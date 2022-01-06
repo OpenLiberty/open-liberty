@@ -24,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -281,7 +282,7 @@ public class LPSTest {
 	
 	private static void restartServer(LibertyServer s) throws Exception{
         // wait for 1st server to have gone away
-        assertNotNull(s.getServerName() + " did not crash", s.waitForStringInTrace("Dump State:"));
+        assertNotNull(s.getServerName() + " did not crash", s.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
         s.resetStarted();
 		FATUtils.startServers(s);
 	}

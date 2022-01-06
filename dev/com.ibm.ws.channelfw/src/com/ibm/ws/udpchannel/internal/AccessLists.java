@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2005 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,100 +10,45 @@
  *******************************************************************************/
 package com.ibm.ws.udpchannel.internal;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class AccessLists {
-    protected UDPFilterList excludeAccess = null;
-    protected UDPFilterList includeAccess = null;
+import io.openliberty.accesslists.AccessListKeysFacade;
+import io.openliberty.accesslists.AddressAccessLists;
+import io.openliberty.accesslists.filterlist.FilterList;
 
-    private static final TraceComponent tc = Tr.register(AccessLists.class, UDPMessages.TR_GROUP, UDPMessages.TR_MSGS);
+/**
+ * This class allows for UDP type specific function to be added if needed.
+ *
+ */
+public class AccessLists extends AddressAccessLists {
+
+    static final TraceComponent tc = Tr.register(AccessLists.class, UDPMessages.TR_GROUP, UDPMessages.TR_MSGS);
 
     /**
      * Constructor.
-     * 
-     * @param _excludeAccess
-     * @param _includeAccess
+     *
+     * @param _addressExcludeList
+     * @param _addressIncludeList
      */
-    public AccessLists(UDPFilterList _excludeAccess, UDPFilterList _includeAccess) {
-        excludeAccess = _excludeAccess;
-        includeAccess = _includeAccess;
+    public AccessLists(FilterList _addressExcludeList, FilterList _addressIncludeList) {
+        super(_addressExcludeList, _addressIncludeList);
     }
 
-    protected static AccessLists getInstance(UDPChannelConfiguration config) {
-        AccessLists retVal = null;
-        boolean haveAList = false;
-        UDPFilterList excludeAccess = null;
-        UDPFilterList includeAccess = null;
+    /**
+     * @param keys the means to get the address access lists
+     * @return the created AccessList or null
+     */
+    protected static AccessLists getInstance(AccessListKeysFacade keys) {
 
-        String sExclude[] = config.getAddressExcludeList();
-        excludeAccess = new UDPFilterList();
-        if (sExclude != null) {
-            excludeAccess.buildData(sExclude, false);
-            excludeAccess.setActive(true);
-            haveAList = true;
+        FilterList addressExcludeList = FilterList.create(keys.getAddressExcludeList());
+        FilterList addressIncludeList = FilterList.create(keys.getAddressIncludeList());
+
+        if (addressExcludeList.getActive() || addressIncludeList.getActive()) {
+            return new AccessLists(addressExcludeList, addressIncludeList);
+        } else {
+            return null;
         }
-
-        String[] sInclude = config.getAddressIncludeList();
-        includeAccess = new UDPFilterList();
-        if (sInclude != null) {
-            includeAccess.buildData(sInclude, false);
-            includeAccess.setActive(true);
-            haveAList = true;
-        }
-
-        if (haveAList) {
-            retVal = new AccessLists(excludeAccess, includeAccess);
-        }
-
-        return retVal;
-    }
-
-    public boolean accessDenied(InetAddress remoteAddr) {
-
-        if (includeAccess.getActive()) {
-            boolean allOk = false;
-
-            if (remoteAddr instanceof Inet6Address) {
-                if (includeAccess.findInList6(remoteAddr.getAddress())) {
-                    allOk = true;
-                }
-            } else {
-                if (includeAccess.findInList(remoteAddr.getAddress())) {
-                    allOk = true;
-                }
-            }
-
-            if (allOk == false) {
-                if (tc.isEventEnabled())
-                    Tr.event(tc, "Address and host name not in include list, address: " + remoteAddr.getHostAddress() + " host name: " + remoteAddr.getHostName());
-                return true;
-            }
-        }
-
-        if (excludeAccess.getActive()) {
-
-            if (remoteAddr instanceof Inet6Address) {
-                if (excludeAccess.findInList6(remoteAddr.getAddress())) {
-                    // close the excluded socket connection
-                    if (tc.isEventEnabled())
-                        Tr.event(tc, "Address (IPv6) in exclude list, address: " + remoteAddr.getHostAddress());
-                    return true;
-                }
-            } else {
-                if (excludeAccess.findInList(remoteAddr.getAddress())) {
-                    // close the excluded socket connection
-                    if (tc.isEventEnabled())
-                        Tr.event(tc, "Address in exclude list, address: " + remoteAddr.getHostAddress());
-                    return true;
-                }
-            }
-
-        } // end if(there are excludes to check)
-        return false;
     }
 
 }

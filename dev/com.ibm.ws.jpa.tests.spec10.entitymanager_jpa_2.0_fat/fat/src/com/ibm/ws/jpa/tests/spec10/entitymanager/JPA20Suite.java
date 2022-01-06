@@ -19,13 +19,17 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.JPA10EntityManager_EJB;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.JPA10EntityManager_Web;
+import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.TestOLGH19182_EJB;
+import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.TestOLGH19182_Web;
 
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPA10EntityManager_EJB.class,
-                JPA10EntityManager_Web.class
+                JPA10EntityManager_Web.class,
+                TestOLGH19182_EJB.class,
+                TestOLGH19182_Web.class
 })
 public class JPA20Suite extends AbstractFATSuite {
 

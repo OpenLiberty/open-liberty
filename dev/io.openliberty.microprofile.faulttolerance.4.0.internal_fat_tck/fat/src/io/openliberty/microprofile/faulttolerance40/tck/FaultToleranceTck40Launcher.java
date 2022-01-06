@@ -123,6 +123,7 @@ public class FaultToleranceTck40Launcher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.4.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
                               additionalProps, Collections.emptySet());
+        MvnUtils.preparePublicationFile();
     }
 
 }

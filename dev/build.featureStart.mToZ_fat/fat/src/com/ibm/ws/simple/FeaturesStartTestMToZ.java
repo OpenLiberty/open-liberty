@@ -253,8 +253,8 @@ public class FeaturesStartTestMToZ {
 
         // Don't test this feature if environment is using Java level below minimum required
         // specified in properties file. Not every feature has a mapping in that file.
-        if (featureJavaLevels.containsKey(feature)) {
-            Integer javaLevel = featureJavaLevels.get(feature);
+        if (featureJavaLevels.containsKey(feature.toLowerCase())) {
+            Integer javaLevel = featureJavaLevels.get(feature.toLowerCase());
             if (JAVA_LEVEL < javaLevel) {
                 Log.info(c, testName.getMethodName(), "Skipping " + feature + " since it needs a minimum Java level of " + javaLevel.toString());
                 return true;

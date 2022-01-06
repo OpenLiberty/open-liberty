@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * Copyright (c) 2018,2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common'),
+  	  project(':com.ibm.ws.security.fat.common.jwt'),
+      project(':io.openliberty.org.apache.commons.logging'),
+      project(':com.ibm.ws.org.apache.httpcomponents'),
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+      'org.brotli:dec:0.1.2',
+      'xalan:xalan:2.7.2',
+      project(':com.ibm.ws.org.apache.commons.io'),
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+      'org.apache.commons:commons-lang3:3.8',
+      'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+      'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+      project(':io.openliberty.org.apache.commons.codec'),
+      'xml-apis:xml-apis:1.4.01',
+      project(':io.openliberty.org.apache.xercesImpl')
+}
+
+def appBuildDir = "${buildDir}/test-application"
+
+task formlogin(type: War) {
+  dependsOn classes
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
+  def appName = "formlogin"
+  def appSuffix = ".jwtsso"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from ("../com.ibm.ws.security.fat.common/build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+  from ("test-applications/${appName}${appSuffix}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/jwtsso/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+task amrbuilder(type: War) {
+  dependsOn classes
+  def appName = "amrbuilder"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from ("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+assemble {
+  dependsOn formlogin
+  dependsOn amrbuilder
+}
+
+task copyServerFiles_sharedConfig { 
+ doLast {
+ 
+ /** copy common config files (like ssl config definitions)  We will override with project specific later **/
+   copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+      include '**/allAlgSSLSettings.xml'
+   }
+  }
+ }
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble', copyServerFiles_sharedConfig
+ 
+autoFVT.doLast {
+  
+  def servers = [
+	'com.ibm.ws.security.jwtsso.fat'
+  ]
+
+  servers.each { server ->
+  
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include '**/allAlg*.p12'
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+    
+    copy { 
+      from new File(buildDir, 'test-application/formlogin.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+    
+    copy { 
+      from new File(buildDir, 'test-application/amrbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+}

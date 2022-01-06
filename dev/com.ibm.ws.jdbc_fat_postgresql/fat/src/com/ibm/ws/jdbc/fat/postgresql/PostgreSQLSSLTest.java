@@ -50,7 +50,7 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("aguibert/postgresql-ssl:1.0")
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("kyleaure/postgres-ssl:1.0")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)

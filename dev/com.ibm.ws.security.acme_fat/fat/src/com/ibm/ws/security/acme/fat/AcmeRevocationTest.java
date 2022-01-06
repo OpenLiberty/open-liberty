@@ -69,7 +69,7 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeRevocationTest {
-
+	
 	@Server("com.ibm.ws.security.acme.fat.revocation")
 	public static LibertyServer server;
 
@@ -143,7 +143,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -167,7 +167,7 @@ public class AcmeRevocationTest {
 			// account for possible time from Boulder: welcome-to-the-purge, purge expected in: 153s
 			long sleepFor = (153 * 1000) - (System.currentTimeMillis() - markStop);
 			if (sleepFor > 0) {
-				Log.info(AcmeSimpleTest.class, methodName, "Before restarting server, sleep for " + sleepFor);
+				Log.info(AcmeRevocationTest.class, methodName, "Before restarting server, sleep for " + sleepFor);
 				Thread.sleep(sleepFor);
 			}
 			server.startServer();
@@ -211,7 +211,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -271,7 +271,7 @@ public class AcmeRevocationTest {
 			/*
 			 * Startup the server.
 			 */
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server.");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server.");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -618,7 +618,7 @@ public class AcmeRevocationTest {
 			configureAcmeRevocation(configuration, true);
 			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Starting server with Pebble");
+			Log.info(AcmeRevocationTest.class, methodName, "Starting server with Pebble");
 			server.startServer();
 			AcmeFatUtils.waitForSslToCreateKeystore(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
@@ -627,18 +627,18 @@ public class AcmeRevocationTest {
 
 			Certificate[] certificates1 = AcmeFatUtils.assertAndGetServerCertificate(server, pebble);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap to Boulder");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap to Boulder");
 			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);
 			server.setMarkToEndOfLog(server.getDefaultLogFile());
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Pebble");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap back to Pebble");
 			AcmeFatUtils.configureAcmeCA(server, pebble, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, pebble, certificates1);
 
-			Log.info(AcmeSimpleTest.class, methodName, "Swap back to Boulder");
+			Log.info(AcmeRevocationTest.class, methodName, "Swap back to Boulder");
 			AcmeFatUtils.configureAcmeCA(server, boulder, configuration, false, DOMAIN);
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			certificates1 = AcmeFatUtils.waitForNewCert(server, boulder, certificates1);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -34,7 +35,7 @@ public class MultiRecoveryTest {
 	protected static String BASE_URL;
 	protected static String BASE_URL2;
 
-	private final static int REQUEST_TIMEOUT = 10;
+	private final static int REQUEST_TIMEOUT = HttpUtils.DEFAULT_TIMEOUT;
 	private final static int START_TIMEOUT = 300000; // in ms
 	
 	private final static String recoveryClient = "recoveryClient";
@@ -85,8 +86,6 @@ public class MultiRecoveryTest {
             // We expect this to fail since it is gonna crash the server
         	result = callSetupServlet(id);
         } catch (Throwable e) {
-            Log.info(this.getClass(), method, "callSetupServlet(" + id + ") crashed as expected");
-            Log.error(this.getClass(), method, e); 
         }
         Log.info(this.getClass(), method, "callSetupServlet(" + id + ") returned: " + result);
 
@@ -94,15 +93,22 @@ public class MultiRecoveryTest {
         final String failMsg = " did not perform recovery";
         //restart server in three modes
         if(startServer.equals("server1")){
-        		FATUtils.startServers(server);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for 1st server to have gone away
+        	assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server);
+        	assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("server2")){
-        		FATUtils.startServers(server2);
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for 2nd server to have gone away
+        	assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server2);
+        	assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         } else if(startServer.equals("both")){
-        		FATUtils.startServers(server, server2);
-                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
-                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
+        	// wait for both servers to have gone away
+        	assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        	FATUtils.startServers(server, server2);
+        	assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), LOG_SEARCH_TIMEOUT));
+        	assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), LOG_SEARCH_TIMEOUT));
         }
 
 		try {
@@ -159,26 +165,24 @@ public class MultiRecoveryTest {
         URL url1 = new URL(urlStr1);
         URL url2 = new URL(urlStr2);
 
-        while (result1.isEmpty() || result2.isEmpty())
-        {
+        while (result1.isEmpty() || result2.isEmpty()) {
         	if (result1.isEmpty()) {
         		HttpURLConnection con1 = null;
 
         		try {
         			Log.info(getClass(), method, "Getting connection to " + urlStr1);
         			con1 = HttpUtils.getHttpConnection(url1, expectedConnectionCode, REQUEST_TIMEOUT);
+            		if (con1 != null) {
+            			Log.info(getClass(), method, "Getting result from " + urlStr1);
+        				result1 = HttpUtils.getConnectionStream(con1).readLine();
+            			Log.info(getClass(), method, "result: " + result1);
+            		}
         		} catch (Exception e) {
         			Log.error(getClass(), method, e);
-        		}
-        		
-        		if (con1 != null) {
-        			try {
-            			Log.info(getClass(), method, "Getting result from " + urlStr1);
-        				BufferedReader br1 = HttpUtils.getConnectionStream(con1);
-        				result1 = br1.readLine();
-        			} finally {
+        		} finally {
+            		if (con1 != null) {
         				con1.disconnect();
-        			}
+            		}
         		}
         	}
 
@@ -188,16 +192,15 @@ public class MultiRecoveryTest {
         		try {
         			Log.info(getClass(), method, "Getting connection to " + urlStr2);
         			con2 = HttpUtils.getHttpConnection(url2, expectedConnectionCode, REQUEST_TIMEOUT);
+        			if (con2 != null) {
+        				Log.info(getClass(), method, "Getting result from " + urlStr2);
+        				result2 = HttpUtils.getConnectionStream(con2).readLine();
+        				Log.info(getClass(), method, "result: " + result2);
+        			}
         		} catch (Exception e) {
         			Log.error(getClass(), method, e);
-        		}
-
-        		if (con2 != null) {
-        			try {
-            			Log.info(getClass(), method, "Getting result from " + urlStr2);
-        				BufferedReader br2 = HttpUtils.getConnectionStream(con2);
-        				result2 = br2.readLine();
-        			} finally {
+        		} finally {
+        			if (con2 != null) {
         				con2.disconnect();
         			}
         		}

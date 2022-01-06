@@ -1,0 +1,27 @@
+<persistence 
+xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+version="2.0">
+
+<persistence-unit name="EntityManagerLock_JEE">
+    <jta-data-source>java:comp/env/jdbc/JPA_JTA_DS</jta-data-source>
+    <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source> 
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <properties>
+        <property name="javax.persistence.lock.timeout" value="15000"/>
+        <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+        <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+    </properties>
+</persistence-unit>
+
+<persistence-unit name="EntityManagerLock_JEE_RL" transaction-type="RESOURCE_LOCAL">
+    <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source>        
+    <shared-cache-mode>NONE</shared-cache-mode>       
+    <properties>
+        <property name="javax.persistence.lock.timeout" value="15000"/>
+        <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+    </properties>
+</persistence-unit>
+
+</persistence>

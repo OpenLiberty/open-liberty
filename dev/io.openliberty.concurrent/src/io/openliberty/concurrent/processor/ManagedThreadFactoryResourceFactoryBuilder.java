@@ -129,6 +129,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         String component = (String) threadFactoryProps.get("component");
         String jndiName = (String) threadFactoryProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) threadFactoryProps.remove("context");
+        Integer priority = (Integer) threadFactoryProps.remove("priority");
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);
         String contextServiceId = contextSvcJndiName == null || "java:comp/DefaultContextService".equals(contextSvcJndiName) //
@@ -150,7 +151,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         threadFactoryProps.put("contextService.cardinality.minimum", 1);
 
         threadFactoryProps.put("createDaemonThreads", false);
-        threadFactoryProps.put("defaultPriority", threadFactoryProps.remove("priority"));
+        threadFactoryProps.put("defaultPriority", priority == null ? Thread.NORM_PRIORITY : priority);
 
         // TODO process these?
         String[] properties = (String[]) threadFactoryProps.remove("properties");

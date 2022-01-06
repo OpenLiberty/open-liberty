@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=The class cache might be corrupte
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: A JPA default property configured in the server.xml file contains an empty name or empty value: name = [{0}], value = [{1}]. The property will be ignored.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: A JPA default property that contains an empty name or empty value is configured in the server.xml file: name = [{0}], value = [{1}]. This property is ignored.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=The name and value attributes for a JPA default property must not be empty.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Change the server configuration to provide a non-empty name and value for the property or remove the property.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: A JPA default property that is intended for use only in Java SE environments is configured in the server.xml file: name = [{0}], value = [{1}]. This property is ignored.
+JDBC_PROP_NAME_CWWJP0057W.explanation=This JPA default property is being used in a Java EE environment, but is intended for use only in Java SE environments.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Change the server and application configuration to use a JNDI data source and remove the property.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

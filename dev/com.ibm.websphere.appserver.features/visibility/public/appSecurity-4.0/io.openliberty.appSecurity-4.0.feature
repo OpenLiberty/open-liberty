@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.appSecurity-4.0
 visibility=public
+singleton=true
 IBM-API-Package: jakarta.security.enterprise; type="spec", \
  jakarta.security.enterprise.authentication.mechanism.http; type="spec", \
  jakarta.security.enterprise.credential; type="spec", \

@@ -1,6 +1,3 @@
-package com.ibm.tx.jta.embeddable.config;
-
-import java.util.List;
 /*******************************************************************************
  * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -11,16 +8,19 @@ import java.util.List;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.config;
+
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.ibm.ejs.ras.Tr;
-import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
 import com.ibm.tx.jta.util.alarm.AlarmManagerImpl;
 import com.ibm.tx.util.alarm.AlarmManager;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class EmbeddableConfigurationProviderImpl implements ConfigurationProvider {
@@ -570,5 +570,10 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     @Override
     public List<Integer> getNonRetriableSqlCodes() {
         return null;
+    }
+
+    @Override
+    public boolean isForcePrepare() {
+        return false;
     }
 }

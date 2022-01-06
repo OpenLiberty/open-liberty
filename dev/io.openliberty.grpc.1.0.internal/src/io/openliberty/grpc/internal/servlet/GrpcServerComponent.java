@@ -280,7 +280,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
     private void setSecurityEnabled() {
         Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
         if (currentFeatureSet.contains("appSecurity-2.0") || currentFeatureSet.contains("appSecurity-1.0")
-                || currentFeatureSet.contains("appSecurity-3.0")) {
+                || currentFeatureSet.contains("appSecurity-3.0") || currentFeatureSet.contains("appSecurity-4.0")) {
             useSecurity = true;
             return;
         }

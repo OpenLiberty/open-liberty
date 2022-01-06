@@ -32,7 +32,7 @@ IBM-API-Package: \
     io.openliberty.opentracing.2.0.spi; location:="dev/spi/ibm/,lib/"
 -files= \
     dev/spi/ibm/javadoc/io.openliberty.opentracing.2.0.spi_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 

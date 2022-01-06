@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.appAuthorization-2.0
 visibility=public
+singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: jakarta.security.jacc; type="spec", \

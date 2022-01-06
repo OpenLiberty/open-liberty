@@ -10,6 +10,8 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
+
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -19,12 +21,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.SessionScoped;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+// When ALL_REMAINING isn't specified for any category (cleared/propagated/unchanged),
+// it is automatically added to cleared
+@ContextServiceDefinition(name = "java:global/concurrent/allcontextcleared",
+                          cleared = SECURITY,
+                          propagated = {},
+                          unchanged = {})
 @SessionScoped
 public class SessionScopedBean implements Serializable {
     private static final long serialVersionUID = -3903544320641023668L;

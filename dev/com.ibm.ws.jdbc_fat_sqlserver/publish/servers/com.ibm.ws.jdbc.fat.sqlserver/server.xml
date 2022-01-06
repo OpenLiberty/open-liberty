@@ -31,7 +31,7 @@
     <fileset dir="${shared.resource.dir}/anon" includes="anomyous.jar"/>
   </library>
     
-  <dataSource id="DefaultDataSource" enableBranchCouplingExtension="true"><!-- TODO remove attribute once GA -->
+  <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="SQLServerLibAnon"/>
     <properties.microsoft.sqlserver
       databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>

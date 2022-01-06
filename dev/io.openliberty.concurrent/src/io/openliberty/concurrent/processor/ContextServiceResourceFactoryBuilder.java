@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
@@ -38,7 +39,6 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
@@ -214,13 +214,10 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                         skip.append(skip.length() == 0 ? "" : ",").append(type);
                     } else {
                         for (String pid : pids)
-                            skip.append(skip.length() == 0 ? "" : ",").append(pid);
+                            skip.append(skip.length() == 0 ? "" : ",").append(pid).append(".provider");
                     }
                 }
             } // TODO else error for duplicate usage
-
-        if (skip.length() > 0)
-            contextSvcProps.put(WSContextService.SKIP_CONTEXT_PROVIDERS, skip.toString());
 
         // propagated
         TreeSet<String> propagated3PCtx = new TreeSet<String>();
@@ -243,7 +240,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                 }
             } // TODO else error for duplicate usage
 
-        if ("propagated".equals(remaining))
+        if (remaining == null)
+            remaining = "cleared";
+        else if ("propagated".equals(remaining))
             for (Map.Entry<String, String[]> entry : BUILT_IN_CONTEXT_PIDS.entrySet()) {
                 String type = entry.getKey();
                 if (!used.contains(type)) {
@@ -253,20 +252,30 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                         contextSvcProps.put("threadContextConfigRef." + (propagateCount++) + ".config.referenceType", pid);
                 }
             }
+        else if ("unchanged".equals(remaining))
+            for (Map.Entry<String, String[]> entry : BUILT_IN_CONTEXT_PIDS.entrySet()) {
+                String type = entry.getKey();
+                if (!used.contains(type)) {
+                    used.add(type);
+                    String[] pids = entry.getValue();
+                    for (String pid : pids)
+                        skip.append(skip.length() == 0 ? "" : ",").append(pid).append(".provider");
+                }
+            }
+
+        if (skip.length() > 0)
+            contextSvcProps.put("context.unchanged", skip.toString());
 
         // Add Transaction context provider
-        if (transaction != null) {
-            String prefix = "threadContextConfigRef." + (propagateCount++);
-            contextSvcProps.put(prefix + ".config.referenceType", "com.ibm.ws.transaction.context");
-            contextSvcProps.put(prefix + ".transaction", transaction);
-        }
-
-        if (remaining == null)
-            remaining = "cleared";
+        if (transaction == null)
+            transaction = remaining;
+        String prefix = "threadContextConfigRef." + (propagateCount++);
+        contextSvcProps.put(prefix + ".config.referenceType", "com.ibm.ws.transaction.context");
+        contextSvcProps.put(prefix + ".transaction", transaction);
 
         // Add a ThreadContextProvider that handles third-party context types
         if (remaining.equals("propagated") || remaining.equals("unchanged") || !propagated3PCtx.isEmpty() || !unchanged3PCtx.isEmpty()) {
-            String prefix = "threadContextConfigRef." + (propagateCount++);
+            prefix = "threadContextConfigRef." + (propagateCount++);
             contextSvcProps.put(prefix + ".config.referenceType", "io.openliberty.thirdparty.context");
             contextSvcProps.put(prefix + ".cleared", new Vector<String>(cleared3PCtx));
             contextSvcProps.put(prefix + ".propagated", new Vector<String>(propagated3PCtx));
@@ -419,6 +428,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
     /**
      * Convert map to text, fully expanding String[] values to make them visible in trace.
      */
+    @Trivial
     private static final String toString(Map<String, Object> map) {
         boolean first = true;
         StringBuilder b = new StringBuilder(200).append('{');

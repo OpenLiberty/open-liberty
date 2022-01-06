@@ -175,7 +175,7 @@ public abstract class LogstashCollectorTest {
     // be started just before the @BeforeClass and stopped after the @AfterClass
     @ClassRule
     public static GenericContainer<?> logstashContainer = new GenericContainer<>(new ImageFromDockerfile() //
-                    .withDockerfileFromBuilder(builder -> builder.from("docker.elastic.co/logstash/logstash:7.2.0") //
+                    .withDockerfileFromBuilder(builder -> builder.from("docker.elastic.co/logstash/logstash:7.16.1") //
                                     .copy("/usr/share/logstash/pipeline/logstash.conf", "/usr/share/logstash/pipeline/logstash.conf") //
                                     .copy("/usr/share/logstash/config/logstash.yml", "/usr/share/logstash/config/logstash.yml") //
                                     .copy("/usr/share/logstash/config/logstash.key", "/usr/share/logstash/config/logstash.key") //

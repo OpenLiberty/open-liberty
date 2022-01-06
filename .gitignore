@@ -21,3 +21,6 @@
 
 # Ignore gradle metadata
 .gradle
+
+# Ignore Eclipse metadata
+.metadata/

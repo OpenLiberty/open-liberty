@@ -29,12 +29,19 @@ fat.minimum.java.level: 1.8
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
-    servlet-4.0,\
+	servlet-4.0,\
 	jaxrs-2.1,\
 	servlet-5.0,\
 	appsecurity-4.0,\
 	expressionlanguage-4.0,\
-	cdi-3.0
+	cdi-3.0,\
+	mpOpenAPI-3.0,\
+	mpRestClient-3.0,\
+	mpMetrics-4.0,\
+	mpJwt-2.0,\
+	mpConfig-3.0,\
+	pages-3.0,\
+	jsonb-2.0
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
@@ -79,4 +86,5 @@ tested.features:\
     com.ibm.websphere.javaee.cdi.2.0,\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-    com.ibm.websphere.javaee.jsonb.1.0;version=latest
+    com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+    io.openliberty.org.apache.xercesImpl;version=latest

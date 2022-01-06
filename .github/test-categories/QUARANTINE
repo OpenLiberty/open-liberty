@@ -22,10 +22,14 @@ com.ibm.ws.jpa.tests.spec10.relationships.manyXone_fat.common
 com.ibm.ws.jpa.tests.spec10.relationships.oneXmany_fat.common
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_fat.common
 com.ibm.ws.repository_fat_shared
+com.ibm.ws.security.jwtsso_fat.commonTest
+com.ibm.ws.security.mp.jwt.1.1_fat.commonTest
+com.ibm.ws.security.mp.jwt.1.2_fat.commonTest
 com.ibm.ws.security.oauth.oidc_fat.common
 com.ibm.ws.security.oidc.server_fat
 com.ibm.ws.security.audit_fat.common.tooling
 com.ibm.ws.security.saml.sso_fat.common
+com.ibm.ws.security.social_fat.commonTest.LibertyOP
 
 # Does not have a valid build.gradle file
 com.ibm.ws.security.social_fat.oidcCertification

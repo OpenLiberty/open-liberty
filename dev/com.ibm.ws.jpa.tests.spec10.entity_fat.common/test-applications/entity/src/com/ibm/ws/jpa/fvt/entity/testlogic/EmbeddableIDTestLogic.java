@@ -52,7 +52,6 @@ public class EmbeddableIDTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("EmbeddableIDTestLogic.testEmbeddableIDClass001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -97,21 +96,10 @@ public class EmbeddableIDTestLogic extends AbstractTestLogic {
             System.out.println("Object returned by find: " + find_entity1);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity1);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity1));
-            Assert.assertEquals(
-                                "Assert that the entity's id is " + pkey_id,
-                                find_entity1.getPkey().getId(),
-                                pkey_id);
-            Assert.assertEquals(
-                                "Assert that the entity's country is " + pkey_country,
-                                find_entity1.getPkey().getCountry(),
-                                pkey_country);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity1);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+            Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity1.getPkey().getId(), pkey_id);
+            Assert.assertEquals("Assert that the entity's country is " + pkey_country, find_entity1.getPkey().getCountry(), pkey_country);
             Assert.assertEquals("Assert intVal field matches expected value.", new_entity.getIntVal(), find_entity1.getIntVal());
 
             System.out.println("Updating field data and persisting to database...");
@@ -138,25 +126,11 @@ public class EmbeddableIDTestLogic extends AbstractTestLogic {
             System.out.println("Object returned by find: " + find_entity2);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity2);
-            Assert.assertNotSame(
-                                 "Assert find did not return the object from the first find",
-                                 find_entity1,
-                                 find_entity2);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity2));
-            Assert.assertEquals(
-                                "Assert that the entity's id is " + pkey_id,
-                                find_entity2.getPkey().getId(),
-                                pkey_id);
-            Assert.assertEquals(
-                                "Assert that the entity's country is " + pkey_country,
-                                find_entity2.getPkey().getCountry(),
-                                pkey_country);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity2);
+            Assert.assertNotSame("Assert find did not return the object from the first find", find_entity1, find_entity2);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity2));
+            Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity2.getPkey().getId(), pkey_id);
+            Assert.assertEquals("Assert that the entity's country is " + pkey_country, find_entity2.getPkey().getCountry(), pkey_country);
             Assert.assertEquals("Assert intVal field matches expected value.", find_entity1.getIntVal(), find_entity2.getIntVal());
 
             System.out.println("Removing entity...");
@@ -184,12 +158,5 @@ public class EmbeddableIDTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("EmbeddableIDTestLogic.testEmbeddableIDClass001(): End");
         }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), EmbeddableIDEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

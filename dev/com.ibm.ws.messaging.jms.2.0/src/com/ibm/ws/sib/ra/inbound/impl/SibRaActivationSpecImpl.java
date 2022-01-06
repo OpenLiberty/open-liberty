@@ -48,7 +48,7 @@ import com.ibm.wsspi.sib.ra.SibRaActivationSpec;
  * Activation specification implementation for inbound core SPI resource
  * adapter. Configured with endpoint properties via JCA administration.
  */
-public final class SibRaActivationSpecImpl implements SibRaActivationSpec,
+final class SibRaActivationSpecImpl implements SibRaActivationSpec,
                 SibRaEndpointConfigurationProvider, FFDCSelfIntrospectable {
 
     private static final String DEFAULT_SHARE_DURABLE_SUBSCRIPTIONS = SHARED_DSUBS_IN_CLUSTER;

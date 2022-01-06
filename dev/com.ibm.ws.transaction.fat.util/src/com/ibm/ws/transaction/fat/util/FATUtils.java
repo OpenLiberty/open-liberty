@@ -118,7 +118,7 @@ public class FATUtils {
             assertNotNull("Attempted to stop a null server", server);
             int attempt = 0;
             int maxAttempts = 5;
-
+            Log.info(c, method, "Working with server " + server);
             do {
                 if (attempt++ > 0) {
                     Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
@@ -131,13 +131,13 @@ public class FATUtils {
 
                 if (!server.isStarted()) {
                     Log.info(c, method,
-                             "Server " + server.getServerName() + " is not started. Maybe it is on the way up.");
-                    continue;
+                             "Server " + server.getServerName() + " is not started. No need to stop it.");
+                    break;
                 }
 
                 ProgramOutput po = null;
                 try {
-                    po = server.stopServer((String[]) null);
+                    po = server.stopServer(toleratedMsgs);
                 } catch (Exception e) {
                     Log.error(c, method, e, "Server stop attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
                 }
@@ -148,27 +148,23 @@ public class FATUtils {
 
                     Log.info(c, method, "ReturnCode: " + rc);
 
-                    s = server.getPid();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(c, method, "Pid: " + s);
-
-                    s = po.getStdout();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(c, method, "Stdout: " + s.trim());
-
-                    s = po.getStderr();
-
-                    if (s != null && !s.isEmpty())
-                        Log.info(c, method, "Stderr: " + s.trim());
-
                     if (rc == 0) {
                         break;
                     } else {
                         String pid = server.getPid();
                         Log.info(c, method,
                                  "Non zero return code stopping server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : "")));
+
+                        s = po.getStdout();
+
+                        if (s != null && !s.isEmpty())
+                            Log.info(c, method, "Stdout: " + s.trim());
+
+                        s = po.getStderr();
+
+                        if (s != null && !s.isEmpty())
+                            Log.info(c, method, "Stderr: " + s.trim());
+
                         server.printProcessHoldingPort(server.getHttpDefaultPort());
                     }
                 }

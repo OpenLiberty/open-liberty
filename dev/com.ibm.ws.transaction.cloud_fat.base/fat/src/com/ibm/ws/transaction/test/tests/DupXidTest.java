@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -100,7 +101,7 @@ public class DupXidTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupDupXid001 returned: " + sb);
 
-        assertNotNull(server1.waitForStringInLog("Dump State:"));
+        assertNotNull(server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // Now start dupXid2
         ProgramOutput po = server2.startServerAndValidate(false, true, true);
@@ -134,7 +135,7 @@ public class DupXidTest extends FATServletClient {
         }
         Log.info(this.getClass(), method, "setupDupXid002 returned: " + sb);
 
-        assertNotNull(server2.waitForStringInLog("Dump State:"));
+        assertNotNull(server2.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // Now start dupXid1
         ProgramOutput po1 = server1.startServerAndValidate(false, true, true);

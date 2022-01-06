@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appbnd.ApplicationBnd;
 import com.ibm.ws.javaee.dd.appbnd.ClientProfile;
 import com.ibm.ws.javaee.dd.appbnd.Group;
@@ -24,48 +25,63 @@ import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
 import com.ibm.ws.javaee.dd.appbnd.SpecialSubject;
 import com.ibm.ws.javaee.dd.appbnd.User;
 
-/**
- *
- */
 public class AppBndTest extends AppBndTestBase {
-
+    
     @Test
-    public void testGetVersion() throws Exception {
-        Assert.assertEquals("XMI", parseApplicationBinding(applicationBinding("") + "</applicationbnd:ApplicationBinding>",
-                                                           parseApplication(application14() + "</application>")).getVersion());
-        Assert.assertEquals("Version should be 1.0", "1.0", parse(appBnd10() + "</application-bnd>").getVersion());
-        Assert.assertEquals("Version should be 1.1", "1.1", parse(appBnd11() + "</application-bnd>").getVersion());
-        Assert.assertEquals("Version should be 1.2", "1.2", parse(appBnd12() + "</application-bnd>").getVersion());
+    public void testXMIGetVersion() throws Exception {
+        Assert.assertEquals("Incorrect application binding version",
+                "XMI",
+                parseAppBndXMI( appBndXMI("", ""), app14() ).getVersion());
     }
 
     @Test
-    public void testAppNameXMI() throws Exception {
-        parseApplicationBinding(applicationBinding("appName=\"an\"") + "</applicationbnd:ApplicationBinding>",
-                                parseApplication(application14() + "</application>"));
+    public void testXMLGetVersion10() throws Exception {
+        Assert.assertEquals("Incorrect application binding version",
+                "1.0",
+                parseAppBndXML(appBnd10()).getVersion());
+    }
+    
+    @Test
+    public void testXMLGetVersion11() throws Exception {    
+        Assert.assertEquals("Incorrect application binding version",
+                "1.1",
+                parseAppBndXML(appBnd11()).getVersion());
+    }
+    
+    @Test
+    public void testXMLGetVersion12() throws Exception {        
+        Assert.assertEquals("Incorrect application binding version",
+                "1.2",
+                parseAppBndXML(appBnd12()).getVersion());
     }
 
     @Test
-    public void testSecurityRole() throws Exception {
-        ApplicationBnd appBnd = parse(appBnd10() +
-                                      "<security-role/>" +
-                                      "  <security-role name=\"sr1\">" +
-                                      "    <user/>" +
-                                      "    <group/>" +
-                                      "    <special-subject/>" +
-                                      "    <run-as/>" +
-                                      "  </security-role>" +
-                                      "  <security-role name=\"sr2\">" +
-                                      "    <user name=\"u0n\" access-id=\"u0ai\"/>" +
-                                      "    <user name=\"u1n\" access-id=\"u1ai\"/>" +
-                                      "    <group name=\"g0n\" access-id=\"g0ai\"/>" +
-                                      "    <group name=\"g1n\" access-id=\"g1ai\"/>" +
-                                      "    <special-subject type=\"EVERYONE\"/>" +
-                                      "    <special-subject type=\"ALL_AUTHENTICATED_USERS\"/>" +
-                                      "    <special-subject type=\"ALL_AUTHENTICATED_IN_TRUSTED_REALMS\"/>" +
-                                      "    <special-subject type=\"SERVER\"/>" +
-                                      "    <run-as userid=\"rau\" password=\"rap\"/>" +
-                                      "  </security-role>" +
-                                      "</application-bnd>");
+    public void testXMIAppName() throws Exception {
+        parseAppBndXMI( appBndXMI("appName=\"an\"", ""), app14() );
+    }
+
+    @Test
+    public void testXMLSecurityRole() throws Exception {
+        ApplicationBnd appBnd = parseAppBndXML(
+                appBnd10(
+                    "<security-role/>" +
+                    "<security-role name=\"sr1\">" +
+                        "<user/>" +
+                        "<group/>" +
+                        "<special-subject/>" +
+                        "<run-as/>" +
+                    "</security-role>" +
+                    "<security-role name=\"sr2\">" +
+                        "<user name=\"u0n\" access-id=\"u0ai\"/>" +
+                        "<user name=\"u1n\" access-id=\"u1ai\"/>" +
+                        "<group name=\"g0n\" access-id=\"g0ai\"/>" +
+                        "<group name=\"g1n\" access-id=\"g1ai\"/>" +
+                        "<special-subject type=\"EVERYONE\"/>" +
+                        "<special-subject type=\"ALL_AUTHENTICATED_USERS\"/>" +
+                        "<special-subject type=\"ALL_AUTHENTICATED_IN_TRUSTED_REALMS\"/>" +
+                        "<special-subject type=\"SERVER\"/>" +
+                        "<run-as userid=\"rau\" password=\"rap\"/>" +
+                    "</security-role>"));
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 3, srs.size());
@@ -118,50 +134,53 @@ public class AppBndTest extends AppBndTestBase {
     }
 
     @Test
-    public void testSecurityRoleXMI() throws Exception {
-        ApplicationBnd appBnd = parseApplicationBinding(applicationBinding("") +
-                                                        "  <authorizationTable>" +
-                                                        "    <authorizations>" +
-                                                        "      <role href=\"META-INF/application.xml#sr0id\"/>" +
-                                                        "    </authorizations>" +
-                                                        "    <authorizations>" +
-                                                        "      <role href=\"META-INF/application.xml#sr1id\"/>" +
-                                                        "      <users/>" +
-                                                        "      <groups/>" +
-                                                        "      <specialSubjects/>" +
-                                                        "    </authorizations>" +
-                                                        "    <authorizations>" +
-                                                        "      <role href=\"META-INF/application.xml#sr2id\"/>" +
-                                                        "      <users name=\"u0n\" accessId=\"u0ai\"/>" +
-                                                        "      <users name=\"u1n\" accessId=\"u1ai\"/>" +
-                                                        "      <groups name=\"g0n\" accessId=\"g0ai\"/>" +
-                                                        "      <groups name=\"g1n\" accessId=\"g1ai\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:Everyone\" name=\"ignored\" accessId=\"ignored\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedUsers\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedInTrustedRealms\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:Server\"/>" +
-                                                        "    </authorizations>" +
-                                                        "  </authorizationTable>" +
-                                                        "  <runAsMap>" +
-                                                        "    <runAsBindings>" +
-                                                        "      <authData xmi:type=\"commonbnd:BasicAuthData\"/>" +
-                                                        "      <securityRole href=\"META-INF/application.xml#sr1id\"/>" +
-                                                        "    </runAsBindings>" +
-                                                        "    <runAsBindings>" +
-                                                        "      <authData xmi:type=\"commonbnd:BasicAuthData\" userId=\"rau\" password=\"rap\"/>" +
-                                                        "      <securityRole href=\"META-INF/application.xml#sr2id\"/>" +
-                                                        "    </runAsBindings>" +
-                                                        "  </runAsMap>" +
-                                                        "</applicationbnd:ApplicationBinding>",
-                                                        parseApplication(application14() +
-                                                                         "  <security-role id=\"sr0id\"/>" +
-                                                                         "  <security-role id=\"sr1id\">" +
-                                                                         "    <role-name>sr1</role-name>" +
-                                                                         "  </security-role>" +
-                                                                         "  <security-role id=\"sr2id\">" +
-                                                                         "    <role-name>sr2</role-name>" +
-                                                                         "  </security-role>" +
-                                                                         "</application>"));
+    public void testXMISecurityRole() throws Exception {
+        Application app = parseApp(
+            app(Application.VERSION_1_4,
+                  "<security-role id=\"sr0id\"/>" +
+                  "<security-role id=\"sr1id\">" +
+                      "<role-name>sr1</role-name>" +
+                  "</security-role>" +
+                  "<security-role id=\"sr2id\">" +
+                      "<role-name>sr2</role-name>" +
+                  "</security-role>"),
+                Application.VERSION_7);
+        
+        ApplicationBnd appBnd = parseAppBndXMI(
+            appBndXMI("",
+                "<authorizationTable>" +
+                    "<authorizations>" +
+                    "   <role href=\"META-INF/application.xml#sr0id\"/>" +
+                    "</authorizations>" +
+                    "<authorizations>" +
+                        "<role href=\"META-INF/application.xml#sr1id\"/>" +
+                        "<users/>" +
+                        "<groups/>" +
+                        "<specialSubjects/>" +
+                    "</authorizations>" +
+                    "<authorizations>" +
+                        "<role href=\"META-INF/application.xml#sr2id\"/>" +
+                        "<users name=\"u0n\" accessId=\"u0ai\"/>" +
+                        "<users name=\"u1n\" accessId=\"u1ai\"/>" +
+                        "<groups name=\"g0n\" accessId=\"g0ai\"/>" +
+                        "<groups name=\"g1n\" accessId=\"g1ai\"/>" +
+                        "<specialSubjects xmi:type=\"applicationbnd:Everyone\" name=\"ignored\" accessId=\"ignored\"/>" +
+                        "<specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedUsers\"/>" +
+                        "<specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedInTrustedRealms\"/>" +
+                        "<specialSubjects xmi:type=\"applicationbnd:Server\"/>" +
+                    "</authorizations>" +
+                "</authorizationTable>" +
+                "<runAsMap>" +
+                    "<runAsBindings>" +
+                        "<authData xmi:type=\"commonbnd:BasicAuthData\"/>" +
+                        "<securityRole href=\"META-INF/application.xml#sr1id\"/>" +
+                    "</runAsBindings>" +
+                    "<runAsBindings>" +
+                        "<authData xmi:type=\"commonbnd:BasicAuthData\" userId=\"rau\" password=\"rap\"/>" +
+                        "<securityRole href=\"META-INF/application.xml#sr2id\"/>" +
+                    "</runAsBindings>" +
+                "</runAsMap>"),
+            app);
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 3, srs.size());
@@ -214,24 +233,27 @@ public class AppBndTest extends AppBndTestBase {
     }
 
     @Test
-    public void testSecurityRoleXMICompat() throws Exception {
-        ApplicationBnd appBnd = parseApplicationBinding("<com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding" +
-                                                        " xmlns:com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd=\"applicationbnd.xmi\"" +
-                                                        " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-                                                        " xmi:version=\"2.0\"" +
-                                                        ">" +
-                                                        "<application href=\"META-INF/application.xml#Application_ID\"/>" +
-                                                        "  <authorizationTable>" +
-                                                        "    <authorizations>" +
-                                                        // This "applicationbnd" prefix erroneously has no xmlns.
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:Everyone\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedUsers\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedInTrustedRealms\"/>" +
-                                                        "      <specialSubjects xmi:type=\"applicationbnd:Server\"/>" +
-                                                        "    </authorizations>" +
-                                                        "  </authorizationTable>" +
-                                                        "</com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding>",
-                                                        parseApplication(application14() + "</application>"));
+    public void testXMISecurityRoleCompat() throws Exception {
+        // This "applicationbnd" prefix erroneously has no xmlns.
+        
+        ApplicationBnd appBnd = parseAppBndXMI(
+            "<com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding" +
+                // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +        
+                " xmlns:com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd=\"applicationbnd.xmi\"" +
+                " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                " xmi:version=\"2.0\"" +
+                ">" +
+                "<application href=\"META-INF/application.xml#Application_ID\"/>" +
+                    "<authorizationTable>" +
+                        "<authorizations>" +
+                            "<specialSubjects xmi:type=\"applicationbnd:Everyone\"/>" +
+                            "<specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedUsers\"/>" +
+                            "<specialSubjects xmi:type=\"applicationbnd:AllAuthenticatedInTrustedRealms\"/>" +
+                            "<specialSubjects xmi:type=\"applicationbnd:Server\"/>" +
+                        "</authorizations>" +
+                    "</authorizationTable>" +
+                "</com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding>",
+                app14() );
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 1, srs.size());
@@ -244,24 +266,22 @@ public class AppBndTest extends AppBndTestBase {
     }
 
     @Test
-    public void testSecurityRoleXMIEmpty() throws Exception {
-        parseApplicationBinding(applicationBinding("") +
-                                "  <authorizationTable/>" +
-                                "  <runAsMap/>" +
-                                "</applicationbnd:ApplicationBinding>",
-                                parseApplication(application14() +
-                                                 "</application>"));
+    public void testXMISecurityRoleEmpty() throws Exception {
+        parseAppBndXMI( appBndXMI("",
+                            "<authorizationTable/>" +
+                            "<runAsMap/>"),
+                        app14() );
     }
 
     @Test
-    public void testProfile() throws Exception {
-        ApplicationBnd appBnd = parse(appBnd10() +
-                                      "  <profile/>" +
-                                      "  <profile name=\"pn1\">" +
-                                      "    <client-profile/>" +
-                                      "    <client-profile name=\"cpn\"/>" +
-                                      "  </profile>" +
-                                      "</application-bnd>");
+    public void testXMLProfile() throws Exception {
+        ApplicationBnd appBnd =
+                parseAppBndXML( appBnd10(
+                    "<profile/>" +
+                        "<profile name=\"pn1\">" +
+                        "<client-profile/>" +
+                        "<client-profile name=\"cpn\"/>" +
+                    "</profile>"));
 
         List<Profile> profiles = appBnd.getProfiles();
         Assert.assertEquals(profiles.toString(), 2, profiles.size());
@@ -279,10 +299,9 @@ public class AppBndTest extends AppBndTestBase {
     }
 
     @Test
-    public void testJASPIRef() throws Exception {
-        ApplicationBnd appBnd = parse(appBnd10() +
-                                      "  <jaspi-ref provider-name=\"pn0\"/>" +
-                                      "</application-bnd>");
+    public void testXMLJASPIRef() throws Exception {
+        ApplicationBnd appBnd =
+                parseAppBndXML(appBnd10("<jaspi-ref provider-name=\"pn0\"/>"));
         Assert.assertEquals("pn0", appBnd.getJASPIRef().getProviderName());
-    }
+    }        
 }

@@ -40,5 +40,6 @@ fat.project: true
 	org.brotli:dec;version=0.1.2,\
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	xml-apis:xml-apis;version=1.4.01,\
-        io.openliberty.org.apache.commons.logging;version=latest,\
-        io.openliberty.org.apache.commons.codec;version=latest
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.xercesImpl;version=latest

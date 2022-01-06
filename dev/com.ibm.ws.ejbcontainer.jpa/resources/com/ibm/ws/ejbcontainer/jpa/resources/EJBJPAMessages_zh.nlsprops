@@ -40,6 +40,18 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR0000-CNTR3999 are reserved for use in container.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
 
 # --------------------------------
 PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: {2} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 {1} \u6a21\u5757\u4e2d\u7684 {0} \u6709\u72b6\u6001\u4f1a\u8bdd bean \u672a\u58f0\u660e\u5bf9 {3} \u6301\u4e45\u6027\u5f15\u7528\u7684\u4f9d\u8d56\u5173\u7cfb\u3002

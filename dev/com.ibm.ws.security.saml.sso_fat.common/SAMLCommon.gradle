@@ -49,7 +49,7 @@ dependencies {
                'org.apache.httpcomponents:httpmime:4.5.12',
                'org.brotli:dec:0.1.2',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0'
+               project(':io.openliberty.org.apache.xercesImpl')
 }
   
 task copyResolver (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {

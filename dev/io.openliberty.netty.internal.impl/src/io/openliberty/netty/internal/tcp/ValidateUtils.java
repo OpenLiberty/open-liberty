@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import io.openliberty.accesslists.filterlist.FilterList;
+
 /**
  * Utility class for validation the TCP channel and factory configuration
  * values.

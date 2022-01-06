@@ -19,6 +19,7 @@ import static com.ibm.ws.classloading.internal.Util.list;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.net.JarURLConnection;
@@ -36,8 +37,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -72,11 +75,49 @@ import com.ibm.wsspi.library.Library;
  * to discover the special methods:
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
+    static final TraceComponent tc = Tr.register(AppClassLoader.class);
+
+    private static final Set<String> forbiddenClassNames = Collections.unmodifiableSet( loadForbidden() );
+
+    private static final String FORBIDDEN_PROPERTIES = "forbidden.properties";
+
+    /**
+     * Load all available {@link #FORBIDDEN_PROPERTIES} resources, answering
+     * property keys as forbidden class names.  Forbidden class names must be
+     * specified as fully qualified class names.
+     *
+     * Load failures will result in either an empty collection of forbidden
+     * class names, or partially loaded forbidden class names.  A null collection
+     * will never be returned.  A load failure will not throw a non-runtime
+     * exception.
+     *
+     * @return The keys of all available forbidden properties resources.
+     */
+    private static Set<String> loadForbidden() {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loading forbidden.properties");
+        }
+        Set<String> forbidden = new HashSet<>();
+        try (InputStream inputStream = AppClassLoader.class.getResourceAsStream(FORBIDDEN_PROPERTIES)) {
+            Properties props = new Properties();
+            props.load(inputStream);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Map<String, String> castProps = (Map) props;
+            forbidden.addAll(castProps.keySet());
+        } catch (IOException e) {
+            // AutoFFDC
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Loaded Forbidden Set" + forbidden);
+        }
+        return forbidden;
+    }    
+
     static {
         ClassLoader.registerAsParallelCapable();
     }
-    static final TraceComponent tc = Tr.register(AppClassLoader.class);
-
+    
     enum SearchLocation {
         PARENT, SELF, DELEGATES
     };
@@ -314,37 +355,37 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     byte[] transformClassBytes(String name, ByteResourceInformation toTransform) throws ClassNotFoundException {
-        // If a class is loaded from the shared classes cache it cannot be transformed.  The bytes are not in 
-        // the normal class bytes format, but rather a cookie to where the bytes are stored in the classes cache.
-        // Since the class was put into the classes cache, it was not transformed previously.  We are
-        // inferring it will not be transformed this time either.  If there is a change requiring the class
-        // to be transformed the user will need to delete the shared classes cache.  If we do not make this
-        // inference, the transform code will fail to process the class bytes resulting in a number of different
-        // types of exceptions or quitting out of the transformation code which will result in the class not being
-        // transformed anyway.
-        byte[] bytes;
-        if (toTransform.foundInClassCache()) {
-            if (systemTransformers.isEmpty()) {
-                bytes = toTransform.getBytes(); 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
-                }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Attempt to transform " + name + " from shared class cache because we have system tranformers");
-                }
-                try {
-                    bytes = toTransform.getActualBytes();
-                    bytes = transformClassBytes(bytes, name, systemTransformers);
-                } catch (IOException e) {
-                    // auto FFDC
-                    // fallback to the cached class
-                    bytes = toTransform.getBytes();
-                }
-            }
+        byte[] originalBytes;
+        boolean fromSCC = toTransform.foundInClassCache();
+        if (!fromSCC) {
+            originalBytes = toTransform.getBytes();
         } else {
-            bytes = transformClassBytes(toTransform.getBytes(), name, transformers);
-            bytes = transformClassBytes(bytes, name, systemTransformers);
+            // Since the class was stored to the shared class cache (SCC), it was not transformed previously.
+            // Transforming the actual class bytes ensures the expected bytes and alleviates the need for the
+            // user to delete the SCC when there is a change requiring the class be transformed.
+            // By not transforming bytes loaded from the SCC we avoid numerous types of exceptions or quitting
+            // out of the transformation code, which will result in the class not being transformed anyway.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Attempt to transform \" + name + \" found in shared class cache because we have "
+                         + (!transformers.isEmpty() ? "[transformers]" : "")
+                         + (!systemTransformers.isEmpty() ? "[system transformers]" : ""));
+            }
+            try {
+                originalBytes = toTransform.getActualBytes();
+            } catch (IOException e) {
+                // auto FFDC
+                // fallback to the cached class
+                return toTransform.getBytes();
+            }
+        }
+        byte[] bytes = transformClassBytes(originalBytes, name, transformers);
+        bytes = transformClassBytes(bytes, name, systemTransformers);
+        if (fromSCC) {
+            // If the transform didn't change the bytes, then return the original bytes
+            // returned from the shared classes cache.
+            if (bytes == originalBytes || Arrays.equals(bytes, originalBytes)) {
+                bytes = toTransform.getBytes();
+            }
         }
         return bytes;
     }
@@ -545,6 +586,24 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        // Fail classes which are forbidden.  For example, by a CVE.
+        if ( forbiddenClassNames.contains(name) ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, "loadClass " + name + " forbidden");
+            }
+            // Since this is not a usual class-not-found case,
+            // directly throw a simple CNFE.
+            //
+            // A more detailed message might be displayed, but,
+            // in most cases the JVM is going to catch the CNFE,
+            // forget the message and then throw a NoClassDefFoundError
+            // with only the class name.  Having a more detailed
+            // message adds little value outside of direct calls
+            // to 'Class.forName' and 'ClassLoader.loadClass'.
+
+            throw new ClassNotFoundException(name);
+        }
+
         ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
         try {

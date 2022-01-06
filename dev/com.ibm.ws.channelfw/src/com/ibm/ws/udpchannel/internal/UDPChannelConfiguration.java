@@ -21,6 +21,8 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.udpchannel.UDPConfigConstants;
 
+import io.openliberty.accesslists.AccessListKeysFacade;
+
 /**
  * @author mjohnson
  */
@@ -357,6 +359,42 @@ public class UDPChannelConfiguration {
      */
     protected String[] getAddressIncludeList() {
         return this.addressIncludeList;
+    }
+
+    /**
+     * A method that can be used to pull out an access list
+     * from a UDPChannelConfiguration
+     *
+     * @return an object that can provide the access lists
+     */
+    public AccessListKeysFacade accessListKeys() {
+        return new AccessListKeysProvider(this);
+    }
+
+    /**
+     * This class is used to protect consumers of the access list keys from having
+     * visibility of this class, it collects together the methods required by the
+     * common access lists code without that code having to know about this consuming
+     * type.
+     */
+    public class AccessListKeysProvider implements AccessListKeysFacade {
+
+        UDPChannelConfiguration delegate;
+
+        AccessListKeysProvider(UDPChannelConfiguration config) {
+            delegate = config;
+        }
+
+        @Override
+        public String[] getAddressExcludeList() {
+            return delegate.getAddressExcludeList();
+        }
+
+        @Override
+        public String[] getAddressIncludeList() {
+            return delegate.getAddressIncludeList();
+        }
+
     }
 
 }

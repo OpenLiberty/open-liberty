@@ -24,7 +24,7 @@ import com.ibm.wsspi.sib.core.SIBusMessage;
  * 
  * @author ajw
  */
-public final class DispatchableMessage 
+final class DispatchableMessage 
 {
   // The SIBusMessage that is contained within this object
   private SIBusMessage message;

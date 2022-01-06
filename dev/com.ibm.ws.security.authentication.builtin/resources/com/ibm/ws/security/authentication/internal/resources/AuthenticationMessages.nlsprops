@@ -56,10 +56,6 @@ JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: WSLoginModuleProxy options is
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=The authentication did not succeed because the WSLoginModuleProxy options element is null or empty.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Verify that the WSLoginModuleProxy configuration includes the options element.
 
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: WSLoginModuleProxy delegate option is not set.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=The authentication did not succeed because the jaasLoginModule with id WSLoginModuleProxy does not have the delegate attribute in the options element.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verify that the jaasLoginModule with id WSLoginModuleProxy includes the delegate attribute on the options element.  
-
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy is not supported in the jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=The WSLoginModuleProxy is not supported in the jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Remove the proxy entry from the loginModuleRef attribute of the jaasLoginContextEntry system.DEFAULT.

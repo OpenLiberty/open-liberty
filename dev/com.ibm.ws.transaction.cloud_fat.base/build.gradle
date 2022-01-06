@@ -23,7 +23,14 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyToSharedDir2(type: Copy) {
+  from configurations.derby
+  into new File(sharedDir, 'derby2')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
 addRequiredLibraries.dependsOn addDerbyToSharedDir
+addRequiredLibraries.dependsOn addDerbyToSharedDir2
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn copyTestContainers

@@ -48,5 +48,6 @@ public class OpentracingTCKLauncher {
     public void launchOpentracingTck() throws Exception {
         // Use default tck-suite.xml
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingTck");
+        MvnUtils.preparePublicationFile();
     }
 }

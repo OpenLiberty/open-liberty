@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+        <!--  Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>StatefulSessionBean</ejb-name>
+            <business-local>com.ibm.ws.jpa.fat.ejb.StatefulSessionBeanLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fat.ejb.StatefulSessionBean</ejb-class>
+            <session-type>Stateful</session-type>    
+        </session>
+    </enterprise-beans>
+</ejb-jar>

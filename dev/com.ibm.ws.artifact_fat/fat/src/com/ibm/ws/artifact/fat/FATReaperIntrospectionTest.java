@@ -142,12 +142,18 @@ public class FATReaperIntrospectionTest{
         logInfo(methodName, "Entering: " + methodName);
 
         if(server != null && server.isStarted()){
-            server.stopServer();
+            server.stopServer(false);
         }
-
+        
         if(dump != null){
             dump.close();
+            dump.deleteFile();           
         }
+        
+        if ( server != null ) {
+            server.postStopServerArchive();
+        }
+   
 
 
         logInfo(methodName, "Exiting: " + methodName);

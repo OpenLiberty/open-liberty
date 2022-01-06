@@ -412,9 +412,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             final boolean trace = TraceComponent.isAnyTracingEnabled();
 
             // data source class is loaded from thread context class loader
+            ClassLoader loader = null;
             if (identifier == null) {
-                ClassLoader tccl = priv.getContextClassLoader();
-                identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
+                loader = priv.getContextClassLoader();
+                identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(loader);
                 // TODO better error handling when thread context class loader does not have an identifier
             }
             mcf1 = mcfPerClassLoader.get(identifier);
@@ -467,7 +468,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
-                mcf1 = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
+                if (loader == null)
+                    loader = connectorSvc.getClassLoaderIdentifierService().getClassLoader(identifier);
+                mcf1 = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, loader, jdbcRuntime);
                 WSManagedConnectionFactoryImpl mcf0 = mcfPerClassLoader.putIfAbsent(identifier, mcf1);
                 mcf1 = mcf0 == null ? mcf1 : mcf0;
 
@@ -667,14 +670,16 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
 
-            WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
+            boolean loadFromApp = jdbcDriverSvc.loadFromApp();
+            ClassLoader loader = loadFromApp ? priv.getContextClassLoader() : jdbcDriverSvc.getClassLoaderForLibraryRef();
 
-            if (jdbcDriverSvc.loadFromApp()) {
+            WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, loader, jdbcRuntime);
+
+            if (loadFromApp) {
                 // data source class loaded from thread context class loader
                 mcf = null;
                 mcfPerClassLoader = new ConcurrentHashMap<String, WSManagedConnectionFactoryImpl>();
-                ClassLoader tccl = priv.getContextClassLoader();
-                String identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
+                String identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(loader);
                 mcfPerClassLoader.put(identifier, mcfImpl);
             } else {
                 // data source class loaded from shared library

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,28 +12,30 @@ package mpGraphQL10.rolesAuth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Base64;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import componenttest.app.FATServlet;
 import io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder;
+import io.smallrye.graphql.client.typesafe.api.GraphQlClientError;
 import io.smallrye.graphql.client.typesafe.api.GraphQlClientException;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.CustomMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 
@@ -41,7 +43,7 @@ import org.junit.Test;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/RolesAuthTestServlet")
 public class RolesAuthTestServlet extends FATServlet {
-    Logger LOG = Logger.getLogger(RolesAuthTestServlet.class.getName());
+    private static Logger LOG = Logger.getLogger(RolesAuthTestServlet.class.getName());
 
     static final String ACCESSED = "Accessed";
     
@@ -70,10 +72,22 @@ public class RolesAuthTestServlet extends FATServlet {
             String s = supplier.getStringThatCouldThrowGraphQlClientException();
             fail("Expected to be unauthorized, but was able to execute query and receive: " + s);
         } catch (GraphQlClientException ex) {
-            assertNotNull(ex.getMessage());
-            assertTrue("Unexpected error message (expected \"Unauthorized\"): " + ex.getMessage(),
-                       ex.getMessage().contains("Unauthorized"));
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.log(Level.FINEST, "caught exception", ex);
+                LOG.log(Level.FINEST, "errors from exception: ", ex.getErrors());
+            }
+            assertNotNull(ex.getErrors());
+            assertThat(ex.getErrors(), CoreMatchers.hasItem(withStringValueContaining("Unauthorized")));
         }
+    }
+    private static Matcher<GraphQlClientError> withStringValueContaining(String s) {
+        return new CustomMatcher<GraphQlClientError>("checks GraphQlClientError contains a specified string") {
+
+            @Override
+            public boolean matches(Object item) {
+                return (item instanceof GraphQlClientError) && ((GraphQlClientError)item).defaultToString().contains(s);
+            }
+        };
     }
 
     @Override

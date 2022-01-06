@@ -59,7 +59,7 @@ public class EmbeddableTestLogic extends AbstractTestLogic {
                                   Object managedComponentObject) {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("EmbeddableTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
+            Assert.fail("EmbeddableTestLogic.testEmbeddable001(): Missing context and/or resources.  Cannot execute the test.");
             return;
         }
 
@@ -81,8 +81,7 @@ public class EmbeddableTestLogic extends AbstractTestLogic {
 
         // Execute Test Case
         try {
-            System.out.println("EmbeddableTestLogic.testTemplate(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
+            System.out.println("EmbeddableTestLogic.testEmbeddable001(): Begin");
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -145,73 +144,27 @@ public class EmbeddableTestLogic extends AbstractTestLogic {
                 System.out.println("Object returned by find: " + find_entity1);
 
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
-                Assert.assertNotSame(
-                                     "Assert find did not return the original object",
-                                     new_entity,
-                                     find_entity1);
-                Assert.assertTrue(
-                                  "Assert entity returned by find is managed by the persistence context.",
-                                  jpaResource.getEm().contains(find_entity1));
-                Assert.assertEquals(
-                                    "Assert that the entity's id is " + pkey_id,
-                                    find_entity1.getId(),
-                                    pkey_id);
-                Assert.assertEquals(
-                                    "Assert that the entity's localIntVal field is " + initial_localIntVal,
-                                    find_entity1.getLocalIntVal(),
-                                    initial_localIntVal);
-                Assert.assertEquals(
-                                    "Assert that the entity's localStringVal field is " + initial_localStrVal,
-                                    find_entity1.getLocalStrVal(),
-                                    initial_localStrVal);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity1);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+                Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity1.getId(), pkey_id);
+                Assert.assertEquals("Assert that the entity's localIntVal field is " + initial_localIntVal, find_entity1.getLocalIntVal(), initial_localIntVal);
+                Assert.assertEquals("Assert that the entity's localStringVal field is " + initial_localStrVal, find_entity1.getLocalStrVal(), initial_localStrVal);
 
                 System.out.println("Verifying Embeddable contents...");
 
                 SimpleEmbeddableObject seo_find = find_entity1.getEmbeddedObj();
                 Assert.assertNotNull("Asset getter method for embeddable object did not return null.", seo_find);
-                Assert.assertNotSame(
-                                     "Assert that the Embeddable object returned by find_entity1 is not the same as the original.",
-                                     seo_new,
-                                     seo_find);
+                Assert.assertNotSame("Assert that the Embeddable object returned by find_entity1 is not the same as the original.", seo_new, seo_find);
 
-                Assert.assertEquals(
-                                    "Assert embeddable field booleanVal == " + initial_embeddable_booleanVal,
-                                    initial_embeddable_booleanVal,
-                                    seo_find.isBooleanVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field byteVal == " + initial_embeddable_byteVal,
-                                    initial_embeddable_byteVal,
-                                    seo_find.getByteVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field charVal == " + initial_embeddable_charVal,
-                                    initial_embeddable_charVal,
-                                    seo_find.getCharVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field doubleVal == " + initial_embeddable_doubleVal,
-                                    initial_embeddable_doubleVal,
-                                    seo_find.getDoubleVal(),
-                                    0.1);
-                Assert.assertEquals(
-                                    "Assert embeddable field floatVal == " + initial_embeddable_floatVal,
-                                    initial_embeddable_floatVal,
-                                    seo_find.getFloatVal(),
-                                    0.1);
-                Assert.assertEquals(
-                                    "Assert embeddable field intVal == " + initial_embeddable_intVal,
-                                    initial_embeddable_intVal,
-                                    seo_find.getIntVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field longVal == " + initial_embeddable_longVal,
-                                    initial_embeddable_longVal,
-                                    seo_find.getLongVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field shortVal == " + initial_embeddable_shortVal,
-                                    initial_embeddable_shortVal,
-                                    seo_find.getShortVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field stringVal == " + initial_embeddable_stringVal,
-                                    initial_embeddable_stringVal,
-                                    seo_find.getStringVal());
+                Assert.assertEquals("Assert embeddable field booleanVal == " + initial_embeddable_booleanVal, initial_embeddable_booleanVal, seo_find.isBooleanVal());
+                Assert.assertEquals("Assert embeddable field byteVal == " + initial_embeddable_byteVal, initial_embeddable_byteVal, seo_find.getByteVal());
+                Assert.assertEquals("Assert embeddable field charVal == " + initial_embeddable_charVal, initial_embeddable_charVal, seo_find.getCharVal());
+                Assert.assertEquals("Assert embeddable field doubleVal == " + initial_embeddable_doubleVal, initial_embeddable_doubleVal, seo_find.getDoubleVal(), 0.1);
+                Assert.assertEquals("Assert embeddable field floatVal == " + initial_embeddable_floatVal, initial_embeddable_floatVal, seo_find.getFloatVal(), 0.1);
+                Assert.assertEquals("Assert embeddable field intVal == " + initial_embeddable_intVal, initial_embeddable_intVal, seo_find.getIntVal());
+                Assert.assertEquals("Assert embeddable field longVal == " + initial_embeddable_longVal, initial_embeddable_longVal, seo_find.getLongVal());
+                Assert.assertEquals("Assert embeddable field shortVal == " + initial_embeddable_shortVal, initial_embeddable_shortVal, seo_find.getShortVal());
+                Assert.assertEquals("Assert embeddable field stringVal == " + initial_embeddable_stringVal, initial_embeddable_stringVal, seo_find.getStringVal());
 
                 // Verified that the initial values of the new entity were saved to the database.
                 // Verify that they can be changed and those changes  are saved to the database.
@@ -250,74 +203,55 @@ public class EmbeddableTestLogic extends AbstractTestLogic {
                 System.out.println("Object returned by find: " + find_entity2);
 
                 Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
-                Assert.assertNotSame(
-                                     "Assert find did not return the original object",
-                                     new_entity,
-                                     find_entity2);
-                Assert.assertTrue(
-                                  "Assert entity returned by find is managed by the persistence context.",
-                                  jpaResource.getEm().contains(find_entity2));
-                Assert.assertEquals(
-                                    "Assert that the entity's id is " + pkey_id,
-                                    find_entity2.getId(),
-                                    pkey_id);
-                Assert.assertEquals(
-                                    "Assert that the entity's localIntVal field is " + postupdate_localIntVal,
-                                    find_entity2.getLocalIntVal(),
-                                    postupdate_localIntVal);
-                Assert.assertEquals(
-                                    "Assert that the entity's localStringVal field is " + postupdate_localStrVal,
-                                    find_entity2.getLocalStrVal(),
-                                    postupdate_localStrVal);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity2);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity2));
+                Assert.assertEquals("Assert that the entity's id is " + pkey_id, find_entity2.getId(), pkey_id);
+                Assert.assertEquals("Assert that the entity's localIntVal field is " + postupdate_localIntVal, find_entity2.getLocalIntVal(), postupdate_localIntVal);
+                Assert.assertEquals("Assert that the entity's localStringVal field is " + postupdate_localStrVal, find_entity2.getLocalStrVal(), postupdate_localStrVal);
 
                 System.out.println("Verifying Embeddable contents...");
 
                 SimpleEmbeddableObject seo_find = find_entity2.getEmbeddedObj();
                 Assert.assertNotNull("Asset getter method for embeddable object did not return null.", seo_find);
-                Assert.assertNotSame(
-                                     "Assert that the Embeddable object returned by find_entity1 is not the same as the original.",
-                                     seo_new,
-                                     seo_find);
+                Assert.assertNotSame("Assert that the Embeddable object returned by find_entity1 is not the same as the original.", seo_new, seo_find);
 
-                Assert.assertEquals(
-                                    "Assert embeddable field booleanVal == " + postupdate_embeddable_booleanVal,
-                                    postupdate_embeddable_booleanVal,
-                                    seo_find.isBooleanVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field byteVal == " + postupdate_embeddable_byteVal,
-                                    postupdate_embeddable_byteVal,
-                                    seo_find.getByteVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field charVal == " + postupdate_embeddable_charVal,
-                                    postupdate_embeddable_charVal,
-                                    seo_find.getCharVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field doubleVal == " + postupdate_embeddable_doubleVal,
-                                    postupdate_embeddable_doubleVal,
-                                    seo_find.getDoubleVal(),
-                                    0.1);
-                Assert.assertEquals(
-                                    "Assert embeddable field floatVal == " + postupdate_embeddable_floatVal,
-                                    postupdate_embeddable_floatVal,
-                                    seo_find.getFloatVal(),
-                                    0.1);
-                Assert.assertEquals(
-                                    "Assert embeddable field intVal == " + postupdate_embeddable_intVal,
-                                    postupdate_embeddable_intVal,
-                                    seo_find.getIntVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field longVal == " + postupdate_embeddable_longVal,
-                                    postupdate_embeddable_longVal,
-                                    seo_find.getLongVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field shortVal == " + postupdate_embeddable_shortVal,
-                                    postupdate_embeddable_shortVal,
-                                    seo_find.getShortVal());
-                Assert.assertEquals(
-                                    "Assert embeddable field stringVal == " + postupdate_embeddable_stringVal,
-                                    postupdate_embeddable_stringVal,
-                                    seo_find.getStringVal());
+                Assert.assertEquals("Assert embeddable field booleanVal == " + postupdate_embeddable_booleanVal, postupdate_embeddable_booleanVal, seo_find.isBooleanVal());
+                Assert.assertEquals("Assert embeddable field byteVal == " + postupdate_embeddable_byteVal, postupdate_embeddable_byteVal, seo_find.getByteVal());
+                Assert.assertEquals("Assert embeddable field charVal == " + postupdate_embeddable_charVal, postupdate_embeddable_charVal, seo_find.getCharVal());
+                Assert.assertEquals("Assert embeddable field doubleVal == " + postupdate_embeddable_doubleVal, postupdate_embeddable_doubleVal, seo_find.getDoubleVal(), 0.1);
+                Assert.assertEquals("Assert embeddable field floatVal == " + postupdate_embeddable_floatVal, postupdate_embeddable_floatVal, seo_find.getFloatVal(), 0.1);
+                Assert.assertEquals("Assert embeddable field intVal == " + postupdate_embeddable_intVal, postupdate_embeddable_intVal, seo_find.getIntVal());
+                Assert.assertEquals("Assert embeddable field longVal == " + postupdate_embeddable_longVal, postupdate_embeddable_longVal, seo_find.getLongVal());
+                Assert.assertEquals("Assert embeddable field shortVal == " + postupdate_embeddable_shortVal, postupdate_embeddable_shortVal, seo_find.getShortVal());
+                Assert.assertEquals("Assert embeddable field stringVal == " + postupdate_embeddable_stringVal, postupdate_embeddable_stringVal, seo_find.getStringVal());
             }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + pkey_id + ")...");
+            IEmbeddedObjectEntity find_remove_entity = (IEmbeddedObjectEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), pkey_id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -326,14 +260,7 @@ public class EmbeddableTestLogic extends AbstractTestLogic {
             t.printStackTrace();
             throw new RuntimeException(t);
         } finally {
-            System.out.println("EmbeddableTestLogic.testTemplate(): End");
+            System.out.println("EmbeddableTestLogic.testEmbeddable001(): End");
         }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), EmbeddableEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

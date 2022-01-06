@@ -28,7 +28,6 @@ import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -70,7 +69,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 

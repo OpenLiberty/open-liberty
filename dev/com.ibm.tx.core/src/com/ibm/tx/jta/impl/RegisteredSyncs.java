@@ -252,7 +252,7 @@ public class RegisteredSyncs {
      */
     public void distributeAfter(int status) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "distributeAfter", new Object[] { this, status });
+            Tr.entry(tc, "distributeAfter", new Object[] { this, Util.printStatus(status) });
 
         // Issue the RRS syncs first - these need to be as close to the completion as possible
         final List RRSsyncs = _syncs[SYNC_TIER_RRS];
@@ -283,7 +283,7 @@ public class RegisteredSyncs {
 
     protected void coreDistributeAfter(int status) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "coreDistributeAfter", status);
+            Tr.entry(tc, "coreDistributeAfter", Util.printStatus(status));
 
         // Iterate through the array backwards so that the syncs
         // are driven in the tier order inner, then normal,

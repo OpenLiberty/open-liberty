@@ -67,6 +67,7 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.metrics.internal.3.0_fat_tck", "launchTck", additionalProps);
+        MvnUtils.preparePublicationFile();
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -259,6 +259,22 @@ public class TranManagerImpl {
     @FFDCIgnore(SystemException.class)
     public Vote prepareTransaction(String globalId) throws WSATException {
         try {
+
+            /*
+             * 
+             * Uncomment to recreate 286979
+             * 
+             * Also uncomment similar code in ProtocolImpl, MultiServerTest, EndToEndClientServlet & TransactionImpl
+             * 
+             * try {
+             * Thread.sleep(2000);
+             * } catch (InterruptedException e) {
+             * if (TC.isDebugEnabled()) {
+             * Tr.debug(TC, "SLEEPING IN PREPARETRANSACTION");
+             * }
+             * e.printStackTrace();
+             * }
+             */
             return getRemoteTranMgr().prepare(globalId);
         } catch (SystemException e) {
             throw new WSATException(Tr.formatMessage(TC, "TRAN_MGR_ERROR_CWLIB0205"), e);

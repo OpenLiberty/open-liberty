@@ -21,12 +21,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutionException;
@@ -92,10 +94,11 @@ import test.context.timing.Timestamp;
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/lowPriorityThreads",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 3)
-// TODO add resource definitions with context unspecified
+@ManagedExecutorDefinition(name = "java:global/concurrent/executor7",
+                           maxAsync = 3)
 
 // TODO remove the following once we can enable them in application.xml
-@ContextServiceDefinition(name="java:app/concurrent/dd/ZPContextService",
+@ContextServiceDefinition(name = "java:app/concurrent/dd/ZPContextService",
                           cleared = ListContext.CONTEXT_NAME,
                           propagated = { ZipCode.CONTEXT_NAME, "Priority" },
                           unchanged = APPLICATION)
@@ -132,6 +135,9 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Resource(name = "java:global/env/concurrent/executor4Ref", lookup = "concurrent/executor4")
     ManagedScheduledExecutorService executor4;
 
+    @Resource(lookup = "java:module/concurrent/executor5")
+    ManagedExecutorService executor5;
+
     @Resource(lookup = "java:comp/concurrent/executor6")
     ManagedScheduledExecutorService executor6;
 
@@ -151,6 +157,28 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(5);
+    }
+
+    /**
+     * Covers the new ManagedExecutorService API methods: completedStage and failedStage,
+     * ensuring propagation of context to dependent stages.
+     */
+    @Test
+    public void testCompletedAndFailedStages() throws Exception {
+        CompletionStage<Integer> stage1 = executor5.completedStage(1);
+        CompletionStage<Integer> stage2 = executor5.failedStage(new IOException("Not a real error."));
+        CompletionStage<Integer> stage3 = stage2.exceptionally(failure -> failure.getClass().getSimpleName().length());
+        ListContext.newList();
+        try {
+            CompletionStage<Void> stage4 = stage3.thenAcceptBothAsync(stage1, (r3, r1) -> ListContext.add(r3 - r1));
+            LinkedBlockingQueue<String> results = new LinkedBlockingQueue<String>();
+            stage4.thenRunAsync(() -> results.add(ListContext.asString()));
+            ListContext.newList();
+            String result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals("[10]", result); // "IOException".length() - 1
+        } finally {
+            ListContext.clear();
+        }
     }
 
     /**
@@ -179,7 +207,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Look up an application-defined ContextService that is configured to
      * propagate some third-party context (ZipCode and List),
      * clear other third-party context (Priority and Timestamp),
-     * and lave other types of context, such as Application, unchanged.
+     * and leave other types of context, such as Application, unchanged.
      * Verify that the ContextService behaves as configured.
      */
     @Test
@@ -216,7 +244,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 };
             });
 
-            // Alter soem of the context on the current thread
+            // Alter some of the context on the current thread
             ZipCode.set(55906);
             ListContext.newList();
             ListContext.add(5);
@@ -272,6 +300,103 @@ public class ConcurrencyTestServlet extends FATServlet {
             ListContext.clear();
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
         }
+    }
+
+    /**
+     * Verify that the ManagedExecutorService copy(stage) and copy(CompletableFuture) methods
+     * create copies that propagate thread context to dependent stages that are created from the
+     * copy.
+     */
+    @Test
+    public void testCopy() throws Exception {
+        CompletableFuture<Integer> stage1 = new CompletableFuture<Integer>();
+        CompletionStage<Integer> stage2 = CompletableFuture.completedStage(6);
+
+        CompletableFuture<Integer> stage1copy = executor5.copy(stage1);
+        CompletionStage<Integer> stage2copy = executor6.copy(stage2);
+
+        try {
+            ZipCode.set(55901);
+            CompletableFuture<Integer> stage3 = stage1copy.thenApplyAsync(i -> ZipCode.get() + i); // 55902
+
+            ZipCode.set(55906);
+            CompletionStage<Object> stage4 = stage2copy.thenApplyAsync(i -> {
+                try {
+                    return InitialContext.doLookup("java:comp/concurrent/executor" + i); // executor6
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            ZipCode.set(55904);
+            CompletableFuture<Integer> stage5 = stage3.thenCombine(stage4, (z, s) -> {
+                return ZipCode.get() - (s instanceof ManagedScheduledExecutorService ? z : 0); // 55904 - 55902 = 2
+            });
+
+            ZipCode.clear();
+            assertTrue(stage1.complete(1));
+            assertEquals(Integer.valueOf(2), stage5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Verify that a ManagedExecutorService propagates context to dependent stages that are
+     * created from a failedFuture().
+     */
+    @Test
+    public void testFailedFuture() throws Exception {
+        Throwable failure = new IllegalStateException("Intentional failure to test error paths");
+        CompletableFuture<Integer> failed = executor5.failedFuture(failure);
+        CompletableFuture<Integer> handled;
+        try {
+            ZipCode.set(55904);
+            handled = failed.handleAsync((result, x) -> {
+                if (result == null && x == failure)
+                    return ZipCode.get();
+                else
+                    throw new CompletionException(x);
+            });
+        } finally {
+            ZipCode.clear();
+        }
+        assertEquals(Integer.valueOf(55904), handled.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify that forced completion of a copied stage neither impacts the original, nor other copies.
+     */
+    @Test
+    public void testForcedCompletionOfCopies() throws Exception {
+        CompletableFuture<String> original = new CompletableFuture<String>();
+        CompletableFuture<String> copy1 = executor5.copy(original);
+        CompletableFuture<String> copy2 = executor5.copy(original);
+        CompletableFuture<String> copy3 = executor5.copy(original);
+        CompletableFuture<String> copy4 = executor5.copy(original);
+        CompletableFuture<String> copy5 = executor5.copy(original);
+        CompletableFuture<String> copy6 = executor5.copy(original);
+        CompletableFuture<String> copy7 = executor5.copy(original);
+
+        copy7.completeOnTimeout("7 is done", 60, TimeUnit.MILLISECONDS);
+        assertTrue(copy6.cancel(true));
+        assertTrue(copy5.complete("5 is done"));
+        copy4.obtrudeValue("4 is done");
+        copy3.completeExceptionally(new IllegalArgumentException("3 is done"));
+        copy2.obtrudeException(new ArrayIndexOutOfBoundsException("2 is done"));
+
+        assertFalse(copy1.isDone());
+        assertFalse(original.isDone());
+
+        assertEquals("7 is done", copy7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(original.complete("original is done"));
+        assertEquals("original is done", copy1.join());
+        assertTrue(copy2.isCompletedExceptionally());
+        assertTrue(copy3.isCompletedExceptionally());
+        assertEquals("4 is done", copy4.join());
+        assertEquals("5 is done", copy5.join());
+        assertTrue(copy6.isCancelled());
     }
 
     /**
@@ -691,7 +816,6 @@ public class ConcurrencyTestServlet extends FATServlet {
         else
             assertNotNull(results[5]);
 
-
         results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
         if (!(results[0] instanceof TimeoutException)) // must time out due to enforcement of maxAsync=1
@@ -704,7 +828,6 @@ public class ConcurrencyTestServlet extends FATServlet {
             throw new AssertionError().initCause((Throwable) results[5]);
         else
             assertNotNull(results[5]);
-
 
         results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
@@ -1255,6 +1378,34 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
         } finally {
             blocker.countDown();
+        }
+    }
+
+    /**
+     * Verify that the ManagedExecutorService runAsync runs the completion stage action
+     * with context captured per the java:comp/DefaultContextService when the
+     * ManagedExecutorDefinition does not specify any value for context.
+     */
+    @Test
+    public void testRunAsyncWithDefaultContextPropagation() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:global/concurrent/executor7");
+
+        ZipCode.set(55906);
+        try {
+            CompletableFuture<Void> future = executor.runAsync(() -> {
+                // third-party context is not propagated
+                assertEquals(0, ZipCode.get());
+                try {
+                    // must have access to application component namespace, per Application context
+                    assertNotNull(InitialContext.doLookup("java:comp/env/concurrent/executor3Ref"));
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+            // cause any assertion errors from above to be raised,
+            assertNull(future.join());
+        } finally {
+            ZipCode.clear();
         }
     }
 }

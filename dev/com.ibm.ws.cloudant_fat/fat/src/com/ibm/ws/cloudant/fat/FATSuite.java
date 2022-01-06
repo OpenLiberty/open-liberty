@@ -34,7 +34,7 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static CouchDBContainer cloudant = new CouchDBContainer("gjwatts/couchdb-tls12:1.0")
+    public static CouchDBContainer cloudant = new CouchDBContainer("kyleaure/couchdb-ssl:1.0")
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "cloudant"));
 
 }

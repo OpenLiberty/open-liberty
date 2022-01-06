@@ -311,6 +311,7 @@ public class DatatypeSupportPropertyTestEntity implements IDatatypeSupportTestEn
         this.longWrapperAttrDefault = longWrapperAttrDefault;
     }
 
+    @Lob
     @Override
     public SerializableClass getSerializableClass() {
         return serializableClass;

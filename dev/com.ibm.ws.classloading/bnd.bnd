@@ -33,7 +33,8 @@ Import-Package: \
   ${defaultPackageImport}
 
 Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
+    OSGI-INF=resources/OSGI-INF, \
+    com/ibm/ws/classloading/internal/forbidden.properties=resources/com/ibm/ws/classloading/internal/forbidden.properties
 
 # catch any packages not explicitly exported and make sure they are private
 Private-Package: \

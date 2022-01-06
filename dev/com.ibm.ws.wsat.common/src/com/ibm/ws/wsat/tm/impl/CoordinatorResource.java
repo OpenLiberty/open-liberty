@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,21 +31,19 @@ public class CoordinatorResource implements RecoveryCoordinator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.RecoveryCoordinator#replayCompletion(java.lang.String)
      */
     @Override
     public void replayCompletion(String globalId) {
         WebClient webClient = WebClient.getWebClient(coordinator, coordinator.getParticipant());
         try {
-            // We re-send the 'prepared' response, which cause the coordinator to resend 
+            // We re-send the 'prepared' response, which cause the coordinator to resend
             // the commit or rollback request, so we can complete the transaction.
             webClient.prepared();
         } catch (WSATException e) {
             // Nothing needed, but log error.  Transaction maanger will perform retries
             // and handle failure if replay fails.
-        } finally {
-            coordinator.remove();
         }
     }
 }

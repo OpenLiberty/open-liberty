@@ -23,7 +23,6 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -43,8 +42,6 @@ public class FATSuite {
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
-
-    public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST;
 
     static {
         // Needed for IBM JDK 8 support.
@@ -74,13 +71,11 @@ public class FATSuite {
 
         try {
             krb5.stop();
+            network.close();
         } catch (Exception e) {
             if (firstError == null)
                 firstError = e;
             Log.error(FATSuite.class, "tearDown", e);
-        }
-        if (!REUSE_CONTAINERS) {
-            network.close();
         }
 
         if (firstError != null)

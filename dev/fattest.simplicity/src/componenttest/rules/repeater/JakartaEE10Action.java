@@ -39,7 +39,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     public static final String ID = "EE10_FEATURES";
 
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
-    private static final Map<String,String> TRANSFORMATION_RULES_APPEND = new HashMap();
+    private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
 
     // TODO This will eventually be a list of Jakarta EE 10 features.
     // TODO Replace EE 9 features in the list below with EE 10 features when they are added.
@@ -49,49 +49,49 @@ public class JakartaEE10Action extends FeatureReplacementAction {
 
     static final String[] EE10_FEATURES_ARRAY = {
                                                   "appClientSupport-2.0",
-                                                  "jakartaee-9.0",
-                                                  "webProfile-9.0",
-                                                  "jakartaeeClient-9.0",
+                                                  "jakartaee-10.0",
+                                                  "webProfile-10.0",
+                                                  "jakartaeeClient-10.0",
                                                   "componenttest-2.0", // replaces "componenttest-1.0"
                                                   "txtest-2.0",
-                                                  "appAuthentication-2.0",
-                                                  "appAuthorization-2.0",
-                                                  "appSecurity-4.0",
-                                                  "batch-2.0",
+                                                  "appAuthentication-3.0",
+                                                  "appAuthorization-2.1",
+                                                  "appSecurity-5.0",
+                                                  "batch-2.1",
                                                   "beanValidation-3.0",
-                                                  "cdi-3.0",
+                                                  "cdi-4.0",
                                                   "concurrent-3.0",
-                                                  "connectors-2.0",
+                                                  "connectors-2.1",
                                                   "connectorsInboundSecurity-2.0",
-                                                  "expressionLanguage-4.0",
+                                                  "expressionLanguage-5.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",
                                                   "enterpriseBeansLite-4.0",
                                                   "enterpriseBeansPersistentTimer-4.0",
                                                   "enterpriseBeansRemote-4.0",
                                                   "enterpriseBeansTest-2.0",
-                                                  "mail-2.0",
-                                                  "persistence-3.0",
-                                                  "persistenceContainer-3.0",
-                                                  "jsonp-2.0",
-                                                  "jsonb-2.0",
-                                                  "jsonpContainer-2.0",
-                                                  "jsonbContainer-2.0",
-                                                  "faces-3.0",
-                                                  "facesContainer-3.0",
-                                                  "pages-3.0",
+                                                  "mail-2.1",
+                                                  "persistence-3.1",
+                                                  "persistenceContainer-3.1",
+                                                  "jsonp-2.1",
+                                                  "jsonb-3.0",
+                                                  "jsonpContainer-2.1",
+                                                  "jsonbContainer-3.0",
+                                                  "faces-4.0",
+                                                  "facesContainer-4.0",
+                                                  "pages-3.1",
                                                   "managedBeans-2.0",
                                                   "mdb-4.0",
-                                                  "messaging-3.0",
+                                                  "messaging-3.1",
                                                   "messagingClient-3.0",
                                                   "messagingServer-3.0",
                                                   "messagingSecurity-3.0",
-                                                  "restfulWS-3.0",
-                                                  "restfulWSClient-3.0",
-                                                  "servlet-5.0",
-                                                  "websocket-2.0",
-                                                  "xmlBinding-3.0",
-                                                  "xmlWS-3.0"
+                                                  "restfulWS-3.1",
+                                                  "restfulWSClient-3.1",
+                                                  "servlet-6.0",
+                                                  "websocket-2.1",
+                                                  "xmlBinding-4.0",
+                                                  "xmlWS-4.0"
     };
 
     public static final Set<String> EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
@@ -104,6 +104,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         forceAddFeatures(false);
+        withMinJavaLevel(11);
         withID(ID);
     }
 
@@ -170,11 +171,11 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional package transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
-     * 
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
+     *
      */
     public JakartaEE10Action withLocalPackageTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tr", TRANSFORMER_RULES_APPEND_ROOT + fileName);
@@ -182,10 +183,10 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional selection transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE10Action withLocalSelectionTransformAppend(String fileName) {
@@ -194,10 +195,10 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional version transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE10Action withLocalVersionTransformAppend(String fileName) {
@@ -206,10 +207,10 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional bundle transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE10Action withLocalBundleTransformAppend(String fileName) {
@@ -218,10 +219,10 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional string transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE10Action withLocalStringTransformAppend(String fileName) {
@@ -230,10 +231,10 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     }
 
     /**
-     * Specifies which file in the rules directory of the FAT will be used for 
+     * Specifies which file in the rules directory of the FAT will be used for
      * adding additional xml transformations.
-     * 
-     * @param fileName    The file name in the publish/rules directory to use for appending
+     *
+     * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
     public JakartaEE10Action withLocalXMLTransformAppend(String fileName) {
@@ -270,7 +271,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param appPath The application path to be transformed to Jakarta
      */
     public static void transformApp(Path appPath) {
-        if(TRANSFORMATION_RULES_APPEND.isEmpty())
+        if (TRANSFORMATION_RULES_APPEND.isEmpty())
             JakartaEE9Action.transformApp(appPath, null);
         else
             JakartaEE9Action.transformApp(appPath, null, TRANSFORMATION_RULES_APPEND);
@@ -290,7 +291,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        if(TRANSFORMATION_RULES_APPEND.isEmpty())
+        if (TRANSFORMATION_RULES_APPEND.isEmpty())
             JakartaEE9Action.transformApp(appPath, newAppPath);
         else
             JakartaEE9Action.transformApp(appPath, newAppPath, TRANSFORMATION_RULES_APPEND);

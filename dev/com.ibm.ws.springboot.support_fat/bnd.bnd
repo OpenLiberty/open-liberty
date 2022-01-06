@@ -53,5 +53,6 @@ tested.features: \
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-	com.ibm.websphere.javaee.websocket.1.1;version=latest
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+    io.openliberty.org.apache.xercesImpl;version=latest
 	

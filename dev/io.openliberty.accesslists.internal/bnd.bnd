@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Access Lists
+Bundle-SymbolicName: io.openliberty.accesslists.internal; singleton:=true
+Bundle-Description: Provides access list and filter function for TCP, UDP \
+and HTTP channels version ${bVersion}
+
+WS-TraceGroup: ChannelFramework
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+	io.openliberty.accesslists;provide:=true, \
+	io.openliberty.accesslists.filterlist;provide:=true
+
+Import-Package: \
+	com.ibm.ws.bytebuffer.internal, \
+	${defaultPackageImport}
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.wsbytebuffer;version=latest
+	
+#  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.jmock:jmock-legacy;version=2.5.0

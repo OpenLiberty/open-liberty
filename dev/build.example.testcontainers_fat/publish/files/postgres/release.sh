@@ -2,13 +2,13 @@
 #Sample script to make it easier to push custom images to dockerhub
 
 #TODO needs to be provided by user
-USER_NAME=
+USER_NAME=kyleaure
 
 #TODO need to provide version of docker image.  Increment if doing a new release
-VERSION=
+VERSION=3.0
 
 #TODO need to provide name of the final image
-IMAGE_NAME=
+IMAGE_NAME=postgres-test-table
 
 #Docker image signiture in form username/image:version
 SIGNITURE=$USER_NAME/$IMAGE_NAME:$VERSION

@@ -319,6 +319,7 @@ public class SerializableDatatypeSupportPropertyTestEntity implements IDatatypeS
     }
 
     // @Basic(fetch=FetchType.EAGER)
+    @Lob
     @Override
     public SerializableClass getSerializableClass() {
         return serializableClass;

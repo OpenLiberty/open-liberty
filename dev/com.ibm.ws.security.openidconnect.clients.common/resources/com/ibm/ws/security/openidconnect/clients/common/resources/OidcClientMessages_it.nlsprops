@@ -110,7 +110,7 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Il validationEndpointUrl speci
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aggiornare la configurazione del client OpenID Connect modificando il validationMethod o il validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributoo di configurazione [{1}] non \u00e8 valido. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributo di configurazione [{1}] non \u00e8 valido. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Il token di accesso fornito ha un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto per l'attributo.
 
@@ -136,7 +136,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Effettuare una delle seg
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: La versione Java utilizzata da questo runtime [{0}] non \u00e8 supportata dalla libreria token web JSON. La versione Java supportata \u00e8 [{1}] o successive.
 OIDC_CLIENT_JWT_JDK7.explanation=Le librerie open source per l'elaborazione dei token web JSON non supporta la versione Java correntemente utilizzata da Liberty Server.
-OIDC_CLIENT_JWT_JDK7.useraction=Installare una versione Java equivalente o supe riore al livello Java mostrato nel messaggio.
+OIDC_CLIENT_JWT_JDK7.useraction=Installare una versione Java equivalente o superiore al livello Java mostrato nel messaggio.
 
 # Do not translate "JSON Web Token"
 #0=Exception, 1=OIDC client ID
@@ -200,7 +200,7 @@ JWK_RETRIEVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e 
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_RETREIVE_FAILED=CWWKS1748E: Non \u00e8 stato possibile contattare l''URL info utente [{0}].  Lo stato della risposta \u00e8 [{1}] e il contenuto restituito \u00e8 [{2}].
-USERINFO_RETREIVE_FAILED.explanation=Impossibile ottenere i dati infor utente dall'URL specificato. L'URL potrebbe non essere valido, il token di accesso fornito potrebbe non essere valido, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
+USERINFO_RETREIVE_FAILED.explanation=Impossibile ottenere i dati info utente dall'URL specificato. L'URL potrebbe non essere valido, il token di accesso fornito potrebbe non essere valido, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
 USERINFO_RETREIVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e specifichi un'ubicazione in grado di restituire i dati info utente. Controllare il codice di stato e il contenuto della risposta per ulteriori informazioni.
 
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
@@ -209,6 +209,11 @@ USERINFO_INVALID.explanation=La richiesta secondaria dei dati info utente deve c
 USERINFO_INVALID.useraction=Verificare che il provider OpenID Connect generi dati info utente validi.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Il client OpenID Connect {0} non \u00e8 in grado di estrarre le richieste JWT (JSON Web Token) dalla risposta web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La risposta web deve essere un JWT in formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Il formato della risposta potrebbe non essere corretto oppure il client OpenID Connect ha rilevato un altro errore durante l'elaborazione della risposta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la risposta sia in formato JWT.
 
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Il client OpenID Connect [{0}] richiede un URL per l''endpoint di autorizzazione, ma non \u00e8 impostato.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=\u00c8 necessario impostare un URL per l'endpoint di autorizzazione al fine di ottenere un codice di autorizzazione o i token richiesti.
@@ -228,5 +233,21 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Per accettare i token JWE,
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Il token non \u00e8 nel formato JWE (JSON Web Encryption) perch\u00e9 non contiene cinque parti, ma il client OpenID Connect [{0}] accetta solo token nel formato JWE.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il token potrebbe avere un formato non corretto oppure potrebbe essere nel formato JWS (JSON Web Signature). I token devono essere nel formato JWE se l'attributo keyManagementKeyAlias \u00e8 configurato.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Per accettare i token JWS invece dei token JWE, rimuovere l'attributo keyManagementKeyAlias nella configurazione del client OpenID Connect. Altrimenti, assicurarsi che a questa risorsa vengano inviati solo token JWE.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: I dati estratti dalla risposta dall''endpoint UserInfo non sono informato JSON. I dati estratti sono [{0}]. L''errore \u00e8 [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=L'endpoint UserInfo deve restituire le asserzioni come membri di un oggetto JSON o un JWT (JSON Web Token). Il formato della risposta potrebbe non essere valido oppure la risposta potrebbe non corrispondere al formato specificato dall'intestazione Content-Type.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=Verificare il formato della risposta dell'endpoint UserInfo per assicurarsi che sia in formato JSON o JWT.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: \u00c8 previsto che la risposta web [{0}] sia un JWT (JSON Web Token), ma la risposta non \u00e8 in formato JWS (JSON Web Signature) o JWE (JSON Web Encryption).
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=L'intestazione Content-Type nella risposta web indica che la risposta contiene un JWT, ma il corpo della risposta non \u00e8 in un formato JWT valido.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Assicurarsi che la risposta web sia nel formato previsto dal client OpenID Connect.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Il client OpenID Connect {0} non \u00e8 in grado di richiamare le informazioni relative al token di accesso dall''endpoint UserInfo: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=La risposta dall'endpoint UserInfo potrebbe non essere in un formato previsto. Il client OpenID Connect potrebbe aver rilevato un errore durante l'inoltro della richiesta UserInfo.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Per ulteriori informazioni, controllare il messaggio di errore. Verificare che il contenuto della risposta UserInfo corrisponda all'intestazione HTTP Content-Type.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

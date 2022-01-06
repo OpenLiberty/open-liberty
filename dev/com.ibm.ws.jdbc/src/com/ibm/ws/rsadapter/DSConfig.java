@@ -12,7 +12,6 @@ package com.ibm.ws.rsadapter;
 
 import java.sql.SQLException; 
 import java.sql.SQLNonTransientException;
-import java.util.ArrayList;
 import java.util.Arrays; 
 import java.util.Collections;
 import java.util.List; 
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.internal.PropertyService;
@@ -166,9 +164,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
      */
     public final boolean enableBeginEndRequest;
 
-    // TODO remove this once branch coupling support is GA
-    public final boolean enableBranchCouplingExtension;
-
     /**
      * Indicates to automatically create a dynamic proxy for interfaces implemented by the connection. 
      */
@@ -306,7 +301,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
         connectionSharing = remove(CONNECTION_SHARING, ConnectionSharing.MatchOriginalRequest, ConnectionSharing.class);
         enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
-        enableBranchCouplingExtension = remove("enableBranchCouplingExtension", false); // TODO remove once GA
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
         heritageHelperClass = remove(HELPER_CLASS, (String) null);

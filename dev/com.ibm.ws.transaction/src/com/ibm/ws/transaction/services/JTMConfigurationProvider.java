@@ -75,7 +75,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
 
-    public JTMConfigurationProvider() {}
+    public JTMConfigurationProvider() {
+    }
 
     /*
      * Called by DS to activate service
@@ -409,6 +410,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public boolean isForcePrepare() {
+        Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "forcePrepare set to {0}", forcePrepare);
+        return forcePrepare;
+    }
+
+    @Override
     public boolean isWaitForRecovery() {
         Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
@@ -620,15 +629,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         // get full path string from resource
         logDir = logDirResource.asFile().getPath().replaceAll("\\\\", "/");
-//        try {
-//            logDir = logDirResource.asFile().getCanonicalPath();
-//        } catch (IOException e) {
-//            final IllegalArgumentException iae = new IllegalArgumentException(configuredLogDir);
-//            iae.initCause(e);
-//            if (tc.isEntryEnabled())
-//                Tr.exit(tc, "parseTransactionLogDirectory", iae);
-//            throw iae;
-//        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "parseTransactionLogDirectory", logDir);

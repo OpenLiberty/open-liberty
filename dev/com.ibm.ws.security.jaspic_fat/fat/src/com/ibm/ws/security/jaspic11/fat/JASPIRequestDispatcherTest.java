@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,7 +39,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @Mode(TestMode.FULL)
 public class JASPIRequestDispatcherTest extends JASPITestBase {
 

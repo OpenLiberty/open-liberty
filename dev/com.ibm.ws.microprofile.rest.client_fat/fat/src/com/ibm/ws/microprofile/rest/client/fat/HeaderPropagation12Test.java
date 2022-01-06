@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -34,11 +35,13 @@ public class HeaderPropagation12Test extends FATServletClient {
     private static final String appName = "headerPropagation12App";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("2.0", SERVER_NAME));
-    
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
+                                                             MicroProfileActions.MP22, //mpRestClient-1.2
+                                                             MicroProfileActions.MP30, // 1.3
+                                                             MicroProfileActions.MP33, // 1.4
+                                                             MicroProfileActions.MP40, // 2.0
+                                                             MicroProfileActions.MP50); // 3.0
+
     @Server(SERVER_NAME)
     @TestServlet(servlet = HeaderPropagationTestServlet.class, contextRoot = appName)
     public static LibertyServer server;

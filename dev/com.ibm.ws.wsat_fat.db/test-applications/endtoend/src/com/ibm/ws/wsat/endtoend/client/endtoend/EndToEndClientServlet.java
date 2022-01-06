@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -367,6 +367,21 @@ public class EndToEndClientServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+		/*
+
+		Uncomment to recreate 286979
+		
+		Also uncomment similar code in ProtocolImpl, TranManagerImpl, MultiServerTest & TransactionImpl
+		
+		try {
+			System.out.println("SLEEPING at end of client servlet to see what comes in");
+
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		System.out.println("end dispatch");
 		return "<html><header></header>"
 						+ "<body>" + finalOutput + "</body></html>";
@@ -383,6 +398,12 @@ public class EndToEndClientServlet extends HttpServlet {
 			XAResourceImpl xaRes;
 			if (vote.equals("rollback")) {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
+						/*
+
+						Use this to recreate 286979						
+						
+						xaResInfo).setSleepTime(13000).setPrepareAction(XAResourceImpl.SLEEP_ROLLBACK);
+						 */
 						xaResInfo).setPrepareAction(XAException.XA_RBROLLBACK);
 			} else {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(

@@ -51,6 +51,7 @@ public class OpentracingTCKLauncherMicroProfile {
         // Use default tck-suite.xml
         
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.preparePublicationFile();
 
     }
 }

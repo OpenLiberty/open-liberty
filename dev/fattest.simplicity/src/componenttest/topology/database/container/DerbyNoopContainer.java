@@ -11,6 +11,7 @@
 package componenttest.topology.database.container;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * This is a Derby no-op database test container that is returned
@@ -20,11 +21,16 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
  * to prevent the creation of a docker container.
  *
  */
-class DerbyNoopContainer<SELF extends DerbyNoopContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
+class DerbyNoopContainer extends JdbcDatabaseContainer<DerbyNoopContainer> {
 
-    /**
-     * @see DerbyNoopContainer
-     */
+    public DerbyNoopContainer(DockerImageName image) {
+        super("");
+    }
+
+    public DerbyNoopContainer(String image) {
+        super("");
+    }
+
     public DerbyNoopContainer() {
         super("");
     }
@@ -54,38 +60,38 @@ class DerbyNoopContainer<SELF extends DerbyNoopContainer<SELF>> extends JdbcData
         //DO NOTHING
     }
 
-	@Override
-	public String getJdbcUrl() {
-		return "jdbc:derby:memory:test;create=true";
-	}
+    @Override
+    public String getJdbcUrl() {
+        return "jdbc:derby:memory:test;create=true";
+    }
 
-	@Override
-	public String getUsername() {
-		return "dbuser1";
-	}
+    @Override
+    public String getUsername() {
+        return "dbuser1";
+    }
 
-	@Override
-	public String getPassword() {
-		return "{xor}Oz0vKDtu";
-	}
+    @Override
+    public String getPassword() {
+        return "{xor}Oz0vKDtu";
+    }
 
-	@Override
-	public Integer getFirstMappedPort() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Integer getFirstMappedPort() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public String getContainerIpAddress() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public String getContainerIpAddress() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public String getDriverClassName() {
-		return "org.apache.derby.jdbc.AutoloadedDriver";
-	}
+    @Override
+    public String getDriverClassName() {
+        return "org.apache.derby.jdbc.AutoloadedDriver";
+    }
 
-	@Override
-	protected String getTestQueryString() {
-		return "";
-	}
+    @Override
+    protected String getTestQueryString() {
+        return "";
+    }
 }

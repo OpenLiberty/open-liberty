@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -167,34 +167,38 @@ public class RequestContext {
 
 	/**
 	 * This method is used to get the stack trace for requested Thread ID. Using
-	 * the Thread class getAllStackTraces() method we get the stack traces for
+	 * the ThreadGroup class enumerate() method we get the stack traces for
 	 * all the active threads, then based on the requirement get the Stack
 	 * thread for specific thread ID and return it.
 	 * 
 	 * @return
 	 */
 	public StringBuffer getStackTrace() {
-
-		Map<Thread, StackTraceElement[]> activeThreadStackTraces = Thread
-				.getAllStackTraces();
-		StringBuffer requestTheadStackStr = new StringBuffer();
-
-		for (Entry<Thread, StackTraceElement[]> entry : activeThreadStackTraces
-				.entrySet()) {
-
-			if (entry.getKey().getId() == threadId) { // If thread ID matches
-														// the requestThreadId,
-														// return the stackTrace
-
-				for (StackTraceElement stackTraceElement : entry.getValue()) {
-					requestTheadStackStr.append("\t at " + stackTraceElement
-							+ "\n");
-				}
-				break;
-			}
-
-		}
-		return requestTheadStackStr;
+		 ThreadGroup systemThreadGroup = Thread.currentThread().getThreadGroup();
+		 ThreadGroup parentThreadGroup;
+        
+		 while ((parentThreadGroup = systemThreadGroup.getParent()) != null) {
+                      systemThreadGroup = parentThreadGroup;
+   		 }
+		
+		 // Ensure there are extra space for additional active threads, since this 
+		 // might have some timing issues/race conditions.
+		 Thread[] threads = new Thread[systemThreadGroup.activeCount() * 2];
+		 int numOfThreads = systemThreadGroup.enumerate(threads);
+        
+		 StringBuffer requestTheadStackStr = new StringBuffer();
+		
+		 for (int i = 0; i < numOfThreads; i++)  {
+                      Thread thread = threads[i];
+                      // If thread ID matches the requestThreadId, return the stackTrace.
+                      if (thread.getId() == threadId) {
+                         for (StackTraceElement stackTraceElement : thread.getStackTrace()) {
+                             requestTheadStackStr.append("\t at " + stackTraceElement + "\n");
+                         }
+                         break;
+                      }
+                  }
+                  return requestTheadStackStr;
 	}
 
 	@Override

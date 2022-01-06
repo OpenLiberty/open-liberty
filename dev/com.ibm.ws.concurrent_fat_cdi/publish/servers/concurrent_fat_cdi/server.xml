@@ -11,11 +11,10 @@
 <server>
 
     <featureManager>
-        <!-- TODO update features to EE 10 -->
-        <feature>servlet-5.0</feature>
+        <feature>servlet-6.0</feature>
         <feature>concurrent-3.0</feature>
         <feature>managedBeans-2.0</feature>
-        <feature>cdi-3.0</feature>
+        <feature>cdi-4.0</feature>
         <feature>componenttest-2.0</feature>
         <feature>jndi-1.0</feature>
     </featureManager>
@@ -29,5 +28,8 @@
     <managedScheduledExecutorService jndiName="concurrent/timeoutExecutor">
         <concurrencyPolicy max="1" maxQueueSize="1" maxWaitForEnqueue="1m" startTimeout="3s"/>
     </managedScheduledExecutorService>
+
+    <!-- needed to shut down pool of unmanaged threads that is used by the application -->
+    <javaPermission codebase="${server.config.dir}/dropins/concurrentCDIApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
 
 </server>

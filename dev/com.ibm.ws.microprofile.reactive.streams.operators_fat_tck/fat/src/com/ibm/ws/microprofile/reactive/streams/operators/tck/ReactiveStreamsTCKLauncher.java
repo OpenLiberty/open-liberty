@@ -56,6 +56,7 @@ public class ReactiveStreamsTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreamsTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.streams.operators_fat_tck", this.getClass() + ":launchReactiveStreamsTck");
+        MvnUtils.preparePublicationFile();
     }
 
 }

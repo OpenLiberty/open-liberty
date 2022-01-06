@@ -25,12 +25,14 @@ public class SyntheticServletTest extends FrameworkMethod {
     private final Field server;
     private final String queryPath;
     private final String testName;
+    private final String syntheticName;
 
-    public SyntheticServletTest(Field server, String queryPath, Method method) {
+    public SyntheticServletTest(Class<?> servletClass, Field server, String queryPath, Method method) {
         super(method);
         this.server = server;
         this.queryPath = queryPath;
         this.testName = method.getName();
+        this.syntheticName = servletClass.getSimpleName() + "." + this.testName;
     }
 
     @Override
@@ -39,5 +41,10 @@ public class SyntheticServletTest extends FrameworkMethod {
         LibertyServer s = (LibertyServer) server.get(null);
         FATServletClient.runTest(s, queryPath, testName);
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return this.syntheticName;
     }
 }

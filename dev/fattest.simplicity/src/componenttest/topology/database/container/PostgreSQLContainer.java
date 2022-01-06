@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * This class is a replacement for the regular <code>org.testcontainers.containers.PostgreSQLContainer</code> class.
@@ -18,7 +19,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
  * 2. To fix the ordering of configure() so that we can set config options such as max_connections=200
  */
 public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContainer> {
-	
+
     public static final String NAME = "postgresql";
     public static final String IMAGE = "postgres";
     public static final String DEFAULT_TAG = "9.6.8";
@@ -37,12 +38,16 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         super(image);
     }
 
+    public PostgreSQLContainer(final DockerImageName image) {
+        super(image);
+    }
+
     /**
      * Add additional configuration options that should be used for this container.
      *
-     * @param key   The PostgreSQL configuration option key. For example: "max_connections"
-     * @param value The PostgreSQL configuration option value. For example: "200"
-     * @return this
+     * @param  key   The PostgreSQL configuration option key. For example: "max_connections"
+     * @param  value The PostgreSQL configuration option value. For example: "200"
+     * @return       this
      */
     public PostgreSQLContainer withConfigOption(String key, String value) {
         if (key == null) {
@@ -64,7 +69,7 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         if (!options.containsKey("fsync"))
             withConfigOption("fsync", "off");
         if (!options.containsKey("max_prepared_transactions"))
-        	withConfigOption("max_prepared_transactions", "2");
+            withConfigOption("max_prepared_transactions", "2");
         List<String> command = new ArrayList<>();
         for (Entry<String, String> e : options.entrySet()) {
             command.add("-c");
@@ -125,11 +130,11 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
         this.password = password;
         return self();
     }
-    
+
     /**
      * Sets the necessary config options for enabling SSL for the container. Assumes there is
      * a server.crt and server.key file under /var/lib/postgresql/ in the container.
-     * An easy way to use this is to combine it with the <code>aguibert/postgresql-ssl:1.0</code>
+     * An easy way to use this is to combine it with the <code>kyleaure/postgres-ssl:1.0</code>
      * or similar base image
      */
     public PostgreSQLContainer withSSL() {

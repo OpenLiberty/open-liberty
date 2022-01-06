@@ -65,6 +65,7 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.metrics.2.0_fat_tck", "launchTck", additionalProps);
+        MvnUtils.preparePublicationFile();
     }
 
 }

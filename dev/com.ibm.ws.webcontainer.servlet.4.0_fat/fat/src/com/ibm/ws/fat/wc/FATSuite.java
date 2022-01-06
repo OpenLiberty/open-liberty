@@ -40,6 +40,7 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMappingTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
+import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -64,12 +65,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // TFB:
-                // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
-                // the gradlew 'buildandrun' invocation.
-                // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
-                // I'm still determining if this is purely a local problem.
-                //              WCPushBuilderSecurityTest.class,
+                // WCPushBuilderSecurityTest.class,
                 WCApplicationMBeanStatusTest.class,
                 WCContextRootPrecedence.class,
                 WCPushBuilderTest.class,
@@ -93,8 +89,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSCIHandlesTypesTest.class,
                 WCResponseHeadersTest.class,
                 WCServerMiscTest.class,
-                WCServerPropertyTest.class
-
+                WCServerPropertyTest.class,
+                WCTestEncodedX590.class
 })
 
 public class FATSuite {

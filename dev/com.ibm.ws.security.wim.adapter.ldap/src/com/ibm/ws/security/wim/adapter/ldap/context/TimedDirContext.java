@@ -376,7 +376,8 @@ public class TimedDirContext {
 
         try {
 
-            traceJndiBegin(METHODNAME, name, filterExpr, filterArgs, LdapHelper.printSearchControls(cons));
+            traceJndiBegin(METHODNAME, name, filterExpr, filterArgs, LdapHelper.printSearchControls(cons),
+                           Context.REFERRAL + ": " + context.getEnvironment().get(Context.REFERRAL));
             begin = System.currentTimeMillis();
             results = context.search(name, filterExpr, filterArgs, cons);
         } catch (NamingException e) {
@@ -406,7 +407,8 @@ public class TimedDirContext {
         NamingEnumeration<SearchResult> results = null;
 
         try {
-            traceJndiBegin(METHODNAME, name, filterExpr, LdapHelper.printSearchControls(cons));
+            traceJndiBegin(METHODNAME, name, filterExpr, LdapHelper.printSearchControls(cons),
+                           Context.REFERRAL + ": " + context.getEnvironment().get(Context.REFERRAL));
             begin = System.currentTimeMillis();
             results = context.search(name, filterExpr, cons);
         } catch (NamingException e) {

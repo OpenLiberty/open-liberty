@@ -15,7 +15,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddress;
 import com.ibm.ws.sib.ra.impl.SibRaUtils;
 
-public class SibRaBusSecurityAction 
+class SibRaBusSecurityAction 
 {
     /**
      * The component to use for trace.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,11 @@ import com.ibm.ws.javaee.dd.common.MailSession;
 import com.ibm.ws.javaee.dd.common.Property;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
-public class MailSessionTest extends JNDIEnvironmentRefsTestBase {
+public class MailSessionTest extends CommonTestBase {
     @Test
     public void testDefault() throws Exception {
         String xml = "<mail-session>" +
-                     "  <name>name0</name>" +
+                          "<name>name0</name>" +
                      "</mail-session>";
         MailSession o = parse(xml).getMailSessions().get(0);
         Assert.assertEquals(Arrays.asList(), o.getDescriptions());
@@ -44,32 +44,32 @@ public class MailSessionTest extends JNDIEnvironmentRefsTestBase {
     @Test(expected = DDParser.ParseException.class)
     public void testDefaultEJB31() throws Exception {
         parseEJB31("<mail-session>" +
-                   "  <name>name0</name>" +
+                       "<name>name0</name>" +
                    "</mail-session>");
     }
 
     @Test
     public void testAll() throws Exception {
         String xml = "<mail-session>" +
-                     "  <description>desc0</description>" +
-                     "  <description>desc1</description>" +
-                     "  <name>name0</name>" +
-                     "  <store-protocol>sp0</store-protocol>" +
-                     "  <store-protocol-class>spc0</store-protocol-class>" +
-                     "  <transport-protocol>tp0</transport-protocol>" +
-                     "  <transport-protocol-class>tpc0</transport-protocol-class>" +
-                     "  <host>host0</host>" +
-                     "  <user>user0</user>" +
-                     "  <password>pass0</password>" +
-                     "  <from>from0</from>" +
-                     "  <property>" +
-                     "    <name>prop0</name>" +
-                     "    <value>value0</value>" +
-                     "  </property>" +
-                     "  <property>" +
-                     "    <name>prop1</name>" +
-                     "    <value>value1</value>" +
-                     "  </property>" +
+                         "<description>desc0</description>" +
+                         "<description>desc1</description>" +
+                         "<name>name0</name>" +
+                         "<store-protocol>sp0</store-protocol>" +
+                         "<store-protocol-class>spc0</store-protocol-class>" +
+                         "<transport-protocol>tp0</transport-protocol>" +
+                         "<transport-protocol-class>tpc0</transport-protocol-class>" +
+                         "<host>host0</host>" +
+                         "<user>user0</user>" +
+                         "<password>pass0</password>" +
+                         "<from>from0</from>" +
+                         "<property>" +
+                             "<name>prop0</name>" +
+                             "<value>value0</value>" +
+                         "</property>" +
+                         "<property>" +
+                             "<name>prop1</name>" +
+                             "<value>value1</value>" +
+                         "</property>" +
                      "</mail-session>";
         MailSession o = parse(xml).getMailSessions().get(0);
         List<Description> descs = o.getDescriptions();

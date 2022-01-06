@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<libertyFixMetadata>
+    <bundles>
+		 <bundle isBaseBundle="false" version="1.0" symbolicName="com.ibm.websphere.appserver.testIfix" date="2021-12-01 11:05" hash="09746e1e160c908927e80ee7bcbdbdd6" size="750" id="lib/com.ibm.ws.install.testIfix_1.0.jar"/>
+    </bundles>
+</libertyFixMetadata>

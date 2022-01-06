@@ -154,7 +154,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>build-classpath</id>
@@ -164,6 +164,17 @@
                         </goals>
                         <configuration>
                             <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifact>org.eclipse.microprofile.graphql:microprofile-graphql-tck:${microprofile.graphql.version}</artifact>
+                            <outputDirectory>${wlp}/usr/servers/${tck_server}/lib/global</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -187,7 +198,6 @@
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
-                        >
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>

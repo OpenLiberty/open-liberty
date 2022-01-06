@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -215,6 +214,12 @@ public class DataSourceTestServlet extends FATServlet {
 
     @Resource
     private ExecutorService executor;
+
+    static final long TWO_MINUTE_MS_TIMEOUT = 120000; // Two minutes in milliseconds
+    static final long FIVE_MINUTE_MS_TIMEOUT = 300000; // Five minutes in milliseconds
+
+    // Atypical uneven interval (in milliseconds) for special polling
+    static final long ODD_POLLING_INTERVAL_MS = 867; // 867 milliseconds
 
     /**
      * Standard isolation level values.
@@ -874,26 +879,23 @@ public class DataSourceTestServlet extends FATServlet {
      * Keep a connection open for a few seconds while ConfigTest increases the queryTimeout.
      */
     public void testConfigChangeWithActiveConnections() throws Exception {
-
-        Stack<Integer> results = new Stack<Integer>();
-        Connection con = ds5.getConnection();
-        try {
-            for (int i = 0; i < 40; i++) {
-                Thread.sleep(100);
-                Statement s = con.createStatement();
-                int queryTimeout = s.getQueryTimeout();
-                int previous = results.isEmpty() ? 30 : results.peek();
-                results.push(queryTimeout);
-                if (queryTimeout < previous || queryTimeout > 34)
-                    throw new Exception("Unexpected queryTimeout in " + results);
+        boolean isFound = false;
+        try (Connection con = ds5.getConnection()) {
+            Statement s = con.createStatement();
+            int queryTimeout = s.getQueryTimeout(); // Initial value should be 30 from the "dsfat5derby" dataSource defined in server.xml
+            int initialTimeout = queryTimeout;
+            s.close();
+            for (long start = System.currentTimeMillis(); !isFound && System.currentTimeMillis() - start < FIVE_MINUTE_MS_TIMEOUT; Thread.sleep(ODD_POLLING_INTERVAL_MS)) {
+                s = con.createStatement();
+                queryTimeout = s.getQueryTimeout();
+                isFound = queryTimeout > initialTimeout ? true : false;
                 s.close();
             }
         } finally {
-            con.close();
+            if (!isFound) {
+                throw new Exception("Test testConfigChangeWithActiveConnections did not complete within the allotted time of " + FIVE_MINUTE_MS_TIMEOUT + " ms.");
+            }
         }
-
-        if (results.peek() == 30) // no updates were made
-            throw new Exception("Did not observe any updates to the queryTimeout: " + results);
     }
 
     /**

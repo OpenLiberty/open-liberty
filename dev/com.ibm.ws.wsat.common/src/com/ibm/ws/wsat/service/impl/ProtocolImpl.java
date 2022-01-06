@@ -182,6 +182,23 @@ public class ProtocolImpl {
         if (coord != null) {
             WebClient client = WebClient.getWebClient(coord, coord.getParticipant());
             if (response == WSATParticipantState.PREPARED) {
+                /*
+                 * 
+                 * Uncomment to recreate 286979
+                 * 
+                 * Also uncomment similar code in EndToEndClientServletMagerImpl, MultiServerTest & TransactionImpl
+                 * 
+                 * try {
+                 * if (TC.isDebugEnabled()) {
+                 * Tr.debug(TC, "SLEEPING IN PARTICIPANTRESPONSE BEFORE SENDING PREPARED");
+                 * }
+                 * Thread.sleep(10000);
+                 * } catch (InterruptedException e) {
+                 * // TODO Auto-generated catch block
+                 * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                 * e.printStackTrace();
+                 * }
+                 */
                 client.prepared();
             } else if (response == WSATParticipantState.COMMITTED) {
                 client.committed();

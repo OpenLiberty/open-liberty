@@ -19,6 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.JPA10EntityManager_EJB;
 import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.JPA10EntityManager_Web;
+import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.TestOLGH19182_EJB;
+import com.ibm.ws.jpa.tests.spec10.entitymanager.tests.TestOLGH19182_Web;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -27,6 +29,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 JPA10EntityManager_EJB.class,
                 JPA10EntityManager_Web.class,
+                TestOLGH19182_EJB.class,
+                TestOLGH19182_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

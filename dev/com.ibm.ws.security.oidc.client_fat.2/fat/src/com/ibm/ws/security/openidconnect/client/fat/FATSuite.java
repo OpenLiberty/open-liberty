@@ -25,6 +25,7 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSameSiteTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientWasReqURLTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationConsumeUserinfoTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationRemoteValidationTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
@@ -41,7 +42,8 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientSignatureAlgTests.class,
         OidcClientEncryptionTests.class,
         OidcClientConsumeUserinfoTests.class,
-        OidcPropagationConsumeUserinfoTests.class
+        OidcPropagationConsumeUserinfoTests.class,
+        OidcPropagationRemoteValidationTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

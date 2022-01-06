@@ -11,12 +11,12 @@
 
     <groupId>io.openliberty.microprofile.metrics</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>4.0-RC4</version>
-    <name>MicroProfile Metrics TCK Runner 4.0-RC4 TCK Module</name>
+    <version>4.0</version>
+    <name>MicroProfile Metrics TCK Runner 4.0 TCK Module</name>
 
     <properties>
         <arquillian.version>1.7.0.Alpha9</arquillian.version>
-        <microprofile.metrics.version>4.0-RC4</microprofile.metrics.version>
+        <microprofile.metrics.version>4.0</microprofile.metrics.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>1.3</version>
+            <version>3.0.1</version>
         </dependency>
         
         <dependency>

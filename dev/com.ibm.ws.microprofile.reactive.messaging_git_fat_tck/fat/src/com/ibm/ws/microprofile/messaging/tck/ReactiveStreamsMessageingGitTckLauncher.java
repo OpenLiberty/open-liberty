@@ -118,6 +118,7 @@ public class ReactiveStreamsMessageingGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "org.eclipse.microprofile.reactive.messaging.tck", this
                         .getClass() + ":launchReactiveMessagingTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
+        MvnUtils.preparePublicationFile();
     }
 
     @Mode(TestMode.LITE)

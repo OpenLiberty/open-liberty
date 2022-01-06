@@ -16,11 +16,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.text.DateFormat;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Assert;
 
@@ -28,12 +30,14 @@ import com.ibm.ws.jpa.fvt.entity.entities.IDatatypeSupportTestEntity;
 import com.ibm.ws.jpa.fvt.entity.support.Constants;
 import com.ibm.ws.jpa.fvt.entity.support.SerializableClass;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.DatatypeSupportEntityEnum;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class SerializableTestLogic extends AbstractTestLogic {
+
     /*
      * 12 Points
      */
@@ -61,12 +65,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testJavaPrimitiveSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -80,9 +94,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharacterWrapperAttrDefault(' ');
@@ -143,22 +157,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -173,64 +179,55 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             // Verify byteAttrDefault
             System.out.println("Introspecting byteAttrDefault: " + mergedEntity.getByteAttrDefault());
-            Assert.assertEquals(
-                                "Assert byteAttrDefault matches the expected value [" + 42 + "]",
-                                (byte) 42,
-                                mergedEntity.getByteAttrDefault());
+            Assert.assertEquals("Assert byteAttrDefault matches the expected value [" + 42 + "]", (byte) 42, mergedEntity.getByteAttrDefault());
 
             // Verify intAttrDefault
             System.out.println("Introspecting intAttrDefault: " + mergedEntity.getIntAttrDefault());
-            Assert.assertEquals(
-                                "Assert intAttrDefault matches the expected value [" + Integer.MAX_VALUE + "]",
-                                Integer.MAX_VALUE,
-                                mergedEntity.getIntAttrDefault());
+            Assert.assertEquals("Assert intAttrDefault matches the expected value [" + Integer.MAX_VALUE + "]", Integer.MAX_VALUE, mergedEntity.getIntAttrDefault());
 
             // Verify shortAttrDefault
             System.out.println("Introspecting shortAttrDefault: " + mergedEntity.getShortAttrDefault());
-            Assert.assertEquals(
-                                "Assert shortAttrDefault matches the expected value [" + Short.MAX_VALUE + "]",
-                                Short.MAX_VALUE,
-                                mergedEntity.getShortAttrDefault());
+            Assert.assertEquals("Assert shortAttrDefault matches the expected value [" + Short.MAX_VALUE + "]", Short.MAX_VALUE, mergedEntity.getShortAttrDefault());
 
             // Verify longAttrDefault
             System.out.println("Introspecting longAttrDefault: " + mergedEntity.getLongAttrDefault());
-            Assert.assertEquals(
-                                "Assert longAttrDefault matches the expected value [" + Long.MAX_VALUE + "]",
-                                Long.MAX_VALUE,
-                                mergedEntity.getLongAttrDefault());
+            Assert.assertEquals("Assert longAttrDefault matches the expected value [" + Long.MAX_VALUE + "]", Long.MAX_VALUE, mergedEntity.getLongAttrDefault());
 
             // Verify booleanAttrDefault
             System.out.println("Introspecting booleanAttrDefault: " + mergedEntity.isBooleanAttrDefault());
-            Assert.assertEquals(
-                                "Assert booleanAttrDefault matches the expected value [" + true + "]",
-                                true,
-                                mergedEntity.isBooleanAttrDefault());
+            Assert.assertEquals("Assert booleanAttrDefault matches the expected value [" + true + "]", true, mergedEntity.isBooleanAttrDefault());
 
             // Verify charAttrDefault
             System.out.println("Introspecting charAttrDefault: " + mergedEntity.getCharAttrDefault());
-            Assert.assertEquals(
-                                "Assert charAttrDefault matches the expected value [" + 'Z' + "]",
-                                'Z',
-                                mergedEntity.getCharAttrDefault());
+            Assert.assertEquals("Assert charAttrDefault matches the expected value [" + 'Z' + "]", 'Z', mergedEntity.getCharAttrDefault());
 
             // Verify floatAttrDefault
             System.out.println("Introspecting floatAttrDefault: " + mergedEntity.getFloatAttrDefault());
-            Assert.assertEquals(
-                                "Assert floatAttrDefault matches the expected value [" + 1.1f + "]", //Float.MAX_VALUE + "]",
+            Assert.assertEquals("Assert floatAttrDefault matches the expected value [" + 1.1f + "]", //Float.MAX_VALUE + "]",
                                 1.1f, //Float.MAX_VALUE,
-                                mergedEntity.getFloatAttrDefault(),
-                                0.1);
+                                mergedEntity.getFloatAttrDefault(), 0.1);
 
             // Verify doubleAttrDefault
             System.out.println("Introspecting doubleAttrDefault: " + mergedEntity.getDoubleAttrDefault());
-            Assert.assertEquals(
-                                "Assert doubleAttrDefault matches the expected value [" + 1.1d + "]", //Double.MAX_VALUE + "]",
+            Assert.assertEquals("Assert doubleAttrDefault matches the expected value [" + 1.1d + "]", //Double.MAX_VALUE + "]",
                                 1.1d, //Double.MAX_VALUE,
-                                mergedEntity.getDoubleAttrDefault(),
-                                0.1);
+                                mergedEntity.getDoubleAttrDefault(), 0.1);
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (Throwable t) {
@@ -268,7 +265,17 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
 //        if (isPostgres) {
 //            // TODO: Address this in Eclipselink
 //            /*
@@ -291,10 +298,11 @@ public class SerializableTestLogic extends AbstractTestLogic {
 //            return;
 //        }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testJavaWrapperSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -308,9 +316,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' '); // prevent postgres PSQLException: ERROR: invalid byte sequence for encoding "UTF8": 0x00
@@ -367,22 +375,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -397,62 +397,58 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             // Verify byteWrapperAttrDefault
             System.out.println("Introspecting byteWrapperAttrDefault: " + mergedEntity.getByteWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert byteAttrDefault matches the expected value [" + new Byte((byte) 42) + "]",
-                                new Byte((byte) 42),
-                                mergedEntity.getByteWrapperAttrDefault());
+            Assert.assertEquals("Assert byteAttrDefault matches the expected value [" + new Byte((byte) 42) + "]", new Byte((byte) 42), mergedEntity.getByteWrapperAttrDefault());
 
             // Verify intWrapperAttrDefault
             System.out.println("Introspecting IntegerWrapperAttrDefault: " + mergedEntity.getIntegerWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert intAttrDefault matches the expected value [" + Integer.MAX_VALUE + "]",
-                                new Integer(Integer.MAX_VALUE),
+            Assert.assertEquals("Assert intAttrDefault matches the expected value [" + Integer.MAX_VALUE + "]", new Integer(Integer.MAX_VALUE),
                                 mergedEntity.getIntegerWrapperAttrDefault());
 
             // Verify shortAttrDefault
             System.out.println("Introspecting shortWrapperAttrDefault: " + mergedEntity.getShortWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert shortWrapperAttrDefault matches the expected value [" + Short.MAX_VALUE + "]",
-                                new Short(Short.MAX_VALUE),
+            Assert.assertEquals("Assert shortWrapperAttrDefault matches the expected value [" + Short.MAX_VALUE + "]", new Short(Short.MAX_VALUE),
                                 mergedEntity.getShortWrapperAttrDefault());
 
             // Verify longWrapperAttrDefault
             System.out.println("Introspecting longWrapperAttrDefault: " + mergedEntity.getLongWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert longWrapperAttrDefault matches the expected value [" + Long.MAX_VALUE + "]",
-                                new Long(Long.MAX_VALUE),
+            Assert.assertEquals("Assert longWrapperAttrDefault matches the expected value [" + Long.MAX_VALUE + "]", new Long(Long.MAX_VALUE),
                                 mergedEntity.getLongWrapperAttrDefault());
 
             // Verify booleanWrapperAttrDefault
             System.out.println("Introspecting booleanWrapperAttrDefault: " + mergedEntity.getBooleanWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert booleanAttrDefault matches the expected value [" + true + "]",
-                                new Boolean(true),
-                                mergedEntity.getBooleanWrapperAttrDefault());
+            Assert.assertEquals("Assert booleanAttrDefault matches the expected value [" + true + "]", new Boolean(true), mergedEntity.getBooleanWrapperAttrDefault());
 
             // Verify charWrapperAttrDefault
             System.out.println("Introspecting charWrapperAttrDefault: " + mergedEntity.getCharacterWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert characterWrapperAttrDefault matches the expected value [" + 'Z' + "]",
-                                new Character('Z'),
-                                mergedEntity.getCharacterWrapperAttrDefault());
+            Assert.assertEquals("Assert characterWrapperAttrDefault matches the expected value [" + 'Z' + "]", new Character('Z'), mergedEntity.getCharacterWrapperAttrDefault());
 
             // Verify floatWrapperAttrDefault
             System.out.println("Introspecting floatWrapperAttrDefault: " + mergedEntity.getFloatWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert floatWrapperAttrDefault matches the expected value [" + 1.1f + "]", // Float.MAX_VALUE + "]",
+            Assert.assertEquals("Assert floatWrapperAttrDefault matches the expected value [" + 1.1f + "]", // Float.MAX_VALUE + "]",
                                 new Float(1.1f), // new Float(Float.MAX_VALUE),
                                 mergedEntity.getFloatWrapperAttrDefault());
 
             // Verify doubleWrapperAttrDefault
             System.out.println("Introspecting doubleWrapperAttrDefault: " + mergedEntity.getDoubleWrapperAttrDefault());
-            Assert.assertEquals(
-                                "Assert doubleWrapperAttrDefault matches the expected value [" + 1.1d + "]", //Double.MAX_VALUE + "]",
+            Assert.assertEquals("Assert doubleWrapperAttrDefault matches the expected value [" + 1.1d + "]", //Double.MAX_VALUE + "]",
                                 new Double(1.1d), //new Double(Double.MAX_VALUE),
                                 mergedEntity.getDoubleWrapperAttrDefault());
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -492,12 +488,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testLargeNumericTypeSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -511,9 +517,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -549,22 +555,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -579,9 +577,7 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             // Verify bigIntegerAttrDefault
             System.out.println("Introspecting bigIntegerAttrDefault: " + mergedEntity.getBigIntegerAttrDefault());
-            Assert.assertEquals(
-                                "Asesert bigIntegerAttrDefault matches the expected value [327683276832768]",
-                                new BigInteger("327683276832768"),
+            Assert.assertEquals("Asesert bigIntegerAttrDefault matches the expected value [327683276832768]", new BigInteger("327683276832768"),
                                 mergedEntity.getBigIntegerAttrDefault());
 
             // Verify bigDecimalAttrDefault
@@ -589,12 +585,24 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             BigDecimal roundedValue = mergedEntity.getBigDecimalAttrDefault().round(new MathContext(3, java.math.RoundingMode.DOWN));
             System.out.println("Rounding bigDecimalAttrDefault down to 2 decimal places: " + roundedValue);
-            Assert.assertTrue(
-                              "Assert bigDecimalAttrDefault matches the expected value [" + mergedEntity.getBigDecimalAttrDefault() + "]",
+            Assert.assertTrue("Assert bigDecimalAttrDefault matches the expected value [" + mergedEntity.getBigDecimalAttrDefault() + "]",
                               roundedValue.compareTo(mergedEntity.getBigDecimalAttrDefault()) == 0);
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -635,12 +643,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testCharArraySerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -654,9 +672,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -698,17 +716,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -724,7 +734,7 @@ public class SerializableTestLogic extends AbstractTestLogic {
             // Verify charArrayAttrDefault
             System.out.println("Introspecting charArrayAttrDefault...");
             char[] charArrayRet = mergedEntity.getCharArrayAttrDefault();
-            Assert.assertNotNull("DatatypeSupportTestEntity(id=1).getCharArrayAttrDefault() returned a null value.", charArrayRet);
+            Assert.assertNotNull("DatatypeSupportTestEntity(id=" + id + ").getCharArrayAttrDefault() returned a null value.", charArrayRet);
             for (int index = 0; index < charArrayRet.length; index++) {
                 if (charArrayRet[index] != charArray[index]) {
                     // One of the chars returned did not match
@@ -738,8 +748,7 @@ public class SerializableTestLogic extends AbstractTestLogic {
             // Verify charWrapperArrayAttrDefault
             System.out.println("Introspecting characterWrapperArrayAttrDefault...");
             Character[] charWrapperArrayRet = mergedEntity.getCharWrapperArrayAttrDefault();
-            Assert.assertNotNull("IDatatypeSupportTestEntity(id=1).getCharacterWrapperArrayAttrDefault() returned a null value.",
-                                 charWrapperArrayRet);
+            Assert.assertNotNull("IDatatypeSupportTestEntity(id=" + id + ").getCharacterWrapperArrayAttrDefault() returned a null value.", charWrapperArrayRet);
             for (int index = 0; index < charWrapperArrayRet.length; index++) {
                 if (!charWrapperArrayRet[index].equals(charWrapperArray[index])) {
                     // One of the Characters returned did not match
@@ -753,8 +762,21 @@ public class SerializableTestLogic extends AbstractTestLogic {
 //            log.assertPass
             System.out.println("Characters have matched expectations.");
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -795,12 +817,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testByteArraySerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -814,9 +846,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -853,22 +885,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -879,7 +903,7 @@ public class SerializableTestLogic extends AbstractTestLogic {
             IDatatypeSupportTestEntity mergedEntity = jpaResource.getEm().merge(serializedEntity);
 
             // Verify that the original data stored in the entity came back correctly
-            System.out.println("Verifying IDatatypeSupportTestEntity(id=1) has the correct values in its attributes...");
+            System.out.println("Verifying IDatatypeSupportTestEntity(id=" + id + ") has the correct values in its attributes...");
 
             // Verify byteArrayAttrDefault
             System.out.println("Introspecting byteArrayAttrDefault...");
@@ -898,7 +922,7 @@ public class SerializableTestLogic extends AbstractTestLogic {
             // Verify byteWrapperArrayAttrDefault
             System.out.println("Introspecting byteWrapperArrayAttrDefault...");
             Byte[] byteWrapperArrayRet = mergedEntity.getByteWrapperArrayAttrDefault();
-            Assert.assertNotNull("IDatatypeSupportTestEntity(id=1).getByteWrapperArrayAttrDefault() returned a null value.", byteWrapperArrayRet);
+            Assert.assertNotNull("IDatatypeSupportTestEntity(id=" + id + ").getByteWrapperArrayAttrDefault() returned a null value.", byteWrapperArrayRet);
             for (int index = 0; index < byteWrapperArrayRet.length; index++) {
                 if (!byteWrapperArrayRet[index].equals(byteWrapperArray[index])) {
                     // One of the Bytes returned did not match
@@ -912,8 +936,21 @@ public class SerializableTestLogic extends AbstractTestLogic {
 //            log.assertPass
             System.out.println("Characters have matched expectations.");
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -954,12 +991,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testStringSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -973,9 +1020,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -1005,22 +1052,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -1035,17 +1074,27 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             // Verify stringAttrDefault
             System.out.println("Introspecting stringAttrDefault: " + mergedEntity.getStringAttrDefault());
-            Assert.assertEquals(
-                                "Assert stringAttrDefault matches the expected value \"" + testString + "\" " +
-                                " (is " + mergedEntity.getStringAttrDefault() + ")",
-                                testString,
-                                mergedEntity.getStringAttrDefault());
+            Assert.assertEquals("Assert stringAttrDefault matches the expected value \"" + testString + "\" " +
+                                " (is " + mergedEntity.getStringAttrDefault() + ")", testString, mergedEntity.getStringAttrDefault());
 
 //            log.assertPass
             System.out.println("Characters have matched expectations.");
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -1086,12 +1135,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testTemporalTypeSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -1105,9 +1164,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -1149,22 +1208,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -1176,20 +1227,27 @@ public class SerializableTestLogic extends AbstractTestLogic {
 
             // Verify utilDateAttrDefault
             System.out.println("Introspecting utilDateAttrDefault: " + mergedEntity.getUtilDateAttrDefault());
-            Assert.assertEquals(
-                                "Assert utilDateAttrDefault matches the expected value [" + todaysDate + "]",
-                                todaysDate,
-                                mergedEntity.getUtilDateAttrDefault());
+            Assert.assertEquals("Assert utilDateAttrDefault matches the expected value [" + todaysDate + "]", todaysDate, mergedEntity.getUtilDateAttrDefault());
 
             // Verify utilCalendarAttrDefault
             System.out.println("Introspecting utilCalendarAttrDefault: " + mergedEntity.getUtilCalendarAttrDefault());
-            Assert.assertEquals(
-                                "Assert  utilCalendarAttrDefault  matches the expected value [" + calendar + "]",
-                                calendar,
-                                mergedEntity.getUtilCalendarAttrDefault());
+            Assert.assertEquals("Assert  utilCalendarAttrDefault  matches the expected value [" + calendar + "]", calendar, mergedEntity.getUtilCalendarAttrDefault());
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -1230,12 +1288,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testJDBCTemporalTypeSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -1249,9 +1317,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -1299,22 +1367,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -1327,29 +1387,34 @@ public class SerializableTestLogic extends AbstractTestLogic {
             // Verify sqlDateAttrDefault
             System.out.println("Introspecting sqlDateAttrDefault: " + mergedEntity.getSqlDateAttrDefault());
             System.out.println("Result of find_entity.getSqlDateAttrDefault().getTime() = " + mergedEntity.getSqlDateAttrDefault().getTime());
-            Assert.assertEquals(
-                                "Assert sqlDateAttrDefault matches the expected value [" + todaysDate + "]",
-                                todaysDate,
-                                mergedEntity.getSqlDateAttrDefault());
+            Assert.assertEquals("Assert sqlDateAttrDefault matches the expected value [" + todaysDate + "]", todaysDate, mergedEntity.getSqlDateAttrDefault());
 
             // Verify sqlTimeAttrDefault
             System.out.println("Introspecting sqlTimeAttrDefault: " + mergedEntity.getSqlTimeAttrDefault());
             System.out.println("Result of find_entity.getSqlTimeAttrDefault().getTime() = " + mergedEntity.getSqlTimeAttrDefault().getTime());
-            Assert.assertEquals(
-                                "Assert sqlTimeAttrDefault matches the expected value [" + currentTime + "]",
-                                currentTime,
-                                mergedEntity.getSqlTimeAttrDefault());
+            Assert.assertEquals("Assert sqlTimeAttrDefault matches the expected value [" + currentTime + "]", currentTime, mergedEntity.getSqlTimeAttrDefault());
 
             // Verify sqlTimestampAttrDefault
             System.out.println("Introspecting sqlTimestampAttrDefault: " + mergedEntity.getSqlTimestampAttrDefault());
             System.out.println("Result of find_entity.getSqlTimestampAttrDefault().getTime() = " + mergedEntity.getSqlTimestampAttrDefault().getTime());
-            Assert.assertEquals(
-                                "Assert sqlTimestampAttrDefault matches the expected value [" + currentTimestamp + "]",
-                                currentTimestamp,
+            Assert.assertEquals("Assert sqlTimestampAttrDefault matches the expected value [" + currentTimestamp + "]", currentTimestamp,
                                 mergedEntity.getSqlTimestampAttrDefault());
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (Throwable t) {
@@ -1387,12 +1452,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testEnumeratedTypeSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -1406,9 +1481,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -1434,22 +1509,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Test Serializablity by fetching a copy of the entity, serialize it into a byte array,
             // reconstruct the entity from the byte array, verify that its data is correct.
@@ -1463,13 +1530,24 @@ public class SerializableTestLogic extends AbstractTestLogic {
             IDatatypeSupportTestEntity mergedEntity = jpaResource.getEm().merge(serializedEntity);
 
             System.out.println("Introspecting enumeration: " + mergedEntity.getEnumeration());
-            Assert.assertEquals(
-                                "Assert of enumeration on the entity matches match the expected value [" + Constants.TestEnumeration.VALUE_ONE + "]",
-                                Constants.TestEnumeration.VALUE_ONE,
-                                mergedEntity.getEnumeration());
+            Assert.assertEquals("Assert of enumeration on the entity matches match the expected value [" + Constants.TestEnumeration.VALUE_ONE + "]",
+                                Constants.TestEnumeration.VALUE_ONE, mergedEntity.getEnumeration());
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -1579,12 +1657,22 @@ public class SerializableTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isPostgres = "PostgreSQL".equals(testExecCtx.getProperties().get("dbProductName"));
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        int id = 1;
 
         // Execute Test Case
         try {
             System.out.println("DatatypeSupportTestLogic.testSerializableTypeSerializableSupport(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -1598,9 +1686,9 @@ public class SerializableTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Construct a new entity instances
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=1)...");
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + id + ")...");
             IDatatypeSupportTestEntity new_entity = (IDatatypeSupportTestEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
 
             if (isPostgres) {
                 new_entity.setCharAttrDefault(' ');
@@ -1636,22 +1724,14 @@ public class SerializableTestLogic extends AbstractTestLogic {
                 System.out.println("Joining entitymanager to JTA transaction...");
                 jpaResource.getEm().joinTransaction();
             }
-            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=1)...");
-            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            Assert.assertNotSame(
-                                 "Assert find did not return the original object",
-                                 new_entity,
-                                 find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
-                              jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
-                                find_entity.getId(),
-                                1);
+            Assert.assertNotSame("Assert find did not return the original object", new_entity, find_entity);
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity));
+            Assert.assertEquals("Assert that the entity's id is " + id, find_entity.getId(), id);
 
             // Serialize the object, pass it through a "virtual channel", and reconstruct it.
             System.out.println("Serializing and deserializing the entity through a 'virtual' channel...");
@@ -1662,14 +1742,24 @@ public class SerializableTestLogic extends AbstractTestLogic {
             IDatatypeSupportTestEntity mergedEntity = jpaResource.getEm().merge(serializedEntity);
 
             System.out.println("Introspecting enumeration: " + mergedEntity.getSerializableClass());
-            Assert.assertEquals(
-                                "Assert serializable class on the entity matches match the expected value [" + sc + "] " +
-                                " (is [" + mergedEntity.getSerializableClass() + "])",
-                                sc,
-                                mergedEntity.getSerializableClass());
+            Assert.assertEquals("Assert serializable class on the entity matches match the expected value [" + sc + "] " +
+                                " (is [" + mergedEntity.getSerializableClass() + "])", sc, mergedEntity.getSerializableClass());
 
-            System.out.println("Rolling Back transaction...");
-            jpaResource.getTj().rollbackTransaction();
+            System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + id + ")...");
+            IDatatypeSupportTestEntity find_remove_entity = (IDatatypeSupportTestEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            System.out.println("Object returned by find: " + find_remove_entity);
+
+            Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+            System.out.println("Removing entity...");
+            jpaResource.getEm().remove(find_remove_entity);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
         } catch (AssertionError ae) {
@@ -1680,57 +1770,5 @@ public class SerializableTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("DatatypeSupportTestLogic.testSerializableTypeSerializableSupport(): End");
         }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("SerializableTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityName = (String) testExecCtx.getProperties().get("EntityName");
-        DatatypeSupportEntityEnum targetEntityType = DatatypeSupportEntityEnum.resolveEntityByName(entityName);
-        if (targetEntityType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity type specified ('" + entityName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("SerializableTestLogic.testTemplate(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } catch (AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException(t);
-        } finally {
-            System.out.println("SerializableTestLogic.testTemplate(): End");
-        }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), DatatypeSupportEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

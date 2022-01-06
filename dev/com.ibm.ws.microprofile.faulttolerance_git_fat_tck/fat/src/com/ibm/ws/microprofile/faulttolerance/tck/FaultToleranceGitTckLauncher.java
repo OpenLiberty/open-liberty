@@ -135,6 +135,7 @@ public class FaultToleranceGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this
                         .getClass() + ":launchFaultToleranceTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
+        MvnUtils.preparePublicationFile();
     }
 
     @Mode(TestMode.LITE)

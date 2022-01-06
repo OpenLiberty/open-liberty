@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -164,7 +164,7 @@ PASSIVATION_DIRECTORY_DOES_NOT_EXIST_CNTR0023W=CNTR0023W: La directory "{0}" non
 PASSIVATION_DIRECTORY_DOES_NOT_EXIST_CNTR0023W.explanation=Il contenitore non \u00e8 stato in grado di \
 aprire la directory di passivazione.
 PASSIVATION_DIRECTORY_DOES_NOT_EXIST_CNTR0023W.useraction=Assicurarsi che la directory di \
-passivazione sia presente.
+disattivazione sia presente.
 
 # --------------------------------
 IOEXCEPTION_READING_FILE_FOR_STATEFUL_SESSION_BEAN_CNTR0024W=CNTR0024W: Impossibile aprire il flusso di input: {0} {1} {2}
@@ -307,9 +307,9 @@ FINDER_COLLECTION_SCOPE_TIMEOUT_NO_TIMEOUT_CNTR0048W.explanation=Il metodo finde
 FINDER_COLLECTION_SCOPE_TIMEOUT_NO_TIMEOUT_CNTR0048W.useraction=Fornire un valore diverso da zero se si desidera l'ambito timeout di raccolta finder.
 
 # --------------------------------
-COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E=CNTR0049E: Il bean sta tentando di utilizzare una combinazione non valida dell'opzione commit A  e Simultaneit\u00e0 ottimistica.
-COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.explanation=L'utente ha specificato l'opzione commit A e il controllo di simultaneit\u00e0 ottimistica su un bean enterprise.  Il server delle applicazioni non supporta l'opzione commit A e il controllo di simultaneit\u00e0 ottimistica su un bean enterprise.
-COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.useraction=Modificare il bean enterprise per utilizzare l'opzione commit A o il controllo di simultaneit\u00e0 ottimistica, ma non entrambe.
+COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E=CNTR0049E: Il bean sta tentando di utilizzare una combinazione non valida dell'opzione commit A  e Optimistic Concurrency.
+COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.explanation=L'utente ha specificato l'opzione commit A e Optimistic Concurrency Control su un bean enterprise.  Il server delle applicazioni non supporta l'opzione commit A e Optimistic Concurrency Control su un bean enterprise.
+COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.useraction=Modificare il bean enterprise per utilizzare l'opzione commit A o Optimistic Concurrency Control, ma non entrambe.
 
 # --------------------------------
 PROTOCOL_ERROR_IN_CONTAINER_TRANSACTION_CNTR0050E=CNTR0050E: Errore di protocollo nella transazione contenitore.
@@ -699,13 +699,13 @@ NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E.explanation=Un MBD deve definire un'inte
 NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E.useraction=Verificare l'origine XML e Java della classe MDB e specificare l'interfaccia listener di messaggi.
 
 # --------------------------------
-INVALID_MAX_POOLTIMEOUT_CNTR0127W=CNTR0127W: Il timeout delle dimensioni massime del pool specificato per il bean {0} non \u00e8 un numero intero valido: {1}. Viene utilizzato invece il valore predefinito di {2} secondi.
-INVALID_MAX_POOLTIMEOUT_CNTR0127W.explanation=\u00c8 possibile specificare solo un numero intero positivo o zero per il timeout delle dimensioni massime del pool.  Viene utilizzato il valore predefinito.
-INVALID_MAX_POOLTIMEOUT_CNTR0127W.useraction=Modificare il valore del timeout delle dimensioni massime del pool in un numero intero positivo o zero.
+INVALID_MAX_POOLTIMEOUT_CNTR0127W=CNTR0127W: Il valore di timeout dimensione massima del pool specificato per il bean {0} non \u00e8 un numero intero valido: {1}. Viene utilizzato invece il valore predefinito di {2} secondi.
+INVALID_MAX_POOLTIMEOUT_CNTR0127W.explanation=\u00c8 possibile specificare solo un numero intero positivo o zero per il timeout dimensione massima del pool. Viene utilizzato il valore predefinito.
+INVALID_MAX_POOLTIMEOUT_CNTR0127W.useraction=Modificare il valore del timeout dimensione massima del pool in un numero intero positivo o zero.
 
 # --------------------------------
-POOLSIZE_VALUES_CNTR0128I=CNTR0128I: Le dimensioni (minime, massime, timeout) del pool sono ({0},{1},{2}) per il bean {3}
-POOLSIZE_VALUES_CNTR0128I.explanation=Questi sono i valori delle dimensioni minime e massime del pool e del timeout delle dimensioni massime del pool che saranno utilizzati per questo tipo di bean.
+POOLSIZE_VALUES_CNTR0128I=CNTR0128I: La dimensione pool (Min,Max,Timeout) \u00e8 ({0},{1},{2}) per il bean {3}.
+POOLSIZE_VALUES_CNTR0128I.explanation=Questi sono i valori delle dimensioni minime e massime del pool e del timeout dimensione massima pool che saranno utilizzati per questo tipo di bean.
 POOLSIZE_VALUES_CNTR0128I.useraction=Non sono richieste azioni da parte dell'utente.
 
 #---------------------------------
@@ -1451,9 +1451,8 @@ AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: Il bean enterprise {0} nel
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=Il descrittore di distribuzione definisce un timer che assegna il metodo specificato, ma non indica quanti parametri tale metodo accetta.  Pi\u00f9 metodi risultano avere lo stesso nome nella gerarchia della classe del bean e sono idonei a ricevere pi\u00f9 callback del timer.  Di conseguenza, il contenitore EJB non \u00e8 riuscito a determinare quale metodo il timer deve assegnare.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Modificare il descrittore di distribuzione in modo tale che il timer indichi esplicitamente se assegna la versione del parametro zero o del parametro uno del metodo.
 
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Il bean di sessione con stato {0} nel modulo {1} nell''applicazione {2} non ha dichiarato una dipendenza sul riferimento della persistenza {3}.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Quando un bean di sessione con stato si trova in un WAR, deve dichiarare le dipendenze in tutti i riferimenti di contesto della persistenza e nei riferimenti dell'unit\u00e0 di persistenza in cui esso intende accedere.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Aggiungere l'annotazione del codice sorgente @PersistenceContext o @PersistenceUnit appropriata nel bean di sessione con stato oppure aggiungere l'elemento persistence-context-ref o persistence-unit-ref appropriato nell'elemento session appropriato nel descrittore di distribuzione XML.
+# In use in EJBJPAMessages.nlsprops
+# PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Rilevato conflitto nel riferimento.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=\u00c8 stato definito un riferimento risorsa in pi\u00f9 ubicazioni, con informazioni in conflitto.
@@ -1557,9 +1556,9 @@ DUPLICATE_REF_BINDING_WEB_CNTR0334E.explanation=Il file ibm-web-bnd.xmi o ibm-we
 DUPLICATE_REF_BINDING_WEB_CNTR0334E.useraction=Rimuovere tutti i bind tranne uno per il riferimento.
 
 #-------------------------------------------------------------------------------
-ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: Il bean enterprise {0} nel modulo {1} all''interno dell''applicazione {2} \u00e8 un bean di entity dichiarato in un''applicazione Java EE versione 7 o succesive. I bean di entity non sono supportati nelle applicazioni Java EE 7 o successive. La configurazione del bean di entity verr\u00e0 ignorata e non verr\u00e0 collegata a un''ubicazione di denominazione.
-ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=I bean enterprise di entit\u00e0 dichiarati in moduli di qualsiasi versione non sono supprotati se il modulo \u00e8 compresso in un'applicazione Java EE versione 7 o successive. Un'applicazione \u00e8 considerata essere Java EE versione 7 se il file application.xml \u00e8 dichiarato come della versione 7 o qualsiasi modulo WAR o EJB compresso in tale applicazione \u00e8 a una versione corrispondente a Java EE versione 7.
-ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Rimuovere l'uso del bean enterprise di entit\u00e0\u00a0 non supportato dall'applicazione o comprimere il bean in un'applicazione della versione 6 o precedente.
+ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: Il bean enterprise {0} nel modulo {1} nell''applicazione {2} \u00e8 un bean entit\u00e0 dichiarato in un''applicazione Java EE versione 7 o successiva. I bean entit\u00e0 non sono supportati in applicazioni Java EE 7 o successive. La configurazione del bean entit\u00e0 verr\u00e0 ignorata e non verr\u00e0 collegata a un''ubicazione di denominazione.
+ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=I bean enterprise entit\u00e0 dichiarati in moduli di qualsiasi versione non sono supportati quando il modulo \u00e8 compresso in un'applicazione Java EE versione 7 o successive. Un'applicazione \u00e8 considerata Java EE versione 7 se il file application.xml \u00e8 dichiarato come appartenente alla versione 7 o se qualsiasi modulo EJB o WAR compresso in tale applicazione \u00e8 a una versione corrispondente a Java EE versione 7.
+ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Rimuovere l'utente del bean enterprise entit\u00e0 non supportato dall'applicazione o comprimere il bean in un'applicazione della versione 6 o precedenti.
 
 #-------------------------------------------------------------------------------
 #
@@ -1624,9 +1623,9 @@ JIT_NOT_TOP_LEVEL_CLASS_CNTR5006E.explanation=Secondo la specifica EJB (Enterpri
 JIT_NOT_TOP_LEVEL_CLASS_CNTR5006E.useraction=Definire la classe bean come una classe top level.
 
 #-------------------------------------------------------------------------------
-JIT_NO_DEFAULT_CTOR_CNTR5007E=CNTR5007E: La classe bean {1} per il bean {0} non dispone di un costruttore public che non accetta parametri.
-JIT_NO_DEFAULT_CTOR_CNTR5007E.explanation=Secondo la specifica EJB (Enterprise JavaBeans) la classe bean deve avere un costruttore public che non accetta parametri.
-JIT_NO_DEFAULT_CTOR_CNTR5007E.useraction=Modificare la classe bean in modo che abbia un costruttore public che non accetta parametri.
+JIT_NO_DEFAULT_CTOR_CNTR5007E=CNTR5007E: La classe bean {1} per il bean {0} non dispone di un costruttore pubblico che non accetta parametri.
+JIT_NO_DEFAULT_CTOR_CNTR5007E.explanation=Secondo la specifica EJB (Enterprise JavaBeans) la classe bean deve avere un costruttore pubblico che non accetta parametri.
+JIT_NO_DEFAULT_CTOR_CNTR5007E.useraction=Modificare la classe bean in modo che abbia un costruttore pubblico che non accetta parametri.
 
 #-------------------------------------------------------------------------------
 JIT_INVALID_FINALIZE_MTHD_CNTR5008E=CNTR5008E: La classe bean {1} per il bean {0} ha definito il metodo finalize.
@@ -2221,11 +2220,11 @@ CNTR9414E_CONFIG_READ_FAIL.explanation=Il contenitore EJB (Enterprise JavaBeans)
 CNTR9414E_CONFIG_READ_FAIL.useraction=Risolvere l'errore esaminando l'eccezione, i log e l'output FFDC.
 
 CNTR9415E_NO_JNDINAME_SPECIFIED=CNTR9415E: Le propriet\u00e0 del contenitore EJB (Enterprise JavaBeans) integrabile per l''origine dati {0} non contiene la propriet\u00e0, name.
-CNTR9415E_NO_JNDINAME_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza contengono un'origine dati priva della specifica del nome JNDI (Java Naming and Directory Interface).
+CNTR9415E_NO_JNDINAME_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza, contengono un'origine dati priva della specifica del nome JNDI (Java Naming and Directory Interface).
 CNTR9415E_NO_JNDINAME_SPECIFIED.useraction=Aggiungere una propriet\u00e0 name per questa origine dati al file delle propriet\u00e0.
 
 CNTR9416E_NO_DATASOURCECLASS_SPECIFIED=CNTR9416E: Le propriet\u00e0 del contenitore EJB (Enterprise JavaBeans) integrabile per l''origine dati {0} non contengono la propriet\u00e0, className.
-CNTR9416E_NO_DATASOURCECLASS_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza contengono un'origine dati priva della specifica className.
+CNTR9416E_NO_DATASOURCECLASS_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza, contengono un'origine dati priva della specifica className.
 CNTR9416E_NO_DATASOURCECLASS_SPECIFIED.useraction=Aggiungere una propriet\u00e0 className per questa origine dati nel file delle propriet\u00e0.
 
 CNTR9417E_MAXCONNECTIONS_VALUE_NOT_NUMERIC=CNTR9417E: Le propriet\u00e0 del contenitore EJB (Enterprise JavaBeans) integrabile per l''origine dati {0} contengono un valore ConnectionPool.MaxConnections {1} che non \u00e8 n\u00e9 un valore numerico positivo n\u00e9 uno zero.
@@ -2252,7 +2251,7 @@ CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY=CNTR9422E: Alla propriet\u00e0 
 CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY.explanation=Alla propriet\u00e0 dell'azione non risolta LTC \u00e8 stato assegnato un valore non supportato.
 CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY.useraction=Alla propriet\u00e0 dell'azione non risolta LTC deve essere assegnato il valore predefinito Rollback o Commit.
 
-CNTR9423E_URL_BIND_FAIL=CNTR9423E: Bind della risorsa URL in JNDI non riuscito, utilizzando il nome {0}.  Eccezione: {1}
+CNTR9423E_URL_BIND_FAIL=CNTR9423E: Bind della risorsa URL nella JNDI non riuscito, utilizzando il nome {0}.  Eccezione: {1}
 CNTR9423E_URL_BIND_FAIL.explanation=Il contenitore EJB (Enterprise JavaBeans) integrabile non \u00e8 riuscito ad eseguire il bind di un'istanza java.net.URL nello spazio dei nomi JNDI.
 CNTR9423E_URL_BIND_FAIL.useraction=Risolvere l'errore esaminando l'eccezione, i log e l'output FFDC.
 
@@ -2261,6 +2260,6 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.explanation=Le propriet\u00e0 che il conteni
 CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Aggiungere una propriet\u00e0 name per questa risorsa URL al file delle propriet\u00e0.
 
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: Le propriet\u00e0 del contenitore EJB (Enterprise JavaBeans) integrabile per la risorsa URL {0} non contiene la propriet\u00e0, specification.
-CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza contengono una risorsa URL priva della propriet\u00e0 specification.
+CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Le propriet\u00e0 che il contenitore EJB (Enterprise JavaBeans) integrabile utilizza, contengono una risorsa URL priva della propriet\u00e0 specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Aggiungere una propriet\u00e0 specification per questa risorsa URL al file delle propriet\u00e0.
 
