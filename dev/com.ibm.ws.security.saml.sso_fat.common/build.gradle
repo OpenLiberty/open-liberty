@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -304,10 +304,16 @@ task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
     include 'rhino-1.7.13.jar', 'idp-plugin-scripting-api-1.0.0.jar', 'idp-plugin-rhino-impl-1.0.0.jar'
     into 'WEB-INF/lib'
   }
-   from (fixed410Files) {
+  from (fixed410Files) {
     include 'web.xml'
     into 'WEB-INF'
   }
+  // update the status.jsp to work around "'<>' operator is not allowed for source level below 1.7" failure
+  from (fixed410Files) {
+    include 'jsp/status.jsp'
+    into 'WEB-INF'
+  }
+  
 }
 
 assemble.dependsOn SAML_Demo_EAR
