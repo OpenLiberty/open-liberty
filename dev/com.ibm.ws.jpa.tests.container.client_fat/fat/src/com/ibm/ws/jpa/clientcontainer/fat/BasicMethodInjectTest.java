@@ -30,9 +30,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
@@ -48,6 +50,9 @@ public class BasicMethodInjectTest extends FATServletClient {
 
     @Rule
     public TestName name = new TestName();
+
+    @Server("BasicJPAServer")
+    public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
