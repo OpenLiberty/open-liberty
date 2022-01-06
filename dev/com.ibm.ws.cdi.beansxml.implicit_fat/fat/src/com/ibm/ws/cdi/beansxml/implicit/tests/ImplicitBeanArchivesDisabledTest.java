@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,7 @@ package com.ibm.ws.cdi.beansxml.implicit.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,8 +22,15 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanArchiveDisabled.ImplicitBeanArchiveDisabledApp;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanArchiveDisabled.emptyBeansXML.MyBike;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanArchiveDisabled.war.MyCar;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanArchiveDisabled.war.MyCarServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanArchiveDisabled.war.jar.MyPlane;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -50,7 +54,7 @@ public class ImplicitBeanArchivesDisabledTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.MyCarServlet.class, contextRoot = IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME) }) //LITE
+                    @TestServlet(servlet = MyCarServlet.class, contextRoot = IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME) }) //LITE
     public static LibertyServer server;
 
     @BeforeClass
@@ -58,29 +62,25 @@ public class ImplicitBeanArchivesDisabledTest extends FATServletClient {
 
         //implicit bean archives are disabled in the server.xml
         //this jar does not have a beans.xml so MyPlane should not be found as a Bean
-        JavaArchive implicitBeanArchiveDisabledJar = ShrinkWrap.create(JavaArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".jar")
-                                                               .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.MyPlane.class);
+        JavaArchive implicitBeanArchiveDisabledJar = ShrinkWrap.create(JavaArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".jar");
+        implicitBeanArchiveDisabledJar.addClass(MyPlane.class);
 
         //this war does have a beans.xml with mode=annotated so MyCar will be found as a Bean
-        WebArchive implicitBeanArchiveDisabled = ShrinkWrap.create(WebArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".war")
-                                                           .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.MyCar.class)
-                                                           .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.MyCarServlet.class)
-                                                           .add(new FileAsset(new File("test-applications/" + IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME
-                                                                                       + ".war/resources/WEB-INF/beans.xml")),
-                                                                "/WEB-INF/beans.xml")
-                                                           .addAsLibrary(implicitBeanArchiveDisabledJar);
+        WebArchive implicitBeanArchiveDisabled = ShrinkWrap.create(WebArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".war");
+        implicitBeanArchiveDisabled.addClass(MyCar.class);
+        implicitBeanArchiveDisabled.addClass(MyCarServlet.class);
+        CDIArchiveHelper.addBeansXML(implicitBeanArchiveDisabled, DiscoveryMode.ANNOTATED);
+        implicitBeanArchiveDisabled.addAsLibrary(implicitBeanArchiveDisabledJar);
 
         //this jar does have a empty beans.xml so MyBike will be found as a Bean
-        JavaArchive explicitBeanArchive = ShrinkWrap.create(JavaArchive.class, "explicitBeanArchive.jar")
-                                                    .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.MyBike.class)
-                                                    .add(new FileAsset(new File("test-applications/explicitBeanArchive.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        JavaArchive explicitBeanArchive = ShrinkWrap.create(JavaArchive.class, "explicitBeanArchive.jar");
+        explicitBeanArchive.addClass(MyBike.class);
+        CDIArchiveHelper.addEmptyBeansXML(explicitBeanArchive);
 
-        EnterpriseArchive implicitBeanArchiveDisabledEar = ShrinkWrap.create(EnterpriseArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".ear")
-                                                                     .add(new FileAsset(new File("test-applications/" + IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME
-                                                                                                 + ".ear/resources/META-INF/application.xml")),
-                                                                          "/META-INF/application.xml")
-                                                                     .addAsLibrary(explicitBeanArchive)
-                                                                     .addAsModule(implicitBeanArchiveDisabled);
+        EnterpriseArchive implicitBeanArchiveDisabledEar = ShrinkWrap.create(EnterpriseArchive.class, IMPLICIT_BEAN_ARCHIVE_DISABLED_APP_NAME + ".ear");
+        implicitBeanArchiveDisabledEar.setApplicationXML(ImplicitBeanArchiveDisabledApp.class.getPackage(), "application.xml");
+        implicitBeanArchiveDisabledEar.addAsLibrary(explicitBeanArchive);
+        implicitBeanArchiveDisabledEar.addAsModule(implicitBeanArchiveDisabled);
 
         ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchiveDisabledEar, DeployOptions.SERVER_ONLY);
         server.startServer();

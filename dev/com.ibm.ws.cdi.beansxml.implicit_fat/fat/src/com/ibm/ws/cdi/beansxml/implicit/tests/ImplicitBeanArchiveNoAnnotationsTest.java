@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,7 @@ package com.ibm.ws.cdi.beansxml.implicit.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,6 +24,14 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi.beansxml.implicit.apps.archiveWithNoBeansXml.ConstructorInjectionServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.archiveWithNoBeansXml.NoCDIAnnotationsServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbArchiveWithNoAnnotations.EjbArchiveWithNoAnnotationsApp;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbArchiveWithNoAnnotations.ejbJar.ApplicationScopedEjbBean;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbArchiveWithNoAnnotations.war.ImplicitBeanArchiveNoAnnotationsServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbJarInWarNoAnnotationsEar.EjbJarInWarNoAnnotationsApp;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbJarInWarNoAnnotationsEar.war.EjbJarInWarServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.ejbJarInWarNoAnnotationsEar.war.ejbJar.ApplicationScopedEjbJarInWarBean;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -52,58 +57,48 @@ public class ImplicitBeanArchiveNoAnnotationsTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.SimpleServlet.class, contextRoot = ARCHIVE_WITH_NO_BEANS_XML_APP_NAME), //LITE
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ConstructorInjectionServlet.class, contextRoot = ARCHIVE_WITH_NO_BEANS_XML_APP_NAME), //LITE
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitBeanArchiveNoAnnotationsServlet.class, contextRoot = EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME), //FULL
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.EjbServlet.class, contextRoot = EJB_JAR_IN_WAR_NO_ANNO_APP_NAME) }) //FULL
+                    @TestServlet(servlet = NoCDIAnnotationsServlet.class, contextRoot = ARCHIVE_WITH_NO_BEANS_XML_APP_NAME), //LITE
+                    @TestServlet(servlet = ConstructorInjectionServlet.class, contextRoot = ARCHIVE_WITH_NO_BEANS_XML_APP_NAME), //LITE
+                    @TestServlet(servlet = ImplicitBeanArchiveNoAnnotationsServlet.class, contextRoot = EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME), //FULL
+                    @TestServlet(servlet = EjbJarInWarServlet.class, contextRoot = EJB_JAR_IN_WAR_NO_ANNO_APP_NAME) }) //FULL
     public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
 
-        WebArchive archiveWithNoBeansXml = ShrinkWrap.create(WebArchive.class, ARCHIVE_WITH_NO_BEANS_XML_APP_NAME + ".war")
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.FirstManagedBeanInterface.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.EjbImpl.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.SimpleServlet.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.ManagedSimpleBean.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.OtherManagedSimpleBean.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.SecondManagedBeanInterface.class)
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ConstructorInjectionServlet.class)
-                                                     .add(new FileAsset(new File("test-applications/" + ARCHIVE_WITH_NO_BEANS_XML_APP_NAME + ".war/resources/WEB-INF/ejb-jar.xml")),
-                                                          "/WEB-INF/ejb-jar.xml");
+        WebArchive archiveWithNoBeansXml = ShrinkWrap.create(WebArchive.class, ARCHIVE_WITH_NO_BEANS_XML_APP_NAME + ".war");
+        archiveWithNoBeansXml.addPackage(NoCDIAnnotationsServlet.class.getPackage());
+        archiveWithNoBeansXml.addAsWebInfResource(NoCDIAnnotationsServlet.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 
-        WebArchive ejbArchiveWithNoAnnotations1 = ShrinkWrap.create(WebArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".war")
-                                                            .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitBeanArchiveNoAnnotationsServlet.class);
+        /////
 
-        JavaArchive ejbArchiveWithNoAnnotations2 = ShrinkWrap.create(JavaArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".jar")
-                                                             .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.ApplicationScopedEjbBean.class)
-                                                             .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.DependentEjbBean.class)
-                                                             .add(new FileAsset(new File("test-applications/" + EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME
-                                                                                         + ".jar/resources/META-INF/ejb-jar.xml")),
-                                                                  "/META-INF/ejb-jar.xml");
+        WebArchive ejbArchiveWithNoAnnotations1 = ShrinkWrap.create(WebArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".war");
+        ejbArchiveWithNoAnnotations1.addClass(ImplicitBeanArchiveNoAnnotationsServlet.class);
 
-        EnterpriseArchive ejbArchiveWithNoAnnotations = ShrinkWrap.create(EnterpriseArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".ear")
-                                                                  .add(new FileAsset(new File("test-applications/" + EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME
-                                                                                              + ".ear/resources/META-INF/application.xml")),
-                                                                       "/META-INF/application.xml")
-                                                                  .addAsModule(ejbArchiveWithNoAnnotations1)
-                                                                  .addAsModule(ejbArchiveWithNoAnnotations2);
+        JavaArchive ejbArchiveWithNoAnnotations2 = ShrinkWrap.create(JavaArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".jar");
+        ejbArchiveWithNoAnnotations2.addPackage(ApplicationScopedEjbBean.class.getPackage());
+        ejbArchiveWithNoAnnotations2.addAsManifestResource(ApplicationScopedEjbBean.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 
-        JavaArchive ejbJarInWarNoAnnotationsJar = ShrinkWrap.create(JavaArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".jar")
-                                                            .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.DependentEjbBean.class)
-                                                            .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.ejb.ApplicationScopedEjbBean.class);
+        EnterpriseArchive ejbArchiveWithNoAnnotations = ShrinkWrap.create(EnterpriseArchive.class, EJB_ARCHIVE_WITH_NO_ANNO_APP_NAME + ".ear");
+        ejbArchiveWithNoAnnotations.setApplicationXML(EjbArchiveWithNoAnnotationsApp.class.getPackage(), "application.xml");
+        ejbArchiveWithNoAnnotations.addAsModule(ejbArchiveWithNoAnnotations1);
+        ejbArchiveWithNoAnnotations.addAsModule(ejbArchiveWithNoAnnotations2);
 
-        WebArchive ejbJarInWarNoAnnotations = ShrinkWrap.create(WebArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".war")
-                                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.EjbServlet.class)
-                                                        .add(new FileAsset(new File("test-applications/" + EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".war/resources/WEB-INF/ejb-jar.xml")),
-                                                             "/WEB-INF/ejb-jar.xml")
-                                                        .addAsLibrary(ejbJarInWarNoAnnotationsJar);
+        /////
 
-        EnterpriseArchive ejbJarInWarNoAnnotationsEar = ShrinkWrap.create(EnterpriseArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".ear")
-                                                                  .add(new FileAsset(new File("test-applications/" + EJB_JAR_IN_WAR_NO_ANNO_APP_NAME
-                                                                                              + ".ear/resources/META-INF/application.xml")),
-                                                                       "/META-INF/application.xml")
-                                                                  .addAsModule(ejbJarInWarNoAnnotations);
+        JavaArchive ejbJarInWarNoAnnotationsJar = ShrinkWrap.create(JavaArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".jar");
+        ejbJarInWarNoAnnotationsJar.addPackage(ApplicationScopedEjbJarInWarBean.class.getPackage());
+
+        WebArchive ejbJarInWarNoAnnotations = ShrinkWrap.create(WebArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".war");
+        ejbJarInWarNoAnnotations.addClass(EjbJarInWarServlet.class);
+        ejbJarInWarNoAnnotations.addAsWebInfResource(EjbJarInWarServlet.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+        ejbJarInWarNoAnnotations.addAsLibrary(ejbJarInWarNoAnnotationsJar);
+
+        EnterpriseArchive ejbJarInWarNoAnnotationsEar = ShrinkWrap.create(EnterpriseArchive.class, EJB_JAR_IN_WAR_NO_ANNO_APP_NAME + ".ear");
+        ejbJarInWarNoAnnotationsEar.setApplicationXML(EjbJarInWarNoAnnotationsApp.class.getPackage(), "application.xml");
+        ejbJarInWarNoAnnotationsEar.addAsModule(ejbJarInWarNoAnnotations);
+
+        /////
 
         ShrinkHelper.exportDropinAppToServer(server, archiveWithNoBeansXml, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, ejbArchiveWithNoAnnotations, DeployOptions.SERVER_ONLY);

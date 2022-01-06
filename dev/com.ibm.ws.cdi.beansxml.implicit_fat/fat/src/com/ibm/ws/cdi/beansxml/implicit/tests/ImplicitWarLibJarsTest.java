@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,7 @@ package com.ibm.ws.cdi.beansxml.implicit.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -24,8 +21,15 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanDiscovery.ImplicitWarLibJarsServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanDiscovery.discoveryModeAnnotated.AnnotatedModeBean;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanDiscovery.emptyBeansXML.InExplicitBeanArchive;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitBeanDiscovery.noBeansXml.NoBeansXmlBean;
+import com.ibm.ws.cdi.beansxml.implicit.apps.utils.ChainableList;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -55,42 +59,35 @@ public class ImplicitWarLibJarsTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitWarLibJarsServlet.class, contextRoot = APP_NAME_IMPLICIT_BEAN_DISCOVERY), //FULL
+                    @TestServlet(servlet = ImplicitWarLibJarsServlet.class, contextRoot = APP_NAME_IMPLICIT_BEAN_DISCOVERY), //FULL
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
 
-        JavaArchive implicitBeanAnnotatedMode = ShrinkWrap.create(JavaArchive.class, "implicitBeanAnnotatedMode.jar")
-                                                          .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.AnnotatedModeBean.class)
-                                                          .add(new FileAsset(new File("test-applications/implicitBeanAnnotatedMode.jar/resources/META-INF/beans.xml")),
-                                                               "/META-INF/beans.xml");
+        JavaArchive implicitBeanAnnotatedMode = ShrinkWrap.create(JavaArchive.class, "implicitBeanAnnotatedMode.jar");
+        implicitBeanAnnotatedMode.addClass(AnnotatedModeBean.class);
+        CDIArchiveHelper.addBeansXML(implicitBeanAnnotatedMode, DiscoveryMode.ANNOTATED);
 
-        JavaArchive implicitBeanNoBeansXml = ShrinkWrap.create(JavaArchive.class, "implicitBeanNoBeansXml.jar")
-                                                       .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.NoBeansXmlBean.class);
+        JavaArchive implicitBeanNoBeansXml = ShrinkWrap.create(JavaArchive.class, "implicitBeanNoBeansXml.jar");
+        implicitBeanNoBeansXml.addClass(NoBeansXmlBean.class);
 
-        JavaArchive implicitBeanExplicitArchive = ShrinkWrap.create(JavaArchive.class, "implicitBeanExplicitArchive.jar")
-                                                            .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.InExplicitBeanArchive.class)
-                                                            .add(new FileAsset(new File("test-applications/implicitBeanExplicitArchive.jar/resources/META-INF/beans.xml")),
-                                                                 "/META-INF/beans.xml");
+        JavaArchive implicitBeanExplicitArchive = ShrinkWrap.create(JavaArchive.class, "implicitBeanExplicitArchive.jar");
+        implicitBeanExplicitArchive.addClass(InExplicitBeanArchive.class);
+        CDIArchiveHelper.addBeansXML(implicitBeanExplicitArchive, DiscoveryMode.ALL);
 
-        JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.ChainableListImpl.class)
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.Intercepted.class)
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.ChainableList.class)
-                                        //.addClass(com.ibm.ws.cdi.beansxml.implicit.utils.Utils.class)
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.SimpleAbstract.class)
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.ForwardingList.class)
-                                        .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar");
+        utilLib.addPackage(ChainableList.class.getPackage());
+        CDIArchiveHelper.addEmptyBeansXML(utilLib);
 
-        WebArchive implicitBeanDiscovery = ShrinkWrap.create(WebArchive.class, APP_NAME_IMPLICIT_BEAN_DISCOVERY + ".war")
-                                                     .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitWarLibJarsServlet.class)
-                                                     .add(new FileAsset(new File("test-applications/implicitBeanDiscovery.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
-                                                     .addAsLibrary(implicitBeanAnnotatedMode)
-                                                     .addAsLibrary(implicitBeanNoBeansXml)
-                                                     .addAsLibrary(implicitBeanExplicitArchive)
-                                                     .addAsLibrary(utilLib);
+        WebArchive implicitBeanDiscovery = ShrinkWrap.create(WebArchive.class, APP_NAME_IMPLICIT_BEAN_DISCOVERY + ".war");
+        implicitBeanDiscovery.addClass(ImplicitWarLibJarsServlet.class);
+        CDIArchiveHelper.addBeansXML(implicitBeanDiscovery, DiscoveryMode.ALL);
+        implicitBeanDiscovery.addAsLibrary(implicitBeanAnnotatedMode);
+        implicitBeanDiscovery.addAsLibrary(implicitBeanNoBeansXml);
+        implicitBeanDiscovery.addAsLibrary(implicitBeanExplicitArchive);
+        implicitBeanDiscovery.addAsLibrary(utilLib);
 
         ShrinkHelper.exportDropinAppToServer(server, implicitBeanDiscovery, DeployOptions.SERVER_ONLY);
         server.startServer();

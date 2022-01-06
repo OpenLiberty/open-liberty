@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,7 @@ package com.ibm.ws.cdi.beansxml.implicit.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -24,8 +21,12 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitWarApp.AnnotatedBean;
+import com.ibm.ws.cdi.beansxml.implicit.apps.implicitWarApp.ImplicitWarServlet;
+import com.ibm.ws.cdi.beansxml.implicit.apps.utils.SimpleAbstract;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -48,7 +49,7 @@ public class ImplicitWarTest extends FATServletClient {
 
     @Server("cdi12ImplicitServer")
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitWarServlet.class, contextRoot = IMPLICIT_WAR_APP_NAME)//LITE
+                    @TestServlet(servlet = ImplicitWarServlet.class, contextRoot = IMPLICIT_WAR_APP_NAME)//LITE
     })
     public static LibertyServer server;
 
@@ -59,14 +60,14 @@ public class ImplicitWarTest extends FATServletClient {
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
 
-        JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
-                                        .addClass(com.ibm.ws.cdi.beansxml.implicit.utils.SimpleAbstract.class)
-                                        .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar");
+        utilLib.addClass(SimpleAbstract.class);
+        CDIArchiveHelper.addEmptyBeansXML(utilLib);
 
-        WebArchive implicitWarApp = ShrinkWrap.create(WebArchive.class, IMPLICIT_WAR_APP_NAME + ".war")
-                                              .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.servlets.ImplicitWarServlet.class)
-                                              .addClass(com.ibm.ws.cdi.beansxml.implicit.apps.beans.AnnotatedBean.class)
-                                              .addAsLibrary(utilLib);
+        WebArchive implicitWarApp = ShrinkWrap.create(WebArchive.class, IMPLICIT_WAR_APP_NAME + ".war");
+        implicitWarApp.addClass(ImplicitWarServlet.class);
+        implicitWarApp.addClass(AnnotatedBean.class);
+        implicitWarApp.addAsLibrary(utilLib);
 
         ShrinkHelper.exportDropinAppToServer(server, implicitWarApp, DeployOptions.SERVER_ONLY);
         server.startServer();
