@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
+
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -345,7 +346,7 @@ public class PartnerLogTable {
      *
      * @param cl A class loader for contacting XA RMs
      */
-    public boolean recover(RecoveryManager recoveryManager, ClassLoader cl, Xid[] xids) {
+    public boolean recover(RecoveryManager recoveryManager, ClassLoader cl, ConcurrentHashSet<Xid> xids) {
         boolean success = true; // flag to indicate that we recovered all RMs
 
         if (tc.isEntryEnabled())

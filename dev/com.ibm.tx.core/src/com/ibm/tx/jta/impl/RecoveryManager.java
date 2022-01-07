@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +8,13 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.transaction.SystemException;
@@ -26,6 +24,7 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
+import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
@@ -141,16 +140,16 @@ public class RecoveryManager implements Runnable {
 
     protected FailureScopeController _failureScopeController;
 
-    // Flag to indcate if recovery processing was prevented from occuring. This
+    // Flag to indicate if recovery processing was prevented from occurring. This
     // can occur when the recovery logs are found to be incompatible or if
     // the recovery log file has been marked as not supporting ha enablement
-    // either premanently or at this time.
+    // either permanently or at this time.
     private boolean _recoveryPrevented;
 
     /**
      * This set contains a list of all recovering transactions.
      */
-    protected HashSet<TransactionImpl> _recoveringTransactions;
+    protected ConcurrentHashSet<TransactionImpl> _recoveringTransactions;
 
     protected final Object _recoveryMonitor = new Object();
 
@@ -182,7 +181,7 @@ public class RecoveryManager implements Runnable {
         _ourApplId = defaultApplId;
         _ourEpoch = defaultEpoch;
 
-        _recoveringTransactions = new HashSet<TransactionImpl>();
+        _recoveringTransactions = new ConcurrentHashSet<TransactionImpl>();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "RecoveryManager", this);
@@ -781,13 +780,13 @@ public class RecoveryManager implements Runnable {
         }
         logs.add(_xaLog);
 
-        final Iterator logIterator = logs.iterator();
+        final Iterator<RecoveryLog> logIterator = logs.iterator();
 
         boolean shuttingDown = false;
 
         try {
             while (logIterator.hasNext() && !shuttingDown) {
-                final RecoveryLog currentLog = (RecoveryLog) logIterator.next();
+                final RecoveryLog currentLog = logIterator.next();
                 recoverableUnits = currentLog.recoverableUnits();
 
                 while (recoverableUnits.hasNext() && !shuttingDown) {
@@ -1431,17 +1430,14 @@ public class RecoveryManager implements Runnable {
                 if (retryAttempts > 0 && tc.isDebugEnabled())
                     Tr.debug(tc, "Retrying resync");
 
-                // Get list of current recovered transactions
-                TransactionImpl[] recoveredTransactions = getRecoveringTransactions();
-
                 // Contact the XA RMs and get the indoubt XIDs.  Match any with our transactions, or else
                 // roll back the ones that we have no information about.  If some fail to recover, we retry
                 // later.
                 if (!XArecovered) {
                     // Build a list of transaction Xids to check with each recovered RM
-                    final Xid[] txnXids = new Xid[recoveredTransactions.length];
-                    for (int i = 0; i < recoveredTransactions.length; i++) {
-                        txnXids[i] = recoveredTransactions[i].getXid();
+                    final ConcurrentHashSet<Xid> txnXids = new ConcurrentHashSet<Xid>();
+                    for (TransactionImpl t : _recoveringTransactions) {
+                        txnXids.add(t.getXid());
                     }
 
                     // plt recover will return early if shutdown is detected.
@@ -1450,19 +1446,19 @@ public class RecoveryManager implements Runnable {
 
                 if (XArecovered) {
                     // If there are any transactions, proceed with recover.
-                    for (int i = 0; i < recoveredTransactions.length; i++) {
+                    for (TransactionImpl t : _recoveringTransactions) {
                         if (stopProcessing = shutdownInProgress()) {
                             break;
                         }
 
                         try {
                             //LIDB3645: don't recover JCA inbound tx in recovery-mode
-                            if (!(recoveryOnlyMode && recoveredTransactions[i].isRAImport())) {
-                                recoveredTransactions[i].recover();
+                            if (!(recoveryOnlyMode && t.isRAImport())) {
+                                t.recover();
                                 if (recoveryOnlyMode) {
-                                    if (recoveredTransactions[i].getTransactionState().getState() != TransactionState.STATE_NONE) {
+                                    if (t.getTransactionState().getState() != TransactionState.STATE_NONE) {
                                         Tr.warning(tc, "WTRN0114_TRAN_RETRY_NEEDED",
-                                                   new Object[] { recoveredTransactions[i].getTranName(),
+                                                   new Object[] { t.getTranName(),
                                                                   retryWait });
                                     }
                                 }
@@ -1675,17 +1671,13 @@ public class RecoveryManager implements Runnable {
         TxTMHelper.resyncComplete(r);
     }
 
-    // This method should only be called from the "recover" thread else ConcurretModificationException may arise
-    protected TransactionImpl[] getRecoveringTransactions() {
-        TransactionImpl[] recoveredTransactions = new TransactionImpl[_recoveringTransactions.size()];
-        _recoveringTransactions.toArray(recoveredTransactions);
-        return recoveredTransactions;
+    protected ConcurrentHashSet<TransactionImpl> getRecoveringTransactions() {
+        return _recoveringTransactions;
     }
 
     /*
      * Cleans up any outstanding transactions and closes the logs
      */
-
     public void cleanupRemoteFailureScope() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "cleanupRemoteFailureScope");
@@ -1696,20 +1688,13 @@ public class RecoveryManager implements Runnable {
             // so we need to get out as soon as possible and not do any more work with this peer.
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Stop processing. Clear down any transactions");
-            if (_recoveringTransactions.size() > 0) {
-                // Get list of current recovered transactions
 
-                // NOTE TO REVIEWERS - SHOULD REALLY BE SYNCHRONIZED BETWEEN ALLOCATING ARRAY AND toArray
-                TransactionImpl[] recoveredTransactions = new TransactionImpl[_recoveringTransactions.size()];
-                _recoveringTransactions.toArray(recoveredTransactions);
-
-                for (int i = 0; i < recoveredTransactions.length; i++) {
-                    // We need to "forget" them so we clean up any datastructures etc...
-                    try {
-                        recoveredTransactions[i].forgetTransaction(false);
-                    } catch (Throwable exc) {
-                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.cleanupRemoteFailureScope", "2069", this);
-                    }
+            // We need to "forget" them so we clean up any datastructures etc...
+            for (TransactionImpl t : _recoveringTransactions) {
+                try {
+                    t.forgetTransaction(false);
+                } catch (Throwable exc) {
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.cleanupRemoteFailureScope", "2069", this);
                 }
             }
 

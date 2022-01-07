@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
  */
 public class ProtocolImpl {
 
-    private static final String CLASS_NAME = ProtocolImpl.class.getName();
     private static final TraceComponent TC = Tr.register(ProtocolImpl.class);
 
     private static final ProtocolImpl INSTANCE = new ProtocolImpl();
@@ -124,12 +123,13 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void prepare(String globalId, EndpointReferenceType fromEpr) throws WSATException {
+        final WSATTransaction tran = WSATTransaction.getTran(globalId);
         try {
             Vote vote = tranService.prepareTransaction(globalId);
             WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED : (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
-            participantResponse(globalId, fromEpr, resp);
+            participantResponse(tran, globalId, fromEpr, resp);
         } catch (WSATException e) {
-            participantResponse(globalId, fromEpr, WSATParticipantState.ROLLBACK);
+            participantResponse(tran, globalId, fromEpr, WSATParticipantState.ROLLBACK);
         }
     }
 
@@ -142,8 +142,9 @@ public class ProtocolImpl {
     @FFDCIgnore(WSATException.class)
     public void commit(String globalId, EndpointReferenceType fromEpr) {
         try {
+            final WSATTransaction tran = WSATTransaction.getTran(globalId);
             tranService.commitTransaction(globalId);
-            participantResponse(globalId, fromEpr, WSATParticipantState.COMMITTED);
+            participantResponse(tran, globalId, fromEpr, WSATParticipantState.COMMITTED);
         } catch (WSATException e) {
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Unable to complete commit: {0}", e);
@@ -153,6 +154,7 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void rollback(String globalId, EndpointReferenceType fromEpr) {
+        final WSATTransaction tran = WSATTransaction.getTran(globalId);
         try {
             tranService.rollbackTransaction(globalId);
         } catch (WSATException e) {
@@ -161,7 +163,7 @@ public class ProtocolImpl {
             }
         }
         try {
-            participantResponse(globalId, fromEpr, WSATParticipantState.ABORTED);
+            participantResponse(tran, globalId, fromEpr, WSATParticipantState.ABORTED);
         } catch (WSATException e) {
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Unable to send rollback response: {0}", e);
@@ -169,11 +171,11 @@ public class ProtocolImpl {
         }
     }
 
-    private void participantResponse(String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
+    private void participantResponse(WSATTransaction tran, String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
         // Send the response to our known coordinator, if we have one.  Otherwise fall back to
-        // using the sender's EPR (see WS-AT spec section 8).
+        // using the sender's EPR (see WS-AT specification section 8).
         WSATCoordinator coord = null;
-        WSATTransaction tran = findTransaction(globalId);
+
         if (tran != null) {
             coord = tran.getCoordinator();
         } else if (fromEpr != null) {
@@ -183,11 +185,11 @@ public class ProtocolImpl {
             WebClient client = WebClient.getWebClient(coord, coord.getParticipant());
             if (response == WSATParticipantState.PREPARED) {
                 /*
-                 * 
+                 *
                  * Uncomment to recreate 286979
-                 * 
+                 *
                  * Also uncomment similar code in EndToEndClientServletMagerImpl, MultiServerTest & TransactionImpl
-                 * 
+                 *
                  * try {
                  * if (TC.isDebugEnabled()) {
                  * Tr.debug(TC, "SLEEPING IN PARTICIPANTRESPONSE BEFORE SENDING PREPARED");
@@ -212,16 +214,6 @@ public class ProtocolImpl {
                 Tr.debug(TC, "Unable to find response coordinator");
             }
         }
-    }
-
-    private WSATTransaction findTransaction(String globalId) {
-        WSATTransaction tran = WSATTransaction.getTran(globalId);
-        if (tran == null) {
-            if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "Unable to find transaction: {0}", globalId);
-            }
-        }
-        return tran;
     }
 
     /*
