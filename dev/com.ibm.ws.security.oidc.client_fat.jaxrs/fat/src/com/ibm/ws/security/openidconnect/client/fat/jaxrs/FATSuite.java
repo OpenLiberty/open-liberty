@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs;
 
@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OIDCTokenMappingResolverGenericTest;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientAPITests;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientBasicTests;
@@ -26,17 +28,16 @@ import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientReA
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                OidcJaxRSClientBasicTests.class,
-                OidcJaxRSClientAPITests.class,
-                OIDCTokenMappingResolverGenericTest.class,
-                OidcJaxRSClientReAuthnTests.class,
-                OidcJaxRSClientDiscoveryBasicTests.class,
+        AlwaysPassesTest.class,
+        OidcJaxRSClientBasicTests.class,
+        OidcJaxRSClientAPITests.class,
+        OIDCTokenMappingResolverGenericTest.class,
+        OidcJaxRSClientReAuthnTests.class,
+        OidcJaxRSClientDiscoveryBasicTests.class,
 //                OidcJaxRSClientRequestFilterTests.class
 })
 /**
@@ -67,6 +68,7 @@ public class FATSuite {
     /* always add servlet-5.0 to enable EE9 in the op which had no feature versions to swap out to enable EE9 */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-                    .andWith(new JakartaEE9Action().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-5.0").fullFATOnly());
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }
