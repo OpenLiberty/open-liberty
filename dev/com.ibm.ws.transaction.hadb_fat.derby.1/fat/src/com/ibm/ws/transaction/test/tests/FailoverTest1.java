@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -194,6 +194,7 @@ public class FailoverTest1 extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBRecoverableRuntimeFailover() throws Exception {
         final String method = "testHADBRecoverableRuntimeFailover";
         StringBuilder sb = null;
@@ -232,7 +233,8 @@ public class FailoverTest1 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBRecoverableFailureMultipleRetries() throws Exception {
         final String method = "testHADBRecoverableFailureMultipleRetries";
@@ -290,7 +292,8 @@ public class FailoverTest1 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
 
     // Defect RTC171085 - an XAException may or may not be generated during
@@ -350,7 +353,7 @@ public class FailoverTest1 extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.resource.spi.ResourceAllocationException" })
     public void testHADBRecoverableStartupFailover() throws Exception {
         final String method = "testHADBRecoverableStartupFailover";
         StringBuilder sb = null;
@@ -383,7 +386,7 @@ public class FailoverTest1 extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.resource.spi.ResourceAllocationException" })
     public void testDuplicationInRecoveryLogsRestart() throws Exception {
         final String method = "testDuplicationInRecoveryLogsRestart";
         StringBuilder sb = null;
@@ -435,7 +438,7 @@ public class FailoverTest1 extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.resource.spi.ResourceAllocationException" })
     public void testDuplicationInRecoveryLogsRuntime() throws Exception {
         final String method = "testDuplicationInRecoveryLogsRuntime";
         StringBuilder sb = null;
@@ -487,7 +490,7 @@ public class FailoverTest1 extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.resource.spi.ResourceAllocationException" })
     public void testAbsenceOfDuplicatesInRecoveryLogs() throws Exception {
         final String method = "testAbsenceOfDuplicatesInRecoveryLogs";
         StringBuilder sb = null;

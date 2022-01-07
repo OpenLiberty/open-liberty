@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -197,7 +197,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBRetriableSqlCodeRuntimeFailover() throws Exception {
         final String method = "testHADBRetriableSqlCodeRuntimeFailover";
@@ -235,7 +236,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBRetriableSqlCodeBatchFailover() throws Exception {
         final String method = "testHADBRetriableSqlCodeBatchFailover";
@@ -277,7 +279,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNonRetriableRuntimeFailover() throws Exception {
         final String method = "testHADBNonRetriableRuntimeFailover";
@@ -333,7 +336,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNonRetriableBatchFailover() throws Exception {
         final String method = "testHADBNonRetriableBatchFailover";
@@ -390,7 +394,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNewBehaviourRuntimeFailover() throws Exception {
         final String method = "testHADBNewBehaviourRuntimeFailover";
@@ -429,7 +434,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNewBehaviourUpdateConfigFailover() throws Exception {
         final String method = "testHADBNewBehaviourUpdateConfigFailover";
@@ -527,7 +533,8 @@ public class FailoverTest2 extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception"
+                           "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
+                           "javax.resource.spi.ResourceAllocationException"
     })
 
     // Defect RTC171085 - an XAException may or may not be generated during
