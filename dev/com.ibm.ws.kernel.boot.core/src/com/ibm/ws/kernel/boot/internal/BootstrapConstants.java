@@ -274,8 +274,6 @@ public final class BootstrapConstants {
      */
     public static final String LIBERTY_BOOT_PROPERTY = "wlp.liberty.boot";
 
-    public static final String CHECKPOINT_PROPERTY_NAME = "io.openliberty.checkpoint";
-
     public static final String ENV_VARIABLE_SOURCE_DIRS = "VARIABLE_SOURCE_DIRS";
 
     public static final String LOC_PROPERTY_VARIABLE_SOURCE_DIRS = "wlp.var.src.dirs";

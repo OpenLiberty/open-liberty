@@ -21,37 +21,15 @@ import org.osgi.annotation.versioning.ConsumerType;
 public interface CheckpointHook {
     /**
      * Prepare to checkpoint. If the hook throws
-     * an exception then the checkpoint will be aborted. All hooks
-     * that already had their {@link prepare()} method called
-     * will then have their {@link #abortPrepare(Exception)}
-     * method called.
+     * an exception then the checkpoint will be aborted.
      */
     default void prepare() {
     };
 
     /**
-     * Abort the prepare for checkpoint.
-     *
-     * @param cause the exception that caused the abort
-     */
-    default void abortPrepare(Exception cause) {
-    };
-
-    /**
      * Restore the state after a checkpoint. If the hook
-     * throws an exception then the restore will be aborted. All hooks
-     * that already had their {@link #restore()} method called
-     * will then have their {@link #abortRestore(Exception)}
-     * method called.
+     * throws an exception then the restore will be aborted.
      */
     default void restore() {
-    };
-
-    /**
-     * Abort the restore from checkpoint.
-     *
-     * @param cause the exception the caused the abort
-     */
-    default void abortRestore(Exception cause) {
     };
 }

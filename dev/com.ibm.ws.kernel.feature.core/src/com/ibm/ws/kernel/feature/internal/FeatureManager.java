@@ -119,7 +119,7 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * The feature manager finishes the initialization of the runtime by analyzing a list
@@ -297,7 +297,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private volatile boolean deactivated;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    private Phase checkpointPhase;
+    private CheckpointPhase checkpointPhase;
 
     private volatile LibertyBootRuntime libertyBoot;
 

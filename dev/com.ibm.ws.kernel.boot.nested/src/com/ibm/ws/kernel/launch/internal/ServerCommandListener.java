@@ -40,13 +40,11 @@ import com.ibm.ws.kernel.boot.internal.ServerCommand;
 import com.ibm.ws.kernel.boot.internal.commands.JavaDumpAction;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  * A trivial server command listener: opens a socket listening for commands.
  */
-public class ServerCommandListener extends ServerCommand {
+public class ServerCommandListener extends ServerCommand implements CheckpointHook {
     private static final TraceComponent tc = Tr.register(ServerCommandListener.class);
 
     private final FrameworkManager frameworkManager;
@@ -136,19 +134,14 @@ public class ServerCommandListener extends ServerCommand {
             throw new LaunchException("Failed to initialize server command listener", MessageFormat.format(BootstrapConstants.messages.getString("error.serverCommand.init"), ex));
         }
 
-        //Set up checkpointHookFactory for checkpoint restore of the .sCommand file
-        bndCtxt.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
-            @Override
-            public CheckpointHook create(Phase phase) {
-                return new CheckpointHook() {
-                    @Override
-                    public void restore() {
-                        File commandFileTmp = createCommandFileTmp(serverWorkArea);
-                        createCommandFile(commandFileTmp);
-                    }
-                };
-            }
-        }, null);
+        bndCtxt.registerService(CheckpointHook.class, this, null);
+    }
+
+    @Override
+    public void restore() {
+        //For checkpoint the the .sCommand file needs restored
+        File commandFileTmp = createCommandFileTmp(serverWorkArea);
+        createCommandFile(commandFileTmp);
     }
 
     /**

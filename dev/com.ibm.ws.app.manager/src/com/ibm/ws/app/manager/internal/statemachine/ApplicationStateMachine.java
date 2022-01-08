@@ -18,6 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.osgi.framework.BundleContext;
 
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
+import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
 import com.ibm.ws.app.manager.internal.ApplicationDependency;
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor;
 import com.ibm.ws.threading.FutureMonitor;
@@ -45,8 +46,9 @@ public abstract class ApplicationStateMachine {
     public static ApplicationStateMachine newInstance(BundleContext ctx, WsLocationAdmin locAdmin, FutureMonitor futureMonitor,
                                                       ArtifactContainerFactory artifactFactory, AdaptableModuleFactory moduleFactory,
                                                       ExecutorService executorService, ScheduledExecutorService scheduledExecutor,
-                                                      ASMHelper asmHelper, ApplicationMonitor appMonitor) {
-        return new ApplicationStateMachineImpl(ctx, locAdmin, futureMonitor, artifactFactory, moduleFactory, executorService, scheduledExecutor, asmHelper, appMonitor);
+                                                      ASMHelper asmHelper, ApplicationMonitor appMonitor,
+                                                      ApplicationConfigurator configurator) {
+        return new ApplicationStateMachineImpl(ctx, locAdmin, futureMonitor, artifactFactory, moduleFactory, executorService, scheduledExecutor, asmHelper, appMonitor, configurator);
     }
 
     public abstract Future<Boolean> start();

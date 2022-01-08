@@ -88,8 +88,7 @@ import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Implementation of FrameworkManager. There are several important threads:
@@ -269,7 +268,7 @@ public class FrameworkManager {
             }
 
             // Init the framework.
-            Framework fwk = initFramework(config);
+            Framework fwk = initFramework(config, logProvider);
 
             if (fwk == null) {
                 Tr.error(tc, "error.unableToLaunch");
@@ -277,30 +276,6 @@ public class FrameworkManager {
             }
             // Set the framework variables only if everything succeeded.
             systemBundleCtx = fwk.getBundleContext();
-
-            if (LaunchArguments.isBetaEdition()) {
-                systemBundleCtx.registerService(CheckpointHookFactory.class, new CheckpointHookFactory() {
-
-                    @Override
-                    public CheckpointHook create(Phase phase) {
-                        CheckpointHook checkpointHook = new CheckpointHook() {
-                            @Override
-                            public void prepare() {
-                                logProvider.stop();
-                            }
-
-                            @Override
-                            public void restore() {
-                                Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
-                                TrConfigurator.update(configMap);
-                            }
-
-                        };
-                        return checkpointHook;
-                    }
-
-                }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
-            }
             framework = fwk;
         } catch (BundleException e) {
             throw new RuntimeException(e);
@@ -574,7 +549,7 @@ public class FrameworkManager {
      * Create and start a new instance of an OSGi framework using the provided
      * properties as framework properties.
      */
-    protected Framework initFramework(BootstrapConfig config) throws BundleException {
+    protected Framework initFramework(BootstrapConfig config, final LogProvider logProvider) throws BundleException {
         // Set the default startlevel of the framework. We want the framework to
         // start at our bootstrap level (i.e. Framework bundle itself will start, and
         // it will pre-load and re-start any previously known bundles in the
@@ -595,12 +570,28 @@ public class FrameworkManager {
                 return null;
             fwk.init();
             if (LaunchArguments.isBetaEdition()) {
-                String phaseProp = config.get(BootstrapConstants.CHECKPOINT_PROPERTY_NAME);
+
+                String phaseProp = config.get(CheckpointPhase.CHECKPOINT_PROPERTY);
                 if (phaseProp != null) {
                     // register the checkpoint phase as early as possible
-                    Phase phase = Phase.getPhase(phaseProp);
-                    fwk.getBundleContext().registerService(Phase.class, phase,
-                                                           FrameworkUtil.asDictionary(Collections.singletonMap(BootstrapConstants.CHECKPOINT_PROPERTY_NAME, phase)));
+                    CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
+                    BundleContext fwkContext = fwk.getBundleContext();
+                    fwkContext.registerService(CheckpointPhase.class, phase,
+                                               FrameworkUtil.asDictionary(Collections.singletonMap(CheckpointPhase.CHECKPOINT_PROPERTY, phase)));
+
+                    fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                        @Override
+                        public void prepare() {
+                            logProvider.stop();
+                        }
+
+                        @Override
+                        public void restore() {
+                            Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                            TrConfigurator.update(configMap);
+                        }
+
+                    }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
                 }
             }
             return fwk;

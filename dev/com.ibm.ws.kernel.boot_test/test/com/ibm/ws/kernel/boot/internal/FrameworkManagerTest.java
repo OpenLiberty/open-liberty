@@ -32,6 +32,7 @@ import com.ibm.ws.kernel.boot.SharedBootstrapConfig;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.launch.internal.FrameworkManager;
 import com.ibm.ws.kernel.launch.service.FrameworkReady;
+import com.ibm.wsspi.logprovider.LogProvider;
 
 import junit.framework.Assert;
 import test.common.SharedOutputManager;
@@ -162,7 +163,7 @@ public class FrameworkManagerTest {
     public void testStartFrameworkException() throws Throwable {
         TestFrameworkManager fm = new TestFrameworkManager() {
             @Override
-            protected Framework initFramework(BootstrapConfig config) {
+            protected Framework initFramework(BootstrapConfig config, LogProvider logProvider) {
                 throw new TestException();
             }
         };
@@ -236,7 +237,7 @@ public class FrameworkManagerTest {
         }
 
         @Override
-        protected Framework initFramework(BootstrapConfig config) throws BundleException {
+        protected Framework initFramework(BootstrapConfig config, LogProvider logProvider) throws BundleException {
             frameworkStarted = true;
             return FrameworkManagerTest.this.framework;
         }
