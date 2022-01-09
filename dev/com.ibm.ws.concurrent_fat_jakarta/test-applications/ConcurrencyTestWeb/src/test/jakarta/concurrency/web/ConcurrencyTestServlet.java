@@ -404,6 +404,115 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Use a ContextService from a ContextServiceDefinition that is defined in an EJB.
+     */
+    @Test
+    public void testEJBContextServiceDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvcTODO");
+
+                // Put some fake context onto the thread:
+                Timestamp.set();
+                ZipCode.set(55906);
+                ListContext.newList();
+                ListContext.add(6);
+                ListContext.add(12);
+                Thread.currentThread().setPriority(4);
+                Long ts0 = Timestamp.get();
+                Thread.sleep(100); // ensure we progress from the current timestamp
+
+                try {
+                    // Contextualize a Callable with the above context:
+                    Callable<Object[]> contextualCallable = contextSvc.contextualCallable(() -> {
+                        // The Callable records the context
+                        Object lookupResult;
+                        try {
+                            lookupResult = InitialContext.doLookup("java:comp/concurrent/executor8");
+                        } catch (NamingException x) {
+                            throw new CompletionException(x);
+                        }
+                        return new Object[] {
+                                              lookupResult,
+                                              ZipCode.get(),
+                                              ListContext.asString(),
+                                              Thread.currentThread().getPriority(),
+                                              Timestamp.get()
+                        };
+                    });
+
+                    // Alter some of the context on the current thread
+                    ZipCode.set(55902);
+                    ListContext.newList();
+                    ListContext.add(2);
+                    Thread.currentThread().setPriority(3);
+
+                    // Run with the captured context:
+                    Object[] results;
+                    try {
+                        results = contextualCallable.call();
+                    } catch (RuntimeException x) {
+                        throw x;
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+
+                    // Application context was configured to be propagated
+                    assertTrue(results[0].toString(), results[0] instanceof ManagedExecutorService);
+
+                    // Zip code context was configured to be propagated
+                    assertEquals(Integer.valueOf(55906), results[1]);
+
+                    // List context was configured to be propagated
+                    assertEquals("[6, 12]", results[2]);
+
+                    // Priority context was configured to be left unchanged
+                    assertEquals(Integer.valueOf(3), results[3]);
+
+                    // Timestamp context was configured to be cleared
+                    assertNull(results[4]);
+
+                    // Verify that context is restored on the current thread:
+                    assertEquals(55902, ZipCode.get());
+                    assertEquals("[2]", ListContext.asString());
+                    assertEquals(3, Thread.currentThread().getPriority());
+                    assertEquals(ts0, Timestamp.get());
+
+                    // Run the supplier on another thread
+                    Future<Object[]> future = unmanagedThreads.submit(contextualCallable);
+                    results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+                    // Application context was configured to be propagated
+                    assertTrue(results[0].toString(), results[0] instanceof ManagedExecutorService);
+
+                    // Zip code context was configured to be propagated
+                    assertEquals(Integer.valueOf(55906), results[1]);
+
+                    // List context was configured to be propagated
+                    assertEquals("[6, 12]", results[2]);
+
+                    // Priority context was configured to be left unchanged
+                    assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[3]);
+
+                    // Timestamp context was configured to be cleared
+                    assertNull(results[4]);
+                } finally {
+                    // Remove fake context
+                    Timestamp.clear();
+                    ZipCode.clear();
+                    ListContext.clear();
+                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                }
+
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new CompletionException(x);
+            }
+        });
+    }
+
+    /**
      * Verify that a ManagedExecutorService propagates context to dependent stages that are
      * created from a failedFuture().
      */

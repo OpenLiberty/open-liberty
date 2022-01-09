@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,14 +42,19 @@ public class ConcurrencyTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Test application ConcurrencyTestApp.ear [ConcurrencyTestWeb.war, application.xml]
+        // Test application ConcurrencyTestApp.ear [ConcurrencyTestEJB.jar, ConcurrencyTestWeb.war, application.xml]
+
         WebArchive ConcurrencyTestWeb = ShrinkHelper.buildDefaultApp("ConcurrencyTestWeb", "test.jakarta.concurrency.web");
+        ShrinkHelper.addDirectory(ConcurrencyTestWeb, "test-applications/ConcurrencyTestWeb/resources");
+
+        JavaArchive ConcurrencyTestEJB = ShrinkHelper.buildJavaArchive("ConcurrencyTestEJB", "test.jakarta.concurrency.ejb");
+        ShrinkHelper.addDirectory(ConcurrencyTestEJB, "test-applications/ConcurrencyTestEJB/resources");
+
         EnterpriseArchive ConcurrencyTestApp = ShrinkWrap.create(EnterpriseArchive.class, "ConcurrencyTestApp.ear");
         ConcurrencyTestApp.addAsModule(ConcurrencyTestWeb);
+        ConcurrencyTestApp.addAsModule(ConcurrencyTestEJB);
         ShrinkHelper.addDirectory(ConcurrencyTestApp, "test-applications/ConcurrencyTestApp/resources");
         ShrinkHelper.exportAppToServer(server, ConcurrencyTestApp);
-
-        ShrinkHelper.defaultApp(server, APP_NAME, "test.jakarta.concurrency.web");
 
         // fake third-party library that also include a thread context provider
         JavaArchive locationUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "location-utils.jar")
