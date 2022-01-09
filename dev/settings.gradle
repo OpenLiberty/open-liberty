@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,12 +165,14 @@ pluginManagement {
 
 // Require Java 11
 if (!JavaVersion.current().isJava11Compatible()) {
-  println "WARNING: Building this repository will soon require Java 11. To use Java 11 follow these steps:\n" + 
+  println "ERROR: Building this repository requires Java 11. To use Java 11 follow these steps:\n" + 
                             "  1) You can download a copy for your OS here if you don't already have it: " + 
-                            "https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=openj9\n" + 
+                            "http://ibm.biz/GetSemeru\n" + 
                             "  2) run 'export JAVA_HOME=/path/to/your/java11' in the shell, or set in ~/.bashrc\n" + 
                             "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" + 
                             "  4) Restart your gradle daemon with './gradlew --stop'\n";
+        throw new GradleException('Current Java version is not 11 or higher.')
+
 }
 
 apply from: 'wlp-gradle/propertiesSettings.gradle'

@@ -154,6 +154,7 @@ jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0
 jakarta.servlet:jakarta.servlet-api:5.0.0
+jakarta.transaction:jakarta.transaction-api:1.3.3
 jakarta.transaction:jakarta.transaction-api:2.0.0
 jakarta.validation:jakarta.validation-api:3.0.0
 jakarta.websocket:jakarta.websocket-api:2.0.0
