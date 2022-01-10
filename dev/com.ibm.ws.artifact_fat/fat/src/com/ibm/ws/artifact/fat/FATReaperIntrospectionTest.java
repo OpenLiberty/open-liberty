@@ -10,35 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.artifact.fat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import org.junit.Assert;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import componenttest.annotation.Server;
-
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.HttpUtils;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import java.io.InputStream;
-import java.beans.Transient;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.OperatingSystem;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 
 
@@ -146,13 +135,18 @@ public class FATReaperIntrospectionTest{
         }
         
         if(dump != null){
-            dump.close();
-            dump.deleteFile();           
+            dump.close();                 
         }
         
-        if ( server != null ) {
-            server.postStopServerArchive();
+        if(server != null && server.isStarted()){
+            // In practice, it is nearly impossible to get rid of the windows file lock so we can delete this file. Closing the file
+            // is not enough. System.gc() could help but isn't guaranteed. We just need to deal with not having the logs on windows. 
+            if ( server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
+                server.stopServer(false);
+            else
+                server.stopServer();
         }
+
    
 
 
