@@ -88,6 +88,7 @@ import com.ibm.ws.jpa.embeddable.basic.model.XMLSetLobEmbed;
 import com.ibm.ws.jpa.embeddable.basic.model.XMLSetTemporalEmbed;
 import com.ibm.ws.jpa.embeddable.basic.model.XMLTemporalFieldAccessEmbed;
 import com.ibm.ws.jpa.embeddable.basic.model.XMLTemporalPropertyAccessEmbed;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -269,7 +270,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
 
         // Execute Test Case
         try {
@@ -369,9 +370,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -450,7 +451,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 findEntity.setIntegerTransientEmbed(new IntegerTransientEmbed());
             }
             findEntity.getIntegerTransientEmbed().setTransientJavaValue(444);
@@ -535,9 +536,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -620,7 +621,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
 
         // Execute Test Case
         try {
@@ -722,9 +723,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -802,7 +803,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 findEntity.setIntegerTransientEmbed(new XMLIntegerTransientEmbed());
             }
             findEntity.getIntegerTransientEmbed().setTransientJavaValue(444);
@@ -888,9 +889,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -2072,7 +2073,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
 
         // Execute Test Case
         try {
@@ -2175,9 +2176,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -2268,7 +2269,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 findEntity.setIntegerTransientEmbed(new IntegerTransientEmbed());
             }
             findEntity.getIntegerTransientEmbed().setTransientJavaValue(444);
@@ -2354,9 +2355,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -2486,7 +2487,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
 
         // Execute Test Case
         try {
@@ -2589,9 +2590,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(findEntity.getIntegerTransientEmbed().getTransientValue());
             }
@@ -2683,7 +2684,7 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 findEntity.setIntegerTransientEmbed(new XMLIntegerTransientEmbed());
             }
             findEntity.getIntegerTransientEmbed().setTransientJavaValue(444);
@@ -2769,9 +2770,9 @@ public class EmbeddableBasicLogic extends AbstractTestLogic {
              * If an Embeddable class has only one field and that field is transient, Ecipselink doesn't
              * create an object of type Embeddable class and set its transient field null.
              */
-            if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed());
-            } else if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientJavaValue());
                 Assert.assertNull(updatedFindEntity.getIntegerTransientEmbed().getTransientValue());
             }

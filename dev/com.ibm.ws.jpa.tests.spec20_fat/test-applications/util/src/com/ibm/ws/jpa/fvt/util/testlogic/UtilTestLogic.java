@@ -43,6 +43,7 @@ import com.ibm.ws.jpa.fvt.util.entities.UtilEmbEntity;
 import com.ibm.ws.jpa.fvt.util.entities.UtilEmbeddable;
 import com.ibm.ws.jpa.fvt.util.entities.UtilEmbeddable2;
 import com.ibm.ws.jpa.fvt.util.entities.UtilEntity;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -169,7 +170,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //            return;
 //        }
 
-        JPAProviderImpl jpaProvider = getJPAProviderImpl(jpaRW.getEm());
+        JPAPersistenceProvider jpaProvider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaRW);
 
         System.out.println(TestUtilBasic +
                            ": Verify functions provided in ProviderUtil, PersistenceUtil and PersistenceUnitUtil interfaces "
@@ -249,13 +250,13 @@ public class UtilTestLogic extends AbstractTestLogic {
                                                                 e1, null, LoadState.LOADED,
                                                                 e1, "name", LoadState.LOADED,
                                                                 e1, "notLoaded", LoadState.NOT_LOADED,
-                                                                e1, "unknown", jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.NOT_LOADED : LoadState.UNKNOWN),
+                                                                e1, "unknown", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.NOT_LOADED : LoadState.UNKNOWN),
                                      // PersistenceUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
                                                              e1, null, true,
                                                              e1, "name", true,
                                                              e1, "notLoaded", false,
-                                                             e1, "unknown", jpaProvider == JPAProviderImpl.OPENJPA),
+                                                             e1, "unknown", JPAPersistenceProvider.OPENJPA.equals(jpaProvider)),
                                      // PersistenceUnitUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
                                                              e1, null, true,
@@ -313,7 +314,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //            return;
 //        }
 
-        JPAProviderImpl jpaProvider = getJPAProviderImpl(jpaRW.getEm());
+        JPAPersistenceProvider jpaProvider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaRW);
 
         System.out.println(TestUtilEmbeddable
                            + ": Verify functions provided in ProviderUtil, PersistenceUtil and PersistenceUnitUtil interfaces "
@@ -335,7 +336,7 @@ public class UtilTestLogic extends AbstractTestLogic {
             System.out.println("Clearing persistence context...");
             em.clear();
             Map<String, Object> hints = new TreeMap<String, Object>();
-            if (JPAProviderImpl.ECLIPSELINK == jpaProvider) {
+            if (JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider)) {
                 // For EclipseLink, use JPA 2.1 entity graphs.
                 // Must access reflectively because this bucket compiles against JPA 2.0.
 
@@ -430,7 +431,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          LoadState.LOADED,     // need OPENJPA-1430 feature
 //                        e1,  "emb.embNotLoaded",     LoadState.NOT_LOADED, // need OPENJPA-1430 feature
                                                                 e1, "emb1", LoadState.LOADED, // all eager fields loaded
-                                                                e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.NOT_LOADED, // initNullEmb == null.
+                                                                e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.NOT_LOADED, // initNullEmb == null.
                                                                 e1, "unknown", LoadState.UNKNOWN),
                                      // PersistenceUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
@@ -440,7 +441,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          false,                //
 //                        e1,  "emb.embNotLoaded",     false,                //
                                                              e1, "emb1", true, // all eager fields loaded
-                                                             e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK, // initNullEmb == null
+                                                             e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider), // initNullEmb == null
                                                              e1, "unknown", true), // All providers can't find "unknown", assume loaded
                                      // PersistenceUnitUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
@@ -450,7 +451,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          false,                //
 //                        e1,  "emb.embNotLoaded",     false,                //
                                                              e1, "emb1", true, // all eager fields loaded
-                                                             e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK, // initNullEmb == null
+                                                             e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider), // initNullEmb == null
                                                              e1, "unknown", false), // this providers can't find "unknown", not loaded
                                      e1, TestUtilEmbeddable_TestRow_Id, UtilEmbEntity.class, jpaProvider);
 
@@ -467,7 +468,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          LoadState.LOADED,     // need OPENJPA-1430 feature
 //                        e1,  "emb.embNotLoaded",     LoadState.NOT_LOADED, // need OPENJPA-1430 feature
                                                                 e1, "emb1", LoadState.LOADED, // emb1 assigned null
-                                                                e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.NOT_LOADED, // initNullEmb == null
+                                                                e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.NOT_LOADED, // initNullEmb == null
                                                                 e1, "unknown", LoadState.UNKNOWN),
                                      // PersistenceUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
@@ -477,7 +478,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          false,                // need OPENJPA-1430 feature
 //                        e1,  "emb.embNotLoaded",     false,                // need OPENJPA-1430 feature
                                                              e1, "emb1", true, // emb1 assigned null
-                                                             e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK, // initNullEmb == null.
+                                                             e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider), // initNullEmb == null.
                                                              e1, "unknown", true), // All providers can't find "unknown", assume loaded
                                      // PersistenceUnitUtil.isLoaded() tests
                                      computeExpectedIsLoaded(
@@ -487,7 +488,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //                        e1,  "emb.embName",          false,                // need OPENJPA-1430 feature
 //                        e1,  "emb.embNotLoaded",     false,                // need OPENJPA-1430 feature
                                                              e1, "emb1", true, // emb1 assigned null
-                                                             e1, "initNullEmb", jpaProvider == JPAProviderImpl.ECLIPSELINK, // initNullEmb == null.
+                                                             e1, "initNullEmb", JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider), // initNullEmb == null.
                                                              e1, "unknown", false), // this provider can't find "unknown", not loaded
                                      e1, TestUtilEmbeddable_TestRow_Id, UtilEmbEntity.class, jpaProvider);
 
@@ -566,7 +567,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //            return;
 //        }
 
-        JPAProviderImpl jpaProvider = getJPAProviderImpl(jpaRW.getEm());
+        JPAPersistenceProvider jpaProvider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaRW);
 
         System.out.println(TestUtil1x1
                            + ": Verify functions provided in ProviderUtil, PersistenceUtil and PersistenceUnitUtil interfaces "
@@ -774,7 +775,7 @@ public class UtilTestLogic extends AbstractTestLogic {
 //            return;
 //        }
 
-        JPAProviderImpl jpaProvider = getJPAProviderImpl(jpaRW.getEm());
+        JPAPersistenceProvider jpaProvider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaRW);
 
         System.out.println(TestUtil1xm
                            + ": Verify functions provided in ProviderUtil, PersistenceUtil and PersistenceUnitUtil interfaces "
@@ -840,7 +841,7 @@ public class UtilTestLogic extends AbstractTestLogic {
             }
             e1 = em.find(Util1xmLf.class, TestUtil1xm_TestRow_Id);
             Assert.assertNotNull("Found Util1xmLf(id=" + TestUtil1xm_TestRow_Id + ")", e1);
-            if (jpaProvider == JPAProviderImpl.OPENJPA) {
+            if (JPAPersistenceProvider.OPENJPA.equals(jpaProvider)) {
                 Collection<Util1xmRt> eRs = e1.uniRight;
                 Assert.assertNull("Util1xmRt uniRight == null", eRs);
             } else {
@@ -899,7 +900,7 @@ public class UtilTestLogic extends AbstractTestLogic {
             Collection<Util1xmRt> saveRightEgr = e1.getUniRightEgr();
             e1.setUniRightEgr(null);
 
-            if (jpaProvider == JPAProviderImpl.OPENJPA) {
+            if (JPAPersistenceProvider.OPENJPA.equals(jpaProvider)) {
                 Collection<Util1xmRt> eRs = e1.uniRight;
                 Assert.assertNull("Util1xmRt uniRight == null. Observed " + eRs, eRs);
             } else {
@@ -1144,16 +1145,16 @@ public class UtilTestLogic extends AbstractTestLogic {
      *
      */
     private void assertBasicNewInstanceLoadState(String desc, Object e1,
-                                                 Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                                 Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
         // EclipseLink considers new entities constructed by the application,
         // which have never been persisted, to be loaded.
-        LoadState expectedLoadState = jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.UNKNOWN;
+        LoadState expectedLoadState = JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.UNKNOWN;
 
         assertBasicInvalidEntityLoadState(desc, e1, expectedIdClass, expectedLoadState, jpaProvider);
     }
 
     private void assertBasicInvalidEntityLoadState(String desc, Object e1,
-                                                   Class<?> expectedIdClass, LoadState expectedLoadState, JPAProviderImpl jpaProvider) {
+                                                   Class<?> expectedIdClass, LoadState expectedLoadState, JPAPersistenceProvider jpaProvider) {
         assertInvalidEntityLoadState(desc,
                                      // ProviderUtil.isLoaded() tests
                                      computeExpectedLoadedState(
@@ -1180,15 +1181,15 @@ public class UtilTestLogic extends AbstractTestLogic {
      *
      */
     private void assertEmbeddableNewInstanceLoadState(String desc, Object e1,
-                                                      Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                                      Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
         // EclipseLink considers new entities constructed by the application,
         // which have never been persisted, to be loaded.
-        LoadState expectedLoadState = jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.UNKNOWN;
+        LoadState expectedLoadState = JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.UNKNOWN;
         assertEmbeddableInvalidEntityLoadState(desc, e1, expectedIdClass, expectedLoadState, jpaProvider);
     }
 
     private void assertEmbeddableInvalidEntityLoadState(String desc, Object e1,
-                                                        Class<?> expectedIdClass, LoadState expectedLoadState, JPAProviderImpl jpaProvider) {
+                                                        Class<?> expectedIdClass, LoadState expectedLoadState, JPAPersistenceProvider jpaProvider) {
         assertInvalidEntityLoadState(desc,
                                      // ProviderUtil.isLoaded() tests
                                      computeExpectedLoadedState(
@@ -1227,15 +1228,15 @@ public class UtilTestLogic extends AbstractTestLogic {
      *
      */
     private void assert1x1NewInstanceLoadState(String desc, Object e1, Object e2,
-                                               Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                               Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
         // EclipseLink considers new entities constructed by the application,
         // which have never been persisted, to be loaded.
-        LoadState expectedLoadState = jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.UNKNOWN;
+        LoadState expectedLoadState = JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.UNKNOWN;
         assert1x1InvalidEntityLoadState(desc, e1, e2, expectedIdClass, expectedLoadState, jpaProvider);
     }
 
     private void assert1x1InvalidEntityLoadState(String desc, Object e1, Object e2,
-                                                 Class<?> expectedIdClass, LoadState expectedLoadState, JPAProviderImpl jpaProvider) {
+                                                 Class<?> expectedIdClass, LoadState expectedLoadState, JPAPersistenceProvider jpaProvider) {
         assertInvalidEntityLoadState(desc,
                                      // ProviderUtil.isLoaded() tests
                                      computeExpectedLoadedState(
@@ -1265,15 +1266,15 @@ public class UtilTestLogic extends AbstractTestLogic {
      *
      */
     private void assert1xmNewInstanceLoadState(String desc, Object e1, Object e2,
-                                               Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                               Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
         // EclipseLink considers new entities constructed by the application,
         // which have never been persisted, to be loaded.
-        LoadState expectedLoadState = jpaProvider == JPAProviderImpl.ECLIPSELINK ? LoadState.LOADED : LoadState.UNKNOWN;
+        LoadState expectedLoadState = JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider) ? LoadState.LOADED : LoadState.UNKNOWN;
         assert1xmInvalidEntityLoadState(desc, e1, e2, expectedIdClass, expectedLoadState, jpaProvider);
     }
 
     private void assert1xmInvalidEntityLoadState(String desc, Object e1, Object e2,
-                                                 Class<?> expectedIdClass, LoadState expectedLoadState, JPAProviderImpl jpaProvider) {
+                                                 Class<?> expectedIdClass, LoadState expectedLoadState, JPAPersistenceProvider jpaProvider) {
         assertInvalidEntityLoadState(desc,
                                      // ProviderUtil.isLoaded() tests
                                      computeExpectedLoadedState(
@@ -1313,7 +1314,7 @@ public class UtilTestLogic extends AbstractTestLogic {
                                               ExpectedLoadState[] pvdrExpected,
                                               ExpectedIsLoaded[] puExpected,
                                               ExpectedIsLoaded[] puuExpected,
-                                              Object eId, Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                              Object eId, Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
         printTestDescription(desc);
         assertAttributeLoadState(
                                  pvdrExpected,
@@ -1363,7 +1364,7 @@ public class UtilTestLogic extends AbstractTestLogic {
                                           ExpectedLoadState[] pvdrExpected,
                                           ExpectedIsLoaded[] puExpected,
                                           ExpectedIsLoaded[] puuExpected,
-                                          Object eId, Object expectedId, Class<?> expectedIdClass, JPAProviderImpl jpaProvider) {
+                                          Object eId, Object expectedId, Class<?> expectedIdClass, JPAPersistenceProvider jpaProvider) {
 
         System.out.println("  >>>----- ProviderUtil Tests -----");
         for (ExpectedLoadState loadState : pvdrExpected) {
@@ -1419,7 +1420,7 @@ public class UtilTestLogic extends AbstractTestLogic {
         }
         if (expectedFailure != null) {
 //            results.assertPass("  -> Test [null] PersistenceUnitUtil.getIdentifer(null) raises " + expectedFailure);
-        } else if (expectedId == null && jpaProvider == JPAProviderImpl.ECLIPSELINK) {
+        } else if (expectedId == null && JPAPersistenceProvider.ECLIPSELINK.equals(jpaProvider)) {
             try {
                 Object entityId = eId.getClass().getMethod("getId").invoke(eId);
                 Assert.assertEquals("  -> Test [null]=PersistenceUnitUtil.getIdentifier(" + eId + ") returned " + id + " instead of " + entityId, id, entityId);

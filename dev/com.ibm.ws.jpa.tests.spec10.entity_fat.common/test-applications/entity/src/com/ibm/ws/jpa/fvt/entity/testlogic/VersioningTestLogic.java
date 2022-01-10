@@ -20,6 +20,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.fvt.entity.entities.IVersionedEntity;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.EntityVersionEntityEnum;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -72,8 +73,8 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
-        if (JPAProviderImpl.HIBERNATE.equals(provider)) {
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             // TODO: Hibernate fails with "org.hibernate.exception.LockAcquisitionException: could not execute statement".
             return;
         }

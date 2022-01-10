@@ -191,49 +191,6 @@ public abstract class AbstractTestLogic {
         cleanupDatabase(em, tj, testEntityEnumArr);
     }
 
-    public enum JPAProviderImpl {
-        OPENJPA,
-        ECLIPSELINK,
-        HIBERNATE;
-    }
-
-    public JPAProviderImpl getJPAProviderImpl(EntityManager em) {
-        if (em == null) {
-            return null;
-        }
-
-        String delegateClassStr = em.getDelegate().getClass().getName();
-        if (delegateClassStr == null) {
-            return null;
-        }
-
-        if (delegateClassStr.toLowerCase().contains("openjpa")) {
-            return JPAProviderImpl.OPENJPA;
-        }
-
-        if (delegateClassStr.toLowerCase().contains("com.ibm")) {
-            return JPAProviderImpl.OPENJPA;
-        }
-
-        if (delegateClassStr.toLowerCase().contains("eclipse")) {
-            return JPAProviderImpl.ECLIPSELINK;
-        }
-
-        if (delegateClassStr.toLowerCase().contains("hibernate")) {
-            return JPAProviderImpl.HIBERNATE;
-        }
-
-        return null;
-    }
-
-    public JPAProviderImpl getJPAProviderImpl(JPAResource jpaRsc) {
-        if (jpaRsc == null) {
-            return null;
-        }
-
-        return getJPAProviderImpl(jpaRsc.getEm());
-    }
-
     protected String toBeanMethod(String prefix, String fieldName) {
         return prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
     }

@@ -27,6 +27,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh17373.model.SimpleEntityOLGH17373;
 import com.ibm.ws.jpa.olgh17373.model.SimpleEntityOLGH17373_;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -147,6 +148,8 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -190,9 +193,8 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
             Assert.assertNotNull(dto01);
             Assert.assertEquals(0, dto01.size());
 
-            JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
             // TODO: Investigate why the following query fails on OpenJPA
-            if (JPAProviderImpl.OPENJPA.equals(provider)) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 return;
             }
 

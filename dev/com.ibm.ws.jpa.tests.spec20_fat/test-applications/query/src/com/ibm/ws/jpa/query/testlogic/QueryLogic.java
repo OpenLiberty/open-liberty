@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.query.model.InvalidQuerySubclass;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -72,6 +73,8 @@ public class QueryLogic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -82,7 +85,7 @@ public class QueryLogic extends AbstractTestLogic {
                 try {
                     Object obj = query.unwrap(Object.class);
 
-                    if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+                    if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                         // TODO: OpenJPA does not support this call
                         Assert.fail("The expected PersistenceException was not thrown and the provide returned object " + obj);
                     }

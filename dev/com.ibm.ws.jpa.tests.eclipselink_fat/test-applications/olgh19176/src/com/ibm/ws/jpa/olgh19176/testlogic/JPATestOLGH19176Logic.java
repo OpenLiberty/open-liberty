@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh19176.model.WeavedEntityAOLGH19176;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -50,9 +51,11 @@ public class JPATestOLGH19176Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 

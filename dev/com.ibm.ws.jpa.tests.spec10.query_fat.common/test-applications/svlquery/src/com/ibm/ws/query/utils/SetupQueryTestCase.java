@@ -34,6 +34,7 @@ import com.ibm.ws.query.entities.interfaces.ISupplier;
 import com.ibm.ws.query.entities.interfaces.ITaskBean;
 import com.ibm.ws.query.entities.interfaces.ITypeTestBean;
 import com.ibm.ws.query.entities.interfaces.IUsage;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 
 /**
@@ -41,7 +42,7 @@ import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
  */
 public class SetupQueryTestCase extends AbstractTestLogic {
     protected EntityManager _em = null;
-    protected JPAProviderImpl _pvdr = null;
+    protected JPAPersistenceProvider _pvdr = null;
 
     protected static boolean isXmlOrMap = false;
 
@@ -154,7 +155,7 @@ public class SetupQueryTestCase extends AbstractTestLogic {
 
     public SetupQueryTestCase(EntityManager em, String dbVendorName, boolean ano) {
         _em = em;
-        _pvdr = getJPAProviderImpl(em);
+        _pvdr = JPAPersistenceProvider.resolveJPAPersistenceProvider(em);
         _dbVendorName = dbVendorName;
         isXmlOrMap = !ano;
     }

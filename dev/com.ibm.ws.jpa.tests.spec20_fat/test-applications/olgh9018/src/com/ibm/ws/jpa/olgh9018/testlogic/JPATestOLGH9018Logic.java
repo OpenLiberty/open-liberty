@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh9018.model.SimpleEntityOLGH9018;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
@@ -60,12 +61,14 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
 
             Connection c = em.unwrap(Connection.class);
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
@@ -101,6 +104,8 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();
 
         // Execute Test Case
@@ -119,7 +124,7 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
@@ -155,6 +160,8 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();
 
         // Execute Test Case
@@ -175,7 +182,7 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {

@@ -25,6 +25,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh19185.model.SimpleEntityOLGH19185;
 import com.ibm.ws.jpa.olgh19185.model.SimpleEntityOLGH19185_;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -56,9 +57,11 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
@@ -174,9 +177,11 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
