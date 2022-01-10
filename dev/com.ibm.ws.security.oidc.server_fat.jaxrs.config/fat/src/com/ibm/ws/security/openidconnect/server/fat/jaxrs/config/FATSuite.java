@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonAltRemoteLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OAuth.OAuthCookieAttributesInboundPropNoneNoOPToken2ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OAuth.OAuthCookieAttributesInboundPropNoneWithOPToken2ServerTests;
@@ -51,7 +53,6 @@ import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPEncryp
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPSignatureRSServerTests;
 
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -112,6 +113,7 @@ public class FATSuite extends CommonAltRemoteLDAPServerSuite {
     /* always add servlet-5.0 to enable EE9 in the op which had no feature versions to swap out to enable EE9 */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new JakartaEE9Action().alwaysAddFeature("servlet-5.0").fullFATOnly());
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }
