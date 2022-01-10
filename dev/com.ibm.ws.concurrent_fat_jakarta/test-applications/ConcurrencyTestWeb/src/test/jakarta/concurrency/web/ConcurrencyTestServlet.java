@@ -412,7 +412,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         assertNotNull(bean);
         bean.execute(() -> {
             try {
-                ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvcTODO");
+                ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvc");
 
                 // Put some fake context onto the thread:
                 Timestamp.set();
