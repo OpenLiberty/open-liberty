@@ -27,11 +27,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class HandlerRuleTest {
     @Server("HandlerRuleTestServer")
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("HandlerRuleTestServer");
@@ -55,7 +58,9 @@ public class HandlerRuleTest {
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.stopServer();
+            server.clearLogMarks();
         }
+        System.gc();
     }
 
     @Test

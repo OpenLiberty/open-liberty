@@ -38,10 +38,13 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class HandlerChainTest {
     private static final String PROVIDER_APP_LOCATION = "HandlerChainTest/testHandlerProvider.war.xml";
     private static final String CLIENT_APP_LOCATION = "HandlerChainTest/testHandlerClient.war.xml";
@@ -61,7 +64,9 @@ public class HandlerChainTest {
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.stopServer();
+            server.clearLogMarks();
         }
+        System.gc();
     }
 
     @Test
