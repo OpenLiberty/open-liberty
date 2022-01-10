@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     private Long hungTaskThreshold;
     private boolean XMLHungTaskThreshold;
 
+    private final String ivBinding;
+
     private Integer maxAsync;
     private boolean XMLMaxAsync;
 
@@ -57,6 +59,9 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     public ManagedScheduledExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+
+        Map<String, String> msxBindings = nameSpaceConfig.getManagedScheduledExecutorDefinitionBindings();
+        ivBinding = msxBindings == null ? null : msxBindings.get(getJndiName());
     }
 
     @Override
@@ -115,11 +120,15 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     public void mergeSaved(InjectionBinding<ManagedScheduledExecutorDefinition> injectionBinding) throws InjectionException {
         ManagedScheduledExecutorDefinitionBinding managedScheduledExecutorBinding = (ManagedScheduledExecutorDefinitionBinding) injectionBinding;
 
-        mergeSavedValue(contextServiceJndiName, managedScheduledExecutorBinding.contextServiceJndiName, "context-service-ref");
-        mergeSavedValue(description, managedScheduledExecutorBinding.description, "description");
-        mergeSavedValue(hungTaskThreshold, managedScheduledExecutorBinding.hungTaskThreshold, "hung-task-threshold");
-        mergeSavedValue(maxAsync, managedScheduledExecutorBinding.maxAsync, "max-async");
-        mergeSavedValue(properties, managedScheduledExecutorBinding.properties, "properties");
+        if (ivBinding != null) {
+            mergeSavedValue(ivBinding, managedScheduledExecutorBinding.ivBinding, "binding-name");
+        } else {
+            mergeSavedValue(contextServiceJndiName, managedScheduledExecutorBinding.contextServiceJndiName, "context-service-ref");
+            mergeSavedValue(description, managedScheduledExecutorBinding.description, "description");
+            mergeSavedValue(hungTaskThreshold, managedScheduledExecutorBinding.hungTaskThreshold, "hung-task-threshold");
+            mergeSavedValue(maxAsync, managedScheduledExecutorBinding.maxAsync, "max-async");
+            mergeSavedValue(properties, managedScheduledExecutorBinding.properties, "properties");
+        }
     }
 
     void resolve() throws InjectionException {
@@ -135,6 +144,6 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
         addOrRemoveProperty(props, KEY_HUNG_TASK_THRESHOLD, hungTaskThreshold);
         addOrRemoveProperty(props, KEY_MAX_ASYNC, maxAsync);
 
-        setObjects(null, createDefinitionReference(null, ManagedScheduledExecutorService.class.getName(), props));
+        setObjects(null, createDefinitionReference(ivBinding, ManagedScheduledExecutorService.class.getName(), props));
     }
 }

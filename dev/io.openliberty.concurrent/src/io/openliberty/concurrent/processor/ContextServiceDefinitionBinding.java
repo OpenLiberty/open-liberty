@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,8 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private String description;
     private boolean XMLDescription;
 
+    private final String ivBinding;
+
     private String[] propagated;
     private boolean XMLpropagated;
 
@@ -56,6 +58,9 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     public ContextServiceDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+
+        Map<String, String> msxBindings = nameSpaceConfig.getContextServiceDefinitionBindings();
+        ivBinding = msxBindings == null ? null : msxBindings.get(getJndiName());
     }
 
     @Override
@@ -116,11 +121,15 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     public void mergeSaved(InjectionBinding<ContextServiceDefinition> injectionBinding) throws InjectionException {
         ContextServiceDefinitionBinding contextServiceBinding = (ContextServiceDefinitionBinding) injectionBinding;
 
-        mergeSavedValue(cleared, contextServiceBinding.cleared, "cleared");
-        mergeSavedValue(description, contextServiceBinding.description, "description");
-        mergeSavedValue(propagated, contextServiceBinding.propagated, "propagated");
-        mergeSavedValue(properties, contextServiceBinding.properties, "properties");
-        mergeSavedValue(unchanged, contextServiceBinding.unchanged, "unchanged");
+        if (ivBinding != null) {
+            mergeSavedValue(ivBinding, contextServiceBinding.ivBinding, "binding-name");
+        } else {
+            mergeSavedValue(cleared, contextServiceBinding.cleared, "cleared");
+            mergeSavedValue(description, contextServiceBinding.description, "description");
+            mergeSavedValue(propagated, contextServiceBinding.propagated, "propagated");
+            mergeSavedValue(properties, contextServiceBinding.properties, "properties");
+            mergeSavedValue(unchanged, contextServiceBinding.unchanged, "unchanged");
+        }
     }
 
     void resolve() throws InjectionException {
@@ -136,6 +145,6 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         addOrRemoveProperty(props, KEY_PROPAGATED, propagated);
         addOrRemoveProperty(props, KEY_UNCHANGED, unchanged);
 
-        setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ContextService.class.getName(), props));
+        setObjects(null, createDefinitionReference(ivBinding, jakarta.enterprise.concurrent.ContextService.class.getName(), props));
     }
 }

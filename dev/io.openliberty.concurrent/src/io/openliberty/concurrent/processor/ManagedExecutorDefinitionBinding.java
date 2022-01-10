@@ -48,6 +48,8 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     private Long hungTaskThreshold;
     private boolean XMLHungTaskThreshold;
 
+    private final String ivBinding;
+
     private Integer maxAsync;
     private boolean XMLMaxAsync;
 
@@ -57,6 +59,9 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     public ManagedExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+
+        Map<String, String> msxBindings = nameSpaceConfig.getManagedExecutorDefinitionBindings();
+        ivBinding = msxBindings == null ? null : msxBindings.get(getJndiName());
     }
 
     @Override
@@ -115,11 +120,15 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     public void mergeSaved(InjectionBinding<ManagedExecutorDefinition> injectionBinding) throws InjectionException {
         ManagedExecutorDefinitionBinding managedExecutorBinding = (ManagedExecutorDefinitionBinding) injectionBinding;
 
-        mergeSavedValue(contextServiceJndiName, managedExecutorBinding.contextServiceJndiName, "context-service-ref");
-        mergeSavedValue(description, managedExecutorBinding.description, "description");
-        mergeSavedValue(hungTaskThreshold, managedExecutorBinding.hungTaskThreshold, "hung-task-threshold");
-        mergeSavedValue(maxAsync, managedExecutorBinding.maxAsync, "max-async");
-        mergeSavedValue(properties, managedExecutorBinding.properties, "properties");
+        if (ivBinding != null) {
+            mergeSavedValue(ivBinding, managedExecutorBinding.ivBinding, "binding-name");
+        } else {
+            mergeSavedValue(contextServiceJndiName, managedExecutorBinding.contextServiceJndiName, "context-service-ref");
+            mergeSavedValue(description, managedExecutorBinding.description, "description");
+            mergeSavedValue(hungTaskThreshold, managedExecutorBinding.hungTaskThreshold, "hung-task-threshold");
+            mergeSavedValue(maxAsync, managedExecutorBinding.maxAsync, "max-async");
+            mergeSavedValue(properties, managedExecutorBinding.properties, "properties");
+        }
     }
 
     void resolve() throws InjectionException {
@@ -135,6 +144,6 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
         addOrRemoveProperty(props, KEY_HUNG_TASK_THRESHOLD, hungTaskThreshold);
         addOrRemoveProperty(props, KEY_MAX_ASYNC, maxAsync);
 
-        setObjects(null, createDefinitionReference(null, ManagedExecutorService.class.getName(), props));
+        setObjects(null, createDefinitionReference(ivBinding, ManagedExecutorService.class.getName(), props));
     }
 }

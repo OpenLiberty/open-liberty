@@ -43,6 +43,8 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private String description;
     private boolean XMLDescription;
 
+    private final String ivBinding;
+
     private Integer priority;
     private boolean XMLPriority;
 
@@ -52,6 +54,9 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     public ManagedThreadFactoryDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+
+        Map<String, String> msxBindings = nameSpaceConfig.getManagedThreadFactoryDefinitionBindings();
+        ivBinding = msxBindings == null ? null : msxBindings.get(getJndiName());
     }
 
     @Override
@@ -104,10 +109,14 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     public void mergeSaved(InjectionBinding<ManagedThreadFactoryDefinition> injectionBinding) throws InjectionException {
         ManagedThreadFactoryDefinitionBinding managedThreadFactoryBinding = (ManagedThreadFactoryDefinitionBinding) injectionBinding;
 
-        mergeSavedValue(contextServiceJndiName, managedThreadFactoryBinding.contextServiceJndiName, "context-service-ref");
-        mergeSavedValue(description, managedThreadFactoryBinding.description, "description");
-        mergeSavedValue(priority, managedThreadFactoryBinding.priority, "priority");
-        mergeSavedValue(properties, managedThreadFactoryBinding.properties, "properties");
+        if (ivBinding != null) {
+            mergeSavedValue(ivBinding, managedThreadFactoryBinding.ivBinding, "binding-name");
+        } else {
+            mergeSavedValue(contextServiceJndiName, managedThreadFactoryBinding.contextServiceJndiName, "context-service-ref");
+            mergeSavedValue(description, managedThreadFactoryBinding.description, "description");
+            mergeSavedValue(priority, managedThreadFactoryBinding.priority, "priority");
+            mergeSavedValue(properties, managedThreadFactoryBinding.properties, "properties");
+        }
     }
 
     void resolve() throws InjectionException {
@@ -122,6 +131,6 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_PRIORITY, priority);
 
-        setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ManagedThreadFactory.class.getName(), props));
+        setObjects(null, createDefinitionReference(ivBinding, jakarta.enterprise.concurrent.ManagedThreadFactory.class.getName(), props));
     }
 }

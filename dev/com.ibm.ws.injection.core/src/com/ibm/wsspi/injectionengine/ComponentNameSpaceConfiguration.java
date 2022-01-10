@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 IBM Corporation and others.
+ * Copyright (c) 2007, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,12 +28,16 @@ import com.ibm.ejs.util.dopriv.SystemGetPropertyPrivileged;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.javaee.dd.common.AdministeredObject;
 import com.ibm.ws.javaee.dd.common.ConnectionFactory;
+import com.ibm.ws.javaee.dd.common.ContextService;
 import com.ibm.ws.javaee.dd.common.DataSource;
 import com.ibm.ws.javaee.dd.common.EJBRef;
 import com.ibm.ws.javaee.dd.common.EnvEntry;
 import com.ibm.ws.javaee.dd.common.JMSConnectionFactory;
 import com.ibm.ws.javaee.dd.common.JMSDestination;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
+import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
 import com.ibm.ws.javaee.dd.common.MessageDestinationRef;
 import com.ibm.ws.javaee.dd.common.PersistenceContextRef;
 import com.ibm.ws.javaee.dd.common.PersistenceUnitRef;
@@ -818,6 +822,20 @@ public class ComponentNameSpaceConfiguration
     }
 
     /**
+     * Returns a map of context service resource definition names to resource
+     * names.
+     */
+    public Map<String, String> getContextServiceDefinitionBindings()
+    {
+        return getJNDIEnvironmentRefBindings(ContextService.class);
+    }
+
+    public void setContextServiceDefinitionBindings(Map<String, String> csDefBindings)
+    {
+        setJNDIEnvironmentRefBindings(ContextService.class, csDefBindings);
+    }
+
+    /**
      * Returns a map of data source resource definition names to resource
      * names.
      */
@@ -829,6 +847,48 @@ public class ComponentNameSpaceConfiguration
     public void setDataSourceDefinitionBindings(Map<String, String> dsDefBindings) // F743-33811
     {
         setJNDIEnvironmentRefBindings(DataSource.class, dsDefBindings);
+    }
+
+    /**
+     * Returns a map of managed executor resource definition names to resource
+     * names.
+     */
+    public Map<String, String> getManagedExecutorDefinitionBindings()
+    {
+        return getJNDIEnvironmentRefBindings(ManagedExecutor.class);
+    }
+
+    public void setManagedExecutorDefinitionBindings(Map<String, String> mxDefBindings)
+    {
+        setJNDIEnvironmentRefBindings(ManagedExecutor.class, mxDefBindings);
+    }
+
+    /**
+     * Returns a map of managed scheduled executor resource definition names to resource
+     * names.
+     */
+    public Map<String, String> getManagedScheduledExecutorDefinitionBindings()
+    {
+        return getJNDIEnvironmentRefBindings(ManagedScheduledExecutor.class);
+    }
+
+    public void setManagedScheduledExecutorDefinitionBindings(Map<String, String> msxDefBindings)
+    {
+        setJNDIEnvironmentRefBindings(ManagedScheduledExecutor.class, msxDefBindings);
+    }
+
+    /**
+     * Returns a map of managed thread factory resource definition names to resource
+     * names.
+     */
+    public Map<String, String> getManagedThreadFactoryDefinitionBindings()
+    {
+        return getJNDIEnvironmentRefBindings(ManagedThreadFactory.class);
+    }
+
+    public void setManagedThreadFactoryDefinitionBindings(Map<String, String> mtfDefBindings)
+    {
+        setJNDIEnvironmentRefBindings(ManagedThreadFactory.class, mtfDefBindings);
     }
 
     /**
