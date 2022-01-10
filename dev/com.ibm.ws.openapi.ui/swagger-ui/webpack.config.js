@@ -122,8 +122,8 @@ module.exports = {
       minify: false
     }),
     new HtmlWebpackPlugin({
-      template: 'microprofile.html',
-      filename: 'microprofile.html',
+      template: 'mpOpenApi.html',
+      filename: 'mpOpenApi.html',
       inject: false,
       minify: false
     }),

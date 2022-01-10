@@ -17,7 +17,7 @@ To make the color changes, we need to modify the original sass style files from 
 
 There are slight differences between the UI presented for the `openapi-3.x` and `mpOpenApi-x.x` features. The main code is capable of displaying either version and the config to choose which to use is in the html file where the initialization is done.
 
-* `microprofile.html` is used for `mpOpenApi-x.x`
+* `mpOpenApi.html` is used for `mpOpenApi-x.x`
 * `openapi.html` is used for `openapi-3.x`
 * `dev.html` is used during development on our extension code when running `npm start`
 
@@ -44,30 +44,56 @@ When started like this, it expects to be able to load an openapi document from `
 
 ### Updating dependencies
 
-To update all our dependencies to the latest compatible version
-```
-npm update
-npm install
-```
+1. Check for outdated packages
+   ```
+   npm outdated
+   ```
 
-If you've updated Swagger UI, then you also need to replace the sass files under `src/style/original` with the versions from the Swagger UI source code.
+   This will list all of our dependencies which have updates, along with the current version, the "wanted" version (the latest version it should be safe to update to) and the absolute latest version.
 
-Here's some git magic to do that (replace `vX.X.X` with the actual tag for the release):
+   * Take note of whether there's an updated version of `swagger-ui`. If so, there will be an extra step later.
 
-```
-git clone --filter=blob:none --depth 1 --no-checkout -b vX.X.X git@github.com:swagger-api/swagger-ui.git
-git -C swagger-ui sparse-checkout set src/style
-git -C swagger-ui checkout
-rm src/style/original/*
-cp swagger-ui/src/style/* src/style/original
-rm -rf swagger-ui
-```
+1. Update all our dependencies to the latest compatible version
+   ```
+   npm update
+   npm install
+   ```
+   
+   This will update `package.json` and `package-lock.json`.
 
-Finally, rebuild
+1. If there was an updated version of `swagger-ui`, update the files under `src/style/original` with the versions from the Swagger UI source code.
 
-```
-npm run build -- --mode=production
-```
+   Check `package.json` to find the version of swagger-ui we're now using and grab the files from their source repository.
+
+   You can do this manually by going to the [Swagger UI repository][swagger-ui-repo], finding the tag for the version, downloading the files from `src/style` and copying them under `src/style/original` under this directory.
+
+   Alternatively, you can run the following git magic from this directory which will do that for you (replace `X.Y.Z` with the version of swagger-ui listed in `package.json`):
+
+   ```
+   git clone --filter=blob:none --depth 1 --no-checkout -b vX.Y.Z git@github.com:swagger-api/swagger-ui.git
+   git -C swagger-ui sparse-checkout set src/style
+   git -C swagger-ui checkout
+   rm src/style/original/*
+   cp swagger-ui/src/style/* src/style/original
+   rm -rf swagger-ui
+   ```
+
+1. After updating you must rebuild our Swagger UI:
+
+   ```
+   npm run build -- --mode=production
+   ```
+
+   Then rebuild the liberty bundles which include the Swagger UI files. From the open-liberty `dev` directory:
+   ```
+   ./gradlew :com.ibm.ws.openapi.ui:assemble :com.ibm.ws.openapi.ui.private:assemble :com.ibm.ws.microprofile.openapi.ui:assemble
+   ```
+
+1. Test (see below) and check in all the changes from this directory.
+
+### Testing
+
+Before delivering changes, follow the test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
 
 ### Other references
 
@@ -75,3 +101,4 @@ This was originally based on the [`webpack-getting-started`][webpack-sample] sam
 
 [swagger-ui]: https://github.com/swagger-api/swagger-ui
 [webpack-sample]: https://github.com/swagger-api/swagger-ui/tree/df7749b2fe88c3235a2a7a2c965e8edaaa646356/docs/samples/webpack-getting-started
+[swagger-ui-repo]: https://github.com/swagger-api/swagger-ui
