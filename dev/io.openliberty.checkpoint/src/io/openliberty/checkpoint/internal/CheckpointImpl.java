@@ -184,27 +184,29 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
 
         Object[] hookRefs = cc.locateServices(HOOKS_REF_NAME);
-        List<CheckpointHook> checkpointHooks = getHooks(hookRefs);
+        List<CheckpointHook> checkpointPrepareHooks = getHooks(hookRefs);
+
+        // reverse prepare hook order for restore hooks
+        List<CheckpointHook> checkpointRestoreHooks = new ArrayList<>(checkpointPrepareHooks);
+        Collections.reverse(checkpointRestoreHooks);
 
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
         }
 
-        prepare(checkpointHooks);
-        Collections.reverse(checkpointHooks);
         try {
             try {
                 criu.checkpointSupported();
             } catch (CheckpointFailedException cpfe) {
-                debug(tc, () -> "ExecuteCRIU service does not support checkpoint.");
-                //TODO log a more helpful message based on cpfe Type
-                System.out.println(cpfe.getMessage());
+                debug(tc, () -> "ExecuteCRIU service does not support checkpoint: " + cpfe.getMessage());
                 throw cpfe;
             }
             File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
-            criu.dump(imageDir, CHECKPOINT_LOG_FILE,
+            criu.dump(() -> prepare(checkpointPrepareHooks),
+                      () -> restore(checkpointRestoreHooks),
+                      imageDir, CHECKPOINT_LOG_FILE,
                       getLogsCheckpoint(),
                       getEnvProperties());
 
@@ -216,7 +218,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
         }
 
-        restore(checkpointHooks);
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
         }

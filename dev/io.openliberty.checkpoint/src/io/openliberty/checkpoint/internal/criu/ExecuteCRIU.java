@@ -18,13 +18,15 @@ public interface ExecuteCRIU {
      * Invokes the criu dump for the specified image directory, log file,
      * working directory, and env properties file.
      *
+     * @param prepare
+     * @param restore
      * @param imageDir
      * @param logFileName
      * @param workDir
      * @param envProps
      * @throws CheckpointFailedException
      */
-    default void dump(File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+    default void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
         // do nothing
     };
 

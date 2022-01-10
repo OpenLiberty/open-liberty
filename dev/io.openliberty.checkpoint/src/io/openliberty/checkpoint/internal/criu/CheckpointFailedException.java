@@ -14,7 +14,7 @@ package io.openliberty.checkpoint.internal.criu;
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
-public class CheckpointFailedException extends Exception {
+public class CheckpointFailedException extends RuntimeException {
     private static final long serialVersionUID = -669718085413549145L;
 
     public enum Type {
@@ -27,18 +27,6 @@ public class CheckpointFailedException extends Exception {
          * CRIU not supported. We are running a JVM with support but the VM was not launched with the option--XX:+EnableCRIUSupport.
          */
         UNSUPPORTED_DISABLED_IN_JVM,
-
-        /**
-         * We are running a jvm with support enabled but criu appears not to be installed on the platform
-         */
-        //TODO or we are running on non-linux? Need to confirm this
-        UNSUPPORTED_CRIU_NOT_INSTALLED,
-
-        /**
-         * CRIU unsupported for a reason not specifically enumerated. Probably because an unanticipated ERROR was
-         * encountered while testing for support.
-         */
-        UNSUPPORTED,
 
         PREPARE_ABORT,
         JVM_CHECKPOINT_FAILED,

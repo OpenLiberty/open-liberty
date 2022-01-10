@@ -80,13 +80,15 @@ public class CheckpointImplTest {
         volatile boolean throwIOException = false;
 
         @Override
-        public void dump(File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+        public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+            prepare.run();
             this.imageDir = imageDir;
             this.logFilename = logFileName;
             this.workDir = workDir;
             if (throwIOException) {
                 throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, "Test failure", new IOException("failed"), 22);
             }
+            restore.run();
         }
 
         @Override
