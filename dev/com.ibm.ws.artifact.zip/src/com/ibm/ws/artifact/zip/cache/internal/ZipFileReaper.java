@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -450,7 +450,7 @@ public class ZipFileReaper {
                         break;
                     }
 
-                    nextReapAt = SystemUtils.getNanoTime();
+                    nextReapAt = System.nanoTime();
 
                     if ( doDebug ) {
                         Tr.debug(tc, methodName + " Reap [ " + reaper.fromInitial_s(nextReapAt) + " ]");
@@ -521,7 +521,7 @@ public class ZipFileReaper {
                 reaper.reaperLock.releaseWriteLock();
             }
 
-            long shutdownAt = SystemUtils.getNanoTime();
+            long shutdownAt = System.nanoTime();
             if ( doDebug ) {
                 Tr.debug(tc, methodName + " Shutting down [ " + reaper.fromInitial_s(shutdownAt) + " ]");
             }
@@ -532,7 +532,7 @@ public class ZipFileReaper {
                 reaper.reaperLock.releaseWriteLock();
             }
 
-            long stopAt = SystemUtils.getNanoTime();
+            long stopAt = System.nanoTime();
             if ( doDebug ) {
                 Tr.debug(tc, methodName + " Stop [ " + reaper.fromInitial_s(stopAt) + " ]");
             }
@@ -543,7 +543,7 @@ public class ZipFileReaper {
 
     @Trivial
     public ZipFileReaper(String reaperName) {
-        this( reaperName, SystemUtils.getNanoTime() );
+        this( reaperName, System.nanoTime() );
     }
 
     @Trivial
@@ -575,7 +575,7 @@ public class ZipFileReaper {
               quickPendMin, quickPendMax,
               slowPendMin, slowPendMax,
               errorHandler,
-              SystemUtils.getNanoTime() );
+              System.nanoTime() );
     }
 
     @Trivial
@@ -590,7 +590,7 @@ public class ZipFileReaper {
               quickPendMin, quickPendMax,
               slowPendMin, slowPendMax,
               ZipFileReaper.NULL_ERROR_HANDLER,
-              SystemUtils.getNanoTime() );
+              System.nanoTime() );
     }
 
     private static void validate(
@@ -1526,7 +1526,7 @@ public class ZipFileReaper {
 
     @Trivial
     public ZipFile open(String path) throws IOException, ZipException {
-        return open( path, SystemUtils.getNanoTime() );
+        return open( path, System.nanoTime() );
     }
 
     @Trivial
@@ -1641,7 +1641,7 @@ public class ZipFileReaper {
     }
 
     public ZipFileData.ZipFileState close(String path) {
-        return close( path, SystemUtils.getNanoTime() );
+        return close( path, System.nanoTime() );
     }
 
     public ZipFileData.ZipFileState close(String path, long closeAt) {
