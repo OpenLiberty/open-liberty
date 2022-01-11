@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,11 +30,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * The adapter for ConnectorModuleMetadata
  */
-//as documentation only at this point:
-//@Component(pid="com.ibm.ws.jca.ConnectorModuleMetaDataAdapter")
 public class ConnectorModuleMetaDataAdapter implements ContainerAdapter<ConnectorModuleMetaData> {
-
-    private final AtomicServiceReference<J2EENameFactory> j2eeNameFactory = new AtomicServiceReference<J2EENameFactory>("j2eeNameFactory");
+    private final AtomicServiceReference<J2EENameFactory> j2eeNameFactory =
+        new AtomicServiceReference<J2EENameFactory>("j2eeNameFactory");
 
     public void setJ2eeNameFactory(ServiceReference<J2EENameFactory> ref) {
         j2eeNameFactory.setReference(ref);
@@ -53,19 +51,37 @@ public class ConnectorModuleMetaDataAdapter implements ContainerAdapter<Connecto
     }
 
     @Override
-    public ConnectorModuleMetaData adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer,
-                                         Container containerToAdapt) throws UnableToAdaptException {
-        RaConnector connector = (RaConnector) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Connector.class);
-        if (connector == null) {
+    public ConnectorModuleMetaData adapt(
+        Container root,
+        OverlayContainer rootOverlay,
+        ArtifactContainer artifactContainer,
+        Container containerToAdapt) throws UnableToAdaptException {
+        
+        String adaptPath = artifactContainer.getPath();
+
+        RaConnector connector = (RaConnector)
+            rootOverlay.getFromNonPersistentCache(adaptPath, Connector.class);
+        if ( connector == null ) {
             connector = (RaConnector) containerToAdapt.adapt(Connector.class);
         }
-        ConnectorModuleMetaDataImpl cmmd = (ConnectorModuleMetaDataImpl) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ConnectorModuleMetaData.class);
-        if (cmmd == null) {
-            ExtendedApplicationInfo appInfo = (ExtendedApplicationInfo) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
-            ConnectorModuleInfo cmInfo = (ConnectorModuleInfo) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ConnectorModuleInfo.class);
-            cmmd = new ConnectorModuleMetaDataImpl(appInfo, cmInfo, connector, j2eeNameFactory.getServiceWithException(), containerToAdapt);
-            rootOverlay.addToNonPersistentCache(artifactContainer.getPath(), ConnectorModuleMetaData.class, cmmd);
+
+        ConnectorModuleMetaDataImpl cmmd = (ConnectorModuleMetaDataImpl)
+            rootOverlay.getFromNonPersistentCache(adaptPath, ConnectorModuleMetaData.class);
+
+        if ( cmmd == null ) {
+            ExtendedApplicationInfo appInfo = (ExtendedApplicationInfo)
+                rootOverlay.getFromNonPersistentCache(adaptPath, ApplicationInfo.class);
+            ConnectorModuleInfo cmInfo = (ConnectorModuleInfo)
+                rootOverlay.getFromNonPersistentCache(adaptPath, ConnectorModuleInfo.class);
+
+            cmmd = new ConnectorModuleMetaDataImpl(
+                appInfo, cmInfo, connector,
+                j2eeNameFactory.getServiceWithException(),
+                containerToAdapt);
+
+            rootOverlay.addToNonPersistentCache(adaptPath, ConnectorModuleMetaData.class, cmmd);
         }
+
         return cmmd;
     }
 }

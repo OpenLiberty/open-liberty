@@ -150,7 +150,7 @@ import com.ibm.ws.javaee.ddmodel.common.XSDTokenType;
  type="xsd:ID"/>
  </xsd:complexType>
  */
-public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor, EJBJar, DDParser.RootParsable {
+public class EJBJarType extends DescriptionGroup implements EJBJar, DDParser.RootParsable {
     public EJBJarType(String path) {
         this.path = path;
     }
@@ -3463,6 +3463,9 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
                 // or, jakarta.jms.Queue or jakarta.jms.Topic, depending on whether
                 // jakarta is provisioned.  That is, whether the maximum EJB
                 // specification version is 4.0 or higher.
+                //
+                // Note that this is a validation of the element value,
+                // not of the XML structure!
 
                 String type_queue;
                 String type_topic;

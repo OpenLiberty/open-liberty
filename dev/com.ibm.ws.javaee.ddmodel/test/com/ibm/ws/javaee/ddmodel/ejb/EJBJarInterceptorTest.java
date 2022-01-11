@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
 
     protected EJBJar getInterceptorsEjbJar() throws Exception {
         if ( interceptorsEJBJar == null ) {
-            interceptorsEJBJar = parseEJBJar( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
+            interceptorsEJBJar = parseEJBJarMax( ejbJar30("", interceptorsXML) );
         }
         return interceptorsEJBJar;
     }
@@ -315,14 +315,17 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
         Assert.assertEquals("injectionTargetName0", injTargList.get(0).getInjectionTargetName());
     }
 
+    // 'around-construct' should supported using a 3.2 schema.
+
     @Test
     public void testAroundConstruct() throws Exception {
-        List<Interceptor> interceptors = parseEJBJar(
-            ejbJar32("", interceptorsAroundConstructXML), EJBJar.VERSION_4_0)
-                .getInterceptors().getInterceptorList();
+        List<Interceptor> interceptors = parseEJBJarMax( ejbJar32("", interceptorsAroundConstructXML) )
+            .getInterceptors().getInterceptorList();
 
         Interceptor interceptor0 = interceptors.get(0);
-        Assert.assertEquals(interceptor0.getAroundConstruct().toString(), 0, interceptor0.getAroundConstruct().size());
+        Assert.assertEquals(
+                interceptor0.getAroundConstruct().toString(),
+                0, interceptor0.getAroundConstruct().size() );
 
         Interceptor interceptor1 = interceptors.get(1);
         List<LifecycleCallback> aroundConstruct1 = interceptor1.getAroundConstruct();
@@ -342,10 +345,22 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
         Assert.assertEquals("aroundConstructMethod21", callback21.getMethodName());
     }
 
+    // 'around-construct' requires the 3.2 schema.
+
     @Test
-    public void testAroundConstructEJB31() throws Exception {
+    public void testAroundConstructEJB31At31() throws Exception {
         parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
-                     EJBJar.VERSION_4_0,
+                     EJBJar.VERSION_3_1,
+                     "unexpected.child.element", "CWWKC2259E"); 
+    }
+
+    // 'around-construct' support is keyed to the schema version,
+    // not the provisioned version.
+    
+    @Test
+    public void testAroundConstructEJB31At32() throws Exception {
+        parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
+                     EJBJar.VERSION_3_2,
                      "unexpected.child.element", "CWWKC2259E"); 
     }
 }

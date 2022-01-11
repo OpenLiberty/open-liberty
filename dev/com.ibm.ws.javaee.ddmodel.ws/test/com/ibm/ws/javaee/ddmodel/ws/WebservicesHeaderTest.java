@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.ibm.ws.javaee.dd.PlatformVersion;
 import com.ibm.ws.javaee.dd.ws.Webservices;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 @RunWith(Parameterized.class)
 public class WebservicesHeaderTest extends WebservicesTestBase {
@@ -293,7 +293,7 @@ public class WebservicesHeaderTest extends WebservicesTestBase {
         public VersionTestData(String xmlText, int version) {
             this.xmlText = xmlText;
             this.version = version;
-            this.versionText = DDParser.getDottedVersionText(version);
+            this.versionText = PlatformVersion.getDottedVersionText(version);
         }
     }
 
@@ -334,10 +334,9 @@ public class WebservicesHeaderTest extends WebservicesTestBase {
         public final String expectedVersionText;
 
         public SchemaTestData(String xmlText, int expectedVersion) {
-            
             this.xmlText = xmlText;
             this.expectedVersion = expectedVersion;
-            this.expectedVersionText = DDParser.getDottedVersionText(expectedVersion);
+            this.expectedVersionText = PlatformVersion.getDottedVersionText(expectedVersion);
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,13 +57,21 @@ public class EJBJarTestBase extends DDTestBase {
 
     //
 
-    public EJBJar parseEJBJar(String ddbody) throws Exception {
+    public EJBJar parseEJBJar32(String ddbody) throws Exception {
         return parseEJBJar(ddbody, EJBJar.VERSION_3_2, getEJBInWar(), null);
     }
     
-    public EJBJar parseEJBJar(String ddbody, String altMessage, String...messages) throws Exception {
+    public EJBJar parseEJBJar32(String ddbody, String altMessage, String...messages) throws Exception {
         return parseEJBJar(ddbody, EJBJar.VERSION_3_2, getEJBInWar(), altMessage, messages);
     }
+    
+    public EJBJar parseEJBJarMax(String ddbody) throws Exception {
+        return parseEJBJar(ddbody, EJBJar.MAX_VERSION, getEJBInWar(), null);
+    }
+    
+    public EJBJar parseEJBJarMax(String ddbody, String altMessage, String...messages) throws Exception {
+        return parseEJBJar(ddbody, EJBJar.MAX_VERSION, getEJBInWar(), altMessage, messages);
+    }    
     
     protected EJBJar parseEJBJar(String ddbody, int maxSchemaVersion) throws Exception {
         return parseEJBJar(ddbody, maxSchemaVersion, getEJBInWar(), null);
@@ -168,50 +176,60 @@ public class EJBJarTestBase extends DDTestBase {
     }
 
     protected static String ejbJar21Head() {
-        return "<ejb-jar" +
-               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-               " version=\"2.1\"" +
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" + '\n' +
+               " version=\"2.1\"" + '\n' +
                ">";
     }
 
     protected static String ejbJar30Head(String attrs) {
-        return "<ejb-jar" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd\"" +
-               " version=\"3.0\"" +
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd\"" + '\n' +
+               " version=\"3.0\"" + '\n' +
                " " + attrs +
                ">";
     }
 
     protected static String ejbJar31Head(String attrs) {
-        return "<ejb-jar" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd\"" +
-               " version=\"3.1\"" +
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd\"" + '\n' +
+               " version=\"3.1\"" + '\n' +
                " " + attrs +
                ">";
     }
 
     protected static String ejbJar32Head(String attrs) {
-        return "<ejb-jar" +
-               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd\"" +
-               " version=\"3.2\"" +
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd\"" + '\n' +
+               " version=\"3.2\"" + '\n' +
                " " + attrs +
                ">";
     }
 
     protected static String ejbJar40Head(String attrs) {
-        return "<ejb-jar" +
-               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd\"" +
-               " version=\"4.0\"" +
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd\"" + '\n' +
+               " version=\"4.0\"" + '\n' +
+               " " + attrs +
+               ">";
+    }
+    
+    protected static String ejbJar50Head(String attrs) {
+        return "<ejb-jar" + '\n' +
+               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" + '\n' +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" + '\n' +
+               " version=\"5.0\"" + '\n' +
                " " + attrs +
                ">";
     }
@@ -220,7 +238,7 @@ public class EJBJarTestBase extends DDTestBase {
         return "</ejb-jar>";
     }
     
-    //
+    //    
     
     protected static String ejbJar11(String body) {
         return ejbJar11Head() + body + ejbJarTail();
@@ -249,6 +267,10 @@ public class EJBJarTestBase extends DDTestBase {
     protected static String ejbJar40(String attrs, String body) {
         return ejbJar40Head(attrs) + body + ejbJarTail();
     }
+    
+    protected static String ejbJar50(String attrs, String body) {
+        return ejbJar50Head(attrs) + body + ejbJarTail();
+    }
 
     protected static String ejbJar(int version, String attrs, String body) {
         String head;
@@ -267,28 +289,34 @@ public class EJBJarTestBase extends DDTestBase {
             head = ejbJar32Head(attrs);
         } else if ( version == EJBJar.VERSION_4_0 ) {
             head = ejbJar40Head(attrs);
+        } else if ( version == EJBJar.VERSION_5_0 ) {
+            head = ejbJar50Head(attrs);            
         } else {
             throw new IllegalArgumentException("Unknown EJBJar version [ " + version + " ]");
         }
         
         return head + body + ejbJarTail();
+    }    
+
+    public static String ejbJarWithout(int version, HeaderLine omit, String ejbJarBody) {
+        return omit.adjust( ejbJar(version, "", ejbJarBody) );
     }
     
     //
 
     public static final String ejbJarBody21 =
-            "<enterprise-beans>" + "\n" +
-                "<session id=\"s0\">" + "\n" +
-                    "<ejb-name>SessionBean1</ejb-name>" + "\n" +
-                "</session>" + "\n" +
+            "<enterprise-beans>" + '\n' +
+                "<session id=\"s0\">" + '\n' +
+                    "<ejb-name>SessionBean1</ejb-name>" + '\n' +
+                "</session>" + '\n' +
             "</enterprise-beans>";
 
     private EJBJar ejbJar21;
 
     public EJBJar getEJBJar21() throws Exception {
         if ( ejbJar21 == null ) {
-            ejbJar21 = parseEJBJar( ejbJar21Head() + "\n" +
-                                        ejbJarBody21 + "\n" +
+            ejbJar21 = parseEJBJar32( ejbJar21Head() + '\n' +
+                                        ejbJarBody21 + '\n' +
                                     ejbJarTail() );
         }
         return ejbJar21;

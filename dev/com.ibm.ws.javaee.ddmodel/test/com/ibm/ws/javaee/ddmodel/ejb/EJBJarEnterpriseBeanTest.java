@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.RunAs;
 import com.ibm.ws.javaee.dd.common.SecurityRoleRef;
-import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejb.SecurityIdentity;
 
@@ -71,7 +70,7 @@ public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
     @Test
     public void testEnterpriseBeanSecurity() throws Exception {
         List<EnterpriseBean> beans =
-            parseEJBJar(ejbJar20(ejb0XML), EJBJar.VERSION_4_0)
+            parseEJBJarMax( ejbJar20(ejb0XML) )
                 .getEnterpriseBeans();
 
         Assert.assertEquals(2, beans.size());
@@ -117,7 +116,7 @@ public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
     @Test
     public void testEnterpriseBean() throws Exception {
         List<EnterpriseBean> beans =
-            parseEJBJar(ejbJar11(ejb1XML), EJBJar.VERSION_4_0)
+            parseEJBJarMax( ejbJar11(ejb1XML) )
                 .getEnterpriseBeans();
 
         Assert.assertEquals(3, beans.size());

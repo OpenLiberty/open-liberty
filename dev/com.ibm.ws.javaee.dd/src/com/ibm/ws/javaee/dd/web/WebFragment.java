@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,12 @@ import com.ibm.ws.javaee.dd.web.common.Ordering;
 import com.ibm.ws.javaee.dd.web.common.WebCommon;
 
 public interface WebFragment extends DeploymentDescriptor, WebCommon {
+    String DD_SHORT_NAME = "web-fragment.xml";
     String DD_NAME = "META-INF/web-fragment.xml";
 
     int[] VERSIONS = {
-            WebApp.VERSION_3_0, WebApp.VERSION_3_1, WebApp.VERSION_4_0,
-            WebApp.VERSION_5_0
+        WebApp.VERSION_3_0, WebApp.VERSION_3_1, WebApp.VERSION_4_0,
+        WebApp.VERSION_5_0, WebApp.VERSION_6_0
     };
     
     String getVersion();

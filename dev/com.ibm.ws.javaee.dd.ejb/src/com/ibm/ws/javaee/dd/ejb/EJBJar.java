@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,15 @@ package com.ibm.ws.javaee.dd.ejb;
 
 import java.util.List;
 
+import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.javaee.dd.common.ModuleDeploymentDescriptor;
 
-/**
- * Represents &lt;ejb-jar&gt;.
- */
-public interface EJBJar extends ModuleDeploymentDescriptor {
+public interface EJBJar extends ModuleDeploymentDescriptor, DeploymentDescriptor {
+    String DD_SHORT_NAME = "ejb-jar.xml";
+    String DD_NAME_EJB = "META-INF/ejb-jar.xml";
+    String DD_NAME_WEB = "WEB-INF/ejb-jar.xml";
+    String[] DD_NAMES = { DD_NAME_EJB, DD_NAME_WEB };
+
     int VERSION_1_1 = 11;
     int VERSION_2_0 = 20;
     int VERSION_2_1 = 21;
@@ -25,12 +28,15 @@ public interface EJBJar extends ModuleDeploymentDescriptor {
     int VERSION_3_1 = 31;
     int VERSION_3_2 = 32;
     int VERSION_4_0 = 40;
+    int VERSION_5_0 = 50;
 
+    int MAX_VERSION = 50;
+    
     int[] VERSIONS = {
         VERSION_1_1, VERSION_2_0,
         VERSION_2_1,
         VERSION_3_0, VERSION_3_1, VERSION_3_2,
-        VERSION_4_0
+        VERSION_4_0, VERSION_5_0,
     };
     
     int[] DTD_VERSION = {
@@ -40,7 +46,7 @@ public interface EJBJar extends ModuleDeploymentDescriptor {
     int[] SCHEMA_VERSIONS = {
         VERSION_2_1,
         VERSION_3_0, VERSION_3_1, VERSION_3_2,
-        VERSION_4_0            
+        VERSION_4_0, VERSION_5_0
     };
     
     int[] ANNOTATION_ENABLED_VERSIONS = {

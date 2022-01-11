@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,11 +135,11 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testGetModuleName() throws Exception {
         Assert.assertNull(
-            parseEJBJar( ejbJar31("", ""), EJBJar.VERSION_4_0)
-                .getModuleName() );
-        Assert.assertEquals("test",
-            parseEJBJar(ejbJar31("", "<module-name>test</module-name>"), EJBJar.VERSION_4_0)
-                .getModuleName());
+            parseEJBJarMax( ejbJar31("", "") ).getModuleName() );
+
+        Assert.assertEquals(
+            "test",
+            parseEJBJarMax(ejbJar31("", "<module-name>test</module-name>")).getModuleName() );
     }
 
     /**
@@ -154,16 +154,15 @@ public class EJBJarTest extends EJBJarTestBase {
     public void testIsMetadataComplete() throws Exception {
         for ( int version : EJBJar.VERSIONS ) {
             Assert.assertFalse(
-                parseEJBJar( ejbJar(version, "", ""), EJBJar.VERSION_4_0)
-                    .isMetadataComplete() );
+                parseEJBJarMax( ejbJar(version, "", "") ).isMetadataComplete() );
         }
 
         for ( int version : EJBJar.ANNOTATION_ENABLED_VERSIONS ) {
             Assert.assertTrue(
-                parseEJBJar( ejbJar(version, "metadata-complete=\"true\"", ""), EJBJar.VERSION_4_0)
+                parseEJBJarMax( ejbJar(version, "metadata-complete=\"true\"", "") )
                     .isMetadataComplete() );
             Assert.assertFalse(
-                parseEJBJar( ejbJar(version, "metadata-complete=\"false\"", ""), EJBJar.VERSION_4_0)
+                parseEJBJarMax( ejbJar(version, "metadata-complete=\"false\"", "") )
                     .isMetadataComplete() );
 
             // XML allows attributes to use both single quotes and double quotes.
@@ -172,23 +171,23 @@ public class EJBJarTest extends EJBJarTestBase {
             //      parsing is not the target of these unit tests.
 
             Assert.assertTrue(
-                parseEJBJar( ejbJar(version, "metadata-complete='true'", ""), EJBJar.VERSION_4_0)
+                parseEJBJarMax( ejbJar(version, "metadata-complete='true'", ""))
                     .isMetadataComplete() );
             Assert.assertFalse(
-                parseEJBJar( ejbJar(version, "metadata-complete='false'", ""), EJBJar.VERSION_4_0)
+                parseEJBJarMax( ejbJar(version, "metadata-complete='false'", ""))
                     .isMetadataComplete() );            
         }
     }
 
     @Test
     public void testDescriptionGroup() throws Exception {
-        DescriptionGroup dg0 = parseEJBJar( ejbJar30("", ""), EJBJar.VERSION_4_0 );
+        DescriptionGroup dg0 = parseEJBJarMax( ejbJar30("", "") );
 
         Assert.assertEquals(Collections.emptyList(), dg0.getDescriptions());
         Assert.assertEquals(Collections.emptyList(), dg0.getDisplayNames());
         Assert.assertEquals(Collections.emptyList(), dg0.getIcons());
 
-        DescriptionGroup dg1 = parseEJBJar( ejbJar30("", descriptionGroupXML), EJBJar.VERSION_4_0 );
+        DescriptionGroup dg1 = parseEJBJarMax( ejbJar30("", descriptionGroupXML) );
 
         List<Description> ds = dg1.getDescriptions();
         Assert.assertEquals(ds.toString(), 2, ds.size());
@@ -216,10 +215,9 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testIconEE13() throws Exception {
-        DescriptionGroup dg = parseEJBJar(
+        DescriptionGroup dg = parseEJBJarMax(
             ejbJar20( "<small-icon>si</small-icon>" +
-                      "<large-icon>li</large-icon>" ),
-            EJBJar.VERSION_4_0);
+                      "<large-icon>li</large-icon>" ) );
 
         List<Icon> icons = dg.getIcons();
         Assert.assertEquals(icons.toString(), 1, icons.size());
@@ -230,57 +228,48 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testGetEnterpriseBeans() throws Exception {
-        Assert.assertEquals(0,
-            parseEJBJar( ejbJar11(""), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans().size() );
+        Assert.assertEquals(
+            0,
+            parseEJBJarMax( ejbJar11("")).getEnterpriseBeans().size() );
     }
 
     @Test
     public void testGetInterceptors() throws Exception {
         Assert.assertNull(
-            parseEJBJar(ejbJar30("", ""), EJBJar.VERSION_4_0)
-                .getInterceptors());
+            parseEJBJarMax( ejbJar30("", "") ).getInterceptors());
         Assert.assertNotNull(
-            parseEJBJar(ejbJar30("", "<interceptors/>"), EJBJar.VERSION_4_0)
-                .getInterceptors() );
+            parseEJBJarMax( ejbJar30("", "<interceptors/>") ).getInterceptors() );
     }
 
     @Test
     public void testGetAssemblyDescriptor() throws Exception {
         Assert.assertNull(
-            parseEJBJar(ejbJar11(""), EJBJar.VERSION_4_0)
-                .getAssemblyDescriptor() );
-
+            parseEJBJarMax( ejbJar11("") ).getAssemblyDescriptor() );
         Assert.assertNotNull(
-            parseEJBJar(ejbJar11("<assembly-descriptor/>"), EJBJar.VERSION_4_0)
-                .getAssemblyDescriptor() );
+            parseEJBJarMax( ejbJar11("<assembly-descriptor/>") ).getAssemblyDescriptor() );
     }
 
     @Test
     public void testRelationships() throws Exception {
         Assert.assertNull(
-            parseEJBJar(ejbJar21(""), EJBJar.VERSION_4_0)
-                .getRelationshipList() );
+            parseEJBJarMax( ejbJar21("") ).getRelationshipList() );
         Assert.assertNotNull(
-            parseEJBJar( ejbJar21("<relationships></relationships>"), EJBJar.VERSION_4_0)
-                .getRelationshipList() );
+            parseEJBJarMax( ejbJar21("<relationships></relationships>") ).getRelationshipList() );
     }
 
     @Test
     public void testGetEjbClientJar() throws Exception {
         Assert.assertNull(
-            parseEJBJar(ejbJar11(""), EJBJar.VERSION_4_0)
-                .getEjbClientJar() );
-
-        Assert.assertEquals("client.jar",
-            parseEJBJar(ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>"), EJBJar.VERSION_4_0)
-                .getEjbClientJar());
+            parseEJBJarMax( ejbJar11("") ).getEjbClientJar() );
+        Assert.assertEquals(
+            "client.jar",
+            parseEJBJarMax( ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>") ).getEjbClientJar() );
     }
 
     @Test
     public void testDisplayNames() throws Exception {
-        List<DisplayName> displayNameList =
-            parseEJBJar(ejbJar11( displayNamesXML), EJBJar.VERSION_4_0).getDisplayNames();
+        List<DisplayName> displayNameList = parseEJBJarMax( ejbJar11( displayNamesXML) )
+            .getDisplayNames();
 
         Assert.assertEquals(3, displayNameList.size());
         Assert.assertEquals("DisplayName0", displayNameList.get(0).getValue());
@@ -292,8 +281,7 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testIcons() throws Exception {
-        List<Icon> iconList =
-            parseEJBJar( ejbJar11(iconsXML), EJBJar.VERSION_4_0 ).getIcons();
+        List<Icon> iconList = parseEJBJarMax( ejbJar11(iconsXML) ).getIcons();
 
         Assert.assertEquals(3, iconList.size());
         Assert.assertEquals("MySmallIcon0", iconList.get(0).getSmallIcon());
@@ -309,8 +297,8 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testInvalidRootElement() throws Exception {
-        parseEJBJar(invalidRootElement, EJBJar.VERSION_4_0,
-                "unexpected.root.element",
-                "CWWKC2252", "ejb-NOT-jar", "ejb-jar.xml");
+        parseEJBJarMax(invalidRootElement,
+                       "unexpected.root.element",
+                       "CWWKC2252", "ejb-NOT-jar", "ejb-jar.xml");
     }
 }

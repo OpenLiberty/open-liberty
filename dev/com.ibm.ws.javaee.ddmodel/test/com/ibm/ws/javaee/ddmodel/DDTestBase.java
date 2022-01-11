@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Assert;
 
+import com.ibm.ws.javaee.dd.PlatformVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -38,7 +39,130 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * dependency of test code in a project on other test code
  * in another project.
  */
-public class DDTestBase {
+public class DDTestBase implements PlatformVersion {
+    public static String getDottedVersionText(int version) {
+        return PlatformVersion.getDottedVersionText(version);
+    }
+    
+    public static String getVersionText(int version) {
+        return PlatformVersion.getVersionText(version);
+    }
+
+    // Note: A version of the following which included the exception type
+    //       as a type parameter was considered.  The resulting complexity
+    //       was not sufficient, even though the resulting types would be
+    //       much more usable.  Current use only uses 'Exception' as the
+    //       exception type.
+
+    @FunctionalInterface
+    public interface FailableProducer<T> {
+        T produce() throws Exception;
+    }
+
+    public class Failable<T> {
+        private final FailableProducer<T> producer;
+
+        private boolean didProduce;
+
+        private T produced;
+
+        private Exception failure;
+
+        public Failable( FailableProducer<T> producer) {
+            this.producer = producer;
+        }
+
+        public void reset() {
+            didProduce = false;
+            produced = null;
+            failure = null;
+        }
+
+        public T get() throws Exception {
+            if ( didProduce ) {
+                if ( failure != null ) {
+                    throw failure;
+                } else {
+                    return produced;
+                }
+            }
+
+            try {
+                produced = producer.produce();
+                didProduce = true;
+                return produced;
+
+            } catch ( Exception e ) {
+                failure = e;
+                didProduce = true;
+                throw e;
+            }
+        }
+    }
+
+    //
+    
+    public enum HeaderLine {
+        NS(1),
+        SI(2),
+        SL(3),
+        XSI(2,3),
+        V(4);
+        
+        public final int lineNo0;
+        public final int lineNo1;
+        
+        private static final int UNUSED_LINE = -1;
+        
+        private HeaderLine(int lineNo0) {
+            this.lineNo0 = lineNo0;
+            this.lineNo1 = UNUSED_LINE;
+        }
+        
+        private HeaderLine(int lineNo0, int lineNo1) {
+            this.lineNo0 = lineNo0;
+            this.lineNo1 = lineNo1;
+        }        
+
+        public String adjust(String header) {
+            int startOffset = -1;
+            int endOffset = -1;
+            
+            for ( int lineNo = 0, lastOffset = 0, nextOffset = 0;
+                  (nextOffset = header.indexOf('\n', lastOffset)) != -1;
+                  lineNo++ ) {
+
+                nextOffset++; // Include the end-of-line in the region.
+
+                if ( startOffset == -1 ) {
+                    if ( lineNo == lineNo0 ) {
+                        startOffset = lastOffset; // Everything before and including the last end-of-line
+                        if ( lineNo1 == UNUSED_LINE ) {
+                            endOffset = nextOffset; // Everything after this end-of-line
+                            break;
+                        }
+                    }
+
+                } else {
+                    if ( lineNo == lineNo1 ) { // Can't get here if 'lineNo1 == UNUSED_LINE'
+                        endOffset = nextOffset; // Everything after this end-of-line
+                        break;
+                    }
+                }
+                
+                lastOffset = nextOffset;
+            }
+
+            if ( (startOffset == -1) || (endOffset == -1) ) {
+                throw new IllegalArgumentException("Too few lines; [ " + lineNo0 + " : " + lineNo1 + " ]");
+            }
+
+            return header.substring(0, startOffset) + header.substring(endOffset);
+        }
+    }
+
+    //
+    
     // 1.2
     // 1.3
     //
