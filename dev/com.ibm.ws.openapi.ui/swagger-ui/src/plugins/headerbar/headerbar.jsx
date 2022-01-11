@@ -1,16 +1,12 @@
-import React, { PropTypes } from "react"
-
-// import Logo from "./logo.png"
+import React from "react"
+import PropTypes from "prop-types"
+import { getDocsUrl } from "../.."
 
 export default class Headerbar extends React.Component {
 
-  constructor(props, context) {
-    super(props, context)
-  }
-
   onFilterChange = (e) => {
-    let {target: {value}} = e
-    this.setState({filter: value})
+    let { target: { value } } = e
+    this.setState({ filter: value })
   }
 
   filter = (e) => {
@@ -21,22 +17,27 @@ export default class Headerbar extends React.Component {
   }
 
   render() {
-    let { getComponent } = this.props
+    let { getComponent, getSystem } = this.props
     const Button = getComponent("Button")
     const Link = getComponent("Link")
+    const enable_filter = getSystem().getConfigs().enable_filter;
+
+    let headerbar_wrapper
+    if (enable_filter) {
+      headerbar_wrapper = <div className="headerbar-wrapper">
+        <form className="filter-wrapper" onSubmit={this.filter}>
+          <input className="filter-input" type="text" aria-label="Filter text" onChange={this.onFilterChange} />
+          <Button className="filter-button" onClick={this.filter}>Filter</Button>
+        </form>
+      </div>
+    } else {
+      headerbar_wrapper = <div className="headerbar-wrapper" style={{height: "35px"}} />
+    }
 
     return (
       <div className="headerbar">
         <div className="wrapper">
-          <div className="headerbar-wrapper">
-            {/* <Link href="#" title="OpenAPI UI">
-              <img id="logo" src={Logo} alt="Company logo" />
-            </Link> */}
-            <form className="filter-wrapper" onSubmit={this.filter}>
-              <input className="filter-input" type="text" aria-label="Filter text" onChange={this.onFilterChange} />
-              <Button className="filter-button" onClick={this.filter}>Filter</Button>
-            </form>
-          </div>
+          {headerbar_wrapper}
         </div>
       </div>
     )
@@ -44,5 +45,6 @@ export default class Headerbar extends React.Component {
 }
 
 Headerbar.propTypes = {
-  getComponent: PropTypes.func.isRequired
+  getComponent: PropTypes.func.isRequired,
+  getSystem: PropTypes.func.isRequired,
 }

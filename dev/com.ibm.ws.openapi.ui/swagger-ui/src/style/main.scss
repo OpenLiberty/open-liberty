@@ -1,23 +1,33 @@
+@import 'variables';
+.swagger-ui {
+    @import 'ie';
+}
+@import 'original/main';
+
 .swagger-ui
 {
-    @import '~tachyons-sass/tachyons.scss';
-    @import 'mixins';
-    @import 'variables';
-    @import 'type';
-    @import 'layout';
-    @import 'buttons';
-    @import 'form';
-    @import 'modal';
-    @import 'models';
-    @import 'servers';
-    @import 'table';
-    @import 'topbar';
-    @import 'information';
-    @import 'authorize';
-    @import 'errors';
+    @import 'original/type';
     @import 'headerbar';
     @import 'footer';
-    @include text_body();
-    @import 'split-pane-mode';
-    @import 'markdown';
+    @import 'info';
+}
+
+html
+{
+  box-sizing: border-box;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after
+{
+  box-sizing: inherit;
+}
+
+body
+{
+  margin:0;
+  background: #fafafa;
 }

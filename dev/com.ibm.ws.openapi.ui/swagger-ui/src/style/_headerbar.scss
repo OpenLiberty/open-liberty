@@ -10,7 +10,6 @@
         padding: 8px 30px 8px 130px;
         display: flex;
         align-items: center;
-        height: 35px;
     }
     a
     {
@@ -36,7 +35,7 @@
 
     .filter-wrapper
     {
-        display: none;
+        display: flex;
 
         flex: 3;
 
@@ -67,7 +66,7 @@
             border-radius: 0 4px 4px 0;
             background: #1d3649;
             color: #ffffff;
-            font-family: 'Open Sans', sans-serif;
+            font-family: sans-serif;
         }
     }
 }

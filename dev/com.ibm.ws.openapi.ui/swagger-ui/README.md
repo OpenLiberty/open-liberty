@@ -1,91 +1,104 @@
-# <img src="https://raw.githubusercontent.com/swagger-api/swagger.io/wordpress/images/assets/SWU-logo-clr.png" width="300">
+## Liberty modifications to Swagger UI
 
-[![NPM version](https://badge.fury.io/js/swagger-ui.svg)](http://badge.fury.io/js/swagger-ui)
-[![Build Status](https://jenkins.swagger.io/view/OSS%20-%20JavaScript/job/oss-swagger-ui-master/badge/icon?subject=jenkins%20build)](https://jenkins.swagger.io/view/OSS%20-%20JavaScript/job/oss-swagger-ui-master/)
-[![npm audit](https://jenkins.swagger.io/buildStatus/icon?job=oss-swagger-ui-security-audit&subject=npm%20audit)](https://jenkins.swagger.io/job/oss-swagger-ui-security-audit/lastBuild/console)
-![total GitHub contributors](https://img.shields.io/github/contributors-anon/swagger-api/swagger-ui.svg)
+This is the [Swagger UI][swagger-ui] used by the `openapi-3.x` and `mpOpenApi-x.x` features.
 
-![monthly npm installs](https://img.shields.io/npm/dm/swagger-ui.svg?label=npm%20downloads)
-![total docker pulls](https://img.shields.io/docker/pulls/swaggerapi/swagger-ui.svg)
-![monthly packagist installs](https://img.shields.io/packagist/dm/swagger-api/swagger-ui.svg?label=packagist%20installs)
-![gzip size](https://img.shields.io/bundlephobia/minzip/swagger-ui.svg?label=gzip%20size)
+### Changes from the base Swagger UI
 
-## Introduction
-[Swagger UI](https://swagger.io/tools/swagger-ui/) allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption.
+- Add a header bar with the OpenLiberty logo and an optional filter field
+  - the filter field relies on the backend to serve up a filtered openapi document, which is only implemented in the `openapi-x.x` features
+- Move some information from the info section to the footer
+- Change the colors for better accessibility (I assume this is for better contrast)
 
-## General
-**👉🏼 Want to score an easy open-source contribution?** Check out our [Good first issue](https://github.com/swagger-api/swagger-ui/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22) label.
+### Overview
 
-**🕰️ Looking for the older version of Swagger UI?** Refer to the [*2.x* branch](https://github.com/swagger-api/swagger-ui/tree/2.x).
+For the most part, Swagger UI is pulled in as an npm dependency and our modifications build on top of it.
 
+To make the color changes, we need to modify the original sass style files from swagger UI, but these aren't available from npm (only the compiled CSS is included in the package). Instead, we keep the original sass files checked in under src/style/original. We can then recompile them with our modifications added.
 
-This repository publishes three different NPM modules:
+There are slight differences between the UI presented for the `openapi-3.x` and `mpOpenApi-x.x` features. The main code is capable of displaying either version and the config to choose which to use is in the html file where the initialization is done.
 
-* [swagger-ui](https://www.npmjs.com/package/swagger-ui) is a traditional npm module intended for use in single-page applications that are capable of resolving dependencies (via Webpack, Browserify, etc).
-* [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist) is a dependency-free module that includes everything you need to serve Swagger UI in a server-side project, or a single-page application that can't resolve npm module dependencies.
-* [swagger-ui-react](https://www.npmjs.com/package/swagger-ui-react) is Swagger UI packaged as a React component for use in React applications.
+* `mpOpenApi.html` is used for `mpOpenApi-x.x`
+* `openapi.html` is used for `openapi-3.x`
+* `dev.html` is used during development on our extension code when running `npm start`
 
-We strongly suggest that you use `swagger-ui` instead of `swagger-ui-dist` if you're building a single-page application, since `swagger-ui-dist` is significantly larger.
+### Building
 
-If you are looking for plain ol' HTML/JS/CSS, [download the latest release](https://github.com/swagger-api/swagger-ui/releases/latest) and copy the contents of the `/dist` folder to your server.
+The code is not built as part of the liberty build. Instead, it's built locally and the built output is checked in (in the dist folder). During the liberty build, the built files are included into the bundles where they're needed by bnd.
 
+To build
 
-## Compatibility
-The OpenAPI Specification has undergone 5 revisions since initial creation in 2010.  Compatibility between Swagger UI and the OpenAPI Specification is as follows:
+```
+npm run build -- --mode=production
+```
 
-Swagger UI Version | Release Date | OpenAPI Spec compatibility | Notes
------------------- | ------------ | -------------------------- | -----
-3.18.3 | 2018-08-03 | 2.0, 3.0 | [tag v3.18.3](https://github.com/swagger-api/swagger-ui/tree/v3.18.3)
-3.0.21 | 2017-07-26 | 2.0 | [tag v3.0.21](https://github.com/swagger-api/swagger-ui/tree/v3.0.21)
-2.2.10 | 2017-01-04 | 1.1, 1.2, 2.0 | [tag v2.2.10](https://github.com/swagger-api/swagger-ui/tree/v2.2.10)
-2.1.5 | 2016-07-20 | 1.1, 1.2, 2.0 | [tag v2.1.5](https://github.com/swagger-api/swagger-ui/tree/v2.1.5)
-2.0.24 | 2014-09-12 | 1.1, 1.2 | [tag v2.0.24](https://github.com/swagger-api/swagger-ui/tree/v2.0.24)
-1.0.13 | 2013-03-08 | 1.1, 1.2 | [tag v1.0.13](https://github.com/swagger-api/swagger-ui/tree/v1.0.13)
-1.0.1 | 2011-10-11 | 1.0, 1.1 | [tag v1.0.1](https://github.com/swagger-api/swagger-ui/tree/v1.0.1)
+The build creates the output files in the `dist` folder. These files are included into bundles by the `bnd.bnd` files in projects:
+* `com.ibm.ws.openapi.ui` (this project)
+* `com.ibm.ws.openapi.ui.private`
+* `com.ibm.ws.microprofile.openapi.ui`
 
-## Documentation
+### Development
 
-#### Usage
-- [Installation](docs/usage/installation.md)
-- [Configuration](docs/usage/configuration.md)
-- [CORS](docs/usage/cors.md)
-- [OAuth2](docs/usage/oauth2.md)
-- [Deep Linking](docs/usage/deep-linking.md)
-- [Limitations](docs/usage/limitations.md)
-- [Version detection](docs/usage/version-detection.md)
+If changes need to be made to our extensions to swagger UI, `npm start` can be run from this directory to start a webpack development server. This allows you to make and test changes without rebuilding and restarting liberty.
 
-#### Customization
-- [Overview](docs/customization/overview.md)
-- [Plugin API](docs/customization/plugin-api.md)
-- [Custom layout](docs/customization/custom-layout.md)
+When started like this, it expects to be able to load an openapi document from `http://localhost:9080/openapi`. The URL can be changed by editing `dev.html`.
 
-#### Development
-- [Setting up](docs/development/setting-up.md)
-- [Scripts](docs/development/scripts.md)
+### Updating dependencies
 
-#### Contributing
-- [Contributing](https://github.com/swagger-api/.github/blob/master/CONTRIBUTING.md)
+1. Check for outdated packages
+   ```
+   npm outdated
+   ```
 
-##### Integration Tests
+   This will list all of our dependencies which have updates, along with the current version, the "wanted" version (the latest version it should be safe to update to) and the absolute latest version.
 
-You will need JDK of version 7 or higher as instructed here
-https://nightwatchjs.org/gettingstarted/#selenium-server-setup
+   * Take note of whether there's an updated version of `swagger-ui`. If so, there will be an extra step later.
 
-Integration tests can be run locally with `npm run e2e` - be sure you aren't running a dev server when testing!
+1. Update all our dependencies to the latest compatible version
+   ```
+   npm update
+   npm install
+   ```
+   
+   This will update `package.json` and `package-lock.json`.
 
-### Browser support
-Swagger UI works in the latest versions of Chrome, Safari, Firefox, and Edge.
+1. If there was an updated version of `swagger-ui`, update the files under `src/style/original` with the versions from the Swagger UI source code.
 
-### Known Issues
+   Check `package.json` to find the version of swagger-ui we're now using and grab the files from their source repository.
 
-To help with the migration, here are the currently known issues with 3.X. This list will update regularly, and will not include features that were not implemented in previous versions.
+   You can do this manually by going to the [Swagger UI repository][swagger-ui-repo], finding the tag for the version, downloading the files from `src/style` and copying them under `src/style/original` under this directory.
 
-- Only part of the parameters previously supported are available.
-- The JSON Form Editor is not implemented.
-- Support for `collectionFormat` is partial.
-- l10n (translations) is not implemented.
-- Relative path support for external files is not implemented.
+   Alternatively, you can run the following git magic from this directory which will do that for you (replace `X.Y.Z` with the version of swagger-ui listed in `package.json`):
 
-## Security contact
+   ```
+   git clone --filter=blob:none --depth 1 --no-checkout -b vX.Y.Z git@github.com:swagger-api/swagger-ui.git
+   git -C swagger-ui sparse-checkout set src/style
+   git -C swagger-ui checkout
+   rm src/style/original/*
+   cp swagger-ui/src/style/* src/style/original
+   rm -rf swagger-ui
+   ```
 
-Please disclose any security-related issues or vulnerabilities by emailing [security@swagger.io](mailto:security@swagger.io), instead of using the public issue tracker.
+1. After updating you must rebuild our Swagger UI:
+
+   ```
+   npm run build -- --mode=production
+   ```
+
+   Then rebuild the liberty bundles which include the Swagger UI files. From the open-liberty `dev` directory:
+   ```
+   ./gradlew :com.ibm.ws.openapi.ui:assemble :com.ibm.ws.openapi.ui.private:assemble :com.ibm.ws.microprofile.openapi.ui:assemble
+   ```
+
+1. Test (see below) and check in all the changes from this directory.
+
+### Testing
+
+Before delivering changes, follow the test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
+
+### Other references
+
+This was originally based on the [`webpack-getting-started`][webpack-sample] sample.
+
+[swagger-ui]: https://github.com/swagger-api/swagger-ui
+[webpack-sample]: https://github.com/swagger-api/swagger-ui/tree/df7749b2fe88c3235a2a7a2c965e8edaaa646356/docs/samples/webpack-getting-started
+[swagger-ui-repo]: https://github.com/swagger-api/swagger-ui
