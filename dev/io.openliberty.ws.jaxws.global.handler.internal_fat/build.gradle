@@ -10,8 +10,7 @@
 *******************************************************************************/
 
 dependencies {
-  requiredLibs 
-    'org.apache.httpcomponents.client5:httpclient5:5.0',
+  requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0',
     'org.apache.httpcomponents.core5:httpcore5:5.0',
     'org.eclipse.jetty.websocket:websocket-client:9.2.2.v20140723',
     'org.eclipse.jetty.websocket:websocket-api:9.2.2.v20140723',
