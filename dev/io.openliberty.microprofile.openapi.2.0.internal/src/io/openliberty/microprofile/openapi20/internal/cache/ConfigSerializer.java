@@ -30,6 +30,9 @@ import org.eclipse.microprofile.openapi.models.Paths;
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.OpenApiConfig.OperationIdStrategy;
 
+/**
+ * Handles serializing an OpenApiConfig object to a map of properties
+ */
 public class ConfigSerializer {
 
     // Package protected for unit testing

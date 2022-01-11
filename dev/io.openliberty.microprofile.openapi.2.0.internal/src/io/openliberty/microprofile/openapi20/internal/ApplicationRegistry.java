@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,12 +47,9 @@ import io.openliberty.microprofile.openapi20.internal.utils.ModuleUtils;
  * The ApplicationRegistry class maintains a collection of the applications that are deployed to the OpenLiberty
  * instance. It also tracks the application whose OpenAPI document is currently being returned to clients that request
  * it via the /openapi endpoint.
- *
- * NOTE: The MP OpenAPI functionality in OpenLiberty only supports generating an OpenAPI model for a single application
- * at a time so, if multiple applications are deployed to the OpenLiberty instance, an OpenAPI document will only
- * be generated for the first application that is processed. Also, if an enterprise application (EAR/EBA) is
- * deployed that contains multiple web modules, an OpenAPI document will only be generated for the first Web
- * Module that generates an OpenAPI document.
+ * <p>
+ * OpenAPI documentation is generated for each web module and then merged together if merging is enabled. If merging is not enabled,
+ * then documentation is only generated for the first web module found.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationRegistry.class)
 public class ApplicationRegistry {

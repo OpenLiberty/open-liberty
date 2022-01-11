@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+/**
+ * Handles processing custom CSS files provided by the user and adding them to the web application so they are served to users.
+ * <p>
+ * {@link CustomCSSProcessor} is entry point, processing CSS files at startup and then watching for updates.
+ */
 @Version(Constants.OSGI_VERSION)
 @TraceOptions(traceGroup = Constants.TRACE_GROUP, messageBundle = Constants.TRACE_OPENAPI)
 package io.openliberty.microprofile.openapi20.internal.css;

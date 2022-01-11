@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,20 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
  * <li>the OpenAPI configuration</li>
  * </ul>
  * The cached value is the OpenAPI model constructed from the application.
+ * <p>
+ * To cache a model:
+ * <ul>
+ * <li>Create a CacheEntry with {@link #createNew(String, Path)}</li>
+ * <li>Add the model, the {@link OpenApiConfig} and all files used to generate the model</li>
+ * <li>Call {@link #write()}</li>
+ * </ul>
+ * <p>
+ * To find a model from the cache for a given application:
+ * <ul>
+ * <li>Read the entry from the cache with {@link #read(String, Path)}</li>
+ * <li>Create a new CacheEntry to represent the current application. Add the current {@link OpenApiConfig} and all files which would be used, but don't add a model.</li>
+ * <li>Call {@link #isUpToDateWith(CacheEntry)} to check whether the cached model can be used in the current environment.</li>
+ * </ul>
  */
 public class CacheEntry {
 

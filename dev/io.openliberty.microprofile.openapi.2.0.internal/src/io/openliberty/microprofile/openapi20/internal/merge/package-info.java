@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+/**
+ * Handles merging together multiple OpenAPI documents. This is used to allow us to serve OpenAPI documentation for more than one web module.
+ * <p>
+ * {@link MergeProcessor#mergeDocuments(java.util.List)} is the entry point for merging and that class contains most of the documentation and code for doing the merge.
+ */
 @Version(Constants.OSGI_VERSION)
 @TraceOptions(traceGroup = Constants.TRACE_GROUP, messageBundle = Constants.TRACE_OPENAPI)
 package io.openliberty.microprofile.openapi20.internal.merge;

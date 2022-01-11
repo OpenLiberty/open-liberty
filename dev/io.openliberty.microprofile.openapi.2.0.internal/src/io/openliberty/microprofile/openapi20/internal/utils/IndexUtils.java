@@ -33,7 +33,7 @@ import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.runtime.scanner.FilteredIndexView;
 
 /**
- *
+ * Utilities to index modules using Jandex.
  */
 public class IndexUtils {
 
