@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,14 +52,6 @@ public class XATestBase {
         _server = server;
 
         ShrinkHelper.defaultApp(_server, _app, "com.ibm.ws.transaction.web.*");
-
-        // TODO: Revisit this after all features required by this FAT suite are available.
-        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
-        // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.2 to enable transactions-2.0.
-        // The following sets the appropriate features for the EE9 repeatable tests.
-        if (JakartaEE9Action.isActive()) {
-            _server.changeFeatures(Arrays.asList("jdbc-4.2", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
-        }
 
         server.setServerStartTimeout(300000);
         _server.startServer();
