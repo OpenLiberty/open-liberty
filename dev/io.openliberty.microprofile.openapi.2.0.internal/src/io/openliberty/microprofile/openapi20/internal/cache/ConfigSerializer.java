@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.Paths;
 
@@ -71,12 +72,12 @@ public class ConfigSerializer {
         Function<OpenApiConfig, String> function;
         String name;
 
-        private ConfigField(String name, Function<OpenApiConfig, String> function) {
+        ConfigField(String name, Function<OpenApiConfig, String> function) {
             this.name = name;
             this.function = function;
         }
 
-        private <V> ConfigField(String name, Function<OpenApiConfig, V> valueGetter, Function<V, String> stringConverter) {
+        <V> ConfigField(String name, Function<OpenApiConfig, V> valueGetter, Function<V, String> stringConverter) {
             this.name = name;
             this.function = c -> {
                 V value = valueGetter.apply(c);
@@ -87,7 +88,7 @@ public class ConfigSerializer {
 
     /**
      * Convert an OpenApiConfig into a Properties object so that it can be easily stored.
-     * 
+     *
      * @param config the config
      * @param model the model used to retrieve paths and operation ids
      * @return a Properties object containing the relevant keys and values from the config
@@ -147,23 +148,23 @@ public class ConfigSerializer {
 
     private static Set<String> getOperationIds(OpenAPI model) {
         return getPathItems(model).values().stream() // Get the paths
-                    .flatMap(i -> i.getOperations().values().stream()) // Get all the operations from all the paths
-                    .filter(o -> o.getOperationId() != null) // Filter out the ones without an id
-                    .map(o -> o.getOperationId()) // Extract just the operation id
-                    .collect(Collectors.toSet()); // Collect the IDs into a set
+                                  .flatMap(i -> i.getOperations().values().stream()) // Get all the operations from all the paths
+                                  .filter(o -> o.getOperationId() != null) // Filter out the ones without an id
+                                  .map(Operation::getOperationId) // Extract just the operation id
+                                  .collect(Collectors.toSet()); // Collect the IDs into a set
     }
-    
+
     private static Map<String, PathItem> getPathItems(OpenAPI model) {
         Paths paths = model.getPaths();
         if (paths == null) {
             return Collections.emptyMap();
         }
-        
+
         Map<String, PathItem> pathItems = paths.getPathItems();
         if (pathItems == null) {
             return Collections.emptyMap();
         }
-        
+
         return pathItems;
     }
 

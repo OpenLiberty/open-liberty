@@ -20,13 +20,14 @@ import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = MergeDisabledAlerter.class)
 public class MergeDisabledAlerter {
-    
+
     private static final TraceComponent tc = Tr.register(MergeDisabledAlerter.class);
 
     private boolean multiAppWarningGiven = false;
 
     /**
      * Called at the point where we notice that multiple modules are deployed but the OpenAPI config is set to only generate docs from the first module
+     *
      * @param firstModule the module which <i>is</i> being used to generate openAPI documentation
      */
     public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {

@@ -29,19 +29,19 @@ public class CloudUtils {
     private static final TraceComponent tc = Tr.register(CloudUtils.class);
 
     /**
-     * The getVCAPHost method checks whether a "VCAP_APPLICATION" environment variable has been set.  In Cloud Foundry
-     * applications (where Bluemix runs) this will be set to the actual host that is visible to the user.  In that
+     * The getVCAPHost method checks whether a "VCAP_APPLICATION" environment variable has been set. In Cloud Foundry
+     * applications (where Bluemix runs) this will be set to the actual host that is visible to the user. In that
      * environment the VHost from Liberty is private and not accessible externally. If the environment variable is set,
      * it extracts the host and returns it;.
-     * 
+     *
      * @return String
-     *          The host specified in VCAP_APPLICATION or null if it is not set.
+     * The host specified in VCAP_APPLICATION or null if it is not set.
      */
     @FFDCIgnore(Exception.class)
     public static String getVCAPHost() {
         // Create the variable to return
         String vcapHost = null;
-        
+
         String vcapApplication = System.getenv(Constants.ENV_VAR_VCAP_APPLICATION);
         if (vcapApplication != null) {
             try {
@@ -57,7 +57,7 @@ public class CloudUtils {
                 }
             }
         }
-        
+
         return vcapHost;
     }
 

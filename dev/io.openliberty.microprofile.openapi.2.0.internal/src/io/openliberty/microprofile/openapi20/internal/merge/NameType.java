@@ -32,17 +32,17 @@ public enum NameType {
     /**
      * @param componentName the name of the component section where objects of this type are stored, or {@code null} if this type of object is not stored under components.
      */
-    private NameType(String componentName) {
+    NameType(String componentName) {
         if (componentName != null) {
             this.referencePrefix = "#/components/" + componentName + "/";
         } else {
             this.referencePrefix = null;
         }
     }
-    
+
     /**
      * The prefix to use for references to a component of this type
-     * 
+     *
      * @return the prefix, or {@code null} if this type of object is not stored in the components section
      */
     public String getReferencePrefix() {

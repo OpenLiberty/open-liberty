@@ -30,7 +30,7 @@ import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 public class ApplicationListener implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(ApplicationListener.class);
-    
+
     @Reference
     private ApplicationRegistry appRegistry;
 
@@ -41,9 +41,9 @@ public class ApplicationListener implements ApplicationStateListener {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application starting process started: " + appInfo);
             }
-            
+
             appRegistry.addApplication(appInfo);
-            
+
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application starting process ended: " + appInfo);
             }

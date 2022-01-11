@@ -20,8 +20,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 
 /**
@@ -52,7 +52,7 @@ public class CallbackValidator extends TypeValidator<Callback> {
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     continue;
                 }
-                
+
                 List<String> vars = RuntimeExpressionUtils.extractURLVars(urlTemplate);
                 if (vars == null) {
                     message = Tr.formatMessage(tc, ValidationMessageConstants.CALLBACK_INVALID_SUBSTITUTION_VARIABLES, urlTemplate);
@@ -71,7 +71,7 @@ public class CallbackValidator extends TypeValidator<Callback> {
                         String templateVar = "{" + v + "}";
                         buildURL = buildURL.replace(templateVar, "e"); //buildURL.replace(templateVar, "e"); // Sample data
                     }
-                    
+
                     if (urlTemplate.contains("{$")) {
                         //Path within a Callback can contain variables (e.g. {$request.query.callbackUrl}/data ) which shouldn't be validated since they are not path params
                         if (LoggingUtils.isDebugEnabled(tc)) {

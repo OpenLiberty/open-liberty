@@ -16,8 +16,8 @@ import org.eclipse.microprofile.openapi.models.media.XML;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 
 /**

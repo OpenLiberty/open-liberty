@@ -19,8 +19,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.components.ComponentsConstant;
 
@@ -42,7 +42,7 @@ public class ComponentsValidator extends TypeValidator<Components> {
     public void validate(ValidationHelper helper, Context context, String key, Components t) {
 
         if (t != null) {
-            Map<String, Map<String, ?>> components = new HashMap<String, Map<String, ?>>();
+            Map<String, Map<String, ?>> components = new HashMap<>();
             if (t.getCallbacks() != null && !t.getCallbacks().isEmpty()) {
                 components.put(ComponentsConstant.PROP_CALLBACKS, t.getCallbacks());
             }
@@ -101,7 +101,7 @@ public class ComponentsValidator extends TypeValidator<Components> {
             }
         }
     }
-    
+
     private ComponentsValidator() {
         // This class is not meant to be instantiated.
     }

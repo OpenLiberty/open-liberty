@@ -21,8 +21,8 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.securityscheme.SecuritySchemeConstant;
 
@@ -100,37 +100,43 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
 
             //'bearerFormat' field is only applicable to 'http' type
             if (t.getBearerFormat() != null && !t.getBearerFormat().isEmpty() && !SecuritySchemeType.HTTP.toString().equals(type)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_BEARER_FORMAT, t.getBearerFormat(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_BEARER_FORMAT,
+                                                        t.getBearerFormat(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             //'scheme' field is only applicable to 'http' type
             if (t.getScheme() != null && !t.getScheme().isEmpty() && !SecuritySchemeType.HTTP.toString().equals(type)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_SCHEME, t.getScheme(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_SCHEME, t.getScheme(),
+                                                        ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             //'in' field is only applicable to 'apiKey' type
             if (t.getIn() != null && !SecuritySchemeType.APIKEY.toString().equals(type)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_IN, t.getIn(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_IN, t.getIn(),
+                                                        ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             //'name' field is only applicable to 'apiKey' type
             if (t.getName() != null && !t.getName().isEmpty() && !SecuritySchemeType.APIKEY.toString().equals(type)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_NAME, t.getName(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_NAME, t.getName(),
+                                                        ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             //'openIdConnectUrl' field is only applicable to 'openIdConnect' type
             if (t.getOpenIdConnectUrl() != null && !t.getOpenIdConnectUrl().isEmpty() && !SecuritySchemeType.OPENIDCONNECT.toString().equals(type)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_OPEN_ID_CONNECT_URL, t.getOpenIdConnectUrl(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_OPEN_ID_CONNECT_URL,
+                                                        t.getOpenIdConnectUrl(), ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             //'flows' field is only applicable to 'oauth2' type
             if (!SecuritySchemeType.OAUTH2.toString().equals(type) && ValidatorUtils.flowsIsSet(t.getFlows())) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD, SecuritySchemeConstant.PROP_FLOWS, ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
+                final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD, SecuritySchemeConstant.PROP_FLOWS,
+                                                        ValidationMessageConstants.VARIABLE_SECURITY_SCHEME_OBJECT, type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
         }

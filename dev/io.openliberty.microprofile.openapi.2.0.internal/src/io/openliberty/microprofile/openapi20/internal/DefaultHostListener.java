@@ -41,14 +41,14 @@ public class DefaultHostListener {
     private static final TraceComponent tc = Tr.register(DefaultHostListener.class);
 
     private static DefaultHostListener instance = null;
-    
+
     private final ServerInfo defaultHostServerInfo = new ServerInfo();
 
     /**
      * The getInstance method returns the singleton instance of the DefaultHostListener
-     * 
+     *
      * @return DefaultHostListener
-     *             The singleton instance
+     * The singleton instance
      */
     public static DefaultHostListener getInstance() {
         return instance;
@@ -56,16 +56,16 @@ public class DefaultHostListener {
 
     /**
      * The getDefaultHostServerInfo method returns the ServerInfo object for the default_host virtual host.
-     * 
+     *
      * @return ServerInfo
-     *          The ServerInfo object for the default_host virtual host.
+     * The ServerInfo object for the default_host virtual host.
      */
     public ServerInfo getDefaultHostServerInfo() {
-        synchronized(defaultHostServerInfo) {
+        synchronized (defaultHostServerInfo) {
             return new ServerInfo(defaultHostServerInfo);
         }
     }
-    
+
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         instance = this;
@@ -81,8 +81,9 @@ public class DefaultHostListener {
             Tr.event(this, tc, "Deactivating DefaultHostListener, reason=" + reason);
         }
     }
-    
-    @Reference(service = VirtualHost.class, target = "(&(enabled=true)(id=default_host)(|(aliases=*)(httpsAlias=*)))", policy = ReferencePolicy.STATIC, cardinality = ReferenceCardinality.MANDATORY)
+
+    @Reference(service = VirtualHost.class, target = "(&(enabled=true)(id=default_host)(|(aliases=*)(httpsAlias=*)))", policy = ReferencePolicy.STATIC,
+               cardinality = ReferenceCardinality.MANDATORY)
     protected void setVirtualHost(VirtualHost vhost, Map<String, Object> props) {
         updateDefaultHostServerInfo(vhost, props);
     }
@@ -93,12 +94,12 @@ public class DefaultHostListener {
 
     /**
      * The updateDefaultHostServerInfo method is invoked whenever the default_host virtual host for the server is
-     * modified.  It updates the ServerInfo to reflect the changes that have been made.
-     * 
+     * modified. It updates the ServerInfo to reflect the changes that have been made.
+     *
      * @param vhost
-     *            The VirtualHost that has been set/updated
+     *     The VirtualHost that has been set/updated
      * @param props
-     *            The properties that have been set/modified
+     *     The properties that have been set/modified
      */
     private void updateDefaultHostServerInfo(VirtualHost vhost, Map<String, Object> props) {
 

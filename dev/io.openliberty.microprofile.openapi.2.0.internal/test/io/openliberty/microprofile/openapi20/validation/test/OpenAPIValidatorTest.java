@@ -56,7 +56,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagTwo");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);
@@ -99,7 +99,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagTwo");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);
@@ -131,7 +131,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagTwo");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);
@@ -163,7 +163,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagTwo");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);
@@ -197,7 +197,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagTwo");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);
@@ -254,7 +254,7 @@ public class OpenAPIValidatorTest {
         tagTwo.setName("tagOne");
         TagImpl tagThree = new TagImpl();
         tagThree.setName("tagThree");
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tags = new ArrayList<>();
         tags.add(tagOne);
         tags.add(tagTwo);
         tags.add(tagThree);

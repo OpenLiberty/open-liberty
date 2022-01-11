@@ -52,7 +52,7 @@ public class ServerValidatorTest {
     @Test
     public void testValidServerValidator() {
         server.setUrl("https://{username}.gigantic-server.com:{port}/{basePath}");
-        
+
         ServerVariableImpl var1 = new ServerVariableImpl();
         var1.setDefaultValue("test_username");
         server.addVariable("username", var1);

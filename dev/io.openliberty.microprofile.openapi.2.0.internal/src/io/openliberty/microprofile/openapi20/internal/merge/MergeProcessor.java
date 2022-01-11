@@ -79,7 +79,7 @@ public class MergeProcessor {
      * Create a merged OpenAPI model from a list of OpenAPIProviders.
      * <p>
      * The input objects will not be modified.
-     * 
+     *
      * @param documents the OpenAPI models to merge
      * @return the merged model
      */
@@ -113,30 +113,30 @@ public class MergeProcessor {
     /**
      * Models which have been processed to remove clashes
      */
-    private List<OpenAPI> processedModels = new ArrayList<>();
+    private final List<OpenAPI> processedModels = new ArrayList<>();
 
     /**
      * This list of providers used to create the merged document
      */
-    private List<OpenAPIProvider> includedProviders = new ArrayList<>();
+    private final List<OpenAPIProvider> includedProviders = new ArrayList<>();
 
     /**
      * The path names in use for models processed so far
      */
-    private Map<OpenAPIProvider, Set<String>> pathNames = new HashMap<>();
-    
+    private final Map<OpenAPIProvider, Set<String>> pathNames = new HashMap<>();
+
     /**
      * The extensions found on the OpenAPI object in models processed so far
      */
-    private Map<OpenAPIProvider, Map<String, Object>> topLevelExtensions = new HashMap<>();
+    private final Map<OpenAPIProvider, Map<String, Object>> topLevelExtensions = new HashMap<>();
 
-    private NameProcessor nameProcessor = new NameProcessor();
+    private final NameProcessor nameProcessor = new NameProcessor();
 
-    private List<String> mergeProblems = new ArrayList<>();
+    private final List<String> mergeProblems = new ArrayList<>();
 
     /**
      * Create a new MergeProcessor which will merge the given providers
-     * 
+     *
      * @param providers the providers to merge
      */
     private MergeProcessor(List<OpenAPIProvider> providers) {
@@ -258,7 +258,7 @@ public class MergeProcessor {
      * If there are no clashes, the paths from {@code document} are added to {@link #pathNames} and {@code false} is returned.
      * <p>
      * If clashes are found, each clash is added to {@link #mergeProblems} and {@code true} is returned.
-     * 
+     *
      * @param model the OpenAPI model to search for clashes
      * @param provider the provider that provided the model
      * @return {@code true} if there are any clashes, otherwise {@code false}
@@ -296,14 +296,14 @@ public class MergeProcessor {
 
         return clashesFound;
     }
-    
+
     /**
      * Finds any extension clashes between {@code document} and any previously processed document
      * <p>
      * If there are no clashes, the extensions from {@code document} are added to {@link #topLevelExtensions} and {@code false} is returned.
      * <p>
      * If clashes are found, each clash is added to {@link #mergeProblems} and {@code true} is returned.
-     * 
+     *
      * @param model the OpenAPI model to search for clashes
      * @param provider the provider that provided the model
      * @return {@code true} if there are any extension clashes, otherwise {@code false}
@@ -314,7 +314,7 @@ public class MergeProcessor {
             // Can't clash if we have no extensions
             return false;
         }
-        
+
         boolean clashesFound = false;
         for (Entry<OpenAPIProvider, Map<String, Object>> entry : this.topLevelExtensions.entrySet()) {
             OpenAPIProvider otherProvider = entry.getKey();
@@ -329,11 +329,11 @@ public class MergeProcessor {
                 }
             }
         }
-        
+
         if (!clashesFound) {
             this.topLevelExtensions.put(provider, extensions);
         }
-        
+
         return clashesFound;
     }
 
@@ -415,18 +415,18 @@ public class MergeProcessor {
 
     /**
      * Attempts to remove the context root from any servers and add it to the model paths
-     * 
+     *
      * @param model the OpenAPI model
      */
     private static void prependPaths(OpenAPI model, String contextRoot, DocumentNameProcessor documentNameProcessor) {
         if (contextRoot == null) {
             return;
         }
-        
+
         if (contextRoot.endsWith("/")) {
-            contextRoot = contextRoot.substring(0, contextRoot.length()-1);
+            contextRoot = contextRoot.substring(0, contextRoot.length() - 1);
         }
-        
+
         if (contextRoot.isEmpty()) {
             return;
         }
@@ -496,12 +496,12 @@ public class MergeProcessor {
                 newPathItems.put(newPath, pathItem);
             }
             paths.setPathItems(newPathItems);
-            
+
             // In some cases, removing the context root can leave all servers with no information at all.
             // In these cases they can be removed.
             boolean allServersEmpty = notNull(servers).stream()
-                            .allMatch(s -> isServerEmpty(s));
-            
+                                                      .allMatch(MergeProcessor::isServerEmpty);
+
             if (allServersEmpty) {
                 model.setServers(null);
             }
@@ -510,7 +510,7 @@ public class MergeProcessor {
 
     /**
      * Check whether a server element contains no useful data
-     * 
+     *
      * @param server the server element to check
      * @return true if the server element has no extensions, no description, no variables and a URL which is empty or {@code "/"}
      */
@@ -519,22 +519,22 @@ public class MergeProcessor {
         if (extensions != null && !extensions.isEmpty()) {
             return false;
         }
-        
+
         String description = server.getDescription();
         if (description != null && !description.isEmpty()) {
             return false;
         }
-        
+
         Map<String, ?> variables = server.getVariables();
         if (variables != null && !variables.isEmpty()) {
             return false;
         }
-        
+
         String url = server.getUrl();
         if (url != null && !url.isEmpty() && !url.equals("/")) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -542,7 +542,7 @@ public class MergeProcessor {
      * Returns whether all of the servers related to {@code pathItem} end with the context root
      * <p>
      * This check will consider all servers listed under the path or any of its operations.
-     * 
+     *
      * @param pathItem the path item to check
      * @param contextRoot the context root to check for
      * @return {@code true} if all servers under {@code pathItem} or any of its operations end with {@code contextRoot}, otherwise {@code false}
@@ -637,9 +637,10 @@ public class MergeProcessor {
             this.model = model;
             this.documentNameProcessor = documentNameProcessor;
         }
-        private OpenAPIProvider provider;
-        private OpenAPI model;
-        private DocumentNameProcessor documentNameProcessor;
+
+        private final OpenAPIProvider provider;
+        private final OpenAPI model;
+        private final DocumentNameProcessor documentNameProcessor;
     }
 
 }

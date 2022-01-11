@@ -42,7 +42,7 @@ public class ServersMergeTest {
         docPaths.addPathItem("/events", OASFactory.createPathItem());
         docPaths.addPathItem("/status", OASFactory.createPathItem());
         doc1.setPaths(docPaths);
-        
+
         OpenAPIProvider provider1 = TestUtil.createProvider(doc1);
 
         OpenAPI doc2 = OASFactory.createOpenAPI();
@@ -55,7 +55,7 @@ public class ServersMergeTest {
         docPaths.addPathItem("/inventory", OASFactory.createPathItem());
         docPaths.addPathItem("/store", OASFactory.createPathItem().addServer(OASFactory.createServer().url("http://custom")));
         doc2.setPaths(docPaths);
-        
+
         OpenAPIProvider provider2 = TestUtil.createProvider(doc2);
 
         OpenAPI doc3 = OASFactory.createOpenAPI();
@@ -66,7 +66,7 @@ public class ServersMergeTest {
         docPaths.addPathItem("/timeline", OASFactory.createPathItem());
         docPaths.addPathItem("/news", OASFactory.createPathItem().addServer(OASFactory.createServer().url("http://custom/basepath")));
         doc3.setPaths(docPaths);
-        
+
         OpenAPIProvider provider3 = TestUtil.createProvider(doc3, "/basepath");
 
         List<Server> doc1Servers = doc1.getServers();
@@ -88,7 +88,7 @@ public class ServersMergeTest {
         validatePathServers(paths.getPathItem("/store"), Arrays.asList(OASFactory.createServer().url("http://custom")));
         validatePathServers(paths.getPathItem("/inventory"), doc2Servers);
         validatePathServers(paths.getPathItem("/billing"), doc2Servers);
-        
+
         Assert.assertNull("Master server should be null", primaryOpenAPI.getServers());
 
         primaryOpenAPI = TestUtil.merge(Arrays.asList(provider1, provider2, provider3));
@@ -107,8 +107,8 @@ public class ServersMergeTest {
             Assert.assertNull(pathItem.getServers());
         } else {
             Assert.assertNotNull(pathItem.getServers());
-            Set<String> actualServerUrls = pathItem.getServers().stream().map(server -> server.getUrl()).collect(Collectors.toSet());
-            Set<String> expectedServerUrls = expectedServers.stream().map(server -> server.getUrl()).collect(Collectors.toSet());
+            Set<String> actualServerUrls = pathItem.getServers().stream().map(Server::getUrl).collect(Collectors.toSet());
+            Set<String> expectedServerUrls = expectedServers.stream().map(Server::getUrl).collect(Collectors.toSet());
             Assert.assertEquals(expectedServerUrls, actualServerUrls);
         }
     }

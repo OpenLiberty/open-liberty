@@ -68,22 +68,22 @@ import io.smallrye.openapi.runtime.io.Format;
 public class ApplicationProcessor {
 
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
-    
+
     private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
-    
+
     @Reference
     private ClassLoadingService classLoadingService;
-    
+
     @Reference
     private MergeDisabledAlerter mergeDisabledAlerter;
-    
+
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
-     * 
+     *
      * @param appInfo
-     *            The ApplicationInfo for the application to be processed.
+     *     The ApplicationInfo for the application to be processed.
      * @return OpenAPIProvider
-     *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
+     * The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
     @FFDCIgnore(ApplicationReadException.class)
     public Collection<OpenAPIProvider> processApplication(final ApplicationInfo appInfo, ModuleSelectionConfig selectionConfig) {
@@ -94,7 +94,7 @@ public class ApplicationProcessor {
         if (LoggingUtils.isEventEnabled(tc)) {
             Tr.event(tc, "Application Processor: Processing application started: appInfo=" + appInfo);
         }
-        
+
         try {
             Collection<ModuleClassesContainerInfo> moduleClassesContainerInfos = getModuleClassesContainerInfos(appInfo);
             for (ModuleClassesContainerInfo moduleClassesContainerInfo : moduleClassesContainerInfos) {
@@ -102,12 +102,12 @@ public class ApplicationProcessor {
                 if (containerInfo.getType() != Type.WEB_MODULE) {
                     continue;
                 }
-                
+
                 WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(containerInfo.getContainer());
                 if (webModuleInfo == null) {
                     continue;
                 }
-                
+
                 if (selectionConfig.useFirstModuleOnly() && !openAPIProviders.isEmpty()) {
                     // Note, this only checks whether we've already created a provider for a module in _this_ application,
                     // but that's sufficient because ApplicationRegistry won't even call us if it's already got a provider
@@ -116,18 +116,19 @@ public class ApplicationProcessor {
                         Tr.event(this, tc, "ApplicationProcessor: Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
                     }
                     mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(openAPIProviders.get(0));
-                    
+
                     break; // Break here since there's no point in looking at any further modules
                 }
-                
+
                 if (!selectionConfig.isIncluded(webModuleInfo)) {
                     if (LoggingUtils.isEventEnabled(tc)) {
-                        Tr.event(this, tc, "ApplicationProcessor: Module not included by config. app=" + appInfo.getName() + " module=" + webModuleInfo.getName() + ", config = " + selectionConfig);
+                        Tr.event(this, tc, "ApplicationProcessor: Module not included by config. app=" + appInfo.getName() + " module=" + webModuleInfo.getName() + ", config = "
+                                           + selectionConfig);
                     }
-                    
+
                     continue;
                 }
-                
+
                 // Process the web module
                 OpenAPIProvider openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
                 if (openAPIProvider != null) {
@@ -146,10 +147,10 @@ public class ApplicationProcessor {
 
         return openAPIProviders;
     }
-    
+
     /**
      * Extracts the ModuleClassContainerInfos for the given application
-     * 
+     *
      * @param appInfo the application info
      * @return the ModuleClassContainerInfos for the modules within the application
      * @throws ApplicationReadException if there is a problem reading the application which means the ModuleClassContainerInfos can't be obtained
@@ -160,33 +161,31 @@ public class ApplicationProcessor {
         if (appContainer == null) {
             throw new ApplicationReadException("appInfo=null");
         }
-        
+
         try {
             NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
             ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
             if (applicationClassesContainerInfo == null) {
                 throw new ApplicationReadException("appInfo=" + appInfo + ", appContainer=null");
             }
-            
-            for (ModuleClassesContainerInfo moduleClassesContainerInfo : applicationClassesContainerInfo.getModuleClassesContainerInfo()) {
-                result.add(moduleClassesContainerInfo);
-            }
+
+            result.addAll(applicationClassesContainerInfo.getModuleClassesContainerInfo());
         } catch (UnableToAdaptException e) {
             throw new ApplicationReadException("Failed to adapt NonPersistentCache: container=" + appContainer + " : \n" + e.getMessage(), e);
         }
         return result;
     }
-    
+
     /**
      * The processWebModule method attempts to generate an OpenAPIProvider for the specified web module using the
      * SmallRye implementation.
-     * 
+     *
      * @param appContainer
-     *            The Container for the web module
+     *     The Container for the web module
      * @param moduleInfo
-     *            The WebModuleInfo object for the web module
+     *     The WebModuleInfo object for the web module
      * @return OpenAPIProvider
-     *         The OpenAPIProvider for the web module, or null if the web module is not an OAS applciation.
+     * The OpenAPIProvider for the web module, or null if the web module is not an OAS applciation.
      */
     private OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo, final ModuleClassesContainerInfo moduleClassesContainerInfo) {
 
@@ -284,60 +283,62 @@ public class ApplicationProcessor {
         return openAPIProvider;
     }
 
-    private OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, ClassLoader appClassloader) {
+    private OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo,
+                                  ClassLoader appClassloader) {
         OpenAPI openAPIModel;
-        
+
         ClassLoader tccl = classLoadingService.createThreadContextClassLoader(appClassloader);
         Object oldClassLoader = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(tccl);
         try {
             OpenApiStaticFile staticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
-            
+
             openAPIModel = OpenApiProcessor.modelFromReader(config, tccl);
             openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromStaticFile(staticFile));
             if (!config.scanDisable()) {
-                openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
+                openAPIModel = MergeUtil.merge(openAPIModel,
+                                               OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
             }
-            
+
             OASFilter filter = OpenApiProcessor.getFilter(config, appClassloader);
             if (filter != null) {
                 openAPIModel = FilterUtil.applyFilter(filter, openAPIModel);
             }
-            
+
             // At this point if we have an empty model, we can give up
             if (openAPIModel != null) {
                 // Set required fields
                 if (openAPIModel.getOpenapi() == null) {
                     openAPIModel.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
                 }
-                
+
                 if (openAPIModel.getPaths() == null) {
                     openAPIModel.setPaths(OASFactory.createPaths());
                 }
-                
+
                 if (openAPIModel.getInfo() == null) {
                     openAPIModel.setInfo(OASFactory.createInfo());
                 }
-                
+
                 if (openAPIModel.getInfo().getTitle() == null) {
                     openAPIModel.getInfo().setTitle(Constants.DEFAULT_OPENAPI_DOC_TITLE);
                 }
-                
+
                 if (openAPIModel.getInfo().getVersion() == null) {
                     openAPIModel.getInfo().setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
                 }
-                
+
                 ConfigUtil.applyConfig(config, openAPIModel);
-                
+
                 if (OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
                     openAPIModel = null;
                 }
             }
-            
+
         } finally {
             THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(oldClassLoader);
             classLoadingService.destroyThreadContextClassLoader(tccl);
         }
-        
+
         if (openAPIModel == null) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "No Open API document generated");

@@ -34,20 +34,20 @@ public class StaticFileProcessor {
 
     @Trivial
     public static OpenApiStaticFile getOpenAPIFile(Container container) {
-    	
-    	// Create the variable to return
+
+        // Create the variable to return
         OpenApiStaticFile staticFile = null;
 
         // Default to YAML format
         Format format = Format.YAML;
-        
+
         // Attempt to find a static OpenAPI file in one of the supported locations
         Entry openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_META_INF_OPENAPI_YAML);
         if (openAPIFileEntry == null) {
-        	openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_WEB_INF_CLASSES_META_INF_OPENAPI_YAML);
+            openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_WEB_INF_CLASSES_META_INF_OPENAPI_YAML);
         }
         if (openAPIFileEntry == null) {
-        	openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_META_INF_OPENAPI_YML);
+            openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_META_INF_OPENAPI_YML);
         }
         if (openAPIFileEntry == null) {
             openAPIFileEntry = container.getEntry(Constants.STATIC_FILE_WEB_INF_CLASSES_META_INF_OPENAPI_YML);
@@ -65,7 +65,7 @@ public class StaticFileProcessor {
         if (openAPIFileEntry != null) {
             InputStream is = entryToInputStream(openAPIFileEntry);
             if (is != null) {
-            	staticFile = new OpenApiStaticFile(is, format);
+                staticFile = new OpenApiStaticFile(is, format);
             }
         } else {
             if (LoggingUtils.isEventEnabled(tc)) {

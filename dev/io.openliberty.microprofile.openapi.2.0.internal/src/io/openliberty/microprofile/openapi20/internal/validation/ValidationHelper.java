@@ -20,15 +20,15 @@ public interface ValidationHelper {
     /**
      * Adds a validation event to the ValidationResult.
      */
-    public void addValidationEvent(ValidationEvent event);
+    void addValidationEvent(ValidationEvent event);
 
     /**
      * Adds an operationId to the set of IDs. Returns true if the ID was already in the set.
      */
-    public boolean addOperationId(String operationId);
+    boolean addOperationId(String operationId);
 
     /**
      * Adds an operationId and location of Link object specifying it to the map of IDs and locations.
      */
-    public void addLinkOperationId(String operationId, String location);
+    void addLinkOperationId(String operationId, String location);
 }

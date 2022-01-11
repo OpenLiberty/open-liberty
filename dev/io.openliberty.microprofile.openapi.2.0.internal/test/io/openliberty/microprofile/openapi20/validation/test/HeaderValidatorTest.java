@@ -57,7 +57,7 @@ public class HeaderValidatorTest {
 
         HeaderImpl exampleAndExamplesNotNull = new HeaderImpl();
         exampleAndExamplesNotNull.setExample("testExample");
-        Map<String, Example> examples = new HashMap<String, Example>();
+        Map<String, Example> examples = new HashMap<>();
         ExampleImpl example = new ExampleImpl();
         example.setDescription("testExample");
         examples.put(key, example);

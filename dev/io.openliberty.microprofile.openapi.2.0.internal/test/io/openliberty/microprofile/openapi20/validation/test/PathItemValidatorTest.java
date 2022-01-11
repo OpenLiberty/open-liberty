@@ -63,7 +63,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -84,7 +84,7 @@ public class PathItemValidatorTest {
         ParameterImpl getOpParamCookie = new ParameterImpl();
         getOpParamCookie.in(In.COOKIE).name("client");
 
-        List<Parameter> opParams = new ArrayList<Parameter>();
+        List<Parameter> opParams = new ArrayList<>();
         opParams.add(getOpParamHeader);
         opParams.add(getOpParamQuery);
         opParams.add(getOpParamCookie);
@@ -106,7 +106,7 @@ public class PathItemValidatorTest {
         ParameterImpl postOpParamCookie = new ParameterImpl();
         postOpParamCookie.in(In.COOKIE).name("sessionId");
 
-        List<Parameter> postOpParams = new ArrayList<Parameter>();
+        List<Parameter> postOpParams = new ArrayList<>();
         postOpParams.add(postOpParamHeader);
         postOpParams.add(postOpParamQuery);
         postOpParams.add(postOpParamCookie);
@@ -128,7 +128,7 @@ public class PathItemValidatorTest {
         ParameterImpl deleteOpParamCookie = new ParameterImpl();
         deleteOpParamCookie.in(In.COOKIE).name("id");
 
-        List<Parameter> deleteOpParams = new ArrayList<Parameter>();
+        List<Parameter> deleteOpParams = new ArrayList<>();
         deleteOpParams.add(deleteOpParamHeader);
         deleteOpParams.add(deleteOpParamQuery);
         deleteOpParams.add(deleteOpParamCookie);
@@ -231,7 +231,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -269,7 +269,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPathOne);
@@ -304,7 +304,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -314,7 +314,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"username}\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"username}\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"username}\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -340,7 +341,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -350,7 +351,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"{username\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"{username\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"{username\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -376,7 +378,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -386,7 +388,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"}username{\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"}username{\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"}username{\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -412,7 +415,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -422,7 +425,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"{}\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"{}\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"{}\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -448,7 +452,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -458,7 +462,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"{us{ername}\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"{us{ername}\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"{us{ername}\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -484,7 +489,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPath);
@@ -494,7 +499,8 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(2, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The format of the \"{username/}\" path is invalid"));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The Path Item Object must contain a valid path. The \"{username/}\" path defines \"[username]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(1).message.contains("The Path Item Object must contain a valid path. The \"{username/}\" path defines \"[username]\" path parameter that is not declared"));
     }
 
     @Test
@@ -524,7 +530,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPathOne);
@@ -563,7 +569,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPathOne);
@@ -573,7 +579,8 @@ public class PathItemValidatorTest {
 
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The \"{username}\" path defines \"[id]\" path parameter that is not declared"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(0).message.contains("The Path Item Object must contain a valid path. The \"{username}\" path defines \"[id]\" path parameter that is not declared"));
     }
 
     @Test
@@ -607,7 +614,7 @@ public class PathItemValidatorTest {
         ParameterImpl pathParamCookie = new ParameterImpl();
         pathParamCookie.in(In.COOKIE).name("status");
 
-        List<Parameter> pathParams = new ArrayList<Parameter>();
+        List<Parameter> pathParams = new ArrayList<>();
         pathParams.add(pathParamHeader);
         pathParams.add(pathParamQuery);
         pathParams.add(pathParamPathOne);
@@ -618,7 +625,8 @@ public class PathItemValidatorTest {
 
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Path Item Object must contain a valid path. The \"{username}\" path defines \"2\" path parameters that are not declared: \"[id, accountNumber]\""));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(0).message.contains("The Path Item Object must contain a valid path. The \"{username}\" path defines \"2\" path parameters that are not declared: \"[id, accountNumber]\""));
     }
 
     @Test
@@ -644,11 +652,11 @@ public class PathItemValidatorTest {
 
         ParameterImpl pathParamPathOne = new ParameterImpl();
         pathParamPathOne.in(In.PATH).name("username").required(false);
-        
+
         ParameterImpl getOpParamCookie = new ParameterImpl();
         getOpParamCookie.in(In.COOKIE).name("client");
 
-        List<Parameter> opParams = new ArrayList<Parameter>();
+        List<Parameter> opParams = new ArrayList<>();
         opParams.add(getOpParamHeader);
         opParams.add(getOpParamQuery);
         opParams.add(getOpParamCookie);
@@ -675,7 +683,7 @@ public class PathItemValidatorTest {
         ParameterImpl postOpParamCookie = new ParameterImpl();
         postOpParamCookie.in(In.COOKIE).name("sessionId");
 
-        List<Parameter> postOpParams = new ArrayList<Parameter>();
+        List<Parameter> postOpParams = new ArrayList<>();
         postOpParams.add(postOpParamHeader);
         postOpParams.add(postOpParamQuery);
         postOpParams.add(postOpParamCookie);
@@ -702,7 +710,7 @@ public class PathItemValidatorTest {
         ParameterImpl deleteOpParamCookie = new ParameterImpl();
         deleteOpParamCookie.in(In.COOKIE).name("id");
 
-        List<Parameter> deleteOpParams = new ArrayList<Parameter>();
+        List<Parameter> deleteOpParams = new ArrayList<>();
         deleteOpParams.add(deleteOpParamHeader);
         deleteOpParams.add(deleteOpParamQuery);
         deleteOpParams.add(deleteOpParamCookie);

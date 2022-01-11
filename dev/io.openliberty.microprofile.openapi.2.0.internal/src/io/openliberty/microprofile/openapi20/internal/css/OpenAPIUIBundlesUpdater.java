@@ -54,7 +54,7 @@ public class OpenAPIUIBundlesUpdater {
     /**
      * List of OpenAPI-UI bundles
      */
-    private static final Set<String> openAPIUIBundleNames = new HashSet<String>(Arrays.asList(new String[] {"com.ibm.ws.microprofile.openapi.ui"}));
+    private static final Set<String> openAPIUIBundleNames = new HashSet<>(Arrays.asList("com.ibm.ws.microprofile.openapi.ui"));
 
     private static boolean stopping = false;
 
@@ -134,7 +134,7 @@ public class OpenAPIUIBundlesUpdater {
     }
 
     private static Set<Bundle> getOpenAPIUIBundles() {
-        Set<Bundle> openAPIUIBundles = new HashSet<Bundle>();
+        Set<Bundle> openAPIUIBundles = new HashSet<>();
         BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
         if (bundleContext != null) {
             for (Bundle aBundle : bundleContext.getBundles()) {
@@ -313,7 +313,7 @@ public class OpenAPIUIBundlesUpdater {
     @SuppressWarnings("unchecked")
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         boolean waitComplete = false;
-        Set<String> expectedBundleNames = new HashSet<String>();
+        Set<String> expectedBundleNames = new HashSet<>();
         for (Bundle bundle : openAPIUIBundles) {
             expectedBundleNames.add(bundle.getSymbolicName());
         }
@@ -339,7 +339,7 @@ public class OpenAPIUIBundlesUpdater {
         } catch (Exception e) {
             waitComplete = false;
             if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", new Object[] { e.getMessage() });
+                Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", e.getMessage());
             }
         }
         return waitComplete;

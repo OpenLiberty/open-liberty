@@ -23,33 +23,33 @@ public interface OpenAPIProvider {
     /**
      * The getApplicationPath method returns the path that should be appended to server URLs. If the application path
      * is already present on the Paths in the model, null is returned.
-     * 
+     *
      * @return String
-     *          The context root of the provider.
+     * The context root of the provider.
      */
-    public String getApplicationPath();
+    String getApplicationPath();
 
     /**
      * Returns the OpenAPI model itself
-     * 
+     *
      * @return the OpenAPI model
      */
-    public OpenAPI getModel();
+    OpenAPI getModel();
 
     /**
      * Returns a string representation of the source for the OpenAPI model, suitable for inclusion in log messages.
-     * 
+     *
      * @return the source of the OpenAPI model
      */
     @Override
     String toString();
-    
+
     /**
      * Returns a list of merge problems which occurred while building this model.
      * <p>
      * If this model was not made from merging multiple models, this will always return an empty list.
-     * 
+     *
      * @return a list of merge problems. Each list item is a string describing which model couldn't be merged and why.
      */
-    public List<String> getMergeProblems();
+    List<String> getMergeProblems();
 }

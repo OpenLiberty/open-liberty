@@ -29,5 +29,4 @@ import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
     MergeTest.class,
     ShutdownTest.class
 })
-public class FATSuite {
-}
+public class FATSuite {}

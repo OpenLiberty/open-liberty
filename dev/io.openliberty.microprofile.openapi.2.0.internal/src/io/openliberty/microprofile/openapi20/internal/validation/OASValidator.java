@@ -49,8 +49,8 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelVisitor;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 
@@ -61,7 +61,7 @@ public final class OASValidator implements OpenAPIModelVisitor, ValidationHelper
 
     private OASValidationResult result;
     private final Set<String> operationIds = new HashSet<>();
-    private final Map<String, Set<String>> linkOperationIds = new HashMap<String, Set<String>>();
+    private final Map<String, Set<String>> linkOperationIds = new HashMap<>();
     private static final TraceComponent tc = Tr.register(OASValidator.class);
 
     public OASValidationResult validate(OpenAPI model) {
@@ -96,7 +96,7 @@ public final class OASValidator implements OpenAPIModelVisitor, ValidationHelper
         if (linkOperationIds.containsKey(operationId)) {
             linkOperationIds.get(operationId).add(location);
         } else {
-            Set<String> locations = new HashSet<String>();
+            Set<String> locations = new HashSet<>();
             locations.add(location);
             linkOperationIds.put(operationId, locations);
         }

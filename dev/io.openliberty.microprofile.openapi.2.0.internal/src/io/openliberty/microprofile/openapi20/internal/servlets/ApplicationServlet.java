@@ -38,14 +38,14 @@ import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
 import io.smallrye.openapi.runtime.io.Format;
 
-@WebServlet(name=Constants.SERVLET_NAME_APPLICATION, urlPatterns = {Constants.URL_PATTERN_ROOT}, loadOnStartup = 1)
+@WebServlet(name = Constants.SERVLET_NAME_APPLICATION, urlPatterns = { Constants.URL_PATTERN_ROOT }, loadOnStartup = 1)
 public class ApplicationServlet extends OpenAPIServletBase {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
-    
+
     private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
-    
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -83,10 +83,10 @@ public class ApplicationServlet extends OpenAPIServletBase {
             }
             final String document;
             if (currentProvider != null) {
-                
+
                 // Take a shallow copy of the model so we can change the servers and info
                 OpenAPI model = OpenAPIUtils.shallowCopy(currentProvider.getModel());
-                
+
                 if (OpenAPIUtils.containsServersDefinition(currentProvider.getModel())) {
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
@@ -99,12 +99,12 @@ public class ApplicationServlet extends OpenAPIServletBase {
                     List<Server> servers = getOpenAPIModelServers(request, currentProvider.getApplicationPath());
                     model.setServers(servers);
                 }
-                
+
                 Info configuredInfo = OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig());
                 if (configuredInfo != null) {
                     model.setInfo(configuredInfo);
                 }
-                
+
                 document = OpenAPIUtils.getOpenAPIDocument(model, responseFormat);
             } else {
                 /*

@@ -20,8 +20,8 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.server.ServerConstant;
 
@@ -78,7 +78,7 @@ public class ServerValidator extends TypeValidator<Server> {
      */
     private Set<String> validateURL(ValidationHelper helper, Context context, String url) {
         String pathToCheck = url;
-        Set<String> serverVariables = new HashSet<String>();
+        Set<String> serverVariables = new HashSet<>();
 
         while (pathToCheck.contains("{")) {
             if (!pathToCheck.contains("}")) {

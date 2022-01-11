@@ -85,25 +85,25 @@ public final class OpenAPIModelWalker {
         /**
          * Returns the OpenAPI model.
          */
-        public OpenAPI getModel();
+        OpenAPI getModel();
 
         /**
          * Returns the parent of the current object being visited.
          */
-        public Object getParent();
+        Object getParent();
 
         /**
          * Returns the location of the current object being visited.
          * The format of this location is a JSON pointer.
          */
-        public String getLocation();
+        String getLocation();
 
         /**
          * Returns the location of the current object being visited
          * with the suffix parameter appended to the end of the
          * string. The format of this location is a JSON pointer.
          */
-        public String getLocation(String suffix);
+        String getLocation(String suffix);
     }
 
     /**
@@ -115,7 +115,7 @@ public final class OpenAPIModelWalker {
      * Each traverse() method checks the "previsit" flag to determine whether it invokes the visitor/filter before or
      * after it traverses through all of its children.
      *
-     * This class contains many lambda expressions that iterate over maps and lists. The convention for maps is 
+     * This class contains many lambda expressions that iterate over maps and lists. The convention for maps is
      * "(k, v) ->", where k is the key and v is the value of an entry in the map. The convention for lists is "(v) ->",
      * where v is the value of an entry in the list.
      */
@@ -169,13 +169,13 @@ public final class OpenAPIModelWalker {
 
         /**
          * The getLocation method returns the location as a JSON ponter.
-         * 
+         *
          * See definition for JSON pointer here: https://tools.ietf.org/html/rfc6901
-         * 
+         *
          * @param suffix
-         *          The suffix to be appended to the location
-         * @return String 
-         *          The location
+         *     The suffix to be appended to the location
+         * @return String
+         * The location
          */
         @Override
         public String getLocation(String suffix) {
@@ -198,16 +198,16 @@ public final class OpenAPIModelWalker {
 
         /**
          * The escapeJSONPointerPathSegment method escapes special characters in the JSON pointer path segment.
-         * 
+         *
          * JSON pointer escaping rules:
-         * 
-         *   - Replace ~ with ~0
-         *   - Replace / with ~1
-         * 
+         *
+         * - Replace ~ with ~0
+         * - Replace / with ~1
+         *
          * @param pathSegment
-         *          The JSON pointer path segment to escape.
+         *     The JSON pointer path segment to escape.
          * @return String
-         *          The escaped JSON pointer path segment
+         * The escaped JSON pointer path segment
          */
         private String escapeJSONPointerPathSegment(String pathSegment) {
             pathSegment = String.valueOf(pathSegment);
@@ -215,13 +215,13 @@ public final class OpenAPIModelWalker {
         }
 
         /**
-         * The isTraversed method returns true if the object has already been traversed, false otherwise. Traversal 
+         * The isTraversed method returns true if the object has already been traversed, false otherwise. Traversal
          * methods call this method to check whether they have already traversed this object before.
-         * 
+         *
          * @param obj
-         *          The object to check
+         *     The object to check
          * @return boolean
-         *          True if the object has already been traversed, false otherwise
+         * True if the object has already been traversed, false otherwise
          */
         public boolean isTraversed(Object obj) {
             if (obj == null) {
@@ -458,7 +458,7 @@ public final class OpenAPIModelWalker {
                                                      new OperationProperty(item.getPUT(), "put"),
                                                      new OperationProperty(item.getTRACE(), "trace") };
             final PathItem _item = item;
-            Arrays.stream(operations).forEach((v) -> {
+            Arrays.stream(operations).forEach(v -> {
                 pathSegments.push(v.name);
                 final Operation o = traverseOperation(v.o);
                 if (o != v.o) {
@@ -878,7 +878,7 @@ public final class OpenAPIModelWalker {
                     }
                     pathSegments.pop();
                 });
-                
+
                 for (Entry<String, APIResponse> entry : updates.entrySet()) {
                     if (entry.getValue() != null) {
                         responses.addAPIResponse(entry.getKey(), entry.getValue());
@@ -963,7 +963,7 @@ public final class OpenAPIModelWalker {
             final Schema addProps = schema.getAdditionalPropertiesSchema();
             if (addProps != null) {
                 pathSegments.push("additionalProperties");
-                final Schema s = traverseSchema(null, (Schema) addProps);
+                final Schema s = traverseSchema(null, addProps);
                 if (s != addProps) {
                     schema.setAdditionalPropertiesSchema(s);
                 }
@@ -1043,19 +1043,19 @@ public final class OpenAPIModelWalker {
                 List<SchemaProperty> _nestedSchemas = new ArrayList<>();
                 List<Schema> allOf = composedSchema.getAllOf();
                 if (allOf != null) {
-                    allOf.forEach((v) -> {
+                    allOf.forEach(v -> {
                         _nestedSchemas.add(new SchemaProperty(v, "allOf"));
                     });
                 }
                 List<Schema> anyOf = composedSchema.getAnyOf();
                 if (anyOf != null) {
-                    anyOf.forEach((v) -> {
+                    anyOf.forEach(v -> {
                         _nestedSchemas.add(new SchemaProperty(v, "anyOf"));
                     });
                 }
                 List<Schema> oneOf = composedSchema.getOneOf();
                 if (oneOf != null) {
-                    oneOf.forEach((v) -> {
+                    oneOf.forEach(v -> {
                         _nestedSchemas.add(new SchemaProperty(v, "oneOf"));
                     });
                 }
@@ -1065,7 +1065,7 @@ public final class OpenAPIModelWalker {
             }
             if (nestedSchemas != null) {
                 final Schema _schema = schema;
-                nestedSchemas.stream().forEach((v) -> {
+                nestedSchemas.stream().forEach(v -> {
                     pathSegments.push(v.name);
                     final Schema s = traverseSchema(null, v.s);
                     if (s != v.s) {
@@ -1209,7 +1209,7 @@ public final class OpenAPIModelWalker {
                                                      new OAuthFlowProperty(authFlows.getImplicit(), "implicit"),
                                                      new OAuthFlowProperty(authFlows.getPassword(), "password") };
             final OAuthFlows afs = authFlows;
-            Arrays.stream(_authFlows).forEach((v) -> {
+            Arrays.stream(_authFlows).forEach(v -> {
                 pathSegments.push(v.name);
                 final OAuthFlow o = traverseOAuthFlow(v.o);
                 if (o != v.o) {
@@ -1406,7 +1406,7 @@ public final class OpenAPIModelWalker {
                     }
                     pathSegments.pop();
                 });
-                
+
                 for (Entry<String, PathItem> entry : updates.entrySet()) {
                     if (entry.getValue() != null) {
                         paths.addPathItem(entry.getKey(), entry.getValue());
@@ -1619,7 +1619,7 @@ public final class OpenAPIModelWalker {
                     }
                     pathSegments.pop();
                 });
-                
+
                 for (Entry<String, MediaType> entry : updates.entrySet()) {
                     if (entry.getValue() != null) {
                         content.addMediaType(entry.getKey(), entry.getValue());

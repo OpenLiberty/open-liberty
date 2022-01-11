@@ -24,8 +24,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 
 /**
@@ -68,9 +68,9 @@ public class PathItemValidator extends TypeValidator<PathItem> {
     }
 
     private void validateParameters(ValidationHelper helper, Context context, String pathStr, PathItem pathItem) {
-        Set<String> definedSharedPathParameters = new HashSet<String>(), definedSharedQueryParameters = new HashSet<String>(),
-                        definedSharedHeaderParameters = new HashSet<String>(),
-                        definedSharedCookieParameters = new HashSet<String>();
+        Set<String> definedSharedPathParameters = new HashSet<>(), definedSharedQueryParameters = new HashSet<>(),
+                        definedSharedHeaderParameters = new HashSet<>(),
+                        definedSharedCookieParameters = new HashSet<>();
         List<Parameter> sharedParameters = pathItem.getParameters();
         if (sharedParameters != null) {
             for (Parameter param : sharedParameters) {
@@ -87,7 +87,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                 if (isPathParameter(parameter)) {
                     // Path parameters must have the 'required' property set to true
                     Boolean required = parameter.getRequired();
-                    if (required == null || required == false) {
+                    if (required == null || !required) {
                         final String message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_REQUIRED_FIELD, parameter.getName(), pathStr);
                         helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
@@ -106,7 +106,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         Set<String> declaredPathParameters = validatePathAndRetrievePathParams(helper, context, pathStr);
 
         if (!declaredPathParameters.containsAll(definedSharedPathParameters)) {
-            Set<String> undeclaredParameters = new HashSet<String>(definedSharedPathParameters);
+            Set<String> undeclaredParameters = new HashSet<>(definedSharedPathParameters);
             undeclaredParameters.removeAll(declaredPathParameters);
             boolean isMultiple = undeclaredParameters.size() > 1;
             final String message;
@@ -130,8 +130,8 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
     private void validateOperationParameters(ValidationHelper helper, Context context, Operation operation, Set<String> declaredPathParameters,
                                              Set<String> definedSharedPathParams, String path, String operationType) {
-        Set<String> definedPathParameters = new HashSet<String>(), definedQueryParameters = new HashSet<String>(),
-                        definedHeaderParameters = new HashSet<String>(), definedCookieParameters = new HashSet<String>();
+        Set<String> definedPathParameters = new HashSet<>(), definedQueryParameters = new HashSet<>(),
+                        definedHeaderParameters = new HashSet<>(), definedCookieParameters = new HashSet<>();
 
         List<Parameter> parameters = operation.getParameters();
         if (parameters != null && !parameters.isEmpty()) {
@@ -140,7 +140,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
                     Parameter parameter = param;
                     String reference = parameter.getRef();
-                    
+
                     if (reference != null && !reference.isEmpty()) {
                         Object componentItem = ReferenceValidator.getInstance().validate(helper, context, null, reference);
                         if (parameter.getClass().isInstance(componentItem)) {
@@ -150,7 +150,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
                     if (isPathParameter(parameter)) {
                         Boolean required = parameter.getRequired();
-                        if (required == null || required == false) {
+                        if (required == null || !required) {
                             final String message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OPERATION_REQUIRED_FIELD, parameter.getName(), operationType, path);
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
@@ -160,7 +160,8 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                         || (isQueryParameter(parameter) && !definedQueryParameters.add(parameter.getName()))
                         || (isHeaderParameter(parameter) && !definedHeaderParameters.add(parameter.getName()))
                         || (isCookieParameter(parameter) && !definedCookieParameters.add(parameter.getName()))) {
-                        final String message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OPERATION_DUPLICATE, operationType, path, parameter.getIn(), parameter.getName());
+                        final String message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OPERATION_DUPLICATE, operationType, path, parameter.getIn(),
+                                                                parameter.getName());
                         helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 } else {
@@ -171,12 +172,13 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         }
 
         if (!declaredPathParameters.containsAll(definedPathParameters)) {
-            Set<String> undeclaredParameters = new HashSet<String>(definedPathParameters);
+            Set<String> undeclaredParameters = new HashSet<>(definedPathParameters);
             undeclaredParameters.removeAll(declaredPathParameters);
             boolean isMultiple = undeclaredParameters.size() > 1;
             final String message;
             if (isMultiple) {
-                message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OP_PARAM_NOT_DECLARED_MULTIPLE, operationType, path, undeclaredParameters.size(), undeclaredParameters);
+                message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OP_PARAM_NOT_DECLARED_MULTIPLE, operationType, path, undeclaredParameters.size(),
+                                           undeclaredParameters);
             } else {
                 message = Tr.formatMessage(tc, ValidationMessageConstants.PATH_ITEM_OP_PARAM_NOT_DECLARED_SINGLE, operationType, path, undeclaredParameters);
             }
@@ -228,7 +230,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
      */
     private Set<String> validatePathAndRetrievePathParams(ValidationHelper helper, Context context, String pathStr) {
         String pathToCheck = pathStr;
-        Set<String> pathParameters = new HashSet<String>();
+        Set<String> pathParameters = new HashSet<>();
 
         while (pathToCheck.contains("{")) {
             if (!pathToCheck.contains("}")) {

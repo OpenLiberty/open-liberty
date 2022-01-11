@@ -89,7 +89,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -130,7 +130,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -213,7 +213,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
 
         components.setSecuritySchemes(securitySchemes);
@@ -260,7 +260,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", null);
         securitySchemes.put("api_key", api_key);
 
@@ -306,7 +306,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -351,7 +351,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 

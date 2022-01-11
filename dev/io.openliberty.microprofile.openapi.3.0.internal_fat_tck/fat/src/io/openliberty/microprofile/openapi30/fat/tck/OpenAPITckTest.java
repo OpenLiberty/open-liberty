@@ -25,6 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
+
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
@@ -42,7 +43,7 @@ public class OpenAPITckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1650E", "CWWKO1651W"); 
+        server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
     @Test
@@ -51,12 +52,12 @@ public class OpenAPITckTest {
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getPort(PortType.WC_defaulthost));
-        
+
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.openapi.3.0.internal_fat_tck", "testOpenAPITck", additionalProps);
         MvnUtils.preparePublicationFile();
-   }
+    }
 
 }

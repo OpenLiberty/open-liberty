@@ -15,10 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-
-import java.util.Optional;
 
 /**
  * Utility class for copying model objects
@@ -29,14 +28,14 @@ public class ModelCopy {
      * Copy an object from an OpenAPI model
      * <p>
      * {@code object} and any objects it contains should be MP OpenAPI model objects, maps, lists or immutable objects (which won't be copied)
-     * 
+     *
      * @param object the object to copy
      * @return the copy
      */
     public static Object copy(Object object) {
         return doCopy(object);
     }
-    
+
     @Trivial
     private static Object doCopy(Object object) {
         if (object == null) {

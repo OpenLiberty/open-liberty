@@ -29,7 +29,7 @@ public class NameProcessor {
     /**
      * The unique names and their values which are in use for models processed so far, grouped by the type of name
      */
-    private Map<NameType, Map<String, Object>> namesInUse;
+    private final Map<NameType, Map<String, Object>> namesInUse;
 
     public NameProcessor() {
         this.namesInUse = new HashMap<>();
@@ -37,7 +37,7 @@ public class NameProcessor {
 
     /**
      * Create a processor which stores and creates new unique names for model elements within a particular document.
-     * 
+     *
      * @return the new document name processor
      */
     public DocumentNameProcessor createDocumentNameProcessor() {
@@ -54,7 +54,7 @@ public class NameProcessor {
      * A new instance of this class should be created using {@link NameProcessor#createDocumentNameProcessor()} for every input document in a merge operation.
      */
     public class DocumentNameProcessor {
-        private Map<NameType, Map<String, String>> renames = new HashMap<>();
+        private final Map<NameType, Map<String, String>> renames = new HashMap<>();
         private boolean hasRenames = false;
 
         private DocumentNameProcessor() {}
@@ -63,26 +63,26 @@ public class NameProcessor {
          * Get the map of renames for the current model of the given name type
          * <p>
          * The returned map maps from the original non-unique name, to the new generated unique name
-         * 
+         *
          * @param nameType the name type
          * @return the map of renames
          */
         @Trivial
         private Map<String, String> getRenameMap(NameType nameType) {
-            return renames.computeIfAbsent(nameType, (k) -> new HashMap<>());
+            return renames.computeIfAbsent(nameType, k -> new HashMap<>());
         }
 
         /**
          * Get the set of names and their values in use for the given name type
          * <p>
          * Note that this is shared between all models being merged.
-         * 
+         *
          * @param nameType the name type
          * @return map of names to their values
          */
         @Trivial
         private Map<String, Object> getNamesInUse(NameType nameType) {
-            return NameProcessor.this.namesInUse.computeIfAbsent(nameType, (k) -> new HashMap<>());
+            return NameProcessor.this.namesInUse.computeIfAbsent(nameType, k -> new HashMap<>());
         }
 
         private static final String NO_VALUE = "NO VALUE";
@@ -94,7 +94,7 @@ public class NameProcessor {
          * <p>
          * However, if this method is called multiple times with the same {@code oldName} <i>within the same document</i> it will return the same name. This is to make it easier
          * to process tags which can be used without previous definition.
-         * 
+         *
          * @param nameType the type of name
          * @param oldName the possibly non-unique name
          * @param value the value associated with the name, or {@code null} to not perform an equality check on the value
@@ -147,7 +147,7 @@ public class NameProcessor {
          * returned, otherwise {@code oldName} will be returned.
          * <p>
          * This is useful for updating references to objects which may have been renamed
-         * 
+         *
          * @param nameType the type of name
          * @param oldName the possibly non-unique name
          * @return the corresponding new name (which may be the same as {@code oldName}
@@ -162,7 +162,7 @@ public class NameProcessor {
          * This is used e.g. when a path name is changed to add the context root.
          * <p>
          * In most other circumstances, {@link #createUniqueName(NameType, String)} should be used instead to generate a non-clashing name
-         * 
+         *
          * @param nameType the type of name
          * @param oldName the old name
          * @param newName the new name
@@ -183,7 +183,7 @@ public class NameProcessor {
          * <p>
          * This will be true if a call to {@link #createUniqueName(NameType, String)} returned a different name to the one it was passed or if
          * {@link #registerRename(NameType, String, String)} has been called.
-         * 
+         *
          * @return {@code true} if any renames have been recorded, otherwise {@code false}
          */
         public boolean hasRenames() {

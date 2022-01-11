@@ -58,10 +58,10 @@ public class MergeConfigTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
-    private Set<String> deployedApps = new HashSet<>();
+    private final Set<String> deployedApps = new HashSet<>();
 
     @After
     public void cleanup() throws Exception {
@@ -78,12 +78,12 @@ public class MergeConfigTest {
 
         // deploy app 1
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         // deploy app 2
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         deployApp(war2);
 
         // check that documentation includes only app 1
@@ -93,9 +93,9 @@ public class MergeConfigTest {
 
         // Test that a message was output
         assertThat(
-            server.findStringsInLogs(
-                " I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.*test1"),
-            hasSize(1));
+                   server.findStringsInLogs(
+                                            " I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.*test1"),
+                   hasSize(1));
 
         // remove app 1
         removeApp(war1);
@@ -112,13 +112,13 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-            .addAsModules(war1, war2);
+                                          .addAsModules(war1, war2);
 
         deployApp(ear);
 
@@ -131,9 +131,9 @@ public class MergeConfigTest {
 
         // Test that a message was output
         assertThat(
-            server.findStringsInLogs(
-                " I CWWKO1663I.*Combining OpenAPI documentation from multiple modules is disabled.*test/(test1|test2)"),
-            hasSize(1));
+                   server.findStringsInLogs(
+                                            " I CWWKO1663I.*Combining OpenAPI documentation from multiple modules is disabled.*test/(test1|test2)"),
+                   hasSize(1));
     }
 
     @Test
@@ -142,15 +142,15 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war2);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war3);
 
         // check that documentation includes apps 2 & 3
@@ -169,15 +169,15 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         deployApp(war2);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war3);
 
         // check that documentation includes apps 1 & 3, excluding 2
@@ -201,16 +201,16 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
-            .addAsModules(war1, war2, war3);
+                                          .addAsModules(war1, war2, war3);
         deployApp(ear);
 
         // check that documentation includes only module war2
@@ -229,16 +229,16 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
-            .addAsModules(war1, war2, war3);
+                                          .addAsModules(war1, war2, war3);
         deployApp(ear);
 
         // check that documentation includes module 2, excluding 1 & 3
@@ -250,28 +250,28 @@ public class MergeConfigTest {
     @Test
     public void testInfoConfigured() throws Exception {
         String info = "{"
-            + "\"title\": \"test title\","
-            + "\"version\": \"3.7\","
-            + "\"termsOfService\": \"http://example.org/tos\","
-            + "\"contact\": {"
-            + "\"name\": \"John Smith\","
-            + "\"url\": \"http://example.org/contact\""
-            + "},"
-            + "\"license\": {"
-            + "\"name\": \"Apache 2.0\","
-            + "\"url\": \"https://www.apache.org/licenses/LICENSE-2.0.html\""
-            + "}"
-            + "}";
+                      + "\"title\": \"test title\","
+                      + "\"version\": \"3.7\","
+                      + "\"termsOfService\": \"http://example.org/tos\","
+                      + "\"contact\": {"
+                      + "\"name\": \"John Smith\","
+                      + "\"url\": \"http://example.org/contact\""
+                      + "},"
+                      + "\"license\": {"
+                      + "\"name\": \"Apache 2.0\","
+                      + "\"url\": \"https://www.apache.org/licenses/LICENSE-2.0.html\""
+                      + "}"
+                      + "}";
 
         setMergeConfig("all", null, info);
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         deployApp(war2);
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
@@ -288,11 +288,11 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         deployApp(war2);
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
@@ -311,18 +311,18 @@ public class MergeConfigTest {
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         deployApp(war2);
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
 
         server.findStringsInLogsUsingMark("CWWKO1664W:.*The title and version properties must be set.*1.0",
-            server.getDefaultLogFile());
+                                          server.getDefaultLogFile());
         assertEquals("Document title", "Generated API", openapiNode.path("info").path("title").asText());
         assertEquals("Version", "1.0", openapiNode.path("info").path("version").asText());
 
@@ -332,15 +332,15 @@ public class MergeConfigTest {
     @Test
     public void testInfoConfiguredOneApp() throws Exception {
         String info = "{"
-            + "\"title\": \"test title\","
-            + "\"version\": \"3.7\""
-            + "}";
+                      + "\"title\": \"test title\","
+                      + "\"version\": \"3.7\""
+                      + "}";
 
         setMergeConfig("all", null, info);
         server.startServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         deployApp(war1);
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
@@ -356,17 +356,17 @@ public class MergeConfigTest {
         setMergeConfig("test1, appWibble", null, null);
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
 
         server.startServer();
 
         assertNotNull(server.waitForStringInLog("CWWKO1667W:.*appWibble")); // appWibble configured but not deployed at
-                                                                            // startup
+                                                                           // startup
         server.stopServer("CWWKO1667W");
     }
 
@@ -375,18 +375,18 @@ public class MergeConfigTest {
         setMergeConfig("test1, test2", null, null);
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
         ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
         ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
 
         server.startServer();
 
         assertNotNull(server.waitForStringInTrace("Checking for unused configuration entries"));
         assertThat(server.findStringsInLogs("CWWKO1667W"), is(empty())); // No warning about app configured but not
-                                                                         // deployed
+                                                                        // deployed
     }
 
     private void setMergeConfig(String included,
@@ -411,7 +411,7 @@ public class MergeConfigTest {
     private void deployApp(Archive<?> app) throws Exception {
         server.setMarkToEndOfLog();
         ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY, DISABLE_VALIDATION); // Do our own validation
-                                                                                            // because this is broken
+                                                                                           // because this is broken
         assertNotNull(server.waitForStringInLog("CWWKZ0001I:.*" + getInstalledName(app.getName())));
         deployedApps.add(app.getName());
     }
@@ -428,9 +428,7 @@ public class MergeConfigTest {
     }
 
     private String getInstalledName(String archiveName) {
-        return archiveName.endsWith(".war") || archiveName.endsWith(".ear")
-            ? archiveName.substring(0, archiveName.length() - 4)
-            : archiveName;
+        return archiveName.endsWith(".war") || archiveName.endsWith(".ear") ? archiveName.substring(0, archiveName.length() - 4) : archiveName;
     }
 
 }

@@ -27,7 +27,7 @@ public class OLOASFactoryResolverImpl extends OASFactoryResolverImpl {
      * @param cc
      */
     public void activate(ComponentContext cc) {
-    	OASFactoryResolver.setInstance(this);
+        OASFactoryResolver.setInstance(this);
     }
 
     /**
@@ -36,6 +36,6 @@ public class OLOASFactoryResolverImpl extends OASFactoryResolverImpl {
      * @param cc
      */
     public void deactivate(ComponentContext cc) throws IOException {
-    	OASFactoryResolver.setInstance(null);
+        OASFactoryResolver.setInstance(null);
     }
 }

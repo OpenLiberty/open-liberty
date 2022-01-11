@@ -73,7 +73,7 @@ public class PathsMergeTest {
 
         primaryOpenAPI = TestUtil.merge(doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc3Paths);
-        
+
         primaryOpenAPI = TestUtil.merge(doc2, doc3);
         validatePaths(primaryOpenAPI.getPaths(), doc2Paths, doc3Paths);
 
@@ -81,15 +81,15 @@ public class PathsMergeTest {
         Assert.assertNull(primaryOpenAPI.getPaths());
 
     }
-    
+
     private OpenAPI mergeAndAssertClashes(OpenAPI... docs) {
         List<OpenAPIProvider> providers = Arrays.stream(docs)
                                                 .map(TestUtil::createProvider)
                                                 .collect(Collectors.toList());
         OpenAPIProvider result = MergeProcessor.mergeDocuments(providers);
-        
+
         assertThat(result.getMergeProblems(), is(not(empty())));
-        
+
         return result.getModel();
     }
 
@@ -99,9 +99,7 @@ public class PathsMergeTest {
 
         List<Paths> docPaths = Arrays.asList(documentPaths);
 
-        Set<String> docsKeys = docPaths.stream().flatMap(paths -> {
-            return paths.getPathItems().keySet().stream();
-        }).collect(Collectors.toSet());
+        Set<String> docsKeys = docPaths.stream().flatMap(paths -> paths.getPathItems().keySet().stream()).collect(Collectors.toSet());
 
         Assert.assertEquals(docsKeys, actualpathsKeys);
     }

@@ -71,8 +71,8 @@ public class MergeProcessorTest {
 
         // Path X from module Y clashes with module Z. Module Y will not be included.
         assertThat("Merge problems", resultProvider.getMergeProblems(),
-                   contains(stringContainsInOrder(Arrays.asList("/test", "clashing-path-with-server-2.yaml", "clashing-path-with-server-1.yaml", "clashing-path-with-server-2.yaml"))));
-        
+                   contains(stringContainsInOrder(Arrays.asList("/test", "clashing-path-with-server-2.yaml", "clashing-path-with-server-1.yaml",
+                                                                "clashing-path-with-server-2.yaml"))));
 
         // As there's only one model in the final merge, it should be returned without modification
         assertModelsEqual(model1.getModel(), resultProvider.getModel());
@@ -99,7 +99,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("component-clash-merge.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     /**
      * Test that components are not renamed if they're identical across documents
      */
@@ -156,7 +156,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("operationid-clash-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     /**
      * Test that clashing tag names are handled correctly
      * <p>
@@ -178,7 +178,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("tag-clash-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     @Test
     public void testServerUnderPaths() {
         OpenAPIProvider model1 = loadModel("server-under-path-1.yaml", "/test1");
@@ -192,7 +192,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("server-under-path-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     @Test
     public void testServerMovedToPaths() {
         OpenAPIProvider model1 = loadModel("server-moved-to-paths-1.yaml", "/foo");
@@ -206,9 +206,9 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("server-moved-to-paths-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     @Test
-    public void testSecurityMovedToOperations( ) {
+    public void testSecurityMovedToOperations() {
         OpenAPIProvider model1 = loadModel("test-security-moved-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("test-security-moved-2.yaml", "/test2");
 
@@ -254,7 +254,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("docs-removed-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     /**
      * Test that external docs links are removed if they're different
      */
@@ -271,7 +271,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("info-identical-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     /**
      * Test that if a model is not included in the merge because there were unresolvable clashes, it doesn't cause changes in the final model
      * <p>
@@ -294,7 +294,7 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("no-phantom-changes-merged.yaml");
         assertModelsEqual(expectedModel, result);
     }
-    
+
     /**
      * Test that clashing extensions at the top level cause the clashing document not to be included
      */
@@ -302,18 +302,17 @@ public class MergeProcessorTest {
     public void testClashingExtension() {
         OpenAPIProvider model1 = loadModel("clashing-extension-1.yaml", "/test1");
         OpenAPIProvider model2 = loadModel("clashing-extension-2.yaml", "/test2");
-        
+
         OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
         OpenAPI result = resultProvider.getModel();
-        // Extension key X in module Y conflicts with module Z, module Y will not be merged 
+        // Extension key X in module Y conflicts with module Z, module Y will not be merged
         assertThat("Merge problems", resultProvider.getMergeProblems(),
                    contains(stringContainsInOrder(Arrays.asList("x-foo", "clashing-extension-2.yaml", "clashing-extension-1.yaml", "clashing-extension-2.yaml"))));
 
         assertThat(resultProvider.getApplicationPath(), is("/test1"));
-        
+
         assertModelsEqual(model1.getModel(), result);
     }
-
 
     private OpenAPI loadModel(String modelResource) {
         try (InputStream is = MergeProcessorTest.class.getResourceAsStream(modelResource)) {

@@ -94,7 +94,7 @@ public enum ModelType {
 
     /**
      * Find the model object which {@code clazz} implements
-     * 
+     *
      * @param clazz a class
      * @return the corresponding model object, or {@code null} if clazz does not implement any of the model interfaces
      */
@@ -109,7 +109,7 @@ public enum ModelType {
 
     /**
      * Create a new instance of the model object using {@code OASFactory}
-     * 
+     *
      * @return the new instance
      */
     public Object createInstance() {
@@ -120,16 +120,16 @@ public enum ModelType {
      * Get the parameter descriptors for the model type
      * <p>
      * Each parameter represents a matching getter/setter pair on the model interface
-     * 
+     *
      * @return the parameter descriptors for the model type
      */
     public List<ModelType.ModelParameter> getParameters() {
         return parameters;
     }
-    
+
     /**
      * Test whether an object is an instance of this model type
-     * 
+     *
      * @param object the object to test
      * @return {@code true} if {@code object} is an instance of the interface associated with this model type, {@code false} otherwise
      */
@@ -141,20 +141,19 @@ public enum ModelType {
      * Represents a getter/setter pair on a model type
      */
     public static class ModelParameter {
-        private Method getter;
-        private Method setter;
-        private Type type;
-    
+        private final Method getter;
+        private final Method setter;
+        private final Type type;
+
         private ModelParameter(Method getter, Method setter, Type type) {
-            super();
             this.getter = getter;
             this.setter = setter;
             this.type = type;
         }
-    
+
         /**
          * Set this parameter on an instance to a value
-         * 
+         *
          * @param instance the instance to have the parameter set
          * @param value the value to set the parameter to
          */
@@ -165,10 +164,10 @@ public enum ModelType {
                 throw new RuntimeException("Error invoking " + setter.getName() + " on " + instance, e);
             }
         }
-    
+
         /**
          * Get the value of this parameter from {@code instance}
-         * 
+         *
          * @param instance the instance to get the parameter for
          * @return the value of this parameter
          */
@@ -182,7 +181,7 @@ public enum ModelType {
 
         /**
          * Get the generic type of this parameter
-         * 
+         *
          * @return the generic type of this parameter
          */
         public Type getType() {
@@ -198,14 +197,14 @@ public enum ModelType {
     private List<ModelType.ModelParameter> parameters;
     private Class<? extends Constructible> clazz;
 
-    private ModelType(Class<? extends Constructible> clazz) {
+    ModelType(Class<? extends Constructible> clazz) {
         parameters = getParameters(clazz);
         this.clazz = clazz;
     }
 
     /**
      * Create the parameters for a model interface
-     * 
+     *
      * @param clazz the model interface
      * @return the list of parameters
      */
@@ -213,7 +212,7 @@ public enum ModelType {
         List<Class<?>> classes = new ArrayList<>();
         classes.add(clazz);
         classes.addAll(Arrays.asList(clazz.getInterfaces()));
-        
+
         return classes.stream()
                       .flatMap(c -> Arrays.stream(c.getDeclaredMethods())) // Find all the methods
                       .filter(m -> m.getName().startsWith("get")) // which are getters
@@ -225,7 +224,7 @@ public enum ModelType {
 
     /**
      * Create a parameter for a getter on a model interface
-     * 
+     *
      * @param clazz the model interface
      * @param getter the getter method
      * @return a stream containing the parameter or an empty stream if {@code clazz} has no corresponding setter

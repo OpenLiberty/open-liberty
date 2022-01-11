@@ -25,7 +25,7 @@ public class TestUtil {
 
     /**
      * Create an OpenAPIProvdier for the given model with an application path of {@code /}
-     * 
+     *
      * @param openapi the openapi model
      * @return the provider
      */
@@ -35,7 +35,7 @@ public class TestUtil {
 
     /**
      * Create an OpenAPIProvider for the given model
-     * 
+     *
      * @param openapi the openapi model
      * @param applicationPath the application path for the returned provider
      * @return the provider
@@ -46,7 +46,7 @@ public class TestUtil {
 
     /**
      * Merge several OpenAPI models using {@link MergeProcessor}
-     * 
+     *
      * @param docs the openapi models
      * @return the merged model
      */
@@ -60,7 +60,7 @@ public class TestUtil {
 
     /**
      * Merge several OpenAPI providers using {@link MergeProcessor}
-     * 
+     *
      * @param providers the providers
      * @return the merged model
      */

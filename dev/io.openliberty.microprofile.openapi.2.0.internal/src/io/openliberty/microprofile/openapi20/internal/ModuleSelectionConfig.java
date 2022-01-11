@@ -33,34 +33,34 @@ import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
  * Handles reading the merge include/exclude configuration properties and indicating whether a particular module should be included or excluded.
  */
 public class ModuleSelectionConfig {
-    
+
     private static final TraceComponent tc = Tr.register(ModuleSelectionConfig.class);
 
     private boolean isAll = false;
     private boolean isFirst = false;
     private List<ModuleName> included;
     private List<ModuleName> excluded;
-    
+
     /**
      * Builds a {@code ModuleSelectionConfig} based on the given {@code Config}
      * <p>
      * This will read and parse the {@value Constants#MERGE_INCLUDE_CONFIG} and {@value Constants#MERGE_EXCLUDE_CONFIG} config properties.
      * <p>
      * If the config is invalid, this method will output warning messages but still return a usable result object.
-     * 
+     *
      * @param config the config to read
      * @return the module selection config
      */
     public static ModuleSelectionConfig fromConfig(Config config) {
         ModuleSelectionConfig result = new ModuleSelectionConfig();
-        
+
         String inclusion = config.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first").trim();
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(null, tc, "Names in config: " + config.getPropertyNames());
             Tr.debug(null, tc, "Inclusion read from config: " + inclusion);
         }
-        
+
         if (inclusion.equals("none")) {
             result.included = Collections.emptyList();
         } else if (inclusion.equals("all")) {
@@ -70,21 +70,21 @@ public class ModuleSelectionConfig {
         } else {
             result.included = parseModuleNames(inclusion, Constants.MERGE_INCLUDE_CONFIG);
         }
-        
+
         String exclusion = config.getOptionalValue(Constants.MERGE_EXCLUDE_CONFIG, String.class).orElse("none").trim();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(null, tc, "Exclusion read from config: " + exclusion);
         }
-        
+
         if (exclusion.equals("none")) {
             result.excluded = Collections.emptyList();
         } else {
             result.excluded = parseModuleNames(exclusion, Constants.MERGE_EXCLUDE_CONFIG);
         }
-        
+
         return result;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Module Selection Config[");
@@ -107,16 +107,16 @@ public class ModuleSelectionConfig {
      * Whether the legacy "first module only" mode should be used.
      * <p>
      * As this requires special handling, if this method returns {@code true}, the other methods on this object should not be called.
-     * 
+     *
      * @return {@code true} if only the first module found should be processed for OpenAPI annotations, {@code false} otherwise.
      */
     public boolean useFirstModuleOnly() {
         return isFirst;
     }
-    
+
     /**
      * Whether the given module should be used to create the OpenAPI document, based on the config
-     * 
+     *
      * @param module the module to check
      * @return {@code true} if the module should be used, {@code false} otherwise
      */
@@ -124,7 +124,7 @@ public class ModuleSelectionConfig {
         if (isFirst) {
             return true;
         }
-        
+
         boolean result = false;
         if (isAll) {
             result = true;
@@ -136,8 +136,8 @@ public class ModuleSelectionConfig {
                 }
             }
         }
-        
-        if (result == true) {
+
+        if (result) {
             for (ModuleName name : excluded) {
                 if (matches(name, module)) {
                     result = false;
@@ -145,13 +145,13 @@ public class ModuleSelectionConfig {
                 }
             }
         }
-        
+
         return result;
     }
-    
+
     /**
      * Given a complete list of all application modules deployed, return a list of entries from the include configuration which didn't match any of the deployed modules.
-     * 
+     *
      * @param moduleInfos the deployed module infos
      * @return the list of include configuration entries which was unused
      */
@@ -162,7 +162,7 @@ public class ModuleSelectionConfig {
 
         List<ModuleName> includedNotYetSeen = new ArrayList<>(included);
         for (Iterator<ModuleName> iterator = includedNotYetSeen.iterator(); iterator.hasNext();) {
-            ModuleName moduleName = (ModuleName) iterator.next();
+            ModuleName moduleName = iterator.next();
             for (ModuleInfo moduleInfo : moduleInfos) {
                 if (matches(moduleName, moduleInfo)) {
                     iterator.remove();
@@ -173,16 +173,16 @@ public class ModuleSelectionConfig {
 
         return includedNotYetSeen.stream().map(ModuleName::toString).collect(toList());
     }
-    
+
     private boolean matches(ModuleName name, ModuleInfo module) {
         if (name.moduleName != null && !name.moduleName.equals(module.getName())) {
             return false;
         }
-        
+
         if (!name.appName.equals(module.getApplicationInfo().getName())) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -190,19 +190,18 @@ public class ModuleSelectionConfig {
         /**
          * The application name
          */
-        private String appName;
-        
+        private final String appName;
+
         /**
          * The module name, may be {@code null} if the configuration just indicates an application name
          */
-        private String moduleName;
+        private final String moduleName;
 
         /**
          * @param appName
          * @param moduleName
          */
         public ModuleName(String appName, String moduleName) {
-            super();
             this.appName = appName;
             this.moduleName = moduleName;
         }
@@ -216,9 +215,9 @@ public class ModuleSelectionConfig {
             }
         }
     }
-    
+
     private static final Pattern CONFIG_VALUE_NAME_REFERENCE = Pattern.compile("(.+?)(/(.+))?");
-    
+
     /**
      * Parses a comma separated list of app and module names into a list of {@code ModuleName}
      * <p>
@@ -227,22 +226,22 @@ public class ModuleSelectionConfig {
      * <li>appName</li>
      * <li>appName/moduleName</li>
      * </ul>
-     * 
+     *
      * @param nameList the comma separated list
      * @param configKey the name of the config property holding the list (used for reporting errors)
      * @param the list of parsed names
      */
     private static List<ModuleName> parseModuleNames(String nameList, String configKey) {
         List<ModuleName> result = new ArrayList<>();
-        
+
         for (String configValuePart : nameList.split(",")) {
             Matcher m = CONFIG_VALUE_NAME_REFERENCE.matcher(configValuePart);
-            
+
             if (!m.matches()) {
                 Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INVALID_NAME_CWWKO1666W, configKey, configValuePart);
                 continue;
             }
-            
+
             String appName = m.group(1).trim();
             String moduleName = m.group(3);
             if (moduleName != null) {
@@ -250,7 +249,7 @@ public class ModuleSelectionConfig {
             }
             result.add(new ModuleName(appName, moduleName));
         }
-        
+
         return result;
     }
 

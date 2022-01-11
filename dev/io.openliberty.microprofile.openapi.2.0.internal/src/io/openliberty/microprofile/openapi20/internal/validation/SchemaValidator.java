@@ -19,8 +19,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.schema.SchemaConstant;
 
@@ -67,8 +67,8 @@ public class SchemaValidator extends TypeValidator<Schema> {
             }
 
             String type = (t.getType() != null) ? t.getType().toString() : Constants.SCHEMA_TYPE_NULL;
-            ArrayList<String> propertiesInvalidValue = new ArrayList<String>();
-            ArrayList<String> propertiesNotForSchemaType = new ArrayList<String>();
+            ArrayList<String> propertiesInvalidValue = new ArrayList<>();
+            ArrayList<String> propertiesNotForSchemaType = new ArrayList<>();
             if (t.getMaxLength() != null) {
                 if (t.getMaxLength().intValue() < 0) {
                     propertiesInvalidValue.add(SchemaConstant.PROP_MAX_LENGTH);

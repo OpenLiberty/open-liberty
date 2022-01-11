@@ -78,7 +78,7 @@ public class TagsMergeTest {
 
     private void validateTags(List<Tag> tags, String... expected) {
         Set<String> expectedTagNames = new HashSet<>(Arrays.asList(expected));
-        Set<String> currentTagNames = tags.stream().map(tag -> tag.getName()).collect(Collectors.toSet());
+        Set<String> currentTagNames = tags.stream().map(Tag::getName).collect(Collectors.toSet());
         Assert.assertEquals(expectedTagNames, currentTagNames);
     }
 

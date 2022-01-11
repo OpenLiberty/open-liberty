@@ -124,7 +124,7 @@ public class ParameterValidatorTest {
         ParameterImpl parameter = new ParameterImpl();
         ExampleImpl example = new ExampleImpl();
         example.summary("This is a test param example").externalValue("http://example.com/queryparam");
-        Map<String, Example> examples = new HashMap<String, Example>();
+        Map<String, Example> examples = new HashMap<>();
         examples.put("example-name", example);
         SchemaImpl schema = new SchemaImpl();
         schema.type(SchemaType.OBJECT);

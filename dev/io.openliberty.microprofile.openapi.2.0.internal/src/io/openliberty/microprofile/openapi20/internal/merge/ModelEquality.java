@@ -14,11 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.ibm.websphere.ras.annotation.Trivial;
-
 import java.util.Objects;
 import java.util.Optional;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Utilities for recursively comparing OpenAPI model objects
@@ -33,7 +32,7 @@ public class ModelEquality {
      * <li>If {@code a} and {@code b} are maps, ensure the key set is the same and the recursively compare the values</li>
      * <li>Otherwise, use {@link Objects#equals(Object, Object)} to compare {@code a} and {@code b}
      * </ul>
-     * 
+     *
      * @param a the first item to compare
      * @param b the second item to compare
      * @return {@code true} if {@code a} and {@code b} are equal, otherwise {@code false}
@@ -41,7 +40,7 @@ public class ModelEquality {
     public static boolean equals(Object a, Object b) {
         return equalsImpl(a, b);
     }
-    
+
     @Trivial
     private static boolean equalsImpl(Object a, Object b) {
         if (a == b) {

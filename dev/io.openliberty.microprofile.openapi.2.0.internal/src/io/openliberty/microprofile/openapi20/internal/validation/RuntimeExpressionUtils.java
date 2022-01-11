@@ -114,7 +114,7 @@ public class RuntimeExpressionUtils {
     private static boolean isFragment(String fragment) {
         if (fragment == null || !fragment.startsWith("#/"))
             return false;
-        
+
         Scanner s = new Scanner(fragment.substring(1)).useDelimiter("/");
         if (!s.hasNext())
             return false; // need at least one reference
@@ -152,7 +152,7 @@ public class RuntimeExpressionUtils {
     // If there are unmatched brackets then return null.
     // E.g. a{b}c{d}e returns array: { "b", "d" }
     public static List<String> extractURLVars(String input) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         if (input.startsWith("}"))
             return null;
         int openLoc = input.indexOf('{');

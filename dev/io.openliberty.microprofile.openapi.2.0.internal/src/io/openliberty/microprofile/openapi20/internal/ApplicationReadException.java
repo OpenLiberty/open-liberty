@@ -17,9 +17,7 @@ public class ApplicationReadException extends Exception {
 
     private static final long serialVersionUID = -3196443502443015385L;
 
-    public ApplicationReadException() {
-        super();
-    }
+    public ApplicationReadException() {}
 
     public ApplicationReadException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);

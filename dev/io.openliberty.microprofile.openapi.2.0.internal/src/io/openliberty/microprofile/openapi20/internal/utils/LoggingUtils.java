@@ -31,7 +31,7 @@ public class LoggingUtils {
     public static boolean isDumpEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
     }
-    
+
     private LoggingUtils() {
         // This class is not meant to be instantiated.
     }

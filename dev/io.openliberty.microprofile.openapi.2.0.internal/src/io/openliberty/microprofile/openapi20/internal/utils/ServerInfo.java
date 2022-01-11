@@ -19,8 +19,7 @@ public class ServerInfo {
     private int httpsPort = -1;
     private String host;
 
-    public ServerInfo() {
-    }
+    public ServerInfo() {}
 
     public ServerInfo(String host, int httpPort, int httpsPort) {
         this.host = host;

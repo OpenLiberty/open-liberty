@@ -22,17 +22,17 @@ public class WebModuleOpenAPIProvider implements OpenAPIProvider {
 
     // The WebModuleInfo for the application/module that the OpenAPI model was generated from
     private final WebModuleInfo webModuleInfo;
-    
+
     // The OpenAPI model
     private final OpenAPI openAPIModel;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param webModuleInfo
-     *          The WebModuleInfo for the application/module that the OpenAPI model was generated from
+     *     The WebModuleInfo for the application/module that the OpenAPI model was generated from
      * @param openAPIModel
-     *          The OpenAPI model itself
+     *     The OpenAPI model itself
      */
     public WebModuleOpenAPIProvider(final WebModuleInfo webModuleInfo, final OpenAPI openAPIModel) {
         this.webModuleInfo = webModuleInfo;
@@ -46,18 +46,17 @@ public class WebModuleOpenAPIProvider implements OpenAPIProvider {
 
         /*
          * Now check if the model contains any paths and, if so, whether the first one starts with the context root.
-         * If it does not, we use the context root as the application path and add it to the URL of the server. 
+         * If it does not, we use the context root as the application path and add it to the URL of the server.
          */
         final String contextRoot = webModuleInfo.getContextRoot();
         Paths paths = openAPIModel.getPaths();
-        if (  paths == null
-           || paths.getPathItems() == null
-           || paths.getPathItems().isEmpty()
-           || !paths.getPathItems().keySet().iterator().next().startsWith(contextRoot)
-           ) {
+        if (paths == null
+            || paths.getPathItems() == null
+            || paths.getPathItems().isEmpty()
+            || !paths.getPathItems().keySet().iterator().next().startsWith(contextRoot)) {
             applicationPath = contextRoot;
         }
-        
+
         return applicationPath;
     }
 

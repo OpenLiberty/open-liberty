@@ -46,71 +46,137 @@ import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.C
  */
 public interface OpenAPIModelVisitor {
 
-    default void visitOpenAPI(Context context) {};
+    default void visitOpenAPI(Context context) {}
 
-    default Components visitComponents(Context context, Components components) { return components; };
+    default Components visitComponents(Context context, Components components) {
+        return components;
+    }
 
-    default Object visitExtension(Context context, String key, Object extension) { return extension; };
+    default Object visitExtension(Context context, String key, Object extension) {
+        return extension;
+    }
 
-    default ExternalDocumentation visitExternalDocumentation(Context context, ExternalDocumentation extDocs) { return extDocs; };
+    default ExternalDocumentation visitExternalDocumentation(Context context, ExternalDocumentation extDocs) {
+        return extDocs;
+    }
 
-    default Info visitInfo(Context context, Info info) { return info; };
+    default Info visitInfo(Context context, Info info) {
+        return info;
+    }
 
-    default Paths visitPaths(Context context, Paths paths) { return paths; };
+    default Paths visitPaths(Context context, Paths paths) {
+        return paths;
+    }
 
-    default SecurityRequirement visitSecurityRequirement(Context context, SecurityRequirement secReq) { return secReq; };
+    default SecurityRequirement visitSecurityRequirement(Context context, SecurityRequirement secReq) {
+        return secReq;
+    }
 
-    default Server visitServer(Context context, Server server) { return server; };
+    default Server visitServer(Context context, Server server) {
+        return server;
+    }
 
-    default Tag visitTag(Context context, Tag tag) { return tag; };
+    default Tag visitTag(Context context, Tag tag) {
+        return tag;
+    }
 
-    default Callback visitCallback(Context context, String key, Callback callback) {return callback; };
+    default Callback visitCallback(Context context, String key, Callback callback) {
+        return callback;
+    }
 
-    default Example visitExample(Context context, Example example) { return example; };
+    default Example visitExample(Context context, Example example) {
+        return example;
+    }
 
-    default Example visitExample(Context context, String key, Example example) { return example; };
+    default Example visitExample(Context context, String key, Example example) {
+        return example;
+    }
 
-    default Header visitHeader(Context context, String key, Header header) { return header; };
+    default Header visitHeader(Context context, String key, Header header) {
+        return header;
+    }
 
-    default Link visitLink(Context context, String key, Link link) { return link; };
+    default Link visitLink(Context context, String key, Link link) {
+        return link;
+    }
 
-    default Parameter visitParameter(Context context, Parameter parameter) { return parameter; };
+    default Parameter visitParameter(Context context, Parameter parameter) {
+        return parameter;
+    }
 
-    default Parameter visitParameter(Context context, String key, Parameter parameter) { return parameter; };
+    default Parameter visitParameter(Context context, String key, Parameter parameter) {
+        return parameter;
+    }
 
-    default RequestBody visitRequestBody(Context context, RequestBody requestBody) { return requestBody; };
+    default RequestBody visitRequestBody(Context context, RequestBody requestBody) {
+        return requestBody;
+    }
 
-    default RequestBody visitRequestBody(Context context, String key, RequestBody requestBody) { return requestBody; };
+    default RequestBody visitRequestBody(Context context, String key, RequestBody requestBody) {
+        return requestBody;
+    }
 
-    default APIResponses visitResponses(Context context, APIResponses responses) { return responses; };
+    default APIResponses visitResponses(Context context, APIResponses responses) {
+        return responses;
+    }
 
-    default APIResponse visitResponse(Context context, String key, APIResponse response) { return response; };
+    default APIResponse visitResponse(Context context, String key, APIResponse response) {
+        return response;
+    }
 
-    default Schema visitSchema(Context context, Schema schema) { return schema; };
+    default Schema visitSchema(Context context, Schema schema) {
+        return schema;
+    }
 
-    default Schema visitSchema(Context context, String key, Schema schema) { return schema; };
+    default Schema visitSchema(Context context, String key, Schema schema) {
+        return schema;
+    }
 
-    default SecurityScheme visitSecurityScheme(Context context, String key, SecurityScheme scheme) { return scheme; };
+    default SecurityScheme visitSecurityScheme(Context context, String key, SecurityScheme scheme) {
+        return scheme;
+    }
 
-    default PathItem visitPathItem(Context context, String key, PathItem pathItem) { return pathItem; };
+    default PathItem visitPathItem(Context context, String key, PathItem pathItem) {
+        return pathItem;
+    }
 
-    default Operation visitOperation(Context context, Operation operation) { return operation; };
+    default Operation visitOperation(Context context, Operation operation) {
+        return operation;
+    }
 
-    default MediaType visitMediaType(Context context, String key, MediaType mediaType) { return mediaType; };
+    default MediaType visitMediaType(Context context, String key, MediaType mediaType) {
+        return mediaType;
+    }
 
-    default Encoding visitEncoding(Context context, String key, Encoding encoding) { return encoding; };
+    default Encoding visitEncoding(Context context, String key, Encoding encoding) {
+        return encoding;
+    }
 
-    default OAuthFlows visitOAuthFlows(Context context, OAuthFlows authFlows) { return authFlows; };
+    default OAuthFlows visitOAuthFlows(Context context, OAuthFlows authFlows) {
+        return authFlows;
+    }
 
-    default OAuthFlow visitOAuthFlow(Context context, OAuthFlow authFlow) { return authFlow; };
+    default OAuthFlow visitOAuthFlow(Context context, OAuthFlow authFlow) {
+        return authFlow;
+    }
 
-    default Discriminator visitDiscriminator(Context context, Discriminator discriminator) {return discriminator; };
+    default Discriminator visitDiscriminator(Context context, Discriminator discriminator) {
+        return discriminator;
+    }
 
-    default XML visitXML(Context context, XML xml) { return xml; };
+    default XML visitXML(Context context, XML xml) {
+        return xml;
+    }
 
-    default Contact visitContact(Context context, Contact contact) { return contact; };
+    default Contact visitContact(Context context, Contact contact) {
+        return contact;
+    }
 
-    default License visitLicense(Context context, License license) { return license; };
+    default License visitLicense(Context context, License license) {
+        return license;
+    }
 
-    default ServerVariable visitServerVariable(Context context, String key, ServerVariable serverVariable) {return serverVariable; };
+    default ServerVariable visitServerVariable(Context context, String key, ServerVariable serverVariable) {
+        return serverVariable;
+    }
 }

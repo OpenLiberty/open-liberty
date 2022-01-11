@@ -10,21 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -53,24 +42,24 @@ public class IndexUtils {
     /**
      * The getIndexView method generates an org.jboss.jandex.IndexView that contains all of the classes that need to be
      * scanned for OpenAPI/JAX-RS annotations. This IndexView is passes to the SmallRye OpenAPI implementation which
-     * performs the scanning.  
-     * 
+     * performs the scanning.
+     *
      * @param webModuleInfo
-     *          The module info for the web module
+     *     The module info for the web module
      * @param moduleClassesContainerInfo
-     *          The module classes container info for the web module
+     *     The module classes container info for the web module
      * @param config
-     *          The configuration that may specify which classes/packages/JARs to include/exclude. 
+     *     The configuration that may specify which classes/packages/JARs to include/exclude.
      * @return IndexView
-     *          The org.jboss.jandex.IndexView instance.
+     * The org.jboss.jandex.IndexView instance.
      */
     public static IndexView getIndexView(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
 
         long startTime = System.currentTimeMillis();
-        
+
         Indexer indexer = new Indexer();
         FilteredIndexView filter = new FilteredIndexView(null, config);
-        
+
         for (ContainerInfo ci : moduleClassesContainerInfo.getClassesContainerInfo()) {
             if (ci.getType() == Type.WEB_INF_CLASSES) {
                 indexContainer(ci.getContainer(), null, indexer, filter);
@@ -91,7 +80,7 @@ public class IndexUtils {
 
         return view;
     }
-    
+
     private static void indexContainer(Container container, String packageName, Indexer indexer, FilteredIndexView filter) {
         for (Entry entry : container) {
             String entryName = entry.getName();
@@ -117,7 +106,7 @@ public class IndexUtils {
                         if (packageName == null) {
                             entryPackageName = entryContainer.getName();
                         } else {
-                            entryPackageName = packageName + "."  + entryContainer.getName();
+                            entryPackageName = packageName + "." + entryContainer.getName();
                         }
                         indexContainer(entryContainer, entryPackageName, indexer, filter);
                     }
@@ -131,25 +120,25 @@ public class IndexUtils {
     /**
      * The acceptClassForScanning method determines whether the specified class should be scanned for MicroProfile
      * OpenAPI annotations based on the configuration specified in the following proeprties:
-     * 
-     *     mp.openapi.scan.classes
-     *     mp.openapi.scan.packages
-     *     mp.openapi.scan.exclude.classes
-     *     mp.openapi.scan.exclude.packages
-     * 
+     *
+     * mp.openapi.scan.classes
+     * mp.openapi.scan.packages
+     * mp.openapi.scan.exclude.classes
+     * mp.openapi.scan.exclude.packages
+     *
      * @param filter
-     *          The SmallRye {@link FilterIndexView} class which wraps an {@link IndexView} instance and filters the
-     *          contents based on the settings provided via {@link OpenApiConfig}.
+     *     The SmallRye {@link FilterIndexView} class which wraps an {@link IndexView} instance and filters the
+     *     contents based on the settings provided via {@link OpenApiConfig}.
      * @param className
-     *          The name of the class
+     *     The name of the class
      * @return boolean
-     *          True if the class should be accepted for scanning, false otherwise
+     * True if the class should be accepted for scanning, false otherwise
      */
     private static boolean acceptClassForScanning(final FilteredIndexView filter, final String className) {
-        
+
         // Create the variable to return
         boolean acceptClass = false;
-        
+
         // Make sure that we have a valid class name
         if (className != null && !className.isEmpty()) {
             acceptClass = filter.accepts(DotName.createSimple(className));
@@ -159,25 +148,25 @@ public class IndexUtils {
     }
 
     /**
-     * The acceptJarForScanning method determines whether the specified JAR file should be opened and the contents 
+     * The acceptJarForScanning method determines whether the specified JAR file should be opened and the contents
      * scanned for MicroProfile OpenAPI annotations. The configuration specified in the following proeprties is used
      * to determine whether the JAR file should be opened:
-     * 
-     *     mp.openapi.extensions.smallrye.scan-dependencies.disable
-     *     mp.openapi.extensions.smallrye.scan-dependencies.jars
-     * 
+     *
+     * mp.openapi.extensions.smallrye.scan-dependencies.disable
+     * mp.openapi.extensions.smallrye.scan-dependencies.jars
+     *
      * @param config
-     *          The OpenAPIConfig representation of the configuration
+     *     The OpenAPIConfig representation of the configuration
      * @param jarFileName
-     *          The full name of the JAR file, including the path
+     *     The full name of the JAR file, including the path
      * @return boolean
-     *          True if the contents of the JAR file should be accepted for scanning, false otherwise
+     * True if the contents of the JAR file should be accepted for scanning, false otherwise
      */
     private static boolean acceptJarForScanning(final OpenApiConfig config, final String jarFileName) {
-        
+
         // Create the variable to return
         boolean acceptJar = false;
-        
+
         //  First, make sure that dependency scanning has not been disabled
         if (!config.scanDependenciesDisable()) {
             // Now check whether specific JARs have been configured for scanning
@@ -187,7 +176,7 @@ public class IndexUtils {
                 acceptJar = true;
             }
         }
-        
+
         return acceptJar;
     }
 }

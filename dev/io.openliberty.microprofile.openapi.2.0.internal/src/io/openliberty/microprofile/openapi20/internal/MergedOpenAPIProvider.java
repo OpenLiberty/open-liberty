@@ -19,11 +19,11 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
  * An OpenAPIProvider for a model created by merging models from multiple modules
  */
 public class MergedOpenAPIProvider implements OpenAPIProvider {
-    
-    private OpenAPI model;
-    private List<String> mergeProblems;
-    private String applicationPath;
-    
+
+    private final OpenAPI model;
+    private final List<String> mergeProblems;
+    private final String applicationPath;
+
     /**
      * @param model the merged OpenAPI model
      * @param mergeProblems the list of merge problems
@@ -33,7 +33,7 @@ public class MergedOpenAPIProvider implements OpenAPIProvider {
         this.mergeProblems = Collections.unmodifiableList(mergeProblems);
         this.applicationPath = null;
     }
-    
+
     /**
      * @param model the merged OpenAPI model
      * @param mergeProblems the list of merge problems

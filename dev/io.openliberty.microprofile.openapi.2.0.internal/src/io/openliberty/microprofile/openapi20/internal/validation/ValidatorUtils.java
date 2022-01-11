@@ -26,8 +26,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 
@@ -64,8 +64,7 @@ public class ValidatorUtils {
     @FFDCIgnore({ MalformedURLException.class })
     public static boolean isValidURL(String urlStr) {
         try {
-            @SuppressWarnings("unused")
-            URL url = new URL(urlStr);
+            new URL(urlStr);
             return true;
         } catch (MalformedURLException e) {
             return false;
@@ -75,8 +74,7 @@ public class ValidatorUtils {
     @FFDCIgnore({ URISyntaxException.class })
     public static boolean isValidURI(String uriStr) {
         try {
-            @SuppressWarnings("unused")
-            URI uri = new URI(uriStr);
+            new URI(uriStr);
             return true;
         } catch (URISyntaxException e) {
             return false;

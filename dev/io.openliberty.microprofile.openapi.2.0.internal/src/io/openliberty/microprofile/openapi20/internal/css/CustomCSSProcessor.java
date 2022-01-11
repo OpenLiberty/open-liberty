@@ -64,29 +64,30 @@ import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
  * OpenAPI UI WABs with a custom banner.
  *
  * It currently makes the following assumptions:
- * 
- *     1) the CSS document is encoded in UTF-8
- *     2) the header contains* sections with the exact text ".swagger-ui .headerbar "
- *     3) the CSS is a valid document.
+ *
+ * 1) the CSS document is encoded in UTF-8
+ * 2) the header contains* sections with the exact text ".swagger-ui .headerbar "
+ * 3) the CSS is a valid document.
  */
-@Component(service = { CustomCSSProcessor.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+@Component(service = { CustomCSSProcessor.class, ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
+           property = { "service.vendor=IBM" })
 public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(CustomCSSProcessor.class);
 
     private static final String KEY_EXECUTOR_SERVICE_REF = "executorService";
-    private final AtomicServiceReference<ScheduledExecutorService> executorServiceRef = new AtomicServiceReference<ScheduledExecutorService>(KEY_EXECUTOR_SERVICE_REF);
+    private final AtomicServiceReference<ScheduledExecutorService> executorServiceRef = new AtomicServiceReference<>(KEY_EXECUTOR_SERVICE_REF);
 
     private volatile WsLocationAdmin locationAdminProvider;
 
     private ServiceRegistration<FileMonitor> fileMonitor;
-    private final List<String> filesToMonitor = new ArrayList<String>();
+    private final List<String> filesToMonitor = new ArrayList<>();
     private final CustomCSSWABUpdater updater;
 
     private final Object cssUpdaterLock = new Object();
-    private final ConcurrentLinkedQueue<CSSUpdate> cssUpdates = new ConcurrentLinkedQueue<CSSUpdate>();
+    private final ConcurrentLinkedQueue<CSSUpdate> cssUpdates = new ConcurrentLinkedQueue<>();
 
-    public class CSSUpdate {
+    public static class CSSUpdate {
         Map<String, Object> updateData;
     }
 
@@ -129,25 +130,27 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
         }
         if (pollingInterval > 0) {
             final BundleContext bundleContext = cc.getBundleContext();
-            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            final Dictionary<String, Object> props = new Hashtable<>();
             props.put(org.osgi.framework.Constants.SERVICE_VENDOR, "IBM");
             props.put(FileMonitor.MONITOR_INTERVAL, String.valueOf(pollingInterval) + "s");
             props.put(FileMonitor.MONITOR_FILES, filesToMonitor);
             if (fileMonitor == null) {
                 fileMonitor = bundleContext.registerService(FileMonitor.class, this, props);
                 if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(this, tc, "Registered FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+                    Tr.event(this, tc,
+                             "Registered FileMonitor service : fileLocations=" + filesToMonitor.stream().map(String::toString).collect(Collectors.joining(", ", "{", "}")));
                 }
             } else {
                 fileMonitor.setProperties(props);
                 if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(this, tc, "Updated FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+                    Tr.event(this, tc, "Updated FileMonitor service : fileLocations=" + filesToMonitor.stream().map(String::toString).collect(Collectors.joining(", ", "{", "}")));
                 }
             }
         } else {
             deactivateFileMonitor();
             if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(this, tc, "FileMonitor service has been disabled : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+                Tr.event(this, tc,
+                         "FileMonitor service has been disabled : fileLocations=" + filesToMonitor.stream().map(String::toString).collect(Collectors.joining(", ", "{", "}")));
             }
         }
     }
@@ -179,7 +182,7 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
                     InputStream is = resource.get();
                     String content = getCSSSections(is);
                     if (content != null) {
-                        Map<String, Object> cssData = new HashMap<String, Object>();
+                        Map<String, Object> cssData = new HashMap<>();
                         cssData.put(Constants.HEADER_CSS_URL_KEY, uri);
                         cssData.put(Constants.HEADER_CSS_CONTENT_KEY, content);
                         CSSUpdate update = new CSSUpdate();
@@ -223,20 +226,17 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
             final Object cssUpdator = cssUpdaterLock;
             // Create a Runnable to process updates.
             // The ExecutorService may run it in a new thread.
-            Runnable bundleUpdater = new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (cssUpdator) {
-                        Iterator<CSSUpdate> it = cssUpdates.iterator();
-                        while (it.hasNext()) {
-                            CSSUpdate update = it.next();
-                            if (update.updateData != null) {
-                                updater.update(update.updateData);
-                            } else {
-                                updater.restoreDefaults();
-                            }
-                            it.remove();
+            Runnable bundleUpdater = () -> {
+                synchronized (cssUpdator) {
+                    Iterator<CSSUpdate> it = cssUpdates.iterator();
+                    while (it.hasNext()) {
+                        CSSUpdate update = it.next();
+                        if (update.updateData != null) {
+                            updater.update(update.updateData);
+                        } else {
+                            updater.restoreDefaults();
                         }
+                        it.remove();
                     }
                 }
             };
@@ -264,19 +264,13 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
     }
 
     private String getContent(InputStream is) throws IOException {
-        Reader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8.name()));
+        try (Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8.name()))) {
             final StringBuilder builder = new StringBuilder();
             int c;
             while ((c = reader.read()) != -1) {
                 builder.append((char) c);
             }
             return builder.toString();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
@@ -308,8 +302,7 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
     //
 
     @Override
-    public void onBaseline(Collection<File> baseline) {
-    }
+    public void onBaseline(Collection<File> baseline) {}
 
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {

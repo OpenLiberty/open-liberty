@@ -35,7 +35,7 @@ public class CustomCSSWABUpdater {
 
     public void restoreDefaults() {
         try {
-            Map<String, Object> filesToUpdate = new HashMap<String, Object>();
+            Map<String, Object> filesToUpdate = new HashMap<>();
             filesToUpdate.put(Constants.PATH_CSS_CUSTOM_HEADER, Constants.PATH_CSS_DEFAULT_HEADER);
             //Update OpenAPI UI bundles
             OpenAPIUIBundlesUpdater.updateResources(filesToUpdate, true);
@@ -54,7 +54,7 @@ public class CustomCSSWABUpdater {
     public void update(Map<String, Object> cssData) {
         Object cssUrlObj = cssData.get(Constants.HEADER_CSS_URL_KEY);
         try {
-            Map<String, Object> filesToUpdate = new HashMap<String, Object>();
+            Map<String, Object> filesToUpdate = new HashMap<>();
 
             //Add CSS content
             String cssContent = (String) cssData.get(Constants.HEADER_CSS_CONTENT_KEY);
@@ -62,7 +62,7 @@ public class CustomCSSWABUpdater {
 
             //Process background image
             if (cssContent.contains("background-image:")) {
-                if (cssUrlObj != null && cssUrlObj instanceof String) {
+                if (cssUrlObj instanceof String) {
                     processBackgroundImage((String) cssUrlObj, cssContent, filesToUpdate);
                 }
             }
@@ -80,7 +80,8 @@ public class CustomCSSWABUpdater {
     }
 
     private void processBackgroundImage(String cssUrl, String cssContent,
-                                        Map<String, Object> filesToUpdate) throws URISyntaxException, IOException {
+                                        Map<String, Object> filesToUpdate)
+                    throws URISyntaxException, IOException {
         //Current restriction : only one image is supported and the relevant property in CSS file has to be 'background-image: url(images/custom-logo.png);'
         if (!cssContent.contains(Constants.EXPECTED_BACKGROUND_IMAGE)) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, MessageConstants.UNSUPPORTED_CSS_VALUE, "background-image", Constants.EXPECTED_BACKGROUND_IMAGE));

@@ -17,8 +17,8 @@ import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.securityscheme.SecuritySchemeConstant;
 
@@ -42,9 +42,10 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
     public void validate(ValidationHelper helper, Context context, String key, OAuthFlows t) {
         if (t != null) {
             if (t.getImplicit() != null) {
-                OAuthFlow implicit = t.getImplicit();;
+                OAuthFlow implicit = t.getImplicit();
                 if (StringUtils.isNotBlank(implicit.getTokenUrl())) {
-                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_TOKEN_URL, implicit.getTokenUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT, SecuritySchemeConstant.PROP_IMPLICIT);
+                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_TOKEN_URL,
+                                                            implicit.getTokenUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT, SecuritySchemeConstant.PROP_IMPLICIT);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), context, SecuritySchemeConstant.PROP_AUTHORIZATION_URL).ifPresent(helper::addValidationEvent);
@@ -52,7 +53,9 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
             if (t.getPassword() != null) {
                 OAuthFlow password = t.getPassword();
                 if (StringUtils.isNotBlank(password.getAuthorizationUrl())) {
-                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_AUTHORIZATION_URL, password.getAuthorizationUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT, SecuritySchemeConstant.PROP_PASSWORD);
+                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_AUTHORIZATION_URL,
+                                                            password.getAuthorizationUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT,
+                                                            SecuritySchemeConstant.PROP_PASSWORD);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(password.getTokenUrl(), context, SecuritySchemeConstant.PROP_TOKEN_URL).ifPresent(helper::addValidationEvent);
@@ -60,7 +63,9 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
             if (t.getClientCredentials() != null) {
                 OAuthFlow clientCred = t.getClientCredentials();
                 if (StringUtils.isNotBlank(clientCred.getAuthorizationUrl())) {
-                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_AUTHORIZATION_URL, clientCred.getAuthorizationUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT, SecuritySchemeConstant.PROP_CLIENT_CREDENTIALS);
+                    final String message = Tr.formatMessage(tc, ValidationMessageConstants.NON_APPLICABLE_FIELD_WITH_VALUE, SecuritySchemeConstant.PROP_AUTHORIZATION_URL,
+                                                            clientCred.getAuthorizationUrl(), ValidationMessageConstants.VARIABLE_OAUTH_FLOW_OBJECT,
+                                                            SecuritySchemeConstant.PROP_CLIENT_CREDENTIALS);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), context, SecuritySchemeConstant.PROP_TOKEN_URL).ifPresent(helper::addValidationEvent);

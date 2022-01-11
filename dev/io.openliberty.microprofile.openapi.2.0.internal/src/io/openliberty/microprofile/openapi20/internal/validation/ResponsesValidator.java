@@ -22,8 +22,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 import io.smallrye.openapi.runtime.io.response.ResponseConstant;
@@ -52,7 +52,7 @@ public class ResponsesValidator extends TypeValidator<APIResponses> {
                 if (responses.size() == 0 && t.getDefaultValue() == null) {
                     final String message = Tr.formatMessage(tc, ValidationMessageConstants.RESPONSE_MUST_CONTAIN_ONE_CODE);
                     helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
-                } else if (!responses.keySet().stream().anyMatch(v -> isSuccessStatusCode(v))) {
+                } else if (!responses.keySet().stream().anyMatch(this::isSuccessStatusCode)) {
                     final String message = Tr.formatMessage(tc, ValidationMessageConstants.RESPONSE_SHOULD_CONTAIN_SUCCESS);
                     helper.addValidationEvent(new ValidationEvent(Severity.WARNING, context.getLocation(), message));
                 }

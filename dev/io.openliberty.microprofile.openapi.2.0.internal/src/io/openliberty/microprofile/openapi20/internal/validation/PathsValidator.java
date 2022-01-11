@@ -18,8 +18,8 @@ import org.eclipse.microprofile.openapi.models.Paths;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 
 /**
@@ -50,7 +50,7 @@ public class PathsValidator extends TypeValidator<Paths> {
                             final String message = Tr.formatMessage(tc, ValidationMessageConstants.PATHS_REQUIRES_SLASH, path);
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(path), message));
                         }
-                        
+
                         //Ensure map doesn't contain null value
                         if (t.getPathItems().get(path) == null) {
                             final String message = Tr.formatMessage(tc, ValidationMessageConstants.NULL_VALUE_IN_MAP, path);

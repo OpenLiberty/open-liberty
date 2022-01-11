@@ -53,7 +53,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     /**
      * Creates a RenameReferenceVisitor
-     * 
+     *
      * @param documentNameProcessor the {@link DocumentNameProcessor} holding the renames for the model
      */
     public RenameReferenceVisitor(DocumentNameProcessor documentNameProcessor) {
@@ -106,7 +106,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
      * References to operations include a path as part of the reference which may have been renamed as part of the merge process.
      * <p>
      * This method updates the operation reference to use the new path if necessary
-     * 
+     *
      * @param operationRef the operation reference, may be {@code null}
      * @return the updated operation reference
      */

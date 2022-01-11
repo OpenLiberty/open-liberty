@@ -47,8 +47,8 @@ public class CacheTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     @Test
     public void testCacheHit() throws Exception {

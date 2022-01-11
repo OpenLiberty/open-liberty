@@ -61,7 +61,7 @@ public class ReferenceValidatorTest {
         model.setComponents(components);
 
         SchemaImpl schema = new SchemaImpl();
-        Map<String, Schema> schemas = new HashMap<String, Schema>();
+        Map<String, Schema> schemas = new HashMap<>();
         schemas.put("testSchema", schema);
         components.setSchemas(schemas);
         schema.setTitle("testSchema");
@@ -69,42 +69,42 @@ public class ReferenceValidatorTest {
         schema.setFormat("string");
 
         APIResponseImpl response = new APIResponseImpl();
-        Map<String, APIResponse> responses = new HashMap<String, APIResponse>();
+        Map<String, APIResponse> responses = new HashMap<>();
         responses.put("testResponse", response);
         components.setResponses(responses);
         response.setDescription("A simple test response.");
 
         ParameterImpl parameter = new ParameterImpl();
-        Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+        Map<String, Parameter> parameters = new HashMap<>();
         parameters.put("testParameter", parameter);
         components.setParameters(parameters);
         parameter.setName("Accept");
         parameter.setIn(In.HEADER);
 
         ExampleImpl example = new ExampleImpl();
-        Map<String, Example> examples = new HashMap<String, Example>();
+        Map<String, Example> examples = new HashMap<>();
         examples.put("testExample", example);
         components.setExamples(examples);
         example.setSummary("A test example");
         example.setDescription("A simple example for testing");
 
         RequestBodyImpl requestBody = new RequestBodyImpl();
-        Map<String, RequestBody> requestBodies = new HashMap<String, RequestBody>();
+        Map<String, RequestBody> requestBodies = new HashMap<>();
         requestBodies.put("testRequestBody", requestBody);
         components.setRequestBodies(requestBodies);
 
         HeaderImpl header = new HeaderImpl();
-        Map<String, Header> headers = new HashMap<String, Header>();
+        Map<String, Header> headers = new HashMap<>();
         headers.put("testHeader", header);
         components.setHeaders(headers);
 
         SecuritySchemeImpl securityScheme = new SecuritySchemeImpl();
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("testSecurityScheme", securityScheme);
         components.setSecuritySchemes(securitySchemes);
 
         LinkImpl link = new LinkImpl();
-        Map<String, Link> links = new HashMap<String, Link>();
+        Map<String, Link> links = new HashMap<>();
         links.put("testLink", link);
         components.setLinks(links);
 

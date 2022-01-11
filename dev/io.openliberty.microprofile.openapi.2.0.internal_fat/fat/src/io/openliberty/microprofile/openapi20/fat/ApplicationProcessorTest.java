@@ -67,8 +67,8 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     @BeforeClass
     public static void setUpTest() throws Exception {
@@ -83,10 +83,10 @@ public class ApplicationProcessorTest extends FATServletClient {
 
         server.startServer(c.getSimpleName() + ".log");
         assertNotNull("Web application is not available at /openapi/",
-            server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
+                      server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
         assertNotNull("Web application is not available at /openapi/ui/",
-            server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become
-                                                                    // available
+                      server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become
+                                                                                                                                               // available
         assertNotNull("Server did not report that it has started", server.waitForStringInLog("CWWKF0011I.*"));
     }
 
@@ -115,11 +115,11 @@ public class ApplicationProcessorTest extends FATServletClient {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(
-            openapiNode,
-            "https://test-server.com:80/#1",
-            "https://test-server.com:80/#2",
-            "https://test-server.com:80/#3",
-            "https://test-server.com:80/#4");
+                                    openapiNode,
+                                    "https://test-server.com:80/#1",
+                                    "https://test-server.com:80/#2",
+                                    "https://test-server.com:80/#3",
+                                    "https://test-server.com:80/#4");
 
         OpenAPITestUtil.checkPaths(openapiNode, 3, "/test-service/test", "/modelReader", "/staticFile");
         JsonNode infoNode = openapiNode.get("info");
@@ -134,11 +134,11 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Mode(TestMode.FULL)
     public void testScanDisabled() throws Exception {
         PropertiesAsset config = new PropertiesAsset()
-            .addProperty("mp.openapi.scan.disable", "true");
+                                                      .addProperty("mp.openapi.scan.disable", "true");
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testScanDisabled.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
-            .addAsResource(config, "META-INF/microprofile-config.properties");
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                   .addAsResource(config, "META-INF/microprofile-config.properties");
 
         server.setTraceMarkToEndOfDefaultTrace();
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
@@ -151,6 +151,6 @@ public class ApplicationProcessorTest extends FATServletClient {
 
         // Assert that we didn't go near the scanning code
         assertThat(server.findStringsInLogsUsingMark("openapi20.utils.IndexUtils", server.getDefaultTraceFile()),
-            is(empty()));
+                   is(empty()));
     }
 }

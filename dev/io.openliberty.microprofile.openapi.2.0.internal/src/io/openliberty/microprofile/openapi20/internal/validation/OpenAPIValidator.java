@@ -20,8 +20,8 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 import io.smallrye.openapi.runtime.io.definition.DefinitionConstant;
 
@@ -56,7 +56,7 @@ public class OpenAPIValidator extends TypeValidator<OpenAPI> {
 
             List<Tag> tags = t.getTags();
             if (tags != null) {
-                Set<String> tagNames = new HashSet<String>();
+                Set<String> tagNames = new HashSet<>();
                 for (Tag tag : tags) {
                     if (!tagNames.add(tag.getName())) {
                         final String message = Tr.formatMessage(tc, ValidationMessageConstants.OPENAPI_TAG_IS_NOT_UNIQUE, tag.getName());

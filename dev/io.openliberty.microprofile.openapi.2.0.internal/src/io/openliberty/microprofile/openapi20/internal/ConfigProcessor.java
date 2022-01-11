@@ -45,16 +45,16 @@ public class ConfigProcessor implements Closeable {
     private int pollingInterval = FILE_POLLING_INTERVAL_DEFAULT_VALUE;
 
     private Config oaConfig;
-    private OpenApiConfigImpl smallryeConfig;
+    private final OpenApiConfigImpl smallryeConfig;
 
     /**
      * Constructor
      *
-     * This creates a brand new Config instance without using the classloader cache in the ConfigProviderResolver.  It
+     * This creates a brand new Config instance without using the classloader cache in the ConfigProviderResolver. It
      * must be closed again after use (see close() method).
-     * 
+     *
      * @param appClassloader
-     *            The ClassLoader to use when discovering the MicroProfile configuration. 
+     *     The ClassLoader to use when discovering the MicroProfile configuration.
      */
     public ConfigProcessor(ClassLoader appClassloader) {
         this.oaConfig = ConfigProvider.getConfig(appClassloader);
@@ -65,9 +65,9 @@ public class ConfigProcessor implements Closeable {
     }
 
     public OpenApiConfig getOpenAPIConfig() {
-    	return this.smallryeConfig;
+        return this.smallryeConfig;
     }
-    
+
     public boolean isValidating() {
         return validation;
     }
@@ -83,8 +83,7 @@ public class ConfigProcessor implements Closeable {
                 ((Closeable) this.oaConfig).close();
                 this.oaConfig = null;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to close config: " + e.getMessage());
             }
@@ -109,7 +108,7 @@ public class ConfigProcessor implements Closeable {
         builder.append(OpenApiConstants.SCAN_DEPENDENCIES_JARS).append("=").append(smallryeConfig.scanDependenciesJars()).append("\n");
         builder.append(OpenApiConstants.CUSTOM_SCHEMA_REGISTRY_CLASS).append("=").append(smallryeConfig.customSchemaRegistryClass()).append("\n");
         builder.append(OpenApiConstants.APP_PATH_DISABLE).append("=").append(smallryeConfig.applicationPathDisable()).append("\n");
-        
+
         builder.append(VALIDATION).append("=").append(validation).append("\n");
         builder.append(FILE_POLLING_INTERVAL).append("=").append(pollingInterval).append("\n");
 

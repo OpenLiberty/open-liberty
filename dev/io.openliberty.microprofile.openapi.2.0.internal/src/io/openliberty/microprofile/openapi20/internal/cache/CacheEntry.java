@@ -62,7 +62,7 @@ public class CacheEntry {
     private static final String FILES_LIST_FILE = "files";
 
     private String appName;
-    private Path cacheDir;
+    private final Path cacheDir;
     private OpenAPI model;
     private OpenApiConfig config;
     private Properties configProperties;
@@ -72,7 +72,7 @@ public class CacheEntry {
      * Create a new empty cache entry
      * <p>
      * This entry can then be populated with {@link #setModel(OpenAPI)}, {@link #setConfig(OpenApiConfig)} and {@link #addDependentFile(Path)} and stored with {@link #write()}.
-     * 
+     *
      * @param applicationName the name of the application
      * @param baseDir the cache directory
      * @return the new CacheEntry
@@ -86,7 +86,7 @@ public class CacheEntry {
      * <p>
      * This entry can then be compared with an entry for the current application using {@link #isUpToDateWith(CacheEntry)} and if it is up to date, the cached model can be
      * retrieved with {@link #getModel()}.
-     * 
+     *
      * @param applicationName the application name
      * @param baseDir the cache directory
      * @return the loaded cache entry, or {@code null} if a valid cache entry does not exist for this application name
@@ -126,7 +126,7 @@ public class CacheEntry {
      * <p>
      * Where files within archives are used to generate the model (e.g. library jars within a war file, or a war file within an ear file), only the enclosing archive needs to added
      * using this method.
-     * 
+     *
      * @param file the file
      * @throws IOException if the file's size or last modified time can't be read
      */
@@ -142,7 +142,7 @@ public class CacheEntry {
 
     /**
      * Set the config for the cache key
-     * 
+     *
      * @param config the config
      */
     public void setConfig(OpenApiConfig config) {
@@ -152,7 +152,7 @@ public class CacheEntry {
 
     /**
      * Set the model to be cached
-     * 
+     *
      * @param model the model
      */
     public void setModel(OpenAPI model) {
@@ -161,7 +161,7 @@ public class CacheEntry {
 
     /**
      * Get the model stored in this CacheEntry
-     * 
+     *
      * @return the model
      */
     public OpenAPI getModel() {
@@ -172,7 +172,7 @@ public class CacheEntry {
      * Check whether this cache entry is up to date with the current state of the application and config.
      * <p>
      * This method may only be called on a cache entry read from disk with {@link #read(String, Path)}.
-     * 
+     *
      * @param current a CacheEntry representing the current state. It must have the config set and all dependent files added before this method is called.
      * @return {@code true} if this cache entry is up to date, {@code false} otherwise
      */
