@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,23 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+@Deprecated
 /**
- *
+ * Replaced by EERepeatActions. Need to move the EEVersion enum somewhere else.
  */
 public class EERepeatTests {
 
     public static enum EEVersion {
-        EE7, EE8, EE9, EE7_FULL, EE8_FULL, EE9_FULL
+        EE6, EE7, EE8, EE9, EE10, EE7_FULL, EE8_FULL, EE9_FULL, EE10_FULL
     }
 
     public static FeatureReplacementAction getEEAction(EEVersion version, String serverName, String clientName) {
         FeatureReplacementAction action = null;
         switch (version) {
+            case EE6: {
+                action = new EE6FeatureReplacementAction();
+                break;
+            }
             case EE7: {
                 action = FeatureReplacementAction.EE7_FEATURES();
                 break;
@@ -34,6 +39,10 @@ public class EERepeatTests {
                 action = FeatureReplacementAction.EE9_FEATURES();
                 break;
             }
+            case EE10: {
+                action = FeatureReplacementAction.EE10_FEATURES();
+                break;
+            }
             case EE7_FULL: {
                 action = FeatureReplacementAction.EE7_FEATURES().fullFATOnly();
                 break;
@@ -44,6 +53,10 @@ public class EERepeatTests {
             }
             case EE9_FULL: {
                 action = FeatureReplacementAction.EE9_FEATURES().fullFATOnly();
+                break;
+            }
+            case EE10_FULL: {
+                action = FeatureReplacementAction.EE10_FEATURES().fullFATOnly();
                 break;
             }
             default: {
