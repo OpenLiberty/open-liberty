@@ -40,7 +40,6 @@ import java.util.UUID;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
@@ -58,7 +57,7 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
 /**
  *
  */
-public class WsLocationAdminImpl implements WsLocationAdmin {
+public class WsLocationAdminImpl implements WsLocationAdmin, CheckpointHook {
     private static final TraceComponent tc = Tr.register(WsLocationAdminImpl.class);
 
     private static final String LOC_INTERNAL_LIB_DIR = "wlp.lib.dir";
@@ -219,6 +218,10 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
     final protected VirtualRootResource commonRoot;
 
+    private String serverCfgDirStr;
+
+    private final String variableSourceDirs;
+
     /**
      * Initialize file locations based on provided initial properties (which
      * includes some set in response to command line argument parsing).
@@ -233,7 +236,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      */
     protected WsLocationAdminImpl(BundleContext bundleContext, Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
-        String serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
+        serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
         String serverLogsDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_LOGS_DIR);
         String bootstrapLibStr = (String) config.get(LOC_INTERNAL_LIB_DIR);
@@ -340,36 +343,30 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        final String variableSourceDirs = (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS);
-        final String configDirStr = serverCfgDirStr;
+        variableSourceDirs = (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS);
+
         SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, variableSourceDirs);
+    }
 
-        if (bundleContext != null) {
-            //Service ranking of this hook here needs to less than service ranking of restore hook in "com.ibm.ws.config.xml.internal.SystemConfiguration.SystemConfiguration(BundleContext, SystemConfigSupport, ConfigurationAdmin). This is important in order to maintain the order of running the hooks"
-            bundleContext.registerService(CheckpointHook.class, new CheckpointHook() {
-                @Override
-                public void restore() {
+    @Override
+    public void restore() {
+        List<File> fileSystemVariableDirs = new ArrayList<File>();
+        String envVarSourceDir = getEnv(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
 
-                    List<File> fileSystemVariableDirs = new ArrayList<File>();
-                    String envVarSourceDir = getEnv(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
+        if (envVarSourceDir == null) {
+            fileSystemVariableDirs.add(new File(serverCfgDirStr, "variables"));
+        } else {
+            StringTokenizer st = new StringTokenizer(envVarSourceDir, File.pathSeparator);
+            while (st.hasMoreTokens()) {
+                String dir = st.nextToken();
+                fileSystemVariableDirs.add(new File(dir));
+            }
+        }
 
-                    if (envVarSourceDir == null) {
-                        fileSystemVariableDirs.add(new File(configDirStr, "variables"));
-                    } else {
-                        StringTokenizer st = new StringTokenizer(envVarSourceDir, File.pathSeparator);
-                        while (st.hasMoreTokens()) {
-                            String dir = st.nextToken();
-                            fileSystemVariableDirs.add(new File(dir));
-                        }
-                    }
+        String newVariableSourceDirs = getMultiplePathProperty(fileSystemVariableDirs);
 
-                    String newVariableSourceDirs = getMultiplePathProperty(fileSystemVariableDirs);
-
-                    if (!newVariableSourceDirs.equals(variableSourceDirs)) {
-                        SymbolRegistry.getRegistry().replaceStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, newVariableSourceDirs);
-                    }
-                };
-            }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
+        if (!newVariableSourceDirs.equals(variableSourceDirs)) {
+            SymbolRegistry.getRegistry().replaceStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, newVariableSourceDirs);
         }
     }
 

@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.service.location.internal;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 
 import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
@@ -19,6 +20,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -47,6 +50,12 @@ public class Activator implements BundleActivator, CheckpointHook {
      */
     private PseudoContextFactory contextFactory;
 
+    private ServiceRegistration<WsLocationAdmin> wsLocationAdminRegistration;
+
+    private ServiceRegistration<VariableRegistry> variableRegistryRegistration;
+
+    private ServiceRegistration<CheckpointHook> checkpointHookRegistration;
+
     @Override
     @FFDCIgnore(IllegalStateException.class)
     public void start(BundleContext context) throws Exception {
@@ -54,9 +63,13 @@ public class Activator implements BundleActivator, CheckpointHook {
         FrameworkState.isValid();
         try {
             WsLocationAdminImpl locServiceImpl = WsLocationAdminImpl.createLocations(context.getBundle(0).getBundleContext());
-            context.registerService(WsLocationAdmin.class.getName(), locServiceImpl, locServiceImpl.getServiceProps());
+            wsLocationAdminRegistration = context.registerService(WsLocationAdmin.class, locServiceImpl, locServiceImpl.getServiceProps());
             VariableRegistryHelper variableRegistry = new VariableRegistryHelper();
-            context.registerService(VariableRegistry.class.getName(), variableRegistry, null);
+            variableRegistryRegistration = context.registerService(VariableRegistry.class, variableRegistry, null);
+            // Service ranking of checkpointHookRegistration needs to be less than com.ibm.ws.config.xml.internal.SystemConfiguration.checkpointHookRegistration.
+            // This is important in order to maintain the order of running the hooks.
+            checkpointHookRegistration = context.registerService(CheckpointHook.class, locServiceImpl,
+                                                                 FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
 
             // Assume this is the first place that tries to set this
             try {
@@ -87,6 +100,17 @@ public class Activator implements BundleActivator, CheckpointHook {
     @Override
     public void stop(BundleContext context) throws Exception {
         this.context = null;
+
+        // unregister service registrations
+        if (wsLocationAdminRegistration != null) {
+            wsLocationAdminRegistration.unregister();
+        }
+        if (variableRegistryRegistration != null) {
+            variableRegistryRegistration.unregister();
+        }
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
 
         // If we set the InitialContextFactoryBuilder (and it is still set to ours),
         // then we must clear it out.
