@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,16 +28,8 @@ Import-Package: \
     javax.xml.bind.annotation;version=!,\
     *
 
-Export-Package: \
-    io.openliberty.microprofile.openapi20,\
-    io.openliberty.microprofile.openapi20.css,\
-    io.openliberty.microprofile.openapi20.servlets,\
-    io.openliberty.microprofile.openapi20.utils,\
-    io.openliberty.microprofile.openapi20.validation
-
 Private-Package: \
-    io.openliberty.microprofile.openapi20.cache,\
-    io.openliberty.microprofile.openapi20.merge
+    io.openliberty.microprofile.openapi20.internal.*
 
 Include-Resource: \
     META-INF/services=resources/META-INF/services,\
@@ -47,13 +39,13 @@ Include-Resource: \
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
--dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\
-    io.openliberty.microprofile.openapi20.ApplicationRegistry,\
-    io.openliberty.microprofile.openapi20.ApplicationProcessor,\
-    io.openliberty.microprofile.openapi20.MergeDisabledAlerter,\
-    io.openliberty.microprofile.openapi20.OLOASFactoryResolverImpl,\
-    io.openliberty.microprofile.openapi20.css.CustomCSSProcessor,\
-    io.openliberty.microprofile.openapi20.DefaultHostListener
+-dsannotations: io.openliberty.microprofile.openapi20.internal.ApplicationListener,\
+    io.openliberty.microprofile.openapi20.internal.ApplicationRegistry,\
+    io.openliberty.microprofile.openapi20.internal.ApplicationProcessor,\
+    io.openliberty.microprofile.openapi20.internal.MergeDisabledAlerter,\
+    io.openliberty.microprofile.openapi20.internal.OLOASFactoryResolverImpl,\
+    io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
+    io.openliberty.microprofile.openapi20.internal.DefaultHostListener
 
 WS-TraceGroup: MPOPENAPI
 

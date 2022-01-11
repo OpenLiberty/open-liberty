@@ -26,9 +26,9 @@ import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.merge.ModelCopy;
-import io.openliberty.microprofile.openapi20.merge.ModelType;
-import io.openliberty.microprofile.openapi20.merge.ModelType.ModelParameter;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelCopy;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType.ModelParameter;
 
 public class TestModelCopy {
     

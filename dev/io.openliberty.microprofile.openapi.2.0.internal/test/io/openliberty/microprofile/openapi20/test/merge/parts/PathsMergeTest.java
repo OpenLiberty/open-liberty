@@ -26,8 +26,8 @@ import org.eclipse.microprofile.openapi.models.Paths;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.OpenAPIProvider;
-import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
+import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
 
 public class PathsMergeTest {
 

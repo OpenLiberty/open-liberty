@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 
 public class TestValidationContextHelper implements Context {

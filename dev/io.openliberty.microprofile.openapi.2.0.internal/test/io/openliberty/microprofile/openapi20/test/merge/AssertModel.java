@@ -27,8 +27,8 @@ import java.util.Optional;
 import org.eclipse.microprofile.openapi.models.Constructible;
 import org.junit.Assert;
 
-import io.openliberty.microprofile.openapi20.merge.ModelType;
-import io.openliberty.microprofile.openapi20.merge.ModelType.ModelParameter;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType.ModelParameter;
 
 public class AssertModel {
 

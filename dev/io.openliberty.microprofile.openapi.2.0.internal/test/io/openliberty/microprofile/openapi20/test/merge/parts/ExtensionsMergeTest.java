@@ -25,8 +25,8 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.merge.ModelEquality;
-import io.openliberty.microprofile.openapi20.merge.ModelType;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelEquality;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType;
 
 /**
  *
