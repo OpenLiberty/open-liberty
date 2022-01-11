@@ -27,11 +27,13 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -53,6 +55,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
+import jakarta.ejb.EJBException;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.LastExecution;
@@ -507,7 +510,213 @@ public class ConcurrencyTestServlet extends FATServlet {
                 }
 
             } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new EJBException(x);
+            }
+        });
+    }
+
+    /**
+     * Use a ManagedExecutorService from a ManagedExecutorDefinition that is defined in an EJB.
+     */
+    @Test
+    public void testEJBManagedExecutorDefinition() throws Exception {
+        Exchanger<Long> exchanger = new Exchanger<Long>();
+        Supplier<Object> runTestAsEJB = () -> {
+            // Enforcement of maxAsync=1
+            try {
+                long threadId = Thread.currentThread().getId();
+                Long otherThreadId = exchanger.exchange(threadId, 1, TimeUnit.SECONDS);
+                fail("This thread (" + threadId + ") and other thread (" + otherThreadId +
+                     ") are running at the same time in violation of maxAsync=1 of ManagedExecutorDefinition");
+            } catch (InterruptedException x) {
                 throw new CompletionException(x);
+            } catch (TimeoutException x) {
+                // expected
+            }
+
+            // Third-party ZipCode context must be cleared
+            assertEquals(0, ZipCode.get());
+
+            // Application context must be propagated
+            try {
+                return InitialContext.doLookup("java:comp/concurrent/executor8");
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ZipCode.set(55901);
+
+                ManagedExecutorService executor = InitialContext.doLookup("java:app/env/concurrent/executor8ref");
+
+                CompletableFuture<?> future1 = executor.supplyAsync(runTestAsEJB);
+                CompletableFuture<?> future2 = executor.supplyAsync(runTestAsEJB);
+
+                Object result = CompletableFuture.anyOf(future1, future2).join();
+                assertNotNull(result);
+                assertTrue(result.toString(), result instanceof ManagedExecutorService);
+
+                // Cancel whichever hasn't completed yet,
+                future1.cancel(true);
+                future2.cancel(true);
+            } catch (NamingException x) {
+                throw new EJBException(x);
+            } finally {
+                ZipCode.clear();
+            }
+        });
+    }
+
+    /**
+     * Use a ManagedScheduledExecutorService from a ManagedScheduledExecutorDefinition that is defined in an EJB.
+     */
+    @Test
+    public void testEJBManagedScheduledExecutorDefinition() throws Exception {
+        Function<CyclicBarrier, Integer> runTestAsEJB = barrier -> {
+            // Enforcement of maxAsync=2
+            try {
+                int index = barrier.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("3 async tasks were able to run at once, in violation of maxAsync=2. Arrival index: " + index);
+            } catch (BrokenBarrierException x) {
+                // expected
+            } catch (InterruptedException | TimeoutException x) {
+                throw new CompletionException(x);
+            }
+
+            // Third-party List context must be propagated
+            assertEquals("[28, 45, 53]", ListContext.asString());
+
+            // Application context must be propagated
+            try {
+                ManagedScheduledExecutorService result = InitialContext.doLookup("java:module/concurrent/executor9");
+                assertNotNull(result);
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+
+            // Third-party Timestamp context must be cleared
+            assertEquals(null, Timestamp.get());
+
+            return ZipCode.get();
+        };
+
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                // Add some fake context
+                ListContext.newList();
+                ListContext.add(28);
+                ListContext.add(45);
+                ListContext.add(53);
+                Timestamp.set();
+
+                ManagedScheduledExecutorService executor = InitialContext.doLookup("java:module/concurrent/executor9");
+
+                CompletableFuture<CyclicBarrier> stage1 = executor.newIncompleteFuture();
+
+                ZipCode.set(55901);
+                CompletableFuture<?> stage2a = stage1.thenApplyAsync(runTestAsEJB);
+
+                ZipCode.set(55902);
+                CompletableFuture<?> stage2b = stage1.thenApplyAsync(runTestAsEJB);
+
+                ZipCode.set(55904);
+                CompletableFuture<?> stage2c = stage1.thenApplyAsync(runTestAsEJB);
+
+                ZipCode.set(55906);
+                assertTrue(stage1.complete(new CyclicBarrier(3)));
+
+                CyclicBarrier barrier = stage1.join();
+
+                // 2 must run in parallel
+                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 2; )
+                    TimeUnit.MILLISECONDS.sleep(200);
+
+                assertEquals(2, barrier.getNumberWaiting());
+
+                // ensure that all 3 do not run in parallel
+                try {
+                    CompletableFuture.allOf(stage2a, stage2b, stage2c).get(1, TimeUnit.SECONDS);
+                    fail("3 async tasks must not run in parallel when maxAsync=2");
+                } catch (TimeoutException x) {
+                    // expected
+                }
+
+                // break the barrier
+                barrier.reset();
+
+                // wait for the third async task to start
+                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 1; )
+                    TimeUnit.MILLISECONDS.sleep(200);
+
+                barrier.reset();
+
+                assertEquals(Integer.valueOf(55901), stage2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(Integer.valueOf(55902), stage2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(Integer.valueOf(55904), stage2c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new EJBException(x);
+            } finally {
+                ListContext.clear();
+                Timestamp.clear();
+                ZipCode.clear();
+            }
+        });
+    }
+
+    /**
+     * Use a ManagedThreadFactory from a ManagedThreadFactoryDefinition that is defined in an EJB.
+     */
+    @Test
+    public void testEJBManagedThreadFactoryDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/tf");
+
+                try {
+                    ZipCode.set(55904);
+                    Thread.currentThread().setPriority(4);
+
+                    LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+
+                    threadFactory.newThread(() -> {
+                        results.add(Thread.currentThread().getPriority());
+                        results.add(ZipCode.get());
+                        try {
+                            results.add(InitialContext.doLookup("java:module/concurrent/tf"));
+                        } catch (Throwable x) {
+                            results.add(x);
+                        }
+                    }).start();
+
+                    // Verify that priority from the ManagedThreadFactoryDefinition is used,
+                    Object priority = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    assertEquals(Integer.valueOf(6), priority);
+
+                    // Verify that custom thread context type ZipCode is cleared
+                    Object zipCode = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    assertEquals(Integer.valueOf(0), zipCode);
+
+                    // Verify that Application component context is propagated,
+                    Object resultOfLookup = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    if (resultOfLookup instanceof Throwable)
+                        throw new CompletionException((Throwable) resultOfLookup);
+                    assertNotNull(resultOfLookup);
+                    assertTrue(resultOfLookup.toString(), resultOfLookup instanceof ManagedThreadFactory);
+                } finally {
+                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                    ZipCode.clear();
+                }
+
+            } catch (InterruptedException | NamingException x) {
+                throw new EJBException(x);
             }
         });
     }

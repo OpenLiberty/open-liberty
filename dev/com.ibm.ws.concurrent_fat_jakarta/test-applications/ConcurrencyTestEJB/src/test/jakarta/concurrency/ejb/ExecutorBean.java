@@ -41,7 +41,8 @@ import test.context.timing.Timestamp;
                                     hungTaskThreshold = 540000,
                                     maxAsync = 2)
 @ManagedThreadFactoryDefinition(name = "java:module/concurrent/tf",
-                                context = "java:app/concurrent/appContextSvc")
+                                context = "java:app/concurrent/appContextSvc",
+                                priority = 6)
 @Stateless
 public class ExecutorBean implements Executor {
     @Resource(lookup = "java:comp/concurrent/executor8", name = "java:app/env/concurrent/executor8ref")
