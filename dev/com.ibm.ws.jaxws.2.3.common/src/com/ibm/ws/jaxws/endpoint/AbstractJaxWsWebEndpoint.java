@@ -164,7 +164,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
      * {@inheritDoc}
      */
     @Override
-    public void invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void invoke(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
             updateDestination(request);
             final HttpServletRequest req = request;

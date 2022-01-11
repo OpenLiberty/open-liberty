@@ -5,8 +5,6 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
-    <logging traceSpecification="*=info:logservice=all:app.manager=all"/>
 
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>
