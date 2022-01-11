@@ -30,7 +30,7 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> {
     // the number of available processors.
     public static int getNumCHBuckets() {
         // determine number of processors
-        final int baseVal = CpuInfo.getAvailableProcessors() * 20;
+        final int baseVal = CpuInfo.getAvailableProcessors().get() * 20;
 
         // determine next power of two
         int pow = 2;
