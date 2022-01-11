@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -627,8 +628,9 @@ class ResolveDirector extends AbstractDirector {
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
+        Collection<String> assetsToInstall = null;
         try {
-            Collection<String> assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
+            assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
             if (assetsToInstall.isEmpty()) {
                 return new ArrayList<List<RepositoryResource>>(0);
             }
@@ -648,6 +650,22 @@ class ResolveDirector extends AbstractDirector {
             }
 
         } catch (RepositoryResolutionException e) {
+            if (assetsToInstall != null) {
+                log(Level.FINE, "RespositoryResolutionException while processing [" + Arrays.toString(assetsToInstall.toArray()) + "]");
+            }
+            log(Level.FINE, Arrays.toString(e.getStackTrace()));
+            if (e.getTopLevelFeaturesNotResolved() != null) {
+                log(Level.FINE, Arrays.toString(e.getTopLevelFeaturesNotResolved().toArray()));
+            }
+            if (e.getAllRequirementsNotFound() != null) {
+                log(Level.FINE, Arrays.toString(e.getAllRequirementsNotFound().toArray()));
+            }
+            if (e.getAllRequirementsResourcesNotFound() != null) {
+                log(Level.FINE, Arrays.toString(e.getAllRequirementsResourcesNotFound().toArray()));
+            }
+            if (e.getFeatureConflicts() != null) {
+                log(Level.FINE, e.getFeatureConflicts().toString());
+            }
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
         } catch (RepositoryException e) {

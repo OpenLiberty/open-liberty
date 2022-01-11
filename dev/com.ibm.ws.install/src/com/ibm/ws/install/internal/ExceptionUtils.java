@@ -454,12 +454,14 @@ public class ExceptionUtils {
                 List productMatchers = SelfExtractor.parseAppliesTo(mr.getRequirementName());
                 wlp.lib.extract.ReturnCode validInstallRC = SelfExtractor.validateProductMatches(installDir, productMatchers);
                 String currentEdition = "";
-                if (validInstallRC.getMessageKey().equals("invalidVersion") || validInstallRC.getMessageKey().equals("invalidEdition")) {
-                    int productEdition = 2;
-                    if (validInstallRC.getMessageKey().equals("invalidEdition")) {
-                        productEdition = 0;
+                if (validInstallRC != null && validInstallRC.getMessageKey() != null) {
+                    if (validInstallRC.getMessageKey().equals("invalidVersion") || validInstallRC.getMessageKey().equals("invalidEdition")) {
+                        int productEdition = 2;
+                        if (validInstallRC.getMessageKey().equals("invalidEdition")) {
+                            productEdition = 0;
+                        }
+                        currentEdition = (String) validInstallRC.getParameters()[productEdition];
                     }
-                    currentEdition = (String) validInstallRC.getParameters()[productEdition];
                 }
                 if (!!!currentEdition.equals("Liberty Early Access")) {
                     if (isNewerVersion(version, newestVersion, false)) {
