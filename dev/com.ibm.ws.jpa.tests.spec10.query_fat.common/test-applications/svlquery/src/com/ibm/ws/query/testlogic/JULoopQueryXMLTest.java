@@ -38,6 +38,7 @@ import com.ibm.ws.query.utils.DeptEmpListView;
 import com.ibm.ws.query.utils.DeptEmpView;
 import com.ibm.ws.query.utils.SimpleDeptEmpView;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -13513,6 +13514,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13526,20 +13529,19 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST203; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                     String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireDate-->JPAEmpBean.HIREDATE]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Date]";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -13585,6 +13587,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13599,20 +13603,19 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST204; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                     String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTime-->JPAEmpBean.HIRETIME]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Time].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -13658,6 +13661,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13672,20 +13677,19 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST205; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                     String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTimestamp-->JPAEmpBean.HIRETIMESTAMP]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Timestamp].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -30918,6 +30922,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -30932,7 +30938,6 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST478; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
@@ -30942,7 +30947,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                 if (eStr == null) {
                     eStr = e.toString();
                 }
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
 //                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
 //                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
                     String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
@@ -30950,7 +30955,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -30996,6 +31001,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -31010,7 +31017,6 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST479; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
@@ -31020,7 +31026,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                 if (eStr == null) {
                     eStr = e.toString();
                 }
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
 //                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
 //                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
                     String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
@@ -31028,7 +31034,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -31136,6 +31142,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -31150,7 +31158,6 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST481; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
@@ -31160,7 +31167,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                 if (eStr == null) {
                     eStr = e.toString();
                 }
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
 //                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
 //                                     "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
                     String lookFor = "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
@@ -31169,7 +31176,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.
@@ -31550,6 +31557,8 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -31564,7 +31573,6 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //TEST487; 1 tuple
 
             // Expect an Exception
-            JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
                 List rList = q.getResultList();
@@ -31574,7 +31582,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                 if (eStr == null) {
                     eStr = e.toString();
                 }
-                if (pvdr == JPAProviderImpl.ECLIPSELINK) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
 //                    String lookFor = "Problem compiling [select new com.ibm.ws.query.utils.DeptEmpListView (d.no, d.name, d.budget, d.emps ) from DeptBean d ]. \n" +
 //                                     "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
                     String lookFor = "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
@@ -31583,7 +31591,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
                     Assert.assertTrue("Received unexpected exception cause: " + eStr, result);
-                } else if (pvdr == JPAProviderImpl.OPENJPA) {
+                } else if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
 
                 } else {
                     // Other provider impl, probably Hibernate.

@@ -22,6 +22,8 @@ import java.util.concurrent.CompletionStage;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.context.Dependent;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
@@ -37,6 +39,10 @@ import javax.naming.NamingException;
                           propagated = SECURITY,
                           cleared = {},
                           unchanged = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:comp/concurrent/appcontextclearedexecutor",
+                           context = "java:module/concurrent/appcontextcleared")
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/remainingcontextunchangedexecutor",
+                                    context = "java:module/concurrent/remainingcontextunchanged")
 @Dependent
 public class DependentScopedBean {
     private boolean value;

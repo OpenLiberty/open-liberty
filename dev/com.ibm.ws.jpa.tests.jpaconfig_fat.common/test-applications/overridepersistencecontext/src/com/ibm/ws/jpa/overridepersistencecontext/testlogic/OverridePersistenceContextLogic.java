@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
@@ -51,6 +52,8 @@ public class OverridePersistenceContextLogic extends AbstractTestLogic {
             return;
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -77,7 +80,6 @@ public class OverridePersistenceContextLogic extends AbstractTestLogic {
                 Object propertyValue = em.getProperties().get(key);
 
                 PersistenceContextType type = jpaResource.getPcCtxInfo().getPcType();
-                JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
 
                 // PersistenceContexts override the persistence property. On EclipseLink, that value overrides the JPAComponent configuration
                 // PersistenceContexts override the persistence property. On Hibernate 2.2+, that value overrides the JPAComponent configuration

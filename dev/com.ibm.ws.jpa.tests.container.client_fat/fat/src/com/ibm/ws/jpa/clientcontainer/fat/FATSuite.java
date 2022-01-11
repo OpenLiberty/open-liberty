@@ -11,8 +11,6 @@
 
 package com.ibm.ws.jpa.clientcontainer.fat;
 
-import org.junit.ClassRule;
-import org.junit.rules.ExternalResource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -32,20 +30,20 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;
 
-    @ClassRule
-    public static ExternalResource testRule = new ExternalResource() {
-        /**
-         * Creates a client and runs its application
-         */
-        @Override
-        protected void before() throws Exception {
-
-        };
-
-        @Override
-        protected void after() {
-
-        };
-    };
+//    @ClassRule
+//    public static ExternalResource testRule = new ExternalResource() {
+//        /**
+//         * Creates a client and runs its application
+//         */
+//        @Override
+//        protected void before() throws Exception {
+//
+//        };
+//
+//        @Override
+//        protected void after() {
+//
+//        };
+//    };
 
 }

@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.entitymanager.model.JPA10EntityManagerEntityA;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -158,7 +159,8 @@ public class EntityManagerLogic extends AbstractTestLogic {
         }
 
         // TODO: OpenJPA Bug: OpenJPA does not throw the exception required by the JPA specification
-        if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
             return;
         }
 

@@ -29,7 +29,7 @@ import jakarta.enterprise.context.RequestScoped;
 
 @ContextServiceDefinition(name = "java:comp/concurrent/txcontextunchanged",
                           propagated = APPLICATION,
-                          unchanged = TRANSACTION,
+                          unchanged = { "MyUnavailableContextType", TRANSACTION },
                           cleared = ALL_REMAINING)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/appContextExecutor",
                                     context = "java:comp/concurrent/txcontextunchanged")

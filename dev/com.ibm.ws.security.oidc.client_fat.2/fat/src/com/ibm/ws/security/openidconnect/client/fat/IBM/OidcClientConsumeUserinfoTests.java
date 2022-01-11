@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,9 +81,10 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         };
 
         // apps are taking too long to start up for the normal app check, but, we need to be sure that they're ready before we try to use them.
-        List<String> extraMsgs = new ArrayList<String>() {
+        List<String> opExtraMsgs = new ArrayList<String>() {
             {
                 add("CWWKZ0001I.*" + JwtConstants.JWT_SIMPLE_BUILDER_SERVLET);
+                add("CWWKZ0001I.*" + Constants.TOKEN_ENDPOINT_SERVLET);
                 add("CWWKZ0001I.*" + Constants.USERINFO_ENDPOINT_SERVLET);
             }
         };
@@ -95,7 +96,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         String certType = Constants.X509_CERT;
 
         // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_userinfo.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, opExtraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
         SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         //Start the OIDC RP server and setup default values

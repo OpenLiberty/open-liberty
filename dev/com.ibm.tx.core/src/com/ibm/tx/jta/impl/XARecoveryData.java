@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
+
 import java.io.File;
 import java.io.Serializable;
 import java.security.AccessController;
@@ -26,6 +26,7 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
+import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.JTAResource;
@@ -370,7 +371,7 @@ public class XARecoveryData extends PartnerLogData {
     }
 
     @Override
-    public boolean recover(ClassLoader cl, Xid[] knownXids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
+    public boolean recover(ClassLoader cl, ConcurrentHashSet<Xid> knownXids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recover", new Object[] { cl, knownXids, failedStoken, cruuid, restartEpoch, this });
 
@@ -684,7 +685,7 @@ public class XARecoveryData extends PartnerLogData {
      * @param knownXids The array of Xids that are possible matches.
      * @return true if we find a match, false if not.
      */
-    protected boolean canWeForgetXid(XidImpl ourXid, Xid[] knownXids) {
+    protected boolean canWeForgetXid(XidImpl ourXid, ConcurrentHashSet<Xid> knownXids) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "canWeForgetXid", new Object[] {
                                                           ourXid,
@@ -692,8 +693,8 @@ public class XARecoveryData extends PartnerLogData {
 
         if (tc.isDebugEnabled()) {
             // We are only called if knownXids != null
-            for (int i = 0; i < knownXids.length; i++) {
-                Tr.debug(tc, "tx xid[" + i + "] " + knownXids[i]);
+            for (Xid xid : knownXids) {
+                Tr.debug(tc, "tx xid: " + xid);
             }
         }
 
@@ -722,28 +723,29 @@ public class XARecoveryData extends PartnerLogData {
         /* Iterate over all the known XIDs (if there are none, we won't */
         /* iterate over anything). */
         /*----------------------------------------------------------------*/
-        int x = 0;
-        while ((x < knownXids.length) && (forgetMe == true)) {
+        boolean firstXid = true;
+        for (Xid xid : knownXids) {
             /*------------------------------------------------------------*/
             /* If this is the first XID, shorten the JTA bqual to the */
             /* length of the transaction bqual. We are assuming here */
             /* that all the transaction bquals are the same length. If */
             /* they arent, for some reason, we will need to revisit this. */
             /*------------------------------------------------------------*/
-            if (x == 0) {
-                final int bqualLength = (knownXids[x].getBranchQualifier()).length;
+            if (firstXid) {
+                final int bqualLength = (xid.getBranchQualifier()).length;
                 jtaBqual = new byte[bqualLength];
                 System.arraycopy(fullJtaBqual, 0,
                                  jtaBqual, 0,
                                  bqualLength);
+                firstXid = false;
             }
 
             /*------------------------------------------------------------*/
             /* Separate the transaction XID into comparable units. */
             /*------------------------------------------------------------*/
-            txnFormatId = knownXids[x].getFormatId();
-            txnGtrid = knownXids[x].getGlobalTransactionId();
-            txnBqual = knownXids[x].getBranchQualifier();
+            txnFormatId = xid.getFormatId();
+            txnGtrid = xid.getGlobalTransactionId();
+            txnBqual = xid.getBranchQualifier();
 
             /*------------------------------------------------------------*/
             /* Compare the individual parts of the XID for equality. If */
@@ -757,11 +759,10 @@ public class XARecoveryData extends PartnerLogData {
                     Tr.debug(tc, "Xid has been matched to a transaction:",
                              ourXid);
                 }
-                auditTransactionXid(ourXid, knownXids[x], getXAResourceInfo());
+                auditTransactionXid(ourXid, xid, getXAResourceInfo());
                 forgetMe = false;
+                break;
             }
-
-            x++;
         }
 
         if (tc.isEntryEnabled())
@@ -898,16 +899,16 @@ public class XARecoveryData extends PartnerLogData {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "fsc, rm", new Object[] { _fsc, _fsc.getRecoveryManager() });
         // Get current list of recovering txns
-        final TransactionImpl[] trans = (_fsc.getRecoveryManager().getRecoveringTransactions());
+        final ConcurrentHashSet<TransactionImpl> trans = _fsc.getRecoveryManager().getRecoveringTransactions();
         // Go through list and look for a match.  We should find a match as we are called on the "recover" thread
         // and we have already found a match of the XID with a transaction XID.  Note: the XID matching is common
         // with ZOS which is why we need to go back and look for the TransactionImpl again.
-        for (int i = 0; i < trans.length; i++) {
+        for (TransactionImpl t : trans) {
             // txnXid should be an XidImpl
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Matching xid with ", trans[i]);
-            if (xid.equals(trans[i].getXidImpl())) {
-                int status = trans[i].getStatus();
+                Tr.debug(tc, "Matching xid with ", t);
+            if (xid.equals(t.getXidImpl())) {
+                int status = t.getStatus();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "getTransactionStatus", Util.printStatus(status));
                 return status;
@@ -926,16 +927,16 @@ public class XARecoveryData extends PartnerLogData {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "fsc, rm", new Object[] { _fsc, _fsc.getRecoveryManager() });
         // Get current list of recovering txns
-        final TransactionImpl[] trans = (_fsc.getRecoveryManager().getRecoveringTransactions());
+        final ConcurrentHashSet<TransactionImpl> trans = (_fsc.getRecoveryManager().getRecoveringTransactions());
         // Go through list and look for a match.  We should find a match as we are called on the "recover" thread
         // and we have already found a match of the XID with a transaction XID.  Note: the XID matching is common
         // with ZOS which is why we need to go back and look for the TransactionImpl again.
-        for (int i = 0; i < trans.length; i++) {
+        for (TransactionImpl t : trans) {
             // txnXid should be an XidImpl
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Matching xid with ", trans[i]);
-            if (xid.equals(trans[i].getXidImpl())) {
-                long id = trans[i].getLocalTID();
+                Tr.debug(tc, "Matching xid with ", t);
+            if (xid.equals(t.getXidImpl())) {
+                long id = t.getLocalTID();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "getTransactionId", id);
                 return Long.toString(id);

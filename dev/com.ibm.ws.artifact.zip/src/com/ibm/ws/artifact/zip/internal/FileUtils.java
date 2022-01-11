@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.function.Function;
 
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
@@ -30,88 +31,84 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
  */
 public class FileUtils {
 
-    public static boolean fileIsFile(final File target) {
+    public static <R> R fileAction(final File target, Function<File,R> function) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            return AccessController.doPrivileged(new PrivilegedAction<R>() {
                 @Override
-                public Boolean run() {
-                    return target.isFile();
+                public R run() {
+                    return function.apply(target);
                 }
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
+
+    private static final Function<File, Boolean> isFileAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.isFile();
+        }
+    };
+
+    public static boolean fileIsFile(final File target) {
+        return fileAction(target, isFileAction);
+    }
+
+    private static final Function<File, Boolean> isDirectoryAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.isDirectory();
+        }
+    };
 
     public static boolean fileIsDirectory(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return target.isDirectory();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(target, isDirectoryAction);
     }
+
+    private static final Function<File, Boolean> existsAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.exists();
+        }
+    };
 
     public static boolean fileExists(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return target.exists();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(target, existsAction);
     }
+
+    private static final Function<File, Long> lengthAction = new Function<File, Long>() {
+        @Override
+        public Long apply(File target) {
+            return target.length();
+        }
+    };
 
     public static long fileLength(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Long>() {
-                @Override
-                public Long run() {
-                    return target.length();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(target, lengthAction);
     }
+
+    private static final Function<File, File[]> listFilesAction = new Function<File, File[]>() {
+        @Override
+        public File[] apply(File target) {
+            return target.listFiles();
+        }
+    };
 
     public static File[] listFiles(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<File[]>() {
-                @Override
-                public File[] run() {
-                    return target.listFiles();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(target, listFilesAction);
     }
 
-    public static String[] list(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<String[]>() {
-                @Override
-                public String[] run() {
-                    return target.list();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
+    private static final Function<File, String[]> listAction = new Function<File, String[]>() {
+        @Override
+        public String[] apply(File target) {
+            return target.list();
         }
+    };
+
+    public static String[] list(final File target) {
+        return fileAction(target, listAction);
     }
 
     public static InputStream getInputStream(final File target) throws FileNotFoundException {
@@ -156,18 +153,15 @@ public class FileUtils {
         }
     }
 
-    public static long fileLastModified(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Long>() {
-                @Override
-                public Long run() {
-                    return target.lastModified();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
+    private static final Function<File, Long> lastModifiedAction = new Function<File, Long>() {
+        @Override
+        public Long apply(File target) {
+            return target.lastModified();
         }
+    };
+
+    public static long fileLastModified(final File target) {
+        return fileAction(target, lastModifiedAction);
     }
 
     public static boolean fileSetLastModified(final File target, final long lastModified) {
@@ -184,64 +178,48 @@ public class FileUtils {
         }
     }
 
-    public static boolean fileCanRead(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return target.canRead();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
+    private static final Function<File, Boolean> canReadAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.canRead();
         }
+    };
+
+    public static boolean fileCanRead(final File target) {
+        return fileAction(target, canReadAction);
     }
+
+    private static final Function<File, Boolean> canWriteAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.canWrite();
+        }
+    };
 
     public static boolean fileCanWrite(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return target.canWrite();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(target, canWriteAction);
     }
 
-    public static boolean fileMkDirs(final File target) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return target.mkdirs();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
+    private static final Function<File, Boolean> deleteAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.delete();
         }
-    }
+    };
 
     public static boolean fileDelete(final File file) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return file.delete();
-                }
-            });
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
+        return fileAction(file, deleteAction);
     }
 
+    private static final Function<File, Boolean> ensureDirExistsAction = new Function<File, Boolean>() {
+        @Override
+        public Boolean apply(File target) {
+            return target.mkdirs() || target.exists();
+        }
+    };
+
     public static boolean ensureDirExists(File dir) {
-        return (fileMkDirs(dir) || fileExists(dir));
+        return fileAction(dir, ensureDirExistsAction);
     }
 
     public static boolean tryToClose(Closeable closeable) {

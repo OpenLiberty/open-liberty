@@ -8,7 +8,7 @@ com.ibm.ws.transaction.hadb_fat.oracle.2
 com.ibm.ws.transaction.hadb_fat.postgresql.1
 com.ibm.ws.transaction.hadb_fat.postgresql.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.1
-om.ibm.ws.transaction.hadb_fat.sqlserver.2
+com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2.1
 com.ibm.ws.transaction.cloud_fat.db2.2

@@ -23,6 +23,7 @@ import com.ibm.ws.jpa.fvt.entity.entities.IAttributeConfigFieldEntity;
 import com.ibm.ws.jpa.fvt.entity.support.SerializableClass;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.BasicAnnotationEntityEnum;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -199,6 +200,8 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
@@ -266,7 +269,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             // rather then a non-negotiable dictation.
             // OpenJPA honors the lazy behavior
             // EclipseLink still loads the String. (change introduced by task 130951)
-            JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
             switch (provider) {
                 case ECLIPSELINK:
                     Assert.assertTrue(targetEntityType.getEntityName() + " (id=" + id + ")'s 'StringValLazy' field is loaded.",
@@ -347,6 +349,8 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         int id = 1;
         boolean onPersist = false;
         boolean onCommit = false;
@@ -382,7 +386,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             serializableClass.setSomeInt(42);
             new_entity.setNotNullable(serializableClass);
 
-            JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
             try {
                 System.out.println("Persisting " + new_entity);
                 onPersist = true;
@@ -401,7 +404,7 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                  * TODO: EclipseLink does not throw an exception and seems to ignore '@Basic(optional = false)'
                  * This may be a bug in EclipseLink and should be investigated.
                  */
-                if (JPAProviderImpl.ECLIPSELINK.equals(provider)) {
+                if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
                     // Cleanup since there was no failure
                     System.out.println("Beginning new transaction...");
                     jpaResource.getTj().beginTransaction();
@@ -1078,6 +1081,8 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
             return;
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         int id = 1;
         boolean onPersist = false;
         boolean onCommit = false;
@@ -1125,7 +1130,6 @@ public class BasicAnnotationTestLogic extends AbstractTestLogic {
                 } catch (AssertionError ae) {
                     throw ae;
                 } catch (Throwable t) {
-                    JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
                     switch (provider) {
                         case ECLIPSELINK:
                         case OPENJPA:

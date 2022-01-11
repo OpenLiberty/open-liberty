@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class MultiRecoveryTest3 extends MultiRecoveryTest{
 
 	@Test
+	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
 	public void WSTXMPR009AFVT() throws Exception {
 		recoveryTest(server1, server2, "901","server1");
@@ -56,6 +57,7 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	}
 	
 	@Test
+	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException"})
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
 	// Need Jon Review:
@@ -92,12 +94,14 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	}
 	
 	@Test
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void WSTXMPR011CFVT() throws Exception {
 		recoveryTest(server1, server2, "1103","both");
 	}
 	
 	@Test
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException", "java.net.SocketException" })
 	public void WSTXMPR012AFVT() throws Exception {
@@ -113,7 +117,6 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@Mode(TestMode.LITE)
 	public void WSTXMPR012CFVT() throws Exception {
 		recoveryTest(server1, server2, "1203","both");
 	}

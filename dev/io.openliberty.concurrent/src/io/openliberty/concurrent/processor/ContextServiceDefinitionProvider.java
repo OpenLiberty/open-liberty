@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,6 @@ public class ContextServiceDefinitionProvider extends InjectionProcessorProvider
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ContextService.class);
 
-    private final InjectionProcessor<ContextServiceDefinition, ContextServiceDefinition.List> processor = new Processor();
-
     @Override
     @Trivial
     public Class<ContextServiceDefinition> getAnnotationClass() {
@@ -61,7 +59,7 @@ public class ContextServiceDefinitionProvider extends InjectionProcessorProvider
 
     @Override
     public InjectionProcessor<ContextServiceDefinition, ContextServiceDefinition.List> createInjectionProcessor() {
-        return processor;
+        return new Processor();
     }
 
     class Processor extends InjectionProcessor<ContextServiceDefinition, ContextServiceDefinition.List> {

@@ -56,18 +56,12 @@ public class OracleTraceTestServlet extends FATServlet {
 
     //helper method
     public static void insert(DataSource ds, int key, String value) throws SQLException {
-        Connection conn = ds.getConnection();
-
-        try {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
+        try (Connection conn = ds.getConnection();
+                        PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
             ps.setInt(1, key);
             ps.setString(2, value);
             ps.executeUpdate();
-            ps.close();
-        } finally {
-            conn.close();
         }
-
     }
 
     //These tests are not expected to actually create an SSL connection to our Oracle Database
@@ -86,5 +80,24 @@ public class OracleTraceTestServlet extends FATServlet {
     @Test
     public void testDSDUsingConnProps() throws Exception {
         insert(conn_prop_dsd, 3, "three");
+    }
+
+    //started from test class and verifies info message is only logged once
+    public void testReadOnlyInfo() throws Exception {
+        try (Connection conn = conn_prop_ds.getConnection();
+                        PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
+            conn.setReadOnly(false);
+            ps.setInt(1, 4);
+            ps.setString(2, "four");
+            ps.executeUpdate();
+        }
+
+        try (Connection conn = conn_prop_ds.getConnection();
+                        PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
+            conn.setReadOnly(false);
+            ps.setInt(1, 5);
+            ps.setString(2, "five");
+            ps.executeUpdate();
+        }
     }
 }

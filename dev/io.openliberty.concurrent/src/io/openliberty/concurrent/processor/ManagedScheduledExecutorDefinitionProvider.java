@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,6 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedScheduledExecutor.class);
 
-    private final InjectionProcessor<ManagedScheduledExecutorDefinition, ManagedScheduledExecutorDefinition.List> processor = new Processor();
-
     @Override
     @Trivial
     public Class<ManagedScheduledExecutorDefinition> getAnnotationClass() {
@@ -61,7 +59,7 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
 
     @Override
     public InjectionProcessor<ManagedScheduledExecutorDefinition, ManagedScheduledExecutorDefinition.List> createInjectionProcessor() {
-        return processor;
+        return new Processor();
     }
 
     class Processor extends InjectionProcessor<ManagedScheduledExecutorDefinition, ManagedScheduledExecutorDefinition.List> {

@@ -28,6 +28,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh17369.model.SimpleEntityOLGH17369;
 import com.ibm.ws.jpa.olgh17369.model.SimpleEntityOLGH17369_;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -171,9 +172,9 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
             return;
         }
 
@@ -444,9 +445,9 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
             return;
         }
 
@@ -671,9 +672,9 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
             return;
         }
 
@@ -840,9 +841,9 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAProviderImpl.OPENJPA.equals(provider)) {
+        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
             return;
         }
 

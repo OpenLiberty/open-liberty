@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -32,6 +34,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -58,6 +61,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.concurrent.ZonedTrigger;
@@ -342,6 +346,173 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Use currentContextExecutor to capture a snapshot of the current thread context and apply
+     * it elsewhere at later points in time.
+     */
+    @Test
+    public void testCurrentContextExecutor() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvc");
+
+        try {
+            Thread.currentThread().setPriority(7);
+
+            ZipCode.set(55901);
+            Executor nwRochesterExecutor = contextSvc.currentContextExecutor();
+
+            ZipCode.set(55902);
+            Executor swRochesterExecutor = contextSvc.currentContextExecutor();
+
+            ZipCode.set(55906);
+            Thread.currentThread().setPriority(6);
+            Timestamp.set();
+            Long timestamp1 = Timestamp.get();
+
+            nwRochesterExecutor.execute(() -> {
+                assertEquals(55901, ZipCode.get()); // propagated
+                assertEquals(null, Timestamp.get()); // cleared
+                assertEquals(Thread.NORM_PRIORITY, Thread.currentThread().getPriority()); // cleared
+                try {
+                    assertNotNull(InitialContext.doLookup("java:module/concurrent/ZLContextSvc")); // unchanged
+                } catch (NamingException x) {
+                    throw new AssertionError(x);
+                }
+            });
+
+            assertEquals(55906, ZipCode.get());
+            assertEquals(timestamp1, Timestamp.get());
+            assertEquals(6, Thread.currentThread().getPriority());
+
+            swRochesterExecutor.execute(() -> {
+                assertEquals(55902, ZipCode.get()); // propagated
+                assertEquals(null, Timestamp.get()); // cleared
+                assertEquals(Thread.NORM_PRIORITY, Thread.currentThread().getPriority()); // cleared
+                try {
+                    assertNotNull(InitialContext.doLookup("java:module/concurrent/ZLContextSvc")); // unchanged
+                } catch (NamingException x) {
+                    throw new AssertionError(x);
+                }
+            });
+
+            assertEquals(55906, ZipCode.get());
+            assertEquals(timestamp1, Timestamp.get());
+            assertEquals(6, Thread.currentThread().getPriority());
+        } finally {
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            Timestamp.clear();
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ContextService from a ContextServiceDefinition that is defined in an EJB.
+     */
+    @Test
+    public void testEJBContextServiceDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/ZLContextSvc");
+
+                // Put some fake context onto the thread:
+                Timestamp.set();
+                ZipCode.set(55906);
+                ListContext.newList();
+                ListContext.add(6);
+                ListContext.add(12);
+                Thread.currentThread().setPriority(4);
+                Long ts0 = Timestamp.get();
+                Thread.sleep(100); // ensure we progress from the current timestamp
+
+                try {
+                    // Contextualize a Callable with the above context:
+                    Callable<Object[]> contextualCallable = contextSvc.contextualCallable(() -> {
+                        // The Callable records the context
+                        Object lookupResult;
+                        try {
+                            lookupResult = InitialContext.doLookup("java:comp/concurrent/executor8");
+                        } catch (NamingException x) {
+                            throw new CompletionException(x);
+                        }
+                        return new Object[] {
+                                              lookupResult,
+                                              ZipCode.get(),
+                                              ListContext.asString(),
+                                              Thread.currentThread().getPriority(),
+                                              Timestamp.get()
+                        };
+                    });
+
+                    // Alter some of the context on the current thread
+                    ZipCode.set(55902);
+                    ListContext.newList();
+                    ListContext.add(2);
+                    Thread.currentThread().setPriority(3);
+
+                    // Run with the captured context:
+                    Object[] results;
+                    try {
+                        results = contextualCallable.call();
+                    } catch (RuntimeException x) {
+                        throw x;
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+
+                    // Application context was configured to be propagated
+                    assertTrue(results[0].toString(), results[0] instanceof ManagedExecutorService);
+
+                    // Zip code context was configured to be propagated
+                    assertEquals(Integer.valueOf(55906), results[1]);
+
+                    // List context was configured to be propagated
+                    assertEquals("[6, 12]", results[2]);
+
+                    // Priority context was configured to be left unchanged
+                    assertEquals(Integer.valueOf(3), results[3]);
+
+                    // Timestamp context was configured to be cleared
+                    assertNull(results[4]);
+
+                    // Verify that context is restored on the current thread:
+                    assertEquals(55902, ZipCode.get());
+                    assertEquals("[2]", ListContext.asString());
+                    assertEquals(3, Thread.currentThread().getPriority());
+                    assertEquals(ts0, Timestamp.get());
+
+                    // Run the supplier on another thread
+                    Future<Object[]> future = unmanagedThreads.submit(contextualCallable);
+                    results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+                    // Application context was configured to be propagated
+                    assertTrue(results[0].toString(), results[0] instanceof ManagedExecutorService);
+
+                    // Zip code context was configured to be propagated
+                    assertEquals(Integer.valueOf(55906), results[1]);
+
+                    // List context was configured to be propagated
+                    assertEquals("[6, 12]", results[2]);
+
+                    // Priority context was configured to be left unchanged
+                    assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[3]);
+
+                    // Timestamp context was configured to be cleared
+                    assertNull(results[4]);
+                } finally {
+                    // Remove fake context
+                    Timestamp.clear();
+                    ZipCode.clear();
+                    ListContext.clear();
+                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                }
+
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new CompletionException(x);
+            }
+        });
+    }
+
+    /**
      * Verify that a ManagedExecutorService propagates context to dependent stages that are
      * created from a failedFuture().
      */
@@ -462,6 +633,40 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
         } finally {
             blocker.countDown();
+        }
+    }
+
+    /**
+     * Per the spec JavaDoc, ContextService.getExecutionProperties can be used on a
+     * contextual proxy obtained by createContextualProxy, but otherwise raises
+     * IllegalArgumentException.
+     */
+    @Test
+    public void testGetExecutionProperties() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/appContextSvc");
+        Function<Integer, Integer> triple = i -> i * 3;
+        Map<String, String> execProps = Collections.singletonMap(ManagedTask.IDENTITY_NAME, "testGetExecutionProperties");
+
+        @SuppressWarnings("unchecked")
+        Function<Integer, Integer> proxyFn = contextSvc.createContextualProxy(triple, execProps, Function.class);
+        assertEquals(execProps, contextSvc.getExecutionProperties(proxyFn));
+
+        Function<Integer, Integer> contextFn = contextSvc.contextualFunction(triple);
+        try {
+            Map<String, String> unexpected = contextSvc.getExecutionProperties(contextFn);
+            fail("getExecutionProperties must raise IllegalArgumentException when the proxy is " +
+                 "not created by createContextualProxy. Result: " + unexpected);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
+
+        Executor contextExecutor = contextSvc.currentContextExecutor();
+        try {
+            Map<String, String> unexpected = contextSvc.getExecutionProperties(contextExecutor);
+            fail("getExecutionProperties must raise IllegalArgumentException when the proxy is " +
+                 "not created by createContextualProxy. Result: " + unexpected);
+        } catch (IllegalArgumentException x) {
+            // expected
         }
     }
 
