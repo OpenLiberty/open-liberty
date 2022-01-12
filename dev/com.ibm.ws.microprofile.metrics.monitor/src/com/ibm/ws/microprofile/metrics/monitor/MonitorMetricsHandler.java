@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package com.ibm.ws.microprofile.metrics.monitor;
 import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -34,6 +37,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
+
+import io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler;
 
 @Component(name = "com.ibm.ws.microprofile.metrics.monitor.MonitorMetricsHandler", property = { "service.vendor=IBM"})
 public class MonitorMetricsHandler {
@@ -122,36 +127,71 @@ public class MonitorMetricsHandler {
     	metricsSet.removeAll(removeSet);
 	}
 
-    private void register() {
-		MBeanServer	mbs = ManagementFactory.getPlatformMBeanServer();
-		for (String sName : mappingTable.getKeys() ) {
-			Set<ObjectInstance> mBeanObjectInstanceSet;
-			try {
-				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
-				if (sName.contains("ThreadPoolStats")) {
-					final int MAX_TIME_OUT = 5000;
-					int currentTimeOut = 0;
-					while (mBeanObjectInstanceSet.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
-						Thread.sleep(50);
-						mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
-						currentTimeOut+=50;
-					}
-				}
-		        for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
-		            String objectName = objInstance.getObjectName().toString();
-		            String[][] data = mappingTable.getData(objectName);
-					if (data != null) {
-						register(objectName, data);
-		            }
-		        }
-			} catch (Exception e) {
-	            if (tc.isDebugEnabled()) {
-	                Tr.debug(tc, "register exception message: ", e.getMessage());
-	                FFDCFilter.processException(e, MonitorMetricsHandler.class.getSimpleName(), "register:Exception");
-	            }
-			}
-		}
-	}
+    protected void register() {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ReentrantLock lock = new ReentrantLock();
+        for (String sName : mappingTable.getKeys()) {
+            Set<ObjectInstance> mBeanObjectInstanceSet;
+
+            try {
+                lock.lock();
+                try {
+                    /*
+                     * ThreadPoolStats is launched in a separate thread. It will invoke
+                     * queryMbeans() as well Lock just in case.
+                     */
+                    mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
+                } finally {
+                    lock.unlock();
+                }
+
+                if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty()) {
+                    ExecutorService execServ = Executors.newSingleThreadExecutor();
+                    execServ.execute(() -> {
+                        final int MAX_TIME_OUT = 5000;
+                        int currentTimeOut = 0;
+                        Set<ObjectInstance> mBeanObjectInstanceSetTemp = mBeanObjectInstanceSet;
+                        while (mBeanObjectInstanceSet.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
+                            try {
+                                Thread.sleep(50);
+                                lock.lock();
+                                try {
+                                    mBeanObjectInstanceSetTemp = mbs.queryMBeans(new ObjectName(sName), null);
+                                } finally {
+                                    lock.unlock();
+                                }
+                                currentTimeOut += 50;
+                            } catch (Exception e) {
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "register exception message: ", e.getMessage());
+                                    FFDCFilter.processException(e, MonitorMetricsHandler.class.getSimpleName(),
+                                            "register:Exception");
+                                }
+                            }
+                        }
+                        registerMbeanObjects(mBeanObjectInstanceSetTemp);
+                    });
+                    execServ.shutdown();
+                }
+                registerMbeanObjects(mBeanObjectInstanceSet);
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "register exception message: ", e.getMessage());
+                    FFDCFilter.processException(e, MonitorMetricsHandler.class.getSimpleName(), "register:Exception");
+                }
+            }
+        }
+    }
+    
+    private synchronized void registerMbeanObjects(Set<ObjectInstance> mBeanObjectInstanceSet) {
+        for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
+            String objectName = objInstance.getObjectName().toString();
+            String[][] data = mappingTable.getData(objectName);
+            if (data != null) {
+                register(objectName, data);
+            }
+        }
+    }
     
 	protected void register(String objectName, String[][] data) {
         MonitorMetrics metrics = null;
