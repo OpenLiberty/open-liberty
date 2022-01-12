@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,8 @@ plugins {
     id "eclipse-wtp"
 }
 
-def grpcVersion = '1.38.1'
-def protocVersion = '3.13.0'
+def grpcVersion = '1.43.2'
+def protocVersion = '3.19.2'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
 // this will allow us to avoid recompiling the protobuf stubs on every build, and additionally
@@ -124,7 +124,7 @@ configurations {
 dependencies {
 
     // Adding libraries the application to run in FAT
-    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.13.0',
+    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.19.2',
     'com.google.code.gson:gson:2.8.6',
     'com.google.guava:guava:30.1-android',
     'com.google.errorprone:error_prone_annotations:2.4.0',
@@ -141,7 +141,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     //
-    implementation 'com.google.protobuf:protobuf-java-util:3.13.0'
+    implementation 'com.google.protobuf:protobuf-java-util:3.19.2'
     // @jar is needed since some of the dependencies of java-util were overwritten
     providedCompile 'io.grpc:grpc-protobuf:' + grpcVersion + '@jar'
     compileOnly 'io.grpc:grpc-stub:' + grpcVersion
@@ -151,7 +151,7 @@ dependencies {
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 
     // provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.13.0'
+    providedCompile 'com.google.protobuf:protobuf-java:3.19.2'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
@@ -178,8 +178,8 @@ dependencies {
       'io.grpc:grpc-stub:' + grpcVersion,
       'io.grpc:grpc-protobuf:' + grpcVersion,
       'io.grpc:grpc-netty:' + grpcVersion,
-      'com.google.protobuf:protobuf-java:3.13.0',
-      'com.google.protobuf:protobuf-java-util:3.13.0'
+      'com.google.protobuf:protobuf-java:3.19.2',
+      'com.google.protobuf:protobuf-java-util:3.19.2'
 }
 
 
