@@ -653,20 +653,20 @@ class ResolveDirector extends AbstractDirector {
             if (assetsToInstall != null) {
                 log(Level.FINE, "RespositoryResolutionException while processing [" + Arrays.toString(assetsToInstall.toArray()) + "]");
             }
-            log(Level.FINE, Arrays.toString(e.getStackTrace()));
+            log(Level.FINE, "Stack Trace : " + Arrays.toString(e.getStackTrace()));
             if (e.getTopLevelFeaturesNotResolved() != null) {
-                log(Level.FINE, Arrays.toString(e.getTopLevelFeaturesNotResolved().toArray()));
+                log(Level.FINE, "getTopLevelFeaturesNotResolved : " + Arrays.toString(e.getTopLevelFeaturesNotResolved().toArray()));
             }
             if (e.getAllRequirementsNotFound() != null) {
-                log(Level.FINE, Arrays.toString(e.getAllRequirementsNotFound().toArray()));
+                log(Level.FINE, "getAllRequirementsNotFound : " + Arrays.toString(e.getAllRequirementsNotFound().toArray()));
             }
             if (e.getAllRequirementsResourcesNotFound() != null) {
-                log(Level.FINE, Arrays.toString(e.getAllRequirementsResourcesNotFound().toArray()));
+                log(Level.FINE, "getAllRequirementsResourcesNotFound : " + Arrays.toString(e.getAllRequirementsResourcesNotFound().toArray()));
             }
             if (e.getFeatureConflicts() != null) {
-                log(Level.FINE, e.getFeatureConflicts().toString());
+                log(Level.FINE, "getFeatureConflicts : " + e.getFeatureConflicts().toString());
             }
-
+            log(Level.FINE, "=====");
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
         } catch (RepositoryException e) {
             throw ExceptionUtils.create(e, assetNamesProcessed, true, proxy, defaultRepo(), isOpenLiberty);

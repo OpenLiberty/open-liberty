@@ -287,9 +287,9 @@ public class DataModelSerializer {
          * Construct the pair
          *
          * @param mainObject
-         *            The first object to store
+         *                                     The first object to store
          * @param incompatibleFieldsObject
-         *            The object containing all the incompatible errors
+         *                                     The object containing all the incompatible errors
          */
         public JSONArtrifactPair(JsonStructure mainObject, JsonObject incompatibleFieldsObject) {
             this.mainObject = mainObject;
@@ -388,7 +388,7 @@ public class DataModelSerializer {
      * Gets a class for a JSON field name, by looking in a given Class for an appropriate setter.
      * The setter is assumed not to be a Collection.
      *
-     * @param fieldName the name to use to search for the getter.
+     * @param fieldName             the name to use to search for the getter.
      * @param classToLookForFieldIn the Class to search for the getter within.
      * @return instance of ClassAndMethod if one is found, null otherwise
      */
@@ -400,7 +400,7 @@ public class DataModelSerializer {
      * Gets a class for a JSON field name, by looking in a given Class for an appropriate setter.
      * The setter is assumed to be a Collection.
      *
-     * @param fieldName the name to use to search for the getter.
+     * @param fieldName             the name to use to search for the getter.
      * @param classToLookForFieldIn the Class to search for the getter within.
      * @return instance of ClassAndMethod if one is found, null otherwise
      */
@@ -412,16 +412,16 @@ public class DataModelSerializer {
      * Utility method, given a JSON field name, and an associated POJO, it will hunt for the appropriate setter to use, and if located return
      * the type the setter expects, along with a reflected reference to the method itself.
      *
-     * @param fieldName the name of the json key being queried.
+     * @param fieldName             the name of the json key being queried.
      * @param classToLookForFieldIn the object to hunt within for appropriate setters.
-     * @param isForArray true, if the setter is expected to be for a collection, based on if the json data was an array.
+     * @param isForArray            true, if the setter is expected to be for a collection, based on if the json data was an array.
      * @return instance of ClassAndMethod associating the class and method for the setter.
      */
     private static ClassAndMethod internalGetClassForFieldName(String fieldName, Class<?> classToLookForFieldIn, boolean isForArray) {
         Method found = null;
 
         //precalc the field name as a setter to use for each method test.
-        String fieldNameAsASetter = new StringBuilder("set").append(fieldName.substring(0, 1).toUpperCase()).append(fieldName.substring(1)).toString();
+        String fieldNameAsASetter = new StringBuilder("set").append(fieldName.substring(0, 1).toUpperCase(Locale.ENGLISH)).append(fieldName.substring(1)).toString();
 
         //hunt for any matching setter in the object
         for (Method m : classToLookForFieldIn.getMethods()) {
@@ -473,9 +473,9 @@ public class DataModelSerializer {
     /**
      * Reads every field from a JsonObject, and creates an instance of typeOfObject, and sets the data into that object.
      *
-     * @param json JsonObject from JSONP
+     * @param json         JsonObject from JSONP
      * @param typeOfObject The class of the object to create
-     * @param verify Specifies if we should check the JSON is something we know how to process
+     * @param verify       Specifies if we should check the JSON is something we know how to process
      * @return The object we created
      * @throws IOException
      * @throws BadVersionException
@@ -697,7 +697,7 @@ public class DataModelSerializer {
      * Handles arrays of simple values, and arrays of complex objects.
      *
      * @param jsonArray the JSONP instance to read data from
-     * @param list the list to add the POJOs/simple data to.
+     * @param list      the list to add the POJOs/simple data to.
      * @param listClass the type of data in the list (required to instantiate elements for pojos)
      * @throws BadVersionException
      * @throws IOException
