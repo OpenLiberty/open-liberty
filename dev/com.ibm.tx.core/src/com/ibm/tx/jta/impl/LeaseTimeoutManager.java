@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,12 @@ public class LeaseTimeoutManager {
             _recoveryAgent = recoveryAgent;
             _leaseLog = leaseLog;
 
+            // Renew lease
+            boolean leaseRenewed = renewLease();
+
+            // Disable lease checking if we failed to renew our own lease;
+            recoveryAgent.setCheckingLeases(leaseRenewed);
+
             schedule(delay);
         }
 
@@ -75,21 +81,7 @@ public class LeaseTimeoutManager {
                 Tr.debug(tc, "LeaseRenewal",
                          new Object[] { _recoveryIdentity, _recoveryGroup });
 
-            boolean leaseRenewed = false;
-            try {
-                if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
-                    _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
-
-                    _leaseLog.releaseLocalLease(_recoveryIdentity);
-                    leaseRenewed = true;
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
-                }
-            } catch (Exception e) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Swallow exception " + e);
-            }
+            boolean leaseRenewed = renewLease();
 
             // Disable lease checking if we failed to renew our own lease;
             _recoveryAgent.setCheckingLeases(leaseRenewed);
@@ -108,6 +100,36 @@ public class LeaseTimeoutManager {
                 _alarm.cancel();
                 _alarm = null;
             }
+        }
+
+        /**
+         * Renew the lease for this recovery identity in this recovery group.
+         *
+         * @return
+         */
+        private boolean renewLease() {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "renewLease");
+
+            boolean leaseRenewed = false;
+            try {
+                if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
+                    _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
+
+                    _leaseLog.releaseLocalLease(_recoveryIdentity);
+                    leaseRenewed = true;
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
+                }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Swallow exception " + e);
+            }
+
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "renewLease", leaseRenewed);
+            return leaseRenewed;
         }
     }
 
