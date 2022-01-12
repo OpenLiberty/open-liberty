@@ -432,9 +432,9 @@ public class MvnUtils {
     }
 
     /**
-     * Get the standard http port for the Liberty server
+     * Get the standard https port for the Liberty server
      *
-     * @return the http port number
+     * @return the https port number
      */
     private int getPortSecure() throws Exception {
         return server.getPort(PortType.WC_defaulthost_secure);

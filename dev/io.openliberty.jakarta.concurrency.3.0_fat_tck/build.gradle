@@ -22,7 +22,7 @@ dependencies {
 task copyTestNG(type: Copy) {
   mustRunAfter jar
   from configurations.testNG
-  into new File(autoFvtDir, 'publish/shared/resources/testng')
+  into new File(autoFvtDir, 'publish/shared/resources/testng/6.14.3')
   rename 'testng-.*.jar', 'testng.jar'
   rename 'jcommander-.*.jar', 'jcommander.jar'
   rename 'bsh-.*.jar', 'bsh.jar'

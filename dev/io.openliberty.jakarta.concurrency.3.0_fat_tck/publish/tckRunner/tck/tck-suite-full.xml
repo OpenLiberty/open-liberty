@@ -11,8 +11,8 @@
 <suite name="jakarta-concurrency" verbose="2" configfailurepolicy="continue">
     <test name="jakarta-concurrency.tck.full">
         <packages>
-            <package name="ee.jakarta.concurrent.api.*"/>
-            <package name="ee.jakarta.concurrent.spec.*"/>
+            <package name="ee.jakarta.tck.concurrent.api.*"/>
+            <package name="ee.jakarta.tck.concurrent.spec.*"/>
         </packages>
     </test>
 </suite>

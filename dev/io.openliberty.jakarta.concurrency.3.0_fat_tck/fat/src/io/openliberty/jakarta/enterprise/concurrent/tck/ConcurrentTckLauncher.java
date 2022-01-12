@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PortType;
@@ -32,7 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 /**
- * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
+ * This is a test class that runs the whole Jakarta Concurrency TCK. The TCK results
  * are copied in the results/junit directory before the Simplicity FAT framework
  * generates the html report - so there is detailed information on individual
  * tests as if they were running as simplicity junit FAT tests in the standard
@@ -92,7 +93,7 @@ public class ConcurrentTckLauncher {
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
-    //@Test //TODO disable
+    //@Test //TODO Enable once TCK is published on maven central
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrentTCK() throws Exception {
         String suiteXmlFile;
@@ -111,7 +112,7 @@ public class ConcurrentTckLauncher {
          */
         int result = MvnUtils.runTCKMvnCmd(
                                            server, //server to run on
-                                           "io.openliberty.jakarta.concurrency.2.0_fat_tck", //bucket name
+                                           "io.openliberty.jakarta.concurrency.3.0_fat_tck", //bucket name
                                            this.getClass() + ":launchConcurrentTCK", //launching method
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props

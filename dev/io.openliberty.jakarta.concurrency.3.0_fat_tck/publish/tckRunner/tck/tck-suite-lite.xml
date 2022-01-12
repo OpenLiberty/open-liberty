@@ -11,12 +11,12 @@
 <suite name="jakarta-concurrency" verbose="2" configfailurepolicy="continue">
 	<test name="jakarta-concurrency.tck.lite">
 		<packages>
-    		<package name="ee.jakarta.concurrent.api.*">
-    			<exclude name="ee.jakarta.concurrent.api.Trigger"/>
+    		<package name="ee.jakarta.tck.concurrent.api.*">
+    			<exclude name="ee.jakarta.tck.concurrent.api.Trigger"/>
     		</package>
-			<package name="ee.jakarta.concurrent.spec.*">
-				<exclude name="ee.jakarta.concurrent.spec.ManagedScheduledExecutorService.inheritedapi"/>
-				<exclude name="ee.jakarta.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"/>
+			<package name="ee.jakarta.tck.concurrent.spec.*">
+				<exclude name="ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi"/>
+				<exclude name="ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"/>
 			</package>
         </packages> 
 	</test>
