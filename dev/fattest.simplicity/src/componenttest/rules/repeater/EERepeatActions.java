@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatTests.EEVersion;
 
 public class EERepeatActions extends RepeatActions {
 

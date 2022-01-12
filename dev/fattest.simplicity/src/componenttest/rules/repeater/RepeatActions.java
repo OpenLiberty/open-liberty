@@ -15,9 +15,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatTests.EEVersion;
 
 public class RepeatActions {
+
+    public static enum EEVersion {
+        EE6, EE7, EE8, EE9, EE10
+    }
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified by
@@ -65,30 +68,43 @@ public class RepeatActions {
      * @return                A FeatureReplacementAction instance
      */
     public static FeatureReplacementAction forFeatureSet(Set<FeatureSet> allFeatureSets, FeatureSet featureSet, String server, TestMode testMode) {
+        //First create a base FeatureReplacementAction
+        //Need to use a FeatureReplacementAction which is specific to the EE version because it also contains the transformation code
         FeatureReplacementAction action = null;
         EEVersion eeVersion = featureSet.getEEVersion();
-        if (eeVersion == EEVersion.EE7)
+        if (eeVersion == EEVersion.EE6) {
+            action = new EE6FeatureReplacementAction();
+        } else if (eeVersion == EEVersion.EE7) {
             action = new EE7FeatureReplacementAction();
-        else if (eeVersion == EEVersion.EE8)
+        } else if (eeVersion == EEVersion.EE8) {
             action = new EE8FeatureReplacementAction();
-        else if (eeVersion == EEVersion.EE9)
+        } else if (eeVersion == EEVersion.EE9) {
             action = new JakartaEE9Action();
-        else if (eeVersion == EEVersion.EE10)
+        } else if (eeVersion == EEVersion.EE10) {
             action = new JakartaEE10Action();
-        else
+        } else {
             action = new FeatureReplacementAction();
+        }
+
+        //add all the features from the primary FeatureSet
         action.addFeatures(featureSet.getFeatures());
+
+        //remove all of features from the other FeatureSets
         for (FeatureSet featureSetToRemove : allFeatureSets) {
             if (!featureSetToRemove.equals(featureSet)) {
                 action.removeFeatures(featureSetToRemove.getFeatures());
             }
         }
+        //don't force features to be added if they were not required by the original server.xml
         action.forceAddFeatures(false);
+        //set the ID
         action.withID(featureSet.getID());
 
+        //set the server
         if (server != null) {
             action.forServers(server);
         }
+        //set the test mode
         if (testMode != null) {
             action.withTestMode(testMode);
         }
