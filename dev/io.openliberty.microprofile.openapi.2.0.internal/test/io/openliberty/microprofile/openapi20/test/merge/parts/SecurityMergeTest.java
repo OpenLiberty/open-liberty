@@ -68,7 +68,7 @@ public class SecurityMergeTest {
         validatePathServers(paths.getPathItem("/events"), doc2Security);
         validatePathServers(paths.getPathItem("/airlines"), doc2Security);
 
-        Assert.assertNull("Master server should be null", primaryOpenAPI.getServers());
+        Assert.assertNull("Servers should be null", primaryOpenAPI.getServers());
     }
 
     private PathItem createPathItem() {

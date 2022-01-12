@@ -89,7 +89,7 @@ public class ServersMergeTest {
         validatePathServers(paths.getPathItem("/inventory"), doc2Servers);
         validatePathServers(paths.getPathItem("/billing"), doc2Servers);
 
-        Assert.assertNull("Master server should be null", primaryOpenAPI.getServers());
+        Assert.assertNull("Servers should be null", primaryOpenAPI.getServers());
 
         primaryOpenAPI = TestUtil.merge(Arrays.asList(provider1, provider2, provider3));
         paths = primaryOpenAPI.getPaths();
@@ -98,7 +98,7 @@ public class ServersMergeTest {
         validatePathServersEmpty(paths.getPathItem("/basepath/timeline"));
         validatePathServers(paths.getPathItem("/basepath/news"), Arrays.asList(OASFactory.createServer().url("http://custom")));
 
-        Assert.assertNull("Master server should be null", primaryOpenAPI.getServers());
+        Assert.assertNull("Servers should be null", primaryOpenAPI.getServers());
     }
 
     private void validatePathServers(PathItem pathItem, List<Server> expectedServers) {

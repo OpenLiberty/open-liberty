@@ -56,7 +56,7 @@ public class ModelReaderImpl implements OASModelReader {
                                               .description("The test API server #2 - from model reader"))
                          .externalDocs(OASFactory.createObject(ExternalDocumentation.class)
                                                  .description("instructions for how to deploy this app")
-                                                 .url("https://github.com/microservices-api/oas3-airlines/blob/master/README.md"))
+                                                 .url("https://github.com/microservices-api/oas3-airlines"))
                          .paths(OASFactory.createObject(Paths.class)
                                           .addPathItem("/modelReader", OASFactory.createObject(PathItem.class)
                                                                                  .GET(OASFactory.createObject(Operation.class)
