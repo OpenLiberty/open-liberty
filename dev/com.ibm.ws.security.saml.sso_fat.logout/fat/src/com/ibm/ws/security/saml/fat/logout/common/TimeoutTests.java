@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -177,7 +177,7 @@ public class TimeoutTests extends SAMLLogoutCommonTest {
             expectationsLogout = vData.addExpectation(expectationsLogout, lastAction, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not get to the Logout skipped page (Body)", null, "You elected not to log out of all the services accessed during your session.");
             expectationsLogout = vData.addExpectation(expectationsLogout, SAMLConstants.PROCESS_LOGOUT_PROPAGATE_YES, SAMLConstants.IDP_PROCESS_LOG, SAMLConstants.STRING_MATCHES, "Did not get msg indicating that no session was found.", null, NO_SESSION_FOUND_MSG);
             // The idp session is destroyed because the SAML token is no longer valid - the local cookie still exists because the IDP deletes it  (that's an IDP issue, not a Liberty SP issue)
-            expectationsLogout = addCookieExpectations(expectationsLogout, lastAction, spShortLifetime_list, idp_session_list);
+            expectationsLogout = addCookieExpectations(expectationsLogout, lastAction, spShortLifetime_list, null); // don't check for shib_idp_session - Shibboleth IDP may or may not have cleaned it up - our SP has no control of that
             break;
         case HTTPSERVLETREMOTE:
             expectationsLogout = helpers.addMessageExpectation(testSAMLServer, expectationsLogout, lastAction, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Server did not log an error message", SAMLMessageConstants.CWWKS5218E_USER_SESSION_NOT_FOUND);

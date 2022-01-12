@@ -14,12 +14,11 @@ package com.ibm.ws.jpa.olgh19182.testlogic;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh19182.model.HelmetEntityOLGH19182;
 import com.ibm.ws.jpa.olgh19182.model.ShelfEntityOLGH19182;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -53,7 +52,8 @@ public class JPATestOLGH19182Logic extends AbstractTestLogic {
 
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
@@ -63,8 +63,6 @@ public class JPATestOLGH19182Logic extends AbstractTestLogic {
 
         // Execute Test Case
         try {
-            EntityManager em = jpaResource.getEm();
-
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
             if (jpaResource.getTj().isApplicationManaged()) {

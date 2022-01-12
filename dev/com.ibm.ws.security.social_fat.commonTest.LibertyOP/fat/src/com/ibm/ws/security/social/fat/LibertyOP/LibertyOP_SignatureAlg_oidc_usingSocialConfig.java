@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,7 @@ public class LibertyOP_SignatureAlg_oidc_usingSocialConfig extends Social_Signat
 
         List<String> opStartMsgs = new ArrayList<String>();
         opStartMsgs.add("CWWKS1631I.*");
+        opStartMsgs.add("CWWKZ0001I.*" + Constants.TOKEN_ENDPOINT_SERVLET);
 
         List<String> opExtraApps = new ArrayList<String>();
         opExtraApps.add(SocialConstants.OP_SAMPLE_APP);

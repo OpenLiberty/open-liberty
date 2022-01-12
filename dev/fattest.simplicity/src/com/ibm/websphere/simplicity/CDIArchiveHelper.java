@@ -100,7 +100,18 @@ public class CDIArchiveHelper {
      * @param srcPackage The package where the source beans.xml file can be found
      */
     public static WebArchive addBeansXML(WebArchive webArchive, Package srcPackage) {
-        return webArchive.addAsWebInfResource(srcPackage, BEANS_XML, BEANS_XML);
+        return addBeansXML(webArchive, srcPackage, BEANS_XML);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param webArchive  The WAR to create the beans.xml in
+     * @param srcPackage  The package where the source beans.xml file can be found
+     * @param srcFileName The exact name of the source beans.xml file
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, Package srcPackage, String srcFileName) {
+        return webArchive.addAsWebInfResource(srcPackage, srcFileName, BEANS_XML);
     }
 
     /**
@@ -171,7 +182,18 @@ public class CDIArchiveHelper {
      * @param srcPackage The package where the source beans.xml file can be found
      */
     public static JavaArchive addBeansXML(JavaArchive archive, Package srcPackage) {
-        return archive.addAsManifestResource(srcPackage, BEANS_XML, BEANS_XML);
+        return addBeansXML(archive, srcPackage, BEANS_XML);
+    }
+
+    /**
+     * Create a META-INF/beans.xml file in an a jar
+     *
+     * @param archive     The archive to create the beans.xml in
+     * @param srcPackage  The package where the source beans.xml file can be found
+     * @param srcFileName The exact name of the source beans.xml file
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive, Package srcPackage, String srcFileName) {
+        return archive.addAsManifestResource(srcPackage, srcFileName, BEANS_XML);
     }
 
     /**

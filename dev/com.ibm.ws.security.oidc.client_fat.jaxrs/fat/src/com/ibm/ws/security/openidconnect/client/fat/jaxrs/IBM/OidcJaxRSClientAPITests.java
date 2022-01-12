@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
@@ -91,9 +92,12 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
                 add(Constants.HELLOWORLD_SERVLET);
             }
         };
-        List<String> op_apps = new ArrayList<String>() {
+
+        // apps are taking too long to start up for the normal app check, but, we need to be sure that they're ready before we try to use them.
+        List<String> extraMsgs = new ArrayList<String>() {
             {
-                add(Constants.TOKENENDPT_APP);
+                add("CWWKZ0001I.*" + Constants.TOKEN_ENDPOINT_SERVLET);
+                add("CWWKZ0001I.*" + Constants.USERINFO_ENDPOINT_SERVLET);
             }
         };
 
@@ -165,7 +169,7 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
         genericTestServer.addIgnoredServerException(MessageConstants.CWWKG0033W_CONFIG_REFERENCE_NOT_FOUND);
 
         // Start the OIDC OP server - tell it to generate JWT access tokens
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub", "op_server_encrypt.xml", Constants.OIDC_OP, op_apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, null, null, true, true, tokenType, Constants.X509_CERT);
+        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub", "op_server_encrypt.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, null, null, true, true, tokenType, Constants.X509_CERT);
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp", "rp_server_api_orig.xml", Constants.OIDC_RP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
         testRPServer.addIgnoredServerException(MessageConstants.CWWKG0033W_CONFIG_REFERENCE_NOT_FOUND);

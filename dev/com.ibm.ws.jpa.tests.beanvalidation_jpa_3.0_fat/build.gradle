@@ -39,7 +39,7 @@ task addJPAFATTools (type: Copy) {
 task addhibernateJPA30(type: Copy) {
   shouldRunAfter jar
   from configurations.hibernateJPA30
-  into new File(autoFvtDir, 'publish/shared/resources/jpa30_hibernate')
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_beanvalidation_fat_jpa30_hibernate')
 }
 
 task copyFAT {

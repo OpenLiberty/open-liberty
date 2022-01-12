@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1910,7 +1910,9 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 } else {
                     keepChecking = false;
                     status = true;
-                    Log.info(thisClass, thisMethod, "The title in the reqponse was NOT validated - the actual title was: " + title);
+                    Log.info(thisClass, thisMethod, "The title in the response was NOT validated - the actual title was: " + title);
+                    Log.info(thisClass, thisMethod, "Caller is just checking to make sure that we can successfully access the requested url.");
+                    msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
                 }
                 Log.info(thisClass, thisMethod, "**********************************************************");
             } catch (Exception e) {

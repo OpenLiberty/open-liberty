@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,6 +144,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
                 nonEE9JavaEEFeatures.add(feature);
             }
         }
+
+        // TODO this is temporarily tolerated with EE 9 features for the early concurrent-3.0 beta. Remove it before GA.
+        nonEE9JavaEEFeatures.remove("concurrent-3.0");
 
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
         incompatibleValueAddFeatures.add("openapi-3.1"); // depends on mpOpenAPI

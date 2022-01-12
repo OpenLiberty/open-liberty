@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
@@ -31,6 +32,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleConnection;
@@ -155,6 +157,23 @@ public class OracleTestServlet extends FATServlet {
         } finally {
             con.close();
         }
+    }
+
+    // Ensure that readOnly true throws an exception
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException" })
+    public void testReadOnlyException() throws Exception {
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
+            con.setReadOnly(true);
+            ps.setInt(1, 4);
+            ps.setString(2, "four");
+            ps.executeUpdate();
+
+            fail("Should not have been able to executeUpdate with read only set to true");
+        } catch (SQLException e) {
+            assertTrue("SQLException should have contained DSRA9010E", e.getMessage().toUpperCase().contains("DSRA9010E"));
+        }
+
     }
 
     // Test for JDBC 4.2 ref cursors.  Should be able to execute a procedure that returns a cursor

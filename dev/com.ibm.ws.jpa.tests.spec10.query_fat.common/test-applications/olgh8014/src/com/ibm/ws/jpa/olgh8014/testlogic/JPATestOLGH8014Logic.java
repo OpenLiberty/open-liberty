@@ -17,13 +17,14 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Query;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh8014.model.NoResultEntityOLGH8014;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -64,6 +65,8 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -76,7 +79,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             Query q = em.createQuery("SELECT MIN(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             Object res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -87,7 +90,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MIN(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -99,7 +102,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT MAX(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -110,7 +113,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MAX(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -122,7 +125,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT AVG(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -133,7 +136,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT AVG(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -145,7 +148,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT SUM(n.itemInteger1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Long(0) is returned
                  */
@@ -156,7 +159,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT SUM(n.itemFloat1) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -213,6 +216,8 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -225,7 +230,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             Query q = em.createQuery("SELECT MIN(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             Object res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -236,7 +241,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MIN(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -248,7 +253,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT MAX(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -259,7 +264,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT MAX(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -271,7 +276,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT AVG(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Integer(0) is returned
                  */
@@ -283,7 +288,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT SUM(n.itemInteger2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Long(0) is returned
                  */
@@ -294,7 +299,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT SUM(n.itemFloat2) FROM NoResultEntityOLGH8014 n");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: NULL is not returned and instead Float(0) is returned
                  */
@@ -358,6 +363,8 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -379,7 +386,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
 
             q = em.createQuery("SELECT AVG(se.itemInteger1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Integer when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -391,7 +398,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT AVG(se.itemFloat1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Integer when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -407,7 +414,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(new Long(40), res);
             q = em.createQuery("SELECT SUM(se.itemFloat1) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Float when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -464,6 +471,8 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -500,7 +509,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             // Test AVG function
             q = em.createQuery("SELECT AVG(se.itemInteger2) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Integer when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -512,7 +521,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             }
             q = em.createQuery("SELECT AVG(se.itemFloat2) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Integer when the JPA 2.0 specification
                  * clearly states the return type should be Double
@@ -529,7 +538,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
             Assert.assertEquals(new Long(42), res);
             q = em.createQuery("SELECT SUM(se.itemFloat2) FROM SimpleEntityOLGH8014 se");
             res = q.getSingleResult();
-            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+            if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                 /*
                  * TODO: OpenJPA bug: incorrectly returns result of type Float when the JPA 2.0 specification
                  * clearly states the return type should be Double

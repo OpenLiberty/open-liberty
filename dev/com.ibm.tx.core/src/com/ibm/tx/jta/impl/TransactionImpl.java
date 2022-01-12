@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1178,7 +1178,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "internalPrepare", result);
+            Tr.exit(tc, "internalPrepare", TransactionState.stateToString(result));
         return result;
     }
 

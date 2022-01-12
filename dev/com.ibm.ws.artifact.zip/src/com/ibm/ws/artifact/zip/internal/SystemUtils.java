@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,25 +36,6 @@ public class SystemUtils {
                 }
 
             } );
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
-    }
-
-    /**
-     * Run {@link System#getNanoTime} as a privileged action.
-     *
-     * @return The system time in nano-seconds.
-     */
-    public static long getNanoTime() {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return AccessController.doPrivileged( new PrivilegedAction<Long>() {
-                @Override
-                public Long run() {
-                    return System.nanoTime();
-                }
-            } ).longValue();
         } finally {
             ThreadIdentityManager.reset(token);
         }

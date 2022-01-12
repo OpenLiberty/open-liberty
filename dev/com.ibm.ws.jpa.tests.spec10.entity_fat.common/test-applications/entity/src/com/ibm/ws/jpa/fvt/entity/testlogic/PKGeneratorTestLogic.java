@@ -24,6 +24,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.fvt.entity.entities.IPKGeneratorEntity;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.PKGeneratorEntityEnum;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -76,8 +77,8 @@ public class PKGeneratorTestLogic extends AbstractTestLogic {
             return;
         }
 
-        JPAProviderImpl provider = getJPAProviderImpl(jpaResource);
-        if (JPAProviderImpl.HIBERNATE.equals(provider)) {
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             // TODO: Hibernate fails with "SEQUENCE 'APP.HIBERNATE_SEQUENCE' does not exist" exception, even though it does exist.
             return;
         }

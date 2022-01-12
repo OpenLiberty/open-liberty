@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +8,14 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.NotSerializableException;
 
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
@@ -173,7 +173,7 @@ public abstract class PartnerLogData {
                             Tr.debug(tc, "logData", "RecoverableUnit returned from createRecoverableUnit was null - throwing InternalLogException"); // PM04949
                         throw new InternalLogException(null); // PM04949
                     } // PM04949
-                    // Can set this now we have a log record
+                      // Can set this now we have a log record
                     _recoveryId = ru.identity();
                 } else {
                     ru = _partnerLog.lookupRecoverableUnit(_recoveryId);
@@ -335,7 +335,7 @@ public abstract class PartnerLogData {
     }
 
     // Default implementation for non-XA recovery data items
-    public boolean recover(ClassLoader cl, Xid[] xids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
+    public boolean recover(ClassLoader cl, ConcurrentHashSet<Xid> xids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "recover", new Object[] { this, cl, xids, failedStoken, cruuid, restartEpoch });
 

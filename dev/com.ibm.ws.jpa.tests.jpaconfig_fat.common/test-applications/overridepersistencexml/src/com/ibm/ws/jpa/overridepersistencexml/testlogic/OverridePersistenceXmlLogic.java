@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -50,6 +51,8 @@ public class OverridePersistenceXmlLogic extends AbstractTestLogic {
             return;
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -73,7 +76,7 @@ public class OverridePersistenceXmlLogic extends AbstractTestLogic {
                                   em.getProperties().containsKey(key));
                 Object propertyValue = em.getProperties().get(key);
 
-                if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
+                if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
                     Assert.assertEquals("The persistence property '" + key + "' contains '" + propertyValue + "' instead of '" + intvalue + "'",
                                         intvalue, propertyValue);
                 } else {
