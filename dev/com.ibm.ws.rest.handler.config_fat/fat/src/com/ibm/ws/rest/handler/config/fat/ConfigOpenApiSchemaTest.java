@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,7 +23,6 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Paths;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,17 +30,12 @@ import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIParser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
 public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     /**  */
@@ -50,12 +43,6 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
-                                                             MicroProfileActions.MP40,
-                                                             MicroProfileActions.MP30,
-                                                             MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {

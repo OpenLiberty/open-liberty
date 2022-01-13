@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -49,7 +50,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter")
                                         .addPackage("org.test.config.jmsadapter"));
-        ShrinkHelper.exportToServer(server, "connectors", rar);
+        ShrinkHelper.exportToServer(server, "connectors", rar, SERVER_ONLY);
 
         FATSuite.setupServerSideAnnotations(server);
 

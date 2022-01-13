@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -47,12 +48,12 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
         ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestConfigAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter"));
-        ShrinkHelper.exportToServer(server, "connectors", tca_rar);
+        ShrinkHelper.exportToServer(server, "connectors", tca_rar, SERVER_ONLY);
 
         ResourceAdapterArchive ata_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "AnotherTestAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter"));
-        ShrinkHelper.exportToServer(server, "connectors", ata_rar);
+        ShrinkHelper.exportToServer(server, "connectors", ata_rar, SERVER_ONLY);
 
         FATSuite.setupServerSideAnnotations(server);
 
