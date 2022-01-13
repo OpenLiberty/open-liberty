@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import org.junit.ClassRule;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -170,12 +172,15 @@ public abstract class LogstashCollectorTest {
         return APP_URL;
     }
 
+    private static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
+                    .apply(DockerImageName.parse("logstash/logstash:7.16.2")).asCanonicalNameString();
+
     // Can be added to the FATSuite to make the resource lifecycle bound to the entire
     // FAT bucket. Or, you can add this to any JUnit test class and the container will
     // be started just before the @BeforeClass and stopped after the @AfterClass
     @ClassRule
     public static GenericContainer<?> logstashContainer = new GenericContainer<>(new ImageFromDockerfile() //
-                    .withDockerfileFromBuilder(builder -> builder.from("docker.elastic.co/logstash/logstash:7.16.1") //
+                    .withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME) //
                                     .copy("/usr/share/logstash/pipeline/logstash.conf", "/usr/share/logstash/pipeline/logstash.conf") //
                                     .copy("/usr/share/logstash/config/logstash.yml", "/usr/share/logstash/config/logstash.yml") //
                                     .copy("/usr/share/logstash/config/logstash.key", "/usr/share/logstash/config/logstash.key") //

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,8 +60,8 @@ public class ValidateCloudantTest extends FATServletClient {
     private static String CLOUDANT_URL;
     private static String databaseURI;
 
-    @ClassRule
-    public static GenericContainer<?> cloudant = new GenericContainer<>("ibmcom/cloudant-developer:2.0.1")
+    @ClassRule //FIXME the cloudant-developer image is deprecated consider using CouchDB
+    public static GenericContainer<?> cloudant = new GenericContainer<>("kyleaure/cloudant-developer:1.0")
                     .withExposedPorts(5984)
                     .withLogConsumer(ValidateCloudantTest::log);
 

@@ -1,5 +1,9 @@
 FROM ibmcom/db2:11.5.7.0
 
+#Contains vulnerable log4j library for features not needed for kerberos
+RUN rm -rf /opt/ibm/db2/V11.5/federation
+RUN rm -rf /opt/ibm/db2/V11.5/db2tss
+
 RUN yum update -y
 RUN yum -y install krb5-workstation krb5-libs krb5-auth-dialog
 
@@ -22,4 +26,5 @@ RUN printf 'add_entry -password -p db2srvc@EXAMPLE.COM -k 1 -e aes256-cts\npassw
 RUN printf 'add_entry -password -p db2inst1@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-# Currently tagged in DockerHub as: kyleaure/db2-krb5:1.0
+
+# Currently tagged in DockerHub as: kyleaure/db2-krb5:2.0
