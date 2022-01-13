@@ -127,12 +127,12 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
 
     private void cacheThirdPartyTokens(OAuth20Token code, OAuth20TokenCache tokenCache) {
         SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtableFromCallerSubject = subjectHelper.getHashtableFromRunAsSubject();
-        if (hashtableFromCallerSubject != null) {
-            int expiresIn = Integer.parseInt((String) hashtableFromCallerSubject.get(OAuth20Constants.EXPIRES_IN));
+        Hashtable<String, ?> hashtableFromRunAsSubject = subjectHelper.getHashtableFromRunAsSubject();
+        if (hashtableFromRunAsSubject != null && hashtableFromRunAsSubject.containsKey(OAuth20Constants.EXPIRES_IN)) {
+            int expiresIn = Integer.parseInt((String) hashtableFromRunAsSubject.get(OAuth20Constants.EXPIRES_IN));
 
             String thirdPartyIdTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
-            String thirdPartyIdTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ID_TOKEN);
+            String thirdPartyIdTokenString = (String) hashtableFromRunAsSubject.get(OAuth20Constants.ID_TOKEN);
             cacheThirdPartyToken(code, thirdPartyIdTokenId, thirdPartyIdTokenString, expiresIn, tokenCache);
         }
     }
