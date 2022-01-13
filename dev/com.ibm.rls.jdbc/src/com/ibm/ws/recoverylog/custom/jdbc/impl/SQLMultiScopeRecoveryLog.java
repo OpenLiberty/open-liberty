@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,12 @@ import java.io.StringReader;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
-import java.sql.SQLTransientException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +88,7 @@ import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
  * log.
  * </p>
  */
-public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, HeartbeatLog {
+public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, HeartbeatLog, SQLRetriableLog {
 
     /**
      * WebSphere RAS TraceComponent registration.
@@ -143,6 +141,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     volatile private boolean _isPostgreSQL;
     volatile private boolean _isDB2;
     volatile private boolean _isSQLServer;
+    volatile private boolean _isDerby;
+    volatile private boolean _isNonStandard;
 
     private boolean isolationFailureReported;
 
@@ -354,15 +354,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * 12571, 17002, 17008, 17009, 17410, 17401, 17430, 25408, 24794, 17447, 30006 }; // N.B. POSITIVE - is that correct?
      * private int _sqlTransientErrorCodes[];
      */
-    private final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
-    private int _transientRetrySleepTime;
     private int _lightweightTransientRetrySleepTime;
-    private final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
-    private int _transientRetryAttempts;
     private int _lightweightTransientRetryAttempts;
-    private boolean sqlTransientErrorHandlingEnabled = true;
+    private boolean _sqlTransientErrorHandlingEnabled = true;
 
     /**
      * Flag to indicate whether the server is stopping.
@@ -445,9 +441,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
          *
          * Set the default values for the HADB SQL retry parameters
          */
-        _transientRetrySleepTime = DEFAULT_TRANSIENT_RETRY_SLEEP_TIME;
         _lightweightTransientRetrySleepTime = LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME;
-        _transientRetryAttempts = DEFAULT_TRANSIENT_RETRY_ATTEMPTS;
         _lightweightTransientRetryAttempts = LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS;
 
         // Now output consolidated trace information regarding the configuration of this object.
@@ -666,9 +660,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 OpenLogRetry openLogRetry = new OpenLogRetry();
                                 openLogRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
-                                if (sqlTransientErrorHandlingEnabled) {
-                                    failAndReport = openLogRetry.retryAfterSQLException(this, currentSqlEx, _transientRetryAttempts,
-                                                                                        _transientRetrySleepTime);
+                                if (_sqlTransientErrorHandlingEnabled) {
+                                    failAndReport = openLogRetry.retryAfterSQLException(this, currentSqlEx);
 
                                     if (failAndReport)
                                         nonTransientException = openLogRetry.getNonTransientException();
@@ -735,7 +728,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getConnection", fullLogDirectory);
         Connection conn = null;
-
+        // If the enableLogRetries attribute has been set to "true" in the transaction stanza of the server.xml, then we will retry
+        // SQL operations when general SQLExceptions are encountered
+        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Set the logRetriesEnabled flag to true");
+            SQLRetry.setLogRetriesEnabled(true);
+        }
         // Parse database properties
         StringTokenizer st = new StringTokenizer(fullLogDirectory, "?");
         String cname = st.nextToken();
@@ -799,8 +798,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 _isPostgreSQL = true;
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
                 _isSQLServer = true;
-            } else if (!dbName.toLowerCase().contains("derby")) {
-                sqlTransientErrorHandlingEnabled = false;
+            } else if (dbName.toLowerCase().contains("derby")) {
+                _isDerby = true;
+            } else {
+                _isNonStandard = true;
+                // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
+                // even if the exception is a SQLTransientException. But if the logRetriesEnabled flag has been explicitly set, then we will retry SQL
+                // operations on all databases.
+                if (!SQLRetry.isLogRetriesEnabled())
+                    _sqlTransientErrorHandlingEnabled = false;
             }
 
             String dbVersion = mdata.getDatabaseProductVersion();
@@ -820,11 +826,31 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @return Connection
      * @throws SQLException
      */
-    protected Connection getConnection() throws SQLException {
+    @Override
+    public Connection getConnection() throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getConnection");
         Connection conn = null;
         boolean lookupDS = false;
+
+        // If the enableLogRetries attribute has been set to "true" in the transaction stanza of the server.xml, then we will retry
+        // SQL operations when general SQLExceptions are encountered
+        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Set the logRetriesEnabled flag to true");
+            SQLRetry.setLogRetriesEnabled(true);
+            // If the logRetriesEnabled flag has been explicitly set, then we will retry SQL operations on all databases.
+            _sqlTransientErrorHandlingEnabled = true;
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Set the logRetriesEnabled flag to false");
+            // If _logRetriesEnabled has been reset (config change) and if the database is non-standard, then we will
+            // no longer retry SQLExceptions
+            if (SQLRetry.isLogRetriesEnabled() && _isNonStandard)
+                _sqlTransientErrorHandlingEnabled = false;
+            SQLRetry.setLogRetriesEnabled(false);
+        }
+
         // Get connection to database via datasource
         try {
             if (_theDS != null) {
@@ -1347,7 +1373,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     try {
                         Connection conn = getConnection();
                         dropDBTable(conn);
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         // FFDC exception but allow processing to continue
                         FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1286", this);
                         if (tc.isDebugEnabled())
@@ -2032,9 +2058,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 ForceSectionsRetry forceSectionsRetry = new ForceSectionsRetry();
                                 forceSectionsRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
-                                if (sqlTransientErrorHandlingEnabled) {
-                                    failAndReport = forceSectionsRetry.retryAfterSQLException(this, currentSqlEx, _transientRetryAttempts,
-                                                                                              _transientRetrySleepTime);
+                                if (_sqlTransientErrorHandlingEnabled) {
+                                    failAndReport = forceSectionsRetry.retryAfterSQLException(this, currentSqlEx);
                                     if (failAndReport)
                                         nonTransientException = forceSectionsRetry.getNonTransientException();
                                 }
@@ -2092,210 +2117,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "internalForceSections");
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.isSQLErrorTransient
-    //------------------------------------------------------------------------------
-    /**
-     * Determine whether we have encountered a potentially transient SQL error condition. If so we can retry the SQL.
-     *
-     * This method is at the heart of the design for retrying SQL operations. If a SQL call receives a SQLTransientException, then we will re-execute the call (acquiring a new
-     * Connection on each occasion) a configured number of times with a configured time interval until the call succeeds or we give up, report the exception and invalidate the
-     * recovery log.
-     *
-     * This design has been (optionally) extended to retry on any SQLException if the server.xml enableLogRetries parameter has been set.
-     *
-     * Note that we have considered the specific situation where a call receives a SQLException on commit() and the call is re-executed. It is not possible to know whether the
-     * commit operation failed or succeeded, so failure is assumed. The impact on this situation occurring in forceSections() is as follows.
-     *
-     * In the forceSections() code an RMLT may comprise a set of inserts, updates and deletes. In the (potential) case where a SQLException was thrown but the commit operation
-     * was completed by the RDBMS, then, after acquiring a new Connection and taking the HADB lock...
-     *
-     * - re-execution of the inserts would result in a set of duplicate rows in the db table
-     * - re-execution of the updates would be a no-op, ie setting columns in a row to identical values
-     * - re-execution of the deletes would also be a no-op, the second attempt would simply delete no rows.
-     *
-     * The potentially sticky thing here is the duplicate rows in the db table. In practice, this does not appear to be an issue - recovery will create one set of runtime
-     * objects from the duplicate rows and deletion at runtime will clear out all appropriate rows.
-     *
-     * Finally, behaviour can be altered by specifying lists of sqlcodes that should be handled differently.
-     *
-     * - if enableLogRetries has NOT been set (the original behaviour)
-     *
-     * --- A customer can set a list of retriable sqlcodes.
-     * ------ If the current sqlcode is found in the list, then the operation will be retried.
-     * ------ If the current exception is a BatchUpdateException and one of its chained SQLExceptions has an sqlcode in the list, then the operation will be retried.
-     * --- If the list is empty, then the operation will be retried if the SQLException is a SQLTransientException or if the SQLException is a BatchUpdateException
-     * and one of its chained SQLExceptions is a SQLTransientException
-     * 
-     * - if enableLogRetries has been set (new behaviour)
-     * 
-     * --- A customer can set a list of non-retriable sqlcodes.
-     * ------ If the current sqlcode is found in the list, then the operation will not be retried.
-     * ------ If the current exception is a BatchUpdateException and one of its chained SQLExceptions has an sqlcode in the list, then the operation will not be retried.
-     * --- If the list is empty, then the operation will be retried.
-     * 
-     * @return true if the error is transient.
-     */
-    protected boolean isSQLErrorTransient(SQLException sqlex) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isSQLErrorTransient ", new Object[] { sqlex, this });
-
-        boolean retryBatch = false;
-        boolean logRetriesEnabled = false;
-        boolean isRetriableSqlCodeList = false;
-        boolean isNonRetriableSqlCodeList = false;
-        List<Integer> retriableSqlCodesList = null;
-        List<Integer> nonRetriableSqlCodesList = null;
-        boolean delveIntoException = true;
-        int sqlErrorCode = sqlex.getErrorCode();
-
-        if (tc.isEventEnabled()) {
-            Tr.event(tc, " SQL exception:");
-            Tr.event(tc, " Message: " + sqlex.getMessage());
-            Tr.event(tc, " SQLSTATE: " + sqlex.getSQLState());
-            Tr.event(tc, " Error code: " + sqlErrorCode);
-        }
-
-        // If the enableLogRetries attribute has been set to "true" in the transaction stanza of the server.xml, then we will retry
-        // SQL operations when general SQLExceptions are encountered
-        if (ConfigurationProviderManager.getConfigurationProvider().enableLogRetries()) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set the logRetriesEnabled flag to true");
-            logRetriesEnabled = true;
-        }
-
-        // Determine whether to retry the operation based on the type of SQLException and its sqlcode.
-        if (!logRetriesEnabled) {
-            // This is the original behaviour, where the enableLogRetries attribute has not been set in server.xml. In this scenario,
-            // the retriableSqlCodesList may come into play, where specific codes that should be retried have been specified.
-
-            // Check whether specific retriable sqlcodes have been configured
-            retriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getRetriableSqlCodes();
-            boolean foundRetriableSqlCode = false;
-            if (retriableSqlCodesList != null && !retriableSqlCodesList.isEmpty()) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "There are retriable sqlcodes in " + retriableSqlCodesList);
-                isRetriableSqlCodeList = true;
-                foundRetriableSqlCode = isErrorCodeInCodeList(retriableSqlCodesList, sqlErrorCode);
-            }
-
-            if (foundRetriableSqlCode || sqlex instanceof SQLTransientException) {
-                retryBatch = true;
-                delveIntoException = false;
-            }
-        } else {
-            // This is the new behaviour, where the enableLogRetries attribute has been set in server.xml. In this scenario,
-            // the nonRetriableSqlCodesList may come into play, where specific codes that should NOT be retried have been specified.
-
-            // Check whether specific non-retriable sqlcodes have been configured
-            nonRetriableSqlCodesList = ConfigurationProviderManager.getConfigurationProvider().getNonRetriableSqlCodes();
-            if (nonRetriableSqlCodesList != null && !nonRetriableSqlCodesList.isEmpty()) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "There are non-retriable sqlcodes in " + nonRetriableSqlCodesList);
-                isNonRetriableSqlCodeList = true;
-                if (isErrorCodeInCodeList(nonRetriableSqlCodesList, sqlErrorCode)) {
-                    // We have found this exception set in the non-retriable list. We will not retry and we won't do any further digging
-                    retryBatch = false;
-                    delveIntoException = false;
-                } else {
-                    // We haven't found a non-retriable exception so we set the retry flag to true. But it is still possible that
-                    // a non-retriable exception may be nested in a BatchUpdateException, so we set the delve flag to true
-                    retryBatch = true;
-                    delveIntoException = true;
-                }
-            } else {
-                // There is no list of non-retriable exceptions
-                retryBatch = true;
-                delveIntoException = false;
-            }
-        }
-
-        if (delveIntoException && sqlex instanceof BatchUpdateException) {
-            if (tc.isDebugEnabled()) {
-                if (sqlex instanceof SQLTransientException) {
-                    Tr.debug(tc, "Exception is not considered transient but does implement SQLTransientException!");
-                }
-            }
-
-            BatchUpdateException buex = (BatchUpdateException) sqlex;
-            Tr.event(tc, "BatchUpdateException: Update Counts - ");
-            int[] updateCounts = buex.getUpdateCounts();
-            for (int i = 0; i < updateCounts.length; i++) {
-                Tr.event(tc, "   Statement " + i + ":" + updateCounts[i]);
-            }
-            SQLException nextex = buex.getNextException();
-            while (nextex != null) {
-                sqlErrorCode = nextex.getErrorCode();
-                if (tc.isEventEnabled()) {
-                    Tr.event(tc, " SQL exception:");
-                    Tr.event(tc, " Message: " + nextex.getMessage());
-                    Tr.event(tc, " SQLSTATE: " + nextex.getSQLState());
-                    Tr.event(tc, " Error code: " + sqlErrorCode);
-                }
-
-                // The behaviour here depends on whether the logRetriesEnabled flag has been set.
-                if (!logRetriesEnabled) {
-                    // This is the original behaviour though we may also need to check the retriable code list too
-                    if (nextex instanceof SQLTransientException) {
-                        retryBatch = true;
-                        break;
-                    }
-
-                    // Check the list if there is one
-                    if (isRetriableSqlCodeList) {
-                        if (isErrorCodeInCodeList(retriableSqlCodesList, sqlErrorCode)) {
-                            retryBatch = true;
-                            break;
-                        }
-                    }
-                } else {
-                    // This is the new behaviour, we need to check the non-retriable code list
-                    if (isNonRetriableSqlCodeList) {
-                        if (isErrorCodeInCodeList(nonRetriableSqlCodesList, sqlErrorCode)) {
-                            retryBatch = false;
-                            break;
-                        }
-                    }
-                }
-
-                nextex = nextex.getNextException();
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isSQLErrorTransient", retryBatch);
-
-        return retryBatch;
-    }
-
-    /**
-     * Traverse a list of sql error codes to see if it contains a specific value, sqlErrorCode.
-     *
-     * @param sqlCodesList
-     * @param sqlErrorCode
-     * @return
-     */
-    boolean isErrorCodeInCodeList(List<Integer> sqlCodesList, int sqlErrorCode) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isErrorCodeInCodeList ", new Object[] { sqlCodesList, sqlErrorCode, this });
-        boolean codeIsInList = false;
-
-        if (sqlCodesList == null || sqlCodesList.isEmpty()) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The list is null or empty");
-        } else {
-            if (sqlCodesList.contains(sqlErrorCode)) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "The error code is in the list");
-                codeIsInList = true;
-            }
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isErrorCodeInCodeList", codeIsInList);
-        return codeIsInList;
     }
 
     //------------------------------------------------------------------------------
@@ -3439,7 +3260,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     // Sets AutoCommit and Isolation level for the connection
-    protected int prepareConnectionForBatch(Connection conn) throws SQLException {
+    @Override
+    public int prepareConnectionForBatch(Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         if (_isDB2) {
@@ -3466,7 +3288,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     // closes the connection and resets the isolation level if required
-    protected void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
+    @Override
+    public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
         if (_isDB2) {
             if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
                 try {
@@ -3572,7 +3395,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "SQLException creating reservedConnection or reading the lock", sqlex);
             // let transient errors be handled by the caller (no FFDC here)
-            if (sqlTransientErrorHandlingEnabled && isSQLErrorTransient(sqlex))
+            if (_sqlTransientErrorHandlingEnabled && SQLRetry.isSQLErrorTransient(sqlex))
                 transientException = sqlex;
             else {
                 FFDCFilter.processException(sqlex, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.reserveConnection", "3901", this);
@@ -3614,7 +3437,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                 // if we're not already throwing a transient then only FFDC if this is not transient - otherwise throw it up to caller for possible retry
                 if (success && transientException == null) {
-                    if (sqlTransientErrorHandlingEnabled && isSQLErrorTransient(sqlex)) {
+                    if (_sqlTransientErrorHandlingEnabled && SQLRetry.isSQLErrorTransient(sqlex)) {
                         transientException = sqlex;
                     } else {
                         FFDCFilter.processException(sqlex, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.reserveConnection", "3937", this);
@@ -3901,7 +3724,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
 
                 // Is this an environment in which a retry should be attempted
-                if (sqlTransientErrorHandlingEnabled) {
+                if (_sqlTransientErrorHandlingEnabled) {
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
@@ -4096,11 +3919,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
 
                 // Is this an environment in which a retry should be attempted
-                if (sqlTransientErrorHandlingEnabled) {
+                if (_sqlTransientErrorHandlingEnabled) {
                     if (nonTransientException == null) {
                         // In this case we will retry if we are operating in an HA DB environment
                         ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
-                        sqlSuccess = claimLocalRetry.retryAndReport(this, _serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
+                        sqlSuccess = claimLocalRetry.retryAndReport(this, _serverName, currentSqlEx);
                         // If the retry operation succeeded, retrieve the result of the underlying operation
                         if (sqlSuccess)
                             isClaimed = claimLocalRetry.isClaimed();
@@ -4341,7 +4164,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             }
 
             // Is this an environment in which a retry should be attempted
-            if (sqlTransientErrorHandlingEnabled) {
+            if (_sqlTransientErrorHandlingEnabled) {
                 if (nonTransientException == null) {
                     // In this case we will retry if we are operating in an HA DB environment
                     ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
@@ -4404,8 +4227,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public void setLogRetryInterval(int logRetryInterval) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setLogRetryInterval", logRetryInterval);
-
-        _transientRetrySleepTime = logRetryInterval * 1000;
+        SQLRetry.setTransientRetrySleepTime(logRetryInterval * 1000);
     }
 
     /*
@@ -4417,8 +4239,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public void setLogRetryLimit(int logRetryLimit) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setLogRetryLimit", logRetryLimit);
-
-        _transientRetryAttempts = logRetryLimit;
+        SQLRetry.setTransientRetryAttempts(logRetryLimit);
     }
 
     /*
@@ -4462,10 +4283,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     /**
-     * This concrete class extends SQLHADBRetry providing the local recovery log claim code to be retried in an HA RDBMS environment.
+     * This concrete class extends SQLRetry providing the local recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimLocalRetry extends SQLHADBRetry {
+    class ClaimLocalRetry extends SQLRetry {
 
         boolean _isClaimed = false;
 
@@ -4486,10 +4307,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     /**
-     * This concrete class extends SQLHADBRetry providing the peer recovery log claim code to be retried in an HA RDBMS environment.
+     * This concrete class extends SQLRetry providing the peer recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimPeerRetry extends SQLHADBRetry {
+    class ClaimPeerRetry extends SQLRetry {
 
         boolean _isClaimed = false;
 
@@ -4510,10 +4331,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     /**
-     * This concrete class extends SQLHADBRetry providing the heartbeat code to be retried in an HA RDBMS environment.
+     * This concrete class extends SQLRetry providing the heartbeat code to be retried in an HA RDBMS environment.
      *
      */
-    class HeartbeatRetry extends SQLHADBRetry {
+    class HeartbeatRetry extends SQLRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -4528,10 +4349,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     /**
-     * This concrete class extends SQLHADBRetry providing the force sections code to be retried in an HA RDBMS environment.
+     * This concrete class extends SQLRetry providing the force sections code to be retried in an HA RDBMS environment.
      *
      */
-    class ForceSectionsRetry extends SQLHADBRetry {
+    class ForceSectionsRetry extends SQLRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -4557,10 +4378,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     /**
-     * This concrete class extends SQLHADBRetry providing the openLog code to be retried in an HA RDBMS environment.
+     * This concrete class extends SQLRetry providing the openLog code to be retried in an HA RDBMS environment.
      *
      */
-    class OpenLogRetry extends SQLHADBRetry {
+    class OpenLogRetry extends SQLRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
