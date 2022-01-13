@@ -15,13 +15,13 @@ task zipMessageFiles(type: Zip) {
   dependsOn parent.subprojects.copyPiiFiles
   baseName 'openPII'
   from "${projectDir}/nlssrc"
-  destinationDir distsDir
+  destinationDirectory = distsDirectory
 }
 
 task zipMessageXmlFiles(type: Zip) {
   baseName 'openPIIXml'
   from "${projectDir}/nlsxml"
-  destinationDir distsDir
+  destinationDirectory = distsDirectory
 }
 
 publishing {

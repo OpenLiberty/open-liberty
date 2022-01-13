@@ -28,7 +28,7 @@ if (isAutomatedBuild && project.file('fat').exists()) {
   release {
     doLast {
       delete autoFvtDir
-      delete distsDir
+      delete distsDirectory
     }
   }
 }
@@ -378,7 +378,7 @@ task zipAutoFVT(type: Zip) {
 task zipProjectFVT(type: Zip) {
   dependsOn zipAutoFVT
   baseName project.name
-  into project.name + '/build/lib', {from "${distsDir}/autoFVT.zip"}
+  into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
   into project.name, {from 'build-test.xml'}
 }
 
