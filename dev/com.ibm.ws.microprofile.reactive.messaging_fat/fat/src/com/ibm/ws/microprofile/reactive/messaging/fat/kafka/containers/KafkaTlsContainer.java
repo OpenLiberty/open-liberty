@@ -8,11 +8,14 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.SocatContainer;
 import org.testcontainers.utility.Base58;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * This class is a modification of the <code>org.testcontainers.containers.KafkaContainer</code> class to add TLS support
  */
 public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
+
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse("confluentinc/cp-kafka:7.0.1");
 
     private final Network network;
 
@@ -30,15 +33,11 @@ public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
 
     protected SocatContainer proxy;
 
-    public KafkaTlsContainer() {
-        this("4.0.0");
-    }
-
     /**
      * @param confluentPlatformVersion
      */
-    public KafkaTlsContainer(String confluentPlatformVersion) {
-        super("confluentinc/cp-kafka:" + confluentPlatformVersion);
+    public KafkaTlsContainer() {
+        super(IMAGE_NAME);
 
         network = Network.newNetwork();
 

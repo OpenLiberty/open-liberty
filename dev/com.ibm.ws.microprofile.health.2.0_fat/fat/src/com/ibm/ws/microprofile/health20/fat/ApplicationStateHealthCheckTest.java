@@ -35,6 +35,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -84,7 +85,7 @@ public class ApplicationStateHealthCheckTest {
         SUCCESS, FAILURE;
     }
 
-    public static KafkaContainer kafkaContainer = new KafkaContainer();
+    public static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.0.1"));
 
     final static String SERVER_NAME = "ApplicationStateHealthCheck";
     final static String FAILS_TO_START_SERVER_NAME = "FailedApplicationStateHealthCheck";

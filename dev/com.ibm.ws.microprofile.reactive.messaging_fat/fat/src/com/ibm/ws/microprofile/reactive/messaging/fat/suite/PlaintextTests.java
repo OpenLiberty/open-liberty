@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
@@ -56,6 +57,8 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 })
 public class PlaintextTests {
 
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse("confluentinc/cp-kafka:7.0.1");
+
     //Required to ensure we calculate the correct strategy each run even when
     //switching between local and remote docker hosts.
     static {
@@ -66,7 +69,7 @@ public class PlaintextTests {
     public static Network network = Network.newNetwork();
 
     @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer()
+    public static KafkaContainer kafkaContainer = new KafkaContainer(IMAGE_NAME)
                     .withNetwork(network)
                     .withStartupTimeout(Duration.ofMinutes(2))
                     .withStartupAttempts(3);

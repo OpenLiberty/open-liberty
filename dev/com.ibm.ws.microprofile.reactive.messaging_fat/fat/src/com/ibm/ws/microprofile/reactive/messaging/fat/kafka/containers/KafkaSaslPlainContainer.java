@@ -3,18 +3,19 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.SocatContainer;
 import org.testcontainers.utility.Base58;
-import org.testcontainers.utility.TestcontainersConfiguration;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * This class is a modification of the <code>org.testcontainers.containers.KafkaContainer</code> class to add SASL+TLS support
  */
 public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainContainer> {
+
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse("confluentinc/cp-kafka:7.0.1");
 
     private final Network network;
 
@@ -42,15 +43,11 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
 
     protected SocatContainer proxy;
 
-    public KafkaSaslPlainContainer() {
-        this("4.0.0");
-    }
-
     /**
      * @param confluentPlatformVersion
      */
-    public KafkaSaslPlainContainer(String confluentPlatformVersion) {
-        super("confluentinc/cp-kafka:" + confluentPlatformVersion);
+    public KafkaSaslPlainContainer() {
+        super(IMAGE_NAME);
 
         network = Network.newNetwork();
 
