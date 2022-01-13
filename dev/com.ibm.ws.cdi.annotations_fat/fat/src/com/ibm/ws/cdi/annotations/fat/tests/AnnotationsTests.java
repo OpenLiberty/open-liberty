@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.annotations.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -42,7 +39,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -62,7 +59,7 @@ public class AnnotationsTests extends FATServletClient {
     public static final String WITH_ANNOTATIONS_APP_NAME = "withAnnotationsApp";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
 
     @Server(SERVER_NAME)
     @TestServlets({
