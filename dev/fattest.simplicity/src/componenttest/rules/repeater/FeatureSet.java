@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import componenttest.rules.repeater.EERepeatTests.EEVersion;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 
 /**
  * An immutable set of features with an ID

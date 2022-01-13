@@ -10,8 +10,9 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+@Deprecated
 /**
- *
+ * Replaced by EERepeatActions. This is only used by CDI tests and those will be switched over shortly.
  */
 public class EERepeatTests {
 
