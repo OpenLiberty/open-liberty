@@ -18,13 +18,26 @@
 		<not>
 			<or>
 				<equals arg1="11" arg2="${java.specification.version}"/>
-				<equals arg1="1.7" arg2="${java.specification.version}"/>
 				<equals arg1="1.8" arg2="${java.specification.version}"/>
 			</or>
 		</not>
 	</condition>
 	<property name="illegal.access.permit.jmx.fat" value=""/>
-		
+	
+	<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
+		     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
+			 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
+			 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
+	<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
+		<not>
+			<or>
+				<equals arg1="11" arg2="${java.specification.version}"/>
+				<equals arg1="1.8" arg2="${java.specification.version}"/>
+			</or>
+		</not>
+	</condition>
+	<property name="use.java.security.manager" value=""/>
+	
 	<!-- This is needed for Moonstone autowas to work -->
 	<target name="init-test-tasks-autowas" unless="inited-test-tasks">
 		<property name="inited-test-tasks" value="true" />
@@ -203,7 +216,6 @@
 			<not>
 				<or>
 					<equals arg1="11" arg2="${java.specification.version}"/>
-					<equals arg1="1.7" arg2="${java.specification.version}"/>
 					<equals arg1="1.8" arg2="${java.specification.version}"/>
 				</or>
 		    </not>
@@ -526,6 +538,8 @@
 					<jvmarg line="${zos.extra.vmargs}" />
 					<!-- Custom strong encapsulation override if working with Java 15+ -->
 					<jvmarg line="${illegal.access.permit.jmx.fat}" />
+					<!-- Override default value of the security manager for Java 18+ -->
+					<jvmarg line="${use.java.security.manager}" />
 				</junit>
 			</sequential>
 			<finally>
