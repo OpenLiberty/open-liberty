@@ -19,7 +19,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
 
@@ -817,7 +817,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
 
         task buildOsNativePackages(type: Exec) {
-	    description 'builds OS Native packages'
+	        description 'builds OS Native packages'
 
             dependsOn copyOpenLiberty
             dependsOn updateRulesTemplate
