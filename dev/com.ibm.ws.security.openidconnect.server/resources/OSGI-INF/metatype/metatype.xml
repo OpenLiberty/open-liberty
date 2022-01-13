@@ -34,8 +34,8 @@
             required="false" type="Boolean" default="true"/>
          <AD id="customClaims" name="%customClaims" description="%customClaims.desc"
             required="false" type="String" cardinality="2147483647"/>            
-         <AD id="thirdPartyIDTokenClaims" name="thirdPartyIDTokenClaims" description="thirdPartyIDTokenClaims.desc"
-            required="false" type="String" cardinality="2147483647"/>
+         <AD id="thirdPartyIDTokenClaims" name="%thirdPartyIDTokenClaims" description="%thirdPartyIDTokenClaims.desc"
+            required="false" type="String" cardinality="2147483647" ibm:beta="true"/>
          <AD id="jtiClaimEnabled" name="internal" description="internal use only"
             required="false" type="Boolean" default="false"/>            
          <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc"

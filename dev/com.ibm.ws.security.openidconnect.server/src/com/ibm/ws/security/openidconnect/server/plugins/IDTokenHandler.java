@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.common.claims.UserClaimsRetrieverService;
@@ -88,6 +89,8 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
 
     private static final int IDTOKEN_LIFETIME_DEFAULT = 7200;
     private volatile SecurityService securityService;
+
+    private static boolean issuedBetaMessage = false;
 
     /** {@inheritDoc} */
     @Override
@@ -407,20 +410,34 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         }
         try {
             Set<String> allowedThirdPartyIDTokenClaims = oidcServerConfig.getThirdPartyIDTokenClaims();
+            if (!allowedThirdPartyIDTokenClaims.isEmpty() && isRunningBetaMode()) {
+                JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(thirdPartyIDToken);
+                JwtClaims jwtClaims = jwtContext.getJwtClaims();
+                Map<String, Object> jwtClaimsMap = jwtClaims.getClaimsMap();
 
-            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(thirdPartyIDToken);
-            JwtClaims jwtClaims = jwtContext.getJwtClaims();
-            Map<String, Object> jwtClaimsMap = jwtClaims.getClaimsMap();
-
-            for (String thirdPartyClaim : allowedThirdPartyIDTokenClaims) {
-                if (jwtClaimsMap.containsKey(thirdPartyClaim)) {
-                    thirdPartyIDTokenClaims.put(thirdPartyClaim, jwtClaimsMap.get(thirdPartyClaim));
+                for (String thirdPartyClaim : allowedThirdPartyIDTokenClaims) {
+                    if (jwtClaimsMap.containsKey(thirdPartyClaim)) {
+                        thirdPartyIDTokenClaims.put(thirdPartyClaim, jwtClaimsMap.get(thirdPartyClaim));
+                    }
                 }
             }
         } catch (Exception e) {
             // ignore for now
         }
         return thirdPartyIDTokenClaims;
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     @Sensitive

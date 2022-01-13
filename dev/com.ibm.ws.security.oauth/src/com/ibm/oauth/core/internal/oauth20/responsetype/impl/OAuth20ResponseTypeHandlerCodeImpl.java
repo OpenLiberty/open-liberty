@@ -116,39 +116,45 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
             result = new ArrayList<OAuth20Token>();
             result.add(code);
 
-            SubjectHelper subjectHelper = new SubjectHelper();
-            Hashtable<String, ?> hashtableFromCallerSubject = subjectHelper.getHashtableFromRunAsSubject();
-            if (hashtableFromCallerSubject != null) {
-                OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
-
-                String idTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ID_TOKEN);
-                int expiresIn = Integer.parseInt((String) hashtableFromCallerSubject.get(OAuth20Constants.EXPIRES_IN));
-
-                if (idTokenString != null) {
-                    String thirdPartyTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
-                    // id tokens don't exist in this oauth package; saving as oauth20bearertokenimpl
-                    OAuth20Token idTokenCacheEntry = new OAuth20BearerTokenImpl(
-                            thirdPartyTokenId,
-                            idTokenString,
-                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
-                            clientId,
-                            username,
-                            redirectUri,
-                            null, // TODO: revisit appropriate value here (we don't actually use this value, null is ok for now)
-                            scope,
-                            expiresIn, // TODO: revisit appropriate value here (currently using expires in from hashtable)
-                            null,
-                            OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
-
-                    // save third-party id token in token cache to pick up when token endpoint is called
-                    tokenCache.add(idTokenCacheEntry.getId(), idTokenCacheEntry, idTokenCacheEntry.getLifetimeSeconds());
-                }
-            }
+            OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
+            cacheThirdPartyTokens(code, tokenCache);
 
         } finally {
             _log.exiting(CLASS, methodName);
         }
         return result;
+    }
+
+    private void cacheThirdPartyTokens(OAuth20Token code, OAuth20TokenCache tokenCache) {
+        SubjectHelper subjectHelper = new SubjectHelper();
+        Hashtable<String, ?> hashtableFromCallerSubject = subjectHelper.getHashtableFromRunAsSubject();
+        if (hashtableFromCallerSubject != null) {
+            int expiresIn = Integer.parseInt((String) hashtableFromCallerSubject.get(OAuth20Constants.EXPIRES_IN));
+
+            String thirdPartyIdTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
+            String thirdPartyIdTokenString = (String) hashtableFromCallerSubject.get(OAuth20Constants.ID_TOKEN);
+            cacheThirdPartyToken(code, thirdPartyIdTokenId, thirdPartyIdTokenString, expiresIn, tokenCache);
+        }
+    }
+
+    private void cacheThirdPartyToken(OAuth20Token code, String thirdPartyTokenId, String thirdPartyTokenString, int expiresIn, OAuth20TokenCache tokenCache) {
+        if (thirdPartyTokenString != null) {
+            OAuth20Token tokenCacheEntry = new OAuth20BearerTokenImpl(
+                    thirdPartyTokenId,
+                    thirdPartyTokenString,
+                    code.getComponentId(), // TODO: revisit appropriate values (currently reusing a bunch of values from auth code)
+                    code.getClientId(),
+                    code.getUsername(),
+                    code.getRedirectUri(),
+                    code.getStateId(),
+                    code.getScope(),
+                    expiresIn, // TODO: revisit appropriate value here (currently using expires in from hashtable)
+                    null,
+                    OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
+
+            // save third-party token in token cache to pick up when token endpoint is called
+            tokenCache.add(tokenCacheEntry.getId(), tokenCacheEntry, tokenCacheEntry.getLifetimeSeconds());
+        }
     }
 
     /**
