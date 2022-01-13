@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.io.StringWriter,java.io.PrintWriter,javax.naming.InitialContext,java.util.concurrent.CompletableFuture,jakarta.enterprise.concurrent.ManagedExecutorService,jakarta.enterprise.concurrent.ContextService,java.util.function.Supplier" %>
+<%@ page import="java.io.StringWriter,java.io.PrintWriter,javax.naming.InitialContext,jakarta.enterprise.concurrent.ContextService,java.util.function.Supplier" %>
 
 <% 
 String output = "SUCCESS";
