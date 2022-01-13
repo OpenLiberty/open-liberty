@@ -38,8 +38,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
-import io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler;
-
 @Component(name = "com.ibm.ws.microprofile.metrics.monitor.MonitorMetricsHandler", property = { "service.vendor=IBM"})
 public class MonitorMetricsHandler {
 	
