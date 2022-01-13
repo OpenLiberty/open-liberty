@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -102,14 +100,17 @@ class UninstallDirector extends AbstractDirector {
     void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
         if (uninstallAssets.isEmpty())
             return;
-        Instant start = Instant.now();
+
+        // On Windows specifically, we need to do a file lock check before attempting to uninstall assets.
         if (InstallUtils.isWindows) {
             // check any file is locked
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
             Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
+                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset));
             }
+
+            // For each uninstall asset's base directory, validate no files are locked recursively.
             for (File baseDir : baseDirs) {
                 try {
                     List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
@@ -121,8 +122,7 @@ class UninstallDirector extends AbstractDirector {
                 }
             }
         }
-        log(Level.ALL, "Lock check took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
-        start = Instant.now();
+
         // proceed to uninstall
         int progress = 20;
         int interval = 70 / uninstallAssets.size();
@@ -152,22 +152,23 @@ class UninstallDirector extends AbstractDirector {
                     InstallUtils.deleteDirectory(f);
             }
         }
-        log(Level.ALL, "Uninstall took <" + Duration.between(start, Instant.now()).toMillis() + "> milliseconds");
-
     }
 
     /**
      *
      * @param uninstallAsset the uninstall asset to derive a base directory from
-     * @param baseDir        the base directory of the uninstallAsset
-     * @return the uninstallAsset's base directory derived from the asset and appended to baseDir. For example, if the uninstallAsset location is dev/spi/ibm and baseDir is
+     * @return the uninstallAsset's base directories derived from uninstallAsset. For example, if the uninstallAsset location is dev/spi/ibm and baseDir is
      *         /opt/IBM/WebSphere/AppServer, this will return 'Set[/opt/IBM/WebSphere/AppServer/dev]' iff the path exists, an empty Set otherwise.
+     * @throws InstallException
      */
-    private Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset, File baseDir) {
+    private Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset) throws InstallException {
 
         Set<File> baseDirs = new HashSet<>();
-
+        File baseDir = engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition());
         Set<String> assetLocations = getAssetLocations(uninstallAsset);
+
+        // For each asset location, construct a list of locations containing the first child directory appended
+        // to the base directory iff that directory exists.
         for (String assetLocation : assetLocations) {
             List<String> subDirs = getFirstChildSubdirectoryFromLocations(assetLocation);
             for (String subDir : subDirs) {
@@ -186,16 +187,19 @@ class UninstallDirector extends AbstractDirector {
      *         It could also be empty if the getLocation() call returns null or an empty string.
      */
     private Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
+        // Only process BUNDLE, JAR, BOOT and FILE subsystem types.
         final List<SubsystemContentType> resourceFilter = Arrays.asList(SubsystemContentType.BUNDLE_TYPE, SubsystemContentType.JAR_TYPE, SubsystemContentType.BOOT_JAR_TYPE,
                                                                         SubsystemContentType.FILE_TYPE);
+        // From the collection of FeatureResources, filter out types we don't wish to process and then collect all location strings from them.
         return uninstallAsset.getProvisioningFeatureDefinition().getConstituents(null).stream().filter(s -> resourceFilter.contains(s.getType())
                                                                                                             && s.getLocation() != null).map(s -> s.getLocation()).collect(Collectors.toSet());
     }
 
     /**
      *
-     * @param locString the location string to parse, may be null.
-     * @return the first child directory specified in the locString. For example, if the locString is bin/tools/tools.zip, this method will return 'bin'.
+     * @param locString the location string to parse, may be null and may contain more than one location separated by `,`.
+     * @return A list of the parent directories specified in the locString. For example, if the locString is "bin/tools/tools.zip", this method will return ["bin"].
+     *         if locString contains "bin/tools/tools.zip,etc/files/files.zip" this method would return ["bin","etc"]
      *
      */
     private List<String> getFirstChildSubdirectoryFromLocations(String locString) {
