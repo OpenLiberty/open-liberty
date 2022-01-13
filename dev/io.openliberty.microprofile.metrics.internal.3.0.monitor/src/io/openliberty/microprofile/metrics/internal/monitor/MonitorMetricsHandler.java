@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -127,37 +126,21 @@ public class MonitorMetricsHandler {
 
     protected void register() {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ReentrantLock lock = new ReentrantLock();
         for (String sName : mappingTable.getKeys()) {
             Set<ObjectInstance> mBeanObjectInstanceSet;
-
             try {
-                lock.lock();
-                try {
-                    /*
-                     * ThreadPoolStats is launched in a separate thread. It will invoke
-                     * queryMbeans() as well Lock just in case.
-                     */
-                    mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
-                } finally {
-                    lock.unlock();
-                }
-
+                mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
                 if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty()) {
                     ExecutorService execServ = Executors.newSingleThreadExecutor();
                     execServ.execute(() -> {
                         final int MAX_TIME_OUT = 5000;
                         int currentTimeOut = 0;
                         Set<ObjectInstance> mBeanObjectInstanceSetTemp = mBeanObjectInstanceSet;
-                        while (mBeanObjectInstanceSet.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
+                        while (mBeanObjectInstanceSetTemp.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
                             try {
                                 Thread.sleep(50);
-                                lock.lock();
-                                try {
-                                    mBeanObjectInstanceSetTemp = mbs.queryMBeans(new ObjectName(sName), null);
-                                } finally {
-                                    lock.unlock();
-                                }
+
+                                mBeanObjectInstanceSetTemp = mbs.queryMBeans(new ObjectName(sName), null);
                                 currentTimeOut += 50;
                             } catch (Exception e) {
                                 if (tc.isDebugEnabled()) {
@@ -165,6 +148,11 @@ public class MonitorMetricsHandler {
                                     FFDCFilter.processException(e, MonitorMetricsHandler.class.getSimpleName(),
                                             "register:Exception");
                                 }
+                                /*
+                                 * Interruption Exception or RuntimeOperationException from malformed query exit
+                                 * thread.
+                                 */
+                                break;
                             }
                         }
                         registerMbeanObjects(mBeanObjectInstanceSetTemp);
