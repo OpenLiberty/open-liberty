@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,7 +120,7 @@ public class SlowAppStartupHealthCheckTest {
         int max_num_of_attempts = 5;
         int responseCode = -1;
         long start_time = System.currentTimeMillis();
-        long time_out = 180000; // 180000ms = 3min
+        long time_out = 240000; // 240000ms = 4min
         boolean connectionExceptionEncountered = false;
         boolean first_time = true;
         boolean app_started = false;
@@ -196,7 +196,7 @@ public class SlowAppStartupHealthCheckTest {
                             List<String> lines = server1.findStringsInFileInLibertyServerRoot("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", MESSAGE_LOG);
                             if (lines.size() == 0) {
                                 log("testStartupEndpointOnServerStart", "Waiting for Application to start.");
-                                String line = server1.waitForStringInLog("(CWWKZ0001I: Application DelayedHealthCheckApp started)+");
+                                String line = server1.waitForStringInLog("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", time_out);
                                 log("testStartupEndpointOnServerStart", "Application started. Line Found : " + line);
                                 assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
                             } else {
