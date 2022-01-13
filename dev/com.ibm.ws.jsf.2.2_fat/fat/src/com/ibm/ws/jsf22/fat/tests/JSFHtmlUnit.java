@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,7 +190,7 @@ public class JSFHtmlUnit {
         try (WebClient webClient = new WebClient()) {
             Calendar calendar = Calendar.getInstance();
 
-            webClient.addRequestHeader("If-Modified-Since", "Thu, 01 Jan " + (calendar.get(Calendar.YEAR) - 1) + " 00:00:00 GMT");
+            webClient.addRequestHeader("If-Modified-Since", "Thu, 03 Jan " + (calendar.get(Calendar.YEAR) - 1) + " 00:00:00 GMT");
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testUserAgentNeedsUpdateMethod.jsf");
 
