@@ -25,6 +25,8 @@ OL-VirtualHost: ${admin.virtual.host}
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
+jakartaeeMe: true
+
 Include-Resource: \
     WEB-INF=resources/WEB-INF
 
