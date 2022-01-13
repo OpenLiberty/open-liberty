@@ -1,0 +1,73 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<!-- Features being tested -->
+		<!--TODO enable <feature>jakartaee-10.0</feature> -->
+		<feature>concurrent-3.0</feature>
+		<feature>jdbc-4.2</feature>
+		<feature>enterpriseBeans-4.0</feature>
+		<feature>cdi-3.0</feature>
+	    <!-- Supporting features -->
+	    <feature>jndi-1.0</feature> 
+	    <!-- Required by test infrastructure -->
+	    <feature>timedexit-1.0</feature>
+	    <!-- Features needed for arquillan support -->
+	    <feature>localConnector-1.0</feature>
+	    <feature>restConnector-2.0</feature>
+	    <feature>arquillian-support-jakarta-2.0</feature>
+	</featureManager>
+   
+	<!-- Allow Arquillian to monitor application -->
+	<applicationMonitor updateTrigger="mbean"/>
+   
+	<!-- Allow Arquillian remote access to server -->
+	<quickStartSecurity userName="${env.tck_username}" userPassword="${env.tck_password}" />
+	
+	<!-- Allow Arquillian to participate in TLS handshake with server -->
+	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	<keyStore id="defaultKeyStore"   location="${env.tck_tls_store}" password="${env.tck_tls_password}" />
+	<keyStore id="defaultTrustStore" location="${env.tck_tls_store}" password="${env.tck_tls_password}" />
+	
+	<!-- Allow Arquillian to create a secure connection -->
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${env.tck_port}" httpsPort="${env.tck_port_secure}">
+    	<sslOptions sslRef="defaultKeyStore"/>
+    </httpEndpoint>
+	
+	<!-- Allow Arquillian access to dropins directory for application installation -->
+	<remoteFileAccess>
+		<writeDir>${server.config.dir}/dropins</writeDir>
+	</remoteFileAccess>
+   
+	<!-- Include derby in gloabl library to make it available to all dropin apps -->
+	<library id="global">
+   	    	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+   	    	<fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
+	</library>
+
+	<!--Java2 security-->
+	<javaPermission className="java.security.AllPermission"  name="*" actions="*" />   
+	<javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codeBase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.security.AllPermission"/>
+	<javaPermission codeBase="${shared.resource.dir}/derbyclient/derbynet.jar" className="java.security.AllPermission"/>
+	
+	<basicRegistry id="basic" realm="default">       
+	    <user name="javajoe" password="javajoe"/>
+	    <group name="Manager">
+	      <member name="javajoe"/>
+	    </group>
+	</basicRegistry>
+	
+	<security-role-mapping> 
+	  <role-name>Manager</role-name>
+	  <principal-name>javajoe</principal-name>
+	</security-role-mapping>
+</server>
