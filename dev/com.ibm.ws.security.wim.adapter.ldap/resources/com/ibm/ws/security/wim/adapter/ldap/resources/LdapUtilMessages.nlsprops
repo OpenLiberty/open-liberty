@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ NULL_CHECKPOINT_VALUE=CWIML4550E: The LDAP operation could not be completed. An 
 NULL_CHECKPOINT_VALUE.explanation=If a repository supports change tracking as specified by the 'supportChangeLog' flag for the repository in the server.xml file, then the checkpoint passed for it in the ChangeControl should not be empty or null.
 NULL_CHECKPOINT_VALUE.useraction=Try the search again with a valid checkpoint or disable 'supportChangeLog' for that repository in the server.xml file, if the user registry adapter is not capable of change tracking.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed. The password is missing or empty.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed as the password is either missing or empty.
 MISSING_OR_EMPTY_PASSWORD.explanation=If the principal name is specified during login, the password cannot be null or empty.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specify the password.
 
@@ -127,9 +127,9 @@ EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: The search operation could not be complet
 EXT_ID_HAS_MULTIPLE_VALUES.explanation=The LDAP attribute used as the external identifier must be unique and cannot contain multiple values.
 EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ensure that the correct attribute is chosen for the external identifier. If no appropriate attribute exists, the distinguished name can be used as the external identifier.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The configured base entry definition is not valid: {0}. Configure a valid base entry definition in the server.xml file. For example: <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation=The syntax for defining a base entry is <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction=Fix the base entry definition in the server.xml file.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The base entry definition {0} is not valid.  Correct the base entry definition in the server.xml file.
+INVALID_BASE_ENTRY_DEFINITION.explanation=The specified base entry definition is invalid.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Specify a valid base entry definition in the server.xml file.
 
 INVALID_DN_SYNTAX=CWIML4517E: The login operation could not be completed. The {0} distinguished name (DN) is not valid. Specify the correct syntax of the distinguished name.
 INVALID_DN_SYNTAX.explanation=The specified distinguished name (DN) is not valid. The user registry operation cannot continue without a valid DN.
@@ -186,9 +186,9 @@ ENTITY_HAS_DESCENDENTS=CWIML4519E: The user registry operation could not be comp
 ENTITY_HAS_DESCENDENTS.explanation=The delete or rename function can only be performed on a leaf entity, that is, an entity without any descendants. The specified entity has descendants.
 ENTITY_HAS_DESCENDENTS.useraction=Delete all the  descendants of the entity first, then delete or rename the entity itself.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The user registry operation could not be completed. {0} is not valid entity type. Invoke the operation by specifying a valid entity type.
-ENTITY_TYPE_NOT_SUPPORTED.explanation=An operation has been requested on an entity, but that operation does not support the specified entity type. For example, if a repository GET operation is invoked for an Account entity, the operation fails.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that operations are invoked for supported entity types and remove any unsupported entity types from the input.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The specified entity type {0} is not valid for this operation.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=An operation has been requested on an entity, but that operation does not support the specified entity type.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities that are provided in the input are of supported entity types, and remove any unsupported entity types from the input.
 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: The user registry operation could not be completed. One cannot create or update property {0} in repository {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=In the create or update operation, a value is specified for a property that cannot be written to the repository. For example, a pricipalName cannot be specified for a CREATE operation.
@@ -242,9 +242,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Kerberos login failed with the {0} K
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Either the specified Kerberos principal is invalid, or the default Kerberos credential cache (ccache) is invalid or expired.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Ensure that a valid Kerberos principal is specified, and that the default Kerberos credential cache (ccache) is not expired.
 
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Kerberos login failed with the {0} Kerberos principal and the default Kerberos keytab.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Either the specified Kerberos principal is invalid, or the default Kerberos keytab is invalid.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ensure that a valid Kerberos principal is specified and that the default Kerberos keytab is valid.
+# CWIML4510 already used
 
 KRB5_TICKETCACHE_USED=CWIML4511E: The {0} LDAP registry is configured with the {1} Kerberos ticket cache (ccache) filename and the {2} keytab filename. The Kerberos credential cache (ccache) is used for Kerberos bind authentication to LDAP server.
 KRB5_TICKETCACHE_USED.explanation=To use the keytab file, the keytab filename must be specified and the Kerberos credential cache (ccache) filename must not be specified.
@@ -264,17 +262,15 @@ KRB5_FILE_NOT_FOUND=CWIML4515E: The {0} attribute from the {1} element is config
 KRB5_FILE_NOT_FOUND.explanation=The configuration refers to a file that is either unreadable or does not exist.
 KRB5_FILE_NOT_FOUND.useraction=Ensure that the configuration points to a file that exists and is readable by the application process.
 
-KRB5_FILE_FOUND=CWIML4516E: The LDAP registry component is configured to use a {0} file that is located at {1}.
-KRB5_FILE_FOUND.explanation=The configured file was successfully located.
-KRB5_FILE_FOUND.useraction=No action is required.
-
+# CWIML4516 already used
 # CWIML4517 already used
 
 IDMAP_INVALID_FORMAT=CWIML4518W: The {0} {1} value is malformed. The value must be a semi-colon separated list of 'objectclass:attribute' or '*:attribute' pairs.
 IDMAP_INVALID_FORMAT.explanation=The userIdMap value must be in a valid format so that the objectclass and attribute can be parsed.
 IDMAP_INVALID_FORMAT.useraction=Update the userIdMap value so that it adheres to the specified format.
 
-# CWIML4519 and CWIML4520 already used
+# CWIML4519 already used
+# CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: The {0} LDAP registry attempted to bind to the LDAP server by using Kerberos credentials for the {1} principal name, but the Kerberos service that provides these credentials is not available. The bind authentication mechanism is {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=The Kerberos service was not available when the LDAP registry attempted to bind to the LDAP server. If the Kerberos service is not available, no users can authenticate.
@@ -283,3 +279,8 @@ KRB5_SERVICE_NOT_AVAILABLE.useraction=Review the LDAP registry configuration set
 FILTER_MISSING_PERCENT_V=CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
 FILTER_MISSING_PERCENT_V.explanation=The LDAP registry replaces the %v with the value to search for when doing searches for users or groups.
 FILTER_MISSING_PERCENT_V.useraction=Update the specified filter to include an attribute value assertion that contains =%v in the value assertion.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: Kerberos login failed with the {0} Kerberos principal and the default Kerberos keytab.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Either the specified Kerberos principal is invalid, or the default Kerberos keytab is invalid.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ensure that a valid Kerberos principal is specified and that the default Kerberos keytab is valid.
+
