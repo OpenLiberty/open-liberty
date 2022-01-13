@@ -18,15 +18,15 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.validation.OASValidationResult;
-import io.openliberty.microprofile.openapi20.validation.ValidationHelper;
-import io.openliberty.microprofile.openapi20.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.validation.OASValidationResult.ValidationEvent.Severity;
+import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult;
+import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
+import io.openliberty.microprofile.openapi20.internal.validation.ValidationHelper;
 
 public class TestValidationHelper implements ValidationHelper {
 
     private final Set<String> operationIds = new HashSet<>();
-    private final Map<String, Set<String>> linkOperationIds = new HashMap<String, Set<String>>();
+    private final Map<String, Set<String>> linkOperationIds = new HashMap<>();
     private static final TraceComponent tc = Tr.register(TestValidationHelper.class);
 
     OASValidationResult result = new OASValidationResult();
@@ -51,7 +51,7 @@ public class TestValidationHelper implements ValidationHelper {
         if (linkOperationIds.containsKey(operationId)) {
             linkOperationIds.get(operationId).add(location);
         } else {
-            Set<String> locations = new HashSet<String>();
+            Set<String> locations = new HashSet<>();
             locations.add(location);
             linkOperationIds.put(operationId, locations);
         }
@@ -89,7 +89,7 @@ public class TestValidationHelper implements ValidationHelper {
     public String toString() {
         if (!hasEvents())
             return "No events";
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         for (ValidationEvent event : result.getEvents()) {
             b.append("\n" + event.severity + "," + event.location + "," + event.message);
         }

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.validation.RuntimeExpressionUtils;
+import io.openliberty.microprofile.openapi20.internal.validation.RuntimeExpressionUtils;
 
 /**
  *

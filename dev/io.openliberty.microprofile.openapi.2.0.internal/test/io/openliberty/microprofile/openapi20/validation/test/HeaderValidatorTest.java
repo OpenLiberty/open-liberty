@@ -18,10 +18,10 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.headers.Header.Style;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.validation.HeaderValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
-import io.openliberty.microprofile.openapi20.validation.HeaderValidator;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.examples.ExampleImpl;
 import io.smallrye.openapi.api.models.headers.HeaderImpl;
@@ -57,7 +57,7 @@ public class HeaderValidatorTest {
 
         HeaderImpl exampleAndExamplesNotNull = new HeaderImpl();
         exampleAndExamplesNotNull.setExample("testExample");
-        Map<String, Example> examples = new HashMap<String, Example>();
+        Map<String, Example> examples = new HashMap<>();
         ExampleImpl example = new ExampleImpl();
         example.setDescription("testExample");
         examples.put(key, example);

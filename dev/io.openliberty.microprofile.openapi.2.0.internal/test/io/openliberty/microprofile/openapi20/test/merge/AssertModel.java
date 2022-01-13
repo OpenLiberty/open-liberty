@@ -27,24 +27,24 @@ import java.util.Optional;
 import org.eclipse.microprofile.openapi.models.Constructible;
 import org.junit.Assert;
 
-import io.openliberty.microprofile.openapi20.merge.ModelType;
-import io.openliberty.microprofile.openapi20.merge.ModelType.ModelParameter;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType;
+import io.openliberty.microprofile.openapi20.internal.merge.ModelType.ModelParameter;
 
 public class AssertModel {
 
     /**
      * Recursively traverse two OpenAPI models and assert that they are equal
-     * 
+     *
      * @param expected the expected result
      * @param actual the model to test for equality to {@code expected}
      */
     public static void assertModelsEqual(Constructible expected, Constructible actual) {
         assertModelsEqual(expected, actual, new ArrayDeque<>());
     }
-    
+
     /**
      * Recursively traverse two maps containing OpenAPI model objects and assert that they are equal
-     * 
+     *
      * @param expected the expected result
      * @param actual the map to test for equality to {@code expected}
      */
@@ -53,7 +53,7 @@ public class AssertModel {
     }
 
     private static void assertModelsEqual(Object expected, Object actual, Deque<String> context) {
-    
+
         if (expected == null) {
             // When smallrye merges model parts, if a map is null it sometimes gets initialized to an empty map
             // so treat an empty map as being equal to null
@@ -62,11 +62,11 @@ public class AssertModel {
         } else {
             assertNotNull(context, actual);
         }
-    
+
         Optional<ModelType> mtExpected = ModelType.getModelObject(expected.getClass());
         Optional<ModelType> mtActual = ModelType.getModelObject(actual.getClass());
         assertEquals("Model types not equal", context, mtExpected, mtActual);
-    
+
         if (mtExpected.isPresent()) {
             assertEqualModelObject(expected, actual, mtExpected.get(), context);
         } else if (expected instanceof Map) {
@@ -91,7 +91,7 @@ public class AssertModel {
         Map<?, ?> expectedMap = (Map<?, ?>) expected;
         assertThat(actual, instanceOf(Map.class));
         Map<?, ?> actualMap = (Map<?, ?>) actual;
-    
+
         assertEquals("Different key set", context, expectedMap.keySet(), actualMap.keySet());
         for (Object key : expectedMap.keySet()) {
             context.push(key.toString());
@@ -104,9 +104,9 @@ public class AssertModel {
         List<?> expectedList = (List<?>) expected;
         assertThat(actual, instanceOf(List.class));
         List<?> actualList = (List<?>) actual;
-    
+
         assertThat("List has wrong size at " + contextString(context), actualList, hasSize(expectedList.size()));
-    
+
         Iterator<?> expectedIterator = expectedList.iterator();
         Iterator<?> actualIterator = actualList.iterator();
         int i = 0;

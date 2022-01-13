@@ -68,15 +68,15 @@ public class MergeTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
-    private List<String> deployedApps = new ArrayList<>();
+    private final List<String> deployedApps = new ArrayList<>();
 
     @BeforeClass
     public static void setupServer() throws Exception {
         server.setAdditionalSystemProperties(
-            Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "all"));
+                                             Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "all"));
         server.startServer();
     }
 
@@ -105,13 +105,13 @@ public class MergeTest {
     @Test
     public void testTwoWars() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         deployApp(war1);
 
@@ -180,13 +180,13 @@ public class MergeTest {
     @Test
     public void testMultiModuleEar() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-            .addAsModules(war1, war2);
+                                          .addAsModules(war1, war2);
 
         deployApp(ear);
 
@@ -200,13 +200,13 @@ public class MergeTest {
     @Test
     public void testNonJaxrsEarModule() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(TestServlet.class);
+                                    .addClasses(TestServlet.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-            .addAsModules(war1, war2);
+                                          .addAsModules(war1, war2);
 
         deployApp(ear);
 
@@ -219,10 +219,10 @@ public class MergeTest {
     @Test
     public void testNonJaxrsAppNotMerged() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(TestServlet.class);
+                                    .addClasses(TestServlet.class);
 
         deployApp(war1);
         deployApp(war2);
@@ -241,12 +241,12 @@ public class MergeTest {
     @Test
     public void testMergeClash() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
-            .addAsManifestResource(openApiJsonWithServers("http://example.org/server1"), "openapi.json");
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsManifestResource(openApiJsonWithServers("http://example.org/server1"), "openapi.json");
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
-            .addAsManifestResource(openApiJsonWithServers("http://example.org/server2"), "openapi.json");
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsManifestResource(openApiJsonWithServers("http://example.org/server2"), "openapi.json");
 
         deployApp(war1);
         assertRest("/test1/test");
@@ -265,24 +265,26 @@ public class MergeTest {
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
         assertThat(server.findStringsInLogsUsingMark(
-            " - The /test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
-            server.getDefaultLogFile()), hasSize(1));
+                                                     " - The /test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
+                                                     server.getDefaultLogFile()),
+                   hasSize(1));
     }
 
     /**
      * This is a slightly convoluted example which will fail if the merged document doesn't have the right context root.
      * <p>
      * test1 and test2 clash, so only test1 will be returned.
+     *
      * @throws Exception
      */
     @Test
     public void testMergeClashNeedingContextRoot() throws Exception {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(DeploymentTestApp.class, DeploymentTestResourceTest1.class)
-            .addAsManifestResource(openApiJsonWithServers("http://example.org"), "openapi.json");
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResourceTest1.class)
+                                    .addAsManifestResource(openApiJsonWithServers("http://example.org"), "openapi.json");
 
         deployApp(war1);
         assertRest("/test1/test");
@@ -303,10 +305,10 @@ public class MergeTest {
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
         assertThat(
-            server.findStringsInLogsUsingMark(
-                " - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
-                server.getDefaultLogFile()),
-            hasSize(1));
+                   server.findStringsInLogsUsingMark(
+                                                     " - The /test1/test path.*test2.* clashes with a path from the.*test1.*test2.*cannot be merged",
+                                                     server.getDefaultLogFile()),
+                   hasSize(1));
 
     }
 
@@ -333,7 +335,7 @@ public class MergeTest {
     private void assertServerContextRoot(JsonNode model,
                                          String contextRoot) {
         OpenAPITestUtil.checkServer(model,
-            OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1, contextRoot));
+                                    OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1, contextRoot));
     }
 
     private void deployApp(Archive<?> archive) throws Exception {

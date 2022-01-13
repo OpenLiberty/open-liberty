@@ -19,10 +19,10 @@ import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.validation.ParameterValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
-import io.openliberty.microprofile.openapi20.validation.ParameterValidator;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.examples.ExampleImpl;
 import io.smallrye.openapi.api.models.media.ContentImpl;
@@ -124,7 +124,7 @@ public class ParameterValidatorTest {
         ParameterImpl parameter = new ParameterImpl();
         ExampleImpl example = new ExampleImpl();
         example.summary("This is a test param example").externalValue("http://example.com/queryparam");
-        Map<String, Example> examples = new HashMap<String, Example>();
+        Map<String, Example> examples = new HashMap<>();
         examples.put("example-name", example);
         SchemaImpl schema = new SchemaImpl();
         schema.type(SchemaType.OBJECT);

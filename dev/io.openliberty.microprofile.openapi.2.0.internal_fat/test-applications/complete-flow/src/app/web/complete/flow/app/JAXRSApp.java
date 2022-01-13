@@ -48,7 +48,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
     },
     externalDocs = @ExternalDocumentation(
         description = "instructions for how to deploy this app",
-        url = "https://github.com/microservices-api/oas3-airlines/blob/master/README.md"),
+        url = "https://github.com/microservices-api/oas3-airlines/"),
     info = @Info(
         title = "Title from JAX-RS app",
         version = "1.0",

@@ -19,10 +19,10 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.validation.ComponentsValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
-import io.openliberty.microprofile.openapi20.validation.ComponentsValidator;
 import io.smallrye.openapi.api.models.ComponentsImpl;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.parameters.ParameterImpl;
@@ -45,16 +45,16 @@ public class ComponentsValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("testKey", new SecuritySchemeImpl());
         components.setSecuritySchemes(securitySchemes);
 
-        Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+        Map<String, Parameter> parameters = new HashMap<>();
         parameters.put("Test_key", new ParameterImpl());
         parameters.put("test-key", new ParameterImpl());
         components.setParameters(parameters);
 
-        Map<String, APIResponse> responses = new HashMap<String, APIResponse>();
+        Map<String, APIResponse> responses = new HashMap<>();
         responses.put("test.my.key", new APIResponseImpl());
 
         validator.validate(vh, context, null, components);
@@ -69,16 +69,16 @@ public class ComponentsValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("testKey", new SecuritySchemeImpl());
         components.setSecuritySchemes(securitySchemes);
 
-        Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+        Map<String, Parameter> parameters = new HashMap<>();
         parameters.put("Test_key", new ParameterImpl());
         parameters.put("_11?78", new ParameterImpl());
         components.setParameters(parameters);
 
-        Map<String, APIResponse> responses = new HashMap<String, APIResponse>();
+        Map<String, APIResponse> responses = new HashMap<>();
         responses.put("test.my.key", new APIResponseImpl());
 
         validator.validate(vh, context, null, components);
@@ -95,16 +95,16 @@ public class ComponentsValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("", new SecuritySchemeImpl());
         components.setSecuritySchemes(securitySchemes);
 
-        Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+        Map<String, Parameter> parameters = new HashMap<>();
         parameters.put("Test_key", new ParameterImpl());
         parameters.put("_11?78", new ParameterImpl());
         components.setParameters(parameters);
 
-        Map<String, APIResponse> responses = new HashMap<String, APIResponse>();
+        Map<String, APIResponse> responses = new HashMap<>();
         responses.put(".test/I'm.invalid", new APIResponseImpl());
 
         validator.validate(vh, context, null, components);
@@ -133,7 +133,7 @@ public class ComponentsValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put(null, new SecuritySchemeImpl());
         components.setSecuritySchemes(securitySchemes);
 
@@ -150,7 +150,7 @@ public class ComponentsValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("mySecurity", null);
         components.setSecuritySchemes(securitySchemes);
 

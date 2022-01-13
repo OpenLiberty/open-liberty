@@ -21,10 +21,10 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme.Type;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.validation.SecurityRequirementValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
-import io.openliberty.microprofile.openapi20.validation.SecurityRequirementValidator;
 import io.smallrye.openapi.api.models.ComponentsImpl;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.security.OAuthFlowsImpl;
@@ -89,7 +89,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -130,7 +130,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -213,7 +213,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
 
         components.setSecuritySchemes(securitySchemes);
@@ -260,7 +260,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", null);
         securitySchemes.put("api_key", api_key);
 
@@ -306,7 +306,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 
@@ -351,7 +351,7 @@ public class SecurityRequirementValidatorTest {
 
         ComponentsImpl components = new ComponentsImpl();
 
-        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         securitySchemes.put("petStore_auth", petStore_auth);
         securitySchemes.put("api_key", api_key);
 

@@ -55,12 +55,12 @@ public class OpenAPITestUtil {
      */
     public static void changeFeatures(LibertyServer server,
                                       String... features)
-        throws Exception {
+                    throws Exception {
         List<String> featuresList = Arrays.asList(features);
         server.setMarkToEndOfLog();
         server.changeFeatures(featuresList);
         assertNotNull("Features weren't updated successfully",
-            server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+                      server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
     }
 
     /**
@@ -78,7 +78,7 @@ public class OpenAPITestUtil {
             features.remove(name);
             server.updateServerConfiguration(config);
             assertNotNull("Config wasn't updated successfully",
-                server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+                          server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
         } catch (Exception e) {
             Assert.fail("Unable to remove feature:" + name);
         }
@@ -99,7 +99,7 @@ public class OpenAPITestUtil {
             features.add(name);
             server.updateServerConfiguration(config);
             assertNotNull("Config wasn't updated successfully",
-                server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
+                          server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*"));
         } catch (Exception e) {
             Assert.fail("Unable to add feature:" + name);
         }
@@ -114,7 +114,7 @@ public class OpenAPITestUtil {
     public static void waitForApplicationProcessorAddedEvent(LibertyServer server,
                                                              String appName) {
         String s = server.waitForStringInTraceUsingMark(
-            "Application Processor: Adding application ended: appInfo=.*\\[" + appName + "\\]", TIMEOUT);
+                                                        "Application Processor: Adding application ended: appInfo=.*\\[" + appName + "\\]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
     }
 
@@ -127,7 +127,7 @@ public class OpenAPITestUtil {
     public static void waitForApplicationProcessorProcessedEvent(LibertyServer server,
                                                                  String appName) {
         String s = server.waitForStringInTraceUsingMark(
-            "Application Processor: Processing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+                                                        "Application Processor: Processing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
     }
 
@@ -140,14 +140,14 @@ public class OpenAPITestUtil {
     public static void waitForApplicationProcessorRemovedEvent(LibertyServer server,
                                                                String appName) {
         String s = server.waitForStringInTraceUsingMark(
-            "Application Processor: Removing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+                                                        "Application Processor: Removing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish removing the app " + appName, s);
     }
 
     public static void waitForApplicationAdded(LibertyServer server,
                                                String appName) {
         String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]",
-            TIMEOUT);
+                                                        TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully process the app " + appName, s);
     }
 
@@ -161,7 +161,7 @@ public class OpenAPITestUtil {
             server.waitForConfigUpdateInLogUsingMark(null);
             waitForApplicationProcessorRemovedEvent(server, appName);
             assertNotNull("FAIL: App didn't report is has been stopped.",
-                server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
+                          server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
         } catch (Exception e) {
             fail("FAIL: Could not remove the application " + appName);
         }
@@ -183,7 +183,7 @@ public class OpenAPITestUtil {
                                              String path,
                                              String type,
                                              boolean waitForAppProcessor)
-        throws Exception {
+                    throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         Application app = config.addApplication(name, path, type);
         server.updateServerConfiguration(config);
@@ -198,7 +198,7 @@ public class OpenAPITestUtil {
                                              String name,
                                              String path,
                                              String type)
-        throws Exception {
+                    throws Exception {
         return addApplication(server, name, path, type, true);
     }
 
@@ -213,14 +213,14 @@ public class OpenAPITestUtil {
      */
     public static Application addApplication(LibertyServer server,
                                              String name)
-        throws Exception {
+                    throws Exception {
         return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", true);
     }
 
     public static Application addApplication(LibertyServer server,
                                              String name,
                                              boolean waitForAppProcessor)
-        throws Exception {
+                    throws Exception {
         return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", waitForAppProcessor);
     }
 
@@ -237,7 +237,7 @@ public class OpenAPITestUtil {
      */
     public static void removeAllApplication(LibertyServer server) throws Exception {
         server.getServerConfiguration().getApplications().stream()
-            .forEach(app -> removeApplication(server, app.getName()));
+              .forEach(app -> removeApplication(server, app.getName()));
     }
 
     public static void checkServer(JsonNode root,
@@ -249,7 +249,7 @@ public class OpenAPITestUtil {
 
         List<String> urls = Arrays.asList(expectedUrls);
         servers.findValues("url")
-            .forEach(url -> assertTrue("FAIL: Unexpected server URL " + url, urls.contains(url.asText())));
+               .forEach(url -> assertTrue("FAIL: Unexpected server URL " + url, urls.contains(url.asText())));
         assertEquals("FAIL: Found incorrect number of server objects.", urls.size(), servers.size());
     }
 
@@ -268,7 +268,7 @@ public class OpenAPITestUtil {
 
     /**
      * Find the given path in the document and prepend the path from a relevant server to it and return the result
-     * 
+     *
      * @param root the document
      * @param pathName the path name
      * @return the prepended path name
@@ -319,7 +319,7 @@ public class OpenAPITestUtil {
     public static void changeServerPorts(LibertyServer server,
                                          int httpPort,
                                          int httpsPort)
-        throws Exception {
+                    throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         HttpEndpoint http = config.getHttpEndpoints().getById("defaultHttpEndpoint");
         if (http == null) {
@@ -329,7 +329,7 @@ public class OpenAPITestUtil {
             http.setHttpsPort(Integer.toString(httpsPort));
             config.getHttpEndpoints().add(http);
         } else if (Integer.parseInt(http.getHttpPort()) == httpPort
-            && Integer.parseInt(http.getHttpsPort()) == httpsPort) {
+                   && Integer.parseInt(http.getHttpsPort()) == httpsPort) {
             return;
         }
 
@@ -343,9 +343,9 @@ public class OpenAPITestUtil {
             // Save the config and wait for message that was a result of the config change
             server.updateServerConfiguration(config);
             assertNotNull("FAIL: Didn't get expected config update log messages.",
-                server.waitForConfigUpdateInLogUsingMark(null, false));
+                          server.waitForConfigUpdateInLogUsingMark(null, false));
             String regex = "Updated server information.*"
-                + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
+                           + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
             server.waitForStringInTrace(regex, TIMEOUT);
         } else {
             server.updateServerConfiguration(config);

@@ -106,7 +106,7 @@ public class OpenAPIConnection {
      */
     public HttpURLConnection getConnection() throws IOException, ProtocolException {
         HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method,
-            headers, streamToWrite);
+                                                             headers, streamToWrite);
         conn.setReadTimeout(30 * 1000);
         return conn;
     }

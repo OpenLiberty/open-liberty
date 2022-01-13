@@ -162,13 +162,15 @@ public class ComponentsMergeTest {
 
     private Method findSetter(Class<?> clazz) {
         Method setter = Arrays.asList(Components.class.getMethods()).stream().filter(method -> method.getName().startsWith("set") &&
-                                                                                               method.getGenericParameterTypes()[0].toString().contains(clazz.getName())).findFirst().get();
+                                                                                               method.getGenericParameterTypes()[0].toString().contains(clazz.getName()))
+                              .findFirst().get();
         return setter;
     }
 
     private Method findGetter(Class<?> clazz) {
         Method setter = Arrays.asList(Components.class.getMethods()).stream().filter(method -> method.getName().startsWith("get") &&
-                                                                                               method.getGenericReturnType().toString().contains(clazz.getName())).findFirst().get();
+                                                                                               method.getGenericReturnType().toString().contains(clazz.getName()))
+                              .findFirst().get();
         return setter;
     }
 }

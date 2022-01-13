@@ -13,10 +13,10 @@ package io.openliberty.microprofile.openapi20.validation.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.validation.OAuthFlowsValidator;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationContextHelper;
 import io.openliberty.microprofile.openapi20.test.utils.TestValidationHelper;
-import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
-import io.openliberty.microprofile.openapi20.validation.OAuthFlowsValidator;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.security.OAuthFlowImpl;
 import io.smallrye.openapi.api.models.security.OAuthFlowsImpl;
@@ -100,7 +100,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"tokenUrl\" field with \"http://test-authorization-url.com\" value is not applicable for \"OAuth Flow Object\" of \"implicit\" type"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(0).message.contains("The \"tokenUrl\" field with \"http://test-authorization-url.com\" value is not applicable for \"OAuth Flow Object\" of \"implicit\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value"));
     }
 
@@ -119,7 +120,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with \"http://test-token-url.com\" value is not applicable for \"OAuth Flow Object\" of \"password\" type"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(0).message.contains("The \"authorizationUrl\" field with \"http://test-token-url.com\" value is not applicable for \"OAuth Flow Object\" of \"password\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 
@@ -137,7 +139,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with \"http://test-client-url.com\" value is not applicable for \"OAuth Flow Object\" of \"clientCredentials\" type"));
+        Assert.assertTrue(vh.getResult().getEvents()
+                            .get(0).message.contains("The \"authorizationUrl\" field with \"http://test-client-url.com\" value is not applicable for \"OAuth Flow Object\" of \"clientCredentials\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 
