@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,33 +24,41 @@ import java.util.logging.Logger;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.Rule;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.threading.internal.SchedulingHelper.ExpeditedFutureTask;
 import test.common.SharedOutputManager;
 
+@SuppressWarnings("restriction") // SharedOutputManager is not API
 public class ScheduledExecutorImplTest {
+
+    static final String cName = ScheduledExecutorImplTest.class.getCanonicalName();
+
     static final DateFormat tsFormatZone = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSSSSS (zz)");
 
-    static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=info:Threading=all");
-    @Rule
-    public TestRule managerRule = outputMgr;
-
-    private static final Class<?> c = ScheduledExecutorImplTest.class;
-    private static final String cName = c.getCanonicalName();
-    private static Logger logger = Logger.getLogger(cName);
-
-    @After
-    public void tearDown() throws Exception {
-        // Clear the output generated after each method invocation
-        outputMgr.resetStreams();
-    }
+    static SharedOutputManager outputMgr;
+    static Logger logger;
 
     ScheduledExecutorImpl m_scheduledExecutor;
 
-    {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr = SharedOutputManager.getInstance().trace("*=info:Threading=all");
+        logger = Logger.getLogger(cName);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        if (m_scheduledExecutor == null) {
+            createScheduledExecutor();
+        }
+    }
+
+    void createScheduledExecutor() {
         m_scheduledExecutor = new ScheduledExecutorImpl();
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
         Map<String, Object> componentConfig = new HashMap<String, Object>(6);
@@ -61,8 +69,19 @@ public class ScheduledExecutorImplTest {
         componentConfig.put("coreThreads", -1);
         componentConfig.put("maxThreads", -1);
         executorService.activate(componentConfig);
-
         m_scheduledExecutor.setExecutor(executorService);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // Clear the output generated after each method invocation
+        outputMgr.resetStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        // Make stdout and stderr "normal"
+        outputMgr.restoreStreams();
     }
 
     /**
