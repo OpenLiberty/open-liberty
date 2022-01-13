@@ -11,10 +11,10 @@ try {
     });
     String name = future.join();
     if(!name.equals("concurrency")) {
-        output = "UserPrincipal Name should have been (concurrency) was (" + name + ")";
+        output = "Security Context should have been propagated. UserPrincipal Name should have been (concurrency) was (" + name + ")";
     };
 
-} catch (Exception e) { //Return any exceptions throw by the test as a string for easier debugging
+} catch (Exception e) { //Return any exceptions thrown by the test as a string for easier debugging
     StringWriter sw = new StringWriter();
     e.printStackTrace(new PrintWriter(sw));
     output = sw.toString();

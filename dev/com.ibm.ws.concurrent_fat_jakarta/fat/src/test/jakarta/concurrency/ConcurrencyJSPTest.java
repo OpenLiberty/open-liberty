@@ -10,8 +10,6 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +25,11 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import junit.framework.Assert;
 
+/**
+ * Basic tests to cover EE Concurrency inside a JSP.
+ * Demonstrates security context propagation, by using basic security on the web app.
+ * Calls to the webapp are made with the username 'concurrency' and password 'password'
+ */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
 public class ConcurrencyJSPTest extends FATServletClient {
@@ -36,17 +39,36 @@ public class ConcurrencyJSPTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive ConcurrencyJSPTestApp = ShrinkWrap.create(WebArchive.class, "ConcurrencyJSPTestApp.war");
-        ShrinkHelper.addDirectory(ConcurrencyJSPTestApp, "test-applications/ConcurrencyJSPTestApp/resources");
-        ShrinkHelper.exportAppToServer(server, ConcurrencyJSPTestApp);
+        HttpUtils.setDefaultAuth("concurrency", "password");
+
+        ShrinkHelper.defaultApp(server, "ConcurrencyJSPTestApp", "test.jakarta.concurrency.jsp");
 
         server.startServer();
     }
 
+    /**
+     * Uses the default ContextService, which propagates security, to confirm that a ContextService can propagate security context inside a JSP
+     */
     @Test
     public void securityPropogatedTest() throws Exception {
-        HttpUtils.setDefaultAuth("concurrency", "password");
         Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/SecurityPropagated.jsp").trim());
+    }
+
+    /**
+     * Uses java:app/concurrent/securityClearedContextSvc, to confirm that a ContextService can clear security context inside a JSP
+     */
+    @Test
+    public void securityClearedTest() throws Exception {
+        Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/SecurityCleared.jsp").trim());
+    }
+
+    /**
+     * Uses java:app/concurrent/securityUnchangedContextSvc, to confirm that a ContextService can leave security context unchanged inside a JSP.
+     * Tests both on the thread to confirm Security context is available, and on a separate thread to confirm it is not propagated.
+     */
+    @Test
+    public void securityUnchangedTest() throws Exception {
+        Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/SecurityUnchanged.jsp").trim());
     }
 
     @AfterClass
