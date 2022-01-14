@@ -173,7 +173,7 @@ public abstract class LogstashCollectorTest {
     }
 
     private static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("logstash/logstash:7.16.2")).asCanonicalNameString();
+                    .apply(DockerImageName.parse("elastic/logstash:7.16.3")).asCanonicalNameString();
 
     // Can be added to the FATSuite to make the resource lifecycle bound to the entire
     // FAT bucket. Or, you can add this to any JUnit test class and the container will
