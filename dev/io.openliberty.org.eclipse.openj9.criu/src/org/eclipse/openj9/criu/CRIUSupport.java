@@ -54,8 +54,18 @@ public final class CRIUSupport {
 	 *
 	 * @return TRUE is support is enabled, FALSE otherwise
 	 */
-	public static boolean isCRIUSupportEnabled() {
+	public synchronized static boolean isCRIUSupportEnabled() {
 		return false;
+	}
+
+	/**
+	 * Returns an error message describing why isCRIUSupportEnabled()
+	 * returns false, and what can be done to remediate the issue.
+	 *
+	 * @return NULL if isCRIUSupportEnabled() returns true. Otherwise the error message
+	 */
+	public static String getErrorMessage() {
+		return null;
 	}
 
 	/**
@@ -218,6 +228,41 @@ public final class CRIUSupport {
 	 * @return this
 	 */
 	public CRIUSupport registerRestoreEnvFile(Path envFile) {
+		return this;
+	}
+
+	/**
+	 * User hook that is run before checkpointing the JVM.
+	 *
+	 * Hooks will be run in single threaded mode, no other application threads
+	 * will be active. Users should avoid synchronization of objects that are not owned
+	 * by the thread, terminally blocking operations and launching new threads in the hook.
+	 *
+	 * @param hook user hook
+	 *
+	 * @return this
+	 *
+	 * TODO: Additional JVM capabilities will be added to prevent certain deadlock scenarios
+	 */
+	public CRIUSupport registerPostRestoreHook(Runnable hook) {
+		return this;
+	}
+
+	/**
+	 * User hook that is run after restoring a checkpoint image.
+	 *
+	 * Hooks will be run in single threaded mode, no other application threads
+	 * will be active. Users should avoid synchronization of objects that are not owned
+	 * by the thread, terminally blocking operations and launching new threads in the hook.
+	 *
+	 * @param hook user hook
+	 *
+	 * @return this
+	 *
+	 * TODO: Additional JVM capabilities will be added to prevent certain deadlock scenarios
+	 */
+	public CRIUSupport registerPreSnapshotHook(Runnable hook) {
+
 		return this;
 	}
 

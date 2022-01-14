@@ -10,9 +10,18 @@
  *******************************************************************************/
 package org.eclipse.openj9.criu;
 
+/**
+ * A CRIU exception representing a failed CRIU operation.
+ */
 public final class SystemCheckpointException extends JVMCRIUException {
     private static final long serialVersionUID = 1262214147293662586L;
 
+    /**
+     * Creates a SystemCheckpointException with the specified message and error code.
+     *
+     * @param message the message
+     * @param errorCode the error code
+     */
     public SystemCheckpointException(String message, int errorCode) {
         super(message, errorCode);
     }

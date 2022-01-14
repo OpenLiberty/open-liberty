@@ -58,6 +58,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
+
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     static final String HOOKS_REF_NAME = "hooks";
     private static final String DIR_CHECKPOINT = "checkpoint/";
@@ -151,11 +152,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         try {
             checkpoint();
         } catch (CheckpointFailedException e) {
-            // Allow auto FFDC here
-            // TODO log error informing we are exiting
-
-            // TODO is there any type of failure where we would not want to exit?
-
+            // Allow auto FFDC here to capture the causing exception (if any)
+            Tr.error(tc, e.getErrorMsgKey(), e.getMessage());
             /*
              * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
              * (which starts a server shutdown and quiesce).
@@ -184,27 +182,29 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
 
         Object[] hookRefs = cc.locateServices(HOOKS_REF_NAME);
-        List<CheckpointHook> checkpointHooks = getHooks(hookRefs);
+        List<CheckpointHook> checkpointPrepareHooks = getHooks(hookRefs);
+
+        // reverse prepare hook order for restore hooks
+        List<CheckpointHook> checkpointRestoreHooks = new ArrayList<>(checkpointPrepareHooks);
+        Collections.reverse(checkpointRestoreHooks);
 
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
         }
 
-        prepare(checkpointHooks);
-        Collections.reverse(checkpointHooks);
         try {
             try {
                 criu.checkpointSupported();
             } catch (CheckpointFailedException cpfe) {
-                debug(tc, () -> "ExecuteCRIU service does not support checkpoint.");
-                //TODO log a more helpful message based on cpfe Type
-                System.out.println(cpfe.getMessage());
+                debug(tc, () -> "ExecuteCRIU service does not support checkpoint: " + cpfe.getMessage());
                 throw cpfe;
             }
             File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
-            criu.dump(imageDir, CHECKPOINT_LOG_FILE,
+            criu.dump(() -> prepare(checkpointPrepareHooks),
+                      () -> restore(checkpointRestoreHooks),
+                      imageDir, CHECKPOINT_LOG_FILE,
                       getLogsCheckpoint(),
                       getEnvProperties());
 
@@ -213,10 +213,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             if (e instanceof CheckpointFailedException) {
                 throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
+            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e);
         }
 
-        restore(checkpointHooks);
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
         }
@@ -252,7 +251,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             debug(tc, () -> "No checkpoint hooks.");
             return Collections.emptyList();
         }
-        debug(tc, () -> "Found checkpoint hook factories: " + hooks);
+        debug(tc, () -> "Found checkpoint hooks: " + hooks);
         List<CheckpointHook> hookList = new ArrayList<>(hooks.length);
         for (Object o : hooks) {
             // if o is anything other than a CheckpointHook then
@@ -287,7 +286,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedPrepare(Exception cause) {
-        return new CheckpointFailedException(Type.PREPARE_ABORT, "Failed to prepare for a checkpoint.", cause, 0);
+        return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "Failed to prepare for a checkpoint.", cause);
     }
 
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
@@ -298,7 +297,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedRestore(Exception cause) {
-        return new CheckpointFailedException(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
+        return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, "Failed to restore from checkpoint.", cause);
     }
 
     boolean checkpointCalledAlready() {

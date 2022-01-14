@@ -14,42 +14,46 @@ package io.openliberty.checkpoint.internal.criu;
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
-public class CheckpointFailedException extends Exception {
+public class CheckpointFailedException extends RuntimeException {
     private static final long serialVersionUID = -669718085413549145L;
+    private static String CHECKPOINT_FAILED_KEY = "CHECKPOINT_FAILED_CWWKC0453E";
+    private static String RESTORE_FAILED_KEY = "RESTORE_FAILED_CWWKC0454E";
 
     public enum Type {
         /**
          * CRIU not supported. The JVM we are running does not offer the org.eclipse.openj9.criu package.
          */
-        UNSUPPORTED_IN_JVM,
+        UNSUPPORTED_IN_JVM(70, CHECKPOINT_FAILED_KEY),
 
         /**
          * CRIU not supported. We are running a JVM with support but the VM was not launched with the option--XX:+EnableCRIUSupport.
          */
-        UNSUPPORTED_DISABLED_IN_JVM,
+        UNSUPPORTED_DISABLED_IN_JVM(71, CHECKPOINT_FAILED_KEY),
 
-        /**
-         * We are running a jvm with support enabled but criu appears not to be installed on the platform
-         */
-        //TODO or we are running on non-linux? Need to confirm this
-        UNSUPPORTED_CRIU_NOT_INSTALLED,
+        LIBERTY_PREPARE_FAILED(72, CHECKPOINT_FAILED_KEY),
+        JVM_CHECKPOINT_FAILED(73, CHECKPOINT_FAILED_KEY),
+        SYSTEM_CHECKPOINT_FAILED(74, CHECKPOINT_FAILED_KEY),
+        JVM_RESTORE_FAILED(75, RESTORE_FAILED_KEY),
+        LIBERTY_RESTORE_FAILED(76, RESTORE_FAILED_KEY),
+        // unknown could be a checkpoint or restore error, but most likely checkpoint
+        // may need a separate message just for unknown
+        UNKNOWN(77, CHECKPOINT_FAILED_KEY);
 
-        /**
-         * CRIU unsupported for a reason not specifically enumerated. Probably because an unanticipated ERROR was
-         * encountered while testing for support.
-         */
-        UNSUPPORTED,
+        final int errorCode;
+        final String errorMsgKey;
 
-        PREPARE_ABORT,
-        JVM_CHECKPOINT_FAILED,
-        SYSTEM_CHECKPOINT_FAILED,
-        JVM_RESTORE_FAILED,
-        RESTORE_ABORT,
-        UNKNOWN;
+        private Type(int errorCode, String errorMsgKey) {
+            this.errorCode = errorCode;
+            this.errorMsgKey = errorMsgKey;
+        }
     }
 
     private final int errorCode;
     private final Type type;
+
+    public CheckpointFailedException(Type type, String msg, Throwable cause) {
+        this(type, msg, cause, type.errorCode);
+    }
 
     public CheckpointFailedException(Type type, String msg, Throwable cause, int errorCode) {
         super(msg, cause);
@@ -63,5 +67,9 @@ public class CheckpointFailedException extends Exception {
 
     public int getErrorCode() {
         return errorCode;
+    }
+
+    public String getErrorMsgKey() {
+        return type.errorMsgKey;
     }
 }
