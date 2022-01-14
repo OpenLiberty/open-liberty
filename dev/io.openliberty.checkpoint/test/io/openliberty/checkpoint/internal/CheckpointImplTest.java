@@ -219,7 +219,7 @@ public class CheckpointImplTest {
             checkpoint.checkpoint();
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
-            assertEquals("Wrong type.", Type.PREPARE_ABORT, e.getType());
+            assertEquals("Wrong type.", Type.LIBERTY_PREPARE_FAILED, e.getType());
             assertEquals("Wrong cause.", prepareException, e.getCause());
         }
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
@@ -268,7 +268,7 @@ public class CheckpointImplTest {
             checkpoint.checkpoint();
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
-            assertEquals("Wrong type.", Type.RESTORE_ABORT, e.getType());
+            assertEquals("Wrong type.", Type.LIBERTY_RESTORE_FAILED, e.getType());
             assertEquals("Wrong cause.", restoreException, e.getCause());
         }
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);

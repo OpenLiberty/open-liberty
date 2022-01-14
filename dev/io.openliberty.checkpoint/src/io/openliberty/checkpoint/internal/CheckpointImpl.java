@@ -58,6 +58,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
+
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     static final String HOOKS_REF_NAME = "hooks";
     private static final String DIR_CHECKPOINT = "checkpoint/";
@@ -215,7 +216,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             if (e instanceof CheckpointFailedException) {
                 throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e, 0);
+            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e);
         }
 
         if (tc.isInfoEnabled()) {
@@ -288,7 +289,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedPrepare(Exception cause) {
-        return new CheckpointFailedException(Type.PREPARE_ABORT, "Failed to prepare for a checkpoint.", cause, 0);
+        return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "Failed to prepare for a checkpoint.", cause);
     }
 
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
@@ -299,7 +300,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedRestore(Exception cause) {
-        return new CheckpointFailedException(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
+        return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, "Failed to restore from checkpoint.", cause);
     }
 
     boolean checkpointCalledAlready() {

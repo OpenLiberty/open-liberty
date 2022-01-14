@@ -27,7 +27,7 @@ public class J9CRIUSupport {
             // return a fully functional implementation. Yay!
             return new ExecuteCRIU_OpenJ9();
         } catch (ClassNotFoundException e) {
-            return createCRIUNotSupported(Type.UNSUPPORTED_IN_JVM, "There is no CRIU support in this JVM.", null, 0);
+            return createCRIUNotSupported(Type.UNSUPPORTED_IN_JVM, "There is no CRIU support in this JVM.", null);
         }
     }
 
@@ -36,16 +36,13 @@ public class J9CRIUSupport {
      * CheckpointFailedException from all public methods. The exception can be examined to get more info on why CRIU
      * support is missing,
      *
-     * @param type      contains an enum with a more specific error reason.
-     * @param msg       exception error message
-     * @param cause
-     * @param errorCode
+     * @param type contains an enum with a more specific error reason.
+     * @param msg  exception error message
      */
     private static ExecuteCRIU createCRIUNotSupported(CheckpointFailedException.Type type,
                                                       String msg,
-                                                      Throwable cause,
-                                                      int errorCode) {
-        final CheckpointFailedException criuSupportException = new CheckpointFailedException(type, msg, cause, errorCode);
+                                                      Throwable cause) {
+        final CheckpointFailedException criuSupportException = new CheckpointFailedException(type, msg, null);
         return new ExecuteCRIU() {
             @Override
             public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {

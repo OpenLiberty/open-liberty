@@ -21,28 +21,38 @@ public class CheckpointFailedException extends RuntimeException {
         /**
          * CRIU not supported. The JVM we are running does not offer the org.eclipse.openj9.criu package.
          */
-        UNSUPPORTED_IN_JVM,
+        UNSUPPORTED_IN_JVM(70),
 
         /**
          * CRIU not supported. We are running a JVM with support but the VM was not launched with the option--XX:+EnableCRIUSupport.
          */
-        UNSUPPORTED_DISABLED_IN_JVM,
+        UNSUPPORTED_DISABLED_IN_JVM(71),
 
-        PREPARE_ABORT,
-        JVM_CHECKPOINT_FAILED,
-        SYSTEM_CHECKPOINT_FAILED,
-        JVM_RESTORE_FAILED,
-        RESTORE_ABORT,
-        UNKNOWN;
+        LIBERTY_PREPARE_FAILED(72),
+        JVM_CHECKPOINT_FAILED(73),
+        SYSTEM_CHECKPOINT_FAILED(74),
+        JVM_RESTORE_FAILED(75),
+        LIBERTY_RESTORE_FAILED(76),
+        UNKNOWN(77);
+
+        final int errorCode;
+
+        private Type(int errorCode) {
+            this.errorCode = errorCode;
+        }
     }
 
     private final int errorCode;
     private final Type type;
 
+    public CheckpointFailedException(Type type, String msg, Throwable cause) {
+        this(type, msg, cause, 0);
+    }
+
     public CheckpointFailedException(Type type, String msg, Throwable cause, int errorCode) {
         super(msg, cause);
         this.type = type;
-        this.errorCode = errorCode;
+        this.errorCode = errorCode == 0 ? type.errorCode : errorCode;
     }
 
     public Type getType() {

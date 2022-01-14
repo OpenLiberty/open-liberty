@@ -49,7 +49,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         } catch (JVMCRIUException e) {
             throw new CheckpointFailedException(Type.UNKNOWN, e.getMessage(), e, e.getErrorCode());
         } catch (RuntimeException e) {
-            throw new CheckpointFailedException(Type.UNKNOWN, e.getMessage(), e, 60);
+            throw new CheckpointFailedException(Type.UNKNOWN, e.getMessage(), e);
         }
     }
 
@@ -58,6 +58,6 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         if (CRIUSupport.isCRIUSupportEnabled()) {
             return;
         }
-        throw new CheckpointFailedException(Type.UNSUPPORTED_DISABLED_IN_JVM, CRIUSupport.getErrorMessage(), null, 0);
+        throw new CheckpointFailedException(Type.UNSUPPORTED_DISABLED_IN_JVM, CRIUSupport.getErrorMessage(), null);
     }
 }
