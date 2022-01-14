@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-
-
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.DefinitionException;
@@ -35,7 +33,6 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -110,8 +107,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<WebSphereBeanDeploymentArchive> accessibleBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
     private final Set<WebSphereBeanDeploymentArchive> descendantBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
 
-    private final Bootstrap bootstrap;
-
     private final WebSphereCDIDeployment cdiDeployment;
     private final Set<EjbDescriptor<?>> ejbDescriptors = new HashSet<EjbDescriptor<?>>();
 
@@ -159,8 +154,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         this.classloader = archive.getClassLoader();
         this.cdiDeployment = cdiDeployment;
         this.extensionCanSeeApplicationBDAs = extensionCanSeeApplicationBDAs;
-
-        this.bootstrap = cdiDeployment.getBootstrap();
 
         //archive classes only
         this.archiveClassNames.addAll(archiveClassNames);
@@ -254,7 +247,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public void scan() throws CDIException {
         if (!this.scanned) {
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {        
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] BEGIN SCAN");
             }
             //mark as scanned up front to prevent loops
@@ -280,10 +273,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 Class<?> loadedClass = classEntry.getValue();
                 ClassLoader actualClassLoader = loadedClass.getClassLoader();
                 if (actualClassLoader == classLoader || !isAccessibleBean(loadedClass)) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && this.beanClasses.containsKey(className)) {        
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && this.beanClasses.containsKey(className)) {
                         Tr.debug(tc, "beanClasses key collision for " + className);
-                        Tr.debug(tc, "Old class " + beanClasses.get(className).getCanonicalName() + beanClasses.get(className).getClassLoader().toString() );
-                        Tr.debug(tc, "New class " + loadedClass.getCanonicalName() + loadedClass.getClassLoader().toString() );
+                        Tr.debug(tc, "Old class " + beanClasses.get(className).getCanonicalName() + beanClasses.get(className).getClassLoader().toString());
+                        Tr.debug(tc, "New class " + loadedClass.getCanonicalName() + loadedClass.getClassLoader().toString());
                     }
                     this.beanClasses.put(className, loadedClass);
                 }
@@ -315,7 +308,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     }
 
     private Set<String> scanForBeanClassNames() throws CDIException {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "scanForBeanClassNames [ " + getHumanReadableName() + " ]");
         }
         Set<String> classNames = new HashSet<String>();
@@ -343,7 +336,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             classNames.remove(appMainClassName);
         }
 
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String beanNames = String.join(", ", classNames);
             Tr.exit(tc, "scanForBeanClassNames [ " + getHumanReadableName() + " ] { " + classNames + " }");
         }
@@ -351,7 +344,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     }
 
     private void initializeInjectionClasses(Collection<Class<?>> beanClasses) throws CDIException {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String beanNames = beanClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
             Tr.entry(tc, "initializeInjectionClasses [ " + getHumanReadableName() + " ] {" + beanNames + "}");
         }
@@ -372,14 +365,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         classes.removeAll(getManagedBeanClasses());
 
         this.injectionClasses.addAll(classes);
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String beanNames = this.injectionClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
             Tr.exit(tc, "initializeInjectionClasses [ " + getHumanReadableName() + " ] {" + beanNames + "}");
         }
     }
 
     private void initializeJEEComponentClasses(Set<String> allClassNames) throws CDIException {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String classNames = String.join(", ", allClassNames);
             Tr.entry(tc, "initializeJEEComponentClasses [ " + getHumanReadableName() + " ] {" + classNames + "}");
         }
@@ -397,7 +390,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     Class<?> clazz = CDIUtils.loadClass(classLoader, className);
                     if (clazz != null) {
                         classes.add(clazz);
-                    } else { 
+                    } else {
                         Tr.debug(tc, "jee Component Class was null", className);
                     }
                 }
@@ -409,7 +402,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         for (EjbDescriptor<?> ejb : ejbs) {
             if (ejb.isMessageDriven()) {
                 classes.add(ejb.getBeanClass());
-                if (ejb.getBeanClass() == null) { 
+                if (ejb.getBeanClass() == null) {
                     Tr.debug(tc, "Message Bean's bean class was null", ejb);
                 }
             }
@@ -430,14 +423,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         classes.addAll(nonCDIInterceptors);
         this.jeeComponentClasses.addAll(classes);
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String names = this.jeeComponentClasses.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
             Tr.exit(tc, "initializeJEEComponentClasses [ " + getHumanReadableName() + " ] {" + names + "}");
         }
     }
 
     private void scanForEndpoints() throws CDIException {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "scanForEndpoints [ " + getHumanReadableName() + " ]");
         }
 
@@ -502,7 +495,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 }
             }
         }
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "scanForEndpoints [ " + getHumanReadableName() + " ]");
         }
     }
@@ -556,7 +549,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      * @param classes
      */
     private void removeVetoedClasses(Set<Class<?>> classes) {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             String vetoedClassNames = classes.stream().filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", "));
             Tr.entry(tc, "removeVetoedClasses [ " + getHumanReadableName() + " ] {" + vetoedClassNames + "}");
         }
@@ -578,7 +571,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             }
 
         }
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "removeVetoedClasses [ " + getHumanReadableName() + " ]");
         }
     }
@@ -648,8 +641,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public void addBeanDeploymentArchive(WebSphereBeanDeploymentArchive accessibleBDA) {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {        
-            Tr.debug(tc, "addBeanDeploymentArchive: [ " + accessibleBDA + " ] will be visible to [ " + getHumanReadableName() + " ]");            
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "addBeanDeploymentArchive: [ " + accessibleBDA + " ] will be visible to [ " + getHumanReadableName() + " ]");
         }
         this.accessibleBDAs.add(accessibleBDA);
     }
@@ -670,14 +663,13 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             Resource beansXmlResource = archive.getBeansXml();
             if (beansXmlResource != null) {
                 URL beansXmlUrl = beansXmlResource.getURL();
-                Bootstrap bootstrap = getCDIDeployment().getBootstrap();
                 final ClassLoader origTCCL = getContextClassLoader();
                 try {
                     // Must use this class's loader as the context classloader to ensure
                     // that we load Liberty's XML parser rather than any parser defined
                     // in the application.
                     setContextClassLoader(BeanDeploymentArchiveImpl.class.getClassLoader());
-                    beansXml = bootstrap.parse(beansXmlUrl);
+                    beansXml = getCDIRuntime().getBeanParser().parse(getCDIDeployment(), beansXmlUrl);
                 } finally {
                     setContextClassLoader(origTCCL);
                 }
@@ -776,10 +768,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     /**
      * @return the beanManager
      */
-
     @Override
     public WeldManager getBeanManager() {
-        return bootstrap.getManager(this);
+        return getCDIDeployment().getBootstrap().getManager(this);
     }
 
     @Override
@@ -857,7 +848,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public void addManagedBeanDescriptor(ManagedBeanDescriptor<?> managedBeanDescriptor) {
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
             this.managedBeanClasses.add(managedBeanDescriptor.getBeanClass());
-            if (managedBeanDescriptor.getBeanClass() == null) { 
+            if (managedBeanDescriptor.getBeanClass() == null) {
                 Tr.debug(tc, "Managed bean descriptor's bean class was null", managedBeanDescriptor);
             }
         }
