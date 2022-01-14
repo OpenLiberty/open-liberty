@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
     /** Format the date and time in ISO-8601 format */
     protected volatile boolean isoDateFormat = false;
+
+    /** Prevent potentially sensitive information from being exposed in log and trace files. */
+    protected volatile boolean suppressSensitiveTrace = false;
 
     /**
      * Max file size in MB: 0 for no limit
@@ -222,6 +225,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         traceSpec = InitConfgAttribute.TRACE_SPEC.getStringValue(c, traceSpec, isInit);
         traceFormat = InitConfgAttribute.TRACE_FORMAT.getTraceFormatValue(c, traceFormat, isInit);
 
+        suppressSensitiveTrace = InitConfgAttribute.SUPPRESS_SENSITIVE_TRACE.getBooleanValue(c, suppressSensitiveTrace, isInit);
+
         isoDateFormat = InitConfgAttribute.ISO_DATE_FORMAT.getBooleanValue(c, isoDateFormat, isInit);
 
         consoleLogLevel = InitConfgAttribute.CONSOLE_LOG_LEVEL.getLogLevelValue(c, consoleLogLevel, isInit);
@@ -313,6 +318,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
     public TraceFormat getTraceFormat() {
         return traceFormat;
+    }
+
+    public boolean getSuppressSensitiveTrace() {
+        return suppressSensitiveTrace;
     }
 
     public boolean getIsoDateFormat() {
@@ -448,6 +457,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",traceFormat=").append(traceFormat);
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);
+        sb.append(",suppressSensitiveTrace=").append(suppressSensitiveTrace);
         sb.append(",newLogsOnStart=").append(newLogsOnStart);
         sb.append("]");
 
@@ -467,6 +477,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         TRACE_FORMAT("traceFormat", "com.ibm.ws.logging.trace.format"),
         ISO_DATE_FORMAT("isoDateFormat", "com.ibm.ws.logging.isoDateFormat"),
         HIDE_MESSAGES("hideMessage", "com.ibm.ws.logging.hideMessage"),
+        SUPPRESS_SENSITIVE_TRACE("suppressSensitiveTrace", "com.ibm.ws.logging.suppress.sensitive.trace"),
 
         MESSAGE_SOURCE("messageSource", "com.ibm.ws.logging.message.source"),
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
