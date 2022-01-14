@@ -244,11 +244,18 @@ public class Entity_EJB extends JPAFATServletClient {
             ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
             ClassloaderElement loader = new ClassloaderElement();
             loader.getCommonLibraryRefs().add("HibernateLib");
+            loader.getCommonLibraryRefs().add("AnonymousJDBCLib");
             cel.add(loader);
         } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
             ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
             ClassloaderElement loader = new ClassloaderElement();
             loader.getCommonLibraryRefs().add("OpenJPALib");
+            loader.getCommonLibraryRefs().add("AnonymousJDBCLib");
+            cel.add(loader);
+        } else {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("AnonymousJDBCLib");
             cel.add(loader);
         }
 
