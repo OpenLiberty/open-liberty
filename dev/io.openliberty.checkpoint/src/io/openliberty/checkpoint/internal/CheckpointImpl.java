@@ -152,11 +152,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         try {
             checkpoint();
         } catch (CheckpointFailedException e) {
-            // Allow auto FFDC here
-            // TODO log error informing we are exiting
-
-            // TODO is there any type of failure where we would not want to exit?
-
+            // Allow auto FFDC here to capture the causing exception (if any)
+            Tr.error(tc, e.getErrorMsgKey(), e.getMessage());
             /*
              * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
              * (which starts a server shutdown and quiesce).
@@ -254,7 +251,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             debug(tc, () -> "No checkpoint hooks.");
             return Collections.emptyList();
         }
-        debug(tc, () -> "Found checkpoint hook factories: " + hooks);
+        debug(tc, () -> "Found checkpoint hooks: " + hooks);
         List<CheckpointHook> hookList = new ArrayList<>(hooks.length);
         for (Object o : hooks) {
             // if o is anything other than a CheckpointHook then
