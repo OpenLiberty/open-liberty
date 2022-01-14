@@ -20,9 +20,11 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 public interface BeanParser {
 
     /**
-     * @param cdiDeployment
-     * @param beansXmlUrl
-     * @return
+     * Parse a BeansXml from the given URL resource
+     *
+     * @param cdiDeployment The CDI Deployment that the beans.xml is part of
+     * @param beansXmlUrl   A URL where the beans.xml file can be found
+     * @return A BeansXml instance
      */
     BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl);
 
