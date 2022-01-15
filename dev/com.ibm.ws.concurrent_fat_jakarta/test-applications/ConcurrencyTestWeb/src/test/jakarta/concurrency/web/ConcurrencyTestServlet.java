@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -410,7 +411,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Use a ContextService from a ContextServiceDefinition that is defined in an EJB.
      */
     @Test
-    public void testEJBContextServiceDefinition() throws Exception {
+    public void testEJBAnnoContextServiceDefinition() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
         assertNotNull(bean);
         bean.execute(() -> {
@@ -519,7 +520,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Use a ManagedExecutorService from a ManagedExecutorDefinition that is defined in an EJB.
      */
     @Test
-    public void testEJBManagedExecutorDefinition() throws Exception {
+    public void testEJBAnnoManagedExecutorDefinition() throws Exception {
         Exchanger<Long> exchanger = new Exchanger<Long>();
         Supplier<Object> runTestAsEJB = () -> {
             // Enforcement of maxAsync=1
@@ -575,7 +576,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Use a ManagedScheduledExecutorService from a ManagedScheduledExecutorDefinition that is defined in an EJB.
      */
     @Test
-    public void testEJBManagedScheduledExecutorDefinition() throws Exception {
+    public void testEJBAnnoManagedScheduledExecutorDefinition() throws Exception {
         Function<CyclicBarrier, Integer> runTestAsEJB = barrier -> {
             // Enforcement of maxAsync=2
             try {
@@ -634,7 +635,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 CyclicBarrier barrier = stage1.join();
 
                 // 2 must run in parallel
-                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 2; )
+                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 2;)
                     TimeUnit.MILLISECONDS.sleep(200);
 
                 assertEquals(2, barrier.getNumberWaiting());
@@ -651,7 +652,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 barrier.reset();
 
                 // wait for the third async task to start
-                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 1; )
+                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && barrier.getNumberWaiting() < 1;)
                     TimeUnit.MILLISECONDS.sleep(200);
 
                 barrier.reset();
@@ -673,7 +674,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * Use a ManagedThreadFactory from a ManagedThreadFactoryDefinition that is defined in an EJB.
      */
     @Test
-    public void testEJBManagedThreadFactoryDefinition() throws Exception {
+    public void testEJBAnnoManagedThreadFactoryDefinition() throws Exception {
         Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
         assertNotNull(bean);
         bean.execute(() -> {
@@ -713,6 +714,296 @@ public class ConcurrencyTestServlet extends FATServlet {
                 } finally {
                     Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
                     ZipCode.clear();
+                }
+
+            } catch (InterruptedException | NamingException x) {
+                throw new EJBException(x);
+            }
+        });
+    }
+
+    /**
+     * Use a ContextService that is defined by a context-service in an EJB deployment descriptor.
+     */
+    @Test
+    public void testEJBDDContextServiceDefinition() throws Exception {
+        // java:global name is accessible outside of the EJB module,
+        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/dd/ejb/LPContextService");
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55904);
+        ListContext.newList();
+        ListContext.add(4);
+        ListContext.add(8);
+        Thread.currentThread().setPriority(4);
+        Long ts0 = Timestamp.get();
+
+        try {
+            // Contextualize a Callable with the above context:
+            Callable<Object[]> contextualCallable = contextSvc.contextualCallable(() -> {
+                // The Callable records the context
+                Object lookupResult;
+                try {
+                    lookupResult = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+                    throw new AssertionError("Application context was not cleared. Looked up: " + lookupResult);
+                } catch (NamingException x) {
+                    // expected
+                }
+                return new Object[] {
+                                      ListContext.asString(),
+                                      Thread.currentThread().getPriority(),
+                                      Timestamp.get(),
+                                      ZipCode.get(),
+                };
+            });
+
+            // Alter some of the context on the current thread
+            ZipCode.set(55901);
+            ListContext.newList();
+            ListContext.add(1);
+            Thread.currentThread().setPriority(6);
+            TimeUnit.MILLISECONDS.sleep(100);
+            Long ts1 = Timestamp.get();
+
+            // Run with the captured context:
+            Object[] results;
+            try {
+                results = contextualCallable.call();
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+
+            // List context was configured to be propagated
+            assertEquals("[4, 8]", results[0]);
+
+            // Priority context was configured to be propagated
+            assertEquals(Integer.valueOf(4), results[1]);
+
+            // Remaining context (Timestamp) was configured to be left unchanged
+            assertEquals(ts1, results[2]);
+
+            // Zip code context was configured to be left unchanged
+            assertEquals(Integer.valueOf(55901), results[3]);
+
+            // Verify that context is restored on the current thread:
+            assertEquals("[1]", ListContext.asString());
+            assertEquals(6, Thread.currentThread().getPriority());
+            assertEquals(ts1, Timestamp.get());
+            assertEquals(55901, ZipCode.get());
+
+            // Run the task on another thread
+            Future<Object[]> future = unmanagedThreads.submit(contextualCallable);
+            results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // List context was configured to be propagated
+            assertEquals("[4, 8]", results[0]);
+
+            // Priority context was configured to be propagated
+            assertEquals(Integer.valueOf(4), results[1]);
+
+            // Remaining context (Timestamp) was configured to be left unchanged
+            assertEquals(null, results[2]);
+
+            // Zip code context was configured to be left unchanged
+            assertEquals(Integer.valueOf(0), results[3]);
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+    }
+
+    /**
+     * Use a ManagedExecutorService that is defined via managed-executor in an EJB deployment descriptor.
+     */
+    @Test
+    public void testEJBDDManagedExecutorDefinition() throws Exception {
+        BiFunction<CountDownLatch, CountDownLatch, Object> task = (twoStarted, threeStarted) -> {
+            twoStarted.countDown();
+            threeStarted.countDown();
+            try {
+                assertTrue(threeStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                // requires application context
+                return InitialContext.doLookup("java:comp/concurrent/dd/ejb/Executor");
+            } catch (InterruptedException | NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/dd/ejb/Executor");
+
+                CompletableFuture<CountDownLatch> twoStartedFuture = executor.completedFuture(new CountDownLatch(2));
+                CompletableFuture<CountDownLatch> threeStartedFuture = executor.completedFuture(new CountDownLatch(3));
+
+                CompletableFuture<?> stage3 = twoStartedFuture.thenCombineAsync(threeStartedFuture, task);
+                CompletableFuture<?> stage4 = twoStartedFuture.thenCombineAsync(threeStartedFuture, task);
+                CompletableFuture<?> stage5 = twoStartedFuture.thenCombineAsync(threeStartedFuture, task);
+
+                // 2 tasks must run concurrently per <max-async>2</max-async>
+                assertTrue(twoStartedFuture.join().await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                // 3 tasks must not run concurrently
+                assertFalse(threeStartedFuture.join().await(1, TimeUnit.SECONDS));
+
+                // running inline is not considered async
+                CompletableFuture<?> stage6 = twoStartedFuture.thenCombine(threeStartedFuture, task);
+                assertNotNull(stage6.join());
+
+                assertNotNull(stage5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertNotNull(stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertNotNull(stage3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new EJBException(x);
+            }
+        });
+    }
+
+    /**
+     * Use a ManagedScheduledExecutorService that is defined via managed-scheduled-executor in an EJB deployment descriptor.
+     */
+    @Test
+    public void testEJBDDManagedScheduledExecutorDefinition() throws Exception {
+        BiFunction<CountDownLatch, CountDownLatch, int[]> task = (threeStarted, fourStarted) -> {
+            threeStarted.countDown();
+            fourStarted.countDown();
+
+            try {
+                assertTrue(fourStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+
+            // Application context must be cleared, per java:global/concurrent/dd/ejb/LPContextService,
+            // which is configured as the context-service-ref for the managed-scheduled-executor,
+            try {
+                Object lookedUp = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+                throw new AssertionError("Application context should be cleared. Instead looked up " + lookedUp);
+            } catch (NamingException x) {
+                // pass
+            }
+
+            return new int[] {
+                               Thread.currentThread().getPriority(), // must be propagated
+                               ZipCode.get() // must be left unchanged
+            };
+        };
+
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+
+                CompletableFuture<CountDownLatch> threeStartedFuture = executor.completedFuture(new CountDownLatch(3));
+                CompletableFuture<CountDownLatch> fourStartedFuture = executor.completedFuture(new CountDownLatch(4));
+
+                Thread.currentThread().setPriority(4);
+                ZipCode.set(55904);
+                CompletableFuture<int[]> stage3 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+                CompletableFuture<int[]> stage4 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+
+                Thread.currentThread().setPriority(6);
+                ZipCode.set(55906);
+                CompletableFuture<int[]> stage5 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+                CompletableFuture<int[]> stage6 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+
+                Thread.currentThread().setPriority(2);
+                ZipCode.set(55902);
+
+                // 3 tasks must run concurrently per <max-async>3</max-async>
+                assertTrue(threeStartedFuture.join().await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                // 4 tasks must not run concurrently
+                assertFalse(fourStartedFuture.join().await(1, TimeUnit.SECONDS));
+
+                // running inline is not considered async
+                CompletableFuture<int[]> stage7 = threeStartedFuture.thenCombine(fourStartedFuture, task);
+
+                int[] results;
+                assertNotNull(results = stage7.join());
+                assertEquals(2, results[0]); // Priority context is propagated
+                assertEquals(55902, results[1]); // ZipCode context is left unchanged
+
+                assertNotNull(results = stage6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(6, results[0]); // Priority context is propagated
+                assertEquals(0, results[1]); // ZipCode context is left unchanged
+
+                assertNotNull(results = stage5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(6, results[0]); // Priority context is propagated
+                assertEquals(0, results[1]); // ZipCode context is left unchanged
+
+                assertNotNull(results = stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(4, results[0]); // Priority context is propagated
+                assertEquals(0, results[1]); // ZipCode context is left unchanged
+
+                assertNotNull(results = stage3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals(4, results[0]); // Priority context is propagated
+                assertEquals(0, results[1]); // ZipCode context is left unchanged
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new EJBException(x);
+            } finally {
+                Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                ZipCode.clear();
+            }
+        });
+    }
+
+    /**
+     * Use a ManagedThreadFactory that is defined by managed-thread-factory in an EJB deployment descriptor.
+     */
+    @Test
+    public void testEJBDDManagedThreadFactoryDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                try {
+                    Timestamp.set();
+                    Thread.currentThread().setPriority(6);
+
+                    ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/dd/ejb/ZLThreadFactory");
+
+                    LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+
+                    threadFactory.newThread(() -> {
+                        results.add(Thread.currentThread().getPriority());
+
+                        Long timestamp = Timestamp.get();
+                        results.add(timestamp == null ? "null" : timestamp);
+
+                        try {
+                            results.add(InitialContext.doLookup("java:module/concurrent/dd/ejb/ZLThreadFactory"));
+                        } catch (Throwable x) {
+                            results.add(x);
+                        }
+                    }).start();
+
+                    // Verify that priority from the managed-thread-factory is used,
+                    Object priority = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    assertEquals(Integer.valueOf(7), priority);
+
+                    // Verify that custom thread context type TimestampContext is cleared
+                    Object timestamp = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    assertEquals("null", timestamp);
+
+                    // Verify that Application component context is propagated,
+                    Object resultOfLookup = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    if (resultOfLookup instanceof Throwable)
+                        throw new CompletionException((Throwable) resultOfLookup);
+                    assertNotNull(resultOfLookup);
+                    assertTrue(resultOfLookup.toString(), resultOfLookup instanceof ManagedThreadFactory);
+                } finally {
+                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                    ListContext.clear();
                 }
 
             } catch (InterruptedException | NamingException x) {
