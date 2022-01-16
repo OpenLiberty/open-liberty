@@ -31,6 +31,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 EjbTimerTest.class,
                 InjectParameterTest.class,
                 MultipleNamedEJBTest.class,
+                NewEjbTimerTest.class,
                 StatefulSessionBeanInjectionTest.class,
 })
 public class FATSuite {
