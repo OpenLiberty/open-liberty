@@ -36,28 +36,28 @@ Import-Package: \
     *
 
 Export-Package: \
-	io.openliberty.opentracing.internal;version=2.0;thread-context=true,\
-	io.openliberty.opentracing.internal.filters;version=2.0,\
-	io.openliberty.opentracing.spi.tracer;version=2.0;provide=true
-                
+    io.openliberty.opentracing.internal;version=2.0;thread-context=true,\
+    io.openliberty.opentracing.internal.filters;version=2.0,\
+    io.openliberty.opentracing.spi.tracer;version=2.0;provide=true
+
 Private-Package: io.openliberty.opentracing.internal.resources
 
-Include-Resource:\
-  META-INF=resources/META-INF
+Include-Resource: \
+    META-INF=resources/META-INF
   
 #javax.ws.rs.ext.Providers is service loaded by restfulWS-3.0 but
 #providers are added with a different mechanism in jaxrs-2.x
 #Future versions of OT will need to use jakarta providers rather than 
 #javax since it's currently being transformed
 app-resources= \
-  META-INF/services/javax.ws.rs.ext.Providers
+    META-INF/services/javax.ws.rs.ext.Providers
 
 Service-Component: \
-  io.openliberty.opentracing20.internal.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
+    io.openliberty.opentracing20.internal.ResourceProvider; \
+        implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+        provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+        configuration-policy:=optional; \
+        properties:="resources=${app-resources}"
     
 jakartaeeMe: true
 
@@ -80,5 +80,6 @@ jakartaeeMe: true
     com.ibm.ws.javaee.version; version=latest, \
     com.ibm.ws.microprofile.opentracing.jaeger;version=latest, \
     com.ibm.ws.classloading;version=latest, \
-    com.ibm.websphere.appserver.spi.kernel.service;version=latest
-        
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
+    io.openliberty.microprofile.opentracing.common
+
