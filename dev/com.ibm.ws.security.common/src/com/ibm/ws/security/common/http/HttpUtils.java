@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +45,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class HttpUtils {
     public static final TraceComponent tc = Tr.register(HttpUtils.class);
@@ -105,8 +104,8 @@ public class HttpUtils {
     private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
         if (isSecure) {
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 SSLConnectionSocketFactory connectionFactory = null;
                 if (!isHostnameVerification) {
@@ -120,7 +119,7 @@ public class HttpUtils {
                     client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
                 }
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
         } else {
             if (addBasicAuthHeader) {
@@ -130,36 +129,6 @@ public class HttpUtils {
             }
         }
         return client;
-    }
-
-    
-    private static ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final Class<?> clazz) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
-                return null;
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final ClassLoader classLoader) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;
-            }
-        });
     }
 
     private BasicCredentialsProvider createCredentialsProvider(String baUser, @Sensitive String baPassword) {
@@ -177,8 +146,8 @@ public class HttpUtils {
             request.addHeader("content-type", "application/json");
             HttpResponse result = null;
             
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
@@ -190,7 +159,7 @@ public class HttpUtils {
                 Tr.error(tc, message, new Object[0]);
                 throw ioex;
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -234,8 +203,8 @@ public class HttpUtils {
         if (url != null && url.startsWith("http:")) {
             client = HttpClientBuilder.create().build();
         } else {
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 SSLConnectionSocketFactory connectionFactory = null;
                 if (!isHostnameVerification) {
@@ -245,7 +214,7 @@ public class HttpUtils {
                 }
                 client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
         }
         return client;
@@ -260,8 +229,8 @@ public class HttpUtils {
         if (url != null && url.toLowerCase().startsWith("http:")) {
             client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 SSLConnectionSocketFactory connectionFactory = null;
                 if (!isHostnameVerification) {
@@ -271,7 +240,7 @@ public class HttpUtils {
                 }
                 client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
         }
         return client;

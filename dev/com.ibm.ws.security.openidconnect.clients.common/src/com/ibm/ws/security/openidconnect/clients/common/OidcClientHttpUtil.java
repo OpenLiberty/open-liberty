@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +45,7 @@ import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
@@ -159,8 +158,8 @@ public class OidcClientHttpUtil {
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
 
-        ClassLoader origCL = getContextClassLoader();
-        setContextClassLoader(getClass());
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
@@ -168,7 +167,7 @@ public class OidcClientHttpUtil {
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
         } finally {
-            setContextClassLoader(origCL);
+            ThreadContextHelper.setClassLoader(origCL);
         }
 
         // Check the response from the endpoint to see if there was an error
@@ -215,8 +214,8 @@ public class OidcClientHttpUtil {
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
 
-        ClassLoader origCL = getContextClassLoader();
-        setContextClassLoader(getClass());
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
@@ -224,7 +223,7 @@ public class OidcClientHttpUtil {
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
         } finally {
-            setContextClassLoader(origCL);
+            ThreadContextHelper.setClassLoader(origCL);
         }
 
         Map<String, Object> result = new HashMap<String, Object>();
@@ -355,8 +354,8 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).build();
         } else {
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 SSLConnectionSocketFactory connectionFactory = null;
                 if (!isHostnameVerification) {
@@ -366,7 +365,7 @@ public class OidcClientHttpUtil {
                 }
                 client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
         }
 
@@ -395,8 +394,8 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 SSLConnectionSocketFactory connectionFactory = null;
                 if (!isHostnameVerification) {
@@ -411,39 +410,10 @@ public class OidcClientHttpUtil {
                         .setDefaultRequestConfig(rcfg)
                         .build();
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
         }
         return client;
-    }
-
-    private static ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final Class<?> clazz) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
-                return null;
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final ClassLoader classLoader) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;
-            }
-        });
     }
 
     static OidcClientHttpUtil instance = null;;

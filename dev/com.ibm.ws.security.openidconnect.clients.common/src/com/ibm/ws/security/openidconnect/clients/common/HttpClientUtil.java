@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
-import java.security.AccessController;
 import java.security.KeyStoreException;
-import java.security.PrivilegedAction;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -30,6 +28,7 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class HttpClientUtil {
 
@@ -78,12 +77,12 @@ public class HttpClientUtil {
             }
             HttpResponse result = null;
 
-            ClassLoader origCL = getContextClassLoader();
-            setContextClassLoader(getClass());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 result = httpClient.execute(request);
             } finally {
-                setContextClassLoader(origCL);
+                ThreadContextHelper.setClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -114,32 +113,4 @@ public class HttpClientUtil {
         return json;
     }
 
-    private static ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final Class<?> clazz) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(clazz.getClassLoader());
-                return null;
-            }
-        });
-    }
-
-    private static void setContextClassLoader(final ClassLoader classLoader) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;
-            }
-        });
-    }
 }
