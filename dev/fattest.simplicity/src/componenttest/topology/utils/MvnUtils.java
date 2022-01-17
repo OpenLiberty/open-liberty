@@ -1189,17 +1189,6 @@ public class MvnUtils {
             String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
             String specVersion = specParts[1];
             String rcVersion = specParts[2];
-<<<<<<< HEAD
-=======
-
-            Date date = new Date();
-            SimpleDateFormat yearNo = new SimpleDateFormat("yy");
-            SimpleDateFormat monthNo = new SimpleDateFormat("MM");
-            String year = yearNo.format(date);
-            String month = monthNo.format(date);
-
-            String OLVersion = getOLVersion();
->>>>>>> 30ebf7211e (tck result generator corrected)
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
