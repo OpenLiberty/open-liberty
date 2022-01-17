@@ -1142,6 +1142,16 @@ public class MvnUtils {
         return version;
     }
 
+    public static void prepareJakartaPublicationFile() {
+        Path outputPath = Paths.get("results","Testing.txt");
+        File outputFile = outputPath.toFile();
+        try (FileWriter output = new FileWriter(outputFile)) {
+            output.write("FOUND FILE");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void preparePublicationFile() {
         Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");
         File outputFile = outputPath.toFile();
