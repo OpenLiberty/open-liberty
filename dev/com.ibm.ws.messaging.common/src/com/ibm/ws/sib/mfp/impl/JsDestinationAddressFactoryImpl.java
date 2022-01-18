@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,16 +30,14 @@ import com.ibm.websphere.ras.TraceComponent;
  *  initialization can create an instance of it at runtime.
  *
  */
-public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressFactory {
+public final class JsDestinationAddressFactoryImpl implements JsDestinationAddressFactory {
 
   private static TraceComponent tc = SibTr.register(JsDestinationAddressFactoryImpl.class, MfpConstants.MSG_GROUP, MfpConstants.MSG_BUNDLE);
 
   /* Constants for creating the System Destination name */
   private static final String SYSTEM_PREFIX = SIMPConstants.SYSTEM_DESTINATION_PREFIX;
   private static final String SYSTEM_SEPARATOR = String.valueOf(SIMPConstants.SYSTEM_DESTINATION_SEPARATOR);
-  private static final int SYSTEM_LENGTH = SYSTEM_PREFIX.length()
-                                         + SYSTEM_SEPARATOR.length()
-                                         + (new SIBUuid8()).getStringLength();
+  private static final int SYSTEM_LENGTH = SYSTEM_PREFIX.length() + SYSTEM_SEPARATOR.length() + (new SIBUuid8()).getStringLength();
 
   /**
    *  Create a new SIDestinationAddress to represent an SIBus Destination.
@@ -55,13 +53,8 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the destinationName parameter is null.
    */
-  public final SIDestinationAddress createSIDestinationAddress(String  destinationName
-                                                              ,boolean localOnly
-                                                              )
-                                                              throws NullPointerException {
-    if (destinationName == null)  {
-      throw new NullPointerException("destinationName");
-    }
+  public final SIDestinationAddress createSIDestinationAddress(String  destinationName, boolean localOnly) throws NullPointerException {
+    if (destinationName == null) throw new NullPointerException("destinationName");
     return new JsDestinationAddressImpl(destinationName, localOnly, null, null, false);
   }
 
@@ -77,13 +70,8 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the destinationName parameter is null.
    */
-  public final SIDestinationAddress createSIDestinationAddress(String destinationName
-                                                              ,String busName
-                                                              )
-                                                              throws NullPointerException {
-    if (destinationName == null)  {
-      throw new NullPointerException("destinationName");
-    }
+  public final SIDestinationAddress createSIDestinationAddress(String destinationName, String busName) throws NullPointerException {
+    if (destinationName == null) throw new NullPointerException("destinationName");
     return new JsDestinationAddressImpl(destinationName, false, null, busName, false);
   }
 
@@ -104,14 +92,8 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the destinationName parameter is null.
    */
-  public final SIDestinationAddress createSIDestinationAddress(String destinationName
-                                                              ,boolean localOnly
-                                                              ,String busName
-                                                              )
-                                                              throws NullPointerException {
-    if (destinationName == null)  {
-      throw new NullPointerException("destinationName");
-    }
+  public final SIDestinationAddress createSIDestinationAddress(String destinationName, boolean localOnly, String busName) throws NullPointerException {
+    if (destinationName == null) throw new NullPointerException("destinationName");
     return new JsDestinationAddressImpl(destinationName, localOnly, null, busName, false);
   }
 
@@ -132,14 +114,8 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the destinationName parameter is null.
    */
-  public final JsDestinationAddress createJsDestinationAddress(String   destinationName
-                                                              ,boolean  localOnly
-                                                              ,SIBUuid8 meId
-                                                              )
-                                                              throws NullPointerException {
-    if (destinationName == null)  {
-      throw new NullPointerException("destinationName");
-    }
+  public final JsDestinationAddress createJsDestinationAddress(String destinationName, boolean localOnly, SIBUuid8 meId) throws NullPointerException {
+    if (destinationName == null) throw new NullPointerException("destinationName");
     return new JsDestinationAddressImpl(destinationName, localOnly, meId, null, false);
   }
 
@@ -160,19 +136,12 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the destinationName parameter is null.
    */
-  public final JsDestinationAddress createJsDestinationAddress(String   destinationName
-                                                              ,boolean  localOnly
-                                                              ,SIBUuid8 meId
-                                                              ,String   busName
-                                                              )
-                                                              throws NullPointerException {
-    if (destinationName == null)  {
-      throw new NullPointerException("destinationName");
-    }
+  public final JsDestinationAddress createJsDestinationAddress(String   destinationName, boolean  localOnly, SIBUuid8 meId, String   busName) throws NullPointerException {
+    if (destinationName == null) throw new NullPointerException("destinationName");
     return new JsDestinationAddressImpl(destinationName, localOnly, meId, busName, false);
   }
 
- 
+
 
   /**
    *  Create a System JsDestinationAddress from the given parameters
@@ -185,14 +154,9 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if the meId parameter is null.
    */
-  public final JsDestinationAddress createJsSystemDestinationAddress(String   prefix
-                                                                    ,SIBUuid8 meId
-                                                                    )
-                                                                    throws NullPointerException {
+  public final JsDestinationAddress createJsSystemDestinationAddress(String prefix, SIBUuid8 meId) throws NullPointerException {
     /* meId should never be null if busName is not specified                  */
-    if (meId == null)  {
-      throw new NullPointerException("MEId");
-    }
+    if (meId == null) throw new NullPointerException("MEId");
     return createJsSystemDestinationAddress(prefix, meId, null);
   }
 
@@ -211,16 +175,10 @@ public final class JsDestinationAddressFactoryImpl extends JsDestinationAddressF
    *
    *  @exception NullPointerException Thrown if both the meId and BusName parameters are null.
    */
-  public final JsDestinationAddress createJsSystemDestinationAddress(String   prefix
-                                                                    ,SIBUuid8 meId
-                                                                    ,String   busName
-                                                                    )
-                                                                    throws NullPointerException {
+  public final JsDestinationAddress createJsSystemDestinationAddress(String prefix, SIBUuid8 meId, String busName) throws NullPointerException {
 
     /* BusName and meId should never both be null */
-    if ((meId == null) && (busName == null))  {
-      throw new NullPointerException("BusName and MEId");
-    }
+    if ((meId == null) && (busName == null)) throw new NullPointerException("BusName and MEId");
 
     StringBuilder s;
 

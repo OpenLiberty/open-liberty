@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+    <!-- Let config processing have a say in the properties provided to the start barrier service -->
+    <OCD id="com.ibm.ws.messaging.lifecycle.SingletonsReady" description="internal use only" name="internal">
+        <!-- Config processing populates this attribute with a list of PIDs
+             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <AD id="singletonDeclarations" name="internal" description="internal use only"
+            type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
+            ibm:service="com.ibm.ws.messaging.lifecycle.Singleton"
+            default="*" />
+        <!-- Config processing sets the number of singleton services to expect equal to the number declared (see AD above) -->
+        <AD id="singletons.cardinality.minimum" name="internal" description="internal use only"
+            type="String" ibm:final="true"
+            default="${count(singletonDeclarations)}" />
+        <!-- Config processing will generate an LDAP filter to match only configured singletons -->
+        <AD id="singletons.target" name="internal" description="internal use only"
+            type="String" cardinality="0" required="true"
+            default="${servicePidOrFilter(singletonDeclarations)}" />
+    </OCD>
+    <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonsReady"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonsReady" /></Designate>
+
+    <!-- Let config processing provide the list of matching PIDs to the singleton monitor service as well -->
+    <OCD id="com.ibm.ws.messaging.lifecycle.SingletonMonitor" description="internal use only" name="internal">
+        <!-- Config processing populates this attribute with a list of PIDs
+             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <AD id="singletonDeclarations" name="internal" description="internal use only"
+            type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
+            ibm:service="com.ibm.ws.messaging.lifecycle.Singleton"
+            default="*" />
+        <!-- Config processing will generate an LDAP filter to match only configured singletons -->
+        <AD id="Singleton.target" name="internal" description="internal use only"
+            type="String" cardinality="0" required="true"
+            default="${servicePidOrFilter(singletonDeclarations)}" />
+    </OCD>
+    <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonMonitor"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonMonitor"/></Designate>
+    
+    <!-- ======================= Singleton declarations ======================= -->
+    <!-- ============ (used by SingletonsReady and Singleton Monitor) ============ -->
+    <!-- === N.B. ensure defaultInstance.xml contains matching declarations === -->
+
+    <OCD id="com.ibm.ws.sib.common.service.CommonServiceFacade"  description="internal use only" name="internal" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton"/>
+    <Designate pid="com.ibm.ws.sib.common.service.CommonServiceFacade"><Object ocdref="com.ibm.ws.sib.common.service.CommonServiceFacade" /></Designate>
+</metatype:MetaData>

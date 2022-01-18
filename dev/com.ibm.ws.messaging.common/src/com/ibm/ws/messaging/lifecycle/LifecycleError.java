@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
-package com.ibm.ws.sib.processor;
+package com.ibm.ws.messaging.lifecycle;
 
-import com.ibm.ws.messaging.lifecycle.Singleton;
-import com.ibm.ws.sib.msgstore.AbstractItem;
+public class LifecycleError extends Error {
 
-public interface ItemInterface extends Singleton {
-    AbstractItem getItemStreamInstance(String itemStreamName);
+    public LifecycleError(String message, Throwable cause) {
+	super(message, cause);
+    }
+
+    public LifecycleError(String message) {
+	super(message);
+    }
 }
