@@ -1179,14 +1179,16 @@ public class MvnUtils {
             String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
             String specVersion = specParts[1];
             String rcVersion = specParts[2];
-
-            Date date = new Date();
-            SimpleDateFormat yearNo = new SimpleDateFormat("yy");
-            SimpleDateFormat monthNo = new SimpleDateFormat("MM");
-            String year = yearNo.format(date);
-            String month = monthNo.format(date);
-
-            String OLVersion = year + ".0.0." + month;
+            String OLVersion = "";
+            File dir = new File("publish/servers");
+            try (BufferedReader br = new BufferedReader(new FileReader("publish/servers/Config20TCKServer/server.xml"))) {
+                String sCurrentLine;
+                while ((sCurrentLine = br.readLine()) != null) {
+                    OLVersion = "22.0.0.1";
+                }
+            } catch (IOException e) {
+            throw new RuntimeException(e);
+            }
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
@@ -1212,7 +1214,7 @@ public class MvnUtils {
             throw new RuntimeException(e);
         } catch (SAXException e) {
             throw new RuntimeException(e);
-        }
+        } 
     }
 
     public static String[] getSpec() {
