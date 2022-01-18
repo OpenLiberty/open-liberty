@@ -12,6 +12,9 @@ package com.ibm.ws.microprofile.health20.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,6 +27,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -57,7 +61,28 @@ public class Health20TCKLauncher {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.health.2.0_fat_tck", this.getClass() + ":launchHealth20Tck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = new HashMap<>();
+        try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Health");
+            resultInfo.put("feature_version", "2.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };
     }
 
 }

@@ -13,11 +13,14 @@ package io.openliberty.microprofile.faulttolerance.tck;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.List;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -123,7 +126,28 @@ public class FaultToleranceTck30Launcher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.3.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
                               additionalProps, Collections.emptySet());
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = new HashMap<>();
+        try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Fault Tolerance");
+            resultInfo.put("feature_version", "3.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };
     }
 
 }
