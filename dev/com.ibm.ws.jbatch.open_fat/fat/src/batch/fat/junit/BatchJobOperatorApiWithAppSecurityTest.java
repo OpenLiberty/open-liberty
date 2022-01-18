@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -855,6 +855,10 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     @Test
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
+    @AllowedFFDC({ "jakarta.batch.operations.JobRestartException",
+                    "com.ibm.jbatch.container.exception.PersistenceException",
+                    "jakarta.servlet.ServletException"
+    })
     public void testRestartAsSubmitterNotOwner() throws Exception {
         Long jobinstance = submitJob(true);
         JsonObject jobExec = waitForFirstJobExecution(jobinstance);
