@@ -20,6 +20,13 @@ import org.osgi.annotation.versioning.ConsumerType;
 @ConsumerType
 public interface CheckpointHook {
     /**
+     * Hooks that must be run while the JVM has multi threaded execution enabled must set this property to
+     * the Boolean value true. If this property is set to false or not set at all then the hook will
+     * run while the JVM is in a single threaded mode of execution.
+     */
+    public static String MULTI_THREADED_HOOK = "io.openliberty.checkpoint.hook.multi.threaded";
+
+    /**
      * Prepare to checkpoint. If the hook throws
      * an exception then the checkpoint will be aborted.
      */

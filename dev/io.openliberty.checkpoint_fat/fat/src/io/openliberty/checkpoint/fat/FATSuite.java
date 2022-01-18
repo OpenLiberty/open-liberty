@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,8 @@ import componenttest.topology.impl.LibertyServer;
                 AlwaysPassesTest.class,
                 TestWithFATServlet.class,
                 TestWithFATServlet2.class,
-                LogsVerificationTest.class
+                LogsVerificationTest.class,
+                OSGiConsoleTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {

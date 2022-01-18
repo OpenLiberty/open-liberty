@@ -53,14 +53,21 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Component(
-           reference = @Reference(name = CheckpointImpl.HOOKS_REF_NAME, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
-                                  policy = ReferencePolicy.DYNAMIC,
-                                  policyOption = ReferencePolicyOption.GREEDY),
+           reference = { @Reference(name = CheckpointImpl.HOOKS_REF_NAME_MULTI_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
+                                    policy = ReferencePolicy.DYNAMIC,
+                                    policyOption = ReferencePolicyOption.GREEDY,
+                                    target = "(" + CheckpointHook.MULTI_THREADED_HOOK + "=true)"),
+                         @Reference(name = CheckpointImpl.HOOKS_REF_NAME_SINGLE_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
+                                    policy = ReferencePolicy.DYNAMIC,
+                                    policyOption = ReferencePolicyOption.GREEDY,
+                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
+           },
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
-    static final String HOOKS_REF_NAME = "hooks";
+    static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
+    static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String FILE_ENV_PROPERTIES = DIR_CHECKPOINT + ".env.properties";
@@ -181,17 +188,20 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
         }
 
-        Object[] hookRefs = cc.locateServices(HOOKS_REF_NAME);
-        List<CheckpointHook> checkpointPrepareHooks = getHooks(hookRefs);
+        List<CheckpointHook> multiThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_MULTI_THREAD));
+        List<CheckpointHook> singleThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_SINGLE_THREAD));
 
         // reverse prepare hook order for restore hooks
-        List<CheckpointHook> checkpointRestoreHooks = new ArrayList<>(checkpointPrepareHooks);
-        Collections.reverse(checkpointRestoreHooks);
+        List<CheckpointHook> multiThreadRestoreHooks = new ArrayList<>(multiThreadPrepareHooks);
+        Collections.reverse(multiThreadRestoreHooks);
+        List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
+        Collections.reverse(singleThreadRestoreHooks);
 
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
         }
 
+        prepare(multiThreadPrepareHooks);
         try {
             try {
                 criu.checkpointSupported();
@@ -202,8 +212,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
-            criu.dump(() -> prepare(checkpointPrepareHooks),
-                      () -> restore(checkpointRestoreHooks),
+            criu.dump(() -> prepare(singleThreadPrepareHooks),
+                      () -> restore(singleThreadRestoreHooks),
                       imageDir, CHECKPOINT_LOG_FILE,
                       getLogsCheckpoint(),
                       getEnvProperties());
@@ -215,6 +225,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
             throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e);
         }
+        restore(multiThreadRestoreHooks);
 
         if (tc.isInfoEnabled()) {
             Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
