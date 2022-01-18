@@ -17,7 +17,7 @@
          It should not be set to things like "*", although we have no way to
          enforce that. Also, we do not require configurations reference this
          variable, but its use is encouraged. -->
-	<variable name="defaultHostName" value="localhost" />
+	<variable name="defaultHostName" defaultValue="localhost" />
 
 	<tcpOptions id="defaultTCPOptions" service.ranking="-1" />
 
