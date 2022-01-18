@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,8 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, DockerImageName.parse("ibmcom/db2:11.5.7.0")),
+    DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
+        DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
     Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
     Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
