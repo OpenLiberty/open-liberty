@@ -92,8 +92,8 @@ public class TestWithFATServlet2 {
         server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART,
                                       LibertyServer.DEFAULT_VALIDATE_APPS, true /* expectStartFailure */ );
 
-        assertNotNull("'CWWKF0048E: .* the checkpoint-1.0 feature was not configured in the server.xml file' message was not found",
-                      server.waitForStringInLogUsingMark("CWWKF0048E: .* the checkpoint-1.0 feature was not configured in the server.xml file", 0));
+        assertNotNull("'CWWKF0048E:",
+                      server.waitForStringInLogUsingMark("CWWKF0048E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
     }
 
     @After
