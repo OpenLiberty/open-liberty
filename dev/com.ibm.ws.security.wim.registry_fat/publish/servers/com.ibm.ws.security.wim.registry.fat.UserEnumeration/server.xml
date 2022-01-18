@@ -12,7 +12,7 @@
    		baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
 		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
 		bindPassword="testuserpwd"
-		ldapType="Microsoft Active Directory">
+		ldapType="Microsoft Active Directory" jndiOutputEnabled="true">
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
         </failoverServers>
