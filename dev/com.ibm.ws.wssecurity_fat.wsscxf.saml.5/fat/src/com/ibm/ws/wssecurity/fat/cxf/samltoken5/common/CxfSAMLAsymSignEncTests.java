@@ -21,7 +21,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.SkipForRepeat;
-
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -115,7 +115,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
  
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
 
@@ -180,7 +180,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
 
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
 
@@ -239,7 +239,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
 
@@ -272,7 +272,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
 
