@@ -37,7 +37,6 @@ import componenttest.topology.utils.HttpUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.transaction.SystemException" })
 public class SimpleTest extends WSATTest {
 
 	private static LibertyServer server;
@@ -102,7 +101,7 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE004FVT() {
 		callServlet("WSATRE004FVT");
 	}
@@ -124,7 +123,7 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE008FVT() {
 		callServlet("WSATRE008FVT");
 	}
@@ -152,7 +151,7 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.HeuristicCommitException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.HeuristicCommitException" })
 	public void testWSATRE013FVT() {
 		callServlet("WSATRE013FVT");
 	}
@@ -174,14 +173,14 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void testWSATRE017FVT() {
 		callServlet("WSATRE017FVT");
 	}
 
 	@Test
 	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void testWSATRE018FVT() {
 		callServlet("WSATRE018FVT");
 	}
@@ -219,13 +218,13 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE025FVT() {
 		callServlet("WSATRE025FVT");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE026FVT() {
 		callServlet("WSATRE026FVT");
 	}
@@ -263,14 +262,14 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@Mode(TestMode.LITE)
 	public void testWSATRE033FVT() {
 		callServlet("WSATRE033FVT");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE034FVT() {
 		callServlet("WSATRE034FVT");
 	}
@@ -308,14 +307,14 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE041FVT() {
 		callServlet("WSATRE041FVT");
 	}
 
 	@Test
 	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE042FVT() {
 		callServlet("WSATRE042FVT");
 	}
@@ -348,7 +347,7 @@ public class SimpleTest extends WSATTest {
 
 	@Test
 	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE048FVT() {
 		callServlet("WSATRE048FVT");
 	}
@@ -359,7 +358,7 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE050FVT() {
 		callServlet("WSATRE050FVT");
 	}
@@ -371,7 +370,7 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE052FVT() {
 		callServlet("WSATRE052FVT");
 	}
@@ -393,20 +392,20 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE056FVT() {
 		callServlet("WSATRE056FVT");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@Mode(TestMode.LITE)
 	public void testWSATRE057FVT() {
 		callServlet("WSATRE057VT");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE058FVT() {
 		callServlet("WSATRE058FVT");
 	}
@@ -423,20 +422,20 @@ public class SimpleTest extends WSATTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE061FVT() {
 		callServlet("WSATRE061FVT");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE062FVT() {
 		callServlet("WSATRE062FVT");
 	}
 
 	@Test
 	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE063FVT() {
 		callServlet("WSATRE063FVT");
 	}

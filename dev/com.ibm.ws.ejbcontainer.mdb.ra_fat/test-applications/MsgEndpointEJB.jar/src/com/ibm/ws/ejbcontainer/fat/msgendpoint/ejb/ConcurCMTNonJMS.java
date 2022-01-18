@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,8 @@ public class ConcurCMTNonJMS implements MessageListener {
         concurrentInfo.decreaseConcurrentMsgNumber();
         System.out.println("--ConcurCMTNonJMS (" + message + "): after decreaseConcurrentMsgNumber");
 
-        synchronized (syncObject) {
+        Object currentSyncObject = syncObject;
+        synchronized (currentSyncObject) {
             System.out.println("--ConcurCMTNonJMS (" + message + "): in the synchronized block");
 
             while (concurrentInfo.getConcurrentMsgNumber() > 0) {
@@ -91,7 +92,7 @@ public class ConcurCMTNonJMS implements MessageListener {
                     throw new RuntimeException();
                 }
             }
-            syncObject.notifyAll();
+            currentSyncObject.notifyAll();
             System.out.println("--ConcurCMTNonJMS (" + message + "): after notifyAll() in the synchronized block");
         }
 

@@ -17,7 +17,8 @@ IBM-API-Package: io.opentracing;  type="third-party",\
          com.ibm.ws.jaxrs.2.x.defaultexceptionmapper, \
          com.ibm.ws.opentracing, \
          com.ibm.ws.opentracing.cdi, \
-         com.ibm.websphere.appserver.thirdparty.opentracing; location:="dev/api/third-party/,lib/"; mavenCoordinates="io.opentracing:opentracing-api:0.30.0"
+         com.ibm.websphere.appserver.thirdparty.opentracing; location:="dev/api/third-party/,lib/"; mavenCoordinates="io.opentracing:opentracing-api:0.30.0", \
+         io.openliberty.microprofile.opentracing.common
 -jars=com.ibm.websphere.appserver.spi.opentracing; location:=dev/spi/ibm/
 -files= dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.opentracing_1.0-javadoc.zip
 kind=ga

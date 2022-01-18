@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -843,8 +843,8 @@ public class StatelessTimedBean implements StatelessTimedLocal {
 
         if (timerIndex >= 0) {
 
-            if (timeoutCounts[timerIndex] == 1) {
-                // Don't run the 2nd interval until test is ready
+            if (timeoutCounts[timerIndex] > 1) {
+                // Don't run the 2nd & 3rd interval until test is ready
                 try {
                     timerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {

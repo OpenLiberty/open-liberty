@@ -63,3 +63,12 @@ convert PKCS12 key to unencrypted PEM:
 	openssl pkcs12 -in certKeyStore.p12  -nodes -nocerts -out someCertp12.key
 	openssl rsa -in someCertp12.key -out someCert.key
 
+Migration:
+The Shibboleth install script created a "dist" directory.  The description of this directory is:
+"Contains the original/default versions of the contents of the conf, flows, messages, and view directories.
+
+This folder is always deleted and re-created from the distribution on every install. This directory can be used as a reference against any locally modified copies of these files."
+from: https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631515/Configuration
+
+The script included a jar in the dist tree that we do not want in shipped code.  The dist directory is NOT needed for the server runtime, so, it will be saved in artifactory and dist will be deleted from this location in Git.  We're keeping this copy of the dist tree to ease migration to future versions of Shibboleth as the files in dist/conf can be compared against what is in the conf directory of the 4.1.0 Shibboleth instance.
+The file in artifactory is named idp-war-4.1.0.zip and is stored in te same location as idp-war-4.1.0.war (artifactory naming conventions dictated the zip file name).

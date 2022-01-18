@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.AccessController;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +29,13 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
 
@@ -39,7 +48,8 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  */
 @Component(name = "io.openliberty.thirdparty.context.provider",
            configurationPolicy = ConfigurationPolicy.IGNORE)
-public class ThirdPartyContextCoordinator implements com.ibm.wsspi.threadcontext.ThreadContextProvider {
+public class ThirdPartyContextCoordinator implements ApplicationStateListener, //
+                com.ibm.wsspi.threadcontext.ThreadContextProvider {
     private static final TraceComponent tc = Tr.register(ThirdPartyContextCoordinator.class);
 
     /**
@@ -61,14 +71,53 @@ public class ThirdPartyContextCoordinator implements com.ibm.wsspi.threadcontext
 
     static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
-    // TODO clear entry when application is uninstalled to avoid leaking memory
     /**
-     * Mapping to a list of available thread context providers that are available for a thread context class loader.
-     * The list determines the order in which thread context should be captured and applied to threads (after the container-implemented providers).
-     * It is the reverse of the order in which thread context is restored on threads (before the container-implemented providers).
+     * Mapping to an application name and list of available thread context providers
+     * that are available for a thread context class loader.
+     * The list determines the order in which thread context should be captured and
+     * applied to threads (after the container-implemented providers).
+     * It is the reverse of the order in which thread context is restored on threads
+     * (before the container-implemented providers).
      */
-    private final ConcurrentHashMap<Object, ArrayList<ThreadContextProvider>> providersPerClassLoader = //
-                    new ConcurrentHashMap<Object, ArrayList<ThreadContextProvider>>();
+    private final ConcurrentHashMap<Object, Entry<String, ArrayList<ThreadContextProvider>>> providersPerClassLoader = //
+                    new ConcurrentHashMap<Object, Entry<String, ArrayList<ThreadContextProvider>>>();
+
+    @Override
+    @Trivial
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+    }
+
+    @Override
+    @Trivial
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+    }
+
+    /**
+     * Remove third-party thread context provider information when the application stops
+     * to avoid leaking the class loader.
+     */
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
+        String appName = appInfo.getName();
+        for (Iterator<Entry<Object, Entry<String, ArrayList<ThreadContextProvider>>>> it = //
+                        providersPerClassLoader.entrySet().iterator(); //
+                        it.hasNext();) {
+            Entry<Object, Entry<String, ArrayList<ThreadContextProvider>>> providerInfo = it.next();
+            if (!NO_CONTEXT_CLASSLOADER.equals(providerInfo.getKey())) {
+                Entry<String, ArrayList<ThreadContextProvider>> entry = providerInfo.getValue();
+                if (appName.equals(entry.getKey())) {
+                    it.remove();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "removed providers", entry.getValue());
+                }
+            }
+        }
+    }
+
+    @Override
+    @Trivial
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
     public ThreadContext captureThreadContext(Map<String, String> execProps, Map<String, ?> threadContextConfig) {
@@ -110,8 +159,8 @@ public class ThirdPartyContextCoordinator implements com.ibm.wsspi.threadcontext
 
         ClassLoader classLoader = priv.getContextClassLoader();
         Object key = classLoader == null ? NO_CONTEXT_CLASSLOADER : classLoader;
-        ArrayList<ThreadContextProvider> providers = providersPerClassLoader.get(key);
-        if (providers == null) {
+        Entry<String, ArrayList<ThreadContextProvider>> providerInfo = providersPerClassLoader.get(key);
+        if (providerInfo == null) {
             // Thread context types for which providers are available
             HashSet<String> available = new HashSet<String>(BUILT_IN_CONTEXT);
 
@@ -128,10 +177,19 @@ public class ThirdPartyContextCoordinator implements com.ibm.wsspi.threadcontext
                 else
                     throw new IllegalStateException("duplicate provider: " + type); // TODO Tr.formatMessage(tc, "CWWKC1150.duplicate.context", type, provider, findConflictingProvider(provider, classloader)));
             }
-            providers = providersPerClassLoader.putIfAbsent(key, providersNew);
-            if (providers == null)
-                providers = providersNew;
+
+            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            String appName = cData == null ? "" : cData.getJ2EEName().getApplication();
+
+            Entry<String, ArrayList<ThreadContextProvider>> providerInfoNew = //
+                            new SimpleEntry<String, ArrayList<ThreadContextProvider>>(appName, providersNew);
+            providerInfo = providersPerClassLoader.putIfAbsent(key, providerInfoNew);
+            if (providerInfo == null)
+                providerInfo = providerInfoNew;
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "providers for", appName, classLoader, providerInfo);
         }
-        return providers;
+        return providerInfo.getValue();
     }
 }

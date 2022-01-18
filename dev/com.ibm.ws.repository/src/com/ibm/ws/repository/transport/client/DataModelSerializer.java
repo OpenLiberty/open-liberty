@@ -421,7 +421,7 @@ public class DataModelSerializer {
         Method found = null;
 
         //precalc the field name as a setter to use for each method test.
-        String fieldNameAsASetter = new StringBuilder("set").append(fieldName.substring(0, 1).toUpperCase()).append(fieldName.substring(1)).toString();
+        String fieldNameAsASetter = new StringBuilder("set").append(fieldName.substring(0, 1).toUpperCase(Locale.ENGLISH)).append(fieldName.substring(1)).toString();
 
         //hunt for any matching setter in the object
         for (Method m : classToLookForFieldIn.getMethods()) {

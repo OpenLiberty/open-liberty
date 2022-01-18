@@ -29,7 +29,8 @@ IBM-API-Package: \
     com.ibm.ws.microprofile.opentracing.jaeger.adapter, \
     com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl,\
     io.openliberty.opentracing.3.0.internal.restfulws, \
-    io.openliberty.opentracing.2.0.spi; location:="dev/spi/ibm/,lib/"
+    io.openliberty.opentracing.2.0.spi; location:="dev/spi/ibm/,lib/", \
+    io.openliberty.microprofile.opentracing.common
 -files= \
     dev/spi/ibm/javadoc/io.openliberty.opentracing.2.0.spi_1.0-javadoc.zip
 kind=ga

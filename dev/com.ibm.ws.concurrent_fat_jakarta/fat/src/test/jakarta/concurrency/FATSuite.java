@@ -19,7 +19,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                ConcurrencyTest.class
+                ConcurrencyTest.class,
+                ConcurrencyJSPTest.class
 })
 public class FATSuite {
 }

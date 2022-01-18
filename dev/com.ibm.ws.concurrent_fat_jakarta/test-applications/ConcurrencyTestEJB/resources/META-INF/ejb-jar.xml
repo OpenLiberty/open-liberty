@@ -13,11 +13,40 @@
          xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd">
-         <!-- 
+
   <enterprise-beans>
     <session>
       <ejb-name>ExecutorBean</ejb-name>
+
+ <!-- TODO enable once working
+      <context-service>
+        <name>java:global/concurrent/dd/ejb/LPContextService</name>
+	    <cleared>Application</cleared>
+	    <propagated>List</propagated>
+	    <propagated>Priority</propagated>
+	    <unchanged>ZipCode</unchanged>
+	    <unchanged>Remaining</unchanged>
+	  </context-service>
+
+	  <managed-executor>
+	    <name>java:comp/concurrent/dd/ejb/Executor</name>
+	    <max-async>2</max-async>
+	    <hung-task-threshold>620000</hung-task-threshold>
+	  </managed-executor>
+
+	  <managed-scheduled-executor>
+	    <name>java:app/concurrent/dd/ejb/LPScheduledExecutor</name>
+	    <context-service-ref>java:global/concurrent/dd/ejb/LPContextService</context-service-ref>
+	    <max-async>3</max-async>
+	  </managed-scheduled-executor>
+
+	  <managed-thread-factory>
+	    <name>java:module/concurrent/dd/ejb/ZLThreadFactory</name>
+	    <context-service-ref>java:module/concurrent/ZLContextSvc</context-service-ref>
+	    <priority>7</priority>
+	  </managed-thread-factory>
+-->
     </session>
   </enterprise-beans>
-   -->
+
 </ejb-jar>
