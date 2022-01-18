@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -40,6 +41,7 @@ import componenttest.topology.utils.MvnUtils;
  * location.
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class ConcurrentTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
