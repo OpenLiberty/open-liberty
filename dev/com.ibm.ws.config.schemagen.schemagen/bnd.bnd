@@ -27,3 +27,5 @@ Command-Class: com.ibm.ws.config.schemagen.internal.Generator
 -outputmask: ws-schemagen.jar
 
 publish.tool.jar=ws-schemagen.jar
+publish.tool.script=schemaGen
+ 

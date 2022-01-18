@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class Generator {
     public static final ResourceBundle messages = ResourceBundle.getBundle(XMLConfigConstants.NLS_PROPS);
     public static final ResourceBundle options = ResourceBundle.getBundle(XMLConfigConstants.NLS_OPTIONS);
 
-    private static final String JAR_NAME = "ws-schemagen.jar";
+    private static final String SCRIPT_NAME = "schemaGen";
 
     /**
      * Pick and use a consistent set of return codes across all
@@ -142,7 +142,7 @@ public class Generator {
                     break;
                 case HELP_ACTION:
                     // Only show command-line-style brief usage -help or --help invoked from command line
-                    System.out.println(MessageFormat.format(options.getString("briefUsage"), JAR_NAME));
+                    System.out.println(MessageFormat.format(options.getString("briefUsageScript"), SCRIPT_NAME));
                     System.out.println();
                     showUsageInfo();
 

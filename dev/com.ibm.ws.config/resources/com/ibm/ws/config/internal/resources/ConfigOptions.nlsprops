@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=\
 Usage: java [JVM options] -jar {0} [options] outputFile  
+briefUsageScript=\
+Usage: ./{0} [options] outputFile
+
 
 use.options=Options:
 # -------- OPTIONS ----------------------------------------------------#
@@ -37,3 +40,18 @@ The product extension name to be processed.                            \n\
 If the product extension is installed in the default user location,    \n\
 use the keyword: usr.                                                  \n\
 If this option is not specified, the action is taken on Liberty core.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=\
+If schemaVersion=1.1 is specified, then both explicitly named child \n\
+elements and the xsd:any element are written to the output file.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=\
+If outputVersion=2.0 is specified, only the xsd:any element is used \n\
+in the output file, so that unknown elements pass XSD validation at \n\
+the expense of losing validation for known elements.
