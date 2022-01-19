@@ -20,7 +20,7 @@
         <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
         
         <!-- TODO: Update this once TCK is GAed -->
-        <jakarta.concurrent.tck.version>3.0.0-RC1</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.tck.version>3.0.0.20220118</jakarta.concurrent.tck.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -36,6 +36,22 @@
         
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>ibmdhe</id>
+            <name>IBM_DHE File Server</name>
+            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -60,7 +76,8 @@
         </dependency>
         <!-- TCK Dependency -->
         <dependency>
-		    <groupId>jakarta.enterprise.concurrent</groupId>
+            <!-- TODO: Update this once TCK is available on maven -->
+		    <groupId>io.openliberty.jakarta.enterprise.concurrent</groupId>
 		    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
 		    <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
