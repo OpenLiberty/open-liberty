@@ -12,13 +12,16 @@ package com.ibm.ws.config.xml.internal;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -67,6 +70,10 @@ class SystemConfiguration implements CheckpointHook {
 
     /** Tracker for metatype registry service */
     private ServiceTracker<MetaTypeRegistry, MetaTypeRegistry> metatypeRegistryTracker = null;
+
+    private final ServiceRegistration<WSConfigurationHelper> wsConfigurationHelperRegistration;
+
+    private final ServiceRegistration<CheckpointHook> checkpointHookRegistration;
 
     SystemConfiguration(BundleContext bc,
                         SystemConfigSupport caSupport,
@@ -129,10 +136,13 @@ class SystemConfiguration implements CheckpointHook {
 
         // Create and register WSConfigurationHelper
         WSConfigurationHelper wsConfigHelper = new WSConfigurationHelperImpl(metatypeRegistry, ce, bundleProcessor);
-        registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
+        wsConfigurationHelperRegistration = bc.registerService(WSConfigurationHelper.class, wsConfigHelper,
+                                                               FrameworkUtil.asDictionary(Collections.singletonMap("service.vendor", "IBM")));
 
         // register restore hook to reprocess config if necessary
-        bc.registerService(CheckpointHook.class, this, null);
+        // Service ranking of checkpointHookRegistration needs to be greater than com.ibm.ws.kernel.service.location.internal.Activator.checkpointHookRegistration.
+        // This is important in order to maintain the order of running the hooks.
+        checkpointHookRegistration = bc.registerService(CheckpointHook.class, this, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 1000)));
     }
 
     @Override
@@ -145,7 +155,7 @@ class SystemConfiguration implements CheckpointHook {
                 configRefresher.variableRefresh(deltaTypes);
             }
         }
-    };
+    }
 
     private OnError getOnError() {
 
@@ -179,13 +189,6 @@ class SystemConfiguration implements CheckpointHook {
         return onError;
     }
 
-    // Register a service with default properties
-    private void registerService(BundleContext bc, String name, Object serviceInstance) {
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("service.vendor", "IBM");
-        bc.registerService(name, serviceInstance, properties);
-    }
-
     void start() throws ConfigUpdateException, ConfigValidationException, ConfigParserException {
         if (serverXMLConfig.hasConfigRoot()) {
             configRefresher.start();
@@ -205,6 +208,14 @@ class SystemConfiguration implements CheckpointHook {
     void stop() {
         bundleProcessor.stopProcessor();
         configRefresher.stop();
+
+        // unregister service registrations
+        if (wsConfigurationHelperRegistration != null) {
+            wsConfigurationHelperRegistration.unregister();
+        }
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
 
         // close trackers
         if (null != locationTracker) {
