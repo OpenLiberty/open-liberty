@@ -12,6 +12,8 @@ package componenttest.topology.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -67,6 +69,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -113,6 +116,7 @@ import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.ServerFileUtils;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -207,9 +211,9 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
-    protected static final boolean DEFAULT_PRE_CLEAN = true;
-    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
-    protected static final boolean DEFAULT_VALIDATE_APPS = true;
+    public static final boolean DEFAULT_PRE_CLEAN = true;
+    public static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
+    public static final boolean DEFAULT_VALIDATE_APPS = true;
     protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
     public static boolean validateApps = DEFAULT_VALIDATE_APPS;
@@ -449,6 +453,72 @@ public class LibertyServer implements LogMonitorClient {
     private final LogMonitor logMonitor;
 
     private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
+
+    public void setCheckpoint(CheckpointPhase phase) {
+        setCheckpoint(phase, true, null);
+    }
+
+    /**
+     * When server.start is executed, perform a
+     *
+     * <pre>
+     * <code> "bin/server checkpoint --at=phase"</code>, followed by
+     * <code> "bin/server start"</code>
+     * </pre>
+     *
+     * @param phase         The phase at which to take the checkpoint. Must be non-null.
+     * @param autoRestore   if true initiate restore as part of serverStart
+     * @param beforeRestore beforeRestore lambda is called just before the server start
+     */
+    public void setCheckpoint(CheckpointPhase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
+        checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
+    }
+
+    /**
+     * Info
+     */
+    private CheckPointInfo checkpointInfo;
+
+    private static class CheckPointInfo {
+
+        Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
+            Log.debug(c, "No beforeRestoreLambda supplied.");
+        };
+
+        public CheckPointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+            if (phase == null) {
+                throw new IllegalArgumentException("Phase must not be null");
+            }
+            this.checkpointPhase = phase;
+            this.autoRestore = autorestore;
+            if (beforeRestoreLambda == null) {
+                this.beforeRestoreLambda = defaultLambda;
+            } else {
+                this.beforeRestoreLambda = (LibertyServer svr) -> {
+                    Log.debug(c, "Begin execution of supplied beforeRestoreLambda.");
+                    beforeRestoreLambda.accept(svr);
+                    Log.debug(c, "Excecution of supplied beforeRestoreLambda complete.");
+                };
+            }
+        }
+
+        /*
+         * parameters to configure a checkpoint/restore test
+         */
+        private final CheckpointPhase checkpointPhase; //Phase to checkpoint
+        private final boolean autoRestore; // weather or not to perform restore after checkpoint
+        //AN optional function executed after checkpoint but before restore
+        private final Consumer<LibertyServer> beforeRestoreLambda;
+
+        /*
+         * save intermediate results of ongoing checkpoint restore test
+         */
+        private final boolean checkpointTaken = false;
+        private ProgramOutput output;
+        private boolean validateApps;
+        private boolean expectStartFailure;
+        private boolean validateTimedExit;
+    }
 
     /**
      * @param serverCleanupProblem the serverCleanupProblem to set
@@ -1455,13 +1525,13 @@ public class LibertyServer implements LogMonitorClient {
                 Runnable execServerCmd = null;
 
                 if (this.runAsAWindowService == false) {
-
+                    final String[] params = doCheckpoint() ? checkpointAdjustParams(parametersList) : parameters;
                     execServerCmd = new Runnable() {
 
                         @Override
                         public void run() {
                             try {
-                                outputQueue.put(machine.execute(cmd, parameters, envVars));
+                                outputQueue.put(machine.execute(cmd, params, envVars));
                             } catch (Exception e) {
                                 Log.info(c, method, "Exception while attempting to start a server: " + e.getMessage());
                             }
@@ -1549,6 +1619,15 @@ public class LibertyServer implements LogMonitorClient {
                     Log.info(c, method, "Return code from script is: " + rc);
                 }
             }
+            if (doCheckpoint()) {
+                checkpointValidate(output, expectStartFailure);
+                checkpointInfo.beforeRestoreLambda.accept(this);
+                if (checkpointInfo.autoRestore) {
+                    checkpointRestore();
+                } else {
+                    return output;
+                }
+            }
         }
 
         // Validate the server and apps started - if they didn't, that
@@ -1561,6 +1640,142 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.exiting(c, method);
         return output;
+    }
+
+    private String[] checkpointAdjustParams(List<String> parametersList) {
+        final String method = "checkpointFixParams";
+        Log.info(c, method, "checkpointFixUpParameters: " + parametersList);
+        ArrayList<String> checkpointParams = new ArrayList<String>();
+        //exclude actions run, debug, package, ...
+        boolean isLaunch = "start".equals(parametersList.get(0));
+        for (int i = 0; i < parametersList.size(); i++) {
+            if (i == 0 && isLaunch) {
+                checkpointParams.add("checkpoint");
+            } else if (i == 2 && isLaunch) {
+                checkpointParams.add("--at=" + checkpointInfo.checkpointPhase);
+                checkpointParams.add(parametersList.get(i));
+            } else {
+                checkpointParams.add(parametersList.get(i));
+            }
+        }
+        if (parametersList.size() == 2 && isLaunch) {
+            checkpointParams.add("--at=" + checkpointInfo.checkpointPhase);
+        }
+        String[] ret = checkpointParams.toArray(new String[checkpointParams.size()]);
+        Log.info(c, method, "checkpointFixParams: " + checkpointParams);
+        return ret;
+    }
+
+    /**
+     * After a checkpoint image has been created and basic validation
+     *
+     * @param output
+     */
+    public void checkpointRestore() throws Exception {
+        String method = "checkpointRestore";
+        //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
+        // polling timeout on the launch
+        String cmd = installRoot + "/bin/server start " + serverToUse;
+        final BlockingQueue<ProgramOutput> restoreProgramOutputQueue = new LinkedBlockingQueue<ProgramOutput>();
+        Runnable execRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //Launch the execute without any environment or JDK options. The restore should manage the
+                    //  process creation with all the original env/option in effect
+                    restoreProgramOutputQueue.put(machine.execute(cmd));
+                } catch (Exception e) {
+                    Log.info(c, method, "Exception while attempting to restore a server: " + e.getMessage());
+                }
+            }
+        };
+        new Thread(execRunnable).start();
+        //Poll for script completion
+        final int scriptTimeout = 5;
+        ProgramOutput output = null;
+        try {
+            output = restoreProgramOutputQueue.poll(scriptTimeout, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (output == null || output.getReturnCode() != 0) {
+            Log.warning(c, "Restore failed with RC:" + output.getReturnCode());
+            Log.warning(c, "Restore stdout: " + output.getStdout());
+            Log.warning(c, "Restore stderr: " + output.getStderr());
+        }
+        if (checkpointInfo.autoRestore == false) {
+            if (output != null && output.getReturnCode() == 0) {
+                validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectStartFailure,
+                                      checkpointInfo.validateTimedExit);
+            }
+        }
+    }
+
+    /**
+     * After a checkpoint the server should be stopped, There should be no errors and the
+     * checkpoint dir should look normal
+     *
+     * @param output
+     */
+    private void checkpointValidate(ProgramOutput output, boolean expectStartFailure) throws Exception {
+        if (!expectStartFailure) {
+            assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+        }
+        // validate server not started
+        resetStarted();
+        if (isStarted) {
+            Exception fail = new Exception("Server should not be started after a checkpoint operation");
+            Log.error(c, "Server should not be started after a checkpoint operation", fail);
+            throw fail;
+        }
+        assertCheckpointDirAsExpected();
+        //server is stopped at this point so no delay on following log searches
+        if (checkpointInfo.checkpointPhase == CheckpointPhase.FEATURES) {
+            assertNull("'CWWKZ0018I: Starting application...' message found taking FEATURES checkpoint.",
+                       waitForStringInLogUsingMark("CWWKZ0018I:", 0));
+        }
+        assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
+                      waitForStringInLogUsingMark("CWWKC0451I:", 0));
+    }
+
+    /**
+     * Check for obvious missing files or structural problems with checkpoint dir layout.
+     * expected layout is
+     *
+     * <pre>
+     *     workarea/
+     *         checkpoint/
+     *             image/
+     *                 inventory.img
+     *                 fdinfo*.img
+     *                 core-*.img
+     *                 ...
+     *             workarea/
+     *                 osgi.eclipse/
+     *                 platform/
+     *         osgi.eclipse/
+     *         platform/
+     * </pre>
+     */
+    public void assertCheckpointDirAsExpected() throws Exception {
+        RemoteFile workarea = machine.getFile(serverRoot + "/workarea");
+        assertTrue("Missing top level workarea dir", workarea.isDirectory());
+        RemoteFile cpDir = new RemoteFile(machine, workarea, "checkpoint");
+        assertTrue("Missing checkpoint dir", cpDir.isDirectory());
+        RemoteFile workareaCheckpoint = new RemoteFile(machine, cpDir, "workarea");
+        assertTrue("Missing workarea backup dir", workareaCheckpoint.isDirectory());
+        assertTrue("checkpoint workarea dir has no files",
+                   workareaCheckpoint.list(false).length > 1 /* a somewhat arbitrary min count */);
+        RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
+        assertTrue("checkpoint image dir has no files",
+                   workareaCheckpoint.list(false).length > 2 /* a somewhat arbitrary min count */);
+    }
+
+    /**
+     * @return
+     */
+    private boolean doCheckpoint() {
+        return (checkpointInfo != null) && getCheckpointSupported();
     }
 
     /**
@@ -6564,5 +6779,42 @@ public class LibertyServer implements LogMonitorClient {
     @Override
     public String toString() {
         return serverToUse + " : " + super.toString();
+    }
+
+    private Boolean checkpointSupported;
+
+    /**
+     * @return
+     *                   true if the server has requisite support for the following operations, false otherwise.
+     *
+     *                   <pre>
+     *   bin/server start --checkpoint==[PHASE];
+     *   bin/server restore
+     *                   </pre>
+     *
+     * @throws Exception we may attempt to fork a new jvm to test for support. An exception typically
+     *                       means a Failure around forking the new process.
+     */
+    public boolean getCheckpointSupported() {
+        if (checkpointSupported == null) {
+            // Check if criu supported. Needed to run checkpoint/restore tests.
+            if ("LINUX".equals(machineOS.name().trim().toUpperCase())) {
+                JavaInfo jinfo;
+                try {
+                    jinfo = JavaInfo.fromPath(machineJava);
+                } catch (IOException e) {
+                    LOG.warning("Unable to detect platform support for criu: " + e.getMessage());
+                    return false; //no cache of checkpointSupported let it keep trying.
+                }
+                if (jinfo.VENDOR == Vendor.OPENJ9 && jinfo.isCriuSupported()) {
+                    checkpointSupported = true;
+                } else {
+                    checkpointSupported = false;
+                }
+            } else {
+                checkpointSupported = false;
+            }
+        }
+        return checkpointSupported;
     }
 }

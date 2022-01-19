@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.osgi.framework.Bundle;
@@ -43,6 +44,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -50,10 +52,12 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+
 /**
  *
  */
-public class WsLocationAdminImpl implements WsLocationAdmin {
+public class WsLocationAdminImpl implements WsLocationAdmin, CheckpointHook {
     private static final TraceComponent tc = Tr.register(WsLocationAdminImpl.class);
 
     private static final String LOC_INTERNAL_LIB_DIR = "wlp.lib.dir";
@@ -67,6 +71,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                     LOC_AREA_NAME_SERVERS = "servers/",
                     LOC_AREA_NAME_CLIENTS = "clients/",
                     LOC_AREA_NAME_WORKING = "workarea/",
+                    LOC_AREA_NAME_LOGS = "logs/",
                     LOC_AREA_NAME_EXTENSION = "extension/";
 
     private volatile static WsLocationAdminImpl instance;
@@ -213,6 +218,10 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
     final protected VirtualRootResource commonRoot;
 
+    private String serverCfgDirStr;
+
+    private final String variableSourceDirs;
+
     /**
      * Initialize file locations based on provided initial properties (which
      * includes some set in response to command line argument parsing).
@@ -227,8 +236,9 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      */
     protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
-        String serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
+        serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
+        String serverLogsDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_LOGS_DIR);
         String bootstrapLibStr = (String) config.get(LOC_INTERNAL_LIB_DIR);
         String workareaDirStr = (String) config.get(LOC_INTERNAL_WORKAREA_DIR);
 
@@ -282,6 +292,14 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
             serverOutputDir = new SymbolicRootResource(serverOutDirStr, WsLocationConstants.LOC_SERVER_OUTPUT_DIR, commonRoot);
         }
 
+        if (serverLogsDirStr == null) {
+            InternalWsResource serverLogsDir = serverOutputDir.createDescendantResource(LOC_AREA_NAME_LOGS);
+            SymbolRegistry.getRegistry().addResourceSymbol(WsLocationConstants.LOC_SERVER_LOGS_DIR, serverLogsDir);
+        } else {
+            // constructor adds to symbol registry
+            new SymbolicRootResource(serverLogsDirStr, WsLocationConstants.LOC_SERVER_LOGS_DIR, commonRoot);
+        }
+
         // Set the process type, either client or server
         SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_PROCESS_TYPE, processType);
 
@@ -325,7 +343,49 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS));
+        variableSourceDirs = (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS);
+
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, variableSourceDirs);
+    }
+
+    @Override
+    public void restore() {
+        List<File> fileSystemVariableDirs = new ArrayList<File>();
+        String envVarSourceDir = getEnv(BootstrapConstants.ENV_VARIABLE_SOURCE_DIRS);
+
+        if (envVarSourceDir == null) {
+            fileSystemVariableDirs.add(new File(serverCfgDirStr, "variables"));
+        } else {
+            StringTokenizer st = new StringTokenizer(envVarSourceDir, File.pathSeparator);
+            while (st.hasMoreTokens()) {
+                String dir = st.nextToken();
+                fileSystemVariableDirs.add(new File(dir));
+            }
+        }
+
+        String newVariableSourceDirs = getMultiplePathProperty(fileSystemVariableDirs);
+
+        if (!newVariableSourceDirs.equals(variableSourceDirs)) {
+            SymbolRegistry.getRegistry().replaceStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, newVariableSourceDirs);
+        }
+    }
+
+    String getEnv(final String key) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+            return System.getenv(key);
+        });
+    }
+
+    String getMultiplePathProperty(List<File> files) {
+        StringBuilder b = new StringBuilder();
+        boolean addSeparator = false;
+        for (File file : files) {
+            if (addSeparator)
+                b.append(File.pathSeparatorChar);
+            b.append(PathUtils.normalize(file.getAbsolutePath())).append('/');
+            addSeparator = true;
+        }
+        return b.toString();
     }
 
     private final void throwInitializationException(RuntimeException t) {

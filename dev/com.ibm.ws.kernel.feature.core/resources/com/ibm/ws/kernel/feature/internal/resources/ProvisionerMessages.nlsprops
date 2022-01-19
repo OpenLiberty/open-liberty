@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -230,6 +230,11 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specify a different version of t
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: The {2} and {3} features cannot be loaded at the same time. The {2} feature of {0} is incompatible with the {3} feature of {1}. The configuration includes an incompatible combination of {6} features that is not supported. The {4} and {5} configured features include an incompatible combination of features. Your configuration is not supported. Update the configuration to use compatible versions of the configured features that support the {0} or {1} programming models.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=The server configuration contains an incompatible combination of features for the indicated programming models. This conflict can happen if the two incompatible features are configured directly in the server configuration, or if the configured features include different versions of a feature that are incompatible.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Try to specify a compatible version of the configured features that caused the conflict in the server.xml file. If no other versions are available, then the configured features are not compatible with each other and cannot be configured at the same time.
+
+#CWWKF0048E
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: The server command specified the checkpoint action. A checkpoint cannot be taken because the checkpoint-1.0 feature is not configured in the server.xml file.
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=The server checkpoint action requires that the checkpoint-1.0 feature be configured.  
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=The checkpoint-1.0 feature must be configured to use a server checkpoint action.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

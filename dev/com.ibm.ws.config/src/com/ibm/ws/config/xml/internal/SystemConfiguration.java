@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,16 @@ package com.ibm.ws.config.xml.internal;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -28,6 +32,7 @@ import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -35,10 +40,12 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+
 /**
  * Represents the configuration of the entire system at runtime, comprising variables, all XML configuration, and all default configuration
  */
-class SystemConfiguration {
+class SystemConfiguration implements CheckpointHook {
     static final TraceComponent tc = Tr.register(SystemConfiguration.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
     private final ServerXMLConfiguration serverXMLConfig;
@@ -63,6 +70,10 @@ class SystemConfiguration {
 
     /** Tracker for metatype registry service */
     private ServiceTracker<MetaTypeRegistry, MetaTypeRegistry> metatypeRegistryTracker = null;
+
+    private final ServiceRegistration<WSConfigurationHelper> wsConfigurationHelperRegistration;
+
+    private final ServiceRegistration<CheckpointHook> checkpointHookRegistration;
 
     SystemConfiguration(BundleContext bc,
                         SystemConfigSupport caSupport,
@@ -125,8 +136,25 @@ class SystemConfiguration {
 
         // Create and register WSConfigurationHelper
         WSConfigurationHelper wsConfigHelper = new WSConfigurationHelperImpl(metatypeRegistry, ce, bundleProcessor);
-        registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
+        wsConfigurationHelperRegistration = bc.registerService(WSConfigurationHelper.class, wsConfigHelper,
+                                                               FrameworkUtil.asDictionary(Collections.singletonMap("service.vendor", "IBM")));
 
+        // register restore hook to reprocess config if necessary
+        // Service ranking of checkpointHookRegistration needs to be greater than com.ibm.ws.kernel.service.location.internal.Activator.checkpointHookRegistration.
+        // This is important in order to maintain the order of running the hooks.
+        checkpointHookRegistration = bc.registerService(CheckpointHook.class, this, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 1000)));
+    }
+
+    @Override
+    public void restore() {
+        if (serverXMLConfig.isModified()) {
+            configRefresher.refreshConfiguration();
+        } else {
+            Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
+            if (!deltaTypes.isEmpty()) {
+                configRefresher.variableRefresh(deltaTypes);
+            }
+        }
     }
 
     private OnError getOnError() {
@@ -161,34 +189,33 @@ class SystemConfiguration {
         return onError;
     }
 
-    // Register a service with default properties
-    private void registerService(BundleContext bc, String name, Object serviceInstance) {
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put("service.vendor", "IBM");
-        bc.registerService(name, serviceInstance, properties);
-    }
-
     void start() throws ConfigUpdateException, ConfigValidationException, ConfigParserException {
         if (serverXMLConfig.hasConfigRoot()) {
             configRefresher.start();
             serverXMLConfig.loadInitialConfiguration(variableRegistry);
         }
 
-        final boolean reprocessConfig;
-        if (serverXMLConfig.isModified() || variableRegistry.variablesChanged()) {
+        if (serverXMLConfig.isModified() || !variableRegistry.variablesChanged().isEmpty()) {
             variableRegistry.clearVariableCache();
             changeHandler.updateAtStartup(serverXMLConfig.getConfiguration());
             serverXMLConfig.setConfigReadTime();
-            reprocessConfig = true;
+            bundleProcessor.startProcessor(true);
         } else {
-            reprocessConfig = false;
+            bundleProcessor.startProcessor(false);
         }
-        bundleProcessor.startProcessor(reprocessConfig);
     }
 
     void stop() {
         bundleProcessor.stopProcessor();
         configRefresher.stop();
+
+        // unregister service registrations
+        if (wsConfigurationHelperRegistration != null) {
+            wsConfigurationHelperRegistration.unregister();
+        }
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
 
         // close trackers
         if (null != locationTracker) {

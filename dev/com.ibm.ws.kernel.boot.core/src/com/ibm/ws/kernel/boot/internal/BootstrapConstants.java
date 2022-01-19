@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,6 +111,7 @@ public final class BootstrapConstants {
 
     public static final String LOC_PROPERTY_SRVCFG_DIR = "server.config.dir";
     public static final String LOC_PROPERTY_SRVOUT_DIR = "server.output.dir";
+    public static final String LOC_PROPERTY_SRVLOGS_DIR = "server.logs.dir";
 
     public static final String LOC_PROPERTY_CLIENTCFG_DIR = "client.config.dir";
     public static final String LOC_PROPERTY_CLIENTOUT_DIR = "client.output.dir";
@@ -276,4 +277,6 @@ public final class BootstrapConstants {
     public static final String ENV_VARIABLE_SOURCE_DIRS = "VARIABLE_SOURCE_DIRS";
 
     public static final String LOC_PROPERTY_VARIABLE_SOURCE_DIRS = "wlp.var.src.dirs";
+
+    public static final String RESTORE_ENABLED = "RESTORE_ENABLED";
 }

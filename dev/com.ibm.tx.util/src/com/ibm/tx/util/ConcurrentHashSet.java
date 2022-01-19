@@ -1,7 +1,7 @@
 package com.ibm.tx.util;
 
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> {
     // the number of available processors.
     public static int getNumCHBuckets() {
         // determine number of processors
-        final int baseVal = CpuInfo.getAvailableProcessors() * 20;
+        final int baseVal = CpuInfo.getAvailableProcessors().get() * 20;
 
         // determine next power of two
         int pow = 2;
