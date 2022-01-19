@@ -87,7 +87,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin, CheckpointHook {
     public static WsLocationAdminImpl createLocations(Map<String, Object> initProps) {
         if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            instance = new WsLocationAdminImpl(null, initProps);
+            instance = new WsLocationAdminImpl(initProps);
         }
 
         return instance;
@@ -104,7 +104,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin, CheckpointHook {
     public static WsLocationAdminImpl createLocations(BundleContext ctx) {
         if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            instance = new WsLocationAdminImpl(ctx, new BundleContextMap(ctx));
+            instance = new WsLocationAdminImpl(new BundleContextMap(ctx));
         }
 
         return instance;
@@ -234,7 +234,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin, CheckpointHook {
      * @throws IllegalStateException
      *                                      if bootstrap library location or instance root don't exist.
      */
-    protected WsLocationAdminImpl(BundleContext bundleContext, Map<String, Object> config) {
+    protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
         serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
