@@ -1164,7 +1164,7 @@ public class MvnUtils {
             String year = yearNo.format(date);
             String month = monthNo.format(date);
 
-            String OLVersion = year + ".0.0." + month;
+            String OLVersion = getOLVersion();
             String osVersion = System.getProperty("os.name");
             String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
             String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
@@ -1214,12 +1214,12 @@ public class MvnUtils {
                         specVersion = versionMatcher.group(1);
                         if (specVersion.contains("-RC")) {
                             parts = specVersion.split("-RC");
-                            RC = parts[1];
+                            RC = "-RC"+parts[1];
                             specVersion = parts[0];
                         }
                         returnArray[0] = specName;
                         returnArray[1] = specVersion;
-                        returnArray[2] = ("-RC" + RC);
+                        returnArray[2] = (RC);
                         return returnArray;
                     }
                 }
@@ -1228,6 +1228,47 @@ public class MvnUtils {
             e.printStackTrace();
         }
         return returnArray;
+    }
+
+    public static String getLogs(){
+        Path serverPath = Paths.get("output","servers");
+        String folderName = "";
+        String logsDir = "";
+        File serverDirectory = serverPath.toFile();
+        if(files.exists(serverPath))) {
+            return logsDir;
+        }/*
+        for (final File folder : serverDirectory.listFiles()) {
+            return "";
+            if (folder.isDirectory()) {
+                folderName = folder.getName();
+                logsDir= "output/servers/"+folderName+"/logs/messages.log";
+                File f = new File(logsDir);
+                if(f.exists()) {
+                    return logsDir;
+                }
+            }
+        }*/
+        return "NOT FOUND";
+    }
+
+    public static String getOLVersion(){
+        String messagesPath = getLogs();
+        /*Pattern olVersionPattern = Pattern.compile("product = WebSphere Application Server (.*?) ", Pattern.DOTALL);
+        try (BufferedReader br = new BufferedReader(new FileReader(getLogs()))) { //TO CHANGE
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if(sCurrentLine.startsWith("product = WebSphere Application Server ")){
+                    Matcher olVersionMatcher = olVersionPattern.matcher(sCurrentLine);
+                    if (olVersionMatcher.find()) {
+                        return olVersionMatcher.group(1);
+                    }
+                }
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        return messagesPath;
     }
 
     public static String capitalise(String spec) {
