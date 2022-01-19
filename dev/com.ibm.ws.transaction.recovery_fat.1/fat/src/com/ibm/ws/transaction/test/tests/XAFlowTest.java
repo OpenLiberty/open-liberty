@@ -16,7 +16,6 @@ import static org.junit.Assert.fail;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,7 +33,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -73,7 +71,7 @@ public class XAFlowTest extends FATServletClient {
         assertTrue("Failed to install xaflow-1.0 bundle",
                    server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.tx.test.impl.jar"));
 
-        server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         FATUtils.startServers(server);
     }
 
