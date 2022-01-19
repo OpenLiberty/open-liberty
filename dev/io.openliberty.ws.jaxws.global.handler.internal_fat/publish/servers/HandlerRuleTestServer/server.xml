@@ -1,6 +1,7 @@
 <server>
     <featureManager>
         <feature>jsp-2.3</feature>
+        <feature>jaxrs-2.0</feature>
         <feature>jaxws-2.2</feature>
         <feature>usr:TestHandlerRuleFeature</feature>
         <feature>usr:TestHandlerRuleFeature2</feature>

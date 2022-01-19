@@ -4,8 +4,6 @@
 	<classpathentry kind="src" path="test-applications/addNumbersClient/src"/>
 	<classpathentry kind="src" path="test-applications/addNumbersProvider/src"/>
 	<classpathentry kind="src" path="test-applications/cdi-rolesallowed/src"/>
-	<classpathentry kind="src" path="test-applications/handlerRuleBundle/src"/>
-	<classpathentry kind="src" path="test-applications/handlerRuleBundle2/src"/>
 	<classpathentry kind="src" path="test-applications/rs20ApplicationWithClient/src"/>
 	<classpathentry kind="src" path="test-applications/rsApplication/src"/>
 	<classpathentry kind="src" path="test-applications/rsUserBundle1/src"/>

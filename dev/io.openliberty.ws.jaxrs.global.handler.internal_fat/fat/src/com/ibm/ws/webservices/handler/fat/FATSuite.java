@@ -29,7 +29,6 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @SuiteClasses({
                JAXRSDynamicHandlerTest.class,
-               HandlerRuleTest.class,
                JAXRSMessageContextAPITest.class,
                CDIRolesAllowedTest.class,
                JAXRSClientHandlerTest.class

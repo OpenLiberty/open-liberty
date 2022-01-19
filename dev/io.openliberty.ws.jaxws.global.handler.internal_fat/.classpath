@@ -7,6 +7,7 @@
 	<classpathentry kind="src" path="test-applications/EJBHandler/src"/>
 	<classpathentry kind="src" path="test-applications/handlerRuleBundle/src"/>
 	<classpathentry kind="src" path="test-applications/handlerRuleBundle2/src"/>
+	<classpathentry kind="src" path="test-applications/rsApplication/src"/>
 	<classpathentry kind="src" path="test-applications/testHandlerClient/src"/>
 	<classpathentry kind="src" path="test-applications/testHandlerProvider/src"/>
 	<classpathentry kind="src" path="test-applications/TransportSecurityProvider/src"/>
