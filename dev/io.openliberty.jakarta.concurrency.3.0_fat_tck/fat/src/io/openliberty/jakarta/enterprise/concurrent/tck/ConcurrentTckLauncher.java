@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PortType;
@@ -81,7 +82,7 @@ public class ConcurrentTckLauncher {
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
-    //@Test //TODO Enable once TCK is published on maven central
+    @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrentTCK() throws Exception {
         String suiteXmlFile;
