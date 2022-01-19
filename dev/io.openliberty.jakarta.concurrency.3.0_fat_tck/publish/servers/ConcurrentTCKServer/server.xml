@@ -17,9 +17,9 @@
 		<feature>enterpriseBeans-4.0</feature>
 		<feature>cdi-3.0</feature>
 		<feature>pages-3.0</feature>
-		<feature>appSecurity-4.0</feature>
 	    <!-- Supporting features -->
 	    <feature>jndi-1.0</feature> 
+	    <feature>appSecurity-4.0</feature>
 	    <!-- Required by test infrastructure -->
 	    <feature>timedexit-1.0</feature>
 	    <!-- Features needed for arquillan support -->
@@ -36,8 +36,7 @@
 	
 	<!-- Allow Arquillian to participate in TLS handshake with server -->
 	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
-	<keyStore id="defaultKeyStore"   location="${env.tck_tls_store}" password="${env.tck_tls_password}" />
-	<keyStore id="defaultTrustStore" location="${env.tck_tls_store}" password="${env.tck_tls_password}" />
+	<keyStore id="defaultKeyStore" password="libertyPassword"/>
 	
 	<!-- Allow Arquillian to create a secure connection -->
     <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${env.tck_port}" httpsPort="${env.tck_port_secure}">
@@ -58,13 +57,13 @@
 	<!--Java2 security-->
 	<javaPermission className="java.security.AllPermission"  name="*" actions="*" />   
 	<javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-	<javaPermission codeBase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.security.AllPermission"/>
-	<javaPermission codeBase="${shared.resource.dir}/derbyclient/derbynet.jar" className="java.security.AllPermission"/>
 	
 	<!-- Ensure JSP can handle lamdas -->
 	<jspEngine jdkSourceLevel="18"/>
 	
 	<!-- Security role(s) needed for TCK tests -->
+	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
+		
 	<basicRegistry id="basic" realm="default">       
 	    <user name="javajoe" password="javajoe"/>
 	    <group name="Manager">

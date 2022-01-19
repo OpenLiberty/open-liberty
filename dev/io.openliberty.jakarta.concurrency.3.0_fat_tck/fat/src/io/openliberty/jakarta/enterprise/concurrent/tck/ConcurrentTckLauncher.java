@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PortType;
@@ -55,25 +54,12 @@ public class ConcurrentTckLauncher {
         additionalProps.put("tck_username", "arquillian");
         additionalProps.put("tck_password", "arquillianPassword");
 
-        //Keystore and Truststore for Arquillian to perform TLS handshake with Liberty server
-        additionalProps.put("javax.net.ssl.keyStore", server.getServerRoot() + "/resources/security/arquillian.p12");
-        additionalProps.put("javax.net.ssl.keyStorePassword", "arquillianPassword");
-        additionalProps.put("javax.net.ssl.keyStoreType", "pkcs12");
-        additionalProps.put("javax.net.ssl.trustStore", server.getServerRoot() + "/resources/security/arquillian.p12");
-        additionalProps.put("javax.net.ssl.trustStorePassword", "arquillianPassword");
-        additionalProps.put("javax.net.ssl.trustStoreType", "pkcs12");
-        //additionalProps.put("javax.net.debug", "ssl:handshake:verbose:keymanager:trustmanager");
-
         //Logging properties for java.util.logging to use for mvn output
         additionalProps.put("java.util.logging.config.file", server.getServerRoot() + "/resources/logging/logging.properties");
 
         //username and password to set on quickStartSecurity
         server.addEnvVar("tck_username", "arquillian");
         server.addEnvVar("tck_password", "arquillianPassword");
-
-        //Keystore and Trustore for Liberty to perform TLS handshake with Liberty server
-        server.addEnvVar("tck_tls_store", server.getServerRoot() + "/resources/security/liberty.p12");
-        server.addEnvVar("tck_tls_password", "libertyPassword");
 
         //Ports liberty should be using for testing
         server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
