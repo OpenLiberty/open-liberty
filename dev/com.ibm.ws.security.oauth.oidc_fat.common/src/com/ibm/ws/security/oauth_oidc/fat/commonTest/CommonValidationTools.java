@@ -66,6 +66,7 @@ public class CommonValidationTools {
     private final String BOOLEAN_CAST_OFFSET = "com.ibm.ws.security.oauth-oidc_fat.commonTest.boolean.offset";
     public static final String JSON_TOKEN_DELIMITER = ".";
     public static final String HEADER_DELIMITER = "|";
+    public static final String COOKIE_DELIMITER = ",";
     private final Class<?> thisClass = CommonValidationTools.class;
     public static CommonMessageTools msgUtils = new CommonMessageTools();
     public ValidationData vData = new ValidationData();
@@ -127,7 +128,8 @@ public class CommonValidationTools {
                             || expected.getWhere().equals(Constants.RESPONSE_STATUS)
                             || expected.getWhere().equals(Constants.RESPONSE_URL)
                             || expected.getWhere().equals(Constants.RESPONSE_HEADER)
-                            || expected.getWhere().equals(Constants.RESPONSE_MESSAGE))) {
+                            || expected.getWhere().equals(Constants.RESPONSE_MESSAGE)
+                            || expected.getWhere().equals(Constants.RESPONSE_COOKIE))) {
                         validateWithResponse(response, expected);
                     } else {
                         if (isInList(validLogLocations, expected.getWhere())) {
@@ -265,13 +267,7 @@ public class CommonValidationTools {
                             responseContent = AutomationTools.getResponseUrl(response);
                         } else {
                             if (expected.getWhere().equals(Constants.RESPONSE_HEADER)) {
-                                String[] hs = AutomationTools.getResponseHeaderNames(response);
-                                StringBuilder sb = new StringBuilder();
-                                for (String h : hs) {
-                                    sb.append(h + ": " + AutomationTools.getResponseHeaderField(response, h));
-                                    sb.append(HEADER_DELIMITER);
-                                }
-                                responseContent = sb.toString();
+                                responseContent = getResponseHeadersString(response);
                             } else {
                                 if (expected.getWhere().equals(Constants.RESPONSE_STATUS)) {
                                     // if we have a status code that results in an exception, that is handled differently
@@ -281,8 +277,12 @@ public class CommonValidationTools {
                                     responseContent = Integer.toString(AutomationTools.getResponseStatusCode(response));
                                     //                                    }
                                 } else {
-                                    Log.info(thisClass, thisMethod, "No valid Response area specified - assuming ALL");
-                                    responseContent = AutomationTools.getResponseText(response);
+                                    if (expected.getWhere().equals(Constants.RESPONSE_COOKIE)) {
+                                        responseContent = getResponseCookiesString(response);
+                                    } else {
+                                        Log.info(thisClass, thisMethod, "No valid Response area specified - assuming ALL");
+                                        responseContent = AutomationTools.getResponseText(response);
+                                    }
                                 }
                             }
                         }
@@ -338,6 +338,36 @@ public class CommonValidationTools {
             throw e;
         }
 
+    }
+
+    private String getResponseHeadersString(Object response) throws Exception {
+        Map<String, String[]> headers = AutomationTools.getResponseHeaders(response);
+        if (headers == null) {
+            return null;
+        }
+        String result = "";
+        for (Entry<String, String[]> header : headers.entrySet()) {
+            for (String value : header.getValue()) {
+                result += header.getKey() + ": " + value + HEADER_DELIMITER;
+            }
+        }
+        if (result.endsWith(HEADER_DELIMITER)) {
+            result = result.replaceAll(Pattern.quote(HEADER_DELIMITER) + "$", "");
+        }
+        return result;
+    }
+
+    private String getResponseCookiesString(Object response) throws Exception {
+        String[] cookieNames = AutomationTools.getResponseCookieNames(response);
+        String result = "";
+        for (String name : cookieNames) {
+            result += name + "=" + AutomationTools.getResponseCookieValue(response, name) + COOKIE_DELIMITER;
+        }
+        if (result.endsWith(COOKIE_DELIMITER)) {
+            result = result.replaceAll(Pattern.quote(COOKIE_DELIMITER) + "$", "");
+        }
+        Log.info(thisClass, "getResponseCookiesString", "Got response cookies: " + result);
+        return result;
     }
 
     public void validateJSONData(Object response, validationData expected) throws Exception {

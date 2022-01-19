@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
 package com.ibm.ws.security.fat.common.utils;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
@@ -179,7 +181,66 @@ public class AutomationTools {
         throw new Exception("Unknown response type: " + pageOrResponse.getClass().getName());
     }
 
-    // may want/need to add other versions of this that actually return the name/value pairs...
+    public static Map<String, String[]> getResponseHeaders(Object pageOrResponse) throws Exception {
+        if (pageOrResponse == null) {
+            Log.info(thisClass, "getResponseHeaders", "pageOrResponse is null");
+            return null;
+        }
+        Map<String, String[]> headerMap = null;
+        if (pageOrResponse instanceof com.meterware.httpunit.WebResponse) {
+            String[] headerNames = ((com.meterware.httpunit.WebResponse) pageOrResponse).getHeaderFieldNames();
+            if (headerNames == null) {
+                return null;
+            }
+            headerMap = new HashMap<>();
+            for (String header : headerNames) {
+                String[] values = ((com.meterware.httpunit.WebResponse) pageOrResponse).getHeaderFields(header);
+                headerMap.put(header, values);
+            }
+        } else {
+            List<NameValuePair> headers = null;
+            if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.WebResponse) {
+                headers = ((com.gargoylesoftware.htmlunit.WebResponse) pageOrResponse).getResponseHeaders();
+            } else if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
+                headers = ((com.gargoylesoftware.htmlunit.html.HtmlPage) pageOrResponse).getWebResponse().getResponseHeaders();
+            } else if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.TextPage) {
+                headers = ((com.gargoylesoftware.htmlunit.TextPage) pageOrResponse).getWebResponse().getResponseHeaders();
+            } else if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.xml.XmlPage) {
+                headers = ((com.gargoylesoftware.htmlunit.xml.XmlPage) pageOrResponse).getWebResponse().getResponseHeaders();
+            } else if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.UnexpectedPage) {
+                headers = ((com.gargoylesoftware.htmlunit.UnexpectedPage) pageOrResponse).getWebResponse().getResponseHeaders();
+            }
+            if (headers == null) {
+                throw new Exception("Unknown response type: " + pageOrResponse.getClass().getName());
+            }
+            headerMap = convertHeadersListToMap(headers);
+
+        }
+        return headerMap;
+    }
+
+    static Map<String, String[]> convertHeadersListToMap(List<NameValuePair> headers) {
+        if (headers == null) {
+            return null;
+        }
+        Map<String, String[]> headerMap = new HashMap<>();
+        for (NameValuePair header : headers) {
+            String name = header.getName();
+            if (headerMap.containsKey(name)) {
+                String[] values = headerMap.get(name);
+                String[] updatedValues = new String[values.length + 1];
+                for (int i = 0; i < values.length; i++) {
+                    updatedValues[i] = values[i];
+                }
+                updatedValues[values.length] = header.getValue();
+                headerMap.put(name, updatedValues);
+            } else {
+                headerMap.put(name, new String[] { header.getValue() });
+            }
+        }
+        return headerMap;
+    }
+
     public static String[] getResponseHeaderNames(Object pageOrResponse) throws Exception {
 
         if (pageOrResponse == null) {
@@ -274,7 +335,7 @@ public class AutomationTools {
                 i++;
             }
             return cookieNames;
-//            throw new Exception("get CookieNames not supported with type: com.gargoylesoftware.htmlunit.html.HtmlPage (cookies come from webClient)");
+            //            throw new Exception("get CookieNames not supported with type: com.gargoylesoftware.htmlunit.html.HtmlPage (cookies come from webClient)");
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.UnexpectedPage) {
             throw new Exception("get CookieNames not supported with type: com.gargoylesoftware.htmlunit.UnexpectedPage (cookies come from webClient)");
@@ -287,6 +348,24 @@ public class AutomationTools {
         }
 
         throw new Exception("Unknown response type: " + pageOrResponse.getClass().getName());
+    }
+
+    public static String getResponseCookieValue(Object pageOrResponse, String cookieName) throws Exception {
+        if (pageOrResponse == null) {
+            Log.info(thisClass, "getResponseCookieValue", "pageOrResponse is null");
+            return null;
+        }
+        if (pageOrResponse instanceof com.meterware.httpunit.WebResponse) {
+            return ((com.meterware.httpunit.WebResponse) pageOrResponse).getNewCookieValue(cookieName);
+        }
+        if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
+            Cookie cookie = ((com.gargoylesoftware.htmlunit.html.HtmlPage) pageOrResponse).getWebClient().getCookieManager().getCookie(cookieName);
+            if (cookie != null) {
+                return cookie.getValue();
+            }
+            return null;
+        }
+        throw new Exception("getResponseCookieValue is not supported for type: " + pageOrResponse.getClass().getName());
     }
 
     public static Boolean getResponseIsHtml(Object pageOrResponse) throws Exception {

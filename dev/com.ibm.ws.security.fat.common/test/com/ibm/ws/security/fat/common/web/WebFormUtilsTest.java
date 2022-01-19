@@ -468,6 +468,8 @@ public class WebFormUtilsTest extends CommonTestClass {
                 {
                     one(form).getInputByValue(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_VALUE);
                     will(throwException(new ElementNotFoundException(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_VALUE, "attributeName", "attributeValue")));
+                    one(form).getButtonByName(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_NAME);
+                    will(throwException(new ElementNotFoundException(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_NAME, "attributeName", "attributeValue")));
                 }
             });
             try {
@@ -715,6 +717,8 @@ public class WebFormUtilsTest extends CommonTestClass {
                 {
                     one(form).getInputByValue(submitButtonValue);
                     will(throwException(new ElementNotFoundException(submitButtonValue, "attributeName", "attributeValue")));
+                    one(form).getButtonByName(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_NAME);
+                    will(throwException(new ElementNotFoundException(WebFormUtils.DEFAULT_LOGIN_SUBMIT_BUTTON_NAME, "attributeName", "attributeValue")));
                 }
             });
             try {
