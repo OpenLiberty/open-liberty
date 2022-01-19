@@ -43,6 +43,7 @@ public class MonitorMetricsHandler {
 	private static final TraceComponent tc = Tr.register(MonitorMetricsHandler.class);
 	
 	protected SharedMetricRegistries sharedMetricRegistry;
+	protected ExecutorService execServ;
     protected MappingTable mappingTable;
     protected Set<MonitorMetrics> metricsSet = new HashSet<MonitorMetrics>();
     protected NotificationListener listener;
@@ -59,7 +60,12 @@ public class MonitorMetricsHandler {
     public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         this.sharedMetricRegistry = sharedMetricRegistry;
     }
-    
+	   
+    @Reference
+    public void getExecutorService(ExecutorService execServ) {
+        this.execServ = execServ;
+    }
+	
     @Deactivate
     protected void deactivate(ComponentContext context) {
     	MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -131,7 +137,6 @@ public class MonitorMetricsHandler {
             try {
                 mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
                 if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty()) {
-                    ExecutorService execServ = Executors.newSingleThreadExecutor();
                     execServ.execute(() -> {
                         final int MAX_TIME_OUT = 5000;
                         int currentTimeOut = 0;
@@ -157,7 +162,6 @@ public class MonitorMetricsHandler {
                         }
                         registerMbeanObjects(mBeanObjectInstanceSetTemp);
                     });
-                    execServ.shutdown();
                 }
                 registerMbeanObjects(mBeanObjectInstanceSet);
             } catch (Exception e) {
