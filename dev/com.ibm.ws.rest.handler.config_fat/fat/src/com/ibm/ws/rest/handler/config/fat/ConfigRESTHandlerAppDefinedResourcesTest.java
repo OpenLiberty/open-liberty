@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -65,7 +66,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                         .addAsModule(ejb)
                         .addAsModule(web)
                         .addAsModule(emb_rar);
-        ShrinkHelper.exportToServer(server, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app, SERVER_ONLY);
         server.addInstalledAppForValidation(APP_NAME);
 
         ResourceAdapterArchive tca_rar = ShrinkWrap.create(ResourceAdapterArchive.class, "ConfigTestAdapter.rar")
@@ -77,7 +78,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                                         .addClass("org.test.config.jmsadapter.JMSTopicConnectionImpl")
                                         .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl")
                                         .addClass("org.test.config.jmsadapter.NoOpSessionImpl"));
-        ShrinkHelper.exportToServer(server, "connectors", tca_rar);
+        ShrinkHelper.exportToServer(server, "connectors", tca_rar, SERVER_ONLY);
 
         FATSuite.setupServerSideAnnotations(server);
 

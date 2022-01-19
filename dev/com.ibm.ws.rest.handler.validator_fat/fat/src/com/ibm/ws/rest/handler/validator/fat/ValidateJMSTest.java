@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static com.ibm.ws.rest.handler.validator.fat.FATSuite.assertClassEquals;
+import static com.ibm.ws.rest.handler.validator.fat.FATSuite.expectedJmsProviderSpecVersion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,14 +31,12 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
 public class ValidateJMSTest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.validator.jms.fat")
     public static LibertyServer server;
@@ -77,7 +76,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "TestClient1", json.getString("clientID"));
     }
 
@@ -106,7 +105,7 @@ public class ValidateJMSTest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertEquals(err, "CWSIA0241", json.getString("errorCode"));
-        assertEquals(err, "javax.jms.JMSException", json.getString("class"));
+        assertClassEquals(err, "javax.jms.JMSException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("CWSIA0241E"));
         assertNotNull(err, stack = json.getJsonArray("stack"));
         assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
@@ -116,7 +115,7 @@ public class ValidateJMSTest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "com.ibm.websphere.sib.exception.SIResourceException", json.getString("class"));
+        assertClassEquals(err, "com.ibm.websphere.sib.exception.SIResourceException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("CWSIT0127E"));
         assertNotNull(err, stack = json.getJsonArray("stack"));
         assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
@@ -171,7 +170,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", j.getString("clientID"));
 
         // [1]: config.displayId=jmsConnectionFactory[jmscf1]
@@ -215,7 +214,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertNull(err, json.get("clientID"));
     }
 
@@ -240,7 +239,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", json.getString("clientID"));
 
         assertNotNull(err, json = tcfs.getJsonObject(1));
@@ -252,7 +251,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "tcf2id", json.getString("clientID"));
 
         assertNotNull(err, json = tcfs.getJsonObject(2));
@@ -264,7 +263,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "tcf3id", json.getString("clientID"));
     }
 
@@ -283,7 +282,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertNull(err, json.get("clientID"));
     }
 
@@ -302,7 +301,7 @@ public class ValidateJMSTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", json.getString("clientID"));
     }
 }
