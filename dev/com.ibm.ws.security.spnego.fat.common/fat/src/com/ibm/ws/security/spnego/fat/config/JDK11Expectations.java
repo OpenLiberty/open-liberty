@@ -344,7 +344,7 @@ public class JDK11Expectations implements JDKExpectationTestClass {
 
     @Override
     public void s4u2_validateKerberosAndGSSCred(String response) {
-        assertTrue("The response should have had the GSSName listed", response.contains("GSSCredential name is: user1@FYRE11.IBM.COM"));
+        assertTrue("The response should have had the GSSName listed", response.contains("GSSCredential name is: user1" + "@" + InitClass.KDC_REALM));
         assertTrue("The response should have had the Krb5ProxyCredential listed", response.contains("Krb5ProxyCredential"));
 
         assertTrue("The response should have had Krb5ProxyCredentials listed", response.contains("sun.security.jgss.krb5.Krb5ProxyCredential"));

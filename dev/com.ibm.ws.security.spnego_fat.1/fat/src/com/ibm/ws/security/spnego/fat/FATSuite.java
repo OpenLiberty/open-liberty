@@ -137,7 +137,7 @@ public class FATSuite extends InitClass {
      * Rule to cleanup users, SPNs etc from the KDC. This rule is separate from the setup
      * rule b/c the after method is not called when the before method fails.
      */
-    //@ClassRule
+    @ClassRule
     public static ExternalResource afterRule = new ExternalResource() {
         @Override
         protected void after() {
