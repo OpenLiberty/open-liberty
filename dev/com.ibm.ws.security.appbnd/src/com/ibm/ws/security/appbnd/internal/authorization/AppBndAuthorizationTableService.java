@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -444,7 +444,9 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                         }
                     } else if (!AccessIdUtil.isUserAccessId(accessIdFromRole)) {
                         accessIdFromRole = getCompleteAccessId(accessId, accessIdFromRole, AccessIdUtil.TYPE_USER, realmName);
-                        maps.userToAccessIdMap.put(userNameFromRole, accessIdFromRole);
+                        if (userNameFromRole != null) {
+                            maps.userToAccessIdMap.put(userNameFromRole, accessIdFromRole);
+                        }
                     }
 
                     if (isMatch(accessId, accessIdFromRole)) {
@@ -464,7 +466,9 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                         }
                     } else if (!AccessIdUtil.isGroupAccessId(accessIdFromRole)) {
                         accessIdFromRole = getCompleteAccessId(accessId, accessIdFromRole, AccessIdUtil.TYPE_GROUP, realmName);
-                        maps.groupToAccessIdMap.put(groupNameFromRole, accessIdFromRole);
+                        if (groupNameFromRole != null) {
+                            maps.groupToAccessIdMap.put(groupNameFromRole, accessIdFromRole);
+                        }
                     }
 
                     if (isMatch(accessId, accessIdFromRole)) {
