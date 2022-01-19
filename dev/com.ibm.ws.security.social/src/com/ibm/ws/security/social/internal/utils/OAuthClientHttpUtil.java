@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 /**
  *
@@ -110,10 +111,15 @@ public class OAuthClientHttpUtil {
     HttpResponse executeRequest(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, HttpUriRequest httpUriRequest, boolean useJvmProps) throws SocialLoginException {
         HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
         HttpResponse response = null;
+        
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             response = httpClient.execute(httpUriRequest);
         } catch (Exception e) {
             throw new SocialLoginException("ERROR_EXECUTING_REQUEST", e, new Object[] { url, e.getLocalizedMessage() });
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
         }
         return response;
     }
@@ -315,13 +321,19 @@ public class OAuthClientHttpUtil {
         if (url != null && url.startsWith("http:")) {
             client = getBuilder(useJvmProps).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+            	ThreadContextHelper.setClassLoader(origCL);
             }
-            client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;
@@ -337,13 +349,19 @@ public class OAuthClientHttpUtil {
         if (url != null && url.startsWith("http:")) {
             client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+            	ThreadContextHelper.setClassLoader(origCL);
             }
-            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;

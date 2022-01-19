@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class HttpUtils {
     public static final TraceComponent tc = Tr.register(HttpUtils.class);
@@ -103,16 +104,22 @@ public class HttpUtils {
     private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
         if (isSecure) {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-            }
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } else {
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                if (addBasicAuthHeader) {
+                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                } else {
+                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                }
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
         } else {
             if (addBasicAuthHeader) {
@@ -138,6 +145,9 @@ public class HttpUtils {
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json");
             HttpResponse result = null;
+            
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
@@ -148,6 +158,8 @@ public class HttpUtils {
                 ;
                 Tr.error(tc, message, new Object[0]);
                 throw ioex;
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -191,13 +203,19 @@ public class HttpUtils {
         if (url != null && url.startsWith("http:")) {
             client = HttpClientBuilder.create().build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
-            client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
         }
         return client;
     }
@@ -211,13 +229,19 @@ public class HttpUtils {
         if (url != null && url.toLowerCase().startsWith("http:")) {
             client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
-            client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
         }
         return client;
     }
