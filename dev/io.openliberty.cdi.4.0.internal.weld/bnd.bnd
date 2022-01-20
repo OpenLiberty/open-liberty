@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.cdi.4.0.internal.weld
+Bundle-SymbolicName: io.openliberty.cdi.4.0.internal.weld
+
+Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
+
+-dsannotations: io.openliberty.cdi40.internal.weld.CDI40BeanParserImpl,\
+                io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService
+
+Export-Package: com.ibm.ws.cdi.executor, \
+                com.ibm.ws.cdi.utils, \
+                com.ibm.ws.cdi.proxy
+
+Import-Package: *
+
+Private-Package: \
+                io.openliberty.cdi40.internal.weld
+
+WS-TraceGroup: JCDI
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	org.eclipse.osgi,\
+	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.org.jboss.weld5,\
+	com.ibm.ws.cdi.internal,\
+	com.ibm.ws.cdi.interfaces,\
+	com.ibm.ws.context,\
+	com.ibm.websphere.appserver.spi.kernel.service

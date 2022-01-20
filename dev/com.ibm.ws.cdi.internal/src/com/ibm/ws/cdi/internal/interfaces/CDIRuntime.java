@@ -188,4 +188,9 @@ public interface CDIRuntime extends CDIService {
      * @return
      */
     public WebSphereCDIDeployment getCurrentDeployment();
+
+    /**
+     * @return a BeanParser instance
+     */
+    public BeanParser getBeanParser();
 }
