@@ -184,7 +184,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorToken() throws Exception {
     	
@@ -244,7 +244,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientToken() throws Exception {
     	
@@ -334,7 +334,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicy() throws Exception {
     	
