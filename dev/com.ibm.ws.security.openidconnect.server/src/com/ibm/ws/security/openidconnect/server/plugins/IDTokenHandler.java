@@ -422,7 +422,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                 }
             }
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR", oidcServerConfig.getProviderId());
+            Tr.error(tc, "OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR", new Object[] { oidcServerConfig.getProviderId(), e.getLocalizedMessage() });
         }
         return thirdPartyIDTokenClaims;
     }
