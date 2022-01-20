@@ -38,7 +38,7 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] ID Requirements identified ([Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty)). (Epic owner / Feature owner with ID focal point)
   * Note: If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
-- [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.
+- [ ] Create a child task of this epic entitled "Feature Test Summary" via [Feature Test Summary](https://github.com/OpenLiberty/open-liberty/issues/new/choose). Add the link in above.
 
 ##
 #### Before proceeding to any items below (active development), this feature MUST be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
@@ -54,7 +54,7 @@ Before Onboarding the beta
 - [ ] Beta Fence the functionality (`kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`)  
 
 1 week before beta GA
-- [ ] Create, populate, and link to the [Beta blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_beta.md&title=BETA+BLOG+-+title_of_your_update)
+- [ ] Create, populate, and link to the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose)
 
 ## **Legal**
 3 weeks before Onboarding
@@ -96,7 +96,7 @@ All features (both "Design Approved" and "No Design Approved")
 - [ ] Github Epic and Epic's issues are closed / complete. All PRs are committed to the release branch. (Epic owner / Feature owner / Backlog Subtribe PM)
 
 1 week before GA
-- [ ] Create, populate, and link to the [Blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update)
+- [ ] Create, populate, and link to the [Open Liberty GA release blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose)
 
 ## **Other deliverbles**
 - [ ] **OL Guides** - ([Yee-Kang Chang](https://github.com/yeekangc)). Assessment for OL Guides is complete or N/A.
