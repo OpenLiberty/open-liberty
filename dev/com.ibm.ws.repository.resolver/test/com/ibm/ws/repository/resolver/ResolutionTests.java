@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,19 +55,14 @@ import com.ibm.ws.repository.resources.IfixResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
 import com.ibm.ws.repository.resources.writeable.EsaResourceWritable;
-import com.ibm.ws.repository.resources.writeable.IfixResourceWritable;
 import com.ibm.ws.repository.resources.writeable.SampleResourceWritable;
 import com.ibm.ws.repository.resources.writeable.WritableResourceFactory;
 
 /**
  * Tests for {@link RepositoryResolver}
  */
+@SuppressWarnings("deprecation")
 public class ResolutionTests {
-
-    /**
-     * Used to autogenerate unique names
-     */
-    private int _count = 0;
 
     /**
      * Features which should be returned from the repository for the test. Tests should modify the list before calling {@link #createConnectionList()}.
@@ -1925,6 +1919,7 @@ public class ResolutionTests {
      * Actual: Feature X, Feature Y, Feature I1.0
      * This test case works as expected.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testSet() throws RepositoryException {
         // initialize all of the features
@@ -2034,6 +2029,7 @@ public class ResolutionTests {
      *
      * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.0, Feature I is private.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testSetTransitivePrivate() throws RepositoryException {
         // initialize all the features
@@ -2097,6 +2093,7 @@ public class ResolutionTests {
      *
      * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.1, Feature I is private.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testSetTransitivePrivateTolerateNewer() throws RepositoryException {
         // initialize all the features
@@ -2159,6 +2156,7 @@ public class ResolutionTests {
      * <p>
      * Expected: featureA-1.0 and autoFeature are both resolved
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testAutofeatureDependsOnKernelFeature() throws RepositoryException {
         Mockery mockery = new Mockery();
@@ -2187,8 +2185,8 @@ public class ResolutionTests {
     /**
      * Run a test to make sure that a sample with an applies to set is resolved correctly
      *
-     * @param name           The name of the sample
-     * @param appliesTo      The applies to to put onto the sample
+     * @param name The name of the sample
+     * @param appliesTo The applies to to put onto the sample
      * @param productVersion The product version to be
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -2209,9 +2207,9 @@ public class ResolutionTests {
     /**
      * Run a test against a product definition with the supplied version and expect a single result back.
      *
-     * @param name           The name to resolve
+     * @param name The name to resolve
      * @param productVersion The product version to use
-     * @param testResource   The resource to expect
+     * @param testResource The resource to expect
      * @throws IOException
      * @throws ProductInfoParseException
      * @throws RepositoryException
@@ -2256,8 +2254,8 @@ public class ResolutionTests {
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo with just the core fields set.
      *
      * @param symbolicName The symbolic name of the resource
-     * @param shortName    The short name of the resource
-     * @param version      The version of the resource
+     * @param shortName The short name of the resource
+     * @param version The version of the resource
      * @return The resource
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -2267,26 +2265,13 @@ public class ResolutionTests {
     }
 
     /**
-     * Creates an ESA resource with a set of required iFixes, only the symbolic name will be set from the core fields.
-     *
-     * @param symbolicName
-     * @param singleton
-     * @return
-     * @throws RepositoryResourceException
-     * @throws RepositoryBackendException
-     */
-    private EsaResourceWritable createEsaResource(String symbolicName, Collection<String> fixes) throws RepositoryResourceException, RepositoryBackendException {
-        return createEsaResource(symbolicName, null, null, null, null, null, false, fixes);
-    }
-
-    /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo
      *
-     * @param symbolicName           The symbolic name of the resource
-     * @param shortName              The short name of the resource
-     * @param version                The version of the resource
+     * @param symbolicName The symbolic name of the resource
+     * @param shortName The short name of the resource
+     * @param version The version of the resource
      * @param dependencySymoblicName The symbolic names of dependencies
-     * @param appliesTo              The product this feature applies to
+     * @param appliesTo The product this feature applies to
      * @return The resource
      * @throws RepositoryBackendException
      */
@@ -2298,14 +2283,14 @@ public class ResolutionTests {
     /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo.
      *
-     * @param symbolicName           The symbolic name of the resource
-     * @param shortName              The short name of the resource
-     * @param version                The version of the resource
-     * @param appliesTo              The product this feature applies to
+     * @param symbolicName The symbolic name of the resource
+     * @param shortName The short name of the resource
+     * @param version The version of the resource
+     * @param appliesTo The product this feature applies to
      * @param dependencySymoblicName The symbolic names of dependencies
      * @param provisionSymbolicNames The symbolic name(s) of the capability required for this feature to be auto provision
-     * @param autoInstallable        The autoInstallable value to use
-     * @param requiredFixes          fixes required by this feature
+     * @param autoInstallable The autoInstallable value to use
+     * @param requiredFixes fixes required by this feature
      * @return The resource
      * @throws RepositoryBackendException
      */
@@ -2345,27 +2330,6 @@ public class ResolutionTests {
         }
         repoFeatures.add(testResource);
         return testResource;
-    }
-
-    /**
-     * Creates and uploads a new IfixResource in Massive
-     *
-     * @param fixId
-     * @param appliesTo
-     * @param lastUpdateDate
-     * @return
-     * @throws RepositoryResourceException
-     * @throws RepositoryBackendException
-     */
-    private IfixResourceWritable createIFixResource(String fixId, String appliesTo, Date lastUpdateDate) throws RepositoryResourceException, RepositoryBackendException {
-        IfixResourceWritable iFixResource = WritableResourceFactory.createIfix(null);
-        iFixResource.setProvideFix(Collections.singleton(fixId));
-        iFixResource.setAppliesTo(appliesTo);
-        iFixResource.setDate(lastUpdateDate);
-        iFixResource.setName("ifix " + _count++);
-        iFixResource.setProviderName("IBM");
-        repoIfixes.add(iFixResource);
-        return iFixResource;
     }
 
     /**
