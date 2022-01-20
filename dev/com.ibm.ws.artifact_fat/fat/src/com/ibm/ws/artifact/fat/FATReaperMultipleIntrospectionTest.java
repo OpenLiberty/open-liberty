@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.impl.LibertyServer;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -142,7 +143,10 @@ public class FATReaperMultipleIntrospectionTest{
     public void tearDown() throws Exception{
         String methodName = "tearDown";
         if(server.isStarted()){
-            server.stopServer();
+            if ( server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
+                server.stopServer(false);
+            else
+                server.stopServer();
         }
 
         //remove the apps on the server
@@ -214,6 +218,8 @@ public class FATReaperMultipleIntrospectionTest{
             }
         }
 
+        firstDump.close();
+        
         logInfo(methodName, "Exiting: " + methodName);
     }
     

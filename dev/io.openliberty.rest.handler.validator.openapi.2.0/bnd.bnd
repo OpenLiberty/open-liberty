@@ -25,6 +25,8 @@ Private-Package:\
 DynamicImport-Package:\
   javax.jms
 
+jakartaeeMe: true
+
 Include-Resource: \
   META-INF=resources/META-INF
   

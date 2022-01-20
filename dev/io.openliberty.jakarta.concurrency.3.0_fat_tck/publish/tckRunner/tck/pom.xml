@@ -20,7 +20,7 @@
         <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
         
         <!-- TODO: Update this once TCK is GAed -->
-        <jakarta.concurrent.tck.version>3.0.0-RC1</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.tck.version>3.0.0.20220118</jakarta.concurrent.tck.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -28,14 +28,30 @@
         <testng.version>6.14.3</testng.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <!--  the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
         
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>ibmdhe</id>
+            <name>IBM_DHE File Server</name>
+            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -60,7 +76,8 @@
         </dependency>
         <!-- TCK Dependency -->
         <dependency>
-		    <groupId>jakarta.enterprise.concurrent</groupId>
+            <!-- TODO: Update this once TCK is available on maven -->
+		    <groupId>io.openliberty.jakarta.enterprise.concurrent</groupId>
 		    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
 		    <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
@@ -127,8 +144,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

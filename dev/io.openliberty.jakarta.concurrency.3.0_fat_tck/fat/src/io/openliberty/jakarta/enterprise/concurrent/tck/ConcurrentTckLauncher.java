@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -40,6 +41,7 @@ import componenttest.topology.utils.MvnUtils;
  * location.
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class ConcurrentTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -53,25 +55,12 @@ public class ConcurrentTckLauncher {
         additionalProps.put("tck_username", "arquillian");
         additionalProps.put("tck_password", "arquillianPassword");
 
-        //Keystore and Truststore for Arquillian to perform TLS handshake with Liberty server
-        additionalProps.put("javax.net.ssl.keyStore", server.getServerRoot() + "/resources/security/arquillian.p12");
-        additionalProps.put("javax.net.ssl.keyStorePassword", "arquillianPassword");
-        additionalProps.put("javax.net.ssl.keyStoreType", "pkcs12");
-        additionalProps.put("javax.net.ssl.trustStore", server.getServerRoot() + "/resources/security/arquillian.p12");
-        additionalProps.put("javax.net.ssl.trustStorePassword", "arquillianPassword");
-        additionalProps.put("javax.net.ssl.trustStoreType", "pkcs12");
-        //additionalProps.put("javax.net.debug", "ssl:handshake:verbose:keymanager:trustmanager");
-
         //Logging properties for java.util.logging to use for mvn output
         additionalProps.put("java.util.logging.config.file", server.getServerRoot() + "/resources/logging/logging.properties");
 
         //username and password to set on quickStartSecurity
         server.addEnvVar("tck_username", "arquillian");
         server.addEnvVar("tck_password", "arquillianPassword");
-
-        //Keystore and Trustore for Liberty to perform TLS handshake with Liberty server
-        server.addEnvVar("tck_tls_store", server.getServerRoot() + "/resources/security/liberty.p12");
-        server.addEnvVar("tck_tls_password", "libertyPassword");
 
         //Ports liberty should be using for testing
         server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
@@ -93,7 +82,7 @@ public class ConcurrentTckLauncher {
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
-    //@Test //TODO Enable once TCK is published on maven central
+    @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrentTCK() throws Exception {
         String suiteXmlFile;

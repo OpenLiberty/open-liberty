@@ -27,3 +27,4 @@ After we obtain the signed CLA, you are welcome to open a pull request, and the 
 Please ensure you follow the coding standards used throughout the existing code base. Some basic rules include:
 * all files must have a Copyright including EPL license in the header.
 * all PRs must have a passing build.
+* all PRs must be reviewed and approved from another org member.

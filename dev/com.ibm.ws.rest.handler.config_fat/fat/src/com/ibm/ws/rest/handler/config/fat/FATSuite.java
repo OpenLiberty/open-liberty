@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -33,8 +35,9 @@ import componenttest.topology.utils.HttpUtils;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
-                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+    public static RepeatTests r = MicroProfileActions.repeat(null, TestMode.FULL,
+                                                             MicroProfileActions.MP50, // EE9
+                                                             MicroProfileActions.MP40); // EE8
 
     @BeforeClass
     public static void setup() throws Exception {

@@ -42,6 +42,7 @@ tested.features: componenttest-2.0,\
                  messaging-3.0,\
                  enterprisebeanslite-4.0,\
                  messagingclient-3.0,\
+                 mpOpenApi-3.0,\
                  mpOpenApi-2.0,\
                  mpOpenApi-1.1,\
                  servlet-4.0,\

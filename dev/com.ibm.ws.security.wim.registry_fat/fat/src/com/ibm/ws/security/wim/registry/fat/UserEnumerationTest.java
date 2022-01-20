@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,9 @@ import static org.junit.Assert.assertNotSame;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -28,7 +30,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -53,6 +54,9 @@ public class UserEnumerationTest {
     private static UserRegistryServletConnection servlet;
 
     private static ServerConfiguration startConfiguration = null;
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Setup the test case.
@@ -259,7 +263,7 @@ public class UserEnumerationTest {
      */
     private void runLoginTestCommon(boolean paddingEnabled) throws Exception {
 
-        String methodName = "testUserEnumeration";
+        String methodName = testName.getMethodName();
 
         int numTimesValid = 0;
         int numTimesInvalid = 0;

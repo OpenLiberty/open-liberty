@@ -430,8 +430,8 @@ org.eclipse.persistence:org.eclipse.persistence.core:2.7.10
 org.eclipse.persistence:org.eclipse.persistence.core:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.10
 org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:3.0.2
-org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.10
+org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.10
 org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2
 org.eclipse:yasson:2.0.1
