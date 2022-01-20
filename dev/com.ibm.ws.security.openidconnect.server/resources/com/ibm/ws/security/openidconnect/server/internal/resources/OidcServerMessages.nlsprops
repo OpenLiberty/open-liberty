@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: A request for a JWK JSON string could 
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producing a JWK JSON string requires the OpenID Connect provider signatureAlgorithm attribute to be set to RS256. Attributes KeyStoreRef and keyAliasName must be valid if specified. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Correct the OpenID Connect provider configuration attributes.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: The claims from the third-party ID token could not be propagated for OpenID Connect provider {0}. 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=There was an issue with extracting the claims from the third-party ID token.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ensure that the third-party OpenID Connect provider is sending a valid ID token.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: The Java version used by this run time [{0}] is not supported by the ID token Mediator SPI. The supported Java version is 1.7 or higher.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=The Java version in the message can not support the ID token Mediator SPI function. 
