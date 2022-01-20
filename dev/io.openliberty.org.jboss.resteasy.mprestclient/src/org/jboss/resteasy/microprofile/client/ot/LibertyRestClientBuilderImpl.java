@@ -861,8 +861,13 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
                 List<Annotation> methodBindings = getBindings(method.getAnnotations(), beanManager);
 
                 if (!classBindings.isEmpty() || !methodBindings.isEmpty()) {
-                    if (FT_ANNO_CLASS != null && containsFTannotation(methodBindings)) {
-                        methodBindings.add(getFTAnnotation());
+                    if (FT_ANNO_CLASS != null) {
+                        if (containsFTannotation(methodBindings)) {
+                            methodBindings.add(getFTAnnotation());
+                        }
+                        if (containsFTannotation(classBindings)) {
+                            classBindings.add(getFTAnnotation());
+                        }
                     }
                     Annotation[] mpFTInterceptorBindings = mergeToFTAnnos(methodBindings, classBindings);
 
