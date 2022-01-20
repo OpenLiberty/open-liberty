@@ -61,6 +61,8 @@ public class RemoteEJBTest extends FATServletClient {
                                        .addClass(com.ibm.ws.cdi.ejb.apps.remoteEJB.TestObserver.class)
                                        .addClass(com.ibm.ws.cdi.ejb.apps.remoteEJB.RemoteInterface.class)
                                        .addClass(com.ibm.ws.cdi.ejb.apps.remoteEJB.EJBEvent.class)
+                                       .add(new FileAsset(new File("test-applications/" + REMOTE_EJB_APP_NAME + ".war/resources/META-INF/permissions.xml")),
+                                            "/META-INF/permissions.xml")
                                        .add(new FileAsset(new File("test-applications/" + REMOTE_EJB_APP_NAME + ".war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, ebjMisc, DeployOptions.SERVER_ONLY);
