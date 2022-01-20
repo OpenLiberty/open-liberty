@@ -180,7 +180,7 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: A request for a JWK JSON string could 
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producing a JWK JSON string requires the OpenID Connect provider signatureAlgorithm attribute to be set to RS256. Attributes KeyStoreRef and keyAliasName must be valid if specified. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Correct the OpenID Connect provider configuration attributes.
 
-OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: The claims from the third-party ID token could not be propagated for OpenID Connect provider {0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: The claims from the third-party ID token could not be propagated for the OpenID Connect provider {0}. {1}
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=The claims from the third-party ID token cannot be extracted. View the error message for more information.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ensure that the third-party OpenID Connect provider is sending a valid ID token.
 
