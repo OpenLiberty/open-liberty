@@ -116,8 +116,8 @@ public class RepositoryResolver {
 
     /**
      * <p>
-     * Construct a new instance of a resolver for a current install. Note that calls to this method will load all of the resources from Massive so this is a relatively expensive
-     * operation and may block the thread for a few seconds so care should be taken when called from a UI.</p>
+     * Construct a new instance of a resolver for a current install. Note that calls to this method will load all of the resources from the repository so this can be a relatively
+     * expensive operation and may block the thread for a few seconds so care should be taken when called from a UI.</p>
      * <p>In order to process what is already installed several details about the liberty installation must be passed in as parameters. These can all be obtained from utility
      * methods within the Liberty installation so suggested usage is as follows:</p>
      * <code>
@@ -138,16 +138,14 @@ public class RepositoryResolver {
      * Collection<IFixInfo> installedIFixes = IFixUtils.getInstalledIFixes(Utils.getInstallDir(), commandConsole);</br>
      * </br>
      * // Create the resolver</br>
-     * MassiveResolver resolver = MassiveResolver.resolve(installedProductDefinitions,</br>
+     * RepositoryResolver resolver = RepositoryResolver.resolve(installedProductDefinitions,</br>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;installedFeatures, installedFixes, loginInfo);</br>
      * </code>
      *
      * @param installDefinition Information about the product(s) installed such as ID and edition. Must not be <code>null</code>.
      * @param installedFeatures The features that are installed. Must not be <code>null</code>.
-     * @param installedIFixes   No longer used, parameter retained for backwards compatibility
-     * @param massiveUserId     The user ID to use when logging into Massive. Must not be <code>null</code>.
-     * @param massivePassword   The password to use when logging into Massive. Must not be <code>null</code>.
-     * @param massiveApiKey     The API key to use when logging into Massive. Must not be <code>null</code>.
+     * @param installedIFixes No longer used, parameter retained for backwards compatibility
+     * @param repoConnections The connection to the repository
      * @throws RepositoryException If there is a connection error with the Massive repository
      * @see ProductInfo#getAllProductInfo()
      * @see IFixUtils#getInstalledIFixes(java.io.File, com.ibm.ws.product.utility.CommandConsole)
@@ -169,6 +167,10 @@ public class RepositoryResolver {
      * Package constructor for unit tests
      * <p>
      * Allows resolution to be tested without connecting to a repository
+     *
+     * @param installedFeatures the features which are installed
+     * @param repoFeatures the features available in the repository
+     * @param repoSamples the samples available in the repository
      */
     RepositoryResolver(Collection<ProvisioningFeatureDefinition> installedFeatures,
                        Collection<? extends EsaResource> repoFeatures,
@@ -184,6 +186,8 @@ public class RepositoryResolver {
 
     /**
      * Populates {@link #repoFeatures} and {@link #repoSamples} with resources from the repository which apply to the install definition.
+     *
+     * @param installDefinition information about the product(s) installed such as ID and edition. Must not be {@code null}.
      *
      * @throws RepositoryException if there's a problem connecting to the repository
      */
@@ -254,10 +258,10 @@ public class RepositoryResolver {
      * want that, you may want to use {@link #resolveAsSet(Collection)} instead.</p>
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The
-     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -285,6 +289,12 @@ public class RepositoryResolver {
      * Resolve a single name
      * <p>
      * Identical to {@code resolve(Collections.singleton(toResolve))}.
+     *
+     * @see #resolve(Collection)
+     *
+     * @param toResolve the identifier of the resource to resolve
+     * @return A collection of ordered lists of resources to install
+     * @throws RepositoryResolutionException
      */
     public Collection<List<RepositoryResource>> resolve(String toResolve) throws RepositoryResolutionException {
         return resolve(Collections.singleton(toResolve));
@@ -306,10 +316,10 @@ public class RepositoryResolver {
      * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The
-     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -370,6 +380,8 @@ public class RepositoryResolver {
 
     /**
      * Populates {@link #samplesToInstall} and {@link #featureNamesToResolve} by processing the list of names to resolve and identifying which are samples.
+     *
+     * @param namesToResolve the list of names to resolve
      */
     void processNames(Collection<String> namesToResolve) {
         for (String name : namesToResolve) {
@@ -439,6 +451,8 @@ public class RepositoryResolver {
 
     /**
      * Uses the kernel resolver to resolve {@link #featureNamesToResolve} and populates {@link #resolvedFeatures} with the result.
+     *
+     * @param mode the resolution mode
      */
     void resolveFeatures(ResolutionMode mode) {
         boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
@@ -636,6 +650,8 @@ public class RepositoryResolver {
      * This method adds {@code featureName} to the map with {@code currentDistance} and then recurses through its dependencies, repeating this operation. It will stop if it
      * encounters a feature which is already installed or if it encounters a dependency loop.
      * <p>
+     * This method also adds any dependencies which can't be satisfied to {@code missingRequirements}.
+     * <p>
      * The result of this operation is useful for building install lists as the features to be installed can be sorted by the longest dependency chain in descending order to ensure
      * that the dependencies of a feature are installed before the feature itself.
      * <p>
@@ -653,10 +669,11 @@ public class RepositoryResolver {
      * Having done this, {@code distanceMap.keySet()} gives the set of all the dependencies of com.example.featureA. {@code distanceMap.get("com.example.featureB")} gives
      * the length of the longest dependency chain from featureA to featureB.
      *
-     * @param maxDistanceMap  the map to be populated
-     * @param featureName     the current feature
+     * @param maxDistanceMap the map to be populated
+     * @param featureName the current feature
      * @param currentDistance the distance to use for the current feature
-     * @param currentStack    the set of feature names already in the current dependency chain (used to detect loops)
+     * @param currentStack the set of feature names already in the current dependency chain (used to detect loops)
+     * @param missingRequirements the list which missing requirements are to be added
      * @return true if all requirements were found, false otherwise
      */
     boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
@@ -794,6 +811,8 @@ public class RepositoryResolver {
 
     /**
      * If any errors occurred during resolution, throw a {@link RepositoryResolutionException}
+     *
+     * @throws RepositoryResolutionException if any errors occurred during resolution
      */
     private void reportErrors() throws RepositoryResolutionException {
         if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
