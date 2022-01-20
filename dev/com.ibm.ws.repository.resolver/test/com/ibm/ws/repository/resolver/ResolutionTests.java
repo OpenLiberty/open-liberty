@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
@@ -2180,6 +2181,128 @@ public class ResolutionTests {
         Collection<List<RepositoryResource>> resolved = resolver.resolve(Collections.singleton(featureA.getProvideFeature()));
         assertThat(resolved, containsInAnyOrder(Matchers.<RepositoryResource> contains(featureA),
                                                 Matchers.<RepositoryResource> contains(featureA, autoFeature)));
+    }
+
+    /**
+     * Test that if an installed feature has a tolerated dependency and satisfying the dependencies of the requested features requires a different tolerated dependency, that
+     * feature is included in the
+     * returned install lists.
+     *
+     * @throws RepositoryException
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testInstalledFeatureNeedsDifferentToleratedDependency() throws RepositoryException {
+        ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
+
+        // Hypothetical base features which delineate other features into two groups (like our eeCompatible features)
+
+        MockFeature base10 = new MockFeature("com.example.base-1.0");
+        base10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PRIVATE);
+        installedFeatures.add(base10);
+
+        EsaResourceWritable base20 = WritableResourceFactory.createEsa(null);
+        base20.setProvideFeature("com.example.base-2.0");
+        base20.setSingleton("true");
+        base20.setVisibility(Visibility.PRIVATE);
+        repoFeatures.add(base20);
+
+        // Already installed features
+
+        // a-1.0 supports both base-1.0 and base-2.0 through a tolerated dependency on a.internal-1.0 & 2.0
+        MockFeature a10 = new MockFeature("com.example.a-1.0");
+        a10.addDependency("com.example.a.internal-1.0", "2.0");
+        a10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PUBLIC);
+        installedFeatures.add(a10);
+
+        MockFeature aInternal10 = new MockFeature("com.example.a.internal-1.0");
+        aInternal10.addDependency("com.example.base-1.0");
+        installedFeatures.add(aInternal10);
+
+        MockFeature b10 = new MockFeature("com.example.b-1.0");
+        b10.addDependency("com.example.base-1.0");
+        installedFeatures.add(b10);
+
+        // Not installed features
+        EsaResourceWritable aInternal20 = WritableResourceFactory.createEsa(null);
+        aInternal20.setProvideFeature("com.example.a.internal-2.0");
+        aInternal20.setVisibility(Visibility.PRIVATE);
+        aInternal20.addRequireFeatureWithTolerates("com.example.base-2.0", emptyList());
+        repoFeatures.add(aInternal20);
+
+        EsaResourceWritable b20 = WritableResourceFactory.createEsa(null);
+        b20.setProvideFeature("com.example.b-2.0");
+        b20.setVisibility(Visibility.PUBLIC);
+        b20.addRequireFeatureWithTolerates("com.example.base-2.0", emptyList());
+        repoFeatures.add(b20);
+
+        RepositoryResolver resolver = createResolver(installedFeatures);
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(a10.getSymbolicName(), b20.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(Matchers.contains(base20, b20),
+                                                Matchers.contains(base20, aInternal20)));
+    }
+
+    /**
+     * Test that if an installed auto feature has a tolerated dependency and satisfying the dependencies of the requested features requires a different tolerated dependency, that
+     * feature is included in the returned install lists.
+     *
+     * @throws RepositoryException
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testInstalledAutoFeatureNeedsDifferentToleratedDependency() throws RepositoryException {
+        ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
+
+        // Hypothetical base features which delineate other features into two groups (like our eeCompatible features)
+
+        MockFeature base10 = new MockFeature("com.example.base-1.0");
+        base10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PRIVATE);
+        installedFeatures.add(base10);
+
+        EsaResourceWritable base20 = WritableResourceFactory.createEsa(null);
+        base20.setProvideFeature("com.example.base-2.0");
+        base20.setSingleton("true");
+        base20.setVisibility(Visibility.PRIVATE);
+        repoFeatures.add(base20);
+
+        // Already installed features
+        MockFeature c10 = new MockFeature("com.example.c-1.0");
+        c10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PUBLIC);
+        installedFeatures.add(c10);
+
+        // a-1.0 is an auto-feature, activated when c-1.0 is present
+        // a-1.0 supports both base-1.0 and base-2.0 through a tolerated dependency on a.internal-1.0 & 2.0
+        MockFeature a10 = new MockFeature("com.example.a-1.0");
+        a10.addDependency("com.example.a.internal-1.0", "2.0");
+        a10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PRIVATE);
+        a10.setProvisionCapability("osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(osgi.identity=com.example.c-1.0))\"");
+        installedFeatures.add(a10);
+
+        MockFeature aInternal10 = new MockFeature("com.example.a.internal-1.0");
+        aInternal10.addDependency("com.example.base-1.0");
+        installedFeatures.add(aInternal10);
+
+        MockFeature b10 = new MockFeature("com.example.b-1.0");
+        b10.addDependency("com.example.base-1.0");
+        installedFeatures.add(b10);
+
+        // Not installed features
+        EsaResourceWritable aInternal20 = WritableResourceFactory.createEsa(null);
+        aInternal20.setProvideFeature("com.example.a.internal-2.0");
+        aInternal20.setVisibility(Visibility.PRIVATE);
+        aInternal20.addRequireFeatureWithTolerates("com.example.base-2.0", emptyList());
+        repoFeatures.add(aInternal20);
+
+        EsaResourceWritable b20 = WritableResourceFactory.createEsa(null);
+        b20.setProvideFeature("com.example.b-2.0");
+        b20.setVisibility(Visibility.PUBLIC);
+        b20.addRequireFeatureWithTolerates("com.example.base-2.0", emptyList());
+        repoFeatures.add(b20);
+
+        RepositoryResolver resolver = createResolver(installedFeatures);
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(c10.getSymbolicName(), b20.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(Matchers.contains(base20, b20),
+                                                Matchers.contains(base20, aInternal20)));
     }
 
     /**

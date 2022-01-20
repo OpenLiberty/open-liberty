@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -258,6 +258,36 @@ public class RepositoryResolverTest {
         assertThat(resolver.createInstallList(autoFeature.getProvideFeature()), contains((RepositoryResource) featureB, featureA, autoFeature));
     }
 
+    /**
+     * Test creating an install list where one a feature with a tolerated dependency is installed but the install list needs to include the other tolerated dependency
+     */
+    @Test
+    public void testCreateInstallListToleratesPartiallyInstalled() {
+        @SuppressWarnings("unused")
+        MockFeature base10 = new MockFeature("com.example.base-1.0");
+        MockFeature base20 = new MockFeature("com.example.base-2.0");
+
+        MockFeature featureA = new MockFeature("com.example.featureA");
+        featureA.addDependency("com.example.internalFeatureA-1.0", "2.0");
+
+        MockFeature internalA10 = new MockFeature("com.example.internalFeatureA-1.0");
+        internalA10.addDependency("com.example.base-1.0");
+
+        EsaResourceWritable internalA20 = WritableResourceFactory.createEsa(null);
+        internalA20.setProvideFeature("com.example.internalFeatureA-2.0");
+        internalA20.addRequireFeatureWithTolerates("com.example.base-2.0", Collections.emptyList());
+
+        EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
+        featureB.setProvideFeature("com.example.featureB-1.0");
+        featureB.addRequireFeatureWithTolerates("com.example.base-2.0", Collections.emptyList());
+
+        RepositoryResolver resolver = testResolver().withResolvedInstalledFeature(base20, featureA)
+                                                    .withResolvedFeature(internalA20, featureB)
+                                                    .build();
+
+        assertThat(resolver.createInstallList("com.example.featureA"), contains(internalA20));
+    }
+
     private static ResolverBuilder testResolver() {
         return new ResolverBuilder(ResolutionMode.IGNORE_CONFLICTS);
     }
@@ -287,6 +317,14 @@ public class RepositoryResolverTest {
             repoFeatures.addAll(Arrays.asList(esas));
             for (EsaResource esa : esas) {
                 resolvedFeatures.put(esa.getProvideFeature(), new KernelResolverEsa(esa, resolutionMode));
+            }
+            return this;
+        }
+
+        public ResolverBuilder withResolvedInstalledFeature(ProvisioningFeatureDefinition... definitions) {
+            installedFeatures.addAll(Arrays.asList(definitions));
+            for (ProvisioningFeatureDefinition feature : definitions) {
+                resolvedFeatures.put(feature.getSymbolicName(), feature);
             }
             return this;
         }
