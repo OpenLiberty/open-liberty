@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi20.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -32,7 +29,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -47,7 +44,7 @@ public class BuiltinAnnoLiteralsTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi20BuiltinAnnoServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE8);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE8);
 
     public static final String APP_NAME = "builtinAnnoLiteralsApp";
 

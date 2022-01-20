@@ -10,15 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import java.io.File;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,7 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -50,7 +46,7 @@ public class NewEjbTimerTest extends FATServletClient {
 
     //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7_FULL);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     @TestServlets({

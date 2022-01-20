@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -35,7 +32,7 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -53,7 +50,7 @@ public class StatefulSessionBeanInjectionTest extends FATServletClient {
 
     //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7_FULL);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -65,13 +62,15 @@ public class StatefulSessionBeanInjectionTest extends FATServletClient {
                                                              .addClass(com.ibm.ws.cdi.ejb.apps.statefulSessionBean.implicitEJB.InjectedEJB.class)
                                                              .addClass(com.ibm.ws.cdi.ejb.apps.statefulSessionBean.implicitEJB.InjectedBean1.class)
                                                              .addClass(com.ibm.ws.cdi.ejb.apps.statefulSessionBean.implicitEJB.InjectedBean2.class)
-                                                             .add(new FileAsset(new File("test-applications/" + STATEFUL_SESSION_BEAN_APP_NAME + ".jar/resources/META-INF/beans.xml")),
+                                                             .add(new FileAsset(new File("test-applications/" + STATEFUL_SESSION_BEAN_APP_NAME
+                                                                                         + ".jar/resources/META-INF/beans.xml")),
                                                                   "/META-INF/beans.xml");
 
         WebArchive statefulSessionBeanInjectionWar = ShrinkWrap.create(WebArchive.class, STATEFUL_SESSION_BEAN_APP_NAME + ".war")
                                                                .addClass(com.ibm.ws.cdi.ejb.apps.statefulSessionBean.web.RemoveServlet.class)
                                                                .addClass(com.ibm.ws.cdi.ejb.apps.statefulSessionBean.web.TestServlet.class)
-                                                               .add(new FileAsset(new File("test-applications/" + STATEFUL_SESSION_BEAN_APP_NAME + ".war/resources/WEB-INF/beans.xml")),
+                                                               .add(new FileAsset(new File("test-applications/" + STATEFUL_SESSION_BEAN_APP_NAME
+                                                                                           + ".war/resources/WEB-INF/beans.xml")),
                                                                     "/WEB-INF/beans.xml")
                                                                .addAsLibrary(statefulSessionBeanInjection);
 

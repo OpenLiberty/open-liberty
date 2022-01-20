@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.beansxml.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -33,7 +32,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -44,7 +43,7 @@ public class EnablingBeansXmlValidationTestEE7 {
     public static final String SERVER_NAME = "cdi12BeansXmlValidationServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

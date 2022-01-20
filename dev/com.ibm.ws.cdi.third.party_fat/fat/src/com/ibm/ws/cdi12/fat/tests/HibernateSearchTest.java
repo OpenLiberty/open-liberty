@@ -10,31 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
-import java.util.List;
-
-import org.junit.Assert;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebBrowserFactory;
-import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -43,8 +28,6 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.rules.repeater.EERepeatTests;
 import componenttest.topology.utils.FATServletClient;
 
 /*
@@ -98,9 +81,4 @@ public class HibernateSearchTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer();
     }
-
-    private String createURL(String path) {
-        return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + path;
-    }
-
 }
