@@ -25,14 +25,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 import test.context.list.ListContext;
 import test.context.location.ZipCode;
-import test.context.timing.Timestamp;
 
-// Use the same name as a context service in ConcurrencyTestServlet,
-// which must be permitted because it is scoped to a different module.
-@ContextServiceDefinition(name = "java:module/concurrent/ZLContextSvc",
-                          propagated = { ZipCode.CONTEXT_NAME, ListContext.CONTEXT_NAME, APPLICATION },
-                          cleared = Timestamp.CONTEXT_NAME,
-                          unchanged = "Priority")
 @ManagedExecutorDefinition(name = "java:comp/concurrent/executor8",
                            context = "java:app/concurrent/appContextSvc",
                            hungTaskThreshold = 480000,
