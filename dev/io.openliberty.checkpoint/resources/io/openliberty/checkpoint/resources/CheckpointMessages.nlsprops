@@ -21,19 +21,19 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requested. The server will stop when the checkpoint completes.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requested. When the checkpoint completes, the server stops.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=A checkpoint was requested. The server is halted and its current state is written to disk.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the documentation for details of the checkpoint/restore operations.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the documentation for details of the checkpoint and restore operations.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: The Liberty server is resuming operation from a checkpoint.
-CHECKPOINT_RESTORE_CWWKC0452I.explanation=A restore operation was run on a liberty server checkpoint image.
-CHECKPOINT_RESTORE_CWWKC0452I.useraction=Check the documentation for details of the checkpoint/restore operations.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=A restore operation was run on a Liberty server checkpoint image.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Check the documentation for details of the checkpoint and restore operations.
 
 CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: The server checkpoint request failed with the following message: {0}
 CHECKPOINT_FAILED_CWWKC0453E.explanation=A checkpoint request for the server has failed.  A valid checkpoint process image for the server has not been created.
-CHECKPOINT_FAILED_CWWKC0453E.useraction=Check the server logs/checkpoint directory for additional logs to determine why the checkpoint failed.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Inspect the checkpoint directory located in the server logs directory for additional log files to determine why the checkpoint failed.
 
 RESTORE_FAILED_CWWKC0454E=CWWKC0454E: The server failed to restore from a checkpoint with the following message: {0}
 RESTORE_FAILED_CWWKC0454E.explanation=An attempt to restore the server from a checkpoint failed.  The server is not running.
-RESTORE_FAILED_CWWKC0454E.useraction=Check the server logs/checkpoint directory for additional logs to determine why the server could not be restored.
+RESTORE_FAILED_CWWKC0454E.useraction=Inspect the checkpoint directory located in the server logs directory for additional log files to determine why the server could not be restored.
 

@@ -708,7 +708,7 @@ warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early rel
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
 warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
 
-error.invalidPhaseName=CWWKE0954E: An empty or unknown checkpoint phase "{0}" was specified.
+error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty or unknown.
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
