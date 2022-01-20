@@ -14,7 +14,6 @@ import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -57,13 +56,21 @@ public class MonitorMetricsHandler {
     }
 
 	@Reference
-    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+    public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         this.sharedMetricRegistry = sharedMetricRegistry;
+    }
+	
+    public void unsetSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        this.sharedMetricRegistry = null;
     }
 	   
     @Reference
-    public void getExecutorService(ExecutorService execServ) {
+    public void setExecutorService(ExecutorService execServ) {
         this.execServ = execServ;
+    }
+    
+    public void unsetExecutorService(ExecutorService execServ) {
+        this.execServ = null;
     }
 	
     @Deactivate
@@ -136,7 +143,7 @@ public class MonitorMetricsHandler {
             Set<ObjectInstance> mBeanObjectInstanceSet;
             try {
                 mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
-                if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty()) {
+                if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty() && execServ != null) {
                     execServ.execute(() -> {
                         final int MAX_TIME_OUT = 5000;
                         int currentTimeOut = 0;
