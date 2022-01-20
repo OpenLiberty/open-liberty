@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
 import com.ibm.ws.repository.resolver.RepositoryResolver.ResolvedFeatureSearchResult.ResultCategory;
 import com.ibm.ws.repository.resolver.internal.ResolutionMode;
+import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 import com.ibm.ws.repository.resources.ApplicableToProduct;
@@ -438,8 +439,8 @@ public class RepositoryResolver {
         ArrayList<String> autofeatureDependencies = new ArrayList<>();
         for (String featureName : featureNamesToResolve) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
-            if (feature != null && feature.isAutoFeature() && feature instanceof KernelResolverEsa) {
-                Collection<ProvisioningFeatureDefinition> dependencies = ((KernelResolverEsa) feature).findFeaturesSatisfyingCapability(resolverRepository.getAllFeatures());
+            if (feature != null && feature.isAutoFeature()) {
+                Collection<ProvisioningFeatureDefinition> dependencies = CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolverRepository.getAllFeatures());
                 for (ProvisioningFeatureDefinition dependency : dependencies) {
                     autofeatureDependencies.add(dependency.getSymbolicName());
                 }
@@ -518,7 +519,7 @@ public class RepositoryResolver {
 
         // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
+            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName())) {
                 installLists.add(createInstallList(feature.getSymbolicName()));
             }
         }
@@ -550,10 +551,11 @@ public class RepositoryResolver {
                     if (!requirementsFoundForOtherProducts.contains(featureName)) {
                         missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
+                } else {
+                    // Build distance map and check dependencies
+                    allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
                 }
 
-                // Build distance map and check dependencies
-                allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
             }
         }
 
@@ -592,16 +594,9 @@ public class RepositoryResolver {
             return Collections.emptyList();
         }
 
-        if (!(feature instanceof KernelResolverEsa)) {
-            // Feature already installed
-            return Collections.emptyList();
-        }
-
-        EsaResource esa = ((KernelResolverEsa) feature).getResource();
-
         Map<String, Integer> maxDistanceMap = new HashMap<>();
         List<MissingRequirement> missingRequirements = new ArrayList<>();
-        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, esa.getProvideFeature(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
+        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, feature.getSymbolicName(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
 
         if (!foundAllDependencies) {
             missingTopLevelRequirements.add(featureName);
@@ -648,7 +643,7 @@ public class RepositoryResolver {
      * Build a map which maps feature symbolic names to the length of the longest dependency chain from the starting point to that feature
      * <p>
      * This method adds {@code featureName} to the map with {@code currentDistance} and then recurses through its dependencies, repeating this operation. It will stop if it
-     * encounters a feature which is already installed or if it encounters a dependency loop.
+     * encounters a dependency loop.
      * <p>
      * This method also adds any dependencies which can't be satisfied to {@code missingRequirements}.
      * <p>
@@ -679,10 +674,6 @@ public class RepositoryResolver {
     boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
                                    List<MissingRequirement> missingRequirements) {
         ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureName);
-        if (!(feature instanceof KernelResolverEsa)) {
-            // Feature is already installed
-            return true;
-        }
 
         if (currentStack.contains(feature)) {
             // We've hit a dependency loop
@@ -692,8 +683,6 @@ public class RepositoryResolver {
         boolean result = true;
 
         currentStack.add(feature);
-
-        KernelResolverEsa featureEsa = (KernelResolverEsa) feature;
 
         Integer oldDistance = maxDistanceMap.get(feature.getSymbolicName());
         if (oldDistance == null || oldDistance < currentDistance) {
@@ -708,7 +697,7 @@ public class RepositoryResolver {
                 result &= populateMaxDistanceMap(maxDistanceMap, searchResult.symbolicName, currentDistance + 1, currentStack, missingRequirements);
             } else if (searchResult.category == ResultCategory.MISSING) {
                 // The dependency was totally missing, add it to the list of missing requirements
-                missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), featureEsa.getResource()));
+                missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
                 result = false;
             } else {
                 // The dependency was found for another product. That missing requirement is already recorded elsewhere.
@@ -717,7 +706,7 @@ public class RepositoryResolver {
         }
 
         // Find autofeature dependencies
-        for (ProvisioningFeatureDefinition dependency : featureEsa.findFeaturesSatisfyingCapability(resolvedFeatures.values())) {
+        for (ProvisioningFeatureDefinition dependency : CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolvedFeatures.values())) {
             result &= populateMaxDistanceMap(maxDistanceMap, dependency.getSymbolicName(), currentDistance + 1, currentStack, missingRequirements);
         }
 
@@ -807,6 +796,20 @@ public class RepositoryResolver {
         }
 
         return results;
+    }
+
+    /**
+     * Get the EsaResource for a feature from the repository
+     *
+     * @param feature the feature
+     * @return the EsaResource, or {@code null} if the feature is not from the repository
+     */
+    private EsaResource getResource(ProvisioningFeatureDefinition feature) {
+        if (!(feature instanceof KernelResolverEsa)) {
+            return null;
+        }
+        KernelResolverEsa esaFeature = (KernelResolverEsa) feature;
+        return esaFeature.getResource();
     }
 
     /**
