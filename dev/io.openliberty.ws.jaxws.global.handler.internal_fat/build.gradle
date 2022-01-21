@@ -1,0 +1,36 @@
+/*******************************************************************************
+* Copyright (c) 2020,2022 IBM Corporation and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     IBM Corporation - initial API and implementation
+*******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.wink:wink-client:1.4',
+    'org.apache.wink:wink-common:1.4',
+    'org.apache.httpcomponents.client5:httpclient5:5.0',
+    'org.apache.httpcomponents.core5:httpcore5:5.0',
+    'org.eclipse.jetty.websocket:websocket-client:9.2.2.v20140723',
+    'org.eclipse.jetty.websocket:websocket-api:9.2.2.v20140723',
+    'org.eclipse.jetty.websocket:websocket-common:9.2.2.v20140723',
+    'javax.websocket:javax.websocket-api:1.0',
+    project(':io.openliberty.org.apache.commons.codec'),
+    'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723',
+    'org.eclipse.jetty:jetty-io:9.2.2.v20140723',
+    'org.eclipse.jetty:jetty-util:9.2.2.v20140723',
+    'org.glassfish.gmbal:gmbal-api-only:3.1.0-b001',
+    project(':com.ibm.websphere.javaee.jaxws.2.2'),
+    project(':com.ibm.ws.jaxws.tools'),
+    project(':com.ibm.ws.com.sun.xml.messaging.saaj'),
+    project(':com.ibm.ws.jaxws.common'),
+    project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':com.ibm.ws.org.apache.cxf.cxf.api.2.6.2'),
+    project(':com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2'),
+    project(':com.ibm.ws.org.apache.ws.xmlschema.core'),
+    project(':io.openliberty.org.apache.commons.logging')
+}
+addRequiredLibraries.dependsOn addJakartaTransformer

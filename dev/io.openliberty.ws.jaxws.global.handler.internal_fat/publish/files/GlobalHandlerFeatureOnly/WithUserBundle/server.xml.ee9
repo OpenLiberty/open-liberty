@@ -1,0 +1,11 @@
+<server>
+    <featureManager>
+        <feature>pages-3.0</feature>
+        <feature>usr:RSHandler1Feature</feature>
+        <!-- <feature>globalWebservicesHandler-1.0</feature> -->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>

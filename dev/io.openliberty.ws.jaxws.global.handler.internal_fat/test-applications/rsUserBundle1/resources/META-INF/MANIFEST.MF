@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Export-Package: com.ibm.ws.rsuserbundle1.myhandler
+Bundle-Name: RSHandler1
+Bundle-Activator: com.ibm.ws.rsuserbundle1.myhandler.MyRSActivitor
+Bundle-ManifestVersion: 2
+Import-Package: com.ibm.wsspi.webservices.handler,javax.servlet.http;resolution:=optional,org.osgi.framework
+DynamicImport-Package: jakarta.servlet.http
+Bundle-SymbolicName: RSHandler1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 1.0.0
