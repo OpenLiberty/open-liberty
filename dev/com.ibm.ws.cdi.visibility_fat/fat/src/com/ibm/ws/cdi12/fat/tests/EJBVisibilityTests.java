@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -50,7 +48,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -62,7 +60,7 @@ public class EJBVisibilityTests extends FATServletClient {
     public static final String SERVER_NAME = "cdi12EJBServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7, EE9);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE7);
 
     public static final String MASKED_CLASS_APP_NAME = "maskedClassWeb";
 

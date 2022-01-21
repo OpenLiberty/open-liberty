@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -32,7 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,7 +44,7 @@ public class EjbDiscoveryTest extends FATServletClient {
 
     //chosen this one test to run on EE8 as well
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE8_FULL, EE7_FULL);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     @TestServlets({
