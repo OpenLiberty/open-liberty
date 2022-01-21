@@ -741,16 +741,19 @@ public class RepositoryResolver {
         }
 
         String baseName = getFeatureBaseName(featureResource.getSymbolicName());
-        for (String toleratedVersion : featureResource.getTolerates()) {
-            String featureName = baseName + toleratedVersion;
+        List<String> tolerates = featureResource.getTolerates();
+        if (tolerates != null) {
+            for (String toleratedVersion : tolerates) {
+                String featureName = baseName + toleratedVersion;
 
-            feature = resolvedFeatures.get(featureName);
-            if (feature != null) {
-                return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
-            }
+                feature = resolvedFeatures.get(featureName);
+                if (feature != null) {
+                    return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
+                }
 
-            if (requirementsFoundForOtherProducts.contains(featureName)) {
-                return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureName);
+                if (requirementsFoundForOtherProducts.contains(featureName)) {
+                    return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureName);
+                }
             }
         }
 

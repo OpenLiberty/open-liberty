@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,12 @@ public class FeatureResourceMatcher extends TypeSafeMatcher<FeatureResource> {
     protected void describeMismatchSafely(FeatureResource item, Description mismatchDescription) {
         mismatchDescription.appendText("FeatureResource with symbolic name ")
                            .appendText(item.getSymbolicName())
-                           .appendText(" and tolerates ")
-                           .appendValueList("<", ", ", ">", item.getTolerates());
+                           .appendText(" and tolerates ");
+        if (item.getTolerates() == null) {
+            mismatchDescription.appendValue(null);
+        } else {
+            mismatchDescription.appendValueList("<", ", ", ">", item.getTolerates());
+        }
     }
 
 }

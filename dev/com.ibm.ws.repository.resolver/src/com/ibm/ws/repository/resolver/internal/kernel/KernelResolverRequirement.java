@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,11 @@ public class KernelResolverRequirement implements FeatureResource {
 
     public KernelResolverRequirement(String symbolicName, Collection<String> tolerates) {
         this.symbolicName = symbolicName;
-        this.tolerates = Collections.unmodifiableList(new ArrayList<>(tolerates));
+        if (tolerates.isEmpty()) {
+            this.tolerates = null;
+        } else {
+            this.tolerates = Collections.unmodifiableList(new ArrayList<>(tolerates));
+        }
     }
 
     @Override
