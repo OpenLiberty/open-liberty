@@ -22,6 +22,12 @@ tested.features:\
 	concurrent-2.0,\
 	connectors-2.0,\
 	pages-3.0,\
+	expressionlanguage-5.0,\
+	concurrent-3.0,\
+	appsecurity-5.0,\
+	pages-3.1,\
+	cdi-4.0,\
+	servlet-6.0,\
 	enterpriseBeansLite-4.0,\
 	componenttest-2.0
 
