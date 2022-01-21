@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,6 +93,12 @@ public class ExternalTestService {
                                 .expectCode(HttpsURLConnection.HTTP_OK)
                                 .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
                                 .run(JsonArray.class);
+
+                if (propertiesJson == null) {
+                    throw new Exception("The Consul server (" + consulServer
+                                        + ") was unavailable or did not return a result for the property: " + propertyName
+                                        + ". Look on #was-liberty-ops for outages, or updates to global.consulServerList");
+                }
 
                 if (propertiesJson.size() != 1) {
                     throw new Exception("Expected to find exactly 1 property but found " + propertiesJson.size() +
