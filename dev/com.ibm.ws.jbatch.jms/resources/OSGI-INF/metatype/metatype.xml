@@ -42,6 +42,7 @@
 
         <AD id="replyConnectionFactoryRef" type="String" default="batchConnectionFactory" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsConnectionFactory" name="%executor.reply.connection.factory.ref" description="%executor.reply.connection.factory.ref.desc" required="false"/>
         <AD id="JMSConnectionFactory.target" type="String" default="(|(service.pid=${replyConnectionFactoryRef})(ibm.extends.source.pid=${replyConnectionFactoryRef}))" ibm:final="true" name="internal" description="internal use only" required="false"/>
+        <AD id="JMSConnectionFactory.cardinality.minimum" type="String" default="${count(replyConnectionFactoryRef)}" ibm:final="true" name="internal" description="internal use only" />
 
   		<AD id="queueRef" type="String" default="batchJobSubmissionQueue" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsQueue" name="%executor.queue.ref" description="%executor.queue.ref.desc"/>
         <AD id="JmsQueue.target" type="String" default="(|(service.pid=${queueRef})(ibm.extends.source.pid=${queueRef}))" ibm:final="true" name="internal" description="internal use only"/>
