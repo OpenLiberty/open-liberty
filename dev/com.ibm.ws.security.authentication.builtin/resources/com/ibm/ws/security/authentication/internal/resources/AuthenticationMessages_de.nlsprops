@@ -33,8 +33,8 @@ JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=Das angegebene Clientzertifikat
 JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Stellen Sie sicher, dass der Client ein Zertifikat bereitstellt, das einem Benutzer in der Registry zugeordnet ist.
 
 JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: Die CLIENT-CERT-Authentifizierung f\u00fcr das Zertifikat mit dem DN {0} war nicht erfolgreich. Es ist eine interne Ausnahme eingetreten: {1}.
-JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001 
-JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002  
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002
 
 JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND=CWWKS1103E: Es gibt keine gemeinsam genutzte Bibliothek f\u00fcr das angepasste Anmeldemodul.
 JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.explanation=Die Authentifizierung war nicht erfolgreich, weil keine JAR-Datei f\u00fcr das angepasste JAAS-Anmeldemodul vorhanden ist.
@@ -45,7 +45,7 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Die Authentifizieru
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Stellen Sie sicher, dass das Element loginModuleRef ein konfiguriertes Element jaasLoginModule hat.
 
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Das JAAS-Anmeldemodul konnte aus der gemeinsam genutzten Bibliothek nicht geladen werden. Es ist eine interne Ausnahme eingetreten.
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Interner Fehler.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Es ist ein interner Fehler aufgetreten.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
 
 JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: Die Authentifizierung f\u00fcr die Benutzer-ID {0} war nicht erfolgreich. Es wurde eine ung\u00fcltige Benutzer-ID angegeben.
@@ -55,10 +55,6 @@ JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Vergewissern Sie sich, dass die Be
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Optionen f\u00fcr WSLoginModuleProxy sind null oder leer.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Die Authentifizierung war nicht erfolgreich, weil das WSLoginModuleProxy-Element options null oder leer sind.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Vergewissern Sie sich, dass die WSLoginModuleProxy-Konfiguration das Element options enth\u00e4lt.
-
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Die WSLoginModuleProxy-Stellvertreteroption (delegate) ist nicht definiert.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Die Authentifizierung war nicht erfolgreich, weil das jaasLoginModule mit der ID WSLoginModuleProxy kein Attribut delegate im Element options enth\u00e4lt.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Vergewissern Sie sich, dass das jaasLoginModule mit der ID WSLoginModuleProxy das Attribut delegate im Element options enth\u00e4lt. 
 
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy wird in jaasLoginContextEntry system.DEFAULT nicht unterst\u00fctzt.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=WSLoginModuleProxy wird in jaasLoginContextEntry system.DEFAULT nicht unterst\u00fctzt.

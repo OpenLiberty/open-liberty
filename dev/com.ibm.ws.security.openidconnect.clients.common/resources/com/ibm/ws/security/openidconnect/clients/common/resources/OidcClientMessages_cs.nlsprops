@@ -70,7 +70,7 @@ OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Projd\u011bte si akce pro tuto chyb
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Po\u017eadavek na p\u0159ipojen\u00ed OpenID byl u\u017eivatelem odm\u00edtnut, nebo do\u0161lo k jin\u00e9 chyb\u011b, jej\u00edm\u017e v\u00fdsledkem bylo zam\u00edtnut\u00ed po\u017eadavku.
-OAUTH_REQUEST_ACCESS_DENIED.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i souhlasu s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
+OAUTH_REQUEST_ACCESS_DENIED.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i se souhlasem, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=U\u017eivatel mus\u00ed povolit poskytovateli p\u0159ipojen\u00ed OpenID sd\u00edlet obory platnosti, kter\u00e9 klient vy\u017eaduje, aby byl po\u017eadavek na p\u0159ipojen\u00ed OpenID \u00fasp\u011b\u0161n\u00fd. Pokud u\u017eivatel tento po\u017eadavek schv\u00e1lil, zkontrolujte protokoly na poskytovateli OP, zda tam nejsou dal\u0161\u00ed chyby.
 
 #1711 is used by client bundle, don't use here.
@@ -210,6 +210,11 @@ USERINFO_INVALID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connec
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0} OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky JWT (JSON Web Token) z webov\u00e9 odezvy. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
+
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Klient OpenID Connect [{0}] vy\u017eaduje adresu URL koncov\u00e9ho bodu autorizace, ale nen\u00ed nastavena.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Adresa URL koncov\u00e9ho bodu autorizace mus\u00ed b\u00fdt nastavena k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du nebo po\u017eadovan\u00fdch token\u016f.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.useraction=Nastavte atribut authorizationEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu autorizace poskytovatele OpenID Connect. Voliteln\u011b nastavte atribut discoveryEndpointUrl v konfiguraci klienta OpenID Connect na adresu URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect.
@@ -228,5 +233,21 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Chcete-li p\u0159ijmout to
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Token nen\u00ed ve form\u00e1tu JSON Web Encryption (JWE), proto\u017ee neobsahuje p\u011bt \u010d\u00e1st\u00ed, ale klient [{0}] OpenID Connect p\u0159ij\u00edm\u00e1 pouze tokeny, kter\u00e9 jsou ve form\u00e1tu JWE.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Token m\u016f\u017ee b\u00fdt chybn\u00fd nebo m\u016f\u017ee b\u00fdt ve form\u00e1tu JSON Web Signature (JWS). Tokeny mus\u00ed b\u00fdt ve form\u00e1tu JWE, pokud je nakonfigurov\u00e1n atribut keyManagementKeyAlias.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Chcete-li p\u0159ijmout tokeny JWE nam\u00edsto token\u016f JWE, odeberte atribut keyManagementKeyAlias v konfiguraci klienta OpenID Connect. Jinak se ujist\u011bte, \u017ee do tohoto prost\u0159edku jsou odes\u00edl\u00e1ny pouze tokeny JWE.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: Data extrahovan\u00e1 z odpov\u011bdi z koncov\u00e9ho bodu UserInfo nejsou ve form\u00e1tu JSON. Extrahovan\u00e1 data jsou [{0}]. Chyba je [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=Koncov\u00fd bod UserInfo by m\u011bl vr\u00e1tit n\u00e1roky jako \u010dleny objektu JSON nebo JSON Web Token (JWT). Form\u00e1t odezvy nemus\u00ed b\u00fdt platn\u00fd, nebo se odezva nemus\u00ed shodovat s form\u00e1tem, kter\u00fd je ur\u010den z\u00e1hlav\u00edm typu obsahu.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=Zkontrolujte form\u00e1t odpov\u011bdi koncov\u00e9ho bodu UserInfo a ujist\u011bte se, \u017ee je ve form\u00e1tu JSON nebo JWT.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: O\u010dek\u00e1v\u00e1 se, \u017ee bude webov\u00e1 odezva [{0}] JSON Web Token (JWT), ale odpov\u011b\u010f nen\u00ed ve form\u00e1tu JSON Web Signature (JWS) nebo JSON Web Encryption (JWE).
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=Z\u00e1hlav\u00ed typu obsahu ve webov\u00e9 odpov\u011bdi ozna\u010duje, \u017ee odpov\u011b\u010f obsahuje JWT, ale t\u011blo odpov\u011bdi nen\u00ed v platn\u00e9m form\u00e1tu JWT.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Ujist\u011bte se, \u017ee je webov\u00e1 odpov\u011b\u010f ve form\u00e1tu, kter\u00fd je o\u010dek\u00e1v\u00e1n klientem pro p\u0159ipojen\u00ed OpenID.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Klient pro p\u0159ipojen\u00ed OpenID {0} nem\u016f\u017ee na\u010d\u00edst informace o p\u0159\u00edstupov\u00e9m tokenu z koncov\u00e9ho bodu UserInfo: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Odpov\u011b\u010f z koncov\u00e9ho bodu UserInfo nemus\u00ed b\u00fdt ve form\u00e1tu, kter\u00fd se o\u010dek\u00e1v\u00e1. Klient pro p\u0159ipojen\u00ed OpenID mohl narazit na chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku UserInfo.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee se obsah odpov\u011bdi UserInfo shoduje se z\u00e1hlav\u00edm typu obsahu HTTP.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

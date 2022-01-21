@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,22 @@ required.attribute.missing=CWWKC2251E: A(z) {2} elemb\u0151l hi\u00e1nyzik a k\u
 required.attribute.missing.explanation=A megadott elemb\u0151l hi\u00e1nyzik egy k\u00f6telez\u0151 attrib\u00fatum.
 required.attribute.missing.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9si le\u00edr\u00f3t a hi\u00e1nyz\u00f3 attrib\u00fatum megad\u00e1s\u00e1val.
 
-invalid.root.element=CWWKC2252E: \u00c9rv\u00e9nytelen {2} gy\u00f6k\u00e9r helyi n\u00e9v a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
-invalid.root.element.explanation=A root elem helytelen.
-invalid.root.element.useraction=\u00c9rv\u00e9nyes\u00edtse az xml f\u00e1jlt, hogy a root elem biztosan helyes legyen.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: A(z) {1} sor {0} telep\u00edt\u00e9sle\u00edr\u00f3ja {2} gy\u00f6k\u00e9relemmel rendelkezik, de {3} gy\u00f6k\u00e9relemet ig\u00e9nyel. 
+unexpected.root.element.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 gy\u00f6k\u00e9releme nem megfelel\u0151.
+unexpected.root.element.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3 gy\u00f6k\u00e9relem\u00e9t.
 
 root.element.not.found=CWWKC2253E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 gy\u00f6k\u00e9releme nem tal\u00e1lhat\u00f3 a(z) {1}. sorban.
 root.element.not.found.explanation=A gy\u00f6k\u00e9relem hi\u00e1nyzik a telep\u00edt\u00e9si le\u00edr\u00f3b\u00f3l.
@@ -66,25 +79,157 @@ unexpected.child.element=CWWKC2259E: A(z) {2} sz\u00fcl\u0151 elem nem v\u00e1rt
 unexpected.child.element.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban a meghat\u00e1roz\u00e1s szerint nem szerepl\u0151 elem tal\u00e1lhat\u00f3.
 unexpected.child.element.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
 
-invalid.href.prefix=CWWKC2260E: A(z) {2} elem href attrib\u00fatum\u00e1nak \u00e9rt\u00e9ke nem {3} \u00e9rt\u00e9kkel kezd\u0151dik a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
-invalid.href.prefix.explanation=A href attrib\u00fatumnak a hivatkozott le\u00edr\u00f3 helyes \u00fatvonal\u00e1val kell kezd\u0151dnie.
-invalid.href.prefix.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: Hiba t\u00f6rt\u00e9nt a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 verzi\u00f3sz\u00e1m\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
-unknown.deployment.descriptor.version.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vt\u00e9r verzi\u00f3sz\u00e1ma \u00e9rv\u00e9nytelen vagy nincs megadva.
-unknown.deployment.descriptor.version.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vt\u00e9r verzi\u00f3sz\u00e1m\u00e1t.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes feldolgozni a(z) {3} v\u00e1ltozatot \u00e9s a(z) {2} n\u00e9vteret a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3ban a(z) {1}. sorban.
-invalid.deployment.descriptor.namespace.explanation=Vagy a megadott v\u00e1ltozat \u00e9s n\u00e9vt\u00e9r nem \u00e9rv\u00e9nyes, vagy pedig a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem rendelkezik olyan szolg\u00e1ltat\u00e1ssal, amely k\u00e9pes lenne feldolgozni a v\u00e1ltozatot \u00e9s n\u00e9vteret.
-invalid.deployment.descriptor.namespace.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vteret vagy a verzi\u00f3sz\u00e1mot, vagy ellen\u0151rizze \u00e9s jav\u00edtsa a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban l\u00e9v\u0151 szolg\u00e1ltat\u00e1sokat.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: A(z) {4} HREF el\u0151tag nem felel meg a v\u00e1rt {5} el\u0151tagnak a(z) {2} elem a(z) {3} HREF \u00e9rt\u00e9k\u00e9ben a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban.
+invalid.href.prefix.explanation=A HREF \u00e9rt\u00e9k el\u0151tagja egy hivatkozott telep\u00edt\u00e9sle\u00edr\u00f3 \u00fatvonalat hat\u00e1roz meg. Az el\u0151tag nem felel meg az adott hivatkozott telep\u00edt\u00e9sle\u00edr\u00f3 \u00fatvonal\u00e1nak.
+invalid.href.prefix.useraction=Jav\u00edtsa a HREF \u00e9rt\u00e9k\u00e9t.
 
-invalid.deployment.descriptor.version=CWWKC2263E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban megadott {2} verzi\u00f3sz\u00e1m attrib\u00fatum nem \u00e9rv\u00e9nyes.
-invalid.deployment.descriptor.version.explanation=\u00c9rv\u00e9nytelen verzi\u00f3sz\u00e1m lett megadva a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
-invalid.deployment.descriptor.version.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a verzi\u00f3sz\u00e1mot.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: A(z) {2} elem {3} HREF \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban.
+invalid.href.explanation=Az elem \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes HREF \u00e9rt\u00e9k: Az \u00e9rt\u00e9knek egy '#' karaktert kell tartalmaznia, \u00e9s a '#' karakter nem lehet az \u00e9rt\u00e9k els\u0151 vagy utols\u00f3 karaktere.
+invalid.href.useraction=Jav\u00edtsa a HREF \u00e9rt\u00e9k\u00e9t.
 
-missing.deployment.descriptor.namespace=CWWKC2264E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 n\u00e9vter\u00e9nek meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
-missing.deployment.descriptor.namespace.explanation=\u00c9rv\u00e9nytelen n\u00e9vt\u00e9r lett megadva a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
-missing.deployment.descriptor.namespace.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vteret.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: A HREF egy {5} t\u00edpus\u00fa objektumra hivatkozik, de egy {4} t\u00edpus\u00fa objektumot ig\u00e9nyel. A hiba a(z) {2} elem {3} HREF \u00e9rt\u00e9k\u00e9ben van a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban.
+incorrect.href.type.explanation=A HREF \u00e9rt\u00e9k \u00e1ltal hivatkozott objektum t\u00edpusa helytelen.
+incorrect.href.type.useraction=Jav\u00edtsa a HREF \u00e9rt\u00e9k\u00e9t.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: A hivatkoz\u00f3 {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban tal\u00e1lhat\u00f3 {2} elem {3} HREF \u00e9rt\u00e9k alapj\u00e1n nem siker\u00fclt feloldani a(z) {4} HREF azonos\u00edt\u00f3t a hivatkozott {5} telep\u00edt\u00e9sle\u00edr\u00f3ban.
+unresolved.href.explanation=A HREF azonos\u00edt\u00f3 nem oldhat\u00f3 fel a hivatkozott telep\u00edt\u00e9sle\u00edr\u00f3 egyik rendelkez\u00e9sre \u00e1ll\u00f3 elem\u00e9re sem. A HREF azonos\u00edt\u00f3nak egyeznie kell a hivatkozott telep\u00edt\u00e9sle\u00edr\u00f3 egyik elem\u00e9nek azonos\u00edt\u00f3j\u00e1val.
+unresolved.href.useraction=Jav\u00edtsa ki vagy a HREF azonos\u00edt\u00f3t a hivatkoz\u00f3 telep\u00edt\u00e9sle\u00edr\u00f3ban, vagy az azonos\u00edt\u00f3 \u00e9rt\u00e9ket a hivatkozott telep\u00edt\u00e9sle\u00edr\u00f3ban.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban a(z) {2} elemben nem tal\u00e1lhat\u00f3 HREF attrib\u00fatum.
+missing.href.explanation=Az elem egy HREF attrib\u00fatumhoz sz\u00fcks\u00e9ges. A HREF attrib\u00fatum neve 'href'.
+missing.href.useraction=Adjon hozz\u00e1 egy HREF attrib\u00fatumot az elemhez.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora nem t\u00e1mogatott {2} v\u00e1ltozatot ad meg.
+unsupported.descriptor.version.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3ban megadott v\u00e1ltozat \u00e9rv\u00e9nytelen az adott telep\u00edt\u00e9sle\u00edr\u00f3hoz.
+unsupported.descriptor.version.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3ban megadott v\u00e1ltozatot.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora nem t\u00e1mogatott {2} n\u00e9vteret ad meg.
+unsupported.descriptor.namespace.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3ban megadott n\u00e9vt\u00e9r \u00e9rv\u00e9nytelen az adott telep\u00edt\u00e9sle\u00edr\u00f3hoz.
+unsupported.descriptor.namespace.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3ban megadott n\u00e9vteret.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: A (z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora {2} v\u00e1ltozatot \u00e9s {3} n\u00e9vteret hat\u00e1roz meg, de {4} n\u00e9vt\u00e9rrel kell rendelkeznie.
+unsupported.descriptor.namespace.for.version.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 helytelen n\u00e9vteret hat\u00e1roz meg az adott v\u00e1ltozathoz. A n\u00e9vt\u00e9r figyelmen k\u00edv\u00fcl maradt.
+unsupported.descriptor.namespace.for.version.useraction=Jav\u00edtsa ki a n\u00e9vteret a megadott v\u00e1ltozathoz \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora {2} v\u00e1ltozatot hat\u00e1roz meg, amely magasabb, mint az aktu\u00e1lisan l\u00e9tes\u00edtett {3} v\u00e1ltozat.
+unprovisioned.descriptor.version.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 \u00e1ltal l\u00e9tes\u00edtett szolg\u00e1ltat\u00e1sok nem t\u00e1mogatj\u00e1k a telep\u00edt\u00e9sle\u00edr\u00f3hoz megadott v\u00e1ltozatot.
+unprovisioned.descriptor.version.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t olyan szolg\u00e1ltat\u00e1sok l\u00e9tes\u00edt\u00e9s\u00e9re, amelyek t\u00e1mogatj\u00e1k a v\u00e1ltozatot.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora nem tartalmazza a sz\u00fcks\u00e9ges {2} n\u00e9vteret.
+missing.descriptor.namespace.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3nak tartalmaznia a megadott n\u00e9vteret.
+missing.descriptor.namespace.useraction=Adja hozz\u00e1 a sz\u00fcks\u00e9ges n\u00e9vteret a telep\u00edt\u00e9sle\u00edr\u00f3hoz.
 
 missing.deployment.descriptor.version=CWWKC2265E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 verzi\u00f3sz\u00e1m\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 missing.deployment.descriptor.version.explanation=Nincs megadva a verzi\u00f3sz\u00e1m a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
@@ -103,23 +248,33 @@ runasmode.missing.specifiedID.element.explanation=A <specified-identity> ut\u00f
 runasmode.missing.specifiedID.element.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9si le\u00edr\u00f3t a sz\u00fcks\u00e9ges ut\u00f3d elem megad\u00e1s\u00e1val, vagy m\u00f3dos\u00edtsa a mode \u00e9rt\u00e9ket.
 
 found.duplicate.ejbname=CWWKC2269E: Az \u00f6sszes <session> \u00e9s <message-driven> komponens elem name attrib\u00fatum\u00e1nak egyedinek kell lennie. T\u00f6bbsz\u00f6r szerepl\u0151 {1} n\u00e9v tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban.
-found.duplicate.ejbname.explanation=Minden egyes munkamenet- \u00e9s \u00fczenetvez\u00e9relt komponens nev\u00e9nek egyedinek kell lennie.  A megadott komponensn\u00e9v t\u00f6bbsz\u00f6r felhaszn\u00e1l\u00e1sra ker\u00fcl.
+found.duplicate.ejbname.explanation=Minden egyes munkamenet- \u00e9s \u00fczenetvez\u00e9relt komponens nev\u00e9nek egyedinek kell lennie. A megadott komponensn\u00e9v t\u00f6bbsz\u00f6r felhaszn\u00e1l\u00e1sra ker\u00fcl.
 found.duplicate.ejbname.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t a t\u00f6bbsz\u00f6r szerepl\u0151 EJB-komponens nevek \u00e1tnevez\u00e9s\u00e9vel.
 
 found.duplicate.attribute.value=CWWKC2270E: A(z) {2} attrib\u00fatumnak az \u00f6sszes {1} elem eset\u00e9ben egyedinek kell lennie. T\u00f6bbsz\u00f6r szerepl\u0151 {3} n\u00e9v tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban.
 found.duplicate.attribute.value.explanation=A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9nek az egyez\u0151 t\u00edpus\u00fa elemeken bel\u00fcl egyedinek kell lennie. 
 found.duplicate.attribute.value.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t a t\u00f6bbsz\u00f6r szerepl\u0151 attrib\u00fatum\u00e9rt\u00e9kek \u00e1tnevez\u00e9s\u00e9vel.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A(z) {0} modulhoz l\u00e9tezik validation.xml f\u00e1jl. Ez a validation.xml f\u00e1jl azonban nincs be\u00e1ll\u00edtva \u00e9rv\u00e9nyes\u00edt\u00e9sre, \u00edgy figyelmen k\u00edv\u00fcl hagyja a rendszer.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=A BeanValidationService nem tud l\u00e9trehozni egy ValidatorFactory oszt\u00e1lyt, mert hiba t\u00f6rt\u00e9nt a validation.xml f\u00e1jlnak a validation-configuration-1.0.xsd s\u00e9maf\u00e1jllal t\u00f6rt\u00e9n\u0151 \u00e9rtelmez\u00e9se k\u00f6zben. Ez a hiba jelezheti azt, hogy a validation.xml f\u00e1jl nem a komponensek fut\u00e1sidej\u0171 \u00e9rt\u00e9kel\u00e9s\u00e9re val\u00f3, ez\u00e9rt figyelmen k\u00edv\u00fcl hagyja a rendszer.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Ha a validation.xml f\u00e1jl nem ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra k\u00e9sz\u00fclt, akkor hagyja figyelmen k\u00edv\u00fcl az \u00fczenetet. Ha azonban a validation.xml f\u00e1jl ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra szolg\u00e1l, akkor gond van.  Enged\u00e9lyezze az alkalmaz\u00e1skiszolg\u00e1l\u00f3n a komponensek fut\u00e1sid\u0151ben t\u00f6rt\u00e9n\u0151 \u00e9rt\u00e9kel\u00e9s\u00e9nek nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st, \u00e9s n\u00e9zze \u00e1t a nyomk\u00f6vet\u00e9s kimeneti f\u00e1jlj\u00e1t olyan nyomk\u00f6vet\u00e9si esem\u00e9nyeket keresve, mint: nem v\u00e1rt kiv\u00e9tel a validation.xml f\u00e1jl adatfolyamb\u00f3l val\u00f3 visszaalak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben. A hibakeres\u00e9sben seg\u00edthet, ha megvizsg\u00e1lja a kiv\u00e9telverem nyomk\u00f6vet\u00e9si adatait is.
+unexpected.root.element.bval=CWWKC2271W: A {1} modul {0} komponens\u00e9rv\u00e9nyes\u00edt\u00e9si konfigur\u00e1ci\u00f3s f\u00e1jlja figyelmen k\u00edv\u00fcl marad. A(z) {2} sorban \u00edrja fel\u00fcl a(z) {3} gy\u00f6k\u00e9relemet a(z) {4} elemmel.
+unexpected.root.element.bval.explanation=Az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jl nem felel meg az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s s\u00e9m\u00e1knak (validation-configuration-1.0.xsd \u00e9s validation-configuration-1.1.xsd). A konfigur\u00e1ci\u00f3s f\u00e1jlt vagy nem komponens\u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re sz\u00e1nt\u00e1k, vagy a konfigur\u00e1ci\u00f3s f\u00e1jl nem megfelel\u0151 form\u00e1tum\u00fa. A konfigur\u00e1ci\u00f3s f\u00e1jl figyelmen k\u00edv\u00fcl marad. A BeanValidationService nem hoz l\u00e9tre ValidatorFactory p\u00e9ld\u00e1nyt.
+unexpected.root.element.bval.useraction=Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt nem komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre sz\u00e1nt\u00e1k, akkor a figyelmeztet\u0151 \u00fczenet figyelmen k\u00edv\u00fcl hagyhat\u00f3. Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre tervezt\u00e9k, akkor ne hagyja figyelmen k\u00edv\u00fcl a figyelmeztet\u0151 \u00fczenetet. A komponens\u00e9rv\u00e9nyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s nem a sz\u00e1nd\u00e9kolt m\u00f3don fut. A probl\u00e9ma diagnosztiz\u00e1l\u00e1s\u00e1hoz enged\u00e9lyezze a komponens\u00e9rv\u00e9nyes\u00edt\u00e9s fut\u00e1sidej\u0171 nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, majd vizsg\u00e1lja meg a komponens\u00e9rv\u00e9nyes\u00edt\u00e9shez kapcsol\u00f3d\u00f3 v\u00e1ratlan kiv\u00e9telek nyomk\u00f6vet\u00e9si kimenet\u00e9t. P\u00e9ld\u00e1ul "V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a validation.xml f\u00e1jl \u00e9rv\u00e9nytelen\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n."  A hibakeres\u00e9st el\u0151seg\u00edtend\u0151, vizsg\u00e1lja meg a kiv\u00e9tel veremnyomk\u00f6vet\u00e9st.
 
-xml.error=CWWKC2272E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n .  A hiba\u00fczenet: {2}
-xml.error.explanation=Hiba t\u00f6rt\u00e9nt az XML telep\u00edt\u00e9sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.  Tov\u00e1bbi magyar\u00e1zat\u00e9rt tekintse meg a hiba\u00fczenetet.
+xml.error=CWWKC2272E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n . A hiba\u00fczenet: {2}
+xml.error.explanation=Hiba t\u00f6rt\u00e9nt az XML telep\u00edt\u00e9sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n. Tov\u00e1bbi magyar\u00e1zat\u00e9rt tekintse meg a hiba\u00fczenetet.
 xml.error.useraction=A hiba elh\u00e1r\u00edt\u00e1s\u00e1hoz jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t.
 
 invalid.enum.value=CWWKC2273E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban l\u00e9v\u0151 {2} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: {3}
@@ -134,10 +289,95 @@ invalid.long.value=CWWKC2275E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban 
 invalid.long.value.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 olyan \u00e9rt\u00e9ket ad meg, amely nem a -9223372036854775808 \u00e9s 9223372036854775807 k\u00f6z\u00e9 es\u0151 sz\u00e1m.
 invalid.long.value.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t, hogy az egy \u00e9rv\u00e9nyes hossz\u00fa sz\u00e1mot haszn\u00e1ljon.
 
-module.name.not.specified=CWWKC2276E: A(z) {0} elemnek moduln\u00e9v attrib\u00fatumot kell megadnia.
-module.name.not.specified.explanation=Az EJB \u00e9s a webmodulok k\u00f6t\u00e9si \u00e9s kiterjeszt\u00e9si konfigur\u00e1ci\u00f3j\u00e1nak tartalmaznia kell egy moduleName attrib\u00fatumot, amely megadja a modult, amelyre a konfigur\u00e1ci\u00f3 vonatkozik. 
-module.name.not.specified.useraction=Adjon hozz\u00e1 moduleName attrib\u00fatumot a web-bnd, web-ext, ejb-bnd vagy ejb-ext elemhez. 
+# ---
 
-module.name.invalid=CWWKC2277E: A(z) {1} elemben legal\u00e1bb egy moduln\u00e9v \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nytelen moduln\u00e9v/modulnevek: {0}.
-module.name.invalid.explanation=A webmodulok k\u00f6t\u00e9si \u00e9s kiterjeszt\u00e9si konfigur\u00e1ci\u00f3j\u00e1nak \u00e9rv\u00e9nyes moduleName attrib\u00fatumot kell megadnia. Legal\u00e1bb egy konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nytelen modulnevet adott meg. A moduln\u00e9vnek a webes vagy EJB alkalmaz\u00e1st tartalmaz\u00f3 arch\u00edvumf\u00e1jl nev\u00e9nek kell lennie.
-module.name.invalid.useraction=Jav\u00edtsa a moduleName attrib\u00fatumot a k\u00f6t\u00e9si vagy kiterjeszt\u00e9si konfigur\u00e1ci\u00f3ban. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: A ''moduleName'' attrib\u00fatum hi\u00e1nyzik legal\u00e1bb egy ''{1}'' k\u00f6t\u00e9sb\u0151l \u00e9s a(z) {0} alkalmaz\u00e1s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemeib\u0151l.
+module.name.not.specified.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemeknek rendelkezni\u00fck kell 'moduleName' attrib\u00fatummal.
+module.name.not.specified.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a 'moduleName' attrib\u00fatum jelen van minden k\u00f6t\u00e9sben \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemben.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: A(z) ''{1}'' k\u00f6t\u00e9sekben \u00e9s a(z) {0} alkalmaz\u00e1skiterjeszt\u00e9s konfigur\u00e1ci\u00f3s elemeiben megadott {2} ''moduleName'' attrib\u00fatumok nem tal\u00e1lhat\u00f3k.  Az alkalmaz\u00e1smodul-nevek: {3}.
+module.name.not.found.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumainak meg kell egyezni\u00fck az alkalmaz\u00e1smodul-nevekkel.
+module.name.not.found.useraction=Gondoskodj\u00e9k arr\u00f3l, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumai megegyezzenek az alkalmaz\u00e1smodul-nevekkel. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: A(z) ''{1}'' k\u00f6t\u00e9sekben \u00e9s a(z) {0} alkalmaz\u00e1skiterjeszt\u00e9s konfigur\u00e1ci\u00f3s elemeiben megadott {2} ''moduleName'' attrib\u00fatumok t\u00f6bbsz\u00f6r\u00f6sen megtal\u00e1lhat\u00f3k.
+module.name.duplicated.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumai nem fordulhatnak el\u0151 t\u00f6bbsz\u00f6r\u00f6sen.
+module.name.duplicated.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek \u00f6sszes 'moduleName'  attrib\u00fatuma egyedi legyen. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: A(z) {0}  {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora nem t\u00e1mogatott nyilv\u00e1nos azonos\u00edt\u00f3t ad meg: {2}.
+unsupported.descriptor.public.id.explanation=A nyilv\u00e1nos azonos\u00edt\u00f3 \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes a telep\u00edt\u00e9sle\u00edr\u00f3 eset\u00e9ben.
+unsupported.descriptor.public.id.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3 nyilv\u00e1nos azonos\u00edt\u00f3j\u00e1nak \u00e9rt\u00e9k\u00e9t.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 nem rendelkezik v\u00e1ltozattal, nyilv\u00e1nos azonos\u00edt\u00f3val vagy n\u00e9vt\u00e9rrel.
+missing.descriptor.version.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3nak rendelkeznie kell v\u00e1ltozattal, nyilv\u00e1nos azonos\u00edt\u00f3val, illetve n\u00e9vt\u00e9rrel.
+missing.descriptor.version.useraction=Adjon hozz\u00e1 egy v\u00e1ltozatot, nyilv\u00e1nos azonos\u00edt\u00f3t vagy n\u00e9vteret a telep\u00edt\u00e9sle\u00edr\u00f3hoz. A hozz\u00e1adott v\u00e1ltozatnak, nyilv\u00e1nos azonos\u00edt\u00f3nak vagy n\u00e9vt\u00e9rnek meg kell felelnie a telep\u00edt\u00e9sle\u00edr\u00f3 tartalm\u00e1nak.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora a(z) {2} n\u00e9vteret hat\u00e1rozza meg, mik\u00f6zben a(z) {3} n\u00e9vt\u00e9rrel kellene rendelkeznie.
+incorrect.descriptor.namespace.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3ban egy elv\u00e1rt adott n\u00e9vt\u00e9rnek kell szerepelnie. A helytelen n\u00e9vt\u00e9r figyelmen k\u00edv\u00fcl maradt.
+incorrect.descriptor.namespace.useraction=M\u00f3dos\u00edtsa a n\u00e9vteret a telep\u00edt\u00e9sle\u00edr\u00f3ban az elv\u00e1rt \u00e9rt\u00e9kre.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: A (z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora {2} v\u00e1ltozatot \u00e9s {3} n\u00e9vteret hat\u00e1roz meg, de az adott v\u00e1ltozat eset\u00e9ben {4} n\u00e9vt\u00e9rrel kell rendelkeznie.
+incorrect.descriptor.namespace.for.version.explanation=A megadott v\u00e1ltozat telep\u00edt\u00e9sle\u00edr\u00f3j\u00e1ban egy adott elv\u00e1rt n\u00e9vt\u00e9rnek kell szerepelnie. A helytelen n\u00e9vt\u00e9r figyelmen k\u00edv\u00fcl maradt.
+incorrect.descriptor.namespace.for.version.useraction=M\u00f3dos\u00edtsa a n\u00e9vteret a telep\u00edt\u00e9sle\u00edr\u00f3ban az elv\u00e1rt \u00e9rt\u00e9kre.
+
