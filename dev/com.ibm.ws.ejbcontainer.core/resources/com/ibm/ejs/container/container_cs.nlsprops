@@ -862,7 +862,7 @@ BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E.useraction=Opravte implementac
 #---------------------------------------------------------------------------------
 # Do not translate "javax.ejb.Timer"
 TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E=CNTR0158E: Objekt session bean {0} v modulu {1} m\u00e1 metodu {2} konfigurovanou jako metodu \u010dasov\u00e9ho limitu. Tato metoda mus\u00ed obsahovat jeden parametr typu javax.ejb.Timer nebo nesm\u00ed m\u00edt \u017e\u00e1dn\u00e9 vstupn\u00ed parametry.
-TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E.explanation=Objekt bean \u010dasova\u010de mus\u00ed implementovat metodu \u010dasov\u00e9ho limitu, kter\u00e1 m\u00e1 bu\u010f jeden parametr typu javax.ejb.Timer, nebo \u017e\u00e1dn\u00e9 parametry.
+TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E.explanation=Objekt typu timer bean mus\u00ed implementovat metodu \u010dasov\u00e9ho limitu, kter\u00e1 m\u00e1 bu\u010f jeden parametr typu javax.ejb.Timer, nebo \u017e\u00e1dn\u00e9 parametry.
 TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E.useraction=Opravte implementaci objektu typu bean tak, aby zahrnovala vy\u017eadovan\u00fd parametr nebo aby nem\u011bla \u017e\u00e1dn\u00e9 parametry.   Pot\u00e9 aplikaci znovu nainstalujte.
 
 #---------------------------------------------------------------------------------
@@ -873,24 +873,24 @@ BEAN_INHERITANCE_ERROR_CNTR0159E.useraction=Opravte konfigurovanou relaci d\u011
 #---------------------------------------------------------------------------------
 # Do not translate "ejbTimeout", or "TimedObject"
 TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E=CNTR0160E: Objekt enterprise bean {0} v modulu {1} je konfigurov\u00e1n jako objekt typu bean \u010dasova\u010de. Tento objekt typu bean v\u0161ak neimplementuje n\u00e1sleduj\u00edc\u00ed vy\u017eadovanou metodu \u010dasov\u00e9ho limitu: ejbTimeout
-TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E.explanation=Objekty typu bean \u010dasova\u010de, kter\u00e9 d\u011bd\u00ed volby z rozhran\u00ed TimedObject, mus\u00ed implementovat n\u00e1sleduj\u00edc\u00ed metodu \u010dasov\u00e9ho limitu: ejbTimeout
+TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E.explanation=Objekty typu timer bean, kter\u00e9 d\u011bd\u00ed volby z rozhran\u00ed TimedObject, mus\u00ed implementovat n\u00e1sleduj\u00edc\u00ed metodu \u010dasov\u00e9ho limitu: ejbTimeout
 TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E.useraction=Opravte implementaci objektu typu bean, aby zahrnovala vy\u017eadovanou metodu.   Pot\u00e9 aplikaci znovu nainstalujte.
 
 #---------------------------------------------------------------------------------
 # Do not translate "@Timeout"
 TIMEOUT_ANNOTATION_OVERSPECIFIED_CNTR0161E=CNTR0161E: Objekt enterprise bean {0} v modulu {1} m\u00e1 zadanou anotaci @Timeout ve v\u00edce metod\u00e1ch.
-TIMEOUT_ANNOTATION_OVERSPECIFIED_CNTR0161E.explanation=Objekty typu bean \u010dasova\u010de mohou implementovat pouze jednu metodu \u010dasov\u00e9ho limitu.
+TIMEOUT_ANNOTATION_OVERSPECIFIED_CNTR0161E.explanation=Objekty typu timer bean mohou implementovat pouze jednu metodu \u010dasov\u00e9ho limitu.
 TIMEOUT_ANNOTATION_OVERSPECIFIED_CNTR0161E.useraction=Opravte implementaci objektu typu bean tak, aby zahrnovala pouze jednu metodu \u010dasov\u00e9ho limitu.   Pot\u00e9 aplikaci znovu nainstalujte.
 
 #---------------------------------------------------------------------------------
 CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E=CNTR0162E: Objekt enterprise bean {0} v modulu {1} m\u00e1 zadanou n\u00e1sleduj\u00edc\u00ed metodu \u010dasov\u00e9ho limitu: {2} Tato metoda nen\u00ed objektem typu bean implementov\u00e1na.
-CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E.explanation=Objekty typu bean \u010dasova\u010de mus\u00ed poskytovat implementaci konfigurovan\u00e9 metody \u010dasov\u00e9ho limitu.
+CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E.explanation=Objekty typu timer bean mus\u00ed poskytovat implementaci konfigurovan\u00e9 metody \u010dasov\u00e9ho limitu.
 CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E.useraction=Opravte implementaci objektu typu bean tak, aby zahrnovala vy\u017eadovanou metodu \u010dasov\u00e9ho limitu.   Pot\u00e9 aplikaci znovu nainstalujte.
 
 #---------------------------------------------------------------------------------
 # Do not translate "XML", or "@Timeout"
 CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E=CNTR0163E: Objekt enterprise bean {0} v modulu {1} m\u00e1 zadanou metodu \u010dasov\u00e9ho limitu {2} ve zna\u010dce metody \u010dasov\u00e9ho limitu v k\u00f3du XML. D\u00e1le m\u00e1 objekt typu bean zadanou metodu \u010dasov\u00e9ho limitu {3} v anotaci @Timeout ve zdrojov\u00e9m k\u00f3du Java. Tato konfigurace je v konfliktu.
-CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.explanation=Objekty bean \u010dasova\u010de mus\u00ed konfigurovat pouze jednu metodu \u010dasov\u00e9ho limitu.
+CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.explanation=Objekty typu timer bean mus\u00ed konfigurovat pouze jednu metodu \u010dasov\u00e9ho limitu.
 CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.useraction=Opravte konfiguraci objektu typu bean tak, aby ur\u010dovala jednu metodu \u010dasov\u00e9ho limitu. Pot\u00e9 aplikaci znovu nainstalujte.
 
 #---------------------------------------------------------------------------------
@@ -1009,7 +1009,7 @@ DUPLICATE_REF_BINDING_CNTR0186E.useraction=Odeberte v\u0161echny vazby pro odkaz
 # Do not translate "TX_REQUIRED", "TX_REQUIRES_NEW", or "TX_NOT_SUPPORTED"
 INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E=CNTR0187E: U metody {0} objektu bean {1} v modulu {2} aplikace {3} je nakonfigurov\u00e1n atribut transakce {4}. Asynchronn\u00ed metody podporuj\u00ed pouze transak\u010dn\u00ed atributy typ\u016f TX_REQUIRED, TX_REQUIRES_NEW a TX_NOT_SUPPORTED.
 INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E.explanation=U asynchronn\u00edch metod mohou b\u00fdt nakonfigurov\u00e1ny n\u00e1sleduj\u00edc\u00ed typy transak\u010dn\u00edch atribut\u016f: TX_REQUIRED, TX_REQUIRES_NEW, TX_NOT_SUPPORTED
-INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E.useraction=Zm\u011b\u0148te konfiguraci atributu transakce v metod\u011b na n\u011bkter\u00fd ze t\u0159\u00ed podporovan\u00fdch typ\u016f.
+INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E.useraction=Zm\u011b\u0148te konfiguraci atribut\u016f transakce v metod\u011b na n\u011bkter\u00fd ze t\u0159\u00ed podporovan\u00fdch typ\u016f.
 
 #-------------------------------------------------------------------------------
 UNEXPECTED_EXCEPTION_CNTR0188E=CNTR0188E: Byla zachycena neo\u010dek\u00e1van\u00e1 v\u00fdjimka. V\u00fdjimka: {0}

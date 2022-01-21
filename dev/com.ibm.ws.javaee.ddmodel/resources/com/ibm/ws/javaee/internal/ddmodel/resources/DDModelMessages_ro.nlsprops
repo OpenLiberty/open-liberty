@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,11 +32,24 @@
 
 required.attribute.missing=CWWKC2251E: Elementului {2} \u00eei lipse\u015fte atributul {3} necesar \u00een descriptorul de implementare {0} la linia {1}.
 required.attribute.missing.explanation=Un atribut necesar lipse\u015fte din elementul specificat.
-required.attribute.missing.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd atributul lips\u0103.
+required.attribute.missing.useraction=Corecta\u0163i descriptorul de implementare ad\u0103ug\u00e2nd atributul lips\u0103.
 
-invalid.root.element=CWWKC2252E: Nume local de root invalid {2} \u00een descriptorul de implementare {0} la linia {1}.
-invalid.root.element.explanation=Elementul root este incorect.
-invalid.root.element.useraction=Valida\u0163i fi\u015fierul xml pentru a v\u0103 asigura c\u0103 elementul root este corect.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: Descriptorul de implementare {0} de la linia {1} are elementul root {2} dar necesit\u0103 elementul root {3}. 
+unexpected.root.element.explanation=Elementul root al descriptorului de implementare este incorect.
+unexpected.root.element.useraction=Corecta\u021bi elementul root al descriptorului de implementare.
 
 root.element.not.found=CWWKC2253E: Nu se poate localiza elementul root al descriptorului de implementare {0} la linia {1}.
 root.element.not.found.explanation=Elementul root lipsea din descriptorul de implementare.
@@ -66,25 +79,157 @@ unexpected.child.element=CWWKC2259E: Element copil nea\u015fteptat {3} al elemen
 unexpected.child.element.explanation=S-a \u00eent\u00e2lnit un element care nu este definit s\u0103 fie \u00een descriptorul de implementare.
 unexpected.child.element.useraction=Corecta\u0163i descriptorul de implementare.
 
-invalid.href.prefix=CWWKC2260E: Valoarea de atribut href a elementului {2} nu \u00eencepe cu {3} \u00een descriptorul de implementare {0} la linia {1}.
-invalid.href.prefix.explanation=Un atribut href trebuie s\u0103 \u00eenceap\u0103 cu calea corect\u0103 spre descriptorul la care se face referire.
-invalid.href.prefix.useraction=Corecta\u0163i descriptorul de implementare.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: A ap\u0103rut o eroare \u00een timp ce se \u00eencerca determinarea versiunii descriptorului de implementare {0}.
-unknown.deployment.descriptor.version.explanation=Versiunea sau spa\u0163iul nume a fost invalid(\u0103) sau nu s-a specificat \u00een elementul root al descriptorului de implementare.
-unknown.deployment.descriptor.version.useraction=Verifica\u0163i \u015fi corecta\u0163i versiunea sau spa\u0163iul nume \u00een elementul root al descriptorului de implementare.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E: Serverul nu poate procesa versiunea {3} \u015fi spa\u0163iul nume {2} din descriptorul de implementare {0} la linia {1}.
-invalid.deployment.descriptor.namespace.explanation=Fie versiunea specificat\u0103 \u015fi spa\u0163iul nume nu sunt valide, fie configura\u0163ia serverului nu are o caracteristic\u0103 ce poate procesa versiunea \u015fi spa\u0163iul nume.
-invalid.deployment.descriptor.namespace.useraction=Verifica\u0163i \u015fi corecta\u0163i versiunea sau spa\u0163iul nume din elementul root al descriptorului de implementare, sau verifica\u0163i \u015fi corecta\u0163i caracteristicile din configura\u0163ia serverului.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: Prefixul HREF {4} nu se potrive\u0219te cu prefixul a\u0219teptat {5} \u00een valoarea HREF {3} a elementului {2} \u00een descriptorul de implementare {0} la linia {1}.
+invalid.href.prefix.explanation=Prefixul valorii HREF specific\u0103 o cale c\u0103tre un descriptor de implementare la care se face referire. Prefixul nu se potrive\u0219te cu calea descriptorului de implementare la care se face referire.
+invalid.href.prefix.useraction=Corecta\u021bi valoarea HREF.
 
-invalid.deployment.descriptor.version=CWWKC2263E: Atributul versiunii {2} specificat \u00een descriptorul de implementare {0} la linia {1} nu este valid.
-invalid.deployment.descriptor.version.explanation=S-a specificat o versiune invalid\u0103 \u00een elementul root al descriptorului de implementare.
-invalid.deployment.descriptor.version.useraction=Verifica\u0163i \u015fi corecta\u0163i num\u0103rul versiunii \u00een elementul root al descriptorului de implementare.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Valoare HREF non-valid\u0103 {3} de element {2} \u00een descriptorul de implementare {0} la linia {1}.
+invalid.href.explanation=Valoarea elementului nu este o valoare HREF valid\u0103: Valoarea trebuie s\u0103 aib\u0103 un caracter '#' \u0219i caracterul '#' nu trebuie s\u0103 fie primul sau ultimul caracter al valorii.
+invalid.href.useraction=Corecta\u021bi valoarea HREF.
 
-missing.deployment.descriptor.namespace=CWWKC2264E: A survenit o eroare la \u00eencercarea de determinare a spa\u0163iului nume al descriptorului de implementare {0} la linia {1}.
-missing.deployment.descriptor.namespace.explanation=S-a specificat un spa\u0163iu nume invalid \u00een elementul root al descriptorului de implementare.
-missing.deployment.descriptor.namespace.useraction=Verifica\u0163i \u015fi corecta\u0163i spa\u0163iul nume \u00een elementul root al descriptorului de implementare.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: O valoare HREF face referire la un obiect de tip {5} dar necesit\u0103 un obiect de tipul {4}. Eroarea apare \u00een valoarea HREF {3} a elementului {2} \u00een descriptorul de implementare {0} la linia {1}.
+incorrect.href.type.explanation=Tipul obiectului la care se face referire prin valoarea HREF este incorect.
+incorrect.href.type.useraction=Corecta\u021bi valoarea HREF.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: Nu s-a putut rezolva ID-ul HREF {4} \u00een cadrul descriptorului de implementare {5}, al valorii HREF {3} al elementului {2} \u00een descriptorul de implementare {0} la linia {1}.
+unresolved.href.explanation=ID-ul HREF nu se rezolv\u0103 cu niciun element disponibil al descriptorului de implementare la care se face referire. ID-ul HREF trebuie s\u0103 se potriveasc\u0103 cu ID-ul unui element al descriptorului de implementare la care se face referire.
+unresolved.href.useraction=Corecta\u021bi fie ID-ul HREF \u00een descriptorul de implementare care face transmisia, fie valoarea ID-ului \u00een descriptorul de implementare la care se face referire.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: Niciun atribut HREF nu este prezent \u00een elementul {2} \u00een descriptorul de implementare {0} la linia {1}.
+missing.href.explanation=Elementul este necesar pentru a furniza un atribut HREF. Un atribut HREF are numele \u201ehref\u201d.
+missing.href.useraction=Ad\u0103uga\u021bi un atribut HREF elementului.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: Descriptorul de implementare {0} de la linia {1} specific\u0103 versiunea nesuportat\u0103 {2}.
+unsupported.descriptor.version.explanation=Versiunea care a fost specificat\u0103 \u00een descriptorul de implementare nu este valid\u0103 pentru acel tip de descriptor de implementare.
+unsupported.descriptor.version.useraction=Corecta\u021bi versiunea specificat\u0103 \u00een descriptorul de implementare.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: Descriptorul de implementare {0} de la linia {1} specific\u0103 spa\u021biul de nume nesuportat {2}.
+unsupported.descriptor.namespace.explanation=Spa\u021biul de nume care a fost specificat \u00een descriptorul de implementare nu este valid pentru acel tip de descriptor de implementare.
+unsupported.descriptor.namespace.useraction=Corecta\u021bi spa\u021biul de nume specificat \u00een descriptorul de implementare.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: Descriptorul de implementare {0} de la linia {1} specific\u0103 versiunea {2} \u0219i spa\u021biul de nume {3} dar ar trebui s\u0103 aib\u0103 spa\u021biul de nume {4}.
+unsupported.descriptor.namespace.for.version.explanation=Descriptorul de implementare are un spa\u021biu de nume incorect specificat pentru versiunea specificat\u0103. Spa\u021biul de nume a fost ignorat.
+unsupported.descriptor.namespace.for.version.useraction=Corecta\u021bi spa\u021biul de nume la valoarea valid\u0103 pentru versiunea specificat\u0103.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: Descriptorul de implementare {0} de la linia {1} specific\u0103 versiunea {2}, care este mai mare dec\u00e2t versiunea actual\u0103 furnizat\u0103 {3}.
+unprovisioned.descriptor.version.explanation=Versiunea care a fost specificat\u0103 pentru descriptorul de implementare nu este suportat\u0103 de caracteristicile furnizate de configura\u021bia serverului.
+unprovisioned.descriptor.version.useraction=Actualiza\u021bi configura\u021bia serverului pentru a furniza caracteristici care suport\u0103 versiunea.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: Descriptorul de implementare {0} de la linia {1} nu are spa\u021biul de nume necesar {2}.
+missing.descriptor.namespace.explanation=Descriptorul de implementare trebuie s\u0103 aib\u0103 spa\u021biul de nume specificat.
+missing.descriptor.namespace.useraction=Ad\u0103uga\u021bi spa\u021biul de nume necesar la descriptorul de implementare.
 
 missing.deployment.descriptor.version=CWWKC2265E: A survenit o eroare la \u00eencercarea de determinare a versiunii descriptorului de implementare {0} la linia {1}.
 missing.deployment.descriptor.version.explanation=Versiunea nu a fost specificat\u0103 \u00een elementul root al descriptorului de implementare.
@@ -96,27 +241,37 @@ at.most.one.occurrence.useraction=Corecta\u0163i descriptorul de implementare.
 
 required.method.element.missing=CWWKC2267E: Elementul {2} trebuie s\u0103 aib\u0103 cel pu\u0163in un element copil {3} definit \u00een descriptorul de implementare {0} la linia {1}.
 required.method.element.missing.explanation=Un element copil necesar lipse\u015fte din elementul p\u0103rinte specificat. 
-required.method.element.missing.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar.
+required.method.element.missing.useraction=Corecta\u0163i descriptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar.
 
 runasmode.missing.specifiedID.element=CWWKC2268E: Atunci c\u00e2nd un atribut de mod al elementului <run-as-mode> este setat pe SPECIFIED_IDENTITY \u00een descriptorul de implementare {0}  la lina {1}, elementul copil <specified-identity> trebuie definit.
 runasmode.missing.specifiedID.element.explanation=Elementul copil <specified-identity> lipse\u015fte pentru elementul <run-as-mode> care are modul setat la SPECIFIED_IDENTITY.
-runasmode.missing.specifiedID.element.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar sau modifica\u0163i modul.
+runasmode.missing.specifiedID.element.useraction=Corecta\u0163i descriptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar sau modifica\u0163i modul.
 
 found.duplicate.ejbname=CWWKC2269E: Atributul nume pentru toate elementele de bean <session> \u015fi <message-driven> trebuie s\u0103 fie unic. S-a g\u0103sit numele duplicat {1} \u00een descriptorul de implementare {0}.
-found.duplicate.ejbname.explanation=Toate numele bean-urilor de sesiune \u015fi controlate de mesaje trebuie s\u0103 fie unice.  Numele bean-ului specificat este folosit mai mult de o dat\u0103.
+found.duplicate.ejbname.explanation=Toate numele bean-urilor de sesiune \u015fi controlate de mesaje trebuie s\u0103 fie unice. Numele bean-ului specificat este folosit mai mult de o dat\u0103.
 found.duplicate.ejbname.useraction=Corecta\u0163i descriptorul de implementare redenumind toate numele de bean de \u00eentreprindere duplicate.
 
 found.duplicate.attribute.value=CWWKC2270E: Atributul {2} pentru toate elementele {1} trebuie s\u0103 fie unic. S-a g\u0103sit numele duplicat {3} \u00een descriptorul de implementare {0}.
 found.duplicate.attribute.value.explanation=Valoarea atributului specificat trebuie s\u0103 fie unic\u0103 pe toate elementele de acela\u015fi tip. 
 found.duplicate.attribute.value.useraction=Corecta\u0163i descriptorul de implementare redenumind toate valorile de atribut duplicate.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A fost g\u0103sit un fi\u015fier validation.xml pentru modulul {0}. Dar, fi\u015fierul validation.xml nu este configurat pentru validare; de aceea acest fi\u015fier XML este ignorat.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService nu poate crea o instan\u0163\u0103 ValidatorFactory din cauza unei erori la parsarea fi\u015fierului validation.xml cu fi\u015fierul de schem\u0103 validation-configuration-1.0.xsd. Aceast\u0103 eroare poate indica c\u0103 fi\u015fierul validation.xml nu este destinat pentru folosire de c\u0103tre runtime-ul Bean Validation; de aceea, acest fi\u015fier XML este ignorat.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Dac\u0103 fi\u015fierul validation.xml nu este pentru crearea unei instan\u0163e ValidatorFactory, atunci ignora\u0163i mesajul. \u00cens\u0103 dac\u0103 fi\u015fierul validation.xml este destinat pentru crearea unei instan\u0163e ValidatorFactory, atnci exist\u0103 o problem\u0103.  Activa\u0163i urm\u0103rirea pentru runtime-ul Bean Validation \u00een serverul de aplica\u0163ii, opri\u0163i aplica\u0163ia, reporni\u0163i aplica\u0163ia \u015fi examina\u0163i fi\u015fierul de ie\u015fire a urm\u0103rii pentru un eveniment de urm\u0103rire cum ar fi: Excep\u0163ie nea\u015fteptat\u0103 la \u00eencercarea opera\u0163iei unmarshall pentru fi\u015fierul validation.xml. Examina\u0163i urma stivei pentru excep\u0163ie pentru a v\u0103 ajuta la depanare.
+unexpected.root.element.bval=CWWKC2271W: Ignorarea fi\u0219ierului de configurare de validare bean {0} a modulului {1}. La linia num\u0103rul {2}, \u00eenlocui\u021bi elementul root {3} cu {4}.
+unexpected.root.element.bval.explanation=Fi\u0219ierul de configurare de validare nu se potrive\u0219te cu schemele de configurare de validare (validation-configuration-1.0.xsd \u0219i validation-configuration-1.1.xsd). Fie fi\u0219ierul de configurare nu a fost destinat valid\u0103rii bean-ului, fie fi\u0219ierul de configurare este afectat. Fi\u0219ierul de configurare este ignorat. BeanValidationService nu va crea un ValidatorFactory.
+unexpected.root.element.bval.useraction=Dac\u0103 fi\u0219ierul de configurare de validare nu este destinat valid\u0103rii bean-ului, mesajul de avertizare poate fi ignorat. Dac\u0103 fi\u0219ierul de configurare de validare este destinat valid\u0103rii bean-ului, nu ignora\u021bi mesajul de avertizare. Serviciul de validare al bean-ului nu ruleaz\u0103 \u00een mod corespunz\u0103tor. Pentru a diagnostica problema, activa\u021bi urm\u0103rirea timpului de rulare de validare bean, opri\u021bi \u0219i reporni\u021bi serverul \u0219i examina\u021bi ie\u0219irea urm\u0103ririi pentru excep\u021bii nea\u0219teptate legate de validarea bean-ului. De exemplu, \u201eExcep\u021bie nea\u0219teptat\u0103 atunci c\u00e2nd se \u00eencearc\u0103 deserializarea fi\u0219ierului validation.xml.\u201d Examina\u021bi stiva de apeluri a excep\u021biei pentru asisten\u021b\u0103 de depanare.
 
 xml.error=CWWKC2272E: A survenit o eroare la parsarea descriptorului de implementare {0} la linia {1}. Mesajul de eroare a fost: {2}
 xml.error.explanation=A survenit o eroare la parsarea descriptorului de implementare XML. Face\u0163i referire la mesajul de eroare pentru explica\u0163ii suplimentare.
@@ -134,10 +289,95 @@ invalid.long.value=CWWKC2275E: Valoarea {2} din descriptorul de implementare {0}
 invalid.long.value.explanation=Descriptorul de implementare specific\u0103 o valoare ce nu este un num\u0103r din intervalul -9223372036854775808 la 9223372036854775807.
 invalid.long.value.useraction=Corecta\u0163i descriptorul de implementare pentru a utiliza un num\u0103r lung valid.
 
-module.name.not.specified=CWWKC2276E: Elementul {0} trebuie s\u0103 specifice un atribut de nume de modul.
-module.name.not.specified.explanation=Configura\u0163ia de legare \u015fi extensie pentru EJB \u015fi pentru modulele web trebuie s\u0103 con\u0163in\u0103 un atribut moduleName care specific\u0103 modulul la care se aplic\u0103 configura\u0163ia. 
-module.name.not.specified.useraction=Ad\u0103uga\u0163i un atribut moduleName la elementul web-bnd, web-ext, ejb-bnd sau ejb-ext. 
+# ---
 
-module.name.invalid=CWWKC2277E: Unul sau mai multe nume de pe elementul {1} sunt invalide. Numele invalid(e) de modul(e) este (sunt) {0}.
-module.name.invalid.explanation=Configura\u0163ia de legare \u015fi extensie pentru modulele web trebuie s\u0103 specifice un atribut valid moduleName. Cel pu\u0163in o configura\u0163ie a specificat un nume invalid de modul. Numele modulului trebuie s\u0103 fie numele fi\u015fierului arhiv\u0103 care con\u0163ine aplica\u0163ia web sau EJB.
-module.name.invalid.useraction=Corecta\u0163i atributul moduleName \u00een configura\u0163ia de legare sau de extensie. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: Atributul ''moduleName'' lipse\u0219te din una sau mai multe leg\u0103ri ''{1}'' \u0219i elemente de configurare extensie ale aplica\u021biei {0}.
+module.name.not.specified.explanation=Leg\u0103rile \u0219i elementele de configurare extensie trebuie s\u0103 aib\u0103 un atribut  'moduleName'.
+module.name.not.specified.useraction=Asigura\u021bi-v\u0103 c\u0103 un atribut 'moduleName' este prezent \u00een toate leg\u0103rile \u0219i elementele de configurare extensie.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: Nu se pot g\u0103si atributele {2} ''moduleName'' specificate \u00een leg\u0103rile ''{1}'' \u0219i elementele de configurare extensie ale aplica\u021biei {0}.  Numele modulelor de aplica\u021bie sunt {3}.
+module.name.not.found.explanation=Atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie trebuie s\u0103 se potriveasc\u0103 cu numele modulelor de aplica\u021bie.
+module.name.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie se potrivesc cu numele modulelor de aplica\u021bie. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: Atributele duplicat {2} ''moduleName'' sunt specificate \u00een leg\u0103rile ''{1}'' \u0219i elementele de configurare extensie ale aplica\u021biei {0}.
+module.name.duplicated.explanation=Este posibil ca atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie s\u0103 nu fie duplicate.
+module.name.duplicated.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie sunt unice. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: Descriptorul de implementare {0} de la linia {1} specific\u0103 ID-ul public nesuportat {2}.
+unsupported.descriptor.public.id.explanation=Valoarea ID-ului public nu este valid\u0103 pentru descriptorul de implementare.
+unsupported.descriptor.public.id.useraction=Corecta\u021bi valoarea ID-ului public al descriptorului de implementare.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: Descriptorul de implementare {0} nu are o versiune, un ID-ul PUBLIC sau un spa\u021biu de nume.
+missing.descriptor.version.explanation=Un descriptor de implementare trebuie s\u0103 aib\u0103 o versiune, un ID public sau un spa\u021biu de nume.
+missing.descriptor.version.useraction=Ad\u0103uga\u021bi o versiune, un ID-ul public sau un spa\u021biu de nume la descriptorul de implementare. Versiunea ad\u0103ugat\u0103, ID-ul public sau spa\u021biul de nume trebuie s\u0103 se potriveasc\u0103 cu con\u021binutul descriptorului de implementare.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: Descriptorul de implementare {0} de la linia {1} specific\u0103 spa\u021biul de nume {2} dar ar trebui s\u0103 aib\u0103 spa\u021biul de nume {3}.
+incorrect.descriptor.namespace.explanation=Un anumit spa\u021biu de nume este a\u0219teptat \u00een cadrul descriptorului de implementare. Spa\u021biul de nume incorect a fost ignorat.
+incorrect.descriptor.namespace.useraction=Modifica\u021bi spa\u021biul de nume \u00een cadrul descriptorului de implementare la valoarea a\u0219teptat\u0103.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: Descriptorul de implementare {0} de la linia {1} specific\u0103 versiunea {2} \u0219i spa\u021biul de nume {3} dar pentru acea versiune ar trebui s\u0103 aib\u0103 spa\u021biul de nume {4}.
+incorrect.descriptor.namespace.for.version.explanation=Un anumit spa\u021biu de nume este a\u0219teptat \u00een cadrul descriptorului de implementare pentru versiunea specificat\u0103. Spa\u021biul de nume incorect a fost ignorat.
+incorrect.descriptor.namespace.for.version.useraction=Modifica\u021bi spa\u021biul de nume \u00een cadrul descriptorului de implementare la valoarea a\u0219teptat\u0103.
+
