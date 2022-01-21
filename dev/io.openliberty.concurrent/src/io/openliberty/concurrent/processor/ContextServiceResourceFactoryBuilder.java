@@ -285,9 +285,11 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
         BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
 
+        // jndiName is included in the filter to avoid matching similar services reregistered
+        // as non-ResourceFactories by the JNDI implementation
         StringBuilder contextServiceFilter = new StringBuilder(200);
         contextServiceFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, contextServiceID));
-        contextServiceFilter.append("(component.name=com.ibm.ws.context.service))");
+        contextServiceFilter.append("(component.name=com.ibm.ws.context.service)(jndiName=*))");
 
         ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, contextServiceID, contextServiceFilter.toString(), declaringApplication);
         try {
