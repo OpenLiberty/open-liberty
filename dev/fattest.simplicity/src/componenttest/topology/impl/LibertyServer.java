@@ -1223,6 +1223,16 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        return Integer.valueOf(versionElements[i]);
+    }
+
     public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
                                              boolean validateApps, boolean expectStartFailure,
                                              String serverCmd, List<String> args,
@@ -1351,6 +1361,11 @@ public class LibertyServer implements LogMonitorClient {
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
+
+            // If we are running on Java 18+, then we need to explicitly enable the security manager
+            if (javaVersion() >= 18) {
+                JVM_ARGS += " -Djava.security.manager=allow";
+            }
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -1665,6 +1680,7 @@ public class LibertyServer implements LogMonitorClient {
                 w.write("websphere.java.security.unique=true".getBytes());
                 w.write("\n".getBytes());
             }
+
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
@@ -4100,6 +4116,7 @@ public class LibertyServer implements LogMonitorClient {
                 optionList.add(option.toString());
             }
         }
+
         this.setJvmOptions(optionList);
     }
 
