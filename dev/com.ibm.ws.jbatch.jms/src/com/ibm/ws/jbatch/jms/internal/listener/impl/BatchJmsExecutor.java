@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,14 @@
  *******************************************************************************/
 
 package com.ibm.ws.jbatch.jms.internal.listener.impl;
+
+import static com.ibm.websphere.ras.Tr.debug;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_COMPONENT;
+import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_MODULE;
+import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_NAME;
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -30,9 +38,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
@@ -46,7 +51,7 @@ import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.resource.ResourceConfig;
@@ -68,104 +73,130 @@ public class BatchJmsExecutor {
 
     private static final TraceComponent tc = Tr.register(BatchJmsExecutor.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");
     
-    static final String REFERENCE_ENDPOINT_ACTIVATION_SERVICES = "JmsActivationSpec";
-    static final String REFERENCE_ADMIN_OBJECT_SERVICES = "JmsQueue";
-    static final String OPERATION_GROUP = "operationGroup";
+    private static final String REFERENCE_ENDPOINT_ACTIVATION_SERVICES = "JmsActivationSpec";
+    private static final String REFERENCE_ADMIN_OBJECT_SERVICES = "JmsQueue";
+    private static final String OPERATION_GROUP = "operationGroup";
 
-    private ComponentContext cContext = null;
-
-    private final AtomicServiceReference<RRSXAResourceFactory> rrsXAResFactorySvcRef = new AtomicServiceReference<RRSXAResourceFactory>("rRSXAResourceFactory");
-
+    private final ComponentContext context;
+    private final RRSXAResourceFactory xaResourceFactory;
     /**
-     * Connection factory for dispatch queue
+     * For creating jms dispatcher connection factory
      */
-    private ConnectionFactory jmsCF = null;
-
-    /**
-     * For creating jms dispatcher connnection factory
-     */
-    private ResourceFactory jmsConnectionFactory;
-    
+    private final ResourceFactory resourceFactory;
     /**
      * Resource configuration factory used to create a resource info object.
      */
-    private ResourceConfigFactory resourceConfigFactory;
+    private final ResourceConfigFactory resourceConfigFactory;      
+    private final WSJobRepository jobRepository;
+    private final ServiceReference<AdminObjectService> adminObjectServiceRef;
     
+    /**
+     * Connection factory for dispatch queue
+     */
+    private ConnectionFactory jmsConnectionFactory;
     private BatchOperationGroup batchOperationGroup;
-        
-    private WSJobRepository jobRepo;
+    private boolean deactivated = false;
  
-    @Reference(service = ResourceConfigFactory.class)
-    protected void setResourceConfigFactory(ResourceConfigFactory svc) {
-        resourceConfigFactory = svc;
+    @Activate
+    public BatchJmsExecutor(ComponentContext context, Map<String, Object> config,
+            @Reference ApplicationStartBarrier requiredButNotUsed,
+            @Reference ServerStartedPhase2 requiredButNotUsed2,
+            @Reference J2EENameFactory j2eeNameFactory,
+            @Reference ResourceConfigFactory resourceConfigFactory,
+            @Reference WSJobRepository jobRepository,
+            @Reference(cardinality=OPTIONAL, policyOption=GREEDY) RRSXAResourceFactory xaResourceFactory,
+            @Reference(target="(id=unbound)", cardinality=OPTIONAL, policyOption=GREEDY) ResourceFactory jmsConnectionFactory,
+            @Reference(name=REFERENCE_ADMIN_OBJECT_SERVICES, target="(id=unbound)") ServiceReference<AdminObjectService> adminObjectServiceRef,
+            @Reference(name=REFERENCE_ENDPOINT_ACTIVATION_SERVICES, target="(id=unbound)") ServiceReference<EndpointActivationService> jmsActivationSpecRef) {
+            
+        this.context = context;
+        this.j2eeName = j2eeNameFactory.create(J2EE_APP_NAME, J2EE_APP_MODULE, J2EE_APP_COMPONENT);    
+        this.resourceConfigFactory = resourceConfigFactory;
+        this.jobRepository = jobRepository;
+        this.xaResourceFactory = xaResourceFactory;
+        this.resourceFactory = jmsConnectionFactory;
+        this.adminObjectServiceRef = adminObjectServiceRef;         
+        this.endpointActivationSpecId = (String) jmsActivationSpecRef.getProperty("id");
+         
+        final String adminId = (String) adminObjectServiceRef.getProperty("id");  
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "BatchJmsExecutor: id=" + adminId);
+       
+        if (null == adminId) { 
+            this.jmsQueueJndi = null;
+        } else {
+            this.jmsQueueJndi = (String) adminObjectServiceRef.getProperty("jndiName");
+        
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "BatchJmsExecutor: jndiName=" + jmsQueueJndi);
+            }
+            addAdminObjectService(adminObjectServiceRef, adminId, false);
+            // If an AdminObjectService has both an id and a jndiName that are
+            // different, it will be added to the set twice.
+            if (jmsQueueJndi != null && !jmsQueueJndi.equals(adminId)) {
+                addAdminObjectService(adminObjectServiceRef, jmsQueueJndi, true);
+            }
+        }
+        
+        if(FrameworkState.isStopping()) {
+            debug(this, tc, "BatchJmsExecutor" , "Framework stopping");
+            return;             
+        }
+            
+        setOperationGroup(config);
+    
+        
+        try {
+            activateEndpoint();
+        } catch (Exception e) {
+            Tr.error(tc, "error.batch.executor.activate.failure", new Object[] { e.toString() });
+        }
+               
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "activationSvcId : " + endpointActivationSpecId);
+        
+        if (null != endpointActivationSpecId) {
+            EndpointActivationServiceInfo easInfo = createEndpointActivationServiceInfo(endpointActivationSpecId);
+        
+            // Deactivate any endpoints that were using the old service.
+            if (easInfo.service != null) deactivateEndpoints(easInfo.endpointFactories);
+        
+            // Activate any endpoints with the new service.
+            easInfo.setReference(jmsActivationSpecRef);
+        
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "easInfo=" + easInfo);
+        
+            activateDeferredEndpoints(easInfo.endpointFactories);
+        }
+        
     }
-
-    @Reference(target = "(id=unbound)", cardinality=ReferenceCardinality.OPTIONAL, policy=ReferencePolicy.STATIC, policyOption=ReferencePolicyOption.GREEDY )
-    protected void setJMSConnectionFactory(ResourceFactory factory, Map<String, String> serviceProps) {
-        jmsConnectionFactory = factory;
-    }
-
+    
     public BatchOperationGroup getBatchOperationGroup(){
         return batchOperationGroup;
     }
     
-    @Reference
-    protected void setWSJobRepository(WSJobRepository jobRepository){
-        jobRepo = jobRepository;
+    public WSJobRepository getWSJobRepository() {
+        return jobRepository;
     }
     
-    public WSJobRepository getWSJobRepository(){
-        return jobRepo;
-    }
-    
-    protected void unsetJMSConnectionFactory(ResourceFactory svc) {
-        if (svc == jmsConnectionFactory) {
-            jmsConnectionFactory = null;
-        }
-    }
-
-    protected void unsetResourceConfigFactory(ResourceConfigFactory svc) {
-        if (svc == resourceConfigFactory) {
-            resourceConfigFactory = null;
-        }
-    }
-    
-    /**
-     * id unique per activation spec configuration
-     */
-    private static final String ACT_SPEC_CFG_ID = "id";
-
     /**
      * ActivationSpec metatype constant for maxEndpoints
      */
     private static final String ACT_SPEC_CFG_MAX_ENDPOINTS = "maxEndpoints";
 
-    /**
-     * id unique per jms queue configuration
-     */
-    private static final String ADMIN_OBJECT_CFG_ID = "id";
-
-    /**
-     * Queue metatype constant for jndiName
-     */
-    private static final String ADMIN_OBJECT_CFG_JNDI_NAME = "jndiName";
-
     /*
-     * Since our listener is a part of the feature, there is no J2EE application
-     * But since jca needs this, create an artificial one.
+     * Since our listener is a part of the batch feature, there is no J2EE application
+     * but since JCA needs a name, create an artificial one.
      */
-    private J2EENameFactory j2eeNameFactory = null;
-    private J2EEName j2eeName = null;
+    private final J2EEName j2eeName;
 
     /**
      * Configuration value from server.xml for activation spec
      */
-    private String endpointActivationSpecId = null;
+    private final String endpointActivationSpecId;
 
     /**
      * Configuration value from server.xml for destination queue
      */
-    private String endpointDestinationQueueJndi = null;
+    private final String jmsQueueJndi;
 
     /**
      * A collection of MessageEndpointFactoryImpl that reference an object.
@@ -297,7 +328,7 @@ public class BatchJmsExecutor {
                 return null;
             }
             if (service == null) {
-                service = (EndpointActivationService) cContext.locateService(REFERENCE_ENDPOINT_ACTIVATION_SERVICES, serviceRef);
+                service = (EndpointActivationService) context.locateService(REFERENCE_ENDPOINT_ACTIVATION_SERVICES, serviceRef);
             }
             return service;
         }
@@ -316,38 +347,9 @@ public class BatchJmsExecutor {
     private final Map<String, EndpointActivationServiceInfo> endpointActivationServices = new HashMap<String, EndpointActivationServiceInfo>();
 
     /**
-     * True when the server is in the 'started' state.
-     */
-    private volatile boolean isServerStarted = false;
-
-    /**
-     * 
      * All endpoints factories being tracked by the runtime.
      */
     private final Set<MessageEndpointFactoryImpl> endpointFactories = new LinkedHashSet<MessageEndpointFactoryImpl>();
-
-    /**
-     * Declarative Services method for setting the RRS XA resource factory
-     * service implementation reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    @Reference(name = "rRSXAResourceFactory", service = RRSXAResourceFactory.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setRRSXAResourceFactory(ServiceReference<RRSXAResourceFactory> ref) {
-        rrsXAResFactorySvcRef.setReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the RRS XA resource factory
-     * service implementation reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void unsetRRSXAResourceFactory(ServiceReference<RRSXAResourceFactory> ref) {
-        rrsXAResFactorySvcRef.unsetReference(ref);
-    }
 
     /**
      * Method to get the XAResource corresponding to an ActivationSpec from the
@@ -360,42 +362,11 @@ public class BatchJmsExecutor {
      * @return the XAResource
      */
     public XAResource getRRSXAResource(String activationSpecId, Xid xid) throws XAResourceNotAvailableException {
-        return rrsXAResFactorySvcRef.getServiceWithException().getTwoPhaseXAResource(xid);
+        return xaResourceFactory.getTwoPhaseXAResource(xid);
     }
 
     public boolean isResourceFactorySet() {
-        return rrsXAResFactorySvcRef.getService() != null;
-    }
-
-    /**
-     * Initialize info for jms queue of the activation spec
-     * 
-     * @param reference
-     */
-    @Reference(service = AdminObjectService.class, target = "(id=unbound)")
-    protected void setJmsQueue(ServiceReference<AdminObjectService> reference) {
-        
-        String id = (String) reference.getProperty(ADMIN_OBJECT_CFG_ID);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "addAdminObjectService: id=" + id);
-        }
-
-        if (id != null) {
-            String jndiName = (String) reference.getProperty(ADMIN_OBJECT_CFG_JNDI_NAME);
-            endpointDestinationQueueJndi = jndiName;
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "addAdminObjectService: jndiName=" + jndiName);
-            }
-            addAdminObjectService(reference, id, false);
-            // If an AdminObjectService has both an id and a jndiName that are
-            // different, it
-            // will be added to the set twice.
-            if (jndiName != null && !jndiName.equals(id)) {
-                addAdminObjectService(reference, jndiName, true);
-            }
-        }
+        return (null != xaResourceFactory);
     }
 
     /**
@@ -421,21 +392,6 @@ public class BatchJmsExecutor {
                 deactivateEndpoints(aosInfo.endpointFactories);
             }
             activateDeferredEndpoints(aosInfo.endpointFactories);
-        }
-    }
-
-    /**
-     * Declarative service method for removing an AdminObjectService.
-     */
-    protected synchronized void unsetJmsQueue(ServiceReference<AdminObjectService> reference) {
-        String id = (String) reference.getProperty(ADMIN_OBJECT_CFG_ID);
-        if (id != null) {
-            removeAdminObjectService(reference, id, false);
-
-            String jndiName = (String) reference.getProperty(ADMIN_OBJECT_CFG_JNDI_NAME);
-            if (jndiName != null && !jndiName.equals(id)) {
-                removeAdminObjectService(reference, jndiName, true);
-            }
         }
     }
 
@@ -500,41 +456,11 @@ public class BatchJmsExecutor {
         }
     }
 
-    @Reference(service = EndpointActivationService.class, target = "(id=unbound)")
-    protected void setJmsActivationSpec(ServiceReference<EndpointActivationService> reference) {
-        String activationSvcId = (String) reference.getProperty(ACT_SPEC_CFG_ID);
-        setEndpointActivationSpecId(activationSvcId);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(BatchJmsExecutor.this, tc, "activationSvcId : " + activationSvcId);
-        }
-
-        if (activationSvcId != null) {
-
-            EndpointActivationServiceInfo easInfo = createEndpointActivationServiceInfo(activationSvcId);
-
-            // Deactivate any endpoints that were using the old service.
-            if (easInfo.service != null) {
-                deactivateEndpoints(easInfo.endpointFactories);
-            }
-
-            // Activate any endpoints with the new service.
-            easInfo.setReference(reference);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(BatchJmsExecutor.this, tc, "easInfo=" + easInfo.toString());
-            }
-
-            activateDeferredEndpoints(easInfo.endpointFactories);
-        }
-    }
-
-
     /**
      * Declarative service method for removing an EndpointActivationService.
      */
     protected synchronized void unsetJmsActivationSpec(ServiceReference<EndpointActivationService> reference) {
-        String activationSvcId = (String) reference.getProperty(ACT_SPEC_CFG_ID);
+        String activationSvcId = (String) reference.getProperty("id");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "activationSvcId : " + activationSvcId);
         }
@@ -580,95 +506,31 @@ public class BatchJmsExecutor {
             endpointActivationServices.remove(easInfo.id);
         }
     }
-
-    /**
-     * Declarative services method that is invoked once the ServerStarted
-     * service is available. Only after this method is invoked are the
-     * activation specifications activated thereby ensuring that endpoints are
-     * activated only after server startup.
-     * 
-     * @param serverStarted
-     *            The server started instance
-     */
-    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
-        	isServerStarted = true;
-
-	        // batch activation spec should be available already
-	        activateDeferredEndpoints(endpointFactories);
-    }
-
-    /**
-     * Declarative services method for unsetting the ServerStarted service
-     * instance.
-     * 
-     * @param serverStarted
-     *            The Started service instance
-     */    
-    protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
-        // No cleanup is needed since the server has stopped.
-        isServerStarted = false;
-    }
-
-
-    private void setOperationGroupFromConfig(String[] opGroups) {
-    	BatchOperationGroup newBatchOperationGroup = new BatchOperationGroup();
-    	if (opGroups != null) {
-    		for (String group : opGroups) {
-    			newBatchOperationGroup.addGroup(group);
-    		}
-    	}
-    	// Doesn't seem to be any need for any synchronization here.  Up until this assignment is made it seems fine to use
-    	// the old value, even though the modified method may have already been called.
-    	this.batchOperationGroup = newBatchOperationGroup;
-    }
-
-    private boolean deactivated = false;
-
-    /*
-     * All services are ready, activate endpoint
-     */
-    @Activate
-    protected void activate(ComponentContext context, Map<String, Object> config) throws Exception {
-        
-    	if(!FrameworkState.isStopping()) {
-        
-        	String[] opGroups = (String[])config.get(OPERATION_GROUP);
-        	setOperationGroupFromConfig(opGroups);
-    
-            cContext = context;
-            j2eeName = j2eeNameFactory.create(BatchJmsConstants.J2EE_APP_NAME, BatchJmsConstants.J2EE_APP_MODULE, BatchJmsConstants.J2EE_APP_COMPONENT);
-    
-            rrsXAResFactorySvcRef.activate(context);
-                    
-            try {
-                activateEndpoint();
-            } catch (Exception e) {
-                Tr.error(tc, "error.batch.executor.activate.failure", new Object[] { e.toString() });
-            }
-    	}
-
-    }
-
+   
     @Modified
-    protected void modified(ComponentContext context, Map<String, Object> config) throws Exception {
+    protected void setOperationGroup(Map<String, Object> config) {
     	String[] opGroups = (String[])config.get(OPERATION_GROUP);
-    	setOperationGroupFromConfig(opGroups);
+    	BatchOperationGroup newBatchOperationGroup = new BatchOperationGroup();
+        if (opGroups != null) {
+        	for (String group : opGroups) {
+        		newBatchOperationGroup.addGroup(group);
+        	}
+        }
+        // Doesn't seem to be any need for any synchronization here.  Up until this assignment is made it seems fine to use
+        // the old value, even though the modified method may have already been called.
+        this.batchOperationGroup = newBatchOperationGroup;
     }
 
     @Deactivate
     protected void deactivate() {
-    	deactivated = true;
-    }
-
-    public void setContext(ComponentContext cContext) {
-        this.cContext = cContext;
-    }
-
-    // Declarative services bind method
-    @Reference
-    protected void setJEENameFactory(J2EENameFactory svc) {
-        j2eeNameFactory = svc;
+        final String adminId = (String) adminObjectServiceRef.getProperty("id");
+    	if (null != adminId) {
+            removeAdminObjectService(adminObjectServiceRef, adminId, false);
+            if (jmsQueueJndi != null && !jmsQueueJndi.equals(adminId)) {
+                removeAdminObjectService(adminObjectServiceRef, jmsQueueJndi, true);
+            }
+        }
+    	deactivated = true; 	
     }
 
     /**
@@ -770,7 +632,7 @@ public class BatchJmsExecutor {
         // implicitly wait for the destination. If the destination isn't
         // specified at all, then the activation will fail.
 
-        if (mef.adminObjectServiceInfo != null && mef.adminObjectServiceInfo.id.equalsIgnoreCase(endpointDestinationQueueJndi) && mef.adminObjectServiceInfo.serviceRef == null) {
+        if (mef.adminObjectServiceInfo != null && mef.adminObjectServiceInfo.id.equalsIgnoreCase(jmsQueueJndi) && mef.adminObjectServiceInfo.serviceRef == null) {
             //Tr.warning(tc, "warning.batch.destination.queue.not.found", new Object[] { mef.getJ2EEName().getComponent(), mef.adminObjectServiceInfo.id });
             //make this message debug because it could be possible we are here but doesn't mean the config is bad.
             //Since this process is asynchronous, this method could be call later when the config is avaible.
@@ -792,13 +654,6 @@ public class BatchJmsExecutor {
             return;
         }
         
-        if (!isServerStarted) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "server is not started");
-            }
-            return;
-        }
-
         /**
          * only activate batch activation spec
          */
@@ -879,55 +734,33 @@ public class BatchJmsExecutor {
         }
     }
 
-    /**
-     * Getter for activation spec id
-     * 
-     * @return
-     */
     public String getEndpointActivationSpecId() {
         return endpointActivationSpecId;
     }
 
-    /**
-     * Setter for activation spec id
-     * 
-     * @return
-     */
-    public void setEndpointActivationSpecId(String id) {
-        this.endpointActivationSpecId = id;
-    }
-    /**
-     * Getter for queue id
-     * 
-     * @return
-     */
     public String getEndpointDestinationQueueJndi() {
-        return endpointDestinationQueueJndi;
+        return jmsQueueJndi;
     }
 
-    /**
-     * 
-     * @return the jmsCf
-     */
     protected ConnectionFactory getConnectionFactory() {
     	if (deactivated) {
     		throw new IllegalStateException("Executor = " + this + " has been deactivated, but getConnectionFactory() called.");
     	}
 
-    	// Lazily instantiate the 'jmsCF' return value
-    	if (jmsCF == null) {
-    		if(jmsConnectionFactory != null) {
+    	// Lazily instantiate the 'jmsConnectionFactory' return value
+    	if (jmsConnectionFactory == null) {
+    		if(resourceFactory != null) {
     			// If the optional reference is set.  Note that, because this is a static, not an optional reference,
     			// we don't have to worry about synchronizing the setting of the reference.  That is, we can assume
     			// it's already been set (or not) at this point, without worrying about another thread coming in.
     			createConnectionFactoryInstance();
             } else {
                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                     Tr.debug(tc, "jmsConnectionFactory not set, exiting");
+                     Tr.debug(tc, "resourceFactory not set, exiting");
                  }
     		}
     	}
-        return jmsCF;
+        return jmsConnectionFactory;
     }
     
     /*
@@ -939,10 +772,10 @@ public class BatchJmsExecutor {
         try {
             ResourceConfig cfResourceConfig = resourceConfigFactory.createResourceConfig(ConnectionFactory.class.getName());
             cfResourceConfig.setResAuthType(ResourceInfo.AUTH_CONTAINER);
-            jmsCF = (ConnectionFactory) jmsConnectionFactory.createResource(cfResourceConfig);
+            jmsConnectionFactory = (ConnectionFactory) resourceFactory.createResource(cfResourceConfig);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "jmsConnectionFactory = " + jmsConnectionFactory.toString() + ", jmsCf = " + jmsCF.toString());
+                Tr.debug(tc, "resourceFactory = " + resourceFactory.toString() + ", jmsCf = " + jmsConnectionFactory.toString());
             }
         } catch (Exception e) {
             Tr.error(tc, "error.batch.executor.jms.create.failure", new Object[] { e });
