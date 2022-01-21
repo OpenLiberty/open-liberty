@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -44,11 +44,13 @@ Export-Package: \
 	componenttest.topology.impl;version=1.0.16,\
 	componenttest.topology.ldap;version=1.0.16,\
 	componenttest.topology.utils;version=1.0.16,\
-	componenttest.vulnerability;version=1.0.16
+	componenttest.vulnerability;version=1.0.16,\
+	io.openliberty.checkpoint.spi
 	
 Private-Package: \
 	componenttest.annotation.processor,\
-	componenttest.depchain
+	componenttest.depchain,\
+	componenttest.topology.impl.probe
 
 Include-Resource: \
     resources/init-sqlserver.sql=resources/init-sqlserver.sql, \
@@ -96,4 +98,7 @@ test.project: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	io.openliberty.jakarta.cdi.3.0;version=latest
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	io.openliberty.org.eclipse.openj9.criu;version=latest

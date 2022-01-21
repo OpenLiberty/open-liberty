@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,15 @@
 package componenttest.topology.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -93,6 +96,7 @@ public class JavaInfo {
     final Vendor VENDOR;
     final int SERVICE_RELEASE;
     final int FIXPACK;
+    Optional<Boolean> criuSupported = Optional.empty();
 
     private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
         JAVA_HOME = jdk_home;
@@ -273,6 +277,58 @@ public class JavaInfo {
         return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
     }
 
+    synchronized public Boolean isCriuSupported() {
+        return criuSupported.orElseGet(() -> probeCriuSupport());
+    }
+
+    /**
+     * Check for criu support by invoking a criu operation in a forked jvm.
+     * As a side effect, update this instance of JavaInfo with the result of the check.
+     *
+     * @return Boolean indicating if criu is supported.
+     */
+    private Boolean probeCriuSupport() {
+        final String method = "probeCriuSupport";
+        //Find path to fattest.simplicity.jar jar on file system (the jar containing this class).
+        String simplicityJar;
+        try {
+            simplicityJar = new File(componenttest.topology.impl.probe.CriuSupport.class.getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()).getPath();
+        } catch (URISyntaxException e) {
+            throw new Error(e);
+        }
+        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
+                        "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
+        Process proc;
+        try {
+            proc = procBuilder.start();
+            proc.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            String line;
+            int lines = 0;
+            //If there is any error output then criu support not present (or could not be determined).
+            while ((line = br.readLine()) != null) {
+                if (lines == 0) {
+                    Log.info(c, method, "STDERROR from probeCRIUSupport: ");
+                }
+                lines++;
+                Log.info(c, method, "STDERR: " + line);
+            }
+            if (lines == 0) {
+                criuSupported = Optional.of(Boolean.TRUE);
+            } else {
+                criuSupported = Optional.of(Boolean.FALSE);
+            }
+        } catch (IOException | InterruptedException ex) {
+            Log.info(c, method, "Exception launching process to probe for criu support:" + ex);
+            criuSupported = Optional.of(Boolean.FALSE);
+        }
+        Log.info(c, method, "Executed isCriuSupported on Jinfo: " + this);
+        return criuSupported.get();
+    }
+
     private static JavaInfo runJavaVersion(String javaHome) throws IOException {
         final String m = "runJavaVersion";
 
@@ -366,6 +422,8 @@ public class JavaInfo {
 
     @Override
     public String toString() {
-        return "major=" + MAJOR + "  minor=" + MINOR + " service release=" + SERVICE_RELEASE + " fixpack=" + FIXPACK + "  vendor=" + VENDOR + "  javaHome=" + JAVA_HOME;
+        return "major=" + MAJOR + ",  minor=" + MINOR + ", service release=" + SERVICE_RELEASE
+               + ", fixpack=" + FIXPACK + ",  vendor=" + VENDOR
+               + ",  javaHome=" + JAVA_HOME + ", criuSupported=" + criuSupported;
     }
 }

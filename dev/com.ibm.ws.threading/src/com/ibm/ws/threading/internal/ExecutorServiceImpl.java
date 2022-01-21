@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
@@ -53,7 +54,7 @@ import com.ibm.wsspi.threading.WSExecutorService;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = "service.vendor=IBM",
            service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
-public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce {
+public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce, AvailableProcessorsListener {
 
     /**
      * The target ExecutorService.
@@ -136,6 +137,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      */
     @Activate
     protected void activate(Map<String, Object> componentConfig) {
+        CpuInfo.addAvailableProcessorsListener(this);
         this.componentConfig = componentConfig;
         createExecutor();
     }
@@ -154,6 +156,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      */
     @Deactivate
     protected void deactivate(int reason) {
+        CpuInfo.removeAvailableProcessorsListener(this);
         threadPoolController.deactivate();
 
         // Shutdown the thread pool and let users finish using it
@@ -181,8 +184,9 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
             return;
         }
 
-        if (threadPoolController != null)
+        if (threadPoolController != null) {
             threadPoolController.deactivate();
+        }
 
         ThreadPoolExecutor oldPool = threadPool;
 
@@ -197,7 +201,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         }
 
         if (coreThreads < 0) {
-            coreThreads = 2 * CpuInfo.getAvailableProcessors();
+            coreThreads = 2 * CpuInfo.getAvailableProcessors().get();
         }
 
         // Make sure coreThreads is not bigger than maxThreads, subject to MINIMUM_POOL_SIZE limit
@@ -209,6 +213,9 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         RejectedExecutionHandler rejectedExecutionHandler = new ExpandPolicy(workQueue, this);
 
+        if (threadPool != null) {
+            ((BoundedBuffer<Runnable>) threadPool.getQueue()).removeFromAvailableProcessors();
+        }
         threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, 0, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
 
         threadPoolController = new ThreadPoolController(this, threadPool);
@@ -535,5 +542,17 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public boolean quiesceStarted() {
         return this.serverStopping;
+    }
+
+    @Override
+    public void setAvailableProcessors(int availableProcessors) {
+        if (componentConfig != null) {
+            int coreThreads = Integer.parseInt(String.valueOf(componentConfig.get("coreThreads")));
+            if (coreThreads < 0) {
+                // Create a new executor; the number of cpus available to the process has changed
+                // which causes the algorithms used by ThreadPoolExecutor to change
+                createExecutor();
+            }
+        }
     }
 }
