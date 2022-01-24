@@ -46,7 +46,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      */
     private static final TraceComponent tc = Tr.register(SQLSharedServerLeaseLog.class,
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
-
     // Reference to the dedicated non-transactional datasource
     private DataSource _theDS;
 
@@ -313,7 +312,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLeasesForPeers");
+            Tr.exit(tc, "getPeerLeasesFromTable");
     }
 
     /**
@@ -530,6 +529,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     Tr.debug(tc, "Lease select update failed but server is stopping, exception: " + currentEx);
             }
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "queryLeaseTable", newTable);
         return newTable;
@@ -711,6 +711,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Set the logRetriesEnabled flag to true");
             _logRetriesEnabled = true;
+            SQLRetry.setLogRetriesEnabled(true);
             // If the logRetriesEnabled flag has been explicitly set, then we will retry SQL operations on all databases.
             _sqlTransientErrorHandlingEnabled = true;
         } else {
@@ -721,6 +722,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             if (_logRetriesEnabled && _isNonStandard)
                 _sqlTransientErrorHandlingEnabled = false;
             _logRetriesEnabled = false;
+            SQLRetry.setLogRetriesEnabled(false);
         }
 
         // Have we acquired the reference to the DataSource yet?
@@ -912,15 +914,9 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 Tr.debug(tc, "Set autocommit FALSE on the connection");
             conn.setAutoCommit(false);
 
-            // We can go ahead and write to the Database
-            _deleteStmt = conn.createStatement();
+            // We can go ahead and delete from the Database
 
-            String deleteString = "DELETE FROM " + _leaseTableName +
-                                  " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
-
-            int ret = _deleteStmt.executeUpdate(deleteString);
+            int ret = deleteLeaseFromTable(recoveryIdentity, conn);
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Have deleted row with return: " + ret + ", commit the change");
@@ -997,6 +993,24 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteServerLease");
+    }
+
+    private int deleteLeaseFromTable(String recoveryIdentity, Connection conn) throws Exception {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteLeaseFromTable", new java.lang.Object[] { recoveryIdentity, conn, this });
+
+        _deleteStmt = conn.createStatement();
+
+        String deleteString = "DELETE FROM " + _leaseTableName +
+                              " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
+
+        int ret = _deleteStmt.executeUpdate(deleteString);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteLeaseFromTable", ret);
+        return ret;
     }
 
     /**
@@ -1385,15 +1399,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 Tr.debug(tc, "Set autocommit FALSE on the connection");
             conn.setAutoCommit(false);
 
-            // We can go ahead and write to the Database
-            _deleteStmt = conn.createStatement();
-
-            String deleteString = "DELETE FROM " + _leaseTableName +
-                                  " WHERE SERVER_IDENTITY='" + _recoveryIdentity + "'";
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "delete server lease for " + _recoveryIdentity + "using string " + deleteString);
-
-            int ret = _deleteStmt.executeUpdate(deleteString);
+            // We can go ahead and delete from the Database
+            int ret = deleteLeaseFromTable(_recoveryIdentity, conn);
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Have deleted row with return: " + ret + ", commit the change");
