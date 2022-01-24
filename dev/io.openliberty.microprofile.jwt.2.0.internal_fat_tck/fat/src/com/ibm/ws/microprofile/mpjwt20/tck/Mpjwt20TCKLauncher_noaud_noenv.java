@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.mpjwt20.tck;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,7 +52,16 @@ public class Mpjwt20TCKLauncher_noaud_noenv {
     public void launchMpjwt20TCKLauncher_noaud_noenv() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_noaud_noenv.xml", Collections.emptyMap(), Collections.emptySet());
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        }
 
     }
 }

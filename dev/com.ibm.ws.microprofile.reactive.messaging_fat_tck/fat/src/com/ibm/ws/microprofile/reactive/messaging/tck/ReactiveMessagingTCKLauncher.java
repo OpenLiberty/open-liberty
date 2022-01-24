@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.tck;
 
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,7 +49,16 @@ public class ReactiveMessagingTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessagingTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.messaging_fat_tck", this.getClass() + ":launchReactiveMessagingTck");
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
     }
 
 }

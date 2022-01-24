@@ -12,6 +12,7 @@ package io.openliberty.microprofile.health40.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,7 +58,16 @@ public class Health40TCKLauncher {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.health.4.0.internal_fat_tck", this.getClass() + ":launchHealth40Tck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        }
     }
 
 }

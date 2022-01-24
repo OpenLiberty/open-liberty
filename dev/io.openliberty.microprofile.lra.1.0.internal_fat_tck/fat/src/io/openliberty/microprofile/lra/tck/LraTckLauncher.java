@@ -12,6 +12,7 @@ package io.openliberty.microprofile.lra.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -86,7 +87,16 @@ public class LraTckLauncher {
         additionalProps.put("test", "TckTests#*LRA*+join*");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
 
     }
 
@@ -110,7 +120,16 @@ public class LraTckLauncher {
         additionalProps.put("lraTestsToRun", "**/*Test*.java");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        }
 
     }
 }

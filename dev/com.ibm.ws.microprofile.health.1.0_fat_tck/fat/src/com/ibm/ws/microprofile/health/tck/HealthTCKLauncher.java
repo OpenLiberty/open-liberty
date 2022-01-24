@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.health.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,7 +58,16 @@ public class HealthTCKLauncher {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.health.1.0_fat_tck", this.getClass() + ":launchHealthTck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
     }
 
 }

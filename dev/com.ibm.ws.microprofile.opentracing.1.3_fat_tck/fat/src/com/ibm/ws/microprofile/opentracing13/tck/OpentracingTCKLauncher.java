@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.opentracing13.tck;
 
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +50,15 @@ public class OpentracingTCKLauncher {
     public void launchOpentracingTck() throws Exception {
         // Use default tck-suite.xml
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingTck");
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
     }
 }
