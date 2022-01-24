@@ -24,6 +24,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 
+import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationInfoType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationValueType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationsType;
@@ -46,7 +47,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueType;
 
 public class AsmClassAnalyzer {
     private final static String JavaLangObject = "java.lang.Object";
-    private final static int ASM_LEVEL = Opcodes.ASM8;
+    private final static int ASM_LEVEL = ASMHelper.getCurrentASM();
 
     public static final ClassInfoType analyzeClass(String targetClass, byte[] bytecode, InnerOuterResolver ioResolver) throws ClassScannerException {
         if (bytecode == null || bytecode.length == 0) {

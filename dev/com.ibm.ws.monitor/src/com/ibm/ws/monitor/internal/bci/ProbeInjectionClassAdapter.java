@@ -28,6 +28,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.monitor.internal.ProbeImpl;
 import com.ibm.ws.monitor.internal.ProbeListener;
 import com.ibm.ws.monitor.internal.ProbeManagerImpl;
@@ -51,7 +52,7 @@ public class ProbeInjectionClassAdapter extends ClassVisitor {
     Set<ProbeListener> interestedListeners;
 
     public ProbeInjectionClassAdapter(ClassVisitor delegate, ProbeManagerImpl probeManager, final Class<?> clazz) {
-        super(Opcodes.ASM8, delegate);
+        super(ASMHelper.getCurrentASM(), delegate);
         this.probeManager = probeManager;
         this.probedClasses = clazz;
         this.interestedListeners = probeManager.getInterestedByClass(clazz);

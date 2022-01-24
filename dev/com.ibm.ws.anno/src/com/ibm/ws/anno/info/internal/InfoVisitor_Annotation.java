@@ -19,6 +19,8 @@ import org.objectweb.asm.Type;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import com.ibm.ws.asm.ASMHelper;
+
 // An annotation visitor is used for all processing of annotation occurrences.
 //
 // Annotation visitors have a mandated calling sequence:
@@ -105,7 +107,7 @@ public abstract class InfoVisitor_Annotation extends AnnotationVisitor {
     // annotation class name.  (This is not validated.)
 
     protected InfoVisitor_Annotation(InfoStoreImpl iStore) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         this.infoStore = iStore;
 

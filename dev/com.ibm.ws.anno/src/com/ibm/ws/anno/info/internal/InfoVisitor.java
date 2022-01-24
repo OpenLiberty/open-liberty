@@ -27,6 +27,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.info.internal.InfoVisitor_Annotation.AnnotationInfoVisitor;
 
+import com.ibm.ws.asm.ASMHelper;
+
 // Visit rules:
 //
 // Class Visitor:
@@ -132,7 +134,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl>[] paramAnnotations;
 
         public InfoMethodVisitor() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
         }
 
         @SuppressWarnings("unchecked")
@@ -220,7 +222,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl> annotations;
 
         public InfoFieldVisitor() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
         }
 
         void setFieldInfo(FieldInfoImpl fii) {
@@ -286,7 +288,7 @@ public class InfoVisitor extends ClassVisitor {
     //
 
     public InfoVisitor(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         this.infoStore = infoStore;
         this.externalName = externalName;

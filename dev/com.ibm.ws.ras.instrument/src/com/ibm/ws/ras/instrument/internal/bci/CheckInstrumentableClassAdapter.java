@@ -47,7 +47,7 @@ public class CheckInstrumentableClassAdapter extends ClassVisitor {
      *            the visitor to delegate to
      */
     public CheckInstrumentableClassAdapter(ClassVisitor visitor) {
-        super(Opcodes.ASM8, visitor);
+        super(Opcodes.ASM9, visitor);
     }
 
     /**

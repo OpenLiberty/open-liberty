@@ -19,7 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor;
 import com.ibm.wsspi.request.probe.bci.RequestProbeHelper;
-
+import com.ibm.ws.asm.ASMHelper;
 
 /**
  *
@@ -35,7 +35,7 @@ public class RequestProbeClassVisitor extends ClassVisitor {
 	 * @param arg0
 	 */
 	public RequestProbeClassVisitor(ClassVisitor cv, String clsName) {
-		super(Opcodes.ASM8, cv);
+		super(ASMHelper.getCurrentASM(), cv);
 		this.classname = clsName;
 	}
 

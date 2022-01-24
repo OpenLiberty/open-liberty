@@ -31,6 +31,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.monitor.internal.MonitoringProxyActivator;
 import com.ibm.ws.monitor.internal.ProbeImpl;
 import com.ibm.ws.monitor.internal.ProbeListener;
@@ -186,7 +187,7 @@ public class ProbeMethodAdapter extends MethodVisitor {
      * @param methodInfo
      */
     ProbeMethodAdapter(MethodVisitor visitor, MethodInfo methodInfo) {
-        super(Opcodes.ASM8, visitor);
+        super(ASMHelper.getCurrentASM(), visitor);
         this.visitor = visitor;
         this.methodInfo = methodInfo;
     }
@@ -195,7 +196,7 @@ public class ProbeMethodAdapter extends MethodVisitor {
      * Create an instance of a {@code ProbeMethodAdapter}.
      */
     protected ProbeMethodAdapter(ProbeMethodAdapter probeMethodAdapter, MethodInfo methodInfo) {
-        super(Opcodes.ASM8, probeMethodAdapter);
+        super(ASMHelper.getCurrentASM(), probeMethodAdapter);
         this.probeMethodAdapter = probeMethodAdapter;
         this.visitor = probeMethodAdapter.getVisitor();
         this.methodInfo = methodInfo;

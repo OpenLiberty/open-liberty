@@ -17,6 +17,8 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import com.ibm.ws.asm.ASMHelper;
+
 // An annotation visitor is used for all processing of annotation occurrences.
 //
 // Annotation visitors have a mandated calling sequence:
@@ -84,7 +86,7 @@ public abstract class AnnotationVisitorImpl_Info extends AnnotationVisitor {
     // annotation class name.  (This is not validated.)
 
     protected AnnotationVisitorImpl_Info(InfoStoreImpl iStore) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
         String methodName = "<init>";
 
         this.infoStore = iStore;

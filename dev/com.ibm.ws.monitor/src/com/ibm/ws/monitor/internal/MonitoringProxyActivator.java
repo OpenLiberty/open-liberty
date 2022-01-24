@@ -39,6 +39,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentException;
 
+import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.monitor.internal.bci.ProbeMethodAdapter;
 import com.ibm.ws.monitor.internal.bci.remap.AddVersionFieldClassAdapter;
@@ -316,7 +317,7 @@ public class MonitoringProxyActivator {
         InputStream inputStream = classUrl.openStream();
 
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM8) {
+        reader.accept(new ClassVisitor(ASMHelper.getCurrentASM()) {
         }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
 
