@@ -1153,11 +1153,14 @@ public class MvnUtils {
     }
 
     public static void preparePublicationFile(String type, String productVersion) {
-        Path outputPath = Paths.get("results", RepeatTestFilter.getRepeatActionsAsString() + "_CertificationResults.txt");
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
+        String OLVersion = getOLVersion(productVersion);
+
+        Path outputPath = Paths.get("results", OLVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc");
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
-        JavaInfo javaInfo = JavaInfo.forCurrentVM();
         try {
             factory = SAXParserFactory.newInstance();
             saxParser = factory.newSAXParser();
@@ -1190,34 +1193,35 @@ public class MvnUtils {
             String specVersion = specParts[1];
             String rcVersion = specParts[2];
             String osVersion = System.getProperty("os.name");
-            String javaVersion = System.getProperty("java.vm.info").replaceAll("\\r|\\n", ";  ");
-            String javaMajorVersion = String.valueOf(javaInfo.majorVersion());
-            String OLVersion = getOLVersion(productVersion);
-            if(type.equals("MicroProfile")){
-                String[] documentParts = { ":page-layout: certification \n= TCK Results\n\n",
+            String javaVersion = System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')';
+
+            String[] documentStart = {":page-layout: certification \n= TCK Results\n\n",
                                         "As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ", 
-                                        type, //MicroProfile or Jakarta EE
-                                        specName, " ", specVersion, 
+                                        type //MicroProfile or Jakarta EE
+                                        };
+            for (String part : documentStart) {
+                adocContent += part;
+            }
+            if(type.equals("MicroProfile")){
+                String[] documentMain = {specName, " ", specVersion, 
                                         ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
-                                        " Certification Summary \n\n* Product Name, Version and download URL (if applicable):\n",
+                                        " Certification Summary (Java ", javaMajorVersion,")\n\n",
+                                        "* Product Name, Version and download URL (if applicable):\n",
                                         "+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
                                         OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
                                         "* Specification Name, Version and download URL:\n+\n", 
                                         "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-", specVersion, rcVersion, 
                                         "/microprofile-", MPSpecLower, "-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
-                                        rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                        rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-Java",javaMajorVersion,"-TCKResults.html[TCK results summary]\n\n",
                                         "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
                                         "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
-                                        osVersion,"\n\n= Test results:\n\n [source,xml]\n----\n" };
-                for (String part : documentParts) {
+                                        osVersion,"\n\nTest results:\n\n[source, txt]\n----\n" };
+                for (String part : documentMain) {
                     adocContent += part;
                 }
             }
             else{
-                String[] documentParts = { ":page-layout: certification \n= TCK Results\n\n",
-                                       "As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ", 
-                                       type, //MicroProfile or Jakarta EE
-                                       ".\n\n== Open Liberty ", OLVersion, " ", type, specName, " using Java ", javaMajorVersion, " Certification Summary",
+                String[] documentMain = {".\n\n== Open Liberty ", OLVersion, " ", type, specName, " Certification Summary (Java ", javaMajorVersion,")\n\n",
                                        " \n\n* Product Name, Version and download URL (if applicable):",
                                        "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/",OLVersion,".zip[Open Liberty ",OLVersion, "]\n\n",
                                        "* Specification Name, Version and download URL:\n+\n", 
@@ -1225,11 +1229,11 @@ public class MvnUtils {
                                        "* TCK Version, digital SHA-256 fingerprint and download URL:\n+\n", 
                                        "https://download.eclipse.org/jakartaee/",".zip[Jakarta EE]\n",
                                        "SHA-256: ``\n\n",
-                                       "*Public URL of TCK Results Summary:\n",
-                                       "+link:", OLVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                       "* Public URL of TCK Results Summary:\n+\n",
+                                       "link:", OLVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
                                        "* Any Additional Specification Certification Requirements:\n\n",
                                        "+\nJakarta Contexts and Dependency Injection\n",
-                                       "link:https://https://download.eclipse.org/jakartaee/cdi/","SHA-256:\n``\n",
+                                       "link:https://download.eclipse.org/jakartaee/cdi/","SHA-256:\n``\n",
                                        "+\nJakarta Bean Validation\n",
                                        "link:https://download.eclipse.org/jakartaee/bean-validation/","SHA-256:\n``\n",
                                        "+\nDependency Injection\n",
@@ -1240,8 +1244,8 @@ public class MvnUtils {
                                        "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n",
                                        osVersion,
                                        "\n\n* Challenges\n+\nhttps://github.com/eclipse-ee4j/faces-api/issues/1474[JSF Signature Test Challenge (signaturetest)]",
-                                       "\n\n= Test results:\n\n [source,xml]\n----\n" };
-                for (String part : documentParts) {
+                                       "\n\nTest results:\n\n[source,txt]\n----\n" };
+                for (String part : documentMain) {
                     adocContent += part;
                 }
             }
@@ -1294,47 +1298,6 @@ public class MvnUtils {
             e.printStackTrace();
         }
         return returnArray;
-    }
-
-    public static String getLogs(){
-        Path serverPath = Paths.get("output","servers");
-        String folderName = "";
-        String logsDir = "";
-        File serverDirectory = serverPath.toFile();
-        if(files.exists(serverPath))) {
-            return logsDir;
-        }/*
-        for (final File folder : serverDirectory.listFiles()) {
-            return "";
-            if (folder.isDirectory()) {
-                folderName = folder.getName();
-                logsDir= "output/servers/"+folderName+"/logs/messages.log";
-                File f = new File(logsDir);
-                if(f.exists()) {
-                    return logsDir;
-                }
-            }
-        }*/
-        return "NOT FOUND";
-    }
-
-    public static String getOLVersion(){
-        String messagesPath = getLogs();
-        /*Pattern olVersionPattern = Pattern.compile("product = WebSphere Application Server (.*?) ", Pattern.DOTALL);
-        try (BufferedReader br = new BufferedReader(new FileReader(getLogs()))) { //TO CHANGE
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                if(sCurrentLine.startsWith("product = WebSphere Application Server ")){
-                    Matcher olVersionMatcher = olVersionPattern.matcher(sCurrentLine);
-                    if (olVersionMatcher.find()) {
-                        return olVersionMatcher.group(1);
-                    }
-                }
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        return messagesPath;
     }
 
     public static String capitalise(String spec) {
