@@ -22,10 +22,6 @@ Bundle-Description: Provides interceptors for Jakarta Concurrency; version=${bVe
 
 WS-TraceGroup: concurrent
 
-# temporary package for simulating possible additions to Jakarta Concurrency
-Export-Package: \
-  prototype.enterprise.concurrent
-
 Import-Package: !jakarta.interceptor,*
 
 Private-Package: \

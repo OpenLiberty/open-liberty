@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
 -bundles=\
   io.openliberty.concurrent.cdi.jakarta
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core
