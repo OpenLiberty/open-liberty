@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -34,8 +35,6 @@ final class ResultHandler {
     private final AtomicNumHandlersInFlight numHandlersInFlight;
     /** Total number of IO events received from native library */
     private long numItemsFromNative = 0;
-    /** Maximum number of handler threads in the entire system. */
-    private final int maxHandlers;
     /** Number of handlers currently waiting for an event. */
     private final AtomicInteger handlersWaiting = new AtomicInteger(0);
     /** Port number used in the native library */
@@ -58,7 +57,7 @@ final class ResultHandler {
         }
 
         // Based on num processors (or explicit config)
-        this.maxHandlers = AsyncProperties.maxThreadsWaitingForEvents;
+        Integer maxHandlers = AsyncProperties.maxThreadsWaitingForEvents;
 
         if (AsyncLibrary.getInstance().hasCapability(IAsyncProvider.CAP_BATCH_IO)) {
             this.batchSize = AsyncProperties.maximumBatchedEvents;
@@ -72,10 +71,10 @@ final class ResultHandler {
 
         this.completionPort = port;
         this.myGroupID = groupID;
-        this.numHandlersInFlight = new AtomicNumHandlersInFlight(this.maxHandlers);
+        this.numHandlersInFlight = new AtomicNumHandlersInFlight(maxHandlers);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "completionPort=" + port + " group=" + groupID + " maxHandlers=" + this.maxHandlers);
+            Tr.debug(tc, "completionPort=" + port + " group=" + groupID + " maxHandlers=" + (maxHandlers == null ? CpuInfo.getAvailableProcessors().get() : maxHandlers));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -457,16 +456,20 @@ final class ResultHandler {
      */
     final static class AtomicNumHandlersInFlight {
         private final AtomicInteger myNumHandlersInFlight;
-        private final int myMaxHandlers;
+        private int myMaxHandlers;
+        private final boolean recalculate;
 
         /**
          * Constructor.
          *
          * @param max
          */
-        AtomicNumHandlersInFlight(int max) {
+        AtomicNumHandlersInFlight(Integer max) {
             this.myNumHandlersInFlight = new AtomicInteger(0);
-            this.myMaxHandlers = max;
+            if (max != null) {
+                this.myMaxHandlers = max.intValue();
+            }
+            recalculate = (max == null ? true : false);
         }
 
         /**
@@ -489,7 +492,8 @@ final class ResultHandler {
             boolean succ = false;
             do {
                 int val = this.myNumHandlersInFlight.get();
-                if (val < this.myMaxHandlers) {
+                int check = recalculate ? CpuInfo.getAvailableProcessors().get() : myMaxHandlers;
+                if (val < check) {
                     int newval = val + 1;
                     succ = this.myNumHandlersInFlight.weakCompareAndSet(val, newval);
                     if (succ) {

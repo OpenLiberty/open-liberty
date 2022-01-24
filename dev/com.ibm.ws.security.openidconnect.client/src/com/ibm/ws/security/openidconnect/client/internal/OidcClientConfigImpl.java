@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 /**
  * Process the OpenID Connect client entry in the server.xml file
@@ -1070,11 +1071,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json");
             HttpResponse result = null;
+
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
                 logErrorMessage(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
                 throw ioex;
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
             StatusLine statusLine = result.getStatusLine();
             int iStatusCode = statusLine.getStatusCode();
@@ -1137,16 +1143,22 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
         HttpClient client = null;
         if (isSecure) {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-            }
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } else {
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                if (addBasicAuthHeader) {
+                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                } else {
+                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                }
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
         } else {
             if (addBasicAuthHeader) {

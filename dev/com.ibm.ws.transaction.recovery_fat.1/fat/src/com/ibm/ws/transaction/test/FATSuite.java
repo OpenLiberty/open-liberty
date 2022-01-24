@@ -16,8 +16,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.test.tests.RecoveryTest;
-import com.ibm.ws.transaction.test.tests.XAFlowTest;
-import com.ibm.ws.transaction.test.tests.WaitForRecoveryTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;

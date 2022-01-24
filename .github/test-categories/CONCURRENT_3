@@ -14,3 +14,4 @@ com.ibm.ws.concurrent_fat_work
 com.ibm.ws.context_fat
 com.ibm.ws.context_fat_customproviders
 com.ibm.ws.context_fat_serialization
+io.openliberty.jakarta.concurrency.3.0_fat_tck

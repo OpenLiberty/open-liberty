@@ -250,6 +250,19 @@ public class Entity_EJB extends JPAFATServletClient {
             ClassloaderElement loader = new ClassloaderElement();
             loader.getCommonLibraryRefs().add("OpenJPALib");
             cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("20") && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            /*
+             * TODO: OpenJPA 2.2.x (JPA 2.0) has hard dependencies on the Oracle JDBC driver classes and
+             * therefore requires the driver be added to the application classloader
+             *
+             * https://issues.apache.org/jira/projects/OPENJPA/issues/OPENJPA-2602
+             * https://issues.apache.org/jira/projects/OPENJPA/issues/OPENJPA-2690
+             */
+
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("AnonymousJDBCLib");
+            cel.add(loader);
         }
 
         server.setMarkToEndOfLog();

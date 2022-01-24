@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,13 +51,6 @@ public class EJBNewTxDBRoSTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // TODO: Revisit this after all features required by this FAT suite are available.
-        // The test-specific public features, txtest-x.y, are not in the repeatable EE feature
-        // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.2 to enable transactions-2.0
-        // The following sets the appropriate features for the EE9 repeatable tests.
-        if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jdbc-4.2", "servlet-5.0", "componenttest-2.0", "enterpriseBeansLite-4.0"));
-        }
         // Use ShrinkHelper to build the Ears & Wars
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)

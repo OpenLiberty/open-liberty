@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
 package com.ibm.ws.rest.handler.validator.fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static com.ibm.ws.rest.handler.validator.fat.FATSuite.expectedJmsProviderSpecVersion;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -44,14 +45,12 @@ import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResul
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
 public class ValidateOpenApiSchemaTest extends FATServletClient {
 
     @Server("com.ibm.ws.rest.handler.validator.openapi.fat")
@@ -190,7 +189,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("info"));
         assertEquals(err, "IBM", json.getString("jmsProviderName"));
         assertEquals(err, "1.0", json.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", json.getString("jmsProviderSpecVersion"));
+        assertEquals(err, expectedJmsProviderSpecVersion(), json.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", json.getString("clientID"));
     }
 
@@ -200,14 +199,8 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDisableCloudantValidator() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        String featureToDisable = "cloudant-1.0";
-        try {
-            //Disable cloudant.
-            config.getFeatureManager().getFeatures().remove(featureToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+        //Disable cloudant.
+        try (AutoCloseable x = withoutFeatures("cloudant-1.0")) {
 
             //Test that cloudant elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -229,12 +222,6 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             assertTrue(err, pathsString.contains("/validation/jmsTopicConnectionFactory/"));
             assertTrue(err, pathsString.contains("/validation/jmsTopicConnectionFactory/{uid}"));
             assertTrue(err, paths.size() == 10);
-        } finally {
-            //Re-enable cloudant.
-            config.getFeatureManager().getFeatures().add(featureToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
         }
     }
 
@@ -243,14 +230,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDisableJCAValidator() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        List<String> featuresToDisable = Arrays.asList("jca-1.7", "jms-2.0", "wasjmsclient-2.0", "wasjmsserver-1.0");
-        try {
-            //Disable JCA (JMS 2.0 implicitly enabled it).
-            config.getFeatureManager().getFeatures().removeIf(f -> featuresToDisable.contains(f.toLowerCase()));
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
+        //Disable JCA (JMS 2.0 implicitly enabled it).
+        try (AutoCloseable x = withoutFeatures("jca", "jms", "wasjmsclient", "wasjmsserver",
+                                               "connectors", "messaging", "messagingClient", "messagingServer")) {
 
             //Test that JCA and JMS elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
@@ -276,12 +258,6 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             assertFalse(err, paths.containsKey("/validation/jmsTopicConnectionFactory/{uid}"));
             assertTrue(err, paths.size() == 4);
 
-        } finally {
-            //Re-enable disabled features.
-            config.getFeatureManager().getFeatures().addAll(featuresToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
         }
     }
 
@@ -290,15 +266,8 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDisableJDBCValidator() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        String featureToDisable = "jdbc-4.2";
-        try {
-            //Disable JDBC.
-            config.getFeatureManager().getFeatures().remove(featureToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
-
+        //Disable JDBC.
+        try (AutoCloseable x = withoutFeatures("jdbc")) {
             //Test that JDBC elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
             String yaml = request.run(String.class);
@@ -323,12 +292,6 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             assertTrue(err, paths.containsKey("/validation/jmsTopicConnectionFactory/{uid}"));
             assertTrue(err, paths.size() == 10);
 
-        } finally {
-            //Re-enable JDBC.
-            config.getFeatureManager().getFeatures().add(featureToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
         }
     }
 
@@ -337,15 +300,9 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDisableJMSValidator() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        List<String> featuresToDisable = Arrays.asList("jms-2.0", "wasjmsclient-2.0", "wasjmsserver-1.0");
-        try {
-            //Disable JMS features.
-            config.getFeatureManager().getFeatures().removeIf(f -> featuresToDisable.contains(f.toLowerCase()));
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
-
+        // Remove JMS
+        try (AutoCloseable x = withoutFeatures("jms", "wasjmsclient", "wasjmsserver",
+                                               "messaging", "messagingClient", "messagingServer")) {
             //Test that JMS elements have been removed from the OpenAPI document.
             HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
             String yaml = request.run(String.class);
@@ -369,13 +326,6 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
             assertFalse(err, paths.containsKey("/validation/jmsTopicConnectionFactory/"));
             assertFalse(err, paths.containsKey("/validation/jmsTopicConnectionFactory/{uid}"));
             assertTrue(err, paths.size() == 6);
-
-        } finally {
-            //Re-enable JMS features.
-            config.getFeatureManager().getFeatures().addAll(featuresToDisable);
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(null, true);
         }
     }
 
@@ -401,4 +351,48 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         assertNotNull(err, stack = json.getJsonArray("stack"));
         assertTrue(err, stack.size() > 3);
     }
+
+    /**
+     * Removes all of the listed features from the server.xml and returns an AutoClosable that restores the original configuration.
+     * <p>
+     * Can be used in a try-with-resources block to remove certain features within the block.
+     * <p>
+     * Features are matched ignoring the version to make it easier to use when tests are repeated.
+     *
+     * @param features the feature names to remove
+     * @return an AutoClosable which will restore the original server configuration
+     * @throws Exception if something goes wrong
+     */
+    private static AutoCloseable withoutFeatures(String... features) throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        ServerConfiguration originalConfig = config.clone();
+        List<String> featureRootsList = Arrays.stream(features)
+                        .map(ValidateOpenApiSchemaTest::getRoot)
+                        .collect(toList());
+
+        config.getFeatureManager().getFeatures().removeIf(f -> featureRootsList.contains(getRoot(f)));
+        try {
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(null, true);
+        } catch (Exception e) {
+            try {
+                server.updateServerConfiguration(originalConfig);
+            } catch (Exception e1) {
+                e.addSuppressed(e1);
+            }
+            throw e;
+        }
+
+        return () -> {
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(originalConfig);
+            server.waitForConfigUpdateInLogUsingMark(null, true);
+        };
+    }
+
+    private static String getRoot(String featureName) {
+        return featureName.replaceFirst("-\\d\\.\\d$", "").toLowerCase();
+    }
+
 }

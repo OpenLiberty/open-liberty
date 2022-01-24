@@ -48,6 +48,7 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientUtil {
     @SuppressWarnings("unused")
@@ -241,7 +242,15 @@ public class OidcClientUtil {
 
         HttpClient httpClient = baUsername != null ? oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useSystemPropertiesForHttpClientConnections) : oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
 
-        HttpResponse responseCode = httpClient.execute(request);
+        HttpResponse responseCode = null;
+
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+        try {
+            responseCode = httpClient.execute(request);
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
+        }
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put(ClientConstants.RESPONSEMAP_CODE, responseCode);

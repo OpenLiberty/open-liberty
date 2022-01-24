@@ -4,7 +4,7 @@
 USER_NAME=kyleaure
 
 #Version of docker image.  Increment if doing a new release
-VERSION=1.0
+VERSION=2.0
 
 #Name of the final image
 IMAGE_NAME=db2-krb5

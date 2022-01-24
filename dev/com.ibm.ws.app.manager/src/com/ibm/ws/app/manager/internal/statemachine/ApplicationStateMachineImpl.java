@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
+import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
 import com.ibm.ws.app.manager.internal.ApplicationDependency;
 import com.ibm.ws.app.manager.internal.ApplicationInstallInfo;
 import com.ibm.ws.app.manager.internal.FutureCollectionCompletionListener;
@@ -420,11 +421,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         private final AtomicReference<InternalState> immediateCallbackResult = new AtomicReference<InternalState>();
 
         StartActionCallback() {
-            _callbackState.set(CallbackState.CALLING);
+            setCallbackState(CallbackState.CALLING);
         }
 
         synchronized InternalState resolvedState() {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, CallbackState.WAITING)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, CallbackState.WAITING)) {
                 ApplicationDependency installCalledFuture;
                 while ((installCalledFuture = _notifyAppInstallCalled.poll()) != null) {
                     resolveDependency(installCalledFuture);
@@ -438,7 +439,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public synchronized void changed() {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 ApplicationDependency installCalledFuture;
                 while ((installCalledFuture = _notifyAppInstallCalled.poll()) != null) {
                     resolveDependency(installCalledFuture);
@@ -450,7 +451,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return;
             }
             if (switchInternalState(InternalState.STARTING, InternalState.STARTED)) {
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
             }
@@ -458,7 +459,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public void failed(Throwable t) {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 ApplicationDependency installCalledFuture;
                 while ((installCalledFuture = _notifyAppInstallCalled.poll()) != null) {
                     resolveDependency(installCalledFuture);
@@ -472,7 +473,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
             if (switchInternalState(InternalState.STARTING, InternalState.FAILED)) {
                 _failedThrowable = t;
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
             }
@@ -483,11 +484,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         private final AtomicReference<InternalState> immediateCallbackResult = new AtomicReference<InternalState>();
 
         StopActionCallback() {
-            _callbackState.set(CallbackState.CALLING);
+            setCallbackState(CallbackState.CALLING);
         }
 
         InternalState resolvedState() {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, CallbackState.WAITING)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, CallbackState.WAITING)) {
                 return null;
             } else {
                 if (_currentAction.getAndSet(null) == null) {
@@ -499,7 +500,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public void changed() {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 immediateCallbackResult.set(InternalState.STOPPED);
                 return;
             }
@@ -507,7 +508,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return;
             }
             if (switchInternalState(InternalState.STOPPING, InternalState.STOPPED)) {
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
             }
@@ -515,7 +516,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public void failed(Throwable t) {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 _failedThrowable = t;
                 immediateCallbackResult.set(InternalState.FAILED);
                 return;
@@ -525,7 +526,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
             if (switchInternalState(InternalState.STOPPING, InternalState.FAILED)) {
                 _failedThrowable = t;
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
             }
@@ -536,11 +537,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         private final AtomicReference<InternalState> immediateCallbackResult = new AtomicReference<InternalState>();
 
         ResolveFileCallback() {
-            _callbackState.set(CallbackState.CALLING);
+            setCallbackState(CallbackState.CALLING);
         }
 
         InternalState resolvedState() {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, CallbackState.WAITING)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, CallbackState.WAITING)) {
                 setInterruptible();
                 return null;
             } else {
@@ -567,7 +568,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             _appContainer.set(container);
             _resolvedLocation.set(resource);
 
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 immediateCallbackResult.set(InternalState.STARTING);
                 return;
             }
@@ -575,7 +576,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return;
             }
             if (_internalState.compareAndSet(InternalState.STOPPED, InternalState.STARTING)) {
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     setNonInterruptible();
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
@@ -584,7 +585,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public void failedCompletion(Throwable t) {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, null)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, null)) {
                 _failedThrowable = t;
                 immediateCallbackResult.set(InternalState.FAILED);
                 return;
@@ -594,7 +595,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
             if (_internalState.compareAndSet(InternalState.STOPPED, InternalState.FAILED)) {
                 _failedThrowable = t;
-                if (_callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                if (compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                     _executorService.execute(ApplicationStateMachineImpl.this);
                 }
             }
@@ -700,11 +701,13 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final ScheduledExecutorService _scheduledExecutorService;
     private final ApplicationStateMachine.ASMHelper _asmHelper;
     private final ApplicationMonitor _appMonitor;
+    private final ApplicationConfigurator _configurator;
 
     ApplicationStateMachineImpl(BundleContext ctx, WsLocationAdmin locAdmin, FutureMonitor futureMonitor,
                                 ArtifactContainerFactory artifactFactory, AdaptableModuleFactory moduleFactory,
                                 ExecutorService executorService, ScheduledExecutorService scheduledExecutorService,
-                                ApplicationStateMachine.ASMHelper asmHelper, ApplicationMonitor appMonitor) {
+                                ApplicationStateMachine.ASMHelper asmHelper, ApplicationMonitor appMonitor,
+                                ApplicationConfigurator configurator) {
         _asmSeqNo = asmSequenceNumber.getAndIncrement();
         _ctx = ctx;
         _locAdmin = locAdmin;
@@ -715,6 +718,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         _scheduledExecutorService = scheduledExecutorService;
         _asmHelper = asmHelper;
         _appMonitor = appMonitor;
+        _configurator = configurator;
 
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, "ASM[" + _asmSeqNo + "]: created");
@@ -873,7 +877,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         _performingQueuedActions = false;
                         return;
                     }
-                    if (_callbackState.compareAndSet(CallbackState.RECEIVED, null)) {
+                    if (compareAndSetCallbackState(CallbackState.RECEIVED, null)) {
                         callbackReceivedState = getInternalState();
                     } else {
                         if (_queuedActions.isEmpty()) {
@@ -1128,7 +1132,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                     blockAppStartingFutures.removeAll(futureConditions);
                     final boolean execute;
                     synchronized (_interruptibleLock) {
-                        if (!_callbackState.compareAndSet(CallbackState.CALLING, null) && _callbackState.compareAndSet(CallbackState.WAITING, CallbackState.RECEIVED)) {
+                        if (cl.listener != null && !compareAndSetCallbackState(CallbackState.CALLING, null)
+                            && compareAndSetCallbackState(CallbackState.WAITING, CallbackState.RECEIVED)) {
                             setNonInterruptible();
                             execute = true;
                         } else {
@@ -1153,11 +1158,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         if (oldCL != null) {
             oldCL.cancel();
         }
-        _callbackState.set(CallbackState.CALLING);
+        setCallbackState(CallbackState.CALLING);
         FutureCollectionCompletionListener.newFutureCollectionCompletionListener(futureConditions, newCL);
 
         synchronized (_interruptibleLock) {
-            if (_callbackState.compareAndSet(CallbackState.CALLING, CallbackState.WAITING)) {
+            if (compareAndSetCallbackState(CallbackState.CALLING, CallbackState.WAITING)) {
                 setInterruptible();
                 return true;
             } else {
@@ -1172,7 +1177,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
         if (cl != null) {
-            _callbackState.set(null);
+            setCallbackState(null);
             cl.cancel();
         }
     }
@@ -1342,7 +1347,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             ApplicationInstallInfo aii = new ApplicationInstallInfo(_appConfig.get(), _appContainer.getAndSet(null), _resolvedLocation.getAndSet(null), _handler.get(), ApplicationStateMachineImpl.this);
                             _appInstallInfo.set(aii); // capture the handler so we call the same one for stopping.
                             startCallback = new StartActionCallback();
-                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor);
+                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
                             _currentAction.set(startAction);
                         }
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STARTING);
@@ -1442,6 +1447,22 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
         }
         return false;
+    }
+
+    @Override
+    public void resetStartTime() {
+        Action current = _currentAction.get();
+        if (current != null) {
+            current.resetStartTime();
+        }
+    }
+
+    private void setCallbackState(CallbackState state) {
+        _callbackState.set(state);
+    }
+
+    private boolean compareAndSetCallbackState(CallbackState current, CallbackState updated) {
+        return _callbackState.compareAndSet(current, updated);
     }
 
 }

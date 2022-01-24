@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -166,9 +166,11 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         execSvcProps.put("LongRunningPolicy.target", "(service.pid=unbound)");
         execSvcProps.put("LongRunningPolicy.cardinality.minimum", 0);
 
+        // jndiName is included in the filter to avoid matching similar services reregistered
+        // as non-ResourceFactories by the JNDI implementation
         StringBuilder managedScheduledExecutorSvcFilter = new StringBuilder(200);
         managedScheduledExecutorSvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedScheduledExecutorServiceID));
-        managedScheduledExecutorSvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl))");
+        managedScheduledExecutorSvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl)(jndiName=*))");
 
         // TODO errors for invalid config such as max=0 or -20
         concurrencyPolicyProps.put(ID, concurrencyPolicyId);

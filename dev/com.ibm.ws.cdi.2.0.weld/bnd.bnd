@@ -16,7 +16,8 @@ Bundle-SymbolicName: com.ibm.ws.cdi.2.0.weld
 
 Bundle-Description:cdi 2.0 weld impl, version ${bVersion}
 
--dsannotations: com.ibm.ws.cdi.impl.DefaultCDI20SecurityService
+-dsannotations: com.ibm.ws.cdi.impl.DefaultCDI20SecurityService,\
+                com.ibm.ws.cdi.impl.CDI20BeanParserImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \

@@ -42,8 +42,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatTests;
-import componenttest.rules.repeater.EERepeatTests.EEVersion;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -92,7 +91,7 @@ public class VisTest extends FATServletClient {
     public static final String CLIENT_NAME = "visTestClient";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, CLIENT_NAME, EEVersion.EE8, EEVersion.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE8, EERepeatActions.EE7);
 
     public static final String VIS_TEST_APP_NAME = "visTestWar";
 

@@ -47,6 +47,13 @@ public class ServerBuilder {
     private File installDir;
     private HashMap<String, Properties> productExtensions = null;
 
+    static {
+        // If we are running on Java 18+, then we need to explicitly enable the security manager
+        if (javaVersion() >= 18 && System.getProperty("java.security.manager") == null) {
+            System.setProperty("java.security.manager", "allow");
+        }
+    }
+
     private static class InvalidInstallException extends ServerException {
 
         /**
@@ -166,9 +173,9 @@ public class ServerBuilder {
      * @return a Server instance using any attributes set on the builder.
      *
      * @throws ServerException if the named server does not exist, or if the attributes
-     *             set using the set methods fail validation, e.g. the server name
-     *             contains invalid characters, or the provided Files point to existing
-     *             files in the file system instead of directories.
+     *                             set using the set methods fail validation, e.g. the server name
+     *                             contains invalid characters, or the provided Files point to existing
+     *                             files in the file system instead of directories.
      */
     public Server build() throws ServerException {
         try {
@@ -207,7 +214,7 @@ public class ServerBuilder {
      * <code>$WLP_INSTALL_DIR/etc/extensions</code> to constitute the full set of product
      * extensions for this instance of the running server.
      *
-     * @param name The name of the product extension.
+     * @param name  The name of the product extension.
      * @param props A properties file containing com.ibm.websphere.productId and com.ibm.websphere.productInstall.
      * @return a reference to this object.
      */
@@ -257,5 +264,15 @@ public class ServerBuilder {
         } catch (InvocationTargetException e) {
             throw new InvalidInstallException(e);
         }
+    }
+
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        return Integer.valueOf(versionElements[i]);
     }
 }

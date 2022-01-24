@@ -23,8 +23,14 @@ tested.features:\
 	cdi-3.0,\
 	connectors-2.0,\
 	servlet-5.0,\
+	cdi-4.0,\
+        servlet-6.0,\
 	expressionLanguage-4.0,\
 	pages-3.0,\
+	expressionlanguage-5.0,\
+	connectors-2.1,\
+	xmlbinding-4.0,\
+	pages-3.1,\
 	enterprisebeanslite-4.0,\
 	enterprisebeans-4.0,\
 	enterprisebeansremote-4.0,\

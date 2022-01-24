@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,9 +158,11 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
 
         BundleContext bundleContext = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
 
+        // jndiName is included in the filter to avoid matching similar services reregistered
+        // as non-ResourceFactories by the JNDI implementation
         StringBuilder managedThreadFactorySvcFilter = new StringBuilder(200);
         managedThreadFactorySvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedThreadFactoryID));
-        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.managedThreadFactory))");
+        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.managedThreadFactory)(jndiName=*))");
 
         ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, managedThreadFactoryID, managedThreadFactorySvcFilter.toString(), declaringApplication);
         try {

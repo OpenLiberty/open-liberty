@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,11 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -61,6 +64,9 @@ public class OidcServerConfigImplTest {
     private static final Object GROUP_IDENTIFIER = "groupIds";
 
     private static final Object TEST_SCOPE = "authorization_code";
+
+    private static final String[] THIRD_PARTY_ID_TOKEN_CLAIMS = new String[] { "test1", "test2" };
+    private static final Set<String> THIRD_PARTY_ID_TOKEN_CLAIMS_SET = new HashSet<String>(Arrays.asList(THIRD_PARTY_ID_TOKEN_CLAIMS));
 
     private static final String HS256 = "HS256";
     private static final String RS256 = "RS256";
@@ -154,6 +160,8 @@ public class OidcServerConfigImplTest {
         assertNotNull("claimToUserRegistryAttributeMappings object should not be null.", oidcServerConfig.getClaimToUserRegistryMap());
         assertTrue("Expected message was not logged",
                    outputMgr.checkForMessages("CWWKS1600I: The OpenID Connect provider " + MY_OIDC_SERVER + " configuration has been successfully processed."));
+        assertEquals("third party id token claims should be " + THIRD_PARTY_ID_TOKEN_CLAIMS_SET,
+                     THIRD_PARTY_ID_TOKEN_CLAIMS_SET, oidcServerConfig.getThirdPartyIDTokenClaims());
     }
 
     private OidcServerConfigImpl createActivatedOidcServerConfig(final Map<String, Object> props) {
@@ -213,6 +221,8 @@ public class OidcServerConfigImplTest {
         assertNotNull("claimToUserRegistryAttributeMappings object should not be null.", oidcServerConfig.getClaimToUserRegistryMap());
         assertTrue("Expected message was not logged",
                    outputMgr.checkForMessages("CWWKS1600I: The OpenID Connect provider " + MY_OIDC_SERVER + " configuration has been successfully processed."));
+        assertEquals("third party id token claims should be " + THIRD_PARTY_ID_TOKEN_CLAIMS_SET,
+                     THIRD_PARTY_ID_TOKEN_CLAIMS_SET, oidcServerConfig.getThirdPartyIDTokenClaims());
     }
 
     @Test
@@ -333,6 +343,7 @@ public class OidcServerConfigImplTest {
         props.put(OidcServerConfigImpl.CFG_KEY_CACHE_IDTOKEN, true);
         props.put(OidcServerConfigImpl.CFG_KEY_JWK_ROTATION, 10L);
         props.put(OidcServerConfigImpl.CFG_KEY_JWK_SIGNING_KEY_SIZE, 2000L);
+        props.put(OidcServerConfigImpl.CFG_KEY_THIRD_PARTY_ID_TOKEN_CLAIMS, THIRD_PARTY_ID_TOKEN_CLAIMS);
         return props;
     }
 

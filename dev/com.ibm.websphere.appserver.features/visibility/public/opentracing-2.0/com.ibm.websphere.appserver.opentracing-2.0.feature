@@ -22,7 +22,8 @@ IBM-API-Package: io.opentracing;  type="third-party",\
          io.openliberty.opentracing.2.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="io.opentracing:opentracing-api:0.33.0", \
          com.ibm.ws.microprofile.opentracing.jaeger, \
          com.ibm.ws.microprofile.opentracing.jaeger.adapter, \
-         com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
+         com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl, \
+         io.openliberty.microprofile.opentracing.common
 -jars=io.openliberty.opentracing.2.0.spi; location:=dev/spi/ibm/
 -files= dev/spi/ibm/javadoc/io.openliberty.opentracing.2.0.spi_1.0-javadoc.zip
 kind=ga

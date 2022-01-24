@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -307,11 +307,11 @@ public class JDK8Expectations implements JDKExpectationTestClass {
 
     @Override
     public void s4u2_validateKerberosAndGSSCred(String response) {
-        assertTrue("The response should have had the GSSName listed", response.contains("GSSCredential name is: user1@FYRE11.IBM.COM"));
+        assertTrue("The response should have had the GSSName listed", response.contains("GSSCredential name is: user1" + "@" + InitClass.KDC_REALM));
         assertTrue("The response should have had the Krb5ProxyCredential listed", response.contains("Krb5ProxyCredential"));
         assertTrue("The response should have had Self=Kerberos listed", response.contains("Self=Kerberos credential"));
         assertTrue("The response should have had proper ticket listed listed", response.contains("Ticket=com.ibm.security.krb5.internal.Ticket"));
-        assertTrue("The response should have had Client listed", response.contains("Client=user1@FYRE11.IBM.COM"));
+        assertTrue("The response should have had Client listed", response.contains("Client=user1" + "@" + InitClass.KDC_REALM));
     }
 
     @Override

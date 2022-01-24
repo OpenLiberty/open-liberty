@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -141,7 +144,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     }
 
     protected void enableLogging(EndpointInfo libertyEndpointInfo) {
-        // Replaced by FeatureLogging for jaxws-2.3 and xmlWS-3.0 
+        // Replaced by FeatureLogging for jaxws-2.3 and xmlWS-3.0
     }
 
     public AbstractHTTPDestination getDestination() {
@@ -161,10 +164,22 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
      * {@inheritDoc}
      */
     @Override
-    public void invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void invoke(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
             updateDestination(request);
-            destination.invoke(servletConfig, servletConfig.getServletContext(), request, response);
+            final HttpServletRequest req = request;
+            final HttpServletResponse resp = response;
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                    @Override
+                    public Void run() throws IOException {
+                        destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException pae) {
+                throw (IOException) pae.getException();
+            }
         } catch (IOException e) {
             throw new ServletException(e);
         }
@@ -186,7 +201,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     /**
      * Configure common endpoint properties
-     * 
+     *
      * @param endpointInfo
      */
     protected void configureEndpointInfoProperties(EndpointInfo libertyEndpointInfo, org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo) {
@@ -249,7 +264,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     /**
      * Calculate the base URL based on the HttpServletRequest instance
-     * 
+     *
      * @param request
      * @return
      */
@@ -264,7 +279,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         if (!"/".equals(pathInfo) || reqPrefix.endsWith("/")) {
             StringBuilder sb = new StringBuilder();
             // request.getScheme(), request.getLocalName() and request.getLocalPort()
-            // should be marginally cheaper - provided request.getLocalName() does 
+            // should be marginally cheaper - provided request.getLocalName() does
             // return the actual name used in request URI as opposed to localhost
             // consistently across the Servlet stacks
 

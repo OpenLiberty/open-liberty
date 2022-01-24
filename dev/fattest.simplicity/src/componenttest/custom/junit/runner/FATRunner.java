@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                                                       new TestNameFilter(),
                                                                       new FeatureFilter(),
                                                                       new SystemPropertyFilter(),
-                                                                      new JavaLevelFilter()
+                                                                      new JavaLevelFilter(),
+                                                                      new CheckpointSupportFilter()
     };
 
     private static EE9PackageReplacementHelper ee9Helper;
@@ -472,14 +473,14 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private Map<String, FFDCInfo> retrieveFFDCCounts() {
         HashMap<String, FFDCInfo> ffdcPrimaryInfo = new LinkedHashMap<String, FFDCInfo>();
 
-        Log.info(c, "retrieveFFDCCounts", "Entering");
+        Log.finer(c, "retrieveFFDCCounts", "Entering");
 
         try {
             for (LibertyServer server : getRunningLibertyServers()) {
 
                 // If the server has the FFDC checking flag set to false, skip it.
                 if (server.getFFDCChecking() == false) {
-                    Log.info(c, "retrieveFFDCCounts", "FFDC log collection for server: " + server.getServerName() + " is skipped. FFDC Checking is disabled for this server.");
+                    Log.finer(c, "retrieveFFDCCounts", "FFDC log collection for server: " + server.getServerName() + " is skipped. FFDC Checking is disabled for this server.");
                     continue;
                 }
 
@@ -508,7 +509,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                 }
                                 retry = false;
                             } else {
-                                Log.info(c, "retrieveFFDCCounts", "Read incomplete FFDC summary file, readAttempts = " + readAttempts);
+                                Log.finer(c, "retrieveFFDCCounts", "Read incomplete FFDC summary file, readAttempts = " + readAttempts);
                                 //returned null, file is truncated
                                 retry = true;
                                 //wait a bit and retry
@@ -519,24 +520,24 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                         //ignore the exception as log directory doesn't exist and no FFDC log
                         retry = false;
                     } catch (Exception e) {
-                        Log.info(c, "retrieveFFDCCounts", "Exception parsing FFDC summary");
+                        Log.finer(c, "retrieveFFDCCounts", "Exception parsing FFDC summary");
                         Log.error(c, "retrieveFFDCCounts", e);
                         retry = false;
                     }
                 }
                 // Only bother logging if a failure was previously logged
                 if (readAttempts > 1 && !retry) {
-                    Log.info(c, "retrieveFFDCCounts", "Retry Successful");
+                    Log.finer(c, "retrieveFFDCCounts", "Retry Successful");
                 } else if (retry) {
                     //retry failed 5 times
-                    Log.info(c, "retrieveFFDCCounts", "Retry Unsuccessful");
+                    Log.finer(c, "retrieveFFDCCounts", "Retry Unsuccessful");
                 }
             }
         } catch (Exception e) {
             //Exception obtaining Liberty servers
             Log.error(c, "retrieveFFDCCounts", e);
         }
-        Log.info(c, "retrieveFFDCCounts", "Exiting: " + ffdcPrimaryInfo.toString());
+        Log.finer(c, "retrieveFFDCCounts", "Exiting: " + ffdcPrimaryInfo.toString());
         return ffdcPrimaryInfo;
     }
 

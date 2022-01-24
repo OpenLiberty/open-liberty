@@ -16,7 +16,8 @@ Bundle-SymbolicName: com.ibm.ws.cdi.1.2.weld
 Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
 
--dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService
+-dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
+                com.ibm.ws.cdi.impl.BeanParserImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \

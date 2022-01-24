@@ -19,23 +19,29 @@ src: \
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3,\
-        localconnector-1.0,\
         cdi-3.0,\
         servlet-5.0,\
-        expressionLanguage-4.0,\
+        cdi-4.0,\
+        servlet-6.0,\
+        expressionlanguage-4.0,\
+        enterprisebeanslite-4.0,\
+        pages-3.0,\
+        faces-3.0,\
+        expressionlanguage-5.0,\
+        pages-3.1,\
+        faces-4.0,\
+        connectors-2.0,\
+        connectors-2.1,\
         enterprisebeans-4.0,\
         managedbeans-2.0,\
+        mdb-4.0,\
         enterprisebeansremote-4.0,\
+        jdbc-4.2,\
         enterprisebeanshome-4.0,\
-        enterprisebeanslite-4.0,\
-        enterprisebeanspersistenttimer-4.0,\
-        faces-3.0
-	
+        xmlbinding-3.0,\
+        xmlbinding-4.0,\
+        enterprisebeanspersistenttimer-4.0
+        
 test.project: true
 
 -buildpath: \

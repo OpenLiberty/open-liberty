@@ -727,6 +727,11 @@
       <version>3.0.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>4.0.0.Beta3</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.inject</groupId>
       <artifactId>jakarta.inject-api</artifactId>
       <version>2.0.1</version>
@@ -2144,7 +2149,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.antlr</artifactId>
-      <version>2.7.9</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2154,7 +2159,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>2.7.9</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2164,7 +2169,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>2.7.9</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2174,7 +2179,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>2.7.9</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2184,7 +2189,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.9</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2607,6 +2612,11 @@
       <version>4.0.1.SP1</version>
     </dependency>
     <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <version>5.0.0.Alpha2</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
       <version>2.4.8.Final</version>
@@ -2620,6 +2630,11 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
       <version>4.0.1.SP1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-osgi-bundle</artifactId>
+      <version>5.0.0.Alpha2</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ package com.ibm.io.async;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-
-import com.ibm.ws.kernel.service.util.CpuInfo;
 
 //import java.util.MissingResourceException;
 //import java.util.ResourceBundle;
@@ -74,7 +72,7 @@ class AsyncProperties {
     static boolean timerSleepAlways = true;
 
     // # Sets the maximum number of threads that can wait on events concurrently.
-    static int maxThreadsWaitingForEvents = 1;
+    static Integer maxThreadsWaitingForEvents = null;
 
     // # Sets if timeouts should be disabled.
     // # Condition: true = disable timeouts
@@ -121,11 +119,7 @@ class AsyncProperties {
 
             timerSleepAlways = Boolean.parseBoolean(System.getProperty("com.ibm.io.async.AIOTimerSleepAlways"));
 
-            if (System.getProperty("com.ibm.io.async.AIOMaxThreadsWaitingForEvents") != null) {
-                maxThreadsWaitingForEvents = Integer.parseInt(System.getProperty("com.ibm.io.async.AIOMaxThreadsWaitingForEvents"));
-            } else {
-                maxThreadsWaitingForEvents = CpuInfo.getAvailableProcessors();
-            }
+            maxThreadsWaitingForEvents = Integer.getInteger("com.ibm.io.async.AIOMaxThreadsWaitingForEvents", null);
 
             disableTimeouts = Boolean.parseBoolean(System.getProperty("com.ibm.io.async.AIODisableTimeouts"));
 

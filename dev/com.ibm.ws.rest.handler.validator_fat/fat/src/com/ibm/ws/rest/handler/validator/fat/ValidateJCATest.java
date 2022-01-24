@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package com.ibm.ws.rest.handler.validator.fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static com.ibm.ws.rest.handler.validator.fat.FATSuite.assertClassEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,14 +37,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
 public class ValidateJCATest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.validator.jca.fat")
     public static LibertyServer server;
@@ -79,8 +77,8 @@ public class ValidateJCATest extends FATServletClient {
         server.stopServer("J2CA0046E: .*eis/cf-port-not-in-range", // intentionally raised error to test exception path
                           "J2CA0021E: .*eis/cf6", // intentional error due to invalid user being supplied by login module
                           "J2CA0021E: .*IllegalStateException: Connection was dropped", // testing exception path
-                          "J2CA0021E: .*javax.resource.ResourceException", // testing exception path
-                          "J2CA0021E: .*javax.resource.spi.ResourceAllocationException", // testing exception path
+                          "J2CA0021E: .*(javax|jakarta).resource.ResourceException", // testing exception path
+                          "J2CA0021E: .*(javax|jakarta).resource.spi.ResourceAllocationException", // testing exception path
                           "J2CA0021E: .*ResourceAdapterInternalException: Something bad has happened. See cause." // testing exception path
         );
     }
@@ -161,7 +159,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertEquals(err, "08001", json.getString("sqlState"));
         assertEquals(err, "127", json.getString("errorCode"));
-        assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
+        assertClassEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
         assertEquals(err, "Connection rejected for user names that end in '5'.", json.getString("message"));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -173,7 +171,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertNull(err, json.get("sqlState"));
         assertEquals(err, "ERR_SEC_USR5", json.getString("errorCode"));
-        assertEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Not accepting user names that end with '5'."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -186,7 +184,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "28000", json.getString("sqlState"));
         assertEquals(err, "0", json.getString("errorCode"));
-        assertEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", json.getString("class"));
+        assertClassEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", json.getString("class"));
         assertEquals(err, "The database is unable to accept user names that include a '5'.", json.getString("message"));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -329,7 +327,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "java.io.IOError", json.getString("class"));
+        assertClassEquals(err, "java.io.IOError", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("java.sql.SQLNonTransientConnectionException: Database appears to be down."));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -342,7 +340,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "-13579", json.getString("errorCode"));
         assertEquals(err, "08006", json.getString("sqlState"));
-        assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
+        assertClassEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Database appears to be down."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -373,7 +371,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNull(err, json.get("info"));
 
         assertNotNull(err, json = json.getJsonObject("failure"));
-        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
         assertNotNull(err, json.getString("message"));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -427,7 +425,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNull(err, json.get("info"));
         assertNotNull(err, json = json.getJsonObject("failure")); // login module defaults to dbuser/dbpass, which are not considered valid
         assertEquals(err, "ERR_AUTH", json.getString("errorCode"));
-        assertEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
         String message = json.getString("message");
         assertTrue(err, message.startsWith("Unable to authenticate with dbuser"));
         JsonArray stack;
@@ -481,7 +479,7 @@ public class ValidateJCATest extends FATServletClient {
         // Liberty converts javax.resource.spi.CommException to ResourceAllocationException. Why? // TODO
         assertNotNull(err, j = j.getJsonObject("failure"));
         assertNull(err, j.get("errorCode"));
-        assertEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
         assertTrue(err, j.getString("message").startsWith("Unable to connect to notfound.rchland.ibm.com"));
         JsonArray stack = j.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -492,7 +490,7 @@ public class ValidateJCATest extends FATServletClient {
         // cause // TODO should at least chain the original exception as the cause
         //assertNotNull(err, j = j.getJsonObject("cause"));
         //assertNull(err, j.get("errorCode"));
-        //assertEquals(err, "javax.resource.spi.CommException", j.getString("class"));
+        //assertClassEquals(err, "javax.resource.spi.CommException", j.getString("class"));
         //assertTrue(err, j.getString("message").startsWith("Unable to connect to notfound.rchland.ibm.com"));
         //stack = j.getJsonArray("stack");
         //assertNotNull(err, stack);
@@ -507,7 +505,7 @@ public class ValidateJCATest extends FATServletClient {
         // Liberty converts javax.resource.spi.InvalidPropertyException to ResourceAllocationException. Why? // TODO
         assertNotNull(err, j = j.getJsonObject("failure"));
         assertEquals(err, "ERR_PORT_NEG", j.getString("errorCode"));
-        assertEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
         assertTrue(err, j.getString("message").startsWith("portNumber"));
         stack = j.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -518,7 +516,7 @@ public class ValidateJCATest extends FATServletClient {
         // cause // TODO should at least chain the original exception as the cause
         //assertNotNull(err, j = j.getJsonObject("cause"));
         //assertEquals(err, "ERR_PORT_NEG", j.getString("errorCode"));
-        //assertEquals(err, "javax.resource.spi.InvalidPropertyException", j.getString("class"));
+        //assertClassEquals(err, "javax.resource.spi.InvalidPropertyException", j.getString("class"));
         //assertTrue(err, j.getString("message").startsWith("portNumber"));
         //stack = j.getJsonArray("stack");
         //assertNotNull(err, stack);
@@ -604,7 +602,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "javax.resource.spi.ResourceAdapterInternalException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAdapterInternalException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Something bad has happened. See cause."));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -616,7 +614,7 @@ public class ValidateJCATest extends FATServletClient {
         // cause
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "ERR_CONNECT", json.getString("errorCode"));
-        assertEquals(err, "javax.resource.spi.CommException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.CommException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Lost connection to host."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -647,7 +645,7 @@ public class ValidateJCATest extends FATServletClient {
         assertNull(err, json.get("info"));
 
         assertNotNull(err, json = json.getJsonObject("failure"));
-        assertEquals(err, "javax.resource.ResourceException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.ResourceException", json.getString("class"));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
         assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
@@ -657,7 +655,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "java.lang.IllegalStateException", json.getString("class"));
+        assertClassEquals(err, "java.lang.IllegalStateException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Connection was dropped."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -712,7 +710,7 @@ public class ValidateJCATest extends FATServletClient {
         // Liberty wraps the IllegalArgumentException with ResourceAllocationException
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
         JsonArray stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
         assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
@@ -722,7 +720,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "java.lang.IllegalArgumentException", json.getString("class"));
+        assertClassEquals(err, "java.lang.IllegalArgumentException", json.getString("class"));
         assertEquals(err, "22", json.getString("message"));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -733,7 +731,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "ERR_PORT_INV", json.getString("errorCode"));
-        assertEquals(err, "org.test.validator.adapter.InvalidPortException", json.getString("class"));
+        assertClassEquals(err, "org.test.validator.adapter.InvalidPortException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Port cannot be used."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -745,7 +743,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertEquals(err, "ERR_PORT_OOR", json.getString("errorCode"));
-        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
         assertTrue(err, json.getString("message").startsWith("Port not in allowed range."));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);
@@ -756,7 +754,7 @@ public class ValidateJCATest extends FATServletClient {
 
         assertNotNull(err, json = json.getJsonObject("cause"));
         assertNull(err, json.get("errorCode"));
-        assertEquals(err, "javax.resource.ResourceException", json.getString("class"));
+        assertClassEquals(err, "javax.resource.ResourceException", json.getString("class"));
         assertEquals(err, "Port number is too low.", json.getString("message"));
         stack = json.getJsonArray("stack");
         assertNotNull(err, stack);

@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <!--  <feature>globalWebservicesHandler-1.0</feature> -->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -75,8 +76,9 @@ public class ServerCommandClientTest {
          * @param uuid
          * @param frameworkManager
          */
-        public TestServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager, Thread listenerThread) {
-            super(bootProps, uuid, frameworkManager, listenerThread);
+        public TestServerCommandListener(BootstrapConfig bootProps, String uuid,
+                                         FrameworkManager frameworkManager, Thread listenerThread, BundleContext bc) {
+            super(bootProps, uuid, frameworkManager, listenerThread, bc);
         }
 
         @Override
@@ -167,6 +169,7 @@ public class ServerCommandClientTest {
 
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -202,10 +205,11 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+                allowing(bundCtxt);
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.AUTH_ERROR);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.AUTH_ERROR, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -217,6 +221,7 @@ public class ServerCommandClientTest {
     public void testCommandResponseInvalidInteger() {
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -254,10 +259,13 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+
+                allowing(bundCtxt);
+
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.NOT_NUMBER);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.NOT_NUMBER, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -269,6 +277,7 @@ public class ServerCommandClientTest {
     public void testCommandResponseInvalidResponse() {
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -306,10 +315,13 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+
+                allowing(bundCtxt);
+
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.INVALID_RC);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.INVALID_RC, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -320,6 +332,7 @@ public class ServerCommandClientTest {
     public void testCommandResponseInvalidUUID() {
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -357,10 +370,13 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+
+                allowing(bundCtxt);
+
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.UUID_FAILURE);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.UUID_FAILURE, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -372,6 +388,7 @@ public class ServerCommandClientTest {
     public void testCommandResponseEmptyResponse() {
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -409,10 +426,13 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+
+                allowing(bundCtxt);
+
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.EMPTY_RESPONSE);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.EMPTY_RESPONSE, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -424,6 +444,7 @@ public class ServerCommandClientTest {
     public void testCommandResponseCommFailure() {
         final BootstrapConfig mockBootConfig = mockery.mock(BootstrapConfig.class);
         final FrameworkManager mockFW = mockery.mock(FrameworkManager.class);
+        final BundleContext bundCtxt = mockery.mock(BundleContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -461,10 +482,13 @@ public class ServerCommandClientTest {
 
                 allowing(mockBootConfig).getProcessType();
                 will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_SERVER));
+
+                allowing(bundCtxt);
+
             }
         });
 
-        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.COMM_FAILURE);
+        createAndListenServerCommandListener(mockBootConfig, mockFW, TestType.COMM_FAILURE, bundCtxt);
 
         ServerCommandClient scc = new ServerCommandClient(mockBootConfig);
         ReturnCode rc = scc.stopServer(false);
@@ -472,12 +496,13 @@ public class ServerCommandClientTest {
         assertTrue(outputMgr.checkForStandardOut(COMM_FAILURE_ERROR_MESSAGE));
     }
 
-    private void createAndListenServerCommandListener(final BootstrapConfig mockBootConfig, final FrameworkManager mockFW, final TestType testType) {
+    private void createAndListenServerCommandListener(final BootstrapConfig mockBootConfig,
+                                                      final FrameworkManager mockFW, final TestType testType, final BundleContext mockBC) {
         final CountDownLatch latch = new CountDownLatch(1);
         new Thread("test") {
             @Override
             public void run() {
-                scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW, this);
+                scl = new TestServerCommandListener(mockBootConfig, "testuuid", mockFW, this, mockBC);
                 scl.setTestType(testType);
                 latch.countDown();
                 scl.startListening();

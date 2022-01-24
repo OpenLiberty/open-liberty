@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
@@ -156,12 +157,17 @@ public class OidcClientHttpUtil {
 
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
+
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
             throw ex;
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
         }
 
         // Check the response from the endpoint to see if there was an error
@@ -207,12 +213,17 @@ public class OidcClientHttpUtil {
 
         HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
+
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             response = httpClient.execute(postMethod);
         } catch (SSLException ex) {
             throw ex;
         } catch (Exception ioe) {
             throw ioe; // keep it for unit testing for now.
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
         }
 
         Map<String, Object> result = new HashMap<String, Object>();
@@ -343,13 +354,19 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
         }
 
         // BasicCredentialsProvider credentialsProvider = new
@@ -377,18 +394,24 @@ public class OidcClientHttpUtil {
         if (url.startsWith("http:")) {
             client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+                client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                        .setDefaultCredentialsProvider(credentialsProvider)
+                        .setSSLSocketFactory(connectionFactory)
+                        .setDefaultRequestConfig(rcfg)
+                        .build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
             }
-            RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-            client = createBuilder(useSystemPropertiesForHttpClientConnections)
-                    .setDefaultCredentialsProvider(credentialsProvider)
-                    .setSSLSocketFactory(connectionFactory)
-                    .setDefaultRequestConfig(rcfg)
-                    .build();
         }
         return client;
     }
