@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>TestEDR</title>
         <%@ taglib prefix="test" uri="/WEB-INF/tags/sampleTag.tld" %>
+        <!-- The following taglib is purposely a tld that does not exist.  For issue 18941 that fixes NPE. -->
+        <%@ taglib prefix="nf" uri="/WEB-INF/pluto/notplanet.tld" %>
     </head>
     <body>
         <p>This tests a JSP in the Extended Document Root.</p>
