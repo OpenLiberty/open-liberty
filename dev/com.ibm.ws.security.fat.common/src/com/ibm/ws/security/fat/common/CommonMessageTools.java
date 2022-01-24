@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
@@ -204,10 +205,12 @@ public class CommonMessageTools {
                 Log.info(thisClass, theMethod, "Response (Title): " + AutomationTools.getResponseTitle(response));
             }
             Log.info(thisClass, theMethod, "Response (Url): " + AutomationTools.getResponseUrl(response));
-            String[] hs = AutomationTools.getResponseHeaderNames(response);
-            if (hs != null) {
-                for (String h : hs) {
-                    Log.info(thisClass, theMethod, "Response (Header): Name: " + h + " Value: " + AutomationTools.getResponseHeaderField(response, h));
+            Map<String, String[]> headers = AutomationTools.getResponseHeaders(response);
+            if (headers != null) {
+                for (Entry<String, String[]> header : headers.entrySet()) {
+                    for (String value : header.getValue()) {
+                        Log.info(thisClass, theMethod, "Response (Header): Name: " + header.getKey() + " Value: " + value);
+                    }
                 }
             }
             Log.info(thisClass, theMethod, "Response (Message): " + AutomationTools.getResponseMessage(response));

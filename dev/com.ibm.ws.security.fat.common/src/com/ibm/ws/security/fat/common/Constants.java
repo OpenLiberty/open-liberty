@@ -70,6 +70,7 @@ public class Constants {
     public static final String RESPONSE_STATUS = "status";
     public static final String RESPONSE_HEADER = "header";
     public static final String RESPONSE_URL = "url";
+    public static final String RESPONSE_COOKIE = "cookie";
     public static final String JSON_OBJECT = "jsonObject";
     public static final String EXCEPTION_MESSAGE = "exceptionMsg";
 

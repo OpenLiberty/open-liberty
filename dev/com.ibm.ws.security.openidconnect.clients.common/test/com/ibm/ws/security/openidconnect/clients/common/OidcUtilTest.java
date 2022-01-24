@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -29,12 +29,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
-import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
-import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -172,7 +166,7 @@ public class OidcUtilTest {
                 will(returnValue(expectedNonceCookieValue));
                 one(convClientRequest).getResponse();
                 will(returnValue(response));
-                one(referCookieHandler).createCookie(ClientConstants.WAS_OIDC_NONCE, "", request);
+                one(referCookieHandler).createCookie(expectedNonceCookieName, "", request);
                 will(returnValue(cookie2));
                 allowing(webAppSecConfig).createSSOCookieHelper();
                 allowing(webAppSecConfig).getSSODomainList();
