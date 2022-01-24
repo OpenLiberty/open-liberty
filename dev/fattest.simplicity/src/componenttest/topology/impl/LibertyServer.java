@@ -1223,16 +1223,6 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
-    private static int javaVersion() {
-        String version = System.getProperty("java.version");
-        String[] versionElements = version.split("\\D"); // split on non-digits
-
-        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
-        // Post-JDK 9 the java.version is MAJOR.MINOR
-        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
-        return Integer.valueOf(versionElements[i]);
-    }
-
     public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
                                              boolean validateApps, boolean expectStartFailure,
                                              String serverCmd, List<String> args,
@@ -1363,7 +1353,7 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
 
             // If we are running on Java 18+, then we need to explicitly enable the security manager
-            if (javaVersion() >= 18) {
+            if (info != null && info.majorVersion() >= 18) {
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
         }

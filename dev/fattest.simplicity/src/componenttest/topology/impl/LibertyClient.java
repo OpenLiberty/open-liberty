@@ -531,16 +531,6 @@ public class LibertyClient {
         return args;
     }
 
-    private static int javaVersion() {
-        String version = System.getProperty("java.version");
-        String[] versionElements = version.split("\\D"); // split on non-digits
-
-        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
-        // Post-JDK 9 the java.version is MAJOR.MINOR
-        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
-        return Integer.valueOf(versionElements[i]);
-    }
-
     public ProgramOutput startClientWithArgs(boolean preClean, boolean cleanStart,
                                              boolean validateApps, boolean expectStartFailure,
                                              String clientCmd, List<String> args,
@@ -629,14 +619,15 @@ public class LibertyClient {
             if (clientNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
                 Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
+
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                JavaInfo info = JavaInfo.forCurrentVM();
+                if (info != null && info.majorVersion() >= 18) {
+                    JVM_ARGS += " -Djava.security.manager=allow";
+                }
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
-            }
-
-            // If we are running on Java 18+, then we need to explicitly enable the security manager
-            if (javaVersion() >= 18) {
-                JVM_ARGS += " -Djava.security.manager=allow";
             }
         }
 
