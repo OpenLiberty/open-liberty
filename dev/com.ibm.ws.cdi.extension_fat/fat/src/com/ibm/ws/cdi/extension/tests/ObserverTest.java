@@ -26,6 +26,7 @@ import com.ibm.ws.cdi.extension.apps.observer.ObserverTestServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -34,6 +35,9 @@ public class ObserverTest extends FATServletClient {
 
     public static final String APP_NAME = "observeProcessProducerMethod";
     public static final String SERVER_NAME = "observerServer";
+
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS);
 
     @Server("observerServer")
     @TestServlet(servlet = ObserverTestServlet.class, contextRoot = APP_NAME)

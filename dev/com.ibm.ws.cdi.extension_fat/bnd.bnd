@@ -35,7 +35,12 @@ tested.features:\
 	enterprisebeanslite-4.0,\
 	cdi.internals-3.0,\
 	beanvalidation-3.0,\
-	faces-3.0
+	faces-3.0,\
+	expressionlanguage-5.0,\
+	pages-3.1,\
+	cdi-4.0,\
+	servlet-6.0,\
+	faces-4.0
 	
 test.project: true
 
