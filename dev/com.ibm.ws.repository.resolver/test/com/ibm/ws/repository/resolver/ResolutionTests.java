@@ -10,17 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
+import static com.ibm.ws.repository.resolver.MissingRequirementMatcher.missingRequirement;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -2357,6 +2356,107 @@ public class ResolutionTests {
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(c10.getSymbolicName(), b20.getProvideFeature()));
         assertThat(resolved, containsInAnyOrder(Matchers.contains(base20, b20),
                                                 Matchers.contains(base20, aInternal20)));
+    }
+
+    /**
+     * Test that trying to resolve as a set two conflicting features fails
+     *
+     * @throws RepositoryException
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testConflict() throws RepositoryException {
+        EsaResourceWritable featureA10 = createEsaResource("com.example.featureA-1.0", "featureA-1.0", "1.0");
+        featureA10.setSingleton("true");
+
+        EsaResourceWritable featureA20 = createEsaResource("com.example.featureA-2.0", "featureA-2.0", "1.0");
+        featureA20.setSingleton("true");
+
+        RepositoryResolver resolver = createResolver();
+
+        if (testType == TestType.RESOLVE_AS_SET) {
+            try {
+                Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureA-1.0", "featureA-2.0"));
+                fail("No resolution exception thrown. Result: " + resolved);
+            } catch (RepositoryResolutionException e) {
+                assertThat(e.getFeatureConflicts().keySet(), contains("com.example.featureA"));
+            }
+        } else {
+            Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureA-1.0", "featureA-2.0"));
+            assertThat(resolved, containsInAnyOrder(contains(featureA10), contains(featureA20)));
+        }
+    }
+
+    /**
+     * Test that trying to resolve as a set two features which have dependencies which conflict fails
+     *
+     * @throws RepositoryException
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testConflictingDependencies() throws RepositoryException {
+        EsaResourceWritable featureA10 = createEsaResource("com.example.featureA-1.0", null, "1.0");
+        featureA10.setSingleton("true");
+
+        EsaResourceWritable featureA20 = createEsaResource("com.example.featureA-2.0", null, "1.0");
+        featureA20.setSingleton("true");
+
+        EsaResourceWritable featureB10 = createEsaResource("com.example.featureB-1.0", "featureB-1.0", "1.0",
+                                                           Collections.singleton("com.example.featureA-1.0"), null);
+
+        EsaResourceWritable featureC20 = createEsaResource("com.example.featureC-2.0", "featureC-2.0", "1.0",
+                                                           Collections.singleton("com.example.featureA-2.0"), null);
+
+        RepositoryResolver resolver = createResolver();
+
+        if (testType == TestType.RESOLVE_AS_SET) {
+            try {
+                Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureB-1.0", "featureC-2.0"));
+                fail("No resolution exception thrown. Result: " + resolved);
+            } catch (RepositoryResolutionException e) {
+                assertThat(e.getFeatureConflicts().keySet(), contains("com.example.featureA"));
+                assertThat(e.getAllRequirementsResourcesNotFound(),
+                           containsInAnyOrder(missingRequirement("com.example.featureA-1.0", featureB10),
+                                              missingRequirement("com.example.featureA-2.0", featureC20)));
+            }
+        } else {
+            Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureB-1.0", "featureC-2.0"));
+            assertThat(resolved, containsInAnyOrder(contains(featureA10, featureB10),
+                                                    contains(featureA20, featureC20)));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testConflictAndMissingDeps() throws RepositoryException {
+        EsaResourceWritable featureA10 = createEsaResource("com.example.featureA-1.0", "featureA-1.0", "1.0", Collections.singleton("com.example.missingDep-1.0"), null);
+        featureA10.setSingleton("true");
+
+        EsaResourceWritable featureA20 = createEsaResource("com.example.featureA-2.0", "featureA-2.0", "1.0", Collections.singleton("com.example.missingDep-2.0"), null);
+        featureA20.setSingleton("true");
+
+        RepositoryResolver resolver = createResolver();
+
+        try {
+            Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureA-1.0", "featureA-2.0"));
+            fail("No resolution exception thrown. Result: " + resolved);
+        } catch (RepositoryResolutionException e) {
+            assertThat(e.getTopLevelFeaturesNotResolved(), containsInAnyOrder("featureA-1.0", "featureA-2.0"));
+
+            if (testType == TestType.RESOLVE_AS_SET) {
+                // Fails due to conflict
+                assertThat(e.getFeatureConflicts().keySet(), contains("com.example.featureA"));
+                assertThat(e.getAllRequirementsResourcesNotFound(),
+                           containsInAnyOrder(missingRequirement("featureA-1.0", null),
+                                              missingRequirement("featureA-2.0", null)));
+            } else {
+                // Fails due to missing dependency
+                assertThat(e.getFeatureConflicts().entrySet(), hasSize(0));
+                assertThat(e.getAllRequirementsResourcesNotFound(),
+                           containsInAnyOrder(missingRequirement("com.example.missingDep-1.0", featureA10),
+                                              missingRequirement("com.example.missingDep-2.0", featureA20)));
+            }
+        }
     }
 
     /**
