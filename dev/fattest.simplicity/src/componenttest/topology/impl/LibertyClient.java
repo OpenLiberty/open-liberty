@@ -621,8 +621,7 @@ public class LibertyClient {
                 Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
 
                 // If we are running on Java 18+, then we need to explicitly enable the security manager
-                JavaInfo info = JavaInfo.forCurrentVM();
-                if (info != null && info.majorVersion() >= 18) {
+                if (javaInfo.majorVersion() >= 18) {
                     JVM_ARGS += " -Djava.security.manager=allow";
                 }
             } else {
