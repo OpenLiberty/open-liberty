@@ -36,11 +36,18 @@ public class SlowStopAppListener implements ServletContextListener {
                 System.err.println("Invalid timeout specified, using default value of " + count);
             }
         }
-        System.err.println("Sleeping for approx " + count + " seconds.");
+
+        long startTime = System.currentTimeMillis();
+        System.err.println("Sleeping for approx " + count + " seconds, starting at " + startTime);
         for (int i = 0; i < count; i++) {
             try {
                 System.err.println("SlowApp is sleeping, zzzzzzzz");
                 Thread.sleep(1000);
+                long elapsed = System.currentTimeMillis() - startTime;
+                if (elapsed > (count * 1000)) {
+                    System.err.println("Finished sleeping after " + elapsed + " milliseconds");
+                    break;
+                }
             } catch (InterruptedException e) {
                 //test failed, so re-throw as a runtime error
                 System.err.println("SlowApp was interrupted.");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,17 +165,44 @@ public class MongoServerSelector {
     }
 
     private static ExternalTestService getAvailableMongoServer(String serverPlaceholder) {
-        try {
-            while (true) {
-                ExternalTestService mongoService = ExternalTestService.getService(serverPlaceholder);
-                if (validateMongoConnection(mongoService)) {
-                    return mongoService;
+        String method = "getAvailableMongoServer";
+
+        Exception failure = null;
+        ExternalTestService mongoService = null;
+
+        for (int i = 1; i < 5; i++) {
+            Log.info(c, method, "Request for mongoDB service, attempt #" + i);
+            try {
+                while (true) {
+                    mongoService = ExternalTestService.getService(serverPlaceholder);
+                    Log.info(c, method, "Found service, testing if valid");
+                    if (validateMongoConnection(mongoService)) {
+                        Log.info(c, method, "Found service, ping successful");
+                        return mongoService;
+                    }
+                }
+            } catch (Exception e) {
+                // No more services to try, or timed out waiting for a service to respond; will retry a
+                // few times as ExternalTestService will randomly start with a different server each time.
+                Log.error(c, method, e, "Exeption trying to get MongoDB service.");
+                failure = e;
+                if (i < 4) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                        // fine
+                    }
                 }
             }
-        } catch (Exception e) {
-            // Thrown when there are no more services to try
-            throw new RuntimeException(e);
         }
+
+        if (failure != null) {
+            // Thrown when there are no more services to try
+            Log.warning(c, method + " Despite a retry, could not get requested MongoDB server");
+            throw new RuntimeException(failure);
+        }
+
+        return mongoService;
     }
 
     /**

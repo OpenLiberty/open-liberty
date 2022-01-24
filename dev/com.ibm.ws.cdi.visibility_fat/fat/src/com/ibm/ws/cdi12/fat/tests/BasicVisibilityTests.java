@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -39,7 +36,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,7 +48,7 @@ public class BasicVisibilityTests extends FATServletClient {
     public static final String SERVER_NAME = "cdi12BasicServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7_FULL);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE7);
 
     public static final String CLASS_LOAD_APP_NAME = "TestClassLoadPrereqLogger";
     public static final String ROOT_CLASSLOADER_APP_NAME = "rootClassLoaderApp";

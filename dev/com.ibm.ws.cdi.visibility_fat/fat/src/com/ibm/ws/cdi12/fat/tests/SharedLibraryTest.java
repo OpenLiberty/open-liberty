@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8_FULL;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
-
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -26,9 +23,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi12.test.war.CrossInjectionServlet;
 import com.ibm.ws.cdi12.test.web1.NoInjectionServlet;
 import com.ibm.ws.cdi12.test.web1.SharedLibraryServlet;
-import com.ibm.ws.cdi12.test.war.CrossInjectionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -37,7 +34,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,7 +49,7 @@ public class SharedLibraryTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi12SharedLibraryServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE8_FULL);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE8);
 
     public static final String SHARED_NO_INJECT_APP_NAME = "sharedLibraryNoInjectionApp";
     public static final String SHARED_LIB_APP_NAME = "sharedLibraryAppWeb1";
@@ -79,16 +76,16 @@ public class SharedLibraryTest extends FATServletClient {
                                                   .addClass(com.ibm.ws.cdi12.test.shared.InjectedHello.class);
 
             /// cross injection archives begin
-            WebArchive commonLibraryCrossInjectionTest = ShrinkWrap.create(WebArchive.class, CROSS_INJECT_APP_NAME+".war")
-                                                       .addPackage("com.ibm.ws.cdi12.test.war")
-                                                       .add(new FileAsset(new File("test-applications/" + CROSS_INJECT_APP_NAME + ".war/resources/WEB-INF/beans.xml")),
-                                                                "/WEB-INF/beans.xml");
+            WebArchive commonLibraryCrossInjectionTest = ShrinkWrap.create(WebArchive.class, CROSS_INJECT_APP_NAME + ".war")
+                                                                   .addPackage("com.ibm.ws.cdi12.test.war")
+                                                                   .add(new FileAsset(new File("test-applications/" + CROSS_INJECT_APP_NAME + ".war/resources/WEB-INF/beans.xml")),
+                                                                        "/WEB-INF/beans.xml");
 
             JavaArchive commonLibraryCrossInjectionTestJarOne = ShrinkWrap.create(JavaArchive.class, "commonLibraryCrossInjectionTestJarOne.jar")
-                                                  .addPackage("com.ibm.ws.cdi12.test.common.lib.one");
+                                                                          .addPackage("com.ibm.ws.cdi12.test.common.lib.one");
 
             JavaArchive commonLibraryCrossInjectionTestJarTwo = ShrinkWrap.create(JavaArchive.class, "commonLibraryCrossInjectionTestJarTwo.jar")
-                                                  .addPackage("com.ibm.ws.cdi12.test.common.lib.two");
+                                                                          .addPackage("com.ibm.ws.cdi12.test.common.lib.two");
 
             /// cross injection archives end
 

@@ -165,6 +165,14 @@ public class ConcurrencyTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(5);
+
+        // This EJB needs to first be used so that its ContextServiceDefinition,
+        // which is relied upon by the other EJB, can be processed
+        try {
+            InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ContextServiceDefinerBean!test.jakarta.concurrency.ejb.ContextServiceDefinerBean");
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        }
     }
 
     /**

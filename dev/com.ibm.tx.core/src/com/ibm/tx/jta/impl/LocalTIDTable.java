@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  * Maintains a table of local TIDs mapped to Transactions. Every transaction running on
@@ -33,7 +33,20 @@ public class LocalTIDTable {
      */
     private static TransactionImpl[] noTxns = new TransactionImpl[0];
 
-    protected static final ConcurrentHashMap<Integer, TransactionImpl> localTIDMap = new ConcurrentHashMap<Integer, TransactionImpl>(256, 0.75f, ConcurrentHashSet.getNumCHBuckets());
+    protected static final ConcurrentHashMap<Integer, TransactionImpl> localTIDMap = new ConcurrentHashMap<Integer, TransactionImpl>(256, 0.75f, getNumCHBuckets());
+
+    // Calculate number of concurrent hash buckets as a factor of
+    // the number of available processors.
+    static int getNumCHBuckets() {
+        // determine number of processors
+        final int baseVal = CpuInfo.getAvailableProcessors().get() * 20;
+
+        // determine next power of two
+        int pow = 2;
+        while (pow < baseVal)
+            pow *= 2;
+        return pow;
+    }
 
     private static int _baseSeed = (int) System.currentTimeMillis();
 

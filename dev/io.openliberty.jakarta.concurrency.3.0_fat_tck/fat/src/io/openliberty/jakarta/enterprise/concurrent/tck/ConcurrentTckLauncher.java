@@ -87,6 +87,7 @@ public class ConcurrentTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrentTCK() throws Exception {
         String suiteXmlFile;
+        System.out.println("HELLO");
         if (TestModeFilter.FRAMEWORK_TEST_MODE == Mode.TestMode.FULL) {
             Log.info(getClass(), "launchConcurrentTCK", "Running full tests");
             suiteXmlFile = "tck-suite-full.xml";
@@ -107,6 +108,7 @@ public class ConcurrentTckLauncher {
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
+<<<<<<< HEAD
         );  
 
         try{
@@ -120,5 +122,12 @@ public class ConcurrentTckLauncher {
             finally{
                 assertEquals(0, result);
             }
+=======
+        );
+        
+
+        MvnUtils.prepareJakartaPublicationFile();
+        assertEquals(0, result);
+>>>>>>> d9c021bdd716531290fa54f83def6c828ab1dfee
     }
 }

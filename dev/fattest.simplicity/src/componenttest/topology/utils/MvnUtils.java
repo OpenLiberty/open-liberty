@@ -1296,47 +1296,7 @@ public class MvnUtils {
         return returnArray;
     }
 
-    public static String getLogs(){
-        Path serverPath = Paths.get("output","servers");
-        String folderName = "";
-        String logsDir = "";
-        File serverDirectory = serverPath.toFile();
-        if(files.exists(serverPath))) {
-            return logsDir;
-        }/*
-        for (final File folder : serverDirectory.listFiles()) {
-            return "";
-            if (folder.isDirectory()) {
-                folderName = folder.getName();
-                logsDir= "output/servers/"+folderName+"/logs/messages.log";
-                File f = new File(logsDir);
-                if(f.exists()) {
-                    return logsDir;
-                }
-            }
-        }*/
-        return "NOT FOUND";
-    }
-
-    public static String getOLVersion(){
-        String messagesPath = getLogs();
-        /*Pattern olVersionPattern = Pattern.compile("product = WebSphere Application Server (.*?) ", Pattern.DOTALL);
-        try (BufferedReader br = new BufferedReader(new FileReader(getLogs()))) { //TO CHANGE
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                if(sCurrentLine.startsWith("product = WebSphere Application Server ")){
-                    Matcher olVersionMatcher = olVersionPattern.matcher(sCurrentLine);
-                    if (olVersionMatcher.find()) {
-                        return olVersionMatcher.group(1);
-                    }
-                }
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        return messagesPath;
-    }
-
+    
     public static String capitalise(String spec) {
         char[] charArray = spec.toCharArray();
         boolean foundSpace = true;

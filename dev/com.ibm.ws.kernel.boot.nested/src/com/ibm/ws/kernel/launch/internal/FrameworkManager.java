@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -40,7 +41,9 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
@@ -49,11 +52,13 @@ import org.osgi.framework.launch.FrameworkFactory;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.ClientRunnerException;
+import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -81,6 +86,9 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Implementation of FrameworkManager. There are several important threads:
@@ -194,7 +202,7 @@ public class FrameworkManager {
      *                        framework management activities (start/stop/.. ), or null
      * @param callback
      */
-    public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
+    public void launchFramework(final BootstrapConfig config, final LogProvider logProvider) {
         if (config == null)
             throw new IllegalArgumentException("bootstrap config must not be null");
         boolean isClient = config.getProcessType().equals(BootstrapConstants.LOC_PROCESS_TYPE_CLIENT);
@@ -260,7 +268,7 @@ public class FrameworkManager {
             }
 
             // Init the framework.
-            Framework fwk = initFramework(config);
+            Framework fwk = initFramework(config, logProvider);
 
             if (fwk == null) {
                 Tr.error(tc, "error.unableToLaunch");
@@ -541,7 +549,7 @@ public class FrameworkManager {
      * Create and start a new instance of an OSGi framework using the provided
      * properties as framework properties.
      */
-    protected Framework initFramework(BootstrapConfig config) throws BundleException {
+    protected Framework initFramework(BootstrapConfig config, final LogProvider logProvider) throws BundleException {
         // Set the default startlevel of the framework. We want the framework to
         // start at our bootstrap level (i.e. Framework bundle itself will start, and
         // it will pre-load and re-start any previously known bundles in the
@@ -561,6 +569,31 @@ public class FrameworkManager {
             if (fwk == null)
                 return null;
             fwk.init();
+            if (LaunchArguments.isBetaEdition()) {
+
+                String phaseProp = config.get(CheckpointPhase.CHECKPOINT_PROPERTY);
+                if (phaseProp != null) {
+                    // register the checkpoint phase as early as possible
+                    CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
+                    BundleContext fwkContext = fwk.getBundleContext();
+                    fwkContext.registerService(CheckpointPhase.class, phase,
+                                               FrameworkUtil.asDictionary(Collections.singletonMap(CheckpointPhase.CHECKPOINT_PROPERTY, phase)));
+
+                    fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                        @Override
+                        public void prepare() {
+                            logProvider.stop();
+                        }
+
+                        @Override
+                        public void restore() {
+                            Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                            TrConfigurator.update(configMap);
+                        }
+
+                    }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+                }
+            }
             return fwk;
         } catch (BundleException ex) {
             throw ex;
@@ -758,7 +791,7 @@ public class FrameworkManager {
             @Override
             public void run() {
                 String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
-                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this);
+                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this, FrameworkManager.this.systemBundleCtx);
                 serverListenerLatch.countDown();
                 sc.startListening();
             }

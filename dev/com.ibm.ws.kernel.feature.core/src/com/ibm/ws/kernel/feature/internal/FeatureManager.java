@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,8 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * The feature manager finishes the initialization of the runtime by analyzing a list
@@ -293,6 +295,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * but executed after.
      */
     private volatile boolean deactivated;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    private CheckpointPhase checkpointPhase;
 
     private volatile LibertyBootRuntime libertyBoot;
 
@@ -778,7 +783,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     // even if no features are loaded
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
-
+                    checkIfCheckpointFeatureMissing(Arrays.asList(featureChange.features));
                     checkServerReady();
 
                     //register a service that can be looked up for server start.
@@ -1298,7 +1303,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // short circuit if package server is expecting conflicts
         if (currentPackageServerConflict != null) {
-            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict, EnumSet.allOf(ProcessType.class));
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict,
+                                                   EnumSet.allOf(ProcessType.class));
         }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
@@ -1903,8 +1909,26 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             resolved.clear();
             Tr.warning(tc, "UPDATE_DISABLED_FEATURES_ON_CONFLICT");
         }
+
         return reportedErrors;
 
+    }
+
+    /**
+     * If server launch was requested with a checkpoint, and checkpoint feature is not enabled, an
+     * error message is issued and the jvm is exited.
+     */
+    private void checkIfCheckpointFeatureMissing(Collection<String> features) {
+
+        //TODO remove beta check on feature release.
+        if (checkpointPhase != null && ProductInfo.getBetaEdition()) {
+            if (!features.contains("checkpoint-1.0")) {
+                Tr.error(tc, "CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING");
+
+                // Exit in thread to avoid blocking the server quiesce.
+                new Thread(() -> System.exit(1), "Checkpoint failed, exiting...").start();
+            }
+        }
     }
 
     private ConflictRecord getConflictRecord(Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {

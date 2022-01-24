@@ -71,6 +71,11 @@ public class Launcher {
         initProps.put(BootstrapConstants.LAUNCH_TIME, Long.toString(launchTime));
         initProps.put("org.apache.aries.blueprint.preemptiveShutdown", Boolean.toString(false));
 
+        // If we are running on Java 18+, then we need to explicitly enable the security manager
+        if (javaVersion() >= 18 && System.getProperty("java.security.manager") == null) {
+            System.setProperty("java.security.manager", "allow");
+        }
+
         BootstrapConfig bootProps = createBootstrapConfig();
 
         try {
@@ -457,5 +462,15 @@ public class Launcher {
         }
 
         return args;
+    }
+
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        return Integer.valueOf(versionElements[i]);
     }
 }

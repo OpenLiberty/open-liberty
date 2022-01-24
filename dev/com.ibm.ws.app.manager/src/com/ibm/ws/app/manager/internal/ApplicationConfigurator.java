@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -87,17 +88,20 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.logging.Introspector;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  *
  */
-@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class },
+@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class, CheckpointHook.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
                         Constants.SERVICE_VENDOR + "=" + "IBM",
                         Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID
            })
-public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator {
+public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator, CheckpointHook {
     private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
     /**
@@ -414,10 +418,17 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private volatile ScheduledExecutorService _scheduledExecutor;
     private volatile AppMonitorConfigurator _appMonitorConfigurator;
     private volatile ApplicationManager _applicationManager;
+    private final CheckpointPhase _checkpointPhase;
+    private final List<Runnable> _restoreMessages = new CopyOnWriteArrayList<Runnable>();
 
     private static final Collection<String> SIMPLE_INITIAL_UPDATE_NOTIFICATIONS = Arrays.asList(new String[] { RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED,
                                                                                                                RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED,
                                                                                                                RuntimeUpdateNotification.ORB_STARTED });
+
+    @Activate
+    public ApplicationConfigurator(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        this._checkpointPhase = checkpointPhase;
+    }
 
     @Activate
     protected void activate(ComponentContext ctx) {
@@ -1075,7 +1086,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         ApplicationStateMachine asm = ApplicationStateMachine.newInstance(_ctx, _locAdmin, _futureMonitor,
                                                                           _artifactFactory, _moduleFactory,
                                                                           _executor, _scheduledExecutor,
-                                                                          app, _appMonitorConfigurator.getMonitor());
+                                                                          app, _appMonitorConfigurator.getMonitor(),
+                                                                          this);
         app.setStateMachine(asm);
         return asm;
     }
@@ -2069,4 +2081,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     }
 
+    public void restoreMessage(Runnable message) {
+        if (_checkpointPhase != null) {
+            _restoreMessages.add(message);
+        }
+    }
+
+    @Override
+    public synchronized void restore() {
+        _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
+        _restoreMessages.forEach(Runnable::run);
+        _restoreMessages.clear();
+    }
 }

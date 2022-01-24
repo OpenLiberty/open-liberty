@@ -75,9 +75,14 @@ public class UtilityMain {
      * @throws InstantiationException
      * @throws InvocationTargetException
      * @throws IllegalArgumentException
-     * @throws PrivilegedActionException 
+     * @throws PrivilegedActionException
      */
     public static void internal_main(String[] args) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, PrivilegedActionException {
+        // If we are running on Java 18+, then we need to explicitly enable the security manager
+        if (javaVersion() >= 18 && System.getProperty("java.security.manager") == null) {
+            System.setProperty("java.security.manager", "allow");
+        }
+
         // The sole element of the classpath should be the jar that was launched..
         String jarName = System.getProperty("java.class.path");
 
@@ -187,7 +192,7 @@ public class UtilityMain {
 
     /**
      * Support for embedded libs in a bundle.
-     * 
+     *
      * @param jarFileUrl
      * @return
      * @throws IOException

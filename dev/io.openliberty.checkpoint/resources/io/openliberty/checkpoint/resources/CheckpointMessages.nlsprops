@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requested. When the checkpoint completes, the server stops.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=A checkpoint was requested. The server is halted and its current state is written to disk.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the documentation for details of the checkpoint and restore operations.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: The Liberty server is resuming operation from a checkpoint.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=A restore operation was run on a Liberty server checkpoint image.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Check the documentation for details of the checkpoint and restore operations.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: The server checkpoint request failed with the following message: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=A checkpoint request for the server has failed.  A valid checkpoint process image for the server has not been created.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Inspect the checkpoint directory located in the server logs directory for additional log files to determine why the checkpoint failed.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: The server failed to restore from a checkpoint with the following message: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=An attempt to restore the server from a checkpoint failed.  The server is not running.
+RESTORE_FAILED_CWWKC0454E.useraction=Inspect the checkpoint directory located in the server logs directory for additional log files to determine why the server could not be restored.
+

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -707,6 +707,10 @@ error.missing.version.files.useraction=Ensure that the directory exists and can 
 warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early release version.
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
 warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
+
+error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty or unknown.
+error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
+error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
