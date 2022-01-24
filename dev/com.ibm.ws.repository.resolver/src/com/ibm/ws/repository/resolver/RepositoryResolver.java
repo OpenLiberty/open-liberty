@@ -583,7 +583,14 @@ public class RepositoryResolver {
      * @return the ordered list of resources to install, will be empty if the feature cannot be found or is already installed
      */
     List<RepositoryResource> createInstallList(String featureName) {
+        // Find the feature by name (featureName may be the short or the symbolic name, so we need to use resolverRepository)
         ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+        
+        // Check that the requested feature was actually resolved
+        if (feature != null) {
+            feature = resolvedFeatures.get(feature.getSymbolicName());
+        }
+        
         if (feature == null) {
             // Feature missing
             missingTopLevelRequirements.add(featureName);
