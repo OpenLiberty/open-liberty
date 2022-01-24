@@ -50,7 +50,6 @@ javax.annotation:javax.annotation-api:1.3.1
 javax.annotation:javax.annotation-api:1.3.2
 javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0
 javax.enterprise:cdi-api:1.2
-javax.enterprise:cdi-api:2.0
 javax.inject:javax.inject:1
 javax.interceptor:javax.interceptor-api:1.2
 javax.jms:javax.jms-api:2.0
