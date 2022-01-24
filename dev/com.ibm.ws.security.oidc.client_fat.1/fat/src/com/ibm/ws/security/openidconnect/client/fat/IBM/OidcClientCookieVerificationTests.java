@@ -11,19 +11,15 @@
 
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonValidationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -100,26 +96,9 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         genericRP(_testName, webClient, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
 
         // Verify all cookies that should have been deleted do not appear in the web client anymore
-        verifyNoUnexpectedCookiesStillPresent(webClient, Arrays.asList("WASOidcCode", "WASOidcState", "WASOidcNonce", "WASReqURLOidc"));
+        validationTools.verifyNoUnexpectedCookiesStillPresent(webClient, Arrays.asList("WASOidcCode", "WASOidcState", "WASOidcNonce", "WASReqURLOidc"));
     }
 
     // TODO - OAuthClientTracker.TRACK_OAUTH_CLIENT_COOKIE_NAME
-
-    private void verifyNoUnexpectedCookiesStillPresent(WebClient webClient, List<String> cookiesThatShouldNotExist) {
-        List<String> unexpectedCookiesFound = new ArrayList<>();
-        Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
-        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
-            String cookieName = cookie.getName();
-            Log.info(thisClass, _testName, "Checking remaining cookie: " + cookieName);
-            for (String cookieThatShouldNotExist : cookiesThatShouldNotExist) {
-                if (cookieName.startsWith(cookieThatShouldNotExist)) {
-                    unexpectedCookiesFound.add(cookieName);
-                }
-            }
-        }
-        if (!unexpectedCookiesFound.isEmpty()) {
-            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
-        }
-    }
 
 }
