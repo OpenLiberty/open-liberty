@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Stream;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -118,7 +119,16 @@ public class ReactiveStreamsMessageingGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "org.eclipse.microprofile.reactive.messaging.tck", this
                         .getClass() + ":launchReactiveMessagingTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
     }
 
     @Mode(TestMode.LITE)

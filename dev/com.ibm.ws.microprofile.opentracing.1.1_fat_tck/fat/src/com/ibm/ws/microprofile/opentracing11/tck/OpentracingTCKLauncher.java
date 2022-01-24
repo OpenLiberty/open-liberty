@@ -21,6 +21,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
+import java.util.List;
+
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  */
@@ -56,6 +58,15 @@ public class OpentracingTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchOpentracingTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.1_fat", this.getClass() + ":launchOpentracingTck");
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        };
     }
 }

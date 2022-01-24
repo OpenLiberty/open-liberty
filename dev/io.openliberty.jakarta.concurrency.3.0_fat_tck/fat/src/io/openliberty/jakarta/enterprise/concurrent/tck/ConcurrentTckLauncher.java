@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -106,8 +107,18 @@ public class ConcurrentTckLauncher {
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
-        );
+        );  
 
-        assertEquals(0, result);
+        try{
+            String productVersion = "";
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+                MvnUtils.preparePublicationFile("Jakarta EE", productVersion);
+            }
+            finally{
+                assertEquals(0, result);
+            }
     }
 }

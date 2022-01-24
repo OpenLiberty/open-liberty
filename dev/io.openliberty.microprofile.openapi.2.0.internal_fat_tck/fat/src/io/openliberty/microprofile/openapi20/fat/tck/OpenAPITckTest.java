@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi20.fat.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List; 
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,7 +58,16 @@ public class OpenAPITckTest {
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.openapi.2.0.internal_fat_tck", "testOpenAPITck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        String productVersion = "";
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                productVersion = matches.get(0);
+            }
+        }
+        finally{         
+            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
+        }
     }
 
 }
