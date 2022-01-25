@@ -46,6 +46,14 @@
 	    <priority>7</priority>
 	  </managed-thread-factory>
 -->
+
+<!-- TODO enable to test merging
+      <context-service>
+        <name>java:comp/concurrent/merged/ejb/PTContextService</name>
+        <propagated>Priority</propagated>
+        <propagated>Timestamp</propagated>
+      </context-service>
+-->
     </session>
   </enterprise-beans>
 

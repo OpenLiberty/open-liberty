@@ -25,6 +25,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 import test.context.list.ListContext;
 import test.context.location.ZipCode;
+import test.context.timing.Timestamp;
 
 @ManagedExecutorDefinition(name = "java:comp/concurrent/executor8",
                            context = "java:app/concurrent/appContextSvc",
@@ -51,6 +52,14 @@ import test.context.location.ZipCode;
 @ManagedThreadFactoryDefinition(name = "java:module/concurrent/dd/ejb/ZLThreadFactory",
                                 context = "java:module/concurrent/ZLContextSvc",
                                 priority = 7)
+
+// Merged with ejb-jar.xml
+// TODO enable in ejb-jar.xml and update the following,
+@ContextServiceDefinition(name = "java:comp/concurrent/merged/ejb/PTContextService",
+                          cleared = ListContext.CONTEXT_NAME,
+                          propagated = { "Priority", Timestamp.CONTEXT_NAME }, // TODO ALL_REMAINING, // ejb-jar.xml replaces with Priority, Timestamp
+                          unchanged = APPLICATION)
+
 @Stateless
 public class ExecutorBean implements Executor {
     @Resource(lookup = "java:comp/concurrent/executor8", name = "java:app/env/concurrent/executor8ref")

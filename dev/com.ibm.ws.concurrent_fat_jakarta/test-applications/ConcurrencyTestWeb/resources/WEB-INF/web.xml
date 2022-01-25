@@ -37,4 +37,13 @@
     <priority>10</priority>
   </managed-thread-factory>
 -->
+
+<!-- TODO enable to test merging
+  <context-service>
+    <name>java:app/concurrent/merged/web/LTContextService</name>
+    <cleared></cleared>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+-->
+
 </web-app>
