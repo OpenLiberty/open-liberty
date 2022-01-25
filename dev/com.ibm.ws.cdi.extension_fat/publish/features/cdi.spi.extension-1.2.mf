@@ -1,6 +1,6 @@
 Subsystem-ManifestVersion: 1
-IBM-ShortName: cdi.spi.extension-1.0
-Subsystem-SymbolicName: cdi.spi.extension-1.0;visibility:=public
+IBM-ShortName: cdi.spi.extension-1.2
+Subsystem-SymbolicName: cdi.spi.extension-1.2;visibility:=public
 Subsystem-Version: 1.0.0
 Subsystem-Content: 
   cdi.spi.extension; version="[1.0,1.100)",

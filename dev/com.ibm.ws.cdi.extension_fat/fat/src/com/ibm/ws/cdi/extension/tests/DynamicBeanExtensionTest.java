@@ -33,6 +33,7 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,6 +46,9 @@ public class DynamicBeanExtensionTest extends FATServletClient {
 
     public static final String APP_NAME = "dynamicallyAddedBeans";
     public static final String SERVER_NAME = "cdi12DynamicallyAddedBeansServer";
+
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

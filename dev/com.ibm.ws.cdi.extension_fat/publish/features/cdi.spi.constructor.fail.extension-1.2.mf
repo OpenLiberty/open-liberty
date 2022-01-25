@@ -1,6 +1,6 @@
 Subsystem-ManifestVersion: 1
-IBM-ShortName: cdi.spi.constructor.fail.extension-1.0
-Subsystem-SymbolicName: cdi.spi.constructor.fail.extension-1.0;visibility:=public
+IBM-ShortName: cdi.spi.constructor.fail.extension-1.2
+Subsystem-SymbolicName: cdi.spi.constructor.fail.extension-1.2;visibility:=public
 Subsystem-Version: 1.0.0
 Subsystem-Content: 
   cdi.spi.constructor.fail.extension; version="[1.0,1.100)",
