@@ -45,6 +45,7 @@ Service-Component: \
     immediate:=true; \
     configuration-policy:=optional; \
     securityService=com.ibm.ws.security.SecurityService; \
+    securityReadyService=com.ibm.ws.security.ready.SecurityReadyService; \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService;\
@@ -62,6 +63,7 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/security/internal/resources/
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.ready.service;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\
