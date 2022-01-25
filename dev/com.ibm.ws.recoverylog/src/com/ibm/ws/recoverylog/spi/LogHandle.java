@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.recoverylog.spi.RLSUtils.Operation;
 
 //------------------------------------------------------------------------------
 //Class: LogHandle
@@ -1241,36 +1242,31 @@ class LogHandle {
             Tr.exit(tc, "createWarningFile");
     }
 
-    /**
-     * Delete the underlying file system tree where the log file resides
-     */
-    public void delete() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "delete", new Object[] { this });
-
-        if (_file1 != null && _file2 != null) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Delete the underlying file system log files. Working with log directory " + _logDirectory);
-
-            // Delete the required directory tree
-            File directoryToBeDeleted = new File(_logDirectory);
-            // Only proceed if the directory exists.
-            if (directoryToBeDeleted != null && directoryToBeDeleted.exists()) {
-                directoryToBeDeleted = directoryToBeDeleted.getParentFile();
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Working with directory " + directoryToBeDeleted.getAbsolutePath());
-                RLSUtils.archiveAndDeleteDirectoryTree(directoryToBeDeleted);
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "The directory does not exist");
-            }
-        }
+    public boolean delete() throws Exception {
         _file1 = null;
         _file2 = null;
 
+        return delete(RLSUtils.STANDARD_RETRY_MAX_INTERVAL_NS);
+    }
+
+    private boolean delete(long retryNs) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "delete");
+            Tr.entry(tc, "delete", retryNs);
+
+        Operation deleteOp = new Operation() {
+            @Override
+            public boolean act() throws Exception {
+                return RLSUtils.deleteDirectory(new File(_logDirectory));
+            }
+        };
+        boolean deleted = RLSUtils.retry(deleteOp, retryNs);
+        if (!deleted) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to delete '{0}'", _logDirectory);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete", deleted);
+        return deleted;
     }
 
     public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
@@ -1281,5 +1277,18 @@ class LogHandle {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
+    }
+
+    @Override
+    public String toString() {
+        return "recoveryLog: " + _recoveryLog + ", serviceName: " +
+               _serviceName + ", serviceVersion: " +
+               _serviceVersion + ", serverName: " +
+               _serverName + ", logName: " +
+               _logName + ", logDirectory: " +
+               _logDirectory + ", maxlogFileSize: " +
+               _maxLogFileSize + ", logFileSize: " +
+               _logFileSize + ", failureScope: " +
+               _failureScope;
     }
 }
