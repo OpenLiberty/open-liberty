@@ -141,9 +141,11 @@ jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.ejb:jakarta.ejb-api:4.0.0
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0
-jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.0.Beta3
+jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.0-RC3
+jakarta.enterprise:jakarta.enterprise.lang-model:4.0.0-RC3
 jakarta.inject:jakarta.inject-api:2.0.1
 jakarta.interceptor:jakarta.interceptor-api:2.0.0
+jakarta.interceptor:jakarta.interceptor-api:2.1.0-RC3
 jakarta.jms:jakarta.jms-api:3.0.0
 jakarta.json.bind:jakarta.json.bind-api:2.0.0
 jakarta.json:jakarta.json-api:2.0.0
@@ -518,11 +520,11 @@ org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
 org.jboss.weld.se:weld-se-core:3.1.8.Final
 org.jboss.weld.se:weld-se-core:4.0.1.SP1
-org.jboss.weld.se:weld-se-core:5.0.0.Alpha2
+org.jboss.weld.se:weld-se-core:5.0.0.Beta1
 org.jboss.weld:weld-osgi-bundle:2.4.8.Final
 org.jboss.weld:weld-osgi-bundle:3.1.8.Final
 org.jboss.weld:weld-osgi-bundle:4.0.1.SP1
-org.jboss.weld:weld-osgi-bundle:5.0.0.Alpha2
+org.jboss.weld:weld-osgi-bundle:5.0.0.Beta1
 org.jmock:jmock-junit4:2.5.1
 org.jmock:jmock-junit4:2.6.0
 org.jmock:jmock-legacy:2.5.0

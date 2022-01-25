@@ -17,6 +17,10 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  jakarta.enterprise.util;  type="spec", \
  jakarta.inject;  type="spec", \
  jakarta.interceptor;  type="spec", \
+ jakarta.enterprise.inject.build.compatible.spi;  type="spec", \
+ jakarta.enterprise.lang.model;  type="spec", \
+ jakarta.enterprise.lang.model.declarations;  type="spec", \
+ jakarta.enterprise.lang.model.types;  type="spec", \
  org.jboss.weld.module.web.el; type="internal", \
  org.jboss.weld.module.jsf; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
@@ -51,7 +55,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
   io.openliberty.jakarta.annotation-2.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
-  io.openliberty.jakarta.interceptor-2.0, \
+  io.openliberty.jakarta.interceptor-2.1, \
   io.openliberty.jakarta.pages-3.1, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=io.openliberty.org.jboss.weld5, \
@@ -65,7 +69,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
  io.openliberty.cdi.4.0.internal.weld, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"
--jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.0.0.Alpha2"
+-jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.0.0"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
  dev/spi/ibm/javadoc/io.openliberty.cdi.spi_1.1-javadoc.zip
