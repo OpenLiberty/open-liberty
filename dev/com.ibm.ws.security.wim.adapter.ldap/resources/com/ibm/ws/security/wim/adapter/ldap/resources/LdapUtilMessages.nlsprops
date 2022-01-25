@@ -27,14 +27,6 @@ ENTITY_NOT_FOUND=CWIML4001E: The user registry operation could not be completed.
 ENTITY_NOT_FOUND.explanation=The specified entity name, which could be a uniqueName or a uniqueId, could not be found in the underlying repository. The user registry operation cannot continue without finding this entity.
 ENTITY_NOT_FOUND.useraction=Ensure that the entity exists in the underlying repository. If the entity exists, then verify that the read permission is set for the entity and try again.
 
-INVALID_LEVEL_IN_CONTROL=CWIML4514E: The user registry operation could not be completed. An incorrect value for the {0} property level is specified in {1}. The value of the property, level, must be either 0 or a positive integer.
-INVALID_LEVEL_IN_CONTROL.explanation=The value of the property level, was specified as a negative number.
-INVALID_LEVEL_IN_CONTROL.useraction=The value of the property, level, must be either 0 or a positive integer. Change the value of the property level and then try again.
-
-NAMING_EXCEPTION=CWIML4520E: The LDAP operation could not be completed. The LDAP naming exception {0} occurred during processing.
-NAMING_EXCEPTION.explanation=The message indicates that a general naming exception has occurred during an LDAP operation. See the exception for additional details. 
-NAMING_EXCEPTION.useraction=Ensure that the related repository (for example, a database or an LDAP server) is started and set up correctly.
-
 SYSTEM_EXCEPTION=CWIML1998E: The user registry operation could not be completed. The following system exception occurred while processing the user registry operation: {0} 
 SYSTEM_EXCEPTION.explanation=The program encountered a system exception while performing the user registry operation. 
 SYSTEM_EXCEPTION.useraction= Review the logs for the cause of this error and take appropriate corrective actions. 
@@ -51,10 +43,6 @@ MISSING_MANDATORY_PROPERTY=CWIML1028E: The user registry operation could not be 
 MISSING_MANDATORY_PROPERTY.explanation=The operation cannot be performed because the value of the mandatory property is missing. For example, RDN (Relative Distinguished Name) property is not specified when the entity is created; or propertyName or entityTypeName is missing from PropertyDefinitionControl or ExtensionPropertyDefinitionControl; or entityName is missing from the entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Provide a value for the mandatory property.
 
-ENTITY_IS_NOT_A_GROUP=CWIML4525E: The user registry operation could not be completed. The {0} entity type provided is not of type Group. This operation is only supported by an entity of type Group.
-ENTITY_IS_NOT_A_GROUP.explanation=The group related operations, such as assigning members to a group or getting the members of a group, are only applicable to the Group entity type. An exception is thrown if the specified entity is not of a Group type.
-ENTITY_IS_NOT_A_GROUP.useraction=Ensure that the specified entity type is of Group type. For the LDAP adapter, ensure that the object class that is defined for the Group entity type matches with the actual object class of group.
-
 CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  The user {2} passed the cache control specifying the clear cache mode {1} for the repository {0}. The entire LDAP repository cache is cleared.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=The specified user is trying to clear the entire cache of the specified repository by using the clearAll mode.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=This message is logged for audit purposes.
@@ -66,10 +54,6 @@ UNKNOWN_CLEAR_CACHE_MODE.useraction=Specify a clear cache mode that is supported
 INVALID_PROPERTY_DATA_TYPE=CWIML4522E: The user registry operation could not be completed. The data type of the {0} property is not valid.  The configured user registry and the back-end repository should have the same data type for the property. 
 INVALID_PROPERTY_DATA_TYPE.explanation=The data type specified does not match with the data type that is defined for the property. For example, the data type defined in the configured user registry is a binary, but the data type defined in the back-end repository is a string.
 INVALID_PROPERTY_DATA_TYPE.useraction=Ensure that the data type of the property is the same both in the configured user registry and in the back-end repository. 
-
-LDAP_ENTRY_NOT_FOUND=CWIML4527E: The LDAP operation could not be completed. The LDAP entry {0} was not found: {1} Specify the correct unique name of the entity and define the correct node mapping for the LDAP repository.
-LDAP_ENTRY_NOT_FOUND.explanation=The LDAP entry for the specified entity is not found on the LDAP server.
-LDAP_ENTRY_NOT_FOUND.useraction=Ensure that the unique name of the entity is correctly specified. Ensure that the node mapping of the LDAP repository is correctly defined.
 
 PROPERTY_NOT_DEFINED=CWIML0514W: The user registry operation could not be completed. The {0} property is not defined. Define or use the correct property name.
 PROPERTY_NOT_DEFINED.explanation=The specified property is not defined.
@@ -86,10 +70,6 @@ NULL_CHECKPOINT_VALUE.useraction=Try the search again with a valid checkpoint or
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed as the password is either missing or empty.
 MISSING_OR_EMPTY_PASSWORD.explanation=If the principal name is specified during login, the password cannot be null or empty.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specify the password.
-
-PASSWORD_CHECKED_FAILED=CWIML4529E: The login operation could not be completed. The password verification for the {0} principal name failed. Root cause: {1}. Specify the principal name and the password correctly and check that the account is enabled and not locked.
-PASSWORD_CHECKED_FAILED.explanation=The specified principal name cannot be authenticated because the password verification failed.
-PASSWORD_CHECKED_FAILED.useraction=Ensure that both the principal name and the password are specified correctly. Ensure that the account is not locked and that the account is enabled.
 
 UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: The LDAP repository clear cache operation could not be completed. The clear cache mode {1} passed in the Cache Control is not supported for this operation by the specified repository {0}. Specify a supported clear cache mode.
 UNSUPPORTED_CLEAR_CACHE_MODE.explanation=The specified clear cache mode is invalid for this repository.
@@ -123,33 +103,13 @@ EXT_ID_VALUE_IS_NULL=CWIML4548E: The login operation could not be completed. The
 EXT_ID_VALUE_IS_NULL.explanation=The LDAP attribute used as the external identifier must contain a value for each entity.
 EXT_ID_VALUE_IS_NULL.useraction=Ensure that the correct attribute is chosen for the external identifier. If no appropriate attribute exists, the distinguished name can be used as the external identifier.
 
-EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: The search operation could not be completed. The LDAP attribute used as an external identifier contains multiple values: {0}. Choose the correct LDAP attribute as an external identifier.
-EXT_ID_HAS_MULTIPLE_VALUES.explanation=The LDAP attribute used as the external identifier must be unique and cannot contain multiple values.
-EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ensure that the correct attribute is chosen for the external identifier. If no appropriate attribute exists, the distinguished name can be used as the external identifier.
-
 INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The base entry definition {0} is not valid.  Correct the base entry definition in the server.xml file.
 INVALID_BASE_ENTRY_DEFINITION.explanation=The specified base entry definition is invalid.
 INVALID_BASE_ENTRY_DEFINITION.useraction=Specify a valid base entry definition in the server.xml file.
 
-INVALID_DN_SYNTAX=CWIML4517E: The login operation could not be completed. The {0} distinguished name (DN) is not valid. Specify the correct syntax of the distinguished name.
-INVALID_DN_SYNTAX.explanation=The specified distinguished name (DN) is not valid. The user registry operation cannot continue without a valid DN.
-INVALID_DN_SYNTAX.useraction=Ensure that the syntax of the distinguished name is correct. For example, review for escape characters.
-
-INIT_POOL_SIZE_TOO_BIG=CWIML4532E: The initial context pool size {0} is more than the maximum context pool size {1}. Hence, the context pool has been disabled.
-INIT_POOL_SIZE_TOO_BIG.explanation=The initial context pool size should be less the maximum context pool size.
-INIT_POOL_SIZE_TOO_BIG.useraction=Ensure that the initial context pool size is less than the maximum context pool size or set the maximum context pool size to 0.
-
-PREF_POOL_SIZE_TOO_BIG=CWIML4533E: The preferred context pool size {0} must be less than the maximum context pool size {1}. Hence, the context pool has been disabled.
-PREF_POOL_SIZE_TOO_BIG.explanation=The preferred context pool size should be less than the maximum context pool size.
-PREF_POOL_SIZE_TOO_BIG.useraction=Ensure that the preferred context pool size is less than the maximum context pool size or set the maximum context pool size to 0.
-
 MISSING_INI_PROPERTY=CWIML0004E: An error occurred during the user registry initialization. The initialization property {0} is missing from the server.xml file. Specify an initialization property in the server.xml file.
 MISSING_INI_PROPERTY.explanation=The specified initialization property is mandatory. The user registry operation cannot start without it.
 MISSING_INI_PROPERTY.useraction=Ensure this property is specified in the server.xml file. Ensure this property is not empty or null.
-
-DUPLICATE_ENTITY_TYPE=CWIML4531E: A duplicate {0} entity type is defined in the server.xml file.
-DUPLICATE_ENTITY_TYPE.explanation=The entity type defined in the server.xml file must be unique.
-DUPLICATE_ENTITY_TYPE.useraction=Edit the server.xml file to remove the duplicate entity type.
 
 LDAP_CONFIG_INCOMPLETE=CWWKS3200E: A configuration exception has occurred. The attribute {0} must be defined.
 LDAP_CONFIG_INCOMPLETE.explanation=The specified attribute must be defined.
@@ -182,10 +142,6 @@ LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Unable to authenticate to {0} w
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=The bindDN and bindPassword are incorrect or the port may be wrong.
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Check the configured bindDN and bindPassword are correct for the configured LDAP server.
 
-ENTITY_HAS_DESCENDENTS=CWIML4519E: The user registry operation could not be completed. The {0} entity has descendants. It cannot be deleted or renamed. Please delete all the descendants of the entity before trying to delete or rename the entity itself.
-ENTITY_HAS_DESCENDENTS.explanation=The delete or rename function can only be performed on a leaf entity, that is, an entity without any descendants. The specified entity has descendants.
-ENTITY_HAS_DESCENDENTS.useraction=Delete all the  descendants of the entity first, then delete or rename the entity itself.
-
 ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The specified entity type {0} is not valid for this operation.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=An operation has been requested on an entity, but that operation does not support the specified entity type.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities that are provided in the input are of supported entity types, and remove any unsupported entity types from the input.
@@ -193,10 +149,6 @@ ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities that are provided 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: The user registry operation could not be completed. One cannot create or update property {0} in repository {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=In the create or update operation, a value is specified for a property that cannot be written to the repository. For example, a pricipalName cannot be specified for a CREATE operation.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Remove the erroneous property from the input and retry the operation by specifying valid properties and values.
-
-PARENT_NOT_FOUND=CWIML4526E: The CREATE user registry operation could not be completed. The entity was not created because the parent of the entity was not found. The underlying JDNI exception was : {0}
-PARENT_NOT_FOUND.explanation=During creation, if the parent of the entity that you want to create is not found, an exception is thrown.
-PARENT_NOT_FOUND.useraction=Ensure that the default parent defined for the entity exists.  If it does not exist, you need to create it and retry your operation.
 
 ENTITY_ALREADY_EXIST=CWIML4501E: The CREATE user registry operation could not be completed. An entity with same unique name, {0}, or same RDN value already exists.
 ENTITY_ALREADY_EXIST.explanation=The specified unique name or an entity with same RDN value already exists in the repository. A duplicate entity with the same unique name or same Relative Distinguished Name (RDN) cannot be added to the repository.
@@ -242,7 +194,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Kerberos login failed with the {0} K
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Either the specified Kerberos principal is invalid, or the default Kerberos credential cache (ccache) is invalid or expired.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Ensure that a valid Kerberos principal is specified, and that the default Kerberos credential cache (ccache) is not expired.
 
-# CWIML4510 already used
+# CWIML4510 already used (WimUtilMessages.nlsprops)
 
 KRB5_TICKETCACHE_USED=CWIML4511E: The {0} LDAP registry is configured with the {1} Kerberos ticket cache (ccache) filename and the {2} keytab filename. The Kerberos credential cache (ccache) is used for Kerberos bind authentication to LDAP server.
 KRB5_TICKETCACHE_USED.explanation=To use the keytab file, the keytab filename must be specified and the Kerberos credential cache (ccache) filename must not be specified.
@@ -256,21 +208,31 @@ CANNOT_READ_KRB5_FILE=CWIML4513E: The {0} LDAP registry cannot read the {1} Kerb
 CANNOT_READ_KRB5_FILE.explanation=The Kerberos file cannot be opened. Either the file permissions are incorrect, or the file does not exist.
 CANNOT_READ_KRB5_FILE.useraction=Verify that the file location is correct and that the server has read file permissions.
 
-# CWIML4514 already used
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: The user registry operation could not be completed. An incorrect value for the {0} property level is specified in {1}. The value of the property, level, must be either 0 or a positive integer.
+INVALID_LEVEL_IN_CONTROL.explanation=The value of the property level, was specified as a negative number.
+INVALID_LEVEL_IN_CONTROL.useraction=The value of the property, level, must be either 0 or a positive integer. Change the value of the property level and then try again.
 
 KRB5_FILE_NOT_FOUND=CWIML4515E: The {0} attribute from the {1} element is configured to a file that does not exist at the following location: {2}
 KRB5_FILE_NOT_FOUND.explanation=The configuration refers to a file that is either unreadable or does not exist.
 KRB5_FILE_NOT_FOUND.useraction=Ensure that the configuration points to a file that exists and is readable by the application process.
 
-# CWIML4516 already used
-# CWIML4517 already used
+# CWIML4516 already used (WimUtilMessages.nlsprops)
+
+INVALID_DN_SYNTAX=CWIML4517E: The login operation could not be completed. The {0} distinguished name (DN) is not valid. Specify the correct syntax of the distinguished name.
+INVALID_DN_SYNTAX.explanation=The specified distinguished name (DN) is not valid. The user registry operation cannot continue without a valid DN.
+INVALID_DN_SYNTAX.useraction=Ensure that the syntax of the distinguished name is correct. For example, review for escape characters.
 
 IDMAP_INVALID_FORMAT=CWIML4518W: The {0} {1} value is malformed. The value must be a semi-colon separated list of 'objectclass:attribute' or '*:attribute' pairs.
 IDMAP_INVALID_FORMAT.explanation=The userIdMap value must be in a valid format so that the objectclass and attribute can be parsed.
 IDMAP_INVALID_FORMAT.useraction=Update the userIdMap value so that it adheres to the specified format.
 
-# CWIML4519 already used
-# CWIML4520 already used
+ENTITY_HAS_DESCENDENTS=CWIML4519E: The user registry operation could not be completed. The {0} entity has descendants. It cannot be deleted or renamed. Please delete all the descendants of the entity before trying to delete or rename the entity itself.
+ENTITY_HAS_DESCENDENTS.explanation=The delete or rename function can only be performed on a leaf entity, that is, an entity without any descendants. The specified entity has descendants.
+ENTITY_HAS_DESCENDENTS.useraction=Delete all the  descendants of the entity first, then delete or rename the entity itself.
+
+NAMING_EXCEPTION=CWIML4520E: The LDAP operation could not be completed. The LDAP naming exception {0} occurred during processing.
+NAMING_EXCEPTION.explanation=The message indicates that a general naming exception has occurred during an LDAP operation. See the exception for additional details. 
+NAMING_EXCEPTION.useraction=Ensure that the related repository (for example, a database or an LDAP server) is started and set up correctly.
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: The {0} LDAP registry attempted to bind to the LDAP server by using Kerberos credentials for the {1} principal name, but the Kerberos service that provides these credentials is not available. The bind authentication mechanism is {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=The Kerberos service was not available when the LDAP registry attempted to bind to the LDAP server. If the Kerberos service is not available, no users can authenticate.
@@ -284,3 +246,40 @@ KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: Kerberos login failed with the {0} 
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Either the specified Kerberos principal is invalid, or the default Kerberos keytab is invalid.
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ensure that a valid Kerberos principal is specified and that the default Kerberos keytab is valid.
 
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: The user registry operation could not be completed. The {0} entity type provided is not of type Group. This operation is only supported by an entity of type Group.
+ENTITY_IS_NOT_A_GROUP.explanation=The group related operations, such as assigning members to a group or getting the members of a group, are only applicable to the Group entity type. An exception is thrown if the specified entity is not of a Group type.
+ENTITY_IS_NOT_A_GROUP.useraction=Ensure that the specified entity type is of Group type. For the LDAP adapter, ensure that the object class that is defined for the Group entity type matches with the actual object class of group.
+
+PARENT_NOT_FOUND=CWIML4526E: The CREATE user registry operation could not be completed. The entity was not created because the parent of the entity was not found. The underlying JDNI exception was : {0}
+PARENT_NOT_FOUND.explanation=During creation, if the parent of the entity that you want to create is not found, an exception is thrown.
+PARENT_NOT_FOUND.useraction=Ensure that the default parent defined for the entity exists.  If it does not exist, you need to create it and retry your operation.
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: The LDAP operation could not be completed. The LDAP entry {0} was not found: {1} Specify the correct unique name of the entity and define the correct node mapping for the LDAP repository.
+LDAP_ENTRY_NOT_FOUND.explanation=The LDAP entry for the specified entity is not found on the LDAP server.
+LDAP_ENTRY_NOT_FOUND.useraction=Ensure that the unique name of the entity is correctly specified. Ensure that the node mapping of the LDAP repository is correctly defined.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: The search operation could not be completed. The LDAP attribute used as an external identifier contains multiple values: {0}. Choose the correct LDAP attribute as an external identifier.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=The LDAP attribute used as the external identifier must be unique and cannot contain multiple values.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ensure that the correct attribute is chosen for the external identifier. If no appropriate attribute exists, the distinguished name can be used as the external identifier.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: The login operation could not be completed. The password verification for the {0} principal name failed. Root cause: {1}. Specify the principal name and the password correctly and check that the account is enabled and not locked.
+PASSWORD_CHECKED_FAILED.explanation=The specified principal name cannot be authenticated because the password verification failed.
+PASSWORD_CHECKED_FAILED.useraction=Ensure that both the principal name and the password are specified correctly. Ensure that the account is not locked and that the account is enabled.
+
+# CWIML4530 already used (WimUtilMessages.nlsprops)
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: A duplicate {0} entity type is defined in the server.xml file.
+DUPLICATE_ENTITY_TYPE.explanation=The entity type defined in the server.xml file must be unique.
+DUPLICATE_ENTITY_TYPE.useraction=Edit the server.xml file to remove the duplicate entity type.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: The initial context pool size {0} is more than the maximum context pool size {1}. Hence, the context pool has been disabled.
+INIT_POOL_SIZE_TOO_BIG.explanation=The initial context pool size should be less the maximum context pool size.
+INIT_POOL_SIZE_TOO_BIG.useraction=Ensure that the initial context pool size is less than the maximum context pool size or set the maximum context pool size to 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: The preferred context pool size {0} must be less than the maximum context pool size {1}. Hence, the context pool has been disabled.
+PREF_POOL_SIZE_TOO_BIG.explanation=The preferred context pool size should be less than the maximum context pool size.
+PREF_POOL_SIZE_TOO_BIG.useraction=Ensure that the preferred context pool size is less than the maximum context pool size or set the maximum context pool size to 0.
+
+LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: LDAP repository {0} failed to process the configuration updates from federated repositories. Root cause: {1}
+LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Configuration changes to federated repositories triggered an update to the LDAP repository, but there was an error while processing those changes. 
+LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=Review the logs for the cause of this error and take appropriate corrective actions.

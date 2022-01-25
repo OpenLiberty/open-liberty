@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,9 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.BaseRepository;
+import com.ibm.ws.security.wim.ConfigManager;
 import com.ibm.ws.security.wim.ConfiguredRepository;
+import com.ibm.ws.security.wim.RealmConfigChangeListener;
 import com.ibm.ws.security.wim.adapter.ldap.change.ChangeHandlerFactory;
 import com.ibm.ws.security.wim.adapter.ldap.change.IChangeHandler;
 import com.ibm.ws.security.wim.adapter.ldap.context.TimedDirContext;
@@ -160,7 +162,7 @@ import com.ibm.wsspi.security.wim.model.SearchControl;
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            configurationPid = "com.ibm.ws.security.registry.ldap.config",
            property = "service.vendor=IBM")
-public class LdapAdapter extends BaseRepository implements ConfiguredRepository {
+public class LdapAdapter extends BaseRepository implements ConfiguredRepository, RealmConfigChangeListener {
 
     /**
      * Register the class to trace service.
@@ -216,6 +218,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     private static final String KERB_SERVICE = "kerberosService";
 
     private KerberosService kerberosService = null;
+
+    private ConfigManager wimConfigManager = null;
 
     /**
      * Config updates are not as well ordered as we would like. Peek at the Kerberos config to see if we should create the context pool or not.
@@ -319,7 +323,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     }
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setSSLSupport(SSLSupportOptional sslSupport) {}
+    protected void setSSLSupport(SSLSupportOptional sslSupport) {
+    }
 
     /**
      * Method to get the given Entity from the underlying repository
@@ -621,7 +626,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
 
             String searchExpr = "@xsi:type=" + quote + qName + quote + " and "
-                            + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
+                                + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
 
             loginCtrl.setExpression(searchExpr);
             srchCtrl = getLdapSearchControl(loginCtrl, false, false);
@@ -1078,27 +1083,27 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @param propNames
      * @param attrs
      * @throws WIMException
-     *             NOTE: BEHAVIOR CHANGE USING APAR PM46133
-     *             Before: Properties having binary data-type were not being parsed and pushed into populated Entity.
-     *             This method used to iterate every attribute returned by JNDI_CALL and parse them according to their Property-to-Attribute mapping from wimconfig.xml
-     *             After: Whenever a LDAP returned object(attributes) ;then they'd be returned as
-     *             DN: CN=myCN1,o=ibm ExtId: E525BE85647D750E882578E300444D6A UniqueName: CN=myCN1,o=ibm Type: PersonAccount
-     *             Attributes: {
-     *             dominounid=Attribute ID: dominounid
-     *             Attribute values: E525BE85647D750E882578E300444D6A
-     *             ; jpegphoto;binary=Attribute ID: jpegphoto;binary
-     *             Attribute values: [B@4b3a4b3a
-     *             ; objectclass=Attribute ID: objectclass
-     *             Attribute values: inetorgperson,organizationalPerson,person,top
-     *             ; sn=Attribute ID: sn
-     *             Attribute values: mySN1
-     *             ; cn=Attribute ID: cn
-     *             Attribute values: myCN1
-     *             }
-     *             all attributes EXCEPT jpegphoto(binary type) are having a common syntax <attrName>=Attribute ID:<attrName> Attribute values:<someValue>
-     *             Attributes of type binary have added it's type in the attribute name itself; hence method can't find/validate said attribute (jpegphoto;binary);
-     *             hence fails to retrieve attribute and populate it's value in Entry.
-     *             PS. These changes are not going to affect original behaviour; New changes will be serving binary dataType attributes too!
+     *                          NOTE: BEHAVIOR CHANGE USING APAR PM46133
+     *                          Before: Properties having binary data-type were not being parsed and pushed into populated Entity.
+     *                          This method used to iterate every attribute returned by JNDI_CALL and parse them according to their Property-to-Attribute mapping from wimconfig.xml
+     *                          After: Whenever a LDAP returned object(attributes) ;then they'd be returned as
+     *                          DN: CN=myCN1,o=ibm ExtId: E525BE85647D750E882578E300444D6A UniqueName: CN=myCN1,o=ibm Type: PersonAccount
+     *                          Attributes: {
+     *                          dominounid=Attribute ID: dominounid
+     *                          Attribute values: E525BE85647D750E882578E300444D6A
+     *                          ; jpegphoto;binary=Attribute ID: jpegphoto;binary
+     *                          Attribute values: [B@4b3a4b3a
+     *                          ; objectclass=Attribute ID: objectclass
+     *                          Attribute values: inetorgperson,organizationalPerson,person,top
+     *                          ; sn=Attribute ID: sn
+     *                          Attribute values: mySN1
+     *                          ; cn=Attribute ID: cn
+     *                          Attribute values: myCN1
+     *                          }
+     *                          all attributes EXCEPT jpegphoto(binary type) are having a common syntax <attrName>=Attribute ID:<attrName> Attribute values:<someValue>
+     *                          Attributes of type binary have added it's type in the attribute name itself; hence method can't find/validate said attribute (jpegphoto;binary);
+     *                          hence fails to retrieve attribute and populate it's value in Entry.
+     *                          PS. These changes are not going to affect original behaviour; New changes will be serving binary dataType attributes too!
      */
     private void populateEntity(Entity entity, List<String> propNames, Attributes attrs) throws WIMException {
         if (propNames == null || propNames.size() == 0 || attrs == null) {
@@ -1363,10 +1368,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     /**
      * Process the value of a property.
      *
-     * @param entity The entity to process the value for.
-     * @param propName The property name to process.
-     * @param dataType The data type of the property.
-     * @param syntax The syntax for the property.
+     * @param entity    The entity to process the value for.
+     * @param propName  The property name to process.
+     * @param dataType  The data type of the property.
+     * @param syntax    The syntax for the property.
      * @param ldapValue The value from the LDAP server.
      * @return The processed value.
      * @throws WIMException If there was an issue processing the property's value.
@@ -3266,7 +3271,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      *
      * @param ldapDN LDAP DN
      */
-    protected void deletePreExit(String ldapDN) throws WIMException {}
+    protected void deletePreExit(String ldapDN) throws WIMException {
+    }
 
     /**
      * Get all the descendants of the given DN.
@@ -4209,5 +4215,30 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     private void releaseConfigWriteLock() {
         configReadWriteLock.writeLock().unlock();
+    }
+
+    @Reference
+    private void setConfigManager(ConfigManager configManager) {
+        this.wimConfigManager = configManager;
+        this.wimConfigManager.registerRealmConfigChangeListener(this);
+    }
+
+    private void unsetConfigManager(ConfigManager configManager) {
+        this.wimConfigManager.deregisterRealmConfigChangeListener(this);
+        this.wimConfigManager = null;
+    }
+
+    @Override
+    public void notifyRealmConfigChange() {
+        try {
+            /*
+             * Need to reload the configuration based on the changes to the federated repository configuration.
+             */
+            this.modified(config);
+        } catch (WIMException e) {
+            if (tc.isErrorEnabled()) {
+                Tr.error(tc, WIMMessageKey.LDAP_WIM_CONFIG_UPDATED_FAILED, reposId, e);
+            }
+        }
     }
 }
