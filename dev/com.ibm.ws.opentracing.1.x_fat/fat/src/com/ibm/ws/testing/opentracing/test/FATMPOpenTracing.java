@@ -19,8 +19,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertNull;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -139,6 +141,24 @@ public class FATMPOpenTracing {
             Assert.assertEquals("Expected " + expectedSpans + " spans but found " + spanCount + ":", tracerState);
         }
 
+    }
+
+    @Test
+    public void testNotFoundRemoval() throws Exception {
+        String methodName = "testNotFoundRemoval";
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+
+        try {
+            executeWebService("notFoundRemoval");
+        } catch (TestAppException tae) {
+            FATLogging.info(CLASS, methodName, "Expected exception", tae);
+        } catch (Exception ex) {
+            FATLogging.info(CLASS, methodName, "Unexpected exception", ex);
+            ex.printStackTrace();
+        }
+
+        String line = server.waitForStringInLog("HTTP 404 Not Found", consoleLogFile);
+        assertNull("HTTP 404 Not Found exception appeared in the logs", line);
     }
 
     protected List<String> executeWebService(String method) throws Exception {

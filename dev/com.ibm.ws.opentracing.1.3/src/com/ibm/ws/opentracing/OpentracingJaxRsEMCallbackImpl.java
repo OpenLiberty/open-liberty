@@ -39,7 +39,8 @@ public class OpentracingJaxRsEMCallbackImpl implements DefaultExceptionMapperCal
 
     @Override
     public Map<String,Object> onDefaultMappedException(Throwable t, int statusCode, ResourceInfo resourceInfo ) {
-        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", t);
+        if(!t.getMessage().contains("HTTP 404 Not Found"))
+        	Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", t);
         return Collections.singletonMap(EXCEPTION_KEY, t);
     }
 
