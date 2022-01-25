@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,14 +84,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     protected void setJaasService(JAASService jaasService) {
         this.jaasService = jaasService;
         if (jaasService instanceof JAASServiceImpl) {
-            JAASServiceImpl.setAuthenticationService(this);
+            ((JAASServiceImpl) jaasService).setAuthenticationService(this);
         }
     }
 
     protected void unsetJaasService(JAASService jaasService) {
         if (this.jaasService == jaasService) {
             this.jaasService = null;
-            JAASServiceImpl.unsetAuthenticationService(this);
+            ((JAASServiceImpl) jaasService).unsetAuthenticationService(this);
         }
     }
 
@@ -185,7 +185,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.deactivate(cc);
         defaultDelegationProviderRef.deactivate(cc);
         credentialsServiceRef.deactivate(cc);
-        JAASServiceImpl.unsetAuthenticationService(this);
+        if (jaasService instanceof JAASServiceImpl) {
+            ((JAASServiceImpl) jaasService).unsetAuthenticationService(this);
+        }
         cc = null;
     }
 
@@ -382,9 +384,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
-     * @param authCacheService An authentication cache service
-     * @param token The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
-     * @param ssoTokenBytes Optional SSO token as byte[], if null, it will be constructed from the token
+     * @param authCacheService   An authentication cache service
+     * @param token              The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
+     * @param ssoTokenBytes      Optional SSO token as byte[], if null, it will be constructed from the token
      * @param authenticaitonData TODO
      * @return the cached subject
      * @throws AuthenticationException if no cached subject was found
@@ -600,7 +602,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * or the MethodDelegationProvider if one is not configured.
      *
      * @param roleName the name of the role, used to look up the corresponding user.
-     * @param appName the name of the application, used to look up the corresponding user.
+     * @param appName  the name of the application, used to look up the corresponding user.
      * @return subject a subject representing the user that is mapped to the given run-as role.
      * @throws IllegalArgumentException
      */
