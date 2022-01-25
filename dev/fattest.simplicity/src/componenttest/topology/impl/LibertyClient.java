@@ -619,6 +619,11 @@ public class LibertyClient {
             if (clientNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
                 Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
+
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                if (javaInfo.majorVersion() >= 18) {
+                    JVM_ARGS += " -Djava.security.manager=allow";
+                }
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
@@ -749,6 +754,7 @@ public class LibertyClient {
             w.write("\n".getBytes());
             w.write("websphere.java.security.norethrow=false".getBytes());
             w.write("\n".getBytes());
+
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
@@ -2203,6 +2209,7 @@ public class LibertyClient {
                 optionList.add(option.toString());
             }
         }
+
         this.setJvmOptions(optionList);
     }
 
