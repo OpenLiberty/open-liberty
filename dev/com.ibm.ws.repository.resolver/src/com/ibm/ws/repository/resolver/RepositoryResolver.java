@@ -35,7 +35,6 @@ import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
-import com.ibm.ws.repository.resolver.RepositoryResolver.ResolvedFeatureSearchResult.ResultCategory;
 import com.ibm.ws.repository.resolver.internal.ResolutionMode;
 import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
@@ -548,7 +547,7 @@ public class RepositoryResolver {
                 if (feature == null) {
                     allDependenciesResolved = false;
                     // Unless we know it exists but applies to another product, note the missing requirement as well
-                    if (!requirementsFoundForOtherProducts.contains(featureName)) {
+                    if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(featureName)) {
                         missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
                 } else {
@@ -585,17 +584,16 @@ public class RepositoryResolver {
     List<RepositoryResource> createInstallList(String featureName) {
         // Find the feature by name (featureName may be the short or the symbolic name, so we need to use resolverRepository)
         ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
-        
+
         // Check that the requested feature was actually resolved
         if (feature != null) {
             feature = resolvedFeatures.get(feature.getSymbolicName());
         }
-        
+
         if (feature == null) {
             // Feature missing
             missingTopLevelRequirements.add(featureName);
-            // If we didn't find this feature in another product, we need to record it as missing
-            if (!requirementsFoundForOtherProducts.contains(featureName)) {
+            if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(featureName)) {
                 missingRequirements.add(new MissingRequirement(featureName, null));
             }
             return Collections.emptyList();
@@ -697,17 +695,16 @@ public class RepositoryResolver {
         }
 
         for (FeatureResource dependency : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
-            ResolvedFeatureSearchResult searchResult = findResolvedDependency(dependency);
+            String resolvedFeatureName = findResolvedDependency(dependency);
 
-            if (searchResult.category == ResultCategory.FOUND) {
+            if (resolvedFeatureName != null) {
                 // We found the dependency, continue populating the distance map
-                result &= populateMaxDistanceMap(maxDistanceMap, searchResult.symbolicName, currentDistance + 1, currentStack, missingRequirements);
-            } else if (searchResult.category == ResultCategory.MISSING) {
-                // The dependency was totally missing, add it to the list of missing requirements
-                missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
-                result = false;
+                result &= populateMaxDistanceMap(maxDistanceMap, resolvedFeatureName, currentDistance + 1, currentStack, missingRequirements);
             } else {
-                // The dependency was found for another product. That missing requirement is already recorded elsewhere.
+                if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(dependency.getSymbolicName())) {
+                    // The dependency was totally missing, add it to the list of missing requirements
+                    missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
+                }
                 result = false;
             }
         }
@@ -726,25 +723,14 @@ public class RepositoryResolver {
      * Find the actual resolved feature from a dependency with tolerates
      * <p>
      * Tries each of the tolerated versions in order until it finds one that exists in the set of resolved features.
-     * <p>
-     * Three types of results are possible:
-     * <ul>
-     * <li><b>FOUND</b>: We found the required feature</li>
-     * <li><b>FOUND_WRONG_PRODUCT</b>: We found the required feature, but it was for the wrong product</li>
-     * <li><b>MISSING</b>: We did not find the required feature. The {@code symbolicName} field of the result will be {@code null}</li>
-     * </ul>
      *
      * @param featureResource the dependency definition to resolve
-     * @return the result of the search
+     * @return the symbolic name of the resolved dependency, or {@code null} if it was not found
      */
-    ResolvedFeatureSearchResult findResolvedDependency(FeatureResource featureResource) {
+    String findResolvedDependency(FeatureResource featureResource) {
         ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureResource.getSymbolicName());
         if (feature != null) {
-            return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
-        }
-
-        if (requirementsFoundForOtherProducts.contains(featureResource.getSymbolicName())) {
-            return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureResource.getSymbolicName());
+            return feature.getSymbolicName();
         }
 
         String baseName = getFeatureBaseName(featureResource.getSymbolicName());
@@ -755,16 +741,12 @@ public class RepositoryResolver {
 
                 feature = resolvedFeatures.get(featureName);
                 if (feature != null) {
-                    return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
-                }
-
-                if (requirementsFoundForOtherProducts.contains(featureName)) {
-                    return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureName);
+                    return feature.getSymbolicName();
                 }
             }
         }
 
-        return new ResolvedFeatureSearchResult(ResultCategory.MISSING, null);
+        return null;
     }
 
     /**
@@ -846,23 +828,6 @@ public class RepositoryResolver {
         }
 
         throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
-    }
-
-    static class ResolvedFeatureSearchResult {
-
-        public ResolvedFeatureSearchResult(ResultCategory category, String symbolicName) {
-            this.category = category;
-            this.symbolicName = symbolicName;
-        }
-
-        enum ResultCategory {
-            FOUND,
-            FOUND_WRONG_PRODUCT,
-            MISSING
-        }
-
-        ResultCategory category;
-        String symbolicName;
     }
 
     static class NameAndVersion {

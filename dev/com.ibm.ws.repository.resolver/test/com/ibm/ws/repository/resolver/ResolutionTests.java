@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -2415,9 +2416,7 @@ public class ResolutionTests {
                 fail("No resolution exception thrown. Result: " + resolved);
             } catch (RepositoryResolutionException e) {
                 assertThat(e.getFeatureConflicts().keySet(), contains("com.example.featureA"));
-                assertThat(e.getAllRequirementsResourcesNotFound(),
-                           containsInAnyOrder(missingRequirement("com.example.featureA-1.0", featureB10),
-                                              missingRequirement("com.example.featureA-2.0", featureC20)));
+                assertThat(e.getAllRequirementsResourcesNotFound(), empty());
             }
         } else {
             Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList("featureB-1.0", "featureC-2.0"));
@@ -2446,9 +2445,7 @@ public class ResolutionTests {
             if (testType == TestType.RESOLVE_AS_SET) {
                 // Fails due to conflict
                 assertThat(e.getFeatureConflicts().keySet(), contains("com.example.featureA"));
-                assertThat(e.getAllRequirementsResourcesNotFound(),
-                           containsInAnyOrder(missingRequirement("featureA-1.0", null),
-                                              missingRequirement("featureA-2.0", null)));
+                assertThat(e.getAllRequirementsResourcesNotFound(), empty());
             } else {
                 // Fails due to missing dependency
                 assertThat(e.getFeatureConflicts().entrySet(), hasSize(0));
