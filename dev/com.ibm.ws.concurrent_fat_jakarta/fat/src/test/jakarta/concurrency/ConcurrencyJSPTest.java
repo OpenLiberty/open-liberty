@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,6 +46,10 @@ public class ConcurrencyJSPTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, "ConcurrencyJSPTestApp", "test.jakarta.concurrency.jsp");
 
         server.startServer();
+
+        // wait for LTPA key to be available to avoid CWWKS4000E
+        assertNotNull("CWWKS4105I.* not received on server",
+                      server.waitForStringInLog("CWWKS4105I.*"));
     }
 
     /**
@@ -73,6 +79,6 @@ public class ConcurrencyJSPTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKS4000E"); //Ignore CWWKS4000E just in case.
     }
 }
