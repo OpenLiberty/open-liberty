@@ -21,7 +21,7 @@ DynamicImport-Package: \
   jakarta.enterprise.util,\
   jakarta.interceptor
 
-Import-Package:
+Import-Package: \
   !jakarta.enterprise.util,\
   !jakarta.interceptor,\
   *

@@ -19,7 +19,7 @@ Export-Package: \
   com.google.common.math;version="30.1",\
   com.google.common.net;version="30.1",\
   com.google.common.primitives;version="30.1",\
-  com.google.common.reflect;version="30.1",\,
+  com.google.common.reflect;version="30.1",\
   com.google.common.util.concurrent;version="30.1",\
   com.google.common.xml;version="30.1"
 
