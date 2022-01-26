@@ -1,0 +1,194 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+    <openidConnectProvider 
+    	id="OP_3rdParty_propagateNoClaims" 
+    	oauthProviderRef="oauth_for_propagateNoClaims"
+    	>
+   </openidConnectProvider>
+    
+    <oauthProvider 
+    	id="oauth_for_propagateNoClaims" 
+    	jwtAccessToken="true"
+    	autoAuthorize="true"
+    	>
+    	<autoAuthorizeClient>oidcclient_thirdparty_noExtraClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims</autoAuthorizeClient>
+        <localStore>
+            <client 
+                name="oidcclient_thirdparty_noExtraClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagateGroupIdsIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagate1TestClaimIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsAccessTokenClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimAccessTokenClaims_3rdPartyDoesNotPropagate" />
+            <client 
+                name="oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsAccessTokenClaims_3rdPartyDoesNotPropagate" />
+        </localStore>
+    </oauthProvider>
+
+    <openidConnectProvider 
+    	id="OP_3rdParty_propagateAllClaims" 
+    	oauthProviderRef="oauth_for_propagateAllClaims"
+     	customClaims="testProp1,testProp2"
+    	>
+    	<claimToUserRegistryMap>
+			<property
+				name="testProp1"
+				value="displayName" />
+			<property
+				name="testProp2"
+				value="uid" />
+		</claimToUserRegistryMap>
+    </openidConnectProvider>
+    
+    <oauthProvider 
+    	id="oauth_for_propagateAllClaims" 
+    	jwtAccessToken="true"
+    	autoAuthorize="true"
+    	>
+    	<autoAuthorizeClient>oidcclient_thirdparty_noExtraClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_issClaimInIdToken</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_issClaimInAccessToken</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_subClaimInIdToken</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_subClaimInAccessToken</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_audClaimInIdToken</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_audClaimInAccessToken</autoAuthorizeClient>
+        <localStore>
+            <client 
+                name="oidcclient_thirdparty_noExtraClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagateGroupIdsIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagate1TestClaimIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsAccessTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimAccessTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsAccessTokenClaims_3rdPartyPropagates" />
+            <client 
+                name="oidcclient_thirdparty_issClaimInIdToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInIdToken" />
+            <client 
+                name="oidcclient_thirdparty_issClaimInAccessToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInAccessToken" />
+            <client 
+                name="oidcclient_thirdparty_subClaimInIdToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInIdToken" />
+            <client 
+                name="oidcclient_thirdparty_subClaimInAccessToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInAccessToken" />
+            <client 
+                name="oidcclient_thirdparty_audClaimInIdToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInIdToken" />
+            <client 
+                name="oidcclient_thirdparty_audClaimInAccessToken"
+                secret="password"
+                scope="openid"
+                preAuthorizedScope="openid"
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInAccessToken" />
+        </localStore>
+    </oauthProvider>
+
+
+</server>
