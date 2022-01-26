@@ -2456,6 +2456,22 @@ public class ResolutionTests {
         }
     }
 
+    @Test
+    public void testUnsatisfiedInstalledFeature() throws RepositoryException {
+        ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
+
+        MockFeature unsatisfied = new MockFeature("com.example.unsatisfied-1.0");
+        unsatisfied.setVisibility(com.ibm.ws.kernel.feature.Visibility.PUBLIC);
+        unsatisfied.addDependency("com.example.nonExistant-1.0");
+        installedFeatures.add(unsatisfied);
+
+        EsaResourceWritable featureA10 = createEsaResource("com.example.featureA-1.0", "featureA-1.0", "1.0");
+
+        RepositoryResolver resolver = createResolver(installedFeatures);
+        Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA10.getShortName()));
+        assertThat(resolved, contains(contains(featureA10)));
+    }
+
     /**
      * Run a test to make sure that a sample with an applies to set is resolved correctly
      *
