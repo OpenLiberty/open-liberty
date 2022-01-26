@@ -16,8 +16,10 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -106,16 +108,28 @@ public class ConfigGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config_fat_tck", this
                         .getClass() + ":launchConfigTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
-        String productVersion = "";
+        Map<String, String> resultInfo = new HashMap<>();
         try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Config");
+            resultInfo.put("feature_version", "1.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
             List<String> matches = server.findStringsInLogs("product =");
             if(!matches.isEmpty()){
-                productVersion = matches.get(0);
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
             }
-        }
-        finally{         
-            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
-        };
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };;
     }
 
     @Mode(TestMode.LITE)
