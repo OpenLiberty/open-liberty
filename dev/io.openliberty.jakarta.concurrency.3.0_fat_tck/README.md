@@ -1,12 +1,24 @@
 # Jakarta Concurrency TCK Open Liberty Implementation
 
-This project is an implementation of the Jakarta Concurrency Technology Compatibility Kit (TCK) running on Open Liberty.
+This project runs the Jakarta Concurrency Technology Compatibility Kit (TCK) on Open Liberty.
 Before running this project it is recommended to read the documentation located in the base [TCK project](https://github.com/eclipse-ee4j/concurrency-api/blob/master/tck/README.md)
 
 ## Overview
 
-In order to aid in the development of the `Concurrency-3.0` feature, this project is configured specifically to allow
+In order to aid in the development of the `concurrent-3.0` feature, this project is configured specifically to allow
 the feature developers to run the TCK against a development image of Open Liberty.
+
+## Choose a test strategy
+
+This project has been constructed to support two different test strategies.
+
+1. Running the TCK for Verification
+   1. This strategy is for those who want to run the TCK to verify compatibility, but do not need to run against a development environment.
+2. Running the TCK for Developers
+   1. This strategy is for those who are familiar with the Open Liberty project and are helping to develop the `concurrent-3.0` feature.
+
+Many of the assets in this project are used in different ways based on the strategy being used. 
+Therefore, each strategy below has a `Background` section to explain how the different assets interact and end up depending on the strategy.
 
 ## Requirements
 
@@ -25,7 +37,7 @@ cd concurrency-api
 mvn clean install
 ```
 
-The API and TCK libraries will be tagged withe `3.0.0-SNAPSHOT` version this keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
+The API and TCK libraries will be tagged with the `3.0.0-SNAPSHOT` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
 
 ### Getting Open Liberty
 
@@ -36,17 +48,101 @@ git clone git@github.com:OpenLiberty/open-liberty.git
 cd open-liberty/dev
 ```
 
-## Choose a test strategy
+## Running the TCK for Verification
 
-This project has been constructed to support two different test strategies.
+### Background
 
-1. Running the TCK for Developers
-   1. This strategy is for those who are familiar with the Open Liberty project and are helping to develop the `concurrent-3.0` feature.
-2. Running the TCK for Verification
-   1. This strategy is for those who want to run the TCK to verify compatibility, but do not need to run against a development environment.
+1. `build.gradle` 
+   1. This project is set up using gradle.
+   2. The `build.gradle` file has tasks to set up a `wlp` directory with an Open Liberty install.
+   3. There are additional tasks that will copy dependencies, configurations, and create a server.
+2. `publish/servers`
+   1. This is where the server configuration files are located.
+   2. These files will be copied to `wlp/usr/servers/ConcurrentTCKServer` at build time.
+   3. A special `logging.properties` file is also here to ensure that the TCK logs are formatted and saved to a specific location.
+3. `publish/tckRunner`
+   1. This is a maven project that will actually run the TCK. 
+   2. This project contains the TCK configuration files that will be copied to the `wlp` directory at build time.
+   3. This includes the pom.xml that is used to get the TCK itself, and the dependencies to run the TCK. 
+   4. This is also where the TestNG and Arquillian configuration files are located.
+4. `fat/src`
+   1. This asset is ignored for this test strategy.
 
-Many of the assets in this project are used in different ways based on the strategy being used. 
-Therefore, each strategy below has a `Background` section to explain how the different assets interact and end up depending on the strategy.
+### Project set up
+
+First, check out the release branch: 
+
+```sh
+git checkout release
+git pull
+```
+
+To make things simpler this project contains custom gradle tasks for setting up a standalone Liberty Profile.
+
+First open `build.gradle`. 
+You need to complete the `TODO` under dependencies.
+Provide a WebSphere Liberty Profile (WLP) dependency that corresponds to the release you want to test against.
+
+Then, run the `buildWLP` task
+
+```sh
+./gradlew io.openliberty.jakarta.concurrency.3.0_fat_tck:buildWLP
+```
+
+This will create a `wlp` directory within this project.
+Navigate to this directory and start your server:
+
+```sh
+cd io.openliberty.jakarta.concurrency.3.0_fat_tck/wlp
+
+./bin/server start ConcurrentTCKServer \
+-Denv.tck_username=arquillian \
+-Denv.tck_password=arquillianPassword \
+-Denv.tck_port=9080 \
+-Denv.tck_port_secure=9443
+```
+### Run the TCK
+
+Now you can run the TCK tests. 
+
+```sh
+mvn clean test -B \
+-Dwlp=$PWD \
+-Dtck_server=ConcurrentTCKServer \
+-Dtck_hostname=localhost \
+-Dtck_failSafeUndeployment=true \
+-Dtck_appDeployTimeout=180 \
+-Dtck_appUndeployTimeout=60 \
+-Dtck_port=9080 \
+-Dtck_port_secure=9443 \
+-Dtck_username=arquillian \
+-Dtck_password=arquillianPassword \
+-Dsun.rmi.transport.tcp.responseTimeout=60000 \
+-DsuiteXmlFile=tck-suite-full.xml \
+-Djava.util.logging.config.file=$PWD/usr/servers/ConcurrentTCKServer/resources/logging/logging.properties
+```
+
+By default the TCK will run against a snapshot of the Jakarta API and TCK uploaded to the DHE repository.
+If you want to test against a local `3.0.0-SNAPSHOT` then set these properties on the command above: 
+
+```txt
+-Djakarta.concurrent.groupid=jakarta.enterprise.concurrent
+-Djakarta.concurrent.version=3.0.0-SNAPSHOT
+```
+
+Finally, remember to stop the running server
+
+```sh
+./bin/server stop ConcurrentTCKServer
+```
+
+### View the results
+
+The test results will be located under the following directory:
+
+```txt
+/wlp/tck/target/surefire/surefire-reports
+```
 
 ## Running the TCK for Developers
 
@@ -114,98 +210,4 @@ The test results will be located under the following directory:
 
 ```txt
 build/libs/autoFVT/results/junit
-```
-
-## Running the TCK for Verification
-
-> 🛠 This is still under development a beta version of the `concurrency-3.0` feature has not yet been released
-> These steps will not work until after the `concurrency-3.0` feature has a beta release.
-
-### Background
-
-1. `build.gradle` 
-   1. This project is setup using gradle.
-   2. The `build.gradle` file has tasks to setup a `wlp` directory with an Open Liberty install.
-   3. There are additional tasks that will copy dependencies, configurations, and create a server.
-2. `publish/servers`
-   1. This is where the server configuration files are located.
-   2. These files will be copied to `wlp/usr/servers/ConcurrentTCKServer` at build time.
-   3. A special `logging.properties` file is also here to ensure that the TCK logs are formatted and saved to a specific location.
-3. `publish/tckRunner`
-   1. This is a maven project that will actually run the TCK. 
-   2. This project contains the TCK configuration files that will be copied to the `wlp` directory at build time.
-   3. This includes the pom.xml that is used to get the TCK itself, and the dependencies to run the TCK. 
-   4. This is also where the TestNG and Arquillian configuration files are located.
-4. `fat/src`
-   1. This asset is ignored for this test strategy.
-
-### Project set up
-
-First, check out the release branch: 
-
-```sh
-git checkout release
-git pull
-```
-
-To make things simpler this project contains custom gradle tasks for setting up a standalone Liberty Profile.
-
-First open `build.gradle`. 
-You need to complete the `TODO` under dependencies.
-Provide a WebSphere Liberty Profile (WLP) dependency that corresponds to the release you want to test against.
-
-Then, run the `buildWLP` task
-
-```sh
-./gradlew io.openliberty.jakarta.concurrency.3.0_fat_tck:buildWLP
-```
-
-This will create a `wlp` directory within this project.
-Navigate to this directory and start your server:
-
-```sh
-cd io.openliberty.jakarta.concurrency.3.0_fat_tck/wlp
-
-./bin/server start ConcurrentTCKServer \
--Denv.tck_username=arquillian \
--Denv.tck_password=arquillianPassword \
--Denv.tck_port=9080 \
--Denv.tck_port_secure=9443
-```
-### Run the TCK
-
-Now you can run the TCK tests. 
-By default, the TCK will run against the Jakarta API and TCK version `3.0.0`.
-If you want to test against a local `3.0.0-SNAPSHOT` then add `-Djakarta.concurrent.version=3.0.0-SNAPSHOT`.
-
-```sh
-mvn clean test -B \
--Djakarta.concurrent.version=3.0.0-SNAPSHOT \
--Dwlp=$PWD \
--Dtck_server=ConcurrentTCKServer \
--Dtck_hostname=localhost \
--Dtck_failSafeUndeployment=true \
--Dtck_appDeployTimeout=180 \
--Dtck_appUndeployTimeout=60 \
--Dtck_port=9080 \
--Dtck_port_secure=9443 \
--Dtck_username=arquillian \
--Dtck_password=arquillianPassword \
--Dsun.rmi.transport.tcp.responseTimeout=60000 \
--DsuiteXmlFile=tck-suite-full.xml \
--Djava.util.logging.config.file=$PWD/usr/servers/ConcurrentTCKServer/resources/logging/logging.properties
-```
-
-Finally, remember to stop the running server
-
-```sh
-./bin/server stop ConcurrentTCKServer
-```
-
-### View the results
-
-The test results will be located under the following directory:
-
-```txt
-/wlp/tck/target/surefire/surefire-reports
 ```
