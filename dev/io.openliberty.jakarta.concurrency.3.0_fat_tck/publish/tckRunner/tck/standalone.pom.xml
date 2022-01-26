@@ -18,7 +18,10 @@
     <name>Jakarta Concurrency TCK Runner TCK Module</name>
 
     <properties>
-        <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
+        <!-- TODO remove once spec is GAed -->
+        <!-- These properties can be overwritten by users -->
+        <jakarta.concurrent.groupid>io.openliberty.jakarta.enterprise.concurrent</jakarta.concurrent.groupid>
+        <jakarta.concurrent.version>3.0.0.20220120</jakarta.concurrent.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -34,6 +37,14 @@
         
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>ibmdhe</id>
+            <name>IBM_DHE File Server</name>
+            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -51,13 +62,13 @@
         <!-- TCK Dependency -->
         <dependency>
             <!-- TODO: Update this once TCK is available on maven -->
-		    <groupId>jakarta.enterprise.concurrent</groupId>
+		    <groupId>${jakarta.concurrent.groupid}</groupId>
 		    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
 		    <version>${jakarta.concurrent.version}</version>
         </dependency>
         <!-- API Dependency -->
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
+            <groupId>${jakarta.concurrent.groupid}</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>

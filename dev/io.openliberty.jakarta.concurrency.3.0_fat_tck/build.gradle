@@ -23,9 +23,8 @@ dependencies {
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.1'
 
   //TODO configure WLP dependency, Examples (may not be valid):
-  //wlp 'io.openliberty.beta:openliberty-jakartaee10:22.0.0.2-beta@zip'
-  //wlp 'io.openliberty.beta:openliberty-runtime:22.0.0.2-beta@zip'    
-  //wlp 'io.openliberty:openliberty-jakartaee9:22.0.0.1@zip'
+  //wlp 'io.openliberty.beta:openliberty-jakartaee10:22.0.0.3-beta@zip'
+  //wlp 'io.openliberty.beta:openliberty-runtime:22.0.0.3-beta@zip'
 }
 
 task copyTestNG(type: Copy) {
