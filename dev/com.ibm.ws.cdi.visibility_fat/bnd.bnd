@@ -46,25 +46,8 @@ src: \
 	test-applications/warLibAccessBeansInWar2.jar/src,\
 	test-applications/warLibAccessBeansInWarJar.jar/src,\
 	test-applications/visTestAppClient.jar/src,\
-	test-applications/visTestAppClientAsAppClientLib.jar/src,\
-	test-applications/visTestAppClientAsEjbLib.jar/src,\
-	test-applications/visTestAppClientAsWarLib.jar/src,\
-	test-applications/visTestAppClientLib.jar/src,\
-	test-applications/visTestEarLib.jar/src,\
 	test-applications/visTestEjb.jar/src,\
-	test-applications/visTestEjbAppClientLib.jar/src,\
-	test-applications/visTestEjbAsAppClientLib.jar/src,\
-	test-applications/visTestEjbAsEjbLib.jar/src,\
-	test-applications/visTestEjbAsWarLib.jar/src,\
-	test-applications/visTestEjbLib.jar/src,\
-	test-applications/visTestEjbWarLib.jar/src,\
-	test-applications/visTestFramework.jar/src,\
-	test-applications/visTestNonLib.jar/src,\
-	test-applications/visTestWar.war/src,\
-	test-applications/visTestWar2.war/src,\
-	test-applications/visTestWarAppClientLib.jar/src,\
-	test-applications/visTestWarLib.jar/src,\
-	test-applications/visTestWarWebinfLib.jar/src
+	test-applications/visTestWar.war/src
 	
 	
 test.project: true

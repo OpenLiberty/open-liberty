@@ -15,8 +15,6 @@ src: \
   fat/src,\
   test-applications/addNumbersProvider/src,\
   test-applications/addNumbersClient/src,\
-  test-applications/calculator/src,\
-  test-applications/converter/src,\
   test-applications/ejbServiceRefBndAppCodes/src,\
   test-applications/helloClient/src,\
   test-applications/helloClientDDMerge/src,\
@@ -25,24 +23,13 @@ src: \
   test-applications/helloServer/src,\
   test-applications/POJOServiceSecurity/src,\
   test-applications/POJOServiceSecurityClient/src,\
-  test-applications/pureCXF/src,\
-  test-applications/pureCXFWSDLFirst/src,\
   test-applications/sharedLib/src,\
-  test-applications/stubClient/src,\
-  test-applications/testBindingTypeWsdlWeb/src,\
-  test-applications/testCXFJMXSupport/src,\
   test-applications/testHandlerClient/src,\
   test-applications/testHandlerClientWithoutXML/src,\
   test-applications/testHandlerProvider/src,\
-  test-applications/testMTOM/src,\
-  test-applications/testMTOMClient/src,\
-  test-applications/testMTOMClient_withDD/src,\
   test-applications/testPortComponentRefApplication/src,\
   test-applications/testPortComponentRefEJBinWeb/src,\
   test-applications/testPortComponentRefWeb/src,\
-  test-applications/testWebServiceMonitor/src,\
-  test-applications/virtualhost/src,\
-  test-applications/webServiceRefFeatures/src,\
   test-applications/wsBndServiceRefOverride/src
   
 

@@ -15,9 +15,7 @@ src: \
     fat/src,\
     test-applications/basic/src,\
     test-applications/complex/src,\
-    test-applications/contextandCDI/src,\
     test-applications/disable/src,\
-    test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
     test-applications/lifecyclemismatch/src,\
     test-applications/applicationsingleton/src
