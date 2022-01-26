@@ -29,12 +29,17 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.invoker.MethodDispatcher;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
+import com.ibm.ws.security.context.SubjectManager;
 
 // Set the Priority to Priorities.AUTHORIZATION + 1 so that user filters take precedence.
 @Priority(Priorities.AUTHORIZATION + 1)
@@ -42,6 +47,10 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
 
     private static final TraceComponent tc = Tr
                     .register(LibertyAuthFilter.class);
+
+    protected static final String KEY_UNAUTHENTICATED_SUBJECT_SERVICE = "unauthenticatedSubjectService";
+
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
     
     @Override
     @FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, AccessDeniedException.class })
@@ -93,6 +102,7 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
             HttpServletRequest req = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
             Method method = MessageUtils.getTargetMethod(message).orElseThrow(() -> 
                 new AccessDeniedException("Method is not available : Unauthorized"));
+            setUnauthenticatedSubjectIfNeeded();
             if (RoleMethodAuthUtil.parseMethodSecurity(method,
                                                        req.getUserPrincipal(),
                                                        s -> req.isUserInRole(s))) {
@@ -115,5 +125,25 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
             return method;
         }
         throw new AccessDeniedException("Method is not available : Unauthorized");
+    }
+
+    private void setUnauthenticatedSubjectIfNeeded() {
+        getUnauthenticatedSubjectService();
+
+        SubjectManager subjectManager = new SubjectManager();
+        if (subjectManager.getInvocationSubject() == null) {
+            subjectManager.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+        }
+        if (subjectManager.getCallerSubject() == null) {
+            subjectManager.setCallerSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+        }
+    }
+
+    private void getUnauthenticatedSubjectService() {
+        if (unauthenticatedSubjectService == null) {
+            BundleContext context = FrameworkUtil.getBundle(UnauthenticatedSubjectService.class).getBundleContext();
+            ServiceReference<UnauthenticatedSubjectService> serviceRef = context.getServiceReference(UnauthenticatedSubjectService.class);
+            unauthenticatedSubjectService = context.getService(serviceRef);
+        }
     }
 }

@@ -24,6 +24,8 @@ import com.ibm.ws.security.authorization.util.classes.PermitAllOnClass;
 import com.ibm.ws.security.authorization.util.classes.PrincipalImpl;
 import com.ibm.ws.security.authorization.util.classes.RolesAllowedOnClass;
 
+import junit.framework.Assert;
+
 public class RoleMethodAuthUtilTest {
 
     private static final Class<?> DENYALL_ON_CLASS = DenyAllOnClass.class;
@@ -32,14 +34,24 @@ public class RoleMethodAuthUtilTest {
     private static final Class<?> NO_ANNOTATIONS_ON_CLASS = NoAnnotationsOnClass.class;
 
     //Unauthenticated
-    @Test(expected = UnauthenticatedException.class)
+    @Test()
     public void checkAuthentication_null_principal() throws Exception {
-        RoleMethodAuthUtil.checkAuthentication(null);
+        try {
+            RoleMethodAuthUtil.checkAuthentication(null);
+            Assert.fail();
+        } catch (UnauthenticatedException e) {
+            assertTrue(e instanceof UnauthenticatedException);
+        }
     }
 
-    @Test(expected = UnauthenticatedException.class)
+    @Test()
     public void checkAuthentication_UNAUTHENTICATED_principal() throws Exception {
-        RoleMethodAuthUtil.checkAuthentication(new PrincipalImpl("UNAUTHENTICATED"));
+        try {
+            RoleMethodAuthUtil.checkAuthentication(new PrincipalImpl("UNAUTHENTICATED"));
+            Assert.fail();
+        } catch (UnauthenticatedException e) {
+            assertTrue(e instanceof UnauthenticatedException);
+        }
     }
 
     @Test
