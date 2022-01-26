@@ -54,9 +54,7 @@ public class MPContextPropagationTCKLauncher {
         // if (FATRunner.FAT_TEST_LOCALRUN)
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.2_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
         Map<String, String> resultInfo = new HashMap<>();
-        String productVersion = "";
             try{
-            Map<String, String> resultInfo = new HashMap<>();
             JavaInfo javaInfo = JavaInfo.forCurrentVM();
             String productVersion = "";
             resultInfo.put("results_type", "MicroProfile");

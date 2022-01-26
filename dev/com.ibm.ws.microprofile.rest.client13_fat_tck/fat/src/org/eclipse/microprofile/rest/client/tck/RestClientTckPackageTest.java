@@ -15,6 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -66,7 +71,7 @@ public class RestClientTckPackageTest {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

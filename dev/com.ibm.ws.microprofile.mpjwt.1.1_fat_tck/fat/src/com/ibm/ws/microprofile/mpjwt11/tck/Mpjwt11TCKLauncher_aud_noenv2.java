@@ -85,6 +85,6 @@ public class Mpjwt11TCKLauncher_aud_noenv2 {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 }

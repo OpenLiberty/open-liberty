@@ -1211,8 +1211,8 @@ public class MvnUtils {
                 }
             }
             else{
-                String[] documentMain = {".\n\n== Open Liberty ", OLVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion,")\n\n",
-                                       " \n\n* Product Name, Version and download URL (if applicable):",
+                String[] documentMain = {".\n\n== Open Liberty ", OLVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion,")",
+                                       "\n\n* Product Name, Version and download URL (if applicable):",
                                        "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/",OLVersion,".zip[Open Liberty ",OLVersion, "]\n\n",
                                        "* Specification Name, Version and download URL:\n+\n", 
                                        "link:https://jakarta.ee/specifications/", specName,"/",specVersion,"[Jakarta EE ",specName," ",specVersion,"]\n\n",

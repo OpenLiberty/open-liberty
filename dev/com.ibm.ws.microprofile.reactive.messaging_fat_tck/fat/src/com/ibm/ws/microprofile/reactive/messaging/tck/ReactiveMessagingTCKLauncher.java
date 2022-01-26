@@ -75,7 +75,7 @@ public class ReactiveMessagingTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }
