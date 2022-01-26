@@ -16,7 +16,8 @@ src: \
   fat/src,\
   test-applications/jaxrs21security/src,\
   test-applications/jaxrs21typeAndCType/src,\
-  test-applications/jaxrs21uriInfo/src
+  test-applications/jaxrs21uriInfo/src,\
+  test-applications/RolesAllowed/src
 
 fat.project: true
 
