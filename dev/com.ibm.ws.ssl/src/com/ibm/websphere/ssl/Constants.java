@@ -11,6 +11,7 @@
 package com.ibm.websphere.ssl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -193,6 +194,9 @@ public class Constants {
     public static final String PROTOCOL_SSL = "SSL";
     public static final String PROTOCOL_SSL_TLS = "SSL_TLS";
     public static final String PROTOCOL_SSL_TLS_V2 = "SSL_TLSv2";
+    public static final String PROTOCOL_TLSV1_1 = "TLSv1.1";
+    public static final String PROTOCOL_TLSV1_2 = "TLSv1.2";
+    public static final String PROTOCOL_TLSV1_3 = "TLSv1.3";
 
     /*** SECURITY LEVEL CONSTANTS ***/
     public static final String SECURITY_LEVEL_HIGH = "HIGH";
@@ -434,5 +438,34 @@ public class Constants {
 
         return sb.toString();
     }
+
+    public static String[] getSSLProtocol(String protocol) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getSSLProtocol");
+        }
+
+        // First check the properties object for the ciphers.
+        String[] protocols = protocol.split(",");
+
+        // we only want to set the protocol on the engine if it a specific protocol name
+        // don't set to TLS or SSL
+        if (protocols.length == 1) {
+            if (!MULTI_PROTOCOL_LIST.contains(protocols[0])) {
+                protocols = null;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getSSLProtocol " + protocols);
+        }
+        return protocols;
+    }
+
+    public static final List<String> MULTI_PROTOCOL_LIST = Arrays.asList(new String[] {
+                                                                                        PROTOCOL_TLSV1,
+                                                                                        PROTOCOL_TLSV1_1,
+                                                                                        PROTOCOL_TLSV1_2,
+                                                                                        PROTOCOL_TLSV1_3
+    });
 
 }

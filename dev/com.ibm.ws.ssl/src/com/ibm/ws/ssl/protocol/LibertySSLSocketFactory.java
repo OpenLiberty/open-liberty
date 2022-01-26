@@ -705,8 +705,16 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
     private static SSLParameters createSSLParameters(Properties sslprops, SSLSocket socket) {
 
         SSLParameters p = socket.getSSLParameters();
+
+        //Set ciphers
         String[] ciphers = SSLConfigManager.getInstance().getCipherList(sslprops, socket);
         p.setCipherSuites(ciphers);
+
+        //Set protocol
+        String protocol = sslprops.getProperty(Constants.SSLPROP_PROTOCOL);
+        String[] protocols = Constants.getSSLProtocol(protocol);
+        if (protocols != null)
+            p.setProtocols(protocols);
 
         //Enable hostname verification
         String enableEndpointId = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
