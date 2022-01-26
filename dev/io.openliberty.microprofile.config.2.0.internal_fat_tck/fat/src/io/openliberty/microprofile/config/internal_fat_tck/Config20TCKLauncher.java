@@ -62,16 +62,27 @@ public class Config20TCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig20Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.config.2.0.internal_fat_tck", this.getClass() + ":launchConfig20Tck");
-        String productVersion = "";
+        Map<String, String> resultInfo = new HashMap<>();
         try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
             String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Config");
+            resultInfo.put("feature_version", "2.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
             List<String> matches = server.findStringsInLogs("product =");
             if(!matches.isEmpty()){
-                productVersion = matches.get(0);
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
             }
-        }
-        finally{         
-            MvnUtils.preparePublicationFile("MicroProfile", productVersion);
-        }
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };
     }
 }
