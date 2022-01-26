@@ -376,9 +376,9 @@ public class SocketFactory extends SocketFactoryHelper {
             sslParameters.setUseCipherSuitesOrder(enforceCipherOrder);
 
             // set the SSL protocol on the server socket
-            String protocol = sslConfig.getSSLProtocol(sslConfigName);
-            if (protocol != null) {
-                sslParameters.setProtocols(new String[] { protocol });
+            String[] protocols = sslConfig.getSSLProtocol(sslConfigName);
+            if (protocols != null) {
+                sslParameters.setProtocols(protocols);
             }
 
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
@@ -447,6 +447,17 @@ public class SocketFactory extends SocketFactoryHelper {
         }
 
         params.setCipherSuites(iorSuites);
+
+        try {
+            // set the SSL protocol on the server socket
+            String[] protocols = sslConfig.getSSLProtocol(clientSSLConfigName);
+            if (protocols != null) {
+                params.setProtocols(protocols);
+            }
+        } catch (SSLException e) {
+            throw new IOException("Could not set protocols on socket:", e);
+        }
+
         socket.setSSLParameters(params);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.debug(tc, "Created SSL socket to " + host + ":" + port);

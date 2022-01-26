@@ -97,15 +97,14 @@ public class SSLConfig {
         }
     }
 
-    public String getSSLProtocol(String sslAliasName) throws SSLException {
+    public String[] getSSLProtocol(String sslAliasName) throws SSLException {
         Properties props = jsseHelper.getProperties(sslAliasName);
         String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
 
         // only set the protocol on the socket if it is set to a specific protocol
-        if (protocol.equals(Constants.PROTOCOL_SSL) || protocol.equals(Constants.PROTOCOL_TLS))
-            protocol = null;
+        String[] protocols = Constants.getSSLProtocol(protocol);
 
-        return protocol;
+        return protocols;
     }
 
     public boolean getEnforceCipherOrder(String sslAliasName) throws SSLException {

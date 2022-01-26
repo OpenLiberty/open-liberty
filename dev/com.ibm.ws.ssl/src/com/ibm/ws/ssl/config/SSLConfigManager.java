@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
@@ -40,6 +41,7 @@ import com.ibm.websphere.ssl.SSLConfigChangeEvent;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
@@ -86,6 +88,9 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
+    // collect the good protocols as we run across them
+    private final List<String> goodProtocols = new ArrayList<>();
+
     /**
      * Private constructor, use getInstance().
      */
@@ -105,11 +110,11 @@ public class SSLConfigManager {
     /***
      * This method parses the configuration.
      *
-     * @param map                      Global SSL configuration properties, most likely injected from SSLComponent
-     * @param reinitialize             Boolean flag to indicate if the configuration should be re-loaded
-     * @param isServer                 Boolean flag to indiciate if the code is running within a server process
+     * @param map Global SSL configuration properties, most likely injected from SSLComponent
+     * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
+     * @param isServer Boolean flag to indiciate if the code is running within a server process
      * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
-     * @param aliasPIDs                Map of OSGi PID-indexed repertoire IDs
+     * @param aliasPIDs Map of OSGi PID-indexed repertoire IDs
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,
@@ -164,18 +169,23 @@ public class SSLConfigManager {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "initializeSSL on " + alias, properties);
 
-        SSLConfig config = parseSSLConfig(properties, true);
+        try {
+            SSLConfig config = parseSecureSocketLayer(properties, true);
 
-        if (config != null && config.requiredPropertiesArePresent()) {
-            config.setProperty(Constants.SSLPROP_ALIAS, alias);
-            config.decodePasswords();
+            if (config != null && config.requiredPropertiesArePresent()) {
+                config.setProperty(Constants.SSLPROP_ALIAS, alias);
+                config.decodePasswords();
 
-            addSSLConfigToMap(alias, config);
-        }
+                addSSLConfigToMap(alias, config);
+            }
 
-        if (transportSecurityEnabled) {
-            Set<String> newConnectionInfo = new HashSet<String>(); // will remove later
-            outboundSSL.loadOutboundConnectionInfo(alias, properties, newConnectionInfo);
+            if (transportSecurityEnabled) {
+                Set<String> newConnectionInfo = new HashSet<String>(); // will remove later
+                outboundSSL.loadOutboundConnectionInfo(alias, properties, newConnectionInfo);
+            }
+        } catch (Exception e) {
+            Tr.error(tc, "ssl.protocol.error.CWPKI0833E", new Object[] { alias });
+            throw e;
         }
 
     }
@@ -303,21 +313,6 @@ public class SSLConfigManager {
                 return System.getProperty(key);
             }
         });
-    }
-
-    /**
-     * Helper method to build the SSLConfig properties from the SSLConfig model
-     * object.
-     */
-    private SSLConfig parseSSLConfig(Map<String, Object> properties, boolean reinitialize) throws Exception {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "parseSSLConfig: " + properties.get(LibertyConstants.KEY_ID), properties);
-
-        SSLConfig rc = parseSecureSocketLayer(properties, reinitialize);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "parseSSLConfig");
-        return rc;
     }
 
     /**
@@ -468,8 +463,14 @@ public class SSLConfigManager {
 
         // MISCELLANEOUS ATTRIBUTES
         String sslProtocol = (String) map.get("sslProtocol");
-        if (sslProtocol != null && !sslProtocol.isEmpty())
-            sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+        if (sslProtocol != null && !sslProtocol.isEmpty()) {
+            try {
+                isSSLProtocolValueGood(sslProtocol);
+                sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+            } catch (Exception e) {
+                throw e;
+            }
+        }
 
         String contextProvider = (String) map.get("jsseProvider");
         if (contextProvider != null && !contextProvider.isEmpty()) {
@@ -538,6 +539,68 @@ public class SSLConfigManager {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "parseSecureSocketLayer");
         return sslprops;
+    }
+
+    /**
+     * @param sslProtocol
+     * @return
+     * @throws SSLException
+     */
+    private boolean isSSLProtocolValueGood(String sslProtocol) throws SSLException, UnsupportedOperationException {
+
+        String[] protocols = sslProtocol.split(",");
+
+        if (protocols.length > 1) {
+            betaFenceCheckProtocolList(sslProtocol);
+            // multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
+            for (String protocol : protocols) {
+                if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
+                    if (goodProtocols.contains(protocol))
+                        continue;
+                    else {
+                        if (isGoodProtocol(protocol))
+                            goodProtocols.add(protocol);
+                    }
+                } else {
+                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                }
+            }
+        } else {
+            if (!goodProtocols.contains(protocols[0])) {
+                if (isGoodProtocol(protocols[0]))
+                    return true;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param protocol
+     * @return
+     * @throws SSLException
+     */
+    private boolean isGoodProtocol(String protocol) throws SSLException {
+        try {
+            SSLContext.getInstance(protocol);
+            return true;
+        } catch (Throwable t) {
+            // Just continue
+            String tMsg = t.getMessage();
+            Tr.error(tc, "ssl.protocol.error.CWPKI0831E", new Object[] { protocol, tMsg });
+            throw new SSLException("Error checking checking for valid protocol: " + tMsg);
+        }
+    }
+
+    private static void betaFenceCheckProtocolList(String sslProtocol) throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            Tr.error(tc, "The " + sslProtocol + " sslProtocol attribute value has a list of SSL protocols, the support is beta and is not available.");
+            throw new UnsupportedOperationException("The " + sslProtocol + " sslProtocol attribute value has a list SSL protocols, the support is beta and is not available.");
+        } else {
+            // Running beta exception, issue message
+            Tr.info(tc, "BETA: the " + sslProtocol + " sslProtocol attribute has a list of SSL protocols configured.");
+        }
     }
 
     /**

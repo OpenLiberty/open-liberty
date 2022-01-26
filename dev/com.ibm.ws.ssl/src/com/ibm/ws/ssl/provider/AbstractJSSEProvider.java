@@ -609,15 +609,19 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         // now generate a new SSLContext
         final String ctxtProvider = config.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
-        final String protocol = config.getProperty(Constants.SSLPROP_PROTOCOL);
         final String alias = config.getProperty(Constants.SSLPROP_ALIAS);
         final String configURL = config.getProperty(Constants.SSLPROP_CONFIGURL_LOADED_FROM);
+        String protocolVal = config.getProperty(Constants.SSLPROP_PROTOCOL);
 
         SSLContext sslContext = null;
 
-        if (protocol == null) {
+        if (protocolVal == null) {
             throw new IllegalArgumentException("Protocol is not specified.");
+        } else {
+            if (protocolVal.split(",").length > 1)
+                protocolVal = defaultProtocol;
         }
+        final String protocol = protocolVal;
 
         try {
             sslContext = AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {
