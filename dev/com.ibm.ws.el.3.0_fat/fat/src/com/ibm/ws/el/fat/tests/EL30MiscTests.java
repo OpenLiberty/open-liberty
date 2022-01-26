@@ -89,14 +89,15 @@ public class EL30MiscTests {
     }
 
     /**
-     * Comments in the META-INF/services/javax.el.ExpressionFactory files should be ignored
+     * Comments in the META-INF/services/javax.el.ExpressionFactory files should be ignored.
      *
-     * The BZ 64097 patch was applied to both EL-3.0 and th EL-2.2 API.
+     * The BZ 64097 patch was applied to both EL 3.0 and the EL 2.2 API.
      *
-     * This one tests the service look using the jsp-2.2 feature because it relies on the el 2.2 api. This test was placed here for two mains reasons:
-     * - There's no el 2.2 bucket.
-     * - This scenario tests EL, so we chose not to place this in the the jsp FATs.
-     * - We didn't want to duplicate the test application in multiple buckets
+     * This one tests the service lookup using the jsp-2.2 feature because it relies on the EL 2.2 API. This test was placed here for three reasons:
+     *
+     * 1) There's no EL 2.2 test bucket.
+     * 2) This scenario tests EL, so we chose not to place this in the the JSP FATs.
+     * 3) We didn't want to duplicate the test application in multiple buckets.
      *
      * https://github.com/OpenLiberty/open-liberty/pull/18424
      *
@@ -105,7 +106,6 @@ public class EL30MiscTests {
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @Test
     public void testEL22ServiceLookup() throws Exception {
-
 
         elServer.saveServerConfiguration();
 
@@ -119,22 +119,22 @@ public class EL30MiscTests {
         configuration = elServer.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 
-        try {    
+        try {
             WebConversation wc = new WebConversation();
-    
+
             wc.setExceptionsThrownOnErrorStatus(false);
-    
+
             String url = ELUtils.createHttpUrlString(elServer, ServiceLookup_AppName, "EL22Test.jsp");
             LOG.info("url: " + url);
-    
+
             WebRequest request = new GetMethodWebRequest(url);
             WebResponse response = wc.getResponse(request);
             LOG.info("Servlet response : " + response.getText());
-    
+
             assertEquals("Expected " + 200 + " status code was not returned!",
                          200, response.getResponseCode());
             assertTrue("The response did not contain: Lookup works!", response.getText().contains("Lookup works!"));
-            
+
         } finally {
             elServer.setMarkToEndOfLog();
             elServer.restoreServerConfiguration();
