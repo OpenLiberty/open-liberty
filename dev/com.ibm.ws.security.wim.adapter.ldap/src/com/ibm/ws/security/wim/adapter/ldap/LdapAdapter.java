@@ -70,7 +70,6 @@ import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 import javax.security.auth.Subject;
 
 import org.osgi.framework.ServiceReference;
@@ -580,9 +579,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
 
         String principalName = inAccount.getPrincipalName();
 
-        if (principalName != null)
-            principalName = principalName.replace("*", "\\*");
-
         byte[] pwd = inAccount.getPassword();
         List<byte[]> certList = inAccount.getCertificate();
         int certListSize = certList.size();
@@ -606,7 +602,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 String msg = Tr.formatMessage(tc, WIMMessageKey.CERTIFICATE_MAP_FAILED, (Object) null);
                 throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, msg);
             }
-            srchCtrl = getLdapSearchControl(loginCtrl, false, false);
+            srchCtrl = getLdapSearchControl(loginCtrl, false, false, true);
             acctEntry = mapCertificate(certs, srchCtrl);
             if (acctEntry == null)
                 return outRoot;
@@ -629,23 +625,30 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                                 + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
 
             loginCtrl.setExpression(searchExpr);
-            srchCtrl = getLdapSearchControl(loginCtrl, false, false);
+            srchCtrl = getLdapSearchControl(loginCtrl, false, false, true);
             String[] searchBases = srchCtrl.getBases();
             String sFilter = null;
 
             if (!iLdapConfigMgr.loginPropertyDefined()) {
-                //Check is input principalName is DN, if it is DN use the same for login otherwise use userFilter
+                //Check if input principalName is DN, if it is DN use the same for login otherwise use userFilter
                 String principalNameDN = null;
                 try {
                     principalNameDN = new LdapName(principalName).toString();
                 } catch (InvalidNameException e) {
                 }
                 Filter userFilter = iLdapConfigMgr.getUserFilter();
+                //If principalName is not a DN and a userFilter exists, create the search
+                //filter using userFilter and principalName. This is the dynamically created
+                //search filter using PersonAccount objectclasses and loginProperty.
                 if (principalNameDN == null && userFilter != null) {
+                    principalName = LdapHelper.encode(principalName, true);
                     sFilter = userFilter.prepare(principalName);
                     sFilter = setAttributeNamesInFilter(sFilter, SchemaConstants.DO_PERSON_ACCOUNT);
                 }
             }
+
+            //Either loginProperty is not defined or loginProperty is defined but principalName is a DN or no userFilter is defined.
+            //In this case, we will use the filter from SearchControl. The filter from searchCtrl will include the encoded principal.
             if (sFilter == null) {
                 sFilter = srchCtrl.getFilter();
                 if (iLdapConfigMgr.getUseEncodingInSearchExpression() != null) {
@@ -822,7 +825,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
         String customProperty = getContextProperty(root, SchemaConstants.ALLOW_DN_PRINCIPALNAME_AS_LITERAL);
         boolean ignoreDNBaseSearch = customProperty.equalsIgnoreCase("true");
 
-        LdapSearchControl srchCtrl = getLdapSearchControl(searchControl, isSearchBaseSetByClient, ignoreDNBaseSearch);
+        LdapSearchControl srchCtrl = getLdapSearchControl(searchControl, isSearchBaseSetByClient, ignoreDNBaseSearch, false);
 
         String[] searchBases = srchCtrl.getBases();
         String sFilter = srchCtrl.getFilter();
@@ -922,8 +925,13 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                     }
                     if (dn == null) {
                         Filter f = iLdapConfigMgr.getUserFilter();
-                        if (f != null)
+                        //This will be NOT null if <filters> are defined. This is meant to take
+                        //precedence over the filter from SearchControl - which already has the
+                        //encoded principal.
+                        if (f != null) {
+                            inputPattern = LdapHelper.encode(inputPattern, false);
                             sFilter = f.prepare(inputPattern);
+                        }
                     }
                 } else {
                     // Check if group filter pattern is specified
@@ -937,13 +945,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                         }
                         if (dn == null) {
                             Filter f = iLdapConfigMgr.getGroupFilter();
-                            if (f != null)
+                            //This will be NOT null if <filters> are defined. This is meant to take
+                            //precedence over the filter from SearchControl - which already has the
+                            //encoded principal.
+                            if (f != null) {
+                                inputPattern = LdapHelper.encode(inputPattern, false);
                                 sFilter = f.prepare(inputPattern);
+                            }
                         }
                     }
                 }
             }
-
             for (int i = 0; i < searchBases.length; i++) {
                 Set<LdapEntry> ldapEntriesSet = iLdapConn.searchEntities(searchBases[i], sFilter, null, scope, entityTypes, propNames,
                                                                          false, false, countLimit, timeLimit);
@@ -2812,7 +2824,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
     }
 
     @SuppressWarnings("unchecked")
-    private LdapSearchControl getLdapSearchControl(SearchControl searchControl, boolean isSearchBaseSetByClient, boolean ignoreDNBaseSearch) throws WIMException {
+    private LdapSearchControl getLdapSearchControl(SearchControl searchControl, boolean isSearchBaseSetByClient, boolean ignoreDNBaseSearch,
+                                                   boolean encodeAsterisk) throws WIMException {
         final String METHODNAME = "getLdapSearchControl";
         List<String> propNames = searchControl.getProperties();
         int countLimit = searchControl.getCountLimit();
@@ -2871,13 +2884,22 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                     String value = (String) pNameNode.getValue();
                     String uName = UniqueNameHelper.getValidUniqueName(value);
                     if (uName == null || ignoreDNBaseSearch) {
-                        filter = getPrincipalNameFilter(value);
+                        //principalName is not a DN, so get the principalNameFilter using loginAttributes.
+                        //We will encode value in this method (handle special characters in value).
+                        filter = getPrincipalNameFilter(value, encodeAsterisk);
                     } else {
+                        //uName is a valid DN, so we can do an object scope search for DN
                         pNameBase = getDN(uName, SchemaConstants.DO_PERSON_ACCOUNT, null, true, false);
                     }
 
                 } else {
-                    filter = getSearchFilter(entityTypes, node);
+                    //The expression in the node did not include principalName.
+                    //eg. expression=//entities[@xsi:type='LoginAccount' and cn='ldap_usercn']
+                    //Generally this means the input/output property mapping was changed
+                    //to something other than principalName.
+                    //To generate the search filter, we parse the node, encode
+                    //the value, form the filter, and return it.
+                    filter = getSearchFilter(entityTypes, node, encodeAsterisk);
                 }
             } catch (ParseException e) {
                 throw new SearchControlException(WIMMessageKey.INVALID_SEARCH_EXPRESSION, Tr.formatMessage(
@@ -2896,6 +2918,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 entityTypes.add(ldapEntities.get(i).getName());
             }
         }
+
+        //Filter will be null for DN object scope searches and certificate logins
         if (filter != null) {
             filter = "(&" + iLdapConfigMgr.getEntityTypesFilter(entityTypes) + filter + ")";
         } else {
@@ -2942,13 +2966,24 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
         return ldapSearchCtrl;
     }
 
-    private String getPrincipalNameFilter(String principalName) {
+    /**
+     * This is called from getLdapSearchControl during loginImpl and searchImpl.
+     * First we encode the principalName. Then generate
+     * the filter based on login attributes, eg (|(cn=user1)(uid=user1)).
+     * The loginAttributes are taken from loginProperties
+     * or from the <filter> userFilter
+     * or the default RDN properties.
+     * Note that the principalNameFilter does not include objectclasses.
+     *
+     * @param principalName  The principal name to encode and insert into the filter
+     * @param encodeAsterisk True if asterisks should be encoded
+     * @return The search filter with principalName encoded and inserted.
+     */
+    private String getPrincipalNameFilter(String principalName, boolean encodeAsterisk) {
         List<String> loginAttrs = iLdapConfigMgr.getLoginAttributes();
         principalName = principalName.replace("\"\"", "\""); // Unescape escaped XPath quotation marks
         principalName = principalName.replace("''", "'"); // Unescape escaped XPath apostrophes
-        principalName = Rdn.escapeValue(principalName);
-        principalName = principalName.replace("(", "\\("); // Escape paren for LDAP filter.
-        principalName = principalName.replace(")", "\\)"); // Escape paren for LDAP filter.
+        principalName = LdapHelper.encode(principalName, encodeAsterisk); //Encode principalName. Do NOT include asterisk encoding as it is not a wildcard here.
         StringBuffer filter = new StringBuffer();
         if (loginAttrs != null) {
             if (loginAttrs.size() > 1) {
@@ -2964,12 +2999,19 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
         return filter.toString();
     }
 
-    private String getSearchFilter(Set<String> entityTypes, XPathNode node) throws WIMException {
+    /**
+     * Called from getLdapSearchControl to generate the searchFilter
+     * The login name is pulled from the node and encoded in genSearchString.
+     *
+     * @return The search filter
+     * @throws WIMException
+     */
+    private String getSearchFilter(Set<String> entityTypes, XPathNode node, boolean encodeAsterisk) throws WIMException {
         String filter = null;
         StringBuffer propsFilter = new StringBuffer();
         if (node != null) {
             LdapXPathTranslateHelper helper = new LdapXPathTranslateHelper(entityTypes, iLdapConfigMgr);
-            helper.genSearchString(propsFilter, node);
+            helper.genSearchString(propsFilter, node, encodeAsterisk);
 
             // make sure that query is surrounded by parenthesis because it's going to be and'ed
             if (propsFilter.length() > 0
