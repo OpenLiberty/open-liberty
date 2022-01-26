@@ -136,23 +136,19 @@ public class SSLLinkConfig {
      *
      * @return String
      */
-    public String getSSLProtocol() {
+    public String[] getSSLProtocol() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getSSLProtocol");
         }
 
         // First check the properties object for the ciphers.
         String protocol = (String) this.myConfig.get(Constants.SSLPROP_PROTOCOL);
-
-        // we only want to set the protocol on the engine if it a specific protocol name
-        // don't set to TLS or SSL
-        if (protocol.equals(Constants.PROTOCOL_SSL) || protocol.equals(Constants.PROTOCOL_TLS))
-            protocol = null;
+        String[] protocols = Constants.getSSLProtocol(protocol);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getSSLProtocol " + protocol);
+            Tr.exit(tc, "getSSLProtocol " + protocols);
         }
-        return protocol;
+        return protocols;
     }
 
 }
