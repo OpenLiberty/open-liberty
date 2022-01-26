@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -122,8 +122,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.security,\
-	com.ibm.ws.security.authentication,\
-	com.ibm.ws.security.authentication.builtin
+	com.ibm.ws.security.authentication
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file,\

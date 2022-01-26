@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,6 @@ import com.ibm.ws.security.authorization.util.classes.PermitAllOnClass;
 import com.ibm.ws.security.authorization.util.classes.PrincipalImpl;
 import com.ibm.ws.security.authorization.util.classes.RolesAllowedOnClass;
 
-import junit.framework.Assert;
-
 public class RoleMethodAuthUtilTest {
 
     private static final Class<?> DENYALL_ON_CLASS = DenyAllOnClass.class;
@@ -34,24 +32,14 @@ public class RoleMethodAuthUtilTest {
     private static final Class<?> NO_ANNOTATIONS_ON_CLASS = NoAnnotationsOnClass.class;
 
     //Unauthenticated
-    @Test()
+    @Test(expected = UnauthenticatedException.class)
     public void checkAuthentication_null_principal() throws Exception {
-        try {
-            RoleMethodAuthUtil.checkAuthentication(null);
-            Assert.fail();
-        } catch (UnauthenticatedException e) {
-            assertTrue(e instanceof UnauthenticatedException);
-        }
+        RoleMethodAuthUtil.checkAuthentication(null);
     }
 
-    @Test()
+    @Test(expected = UnauthenticatedException.class)
     public void checkAuthentication_UNAUTHENTICATED_principal() throws Exception {
-        try {
-            RoleMethodAuthUtil.checkAuthentication(new PrincipalImpl("UNAUTHENTICATED"));
-            Assert.fail();
-        } catch (UnauthenticatedException e) {
-            assertTrue(e instanceof UnauthenticatedException);
-        }
+        RoleMethodAuthUtil.checkAuthentication(new PrincipalImpl("UNAUTHENTICATED"));
     }
 
     @Test
@@ -75,7 +63,7 @@ public class RoleMethodAuthUtilTest {
         RoleMethodAuthUtil.parseMethodSecurity(method(ROLESALLOWED_ON_CLASS, "unannotated"),
                                                null,
                                                s -> {
-                                                   return true;
+                                                   return false; // change to false because "unannotated" is protected by "role3" and "role4"
                                                });
     }
 
@@ -84,7 +72,7 @@ public class RoleMethodAuthUtilTest {
         assertFalse(RoleMethodAuthUtil.parseMethodSecurity(method(ROLESALLOWED_ON_CLASS, "unannotated"),
                                                            principal("UNAUTHENTICATED"),
                                                            s -> {
-                                                               return true;
+                                                               return false; // change to false because "unannotated" is protected by "role3" and "role4"
                                                            }));
     }
 
