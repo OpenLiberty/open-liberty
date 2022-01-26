@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -125,11 +125,7 @@ public class OidcUtil {
 
     public static void removeCookie(OidcClientRequest oidcClientRequest) {
         String cookieName = oidcClientRequest.getOidcClientCookieName();
-        Cookie c = OidcClientUtil.createCookie(cookieName,
-                "",
-                oidcClientRequest.getRequest());
-        c.setMaxAge(0);
-        oidcClientRequest.getResponse().addCookie(c);
+        OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);
     }
 
     // The sujbect has to be non-null
@@ -233,11 +229,6 @@ public class OidcUtil {
         return lTimeStamp;
     }
 
-    /**
-     * @param nonceValue
-     * @param state
-     * @param clientConfig
-     */
     @Trivial
     public static void createNonceCookie(OidcClientRequest oidcClientRequest, String nonceValue, String state, ConvergedClientConfig clientConfig) {
         String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, state);
@@ -246,18 +237,12 @@ public class OidcUtil {
         oidcClientRequest.getResponse().addCookie(cookie);
     }
 
-    /**
-     * @param nonceInIDToken
-     * @param clientConfig
-     * @param responseState
-     * @return
-     */
     @Trivial
     public static boolean verifyNonce(OidcClientRequest oidcClientRequest, String nonceInIDToken, ConvergedClientConfig clientConfig, String responseState) {
         String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, responseState);
         String cookieValue = createNonceCookieValue(nonceInIDToken, responseState, clientConfig);
         String oldCookieValue = CookieHelper.getCookieValue(oidcClientRequest.getRequest().getCookies(), cookieName);
-        OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), ClientConstants.WAS_OIDC_NONCE);
+        OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);
         return cookieValue.equals(oldCookieValue);
     }
 
