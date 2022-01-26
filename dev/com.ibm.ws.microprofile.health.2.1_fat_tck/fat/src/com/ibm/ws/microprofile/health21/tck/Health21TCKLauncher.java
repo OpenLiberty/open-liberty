@@ -82,7 +82,7 @@ public class Health21TCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

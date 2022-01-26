@@ -28,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -70,7 +71,6 @@ public class MetricsTCKLauncher {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.metrics.2.3_fat_tck", "launchTck", additionalProps);
         Map<String, String> resultInfo = new HashMap<>();
         try{
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
             String productVersion = "";
             resultInfo.put("results_type", "MicroProfile");
             resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
@@ -89,7 +89,7 @@ public class MetricsTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

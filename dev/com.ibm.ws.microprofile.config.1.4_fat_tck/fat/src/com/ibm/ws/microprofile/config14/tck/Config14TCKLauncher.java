@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -82,6 +83,6 @@ public class Config14TCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 }

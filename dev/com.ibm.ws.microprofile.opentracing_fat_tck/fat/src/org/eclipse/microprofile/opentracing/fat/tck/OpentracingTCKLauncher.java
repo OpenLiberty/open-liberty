@@ -75,6 +75,6 @@ public class OpentracingTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 }

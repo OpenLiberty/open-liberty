@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.metrics.tck.launcher;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -83,7 +84,7 @@ public class MetricsTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

@@ -81,7 +81,7 @@ public class ReactiveStreamsTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

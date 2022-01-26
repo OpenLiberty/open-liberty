@@ -111,7 +111,7 @@ public class LraTckLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
 
     }
 

@@ -78,7 +78,7 @@ public class OpentracingTCKLauncherMicroProfile {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
 
     }
 }

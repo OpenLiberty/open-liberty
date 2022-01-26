@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.health.tck;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -82,7 +83,7 @@ public class HealthTCKLauncher {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
     }
 
 }

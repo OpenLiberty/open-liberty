@@ -84,29 +84,7 @@ public class Mpjwt12TCKLauncher_aud_noenv {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;Map<String, String> resultInfo = new HashMap<>();
-        try{
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
-            String productVersion = "";
-            resultInfo.put("results_type", "MicroProfile");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "JWT Auth");
-            resultInfo.put("feature_version", "1.2");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-        }finally{
-            MvnUtils.preparePublicationFile(resultInfo);
-        };   MvnUtils.preparePublicationFile("MicroProfile", productVersion);
-        }
+        };
 
     }
 }

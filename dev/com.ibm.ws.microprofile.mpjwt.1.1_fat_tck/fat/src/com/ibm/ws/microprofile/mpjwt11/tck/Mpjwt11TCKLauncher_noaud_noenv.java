@@ -78,7 +78,7 @@ public class Mpjwt11TCKLauncher_noaud_noenv {
             }
         }finally{
             MvnUtils.preparePublicationFile(resultInfo);
-        };;
+        };
 
     }
 }
