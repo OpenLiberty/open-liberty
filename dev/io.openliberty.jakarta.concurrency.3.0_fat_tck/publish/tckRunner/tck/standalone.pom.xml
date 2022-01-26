@@ -8,7 +8,7 @@
     Contributors: 
         IBM Corporation - initial API and implementation
 -->
-<!-- NOTE: This pom is used for Dev Testing -->
+<!-- NOTE: This pom is used for Standalone Testing -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,10 +18,10 @@
     <name>Jakarta Concurrency TCK Runner TCK Module</name>
 
     <properties>
-        <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
-        
-        <!-- TODO: Update this once TCK is GAed -->
-        <jakarta.concurrent.tck.version>3.0.0.20220120</jakarta.concurrent.tck.version>
+        <!-- TODO remove once spec is GAed -->
+        <!-- These properties can be overwritten by users -->
+        <jakarta.concurrent.groupid>io.openliberty.jakarta.enterprise.concurrent</jakarta.concurrent.groupid>
+        <jakarta.concurrent.version>3.0.0.20220120</jakarta.concurrent.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -43,14 +43,6 @@
             <id>ibmdhe</id>
             <name>IBM_DHE File Server</name>
             <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -67,36 +59,24 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
-        <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>fattest.simplicity</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> 
-        </dependency>
         <!-- TCK Dependency -->
         <dependency>
             <!-- TODO: Update this once TCK is available on maven -->
-		    <groupId>io.openliberty.jakarta.enterprise.concurrent</groupId>
+		    <groupId>${jakarta.concurrent.groupid}</groupId>
 		    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-		    <version>${jakarta.concurrent.tck.version}</version>
+		    <version>${jakarta.concurrent.version}</version>
         </dependency>
         <!-- API Dependency -->
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
+            <groupId>${jakarta.concurrent.groupid}</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.concurrency.3.0}</systemPath>
         </dependency>
 		<!-- Other API Dependencies -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>5.0.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.servlet.5.0}</systemPath>
         </dependency>
 	    <!-- TEST DEPENDENCIES -->
         <dependency>
