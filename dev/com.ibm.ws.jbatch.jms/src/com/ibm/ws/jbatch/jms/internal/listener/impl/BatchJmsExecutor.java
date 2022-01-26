@@ -16,6 +16,8 @@ import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_COMPONENT;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_MODULE;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_NAME;
+import static com.ibm.ws.jbatch.jms.internal.listener.impl.BatchJmsExecutor.CONN_FACTORY_REF_NAME;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
@@ -34,7 +36,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -45,7 +46,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jbatch.jms.internal.BatchJmsConstants;
 import com.ibm.ws.jbatch.jms.internal.BatchOperationGroup;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
@@ -68,14 +68,18 @@ import com.ibm.wsspi.resource.ResourceInfo;
  * TODO: add required dep on BatchJmsDispatcher to ensure the dispatcher/connection factory
  *       is available (needed for multi-jvm partitions)
  */
-@Component(configurationPid = "com.ibm.ws.jbatch.jms.executor", configurationPolicy = ConfigurationPolicy.REQUIRE, service = {}, property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.jbatch.jms.executor",
+           configurationPolicy = REQUIRE, 
+           property = { CONN_FACTORY_REF_NAME+".cardinality.minimum="+Integer.MAX_VALUE, // Prevent this reference from being satisfied before metatype processing
+                        "service.vendor=IBM" })
 public class BatchJmsExecutor {
 
     private static final TraceComponent tc = Tr.register(BatchJmsExecutor.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");
     
-    private static final String REFERENCE_ENDPOINT_ACTIVATION_SERVICES = "JmsActivationSpec";
-    private static final String REFERENCE_ADMIN_OBJECT_SERVICES = "JmsQueue";
-    private static final String OPERATION_GROUP = "operationGroup";
+    public static final String ACTIVATION_SPEC_REF_NAME = "JmsActivationSpec";
+    public static final String CONN_FACTORY_REF_NAME = "JMSConnectionFactory";
+    public static final String JMS_QUEUE_REF_NAME = "JmsQueue";
+    public static final String OPERATION_GROUP = "operationGroup";
 
     private final ComponentContext context;
     private final RRSXAResourceFactory xaResourceFactory;
@@ -99,15 +103,17 @@ public class BatchJmsExecutor {
  
     @Activate
     public BatchJmsExecutor(ComponentContext context, Map<String, Object> config,
+            // Anonymous References
             @Reference ApplicationStartBarrier requiredButNotUsed,
             @Reference ServerStartedPhase2 requiredButNotUsed2,
             @Reference J2EENameFactory j2eeNameFactory,
             @Reference ResourceConfigFactory resourceConfigFactory,
             @Reference WSJobRepository jobRepository,
             @Reference(cardinality=OPTIONAL, policyOption=GREEDY) RRSXAResourceFactory xaResourceFactory,
-            @Reference(target="(id=unbound)", cardinality=OPTIONAL, policyOption=GREEDY) ResourceFactory jmsConnectionFactory,
-            @Reference(name=REFERENCE_ADMIN_OBJECT_SERVICES, target="(id=unbound)") ServiceReference<AdminObjectService> adminObjectServiceRef,
-            @Reference(name=REFERENCE_ENDPOINT_ACTIVATION_SERVICES, target="(id=unbound)") ServiceReference<EndpointActivationService> jmsActivationSpecRef) {
+            // Named References to tie up with metatype.xml, which replaces the target filters
+            @Reference(name=CONN_FACTORY_REF_NAME, target="(id=unbound)", cardinality=OPTIONAL, policyOption=GREEDY) ResourceFactory jmsConnectionFactory,
+            @Reference(name=JMS_QUEUE_REF_NAME, target="(id=unbound)") ServiceReference<AdminObjectService> adminObjectServiceRef,
+            @Reference(name=ACTIVATION_SPEC_REF_NAME, target="(id=unbound)") ServiceReference<EndpointActivationService> jmsActivationSpecRef) {
             
         this.context = context;
         this.j2eeName = j2eeNameFactory.create(J2EE_APP_NAME, J2EE_APP_MODULE, J2EE_APP_COMPONENT);    
@@ -328,7 +334,7 @@ public class BatchJmsExecutor {
                 return null;
             }
             if (service == null) {
-                service = (EndpointActivationService) context.locateService(REFERENCE_ENDPOINT_ACTIVATION_SERVICES, serviceRef);
+                service = (EndpointActivationService) context.locateService(ACTIVATION_SPEC_REF_NAME, serviceRef);
             }
             return service;
         }
@@ -439,8 +445,8 @@ public class BatchJmsExecutor {
     private synchronized NamedAdminObjectServiceInfo createNamedAdminObjectServiceInfo(String id) {
         NamedAdminObjectServiceInfo aosInfo = adminObjectServices.get(id);
         if (aosInfo == null) {
-            aosInfo = new NamedAdminObjectServiceInfo(id, new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES),
-                    new ConcurrentServiceReferenceSet<AdminObjectService>(REFERENCE_ADMIN_OBJECT_SERVICES));
+            aosInfo = new NamedAdminObjectServiceInfo(id, new ConcurrentServiceReferenceSet<AdminObjectService>(JMS_QUEUE_REF_NAME),
+                    new ConcurrentServiceReferenceSet<AdminObjectService>(JMS_QUEUE_REF_NAME));
             adminObjectServices.put(id, aosInfo);
         }
         return aosInfo;
