@@ -72,7 +72,6 @@ public class MetricsTCKLauncher {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.metrics.internal.4.0_fat_tck", "launchTck", additionalProps);
         Map<String, String> resultInfo = new HashMap<>();
         try{
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
             String productVersion = "";
             resultInfo.put("results_type", "MicroProfile");
             resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');

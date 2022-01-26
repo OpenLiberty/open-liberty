@@ -12,7 +12,9 @@ package io.openliberty.microprofile.openapi20.fat.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List; 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
