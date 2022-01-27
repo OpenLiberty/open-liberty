@@ -17,11 +17,11 @@ ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 
 ext.testcontainersVersion = '1.16.2'
 
-// Local vars
-File publishDir = new File(autoFvtDir, 'publish')
-
 task cleanFat(type: Delete) {
-  delete autoFvtDir
+  doLast {
+      delete new File(project.buildDir, 'autoFVT')
+      followSymlinks = true
+    }
 }
 
 if (isAutomatedBuild && project.file('fat').exists()) {
@@ -67,8 +67,18 @@ dependencies {
 
 }
 
+ task copyPublishDir(type:Copy) {
+  File publishDir = new File(autoFvtDir, 'publish')
+    // Copy the publish directory (minus the 'files' directory)
+      from project.file('publish')
+      include '**/*'
+      exclude 'files'
+      into publishDir
+    }
+
 task addRequiredLibraries(type: Copy) {
-  mustRunAfter jar
+  dependsOn copyPublishDir
+  dependsOn assemble
   from configurations.requiredLibs
   into new File(autoFvtDir, 'lib')
 }
@@ -127,16 +137,53 @@ task copyFeatureBundles {
   }
 }
 
+
+task copyStaticTemplateFiles(type:Copy) {
+   // Copy the static autoFVT-defaults
+      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
+      include '**/*'
+      into autoFvtDir
+    }
+
+task copyDynamicTemplateFiles(type:Copy) {
+  dependsOn copyStaticTemplateFiles
+    // Copy the dynamic autoFVT-defaults
+      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
+      include '**/*'
+      into autoFvtDir
+    }
+
+ task copyPublishFiles(type:Copy) {
+  dependsOn copyPublishDir
+  dependsOn addRequiredLibraries
+    // Copy the published files
+    File publishDir = new File(autoFvtDir, 'publish')
+      from project.file('publish/files'), new File(publishDir, 'files')
+      include '**/*'
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    }
+
+
 task autoFVT {
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
+  dependsOn copyPublishFiles
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
+  dependsOn copyDynamicTemplateFiles
+  dependsOn ':fattest.simplicity:assemble'
+  dependsOn ':com.ibm.ws.junit.extensions:assemble'
+  dependsOn ':com.ibm.ws.org.glassfish.json:assemble'
+  dependsOn ':com.ibm.ws.componenttest:assemble'
+  dependsOn ':com.ibm.ws.common.encoder:assemble'
+  dependsOn ':com.ibm.ws.logging.core:assemble'
   enabled project.file('fat').exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
   doLast {
+    // Local vars
+    File publishDir = new File(autoFvtDir, 'publish')
     // Copy the compiled classes
     copy {
       from compileJava.destinationDir
@@ -188,19 +235,6 @@ task autoFVT {
       into new File(autoFvtDir, 'ddl')
     }
 
-    // Copy the static autoFVT-defaults
-    copy {
-      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
-      include '**/*'
-      into autoFvtDir
-    }
-
-    // Copy the dynamic autoFVT-defaults
-    copy {
-      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
-      include '**/*'
-      into autoFvtDir
-    }
 
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
@@ -263,21 +297,6 @@ task autoFVT {
       include 'com.ibm.ws.common.encoder.jar'
       rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
       into new File(autoFvtDir, 'lib')
-    }
-
-    // Copy the published files
-    copy {
-      from project.file('publish/files'), new File(publishDir, 'files')
-      include '**/*'
-      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
-    }
-
-    // Copy the publish directory (minus the 'files' directory)
-    copy {
-      from project.file('publish')
-      include '**/*'
-      exclude 'files'
-      into publishDir
     }
 
     // Copy the logging libraries over for use while running FATs
@@ -447,6 +466,7 @@ if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
 }
 
 assemble {
+  mustRunAfter cleanFat
   // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
   if(!buildFatEnabled) {
     enabled = false;
@@ -518,6 +538,7 @@ def ebcClone(String url, String branch, String repoPath){
 }
 
 build {
+  mustRunAfter cleanFat
   // Skip out on 'build' unless top-level gradle invocation contains "fat"
   if(!buildFatEnabled) {
     enabled = false;
@@ -535,9 +556,4 @@ buildfat {
 task buildandrun {
  dependsOn buildfat
  dependsOn runfat
-}
-
-task buildFatAndRelease {
-  dependsOn buildfat
-  dependsOn release
 }
