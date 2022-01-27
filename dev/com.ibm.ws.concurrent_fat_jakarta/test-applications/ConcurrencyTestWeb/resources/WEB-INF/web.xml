@@ -20,7 +20,7 @@
 
   <managed-executor>
     <name>java:global/concurrent/dd/web/LPExecutor</name>
-    <context-service-ref>java:global/concurrent/dd/ejb/LPContextService</context-service-ref>
+    <context-service-ref>java:global/concurrent/anno/ejb/LPContextService</context-service-ref>
     <max-async>3</max-async>
   </managed-executor>
 
@@ -43,6 +43,12 @@
     <name>java:app/concurrent/merged/web/LTContextService</name>
     <cleared></cleared>
     <unchanged>Remaining</unchanged>
+  </context-service>
+
+  <context-service>
+    <name>java:comp/concurrent/merged/web/PTContextService</name>
+    <propagated>Priority</propagated>
+    <propagated>Timestamp</propagated>
   </context-service>
 -->
 

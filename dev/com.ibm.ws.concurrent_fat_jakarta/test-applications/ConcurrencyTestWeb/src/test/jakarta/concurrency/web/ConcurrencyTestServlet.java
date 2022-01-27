@@ -134,7 +134,7 @@ import test.context.timing.Timestamp;
                           unchanged = ALL_REMAINING)
 
 @ManagedExecutorDefinition(name = "java:global/concurrent/dd/web/LPExecutor",
-                           context = "java:global/concurrent/dd/ejb/LPContextService",
+                           context = "java:global/concurrent/anno/ejb/LPContextService",
                            maxAsync = 3)
 
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/dd/web/TZScheduledExecutor",
@@ -152,6 +152,11 @@ import test.context.timing.Timestamp;
                           cleared = {}, // TODO "Priority", // web.xml replaces with {}
                           propagated = { ListContext.CONTEXT_NAME, Timestamp.CONTEXT_NAME },
                           unchanged = ALL_REMAINING) // TODO ZipCode.CONTEXT_NAME) // web.xml replaces with Remaining
+
+@ContextServiceDefinition(name = "java:comp/concurrent/merged/web/PTContextService",
+                          cleared = ListContext.CONTEXT_NAME,
+                          propagated = { "Priority", Timestamp.CONTEXT_NAME }, // TODO ALL_REMAINING, // web.xml replaces with Priority, Timestamp
+                          unchanged = APPLICATION)
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -763,12 +768,12 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * Use a ContextService that is defined by a context-service in an EJB deployment descriptor.
+     * Use a ContextService that is defined by another ContextServiceDefinition in an EJB.
      */
     @Test
-    public void testEJBDDContextServiceDefinition() throws Exception {
+    public void testEJBContextServiceDefinition() throws Exception {
         // java:global name is accessible outside of the EJB module,
-        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/dd/ejb/LPContextService");
+        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/anno/ejb/LPContextService");
 
         // Put some fake context onto the thread:
         Timestamp.set();
@@ -785,7 +790,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 // The Callable records the context
                 Object lookupResult;
                 try {
-                    lookupResult = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+                    lookupResult = InitialContext.doLookup("java:app/concurrent/anno/ejb/LPScheduledExecutor");
                     throw new AssertionError("Application context was not cleared. Looked up: " + lookupResult);
                 } catch (NamingException x) {
                     // expected
@@ -859,17 +864,17 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * Use a ManagedExecutorService that is defined via managed-executor in an EJB deployment descriptor.
+     * Use a ManagedExecutorService that is defined by another ManagedExecutorDefinition in an EJB.
      */
     @Test
-    public void testEJBDDManagedExecutorDefinition() throws Exception {
+    public void testEJBManagedExecutorDefinition() throws Exception {
         BiFunction<CountDownLatch, CountDownLatch, Object> task = (twoStarted, threeStarted) -> {
             twoStarted.countDown();
             threeStarted.countDown();
             try {
                 assertTrue(threeStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
                 // requires application context
-                return InitialContext.doLookup("java:comp/concurrent/dd/ejb/Executor");
+                return InitialContext.doLookup("java:comp/concurrent/anno/ejb/Executor");
             } catch (InterruptedException | NamingException x) {
                 throw new CompletionException(x);
             }
@@ -879,7 +884,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         assertNotNull(bean);
         bean.execute(() -> {
             try {
-                ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/dd/ejb/Executor");
+                ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/anno/ejb/Executor");
 
                 CompletableFuture<CountDownLatch> twoStartedFuture = executor.completedFuture(new CountDownLatch(2));
                 CompletableFuture<CountDownLatch> threeStartedFuture = executor.completedFuture(new CountDownLatch(3));
@@ -908,7 +913,7 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * Use a ManagedScheduledExecutorService that is defined via managed-scheduled-executor in an EJB deployment descriptor.
+     * Use a ManagedScheduledExecutorService that is defined by another ManagedScheduledExecutorDefinition in an EJB.
      */
     @Test
     public void testEJBDDManagedScheduledExecutorDefinition() throws Exception {
@@ -922,10 +927,10 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new CompletionException(x);
             }
 
-            // Application context must be cleared, per java:global/concurrent/dd/ejb/LPContextService,
+            // Application context must be cleared, per java:global/concurrent/anno/ejb/LPContextService,
             // which is configured as the context-service-ref for the managed-scheduled-executor,
             try {
-                Object lookedUp = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+                Object lookedUp = InitialContext.doLookup("java:app/concurrent/anno/ejb/LPScheduledExecutor");
                 throw new AssertionError("Application context should be cleared. Instead looked up " + lookedUp);
             } catch (NamingException x) {
                 // pass
@@ -941,7 +946,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         assertNotNull(bean);
         bean.execute(() -> {
             try {
-                ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/dd/ejb/LPScheduledExecutor");
+                ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/anno/ejb/LPScheduledExecutor");
 
                 CompletableFuture<CountDownLatch> threeStartedFuture = executor.completedFuture(new CountDownLatch(3));
                 CompletableFuture<CountDownLatch> fourStartedFuture = executor.completedFuture(new CountDownLatch(4));
@@ -998,7 +1003,7 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
-     * Use a ManagedThreadFactory that is defined by managed-thread-factory in an EJB deployment descriptor.
+     * Use a ManagedThreadFactory that is defined by another ManagedThreadFactoryDefinition in an EJB.
      */
     @Test
     public void testEJBDDManagedThreadFactoryDefinition() throws Exception {
@@ -1010,7 +1015,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                     Timestamp.set();
                     Thread.currentThread().setPriority(6);
 
-                    ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/dd/ejb/ZLThreadFactory");
+                    ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/anno/ejb/ZLThreadFactory");
 
                     LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
 
@@ -1021,7 +1026,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                         results.add(timestamp == null ? "null" : timestamp);
 
                         try {
-                            results.add(InitialContext.doLookup("java:module/concurrent/dd/ejb/ZLThreadFactory"));
+                            results.add(InitialContext.doLookup("java:module/concurrent/anno/ejb/ZLThreadFactory"));
                         } catch (Throwable x) {
                             results.add(x);
                         }
@@ -1051,86 +1056,6 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new EJBException(x);
             }
         });
-    }
-
-    /**
-     * Use a ContextService that is defined by the merging of a ContextServiceDefinition
-     * and a context-service in an EJB module deployment descriptor, which replaces the
-     * cleared and unchanged context types.
-     */
-    @Test
-    public void testEJBMergedContextServiceDefinition() throws Exception {
-        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
-        assertNotNull(bean);
-        bean.execute(() -> {
-            try {
-                ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/merged/ejb/PTContextService");
-
-                // Put some fake context onto the thread:
-                Timestamp.set();
-                ZipCode.set(55906);
-                ListContext.newList();
-                ListContext.add(60);
-                Thread.currentThread().setPriority(9);
-                Long ts0 = Timestamp.get();
-                TimeUnit.MILLISECONDS.sleep(100);
-
-                try {
-                    // Contextualize a Runnable with the above context:
-                    Function<String, Map<String, Object>> task = contextSvc.contextualFunction(jndiName -> {
-                        Map<String, Object> results = new TreeMap<String, Object>();
-                        results.put(ListContext.CONTEXT_NAME, ListContext.asString());
-                        results.put("Priority", Thread.currentThread().getPriority());
-                        results.put(Timestamp.CONTEXT_NAME, Timestamp.get());
-                        results.put(ZipCode.CONTEXT_NAME, ZipCode.get());
-                        try {
-                            results.put(APPLICATION, InitialContext.doLookup(jndiName));
-
-                            TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
-                            results.put(TRANSACTION, tsr.getTransactionStatus());
-                        } catch (NamingException x) {
-                            throw new CompletionException(x);
-                        }
-                        return results;
-                    });
-
-                    // Alter some of the context on the current thread
-                    ZipCode.set(55905);
-                    ListContext.newList();
-                    ListContext.add(50);
-                    Thread.currentThread().setPriority(8);
-                    Long ts1 = Timestamp.get();
-
-                    // Run with the captured context:
-                    Map<String, Object> results = task.apply("java:comp/concurrent/merged/ejb/PTContextService");
-
-                    assertEquals("[]", results.get(ListContext.CONTEXT_NAME)); // cleared
-                    assertEquals(Integer.valueOf(9), results.get("Priority")); // unchanged
-                    assertEquals(ts0, results.get(Timestamp.CONTEXT_NAME)); // propagated
-                    assertEquals(Integer.valueOf(0), results.get(ZipCode.CONTEXT_NAME)); // cleared
-                    assertNotNull(results.get(APPLICATION)); // unchanged
-                    assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results.get(TRANSACTION)); // cleared
-
-                    // Verify that context is restored on the current thread:
-                    assertEquals(55905, ZipCode.get());
-                    assertEquals("[50]", ListContext.asString());
-                    assertEquals(8, Thread.currentThread().getPriority());
-                    assertEquals(ts1, Timestamp.get());
-                    // Container managed transaction from EJB transaction REQUIRED method must still be active,
-                    TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
-                    assertEquals(Status.STATUS_ACTIVE, tsr.getTransactionStatus());
-                } finally {
-                    // Remove fake context
-                    Timestamp.clear();
-                    ZipCode.clear();
-                    ListContext.clear();
-                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
-                }
-            } catch (InterruptedException | NamingException x) {
-                throw new EJBException(x);
-            }
-        });
-
     }
 
     /**
@@ -2486,7 +2411,7 @@ public class ConcurrencyTestServlet extends FATServlet {
      * cleared and unchanged context types.
      */
     @Test
-    public void testWebMergedContextServiceDefinition() throws Exception {
+    public void testWebMergedContextServiceDefinitionClearedAndUnchanged() throws Exception {
         ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/merged/web/LTContextService");
 
         // Put some fake context onto the thread:
@@ -2539,6 +2464,81 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertEquals(4, Thread.currentThread().getPriority());
             assertEquals(ts1, Timestamp.get());
             assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+            tran.rollback();
+        }
+    }
+
+    /**
+     * Use a ContextService that is defined by the merging of a ContextServiceDefinition
+     * and a context-service in a web module deployment descriptor, which replaces the
+     * propagated context types.
+     */
+    @Test
+    public void testWebMergedContextServiceDefinitionPropagated() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/merged/web/PTContextService");
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+        tran.begin();
+        try {
+            // Put some fake context onto the thread:
+            Timestamp.set();
+            ZipCode.set(55906);
+            ListContext.newList();
+            ListContext.add(60);
+            Thread.currentThread().setPriority(9);
+            Long ts0 = Timestamp.get();
+            TimeUnit.MILLISECONDS.sleep(100);
+
+            // Contextualize a Runnable with the above context:
+            Function<String, Map<String, Object>> task = contextSvc.contextualFunction(jndiName -> {
+                Map<String, Object> results = new TreeMap<String, Object>();
+                results.put(ListContext.CONTEXT_NAME, ListContext.asString());
+                results.put("Priority", Thread.currentThread().getPriority());
+                results.put(Timestamp.CONTEXT_NAME, Timestamp.get());
+                results.put(ZipCode.CONTEXT_NAME, ZipCode.get());
+                try {
+                    results.put(APPLICATION, InitialContext.doLookup(jndiName));
+
+                    TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+                    results.put(TRANSACTION, tsr.getTransactionStatus());
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+                return results;
+            });
+
+            // Alter some of the context on the current thread
+            ZipCode.set(55905);
+            ListContext.newList();
+            ListContext.add(50);
+            Thread.currentThread().setPriority(8);
+            Long ts1 = Timestamp.get();
+
+            // Run with the captured context:
+            Map<String, Object> results = task.apply("java:comp/concurrent/merged/web/PTContextService");
+
+            assertEquals("[]", results.get(ListContext.CONTEXT_NAME)); // cleared
+            assertEquals(Integer.valueOf(9), results.get("Priority")); // unchanged
+            assertEquals(ts0, results.get(Timestamp.CONTEXT_NAME)); // propagated
+            assertEquals(Integer.valueOf(0), results.get(ZipCode.CONTEXT_NAME)); // cleared
+            assertNotNull(results.get(APPLICATION)); // unchanged
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results.get(TRANSACTION)); // cleared
+
+            // Verify that context is restored on the current thread:
+            assertEquals(55905, ZipCode.get());
+            assertEquals("[50]", ListContext.asString());
+            assertEquals(8, Thread.currentThread().getPriority());
+            assertEquals(ts1, Timestamp.get());
+            // UserTransaction must still be active,
+            TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+            assertEquals(Status.STATUS_ACTIVE, tsr.getTransactionStatus());
         } finally {
             // Remove fake context
             Timestamp.clear();

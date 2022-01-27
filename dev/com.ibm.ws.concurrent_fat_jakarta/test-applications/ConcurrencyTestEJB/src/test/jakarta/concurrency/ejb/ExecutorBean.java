@@ -38,27 +38,20 @@ import test.context.timing.Timestamp;
 @ManagedThreadFactoryDefinition(name = "java:module/concurrent/tf",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 6)
-// TODO delete the following and enable the equivalent in ejb-jar.xml
-@ContextServiceDefinition(name = "java:global/concurrent/dd/ejb/LPContextService",
+
+@ContextServiceDefinition(name = "java:global/concurrent/anno/ejb/LPContextService",
                           cleared = APPLICATION,
                           propagated = { ListContext.CONTEXT_NAME, "Priority" },
                           unchanged = { ZipCode.CONTEXT_NAME, ALL_REMAINING })
-@ManagedExecutorDefinition(name = "java:comp/concurrent/dd/ejb/Executor",
+@ManagedExecutorDefinition(name = "java:comp/concurrent/anno/ejb/Executor",
                            hungTaskThreshold = 620000,
                            maxAsync = 2)
-@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/dd/ejb/LPScheduledExecutor",
-                                    context = "java:global/concurrent/dd/ejb/LPContextService",
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/anno/ejb/LPScheduledExecutor",
+                                    context = "java:global/concurrent/anno/ejb/LPContextService",
                                     maxAsync = 3)
-@ManagedThreadFactoryDefinition(name = "java:module/concurrent/dd/ejb/ZLThreadFactory",
+@ManagedThreadFactoryDefinition(name = "java:module/concurrent/anno/ejb/ZLThreadFactory",
                                 context = "java:module/concurrent/ZLContextSvc",
                                 priority = 7)
-
-// Merged with ejb-jar.xml
-// TODO enable in ejb-jar.xml and update the following,
-@ContextServiceDefinition(name = "java:comp/concurrent/merged/ejb/PTContextService",
-                          cleared = ListContext.CONTEXT_NAME,
-                          propagated = { "Priority", Timestamp.CONTEXT_NAME }, // TODO ALL_REMAINING, // ejb-jar.xml replaces with Priority, Timestamp
-                          unchanged = APPLICATION)
 
 @Stateless
 public class ExecutorBean implements Executor {
