@@ -73,6 +73,15 @@
     <hung-task-threshold>140000</hung-task-threshold>
   </managed-scheduled-executor>
 
+  <managed-thread-factory>
+    <name>java:comp/concurrent/merged/web/TZThreadFactory</name>
+    <context-service-ref>java:comp/concurrent/dd/web/TZContextService</context-service-ref>
+  </managed-thread-factory>
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/merged/web/LTThreadFactory</name>
+    <priority>8</priority>
+  </managed-thread-factory>
 -->
 
 </web-app>

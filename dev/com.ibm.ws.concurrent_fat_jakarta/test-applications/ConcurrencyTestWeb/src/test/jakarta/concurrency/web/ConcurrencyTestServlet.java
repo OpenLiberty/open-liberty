@@ -176,6 +176,14 @@ import test.context.timing.Timestamp;
                                     context = "java:global/concurrent/anno/ejb/LPContextService", // TODO "java:app/concurrent/dd/ZPContextService", // web.xml replaces with LPContextService
                                     maxAsync = 4)
 
+@ManagedThreadFactoryDefinition(name = "java:comp/concurrent/merged/web/TZThreadFactory",
+                                context = "java:comp/concurrent/dd/web/TZContextService", // TODO "java:module/concurrent/ZLContextSvc", // web.xml replaces with TZContextService
+                                priority = 3)
+
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/merged/web/LTThreadFactory",
+                                context = "java:app/concurrent/merged/web/LTContextService",
+                                priority = 8) // TODO priority = 4) // web.xml replaces with 8
+
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -2837,6 +2845,80 @@ public class ConcurrencyTestServlet extends FATServlet {
         } finally {
             // Remove fake context
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ManagedThreadFactory that is defined by the merging of a ManagedThreadFactoryDefinition
+     * and a managed-thread-factory in a web module deployment descriptor, which replaces the
+     * context service that it uses.
+     */
+    @Test
+    public void testWebMergedManagedThreadFactoryDefinitionContext() throws Exception {
+        try {
+            // Put some fake context onto the thread:
+            ListContext.newList();
+            ListContext.add(333);
+            Thread.currentThread().setPriority(4);
+            Timestamp.set();
+            Long ts0 = Timestamp.get();
+
+            ManagedThreadFactory threadFactory = InitialContext.doLookup("java:comp/concurrent/merged/web/TZThreadFactory");
+
+            TimeUnit.MILLISECONDS.sleep(100);
+            Timestamp.set();
+
+            LinkedBlockingQueue<Number> queue = new LinkedBlockingQueue<>();
+
+            threadFactory.newThread(() -> {
+                queue.add("null".equals(ListContext.asString()) ? 0 : ListContext.sum());
+                queue.add(Thread.currentThread().getPriority());
+                queue.add(Timestamp.get());
+            }).start();
+
+            assertEquals(Integer.valueOf(0), queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // List context must remain unchanged
+            assertEquals(Integer.valueOf(3), queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // configured priority must be used
+            assertEquals(ts0, queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Timestamp context must be propagated
+        } finally {
+            // Remove fake context
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ListContext.clear();
+            Timestamp.clear();
+        }
+    }
+
+    /**
+     * Use a ManagedThreadFactory that is defined by the merging of a ManagedThreadFactoryDefinition
+     * and a managed-thread-factory in a web module deployment descriptor, which replaces the
+     * priority.
+     */
+    @Test
+    public void testWebMergedManagedThreadFactoryDefinitionPriority() throws Exception {
+        try {
+            // Put some fake context onto the thread:
+            ListContext.newList();
+            ListContext.add(88);
+            Thread.currentThread().setPriority(4);
+            ZipCode.set(55904);
+
+            ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/merged/web/LTThreadFactory");
+
+            LinkedBlockingQueue<Number> queue = new LinkedBlockingQueue<>();
+
+            threadFactory.newThread(() -> {
+                queue.add("null".equals(ListContext.asString()) ? 0 : ListContext.sum());
+                queue.add(Thread.currentThread().getPriority());
+                queue.add(ZipCode.get());
+            }).start();
+
+            assertEquals(Integer.valueOf(88), queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // List context must be propagated
+            assertEquals(Integer.valueOf(8), queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // configured priority must be used
+            assertEquals(Integer.valueOf(0), queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ZipCode context must remain unchanged
+        } finally {
+            // Remove fake context
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ListContext.clear();
             ZipCode.clear();
         }
     }
