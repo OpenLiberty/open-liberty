@@ -1289,6 +1289,7 @@ public class MvnUtils {
         return returnArray;
     }
 
+
     public static String capitalise(String spec) {
         char[] charArray = spec.toCharArray();
         boolean foundSpace = true;
