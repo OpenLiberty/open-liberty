@@ -1953,6 +1953,10 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
+    public void validateAppsLoaded() throws Exception {
+        validateAppsLoaded(getDefaultLogFile());
+    }
+
     protected void validateAppsLoaded(RemoteFile outputFile) throws Exception {
         final String method = "validateAppsLoaded";
 

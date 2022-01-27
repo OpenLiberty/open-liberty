@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class EndToEndClientServlet extends HttpServlet {
 			bind.getRequestContext().put(
 					"javax.xml.ws.service.endpoint.address",
 					BASE_URL + "/endtoend/HelloImplTwowayService");
-			if (type.equals("testTwoServerCommit")) {
+			if (type.equals("testTwoServerCommit") || type.equals("testFeatureDynamic")) {
 				Context ctx = new InitialContext();
 				UserTransaction userTransaction = (UserTransaction) ctx
 						.lookup("java:comp/UserTransaction");
@@ -357,7 +357,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				} else {
 					finalOutput = "EnlistXAResource failed.";
 				}
-			}else if (type.equals("noOptionalNoTransaction")) {
+			}else if (type.equals("testNoOptionalNoTransaction")) {
 				// "-1" is used for informing provider of not enlisting XAResourse
 				System.out.println("Reply from server: " + proxy.sayHello("commit", -1));
 				finalOutput = "Finish Twoway message";
