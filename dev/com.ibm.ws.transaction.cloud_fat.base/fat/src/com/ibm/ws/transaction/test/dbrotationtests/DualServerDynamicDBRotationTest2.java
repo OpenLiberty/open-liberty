@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicCoreTest2;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -28,6 +29,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode
 @RunWith(FATRunner.class)
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
 public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
