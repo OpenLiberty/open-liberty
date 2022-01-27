@@ -16,6 +16,12 @@
 	<classpathentry kind="src" path="test-applications/httpConduitProperties/src"/>
 	<classpathentry kind="src" path="test-applications/testMTOMClient_withDD/src"/>
 	<classpathentry kind="src" path="test-applications/virtualhost/src"/>
+	<classpathentry kind="src" path="test-applications/addNumbersProvider/src"/>
+	<classpathentry kind="src" path="test-applications/addNumbersClient/src"/>
+	<classpathentry kind="src" path="test-applications/helloClient/src"/>
+	<classpathentry kind="src" path="test-applications/helloClientDDMerge/src"/>
+	<classpathentry kind="src" path="test-applications/helloClientServiceResource/src"/>
+	<classpathentry kind="src" path="test-applications/helloServer/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

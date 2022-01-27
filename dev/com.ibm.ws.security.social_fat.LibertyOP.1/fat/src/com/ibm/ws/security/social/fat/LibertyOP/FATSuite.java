@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import componenttest.rules.repeater.RepeatTests;
         LibertyOP_BasicConfigTests_oidc_usingSocialConfig.class,
         LibertyOP_BasicConfigTests_oauth_usingSocialConfig_noServerSSL.class,
         LibertyOP_BasicConfigTests_oidc_usingSocialConfig_noServerSSL.class,
+        LibertyOP_CookieVerificationTests.class
 
 })
 

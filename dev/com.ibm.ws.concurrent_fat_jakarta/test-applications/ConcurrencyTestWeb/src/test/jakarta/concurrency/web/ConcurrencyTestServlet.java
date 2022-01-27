@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -72,6 +74,10 @@ import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -121,6 +127,32 @@ import test.context.timing.Timestamp;
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/dd/ThreadFactory",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 4)
+
+//TODO remove the following once enabled in server.xml
+@ContextServiceDefinition(name = "java:comp/concurrent/dd/web/TZContextService",
+                          propagated = { Timestamp.CONTEXT_NAME, ZipCode.CONTEXT_NAME },
+                          unchanged = ALL_REMAINING)
+
+@ManagedExecutorDefinition(name = "java:global/concurrent/dd/web/LPExecutor",
+                           context = "java:global/concurrent/dd/ejb/LPContextService",
+                           maxAsync = 3)
+
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/dd/web/TZScheduledExecutor",
+                                    context = "java:comp/concurrent/dd/web/TZContextService",
+                                    maxAsync = 1,
+                                    hungTaskThreshold = 190000)
+
+@ManagedThreadFactoryDefinition(name = "java:comp/concurrent/dd/web/TZThreadFactory",
+                                context = "java:comp/concurrent/dd/web/TZContextService",
+                                priority = 10)
+
+// Merged with web.xml
+// TODO enable in web.xml and update the following,
+@ContextServiceDefinition(name = "java:app/concurrent/merged/web/LTContextService",
+                          cleared = {}, // TODO "Priority", // web.xml replaces with {}
+                          propagated = { ListContext.CONTEXT_NAME, Timestamp.CONTEXT_NAME },
+                          unchanged = ALL_REMAINING) // TODO ZipCode.CONTEXT_NAME) // web.xml replaces with Remaining
+
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -1012,12 +1044,93 @@ public class ConcurrencyTestServlet extends FATServlet {
                 } finally {
                     Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
                     ListContext.clear();
+                    Timestamp.clear();
                 }
 
             } catch (InterruptedException | NamingException x) {
                 throw new EJBException(x);
             }
         });
+    }
+
+    /**
+     * Use a ContextService that is defined by the merging of a ContextServiceDefinition
+     * and a context-service in an EJB module deployment descriptor, which replaces the
+     * cleared and unchanged context types.
+     */
+    @Test
+    public void testEJBMergedContextServiceDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            try {
+                ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/merged/ejb/PTContextService");
+
+                // Put some fake context onto the thread:
+                Timestamp.set();
+                ZipCode.set(55906);
+                ListContext.newList();
+                ListContext.add(60);
+                Thread.currentThread().setPriority(9);
+                Long ts0 = Timestamp.get();
+                TimeUnit.MILLISECONDS.sleep(100);
+
+                try {
+                    // Contextualize a Runnable with the above context:
+                    Function<String, Map<String, Object>> task = contextSvc.contextualFunction(jndiName -> {
+                        Map<String, Object> results = new TreeMap<String, Object>();
+                        results.put(ListContext.CONTEXT_NAME, ListContext.asString());
+                        results.put("Priority", Thread.currentThread().getPriority());
+                        results.put(Timestamp.CONTEXT_NAME, Timestamp.get());
+                        results.put(ZipCode.CONTEXT_NAME, ZipCode.get());
+                        try {
+                            results.put(APPLICATION, InitialContext.doLookup(jndiName));
+
+                            TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+                            results.put(TRANSACTION, tsr.getTransactionStatus());
+                        } catch (NamingException x) {
+                            throw new CompletionException(x);
+                        }
+                        return results;
+                    });
+
+                    // Alter some of the context on the current thread
+                    ZipCode.set(55905);
+                    ListContext.newList();
+                    ListContext.add(50);
+                    Thread.currentThread().setPriority(8);
+                    Long ts1 = Timestamp.get();
+
+                    // Run with the captured context:
+                    Map<String, Object> results = task.apply("java:comp/concurrent/merged/ejb/PTContextService");
+
+                    assertEquals("[]", results.get(ListContext.CONTEXT_NAME)); // cleared
+                    assertEquals(Integer.valueOf(9), results.get("Priority")); // unchanged
+                    assertEquals(ts0, results.get(Timestamp.CONTEXT_NAME)); // propagated
+                    assertEquals(Integer.valueOf(0), results.get(ZipCode.CONTEXT_NAME)); // cleared
+                    assertNotNull(results.get(APPLICATION)); // unchanged
+                    assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results.get(TRANSACTION)); // cleared
+
+                    // Verify that context is restored on the current thread:
+                    assertEquals(55905, ZipCode.get());
+                    assertEquals("[50]", ListContext.asString());
+                    assertEquals(8, Thread.currentThread().getPriority());
+                    assertEquals(ts1, Timestamp.get());
+                    // Container managed transaction from EJB transaction REQUIRED method must still be active,
+                    TransactionSynchronizationRegistry tsr = InitialContext.doLookup("java:comp/TransactionSynchronizationRegistry");
+                    assertEquals(Status.STATUS_ACTIVE, tsr.getTransactionStatus());
+                } finally {
+                    // Remove fake context
+                    Timestamp.clear();
+                    ZipCode.clear();
+                    ListContext.clear();
+                    Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                }
+            } catch (InterruptedException | NamingException x) {
+                throw new EJBException(x);
+            }
+        });
+
     }
 
     /**
@@ -2119,6 +2232,321 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertNull(future.join());
         } finally {
             ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ContextService that is defined by a context-service in a web module deployment descriptor.
+     */
+    @Test
+    public void testWebDDContextServiceDefinition() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/dd/web/TZContextService");
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55906);
+        ListContext.newList();
+        ListContext.add(36);
+        Thread.currentThread().setPriority(3);
+        Long ts0 = Timestamp.get();
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+        tran.begin();
+        try {
+
+            // Contextualize a Runnable with the above context:
+            Runnable task = contextSvc.contextualRunnable(() -> {
+                assertEquals(ts0, Timestamp.get()); // propagated
+                assertEquals(55906, ZipCode.get()); // propagated
+                assertEquals("[68]", ListContext.asString()); // unchanged
+                assertEquals(6, Thread.currentThread().getPriority()); // unchanged
+                try {
+                    assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus()); // cleared
+                    assertNotNull(InitialContext.doLookup("java:comp/concurrent/dd/web/TZContextService")); // unchanged
+                } catch (NamingException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // Alter some of the context on the current thread
+            ZipCode.set(55904);
+            ListContext.newList();
+            ListContext.add(68);
+            Thread.currentThread().setPriority(6);
+            Long ts1 = Timestamp.get();
+
+            // Run with the captured context:
+            task.run();
+
+            // Verify that context is restored on the current thread:
+            assertEquals(55904, ZipCode.get());
+            assertEquals("[68]", ListContext.asString());
+            assertEquals(6, Thread.currentThread().getPriority());
+            assertEquals(ts1, Timestamp.get());
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+            tran.rollback();
+        }
+    }
+
+    /**
+     * Use a ManagedExecutorService that is defined via managed-executor in a web module deployment descriptor.
+     */
+    @Test
+    public void testWebDDManagedExecutorDefinition() throws Exception {
+        BiFunction<CountDownLatch, CountDownLatch, int[]> task = (threeStarted, fourStarted) -> {
+            threeStarted.countDown();
+            fourStarted.countDown();
+            try {
+                assertTrue(fourStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                return new int[] {
+                                   ZipCode.get(), // unchanged
+                                   Thread.currentThread().getPriority() // propagated
+                };
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        ManagedExecutorService executor = InitialContext.doLookup("java:global/concurrent/dd/web/LPExecutor");
+
+        CompletableFuture<CountDownLatch> threeStartedFuture = executor.completedFuture(new CountDownLatch(3));
+        CompletableFuture<CountDownLatch> fourStartedFuture = executor.completedFuture(new CountDownLatch(4));
+
+        try {
+            Thread.currentThread().setPriority(4);
+            ZipCode.set(55904);
+
+            CompletableFuture<int[]> stage3 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+            CompletableFuture<int[]> stage4 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+            CompletableFuture<int[]> stage5 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+
+            Thread.currentThread().setPriority(6);
+            ZipCode.set(55906);
+
+            CompletableFuture<int[]> stage6 = threeStartedFuture.thenCombineAsync(fourStartedFuture, task);
+
+            // 3 tasks must run concurrently per <max-async>3</max-async>
+            assertTrue(threeStartedFuture.join().await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // 4 tasks must not run concurrently
+            assertFalse(fourStartedFuture.join().await(1, TimeUnit.SECONDS));
+
+            // running inline is not considered async
+            CompletableFuture<int[]> stage7 = threeStartedFuture.thenCombine(fourStartedFuture, task);
+            int[] results = stage7.join();
+            assertEquals(55906, results[0]);
+            assertEquals(6, results[1]);
+
+            results = stage6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(0, results[0]);
+            assertEquals(6, results[1]);
+
+            results = stage5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(0, results[0]);
+            assertEquals(4, results[1]);
+
+            results = stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(0, results[0]);
+            assertEquals(4, results[1]);
+
+            results = stage3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(0, results[0]);
+            assertEquals(4, results[1]);
+        } finally {
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ManagedScheduledExecutorService that is defined via managed-scheduled-executor in a web module deployment descriptor.
+     */
+    @Test
+    public void testWebDDManagedScheduledExecutorDefinition() throws Exception {
+        ManagedScheduledExecutorService scheduledExecutor = InitialContext.doLookup("java:comp/concurrent/dd/web/TZScheduledExecutor");
+        CompletableFuture<Exchanger<Object>> stage0 = scheduledExecutor.completedFuture(new Exchanger<Object>());
+
+        try {
+            ListContext.newList();
+            ListContext.add(135);
+            ZipCode.set(55901);
+            Thread.currentThread().setPriority(3);
+
+            CompletableFuture<int[]> stage1 = stage0.thenApplyAsync(exchanger -> {
+                ExecutorService executor;
+                try {
+                    executor = (ExecutorService) exchanger.exchange("Task 1 started", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                } catch (InterruptedException | TimeoutException x) {
+                    throw new CompletionException(x);
+                }
+
+                Future<Integer> task2future = executor.submit(() -> 2);
+                try {
+                    Object result = task2future.get(1, TimeUnit.SECONDS);
+                    fail("max-async=1 must prevent 2 tasks from running at the same time. Task 2 result: " + result);
+                } catch (ExecutionException | InterruptedException x) {
+                    throw new CompletionException(x);
+                } catch (TimeoutException x) {
+                    // expected
+                }
+
+                assertTrue(task2future.cancel(false));
+
+                return new int[] {
+                                   "null".equals(ListContext.asString()) ? 0 : ListContext.sum(),
+                                   ZipCode.get(),
+                                   Thread.currentThread().getPriority()
+                };
+            });
+
+            ZipCode.set(55902);
+
+            // wait for task1 to start running
+            stage0.join().exchange(scheduledExecutor, TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            int[] results = stage1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(0, results[0]); // unchanged
+            assertEquals(55901, results[1]); // propagated
+            assertEquals(Thread.NORM_PRIORITY, results[2]); // unchanged
+        } finally {
+            ListContext.clear();
+            ZipCode.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+    }
+
+    /**
+     * Use a ManagedThreadFactory that is defined by managed-thread-factory in a web module deployment descriptor.
+     */
+    @Test
+    public void testWebDDManagedThreadFactoryDefinition() throws Exception {
+        try {
+            try {
+                Timestamp.set();
+                Long ts0 = Timestamp.get();
+                TimeUnit.MILLISECONDS.sleep(100);
+                ListContext.newList();
+                ListContext.add(25);
+                Thread.currentThread().setPriority(6);
+                ZipCode.set(55906);
+
+                ManagedThreadFactory threadFactory = InitialContext.doLookup("java:comp/concurrent/dd/web/TZThreadFactory");
+
+                LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+
+                ZipCode.set(55904);
+
+                threadFactory.newThread(() -> {
+                    results.add(ListContext.asString()); // unchanged
+                    results.add(Thread.currentThread().getPriority()); // unchanged
+
+                    Long timestamp = Timestamp.get(); // propagated
+                    results.add(timestamp == null ? "null" : timestamp);
+
+                    results.add(ZipCode.get()); // propagated
+                }).start();
+
+                // Verify that custom thread context type ListContext is left unchanged
+                Object listStr = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals("null", listStr);
+
+                // Verify that priority from the managed-thread-factory is used,
+                Object priority = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(Integer.valueOf(10), priority);
+
+                // Verify that custom thread context type Timestamp is propagated
+                Object timestamp = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(ts0, timestamp);
+
+                // Verify that custom thread context type ZipCode is propagated
+                Object zipcode = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals(Integer.valueOf(55906), zipcode);
+            } finally {
+                Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                ListContext.clear();
+                Timestamp.clear();
+                ZipCode.clear();
+            }
+        } catch (InterruptedException | NamingException x) {
+            throw new EJBException(x);
+        }
+    }
+
+    /**
+     * Use a ContextService that is defined by the merging of a ContextServiceDefinition
+     * and a context-service in a web module deployment descriptor, which replaces the
+     * cleared and unchanged context types.
+     */
+    @Test
+    public void testWebMergedContextServiceDefinition() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/merged/web/LTContextService");
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55902);
+        ListContext.newList();
+        ListContext.add(22);
+        Thread.currentThread().setPriority(2);
+        Long ts0 = Timestamp.get();
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+        tran.begin();
+        try {
+            // Contextualize a Runnable with the above context:
+            Consumer<Map<String, Object>> task = contextSvc.contextualConsumer(results -> {
+                results.put(ListContext.CONTEXT_NAME, ListContext.asString());
+                results.put("Priority", Thread.currentThread().getPriority());
+                results.put(Timestamp.CONTEXT_NAME, Timestamp.get());
+                results.put(ZipCode.CONTEXT_NAME, ZipCode.get());
+                try {
+                    results.put(APPLICATION, InitialContext.doLookup("java:app/concurrent/merged/web/LTContextService"));
+                    results.put(TRANSACTION, tran.getStatus());
+                } catch (NamingException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // Alter some of the context on the current thread
+            ZipCode.set(55904);
+            ListContext.newList();
+            ListContext.add(44);
+            Thread.currentThread().setPriority(4);
+            Long ts1 = Timestamp.get();
+
+            // Run with the captured context:
+            Map<String, Object> results = new TreeMap<String, Object>();
+            task.accept(results);
+
+            assertEquals("[22]", results.get(ListContext.CONTEXT_NAME)); // propagated
+            assertEquals(Integer.valueOf(4), results.get("Priority")); // unchanged
+            assertEquals(ts0, results.get(Timestamp.CONTEXT_NAME)); // propagated
+            assertEquals(Integer.valueOf(55904), results.get(ZipCode.CONTEXT_NAME)); // unchanged
+            assertNotNull(results.get(APPLICATION)); // unchanged
+            assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), results.get(TRANSACTION)); // unchanged
+
+            // Verify that context is restored on the current thread:
+            assertEquals(55904, ZipCode.get());
+            assertEquals("[44]", ListContext.asString());
+            assertEquals(4, Thread.currentThread().getPriority());
+            assertEquals(ts1, Timestamp.get());
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+            tran.rollback();
         }
     }
 }

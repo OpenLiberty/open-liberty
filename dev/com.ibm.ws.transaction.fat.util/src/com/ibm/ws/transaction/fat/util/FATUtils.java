@@ -11,6 +11,7 @@
 package com.ibm.ws.transaction.fat.util;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.time.Duration;
 
@@ -18,16 +19,77 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 public class FATUtils {
 	
 	private static final Class<FATUtils> c = FATUtils.class;
 
 	public static final Duration TESTCONTAINER_STARTUP_TIMEOUT = Duration.ofMinutes(5);
+	public static final int LOG_SEARCH_TIMEOUT = 300000;
 
     public static void startServers(LibertyServer... servers) throws Exception {
     	startServers((SetupRunner)null, servers);
     }
+
+    private static final FATServletClient fsc = new FATServletClient();
+
+    public static void recoveryTest(LibertyServer server, String servletName, String id) throws Exception {
+        recoveryTest(server, server, servletName, id);
+    }
+
+    public static void recoveryTest(LibertyServer crashingServer, LibertyServer recoveringServer, String servletName, String id) throws Exception {
+        final String method = "recoveryTest";
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            FATServletClient.runTest(crashingServer, servletName, "setupRec" + id);
+            restartServer(crashingServer);
+            fail(crashingServer.getServerName() + " did not crash as expected");
+        } catch (Exception e) {
+            Log.info(FATUtils.class, method, "setupRec" + id + " crashed as expected");
+        }
+
+        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State: "));
+
+        crashingServer.postStopServerArchive(); // must explicitly collect since server start failed
+
+        FATUtils.startServers(recoveringServer);
+
+        // Server appears to have started ok
+        assertNotNull(recoveringServer.getServerName() + " didn't recover properly",
+                      recoveringServer.waitForStringInTrace("Performed recovery for " + crashingServer.getServerName()));
+
+        int attempt = 0;
+        while (true) {
+            Log.info(FATUtils.class, method, "calling checkRec" + id);
+            try {
+                final StringBuilder sb = fsc.runTestWithResponse(recoveringServer, servletName, "checkRec" + id);
+                Log.info(FATUtils.class, method, "checkRec" + id + " returned: " + sb);
+                break;
+            } catch (Exception e) {
+                Log.error(FATUtils.class, method, e);
+                if (++attempt < 5) {
+                    Thread.sleep(10000);
+                } else {
+                    // Something is seriously wrong with this server instance. Reset so the next test has a chance
+                    restartServer(recoveringServer);
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private static void restartServer(LibertyServer s) {
+        try {
+            FATUtils.stopServers(new String[] { ".*" }, s);
+            FATUtils.startServers(s);
+            s.printProcessHoldingPort(s.getHttpDefaultPort());
+        } catch (Exception e) {
+            Log.error(FATUtils.class, "restartServer", e);
+        }
+    }
+
 
     public static void startServers(SetupRunner r, LibertyServer... servers) throws Exception {
         final String method = "startServers";
@@ -118,7 +180,7 @@ public class FATUtils {
             assertNotNull("Attempted to stop a null server", server);
             int attempt = 0;
             int maxAttempts = 5;
-            Log.info(c, method, "Working with server " + server);
+            Log.info(c, method, "Stopping " + server.getServerName());
             do {
                 if (attempt++ > 0) {
                     Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);

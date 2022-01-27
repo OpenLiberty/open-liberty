@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,8 +35,9 @@ import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1MyBean;
 import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1TestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -46,19 +48,20 @@ import componenttest.topology.utils.HttpUtils;
 public class CDI12ExtensionTest {
 
     public static final String SERVER_NAME = "cdi12RuntimeExtensionServer";
-    public static final String INSTALL_USERBUNDLE_JAVAX = "cdi.helloworld.extension";
-    public static final String INSTALL_USERBUNDLE_JAKARTA = "cdi.helloworld.extension-jakarta";
-    public static final String INSTALL_USERFEATURE_JAVAX = "cdi.helloworld.extension-1.0";
-    public static final String INSTALL_USERFEATURE_JAKARTA = "cdi.helloworld.extension-3.0";
-
-    public static final String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX = "cdi.internals-1.0";
-    public static final String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA = "cdi.internals-3.0";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+
     @BeforeClass
     public static void setUp() throws Exception {
+        System.out.println("Install the user feature bundle... cdi.helloworld.extension");
+        CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
+        CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
+
         JavaArchive multipleWarEmbeddedJar = ShrinkWrap.create(JavaArchive.class, "multipleWarEmbeddedJar.jar");
         multipleWarEmbeddedJar.addClass(EmbeddedJarMyEjb.class);
         CDIArchiveHelper.addBeansXML(multipleWarEmbeddedJar, DiscoveryMode.ANNOTATED);
@@ -95,21 +98,13 @@ public class CDI12ExtensionTest {
          */
         ShrinkHelper.exportDropinAppToServer(server, multipleWars, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, helloWorldExension, DeployOptions.SERVER_ONLY);
-        System.out.println("Install the user feature bundle... cdi.helloworld.extension");
-        if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
-            server.installUserBundle(INSTALL_USERBUNDLE_JAKARTA);
-            server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
-            server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA);
-        } else {
-            server.installUserBundle(INSTALL_USERBUNDLE_JAVAX);
-            server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
-            server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX);
-        }
+
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
     }
 
     @Test
+    @SkipForRepeat(CDIExtensionRepeatActions.EE10_PLUS_ID) //currently does not work on EE10, don't know why - https://github.com/OpenLiberty/open-liberty/issues/19900
     public void testHelloWorldExtensionServlet() throws Exception {
         HttpUtils.findStringInUrl(server, "/helloWorldExtension/hello", "Hello World CDI 1.2!");
 
@@ -151,14 +146,7 @@ public class CDI12ExtensionTest {
             server.stopServer();
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
-            server.uninstallUserBundle(INSTALL_USERBUNDLE_JAKARTA);
-            server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
-            server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA);
-        } else {
-            server.uninstallUserBundle(INSTALL_USERBUNDLE_JAVAX);
-            server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
-            server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX);
-        }
+        CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
+        CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
     }
 }

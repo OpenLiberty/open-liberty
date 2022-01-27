@@ -20,13 +20,13 @@
 	    <!-- Supporting features -->
 	    <feature>jndi-1.0</feature> 
 	    <feature>appSecurity-4.0</feature>
-	    <!-- Required by test infrastructure -->
-	    <feature>timedexit-1.0</feature>
 	    <!-- Features needed for arquillan support -->
 	    <feature>localConnector-1.0</feature>
 	    <feature>restConnector-2.0</feature>
-	    <feature>arquillian-support-jakarta-2.0</feature>
 	</featureManager>
+
+	<!-- Use logging instead of bootstrap for standalone WLP case -->
+	<logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all" /> 
    
 	<!-- Allow Arquillian to monitor application -->
 	<applicationMonitor updateTrigger="mbean"/>

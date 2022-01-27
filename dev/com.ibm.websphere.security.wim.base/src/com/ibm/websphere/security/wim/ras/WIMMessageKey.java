@@ -1686,4 +1686,13 @@ public interface WIMMessageKey {
      * CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
      */
     String FILTER_MISSING_PERCENT_V = "FILTER_MISSING_PERCENT_V";
+
+    /**
+     * LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: LDAP repository {0} failed to process the configuration updates from federated repositories. Root cause: {1}
+     * LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Configuration changes to federated repositories triggered an update to the LDAP repository, but there was an error while
+     * processing those changes.
+     * changes.
+     * LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=Review the logs for the cause of this error and take appropriate corrective actions.
+     */
+    String LDAP_WIM_CONFIG_UPDATED_FAILED = "LDAP_WIM_CONFIG_UPDATED_FAILED";
 }

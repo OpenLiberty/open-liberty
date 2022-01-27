@@ -89,10 +89,28 @@ public class Base2PCCloudServlet extends FATServlet {
         }
     }
 
+    public void checkRecCore(HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
+        try {
+            if (XAResourceImpl.resourceCount() != 3) {
+                throw new Exception("Core failed: "
+                                    + XAResourceImpl.resourceCount() + " resources");
+            }
+
+            if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+                throw new Exception("Rec001 failed");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            XAResourceImpl.clear();
+        }
+    }
+
     // Looks on the face of it that this will work. However, the plan is to run it in a server that
     // has its logs grabbed from under it.
     public void setupRecLostLog(HttpServletRequest request,
-                             HttpServletResponse response) throws Exception {
+                                HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory
                         .getTransactionManager();
 

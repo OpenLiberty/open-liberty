@@ -41,7 +41,7 @@ public class RecoveryTest extends FATServletClient {
 
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
 
-        server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         FATUtils.startServers(server);
     }
 
@@ -53,143 +53,143 @@ public class RecoveryTest extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec000() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "007");
-        TestUtils.recoveryTest(server, SERVLET_NAME, "090");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "007");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "090");
     }
 
     @Test
     public void testRec001() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "001");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "001");
     }
 
     @Test
     public void testRec002() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "002");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "002");
     }
 
     @Test
     public void testRec003() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "003");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "003");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException",
                            "javax.transaction.RollbackException" })
     public void testRec004() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "004");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "004");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException",
                            "javax.transaction.RollbackException" })
     public void testRec005() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "005");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "005");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException",
                            "javax.transaction.RollbackException" })
     public void testRec006() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "006");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "006");
     }
 
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec007() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "007");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "007");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec008() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "008");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "008");
     }
 
     @Test
     public void testRec009() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "009");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "009");
     }
 
     @Test
     public void testRec010() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "010");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "010");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec011() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "011");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "011");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec012() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "012");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "012");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec013() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "013");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "013");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec014() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "014");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "014");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec015() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "015");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "015");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException",
                            "javax.transaction.RollbackException" })
     public void testRec016() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "016");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "016");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec017() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "017");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "017");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec018() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "018");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "018");
     }
 
     @Test
     public void testRec047() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "047");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "047");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec048() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "048");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "048");
     }
 
     @Test
     public void testRec050() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "050");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "050");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec051() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "051");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "051");
     }
 
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRec090() throws Exception {
-        TestUtils.recoveryTest(server, SERVLET_NAME, "090");
+        FATUtils.recoveryTest(server, SERVLET_NAME, "090");
     }
 }

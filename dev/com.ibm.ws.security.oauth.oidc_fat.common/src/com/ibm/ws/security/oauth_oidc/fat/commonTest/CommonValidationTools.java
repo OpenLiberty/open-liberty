@@ -38,6 +38,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.joda.time.Instant;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONArray;
@@ -2411,4 +2412,58 @@ public class CommonValidationTools {
         }
         return false;
     }
+
+    /**
+     * Verifies that no cookies with names in the provided list show up in the WebClient. The list of cookie names to match
+     * against may also be regular expressions.
+     *
+     * @param webClient
+     * @param cookiesThatShouldNotExist List of cookie name prefixes or regular expressions to match against existing cookie names.
+     */
+    public void verifyNoUnexpectedCookiesStillPresent(WebClient webClient, List<String> cookiesThatShouldNotExist) {
+        List<String> unexpectedCookiesFound = new ArrayList<>();
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
+        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
+            String cookieName = cookie.getName();
+            Log.info(thisClass, "verifyNoUnexpectedCookiesStillPresent", "Checking remaining cookie: " + cookieName);
+            for (String cookieThatShouldNotExist : cookiesThatShouldNotExist) {
+                if (cookieName.startsWith(cookieThatShouldNotExist) || cookieName.matches(cookieThatShouldNotExist)) {
+                    unexpectedCookiesFound.add(cookieName);
+                }
+            }
+        }
+        if (!unexpectedCookiesFound.isEmpty()) {
+            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+        }
+    }
+
+    /**
+     * Verifies that only cookies with names in the provided list show up in the WebClient. The list of cookie names to match
+     * against may also be regular expressions.
+     *
+     * @param webClient
+     * @param onlyAllowedCookies List of cookie name prefixes or regular expressions to match against existing cookie names.
+     */
+    public void verifyOnlyAllowedCookiesStillPresent(WebClient webClient, List<String> onlyAllowedCookies) {
+        List<String> unexpectedCookiesFound = new ArrayList<>();
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
+        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
+            String cookieName = cookie.getName();
+            Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Checking remaining cookie: " + cookieName);
+            boolean isCookieAllowed = false;
+            for (String allowedCookie : onlyAllowedCookies) {
+                if (cookieName.startsWith(allowedCookie) || cookieName.matches(allowedCookie)) {
+                    isCookieAllowed = true;
+                    break;
+                }
+            }
+            if (!isCookieAllowed) {
+                unexpectedCookiesFound.add(cookieName);
+            }
+        }
+        if (!unexpectedCookiesFound.isEmpty()) {
+            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+        }
+    }
+
 }

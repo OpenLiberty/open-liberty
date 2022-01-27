@@ -12,7 +12,6 @@ package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
 
@@ -33,7 +32,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -63,7 +61,7 @@ public class DataSourceChangeTest extends FATServletClient {
 
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
 
-        server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         FATUtils.startServers(server);
     }
 

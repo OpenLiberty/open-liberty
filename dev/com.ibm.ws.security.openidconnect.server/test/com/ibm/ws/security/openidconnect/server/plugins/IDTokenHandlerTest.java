@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -404,6 +404,29 @@ public class IDTokenHandlerTest {
         assertTrue("ID token should contain third-party claim 'test1'.", idTokenClaimsJSON.containsKey("test1"));
         assertTrue("ID token should contain third-party claim 'test4'.", idTokenClaimsJSON.containsKey("test4"));
         assertFalse("ID token should not contain third-party claim 'test6'.", idTokenClaimsJSON.containsKey("test6"));
+    }
+
+    @Test
+    public void createToken_customClaims_thirdPartyIDToken_IDTokenIsNotJWT() throws Exception {
+        idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { "NotAJWT" });
+        createOIDCTestDefaultExpectations();
+
+        Set<String> allowedThirdPartyIDTokenClaims = new HashSet<String>();
+        allowedThirdPartyIDTokenClaims.add("test1");
+        allowedThirdPartyIDTokenClaims.add("test4");
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getThirdPartyIDTokenClaims();
+                will(returnValue(allowedThirdPartyIDTokenClaims));
+            }
+        });
+
+        OAuth20Token idToken = idTokenHandler.createToken(idTokenMap);
+        JSONObject idTokenClaimsJSON = getIdTokenClaims(idToken);
+
+        assertFalse("ID token should not contain third-party claim 'test1'.", idTokenClaimsJSON.containsKey("test1"));
+        assertFalse("ID token should not contain third-party claim 'test4'.", idTokenClaimsJSON.containsKey("test4"));
     }
 
     @Test

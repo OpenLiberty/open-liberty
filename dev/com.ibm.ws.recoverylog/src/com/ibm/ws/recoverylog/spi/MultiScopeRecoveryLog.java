@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.utils.DirUtils;
 import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
@@ -30,7 +31,7 @@ import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
 /**
  * <p>
  * The MultiScopeRecoveryLog class implements the DistributedRecoveryLog interface and
- * provides support for controling a specific recovery log on behalf of a client
+ * provides support for controlling a specific recovery log on behalf of a client
  * service.
  * </p>
  *
@@ -337,8 +338,8 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * </p>
      *
      * @param fileLogProperties The identity and physical properties of the recovery log.
-     * @param recoveryAgent The RecoveryAgent of the associated client service.
-     * @param fs The FailureScope of the associated client service.
+     * @param recoveryAgent     The RecoveryAgent of the associated client service.
+     * @param fs                The FailureScope of the associated client service.
      */
     MultiScopeRecoveryLog(FileLogProperties fileLogProperties, RecoveryAgent recoveryAgent, FailureScope fs) {
         if (tc.isEntryEnabled())
@@ -494,10 +495,10 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * calls independently.
      * </p>
      *
-     * @exception LogCorruptedException The recovery log has become corrupted and
-     *                cannot be opened.
+     * @exception LogCorruptedException  The recovery log has become corrupted and
+     *                                       cannot be opened.
      * @exception LogAllocationException The recovery log could not be created.
-     * @exception InternalLogException An unexpected failure has occured.
+     * @exception InternalLogException   An unexpected failure has occured.
      */
     @Override
     public synchronized void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException {
@@ -685,8 +686,8 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return The service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must
+     *                                     be opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -752,12 +753,12 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * finished.
      * </p>
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      *
      */
     @Override
@@ -845,12 +846,12 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @param serviceData The updated service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException, LogIncompatibleException {
@@ -1178,12 +1179,12 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return The new RecoverableUnit.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must be
+     *                                         opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public RecoverableUnit createRecoverableUnit(FailureScope failureScope) throws LogClosedException, InternalLogException, LogIncompatibleException {
@@ -1280,13 +1281,13 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @param identity Identity of the RecoverableUnit to be removed.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException              Thrown if the recovery log is closed and must be
+     *                                                opened before this call can be issued.
      * @exception InvalidRecoverableUnitException Thrown if the RecoverableUnit does not exist.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
-     * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     * @exception InternalLogException            Thrown if an unexpected error has occured.
+     * @exception LogIncompatibleException        An attempt has been made access a recovery
+     *                                                log that is not compatible with this version
+     *                                                of the service.
      */
     @Override
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException, LogIncompatibleException {
@@ -1422,7 +1423,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *         RecoverableUnits.
      *
      * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     @Override
     public synchronized LogCursor recoverableUnits(FailureScope failureScope) throws LogClosedException /* @MD19706C */
@@ -1523,11 +1524,11 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * information will be removed and all cached information will be forced to disk.
      * </p>
      *
-     * @exception LogClosedException Thrown if the log is closed.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the log is closed.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public void keypoint() throws LogClosedException, InternalLogException, LogIncompatibleException {
@@ -1903,14 +1904,14 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * H H
      *
      * @param unwrittenPayloadSize The additional number of bytes that would be needed
-     *            to form a persistent record of the new data item
-     *            that has been added within this recovery log when a
-     *            writeSections or forceSections operation is driven
-     *            by the client service.
-     * @param totalPayloadSize The additional number of bytes that would be needed
-     *            to form a persistent record of the new data item
-     *            that has been added within this recovery log when a
-     *            keypoint operation occurs.
+     *                                 to form a persistent record of the new data item
+     *                                 that has been added within this recovery log when a
+     *                                 writeSections or forceSections operation is driven
+     *                                 by the client service.
+     * @param totalPayloadSize     The additional number of bytes that would be needed
+     *                                 to form a persistent record of the new data item
+     *                                 that has been added within this recovery log when a
+     *                                 keypoint operation occurs.
      */
     protected void payloadAdded(int unwrittenPayloadSize, int totalPayloadSize) {
         if (tc.isEntryEnabled())
@@ -1971,9 +1972,9 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * h1 + h2 + h3 = H.
      *
      * @param payloadSize The number of bytes that no longer need to be written in order
-     *            to form a persistent record of the remaining unwritten data items
-     *            when a writeSections or forceSections operation is driven by the
-     *            client service.
+     *                        to form a persistent record of the remaining unwritten data items
+     *                        when a writeSections or forceSections operation is driven by the
+     *                        client service.
      */
     protected void payloadWritten(int payloadSize) {
         if (tc.isEntryEnabled())
@@ -2035,12 +2036,12 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * required.
      *
      * @param unwrittenPayloadSize The number of bytes that will no longer be required
-     *            to form a persistent record of the recovery log when a
-     *            writeSections or forceSections operation is driven
-     *            by the client service.
-     * @param totalPayloadSize The number of bytes that will no longer be required
-     *            to form a persistent record of the recovery log the
-     *            next time a keypoint operation occurs.
+     *                                 to form a persistent record of the recovery log when a
+     *                                 writeSections or forceSections operation is driven
+     *                                 by the client service.
+     * @param totalPayloadSize     The number of bytes that will no longer be required
+     *                                 to form a persistent record of the recovery log the
+     *                                 next time a keypoint operation occurs.
      */
     protected void payloadDeleted(int totalPayloadSize, int unwrittenPayloadSize) {
         if (tc.isEntryEnabled())
@@ -2075,6 +2076,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return true if a serious internal error has occured, otherwise false.
      */
+    @Trivial
     protected boolean failed() {
         if (tc.isDebugEnabled() && _failed)
             Tr.debug(tc, "failed: RecoveryLog has been marked as failed. [" + this + "]");
@@ -2211,10 +2213,10 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * classes collection of such objects.
      *
      * @param recoverableUnit The RecoverableUnit to be added
-     * @param recovered Flag to indicate if this instances have been created during
-     *            recovery (true) or normal running (false). If its been created
-     *            during recovery we need to reserve the associated id so that
-     *            it can't be allocated to an independent RecoverableUnit.
+     * @param recovered       Flag to indicate if this instances have been created during
+     *                            recovery (true) or normal running (false). If its been created
+     *                            during recovery we need to reserve the associated id so that
+     *                            it can't be allocated to an independent RecoverableUnit.
      */
     protected void addRecoverableUnit(RecoverableUnit recoverableUnit, boolean recovered) {
         if (tc.isEntryEnabled())
@@ -2372,6 +2374,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
                        + "clientName=" + _clientName + ":"
                        + "clientVersion=" + _clientVersion + ":"
                        + "logName=" + _logName + ":"
+                       + "logDirectory=" + _logDirectory + ":"
                        + "logIdentifier=" + _logIdentifier + " @"
                        + System.identityHashCode(this);
 
@@ -2427,19 +2430,21 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "delete", new Object[] { this });
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Attempt to delete the underlying logs");
         if (failed() || _closesRequired > 0) {
             // FFDC exception but allow processing to continue
             Exception e = new Exception();
             FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2431", this);
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
+                Tr.debug(tc, "Do not delete logs as failed state is {0} or closesRequired is {1}", failed(), _closesRequired);
         } else { // the log is in the right state, we can proceed
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Attempt to delete log with handle - " + _logHandle);
+                Tr.debug(tc, "Attempt to delete log with handle {0}", _logHandle);
             if (_logHandle != null) {
-                _logHandle.delete();
+                try {
+                    _logHandle.delete();
+                } catch (Exception e) {
+                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2445", this);
+                }
             }
         }
 

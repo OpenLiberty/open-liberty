@@ -15,7 +15,7 @@
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="FScloud001"
+      recoveryIdentity="FSCLOUD001"
       recoveryGroup="defaultGroup"
       leaseLength="600"
       leaseCheckInterval="25"

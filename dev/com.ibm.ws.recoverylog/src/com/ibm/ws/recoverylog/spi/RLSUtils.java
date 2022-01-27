@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -33,6 +34,27 @@ import com.ibm.websphere.ras.TraceComponent;
 public class RLSUtils {
     private static final TraceComponent tc = Tr.register(RLSUtils.class,
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
+
+    public interface Operation {
+        public boolean act() throws Exception;
+    }
+
+    /**
+     * The maximum wait time to retry an operation
+     *
+     * Note: This does not handle when the server is prevented
+     * from running. In a typical case, where application files
+     * are updated after accessing the server files, if the server
+     * is prevented from running while an application file has a
+     * pending close, the usual pend time may be exceeded without
+     * the file being closed.
+     */
+    public static final long STANDARD_RETRY_MAX_INTERVAL_NS = TimeUnit.SECONDS.toNanos(10);
+
+    /**
+     * The amount of time to wait before retrying
+     */
+    public static final long STANDARD_RETRY_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(100); // 0.1s
 
     /**
      * Lookup string that allows character digit lookup by index value.
@@ -104,7 +126,7 @@ public class RLSUtils {
      * Converts a byte array into a printable hex string.
      *
      * @param byteSource The byte array source.
-     * @param bytes The number of bytes to display.
+     * @param bytes      The number of bytes to display.
      *
      * @return String printable hex string or "null"
      */
@@ -237,6 +259,139 @@ public class RLSUtils {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createDirectoryTree", exists);
         return exists;
+    }
+
+    /**
+     * Attempt an operation. Retry the operation, possibly several times,
+     * across a specified retry interval.
+     *
+     * @param op          The operation which is being performed.
+     * @param fullRetryNs The full retry duration.
+     *
+     * @return True or false telling if the operation was successful.
+     *
+     * @throws Exception
+     */
+    public static boolean retry(Operation op, long fullRetryNs) throws Exception {
+        // First try is immediate.
+        if (op.act()) {
+            return true;
+        }
+
+        // Don't retry unless a retry interval was specified.
+        if (fullRetryNs == 0) {
+            return false;
+        }
+
+        // Make sure the retry interval is usable.
+        if (fullRetryNs < 0) {
+            throw new IllegalArgumentException("Full retry interval (" + fullRetryNs + ") is less then 0");
+        }
+
+        // Delay and retry, in increments of the partial retry interval, until
+        // at least the full retry interval has elapsed.
+
+        // Time accounting here has ambiguity: Should operation time be considered a part of
+        // the time slept?
+        //
+        // For the intended cases, file deletion and file renaming, the operation time can be
+        // considerable.
+
+        long finalNs = System.nanoTime() + fullRetryNs;
+        do {
+            sleep(STANDARD_RETRY_INTERVAL_NS); // throws InterruptedException
+            if (op.act()) {
+                return true;
+            }
+        } while (System.nanoTime() < finalNs);
+
+        return false;
+    }
+
+    /**
+     * A more accurate version of {@link Thread#sleep}: Use nano-second units,
+     * and do not rely on the actual sleep duration being at least the requested
+     * duration.
+     *
+     * Thread.sleep() is repeated until System.nanoTime() shows that the thread
+     * has waited at least the specified time in milliseconds.
+     *
+     * @param requestedNs The requested sleep time, in nano-seconds.
+     *
+     * @return The time slept, in nano-seconds.
+     *
+     * @throws InterruptedException Thrown if if the sleep is
+     *                                  interrupted.
+     */
+    private static long sleep(long requestedNs) throws InterruptedException {
+        long startNs = System.nanoTime();
+
+        long elapsedNs = 0L;
+        long remainingNs = requestedNs;
+
+        while (remainingNs > 0) {
+            TimeUnit.NANOSECONDS.sleep(remainingNs); // throws InterruptedException
+
+            elapsedNs = System.nanoTime() - startNs;
+            remainingNs = requestedNs - elapsedNs;
+        }
+
+        return elapsedNs;
+    }
+
+    public static boolean deleteDirectory(File dir) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteDirectory", dir.getAbsolutePath());
+
+        if (!dir.exists()) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "deleteDirectory", true);
+            return true;
+        }
+
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                if (!deleteDirectory(file)) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "deleteDirectory", false);
+                    return false;
+                }
+            } else {
+                if (!deleteFile(file)) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "deleteDirectory", false);
+                    return false;
+                }
+            }
+        }
+
+        boolean ret = deleteFile(dir);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteDirectory", ret);
+        return ret;
+    }
+
+    private static boolean deleteFile(File file) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteFile", file.getAbsolutePath());
+        Path path = file.toPath();
+        try {
+            if (!Files.exists(path)) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "deleteFile", true);
+                return true;
+            }
+
+            boolean ret = Files.deleteIfExists(path);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "deleteFile", ret);
+            return ret;
+        } catch (IOException e) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "deleteFile", false);
+            return false;
+        }
     }
 
     /**
