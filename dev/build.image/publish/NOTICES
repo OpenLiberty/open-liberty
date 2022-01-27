@@ -1,5 +1,5 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 1999-2021 IBM Corporation and others
+Copyright 1999-2022 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -129,8 +129,7 @@ BSFEVENTPROCESSORRETURNINGEVENTINFOS.JAVA [Apache Commons BSF],
 ANSI-HTML, COMMONS-NET, MICROPROFILE-GRAPHQL, DIJIT-THEMES/FLAT-ICONS,
 GERONIMO-J2EE-CONNECTOR_1.6_SPEC, NETTY-TCNATIVE-BORINGSSL-STATIC,
 PLEXUS-INTERPOLATION, MOCKSERVER, APACHE FELIX RESOLVER
-[org.eclipse.osgi], TOMCAT EL-API, ORG.APACHE.COMMONS.LOGGING.IMPL
-[SLF4J], WIREMOCK-STANDALONE, JAVAX-WEBSOCKET-CLIENT-IMPL,
+[org.eclipse.osgi], TOMCAT EL-API,WIREMOCK-STANDALONE, JAVAX-WEBSOCKET-CLIENT-IMPL,
 ORG.APACHE.ARIES.SAMPLES.BLOG.BIZ, XMLSEC, TUNNEL-AGENT, STRUTS2-CORE,
 SMALLRYE-REACTIVE-MESSAGING, JODA-TIME, ORG.OSGI.SERVICE.JPA;
 [javax.persistence], OSGI CORE, JAVASCRIPT [Tomahawk], APACHE
@@ -140,52 +139,50 @@ GERONIMO-EJB_3.1_SPEC, OKIO, ANT-CONTRIB [JUnit], APACHE DIRECTORY,
 XERCES-IMPL, HAWTIO [Jetty], METRICS, RXJAVA, GITHUB MARKDOWN [JUnit],
 HTTPCORE, TOMAHAWK, MYFACES-SHARED-TOMAHAWK, WEBSOCKET-API,
 JSONAPI-CONVERTER, OSGI MATERIALS [org.eclipse.osgi], MICROPROFILE
-REST-CLIENT, MICROPROFILE-JWT-AUTH, BOOTSTRAP.MIN.CSS [Spring-boot],
+REST-CLIENT, MICROPROFILE-JWT-AUTH, BOOTSTRAP.MIN.CSS,
 JBOSS-LOGGING, JORPHAN, MICROPROFILE-CONFIG-API, POM.XML, OPENSAML,
 UUID-JS, LICENSE_HEADER [DOMPurify], MICROPROFILE METRICS,
-COMMONS-CODEC, FREEMARKER, LINEAROBJECTIVEFUNCTION [Commons-Math],
+COMMONS-CODEC, FREEMARKER, 
 ABDERA-I18N, ENVOY [grpc-java], JAXRPC, XBEAN FINDER, GRPC-JAVA,
 ARIES-JNDI, DATERANGEPICKER [msf4j], MYFACES-EXTCDI-CORE-IMPL, APACHE
 MAVEN-ANT-TASKS [JUnit], DOJO/CSS, FOREVER-AGENT, HTMLUNIT,
 ORG.APACHE.FELIX.CONFIGADMIN, GLOBUS TOOLKIT PUBLIC 3 [XML-APIs],
-RELATIONSHIP [Commons-Math], ACME4J, CLOSURECOMPILER [Dojo Toolkit],
+ACME4J, CLOSURECOMPILER [Dojo Toolkit],
 LIBPHONENUMBER, DELTASPIKE, MICROPROFILEREACTIVEMESSAGING,
 ORG.CODEHAUS.GROOVY.GRAILS.WEB.UTIL.STREAMCHARBUFFER [myfaces-impl],
 ORG.APACHE.ARIES.SAMPLES.BLOG.WEB, APACHE COMMONS NET [JUnit], APACHE
 RAT [Tomcat], MAVEN-RESOLVER, MYFACES-EXTCDI-CORE-API, BYTE64.JAVA
 [Plexus-Cipher], URLPATTERN.JAVA [Javaee-BC1#10], JQUERY.D.TS, JNR-FFI,
-COMMONS-MATH, R [Commons-Math], SHIBBOLETH-IDENTITY-PROVIDER, NETTY-ALL,
-JQUERY.ATMOSPHERE [richfaces-components-ui], XMLSCHEMA-CORE, TESTNG,
+SHIBBOLETH-IDENTITY-PROVIDER, NETTY-ALL,
+XMLSCHEMA-CORE, TESTNG,
 XALAN-J, JOSE4J, JBOSS-CLASSFILEWRITER, PRETTIFY.JS [logback],
 GERONIMO-VALIDATION_1.0_SPEC, BCEL, APACHE CXF, GRAPHQL-SPQR,
 SMALLRYE-REACTIVE-STREAMS-OPERATORS, JAKARTA COMMONS CLI 1.0
 [javax.xml], JSONTOKEN, ECMASCRIPT [Tomahawk], APACHE-JUL-LOG4J-BRIDGE,
-LOGSTASH, MYFACES-BUILDER-ANNOTATIONS, DELTASPIKE-CORE, LINEARCONSTRAINT
-[Commons-Math], LINEAROPTIMIZER [Commons-Math], BASE64.JAVA
+LOGSTASH, MYFACES-BUILDER-ANNOTATIONS, DELTASPIKE-CORE,BASE64.JAVA
 [Plexus-Cipher], WEB-JSPTAGLIBRARY_1_2.DTD [FreeMarker], OPENAJAX,
 CRYPTACULAR, MAVEN-SHARED-UTILS, TAGLIBS, ARIES JPA, ERROR-PRONE,
 BOOTSTRAP-SLIDER.JS [sip-servlets], APACHE ARIES,
 JBOSS-LOGGING-ANNOTATIONS, JANSI, COMMONS-WEAVER, SPRING FRAMEWORK,
-FELIX GOGO COMMAND, SIMPLEXTABLEAU [Commons-Math], JAVA-COMMON-PROTOS,
-PRIMEFACES, XERCESIMPL, SPRING-BOOT, FAST INFOSET, WEBSOCKET-COMMON,
+FELIX GOGO COMMAND, JAVA-COMMON-PROTOS,
+PRIMEFACES, XERCESIMPL,FAST INFOSET, WEBSOCKET-COMMON,
 APACHE TIKA, COMMONS-FILEUPLOAD, AMQP-CLIENT, COMMONS-CONFIGURATION,
 SNAPPY-JAVA, JACKSON-ANNOTATIONS, PROTOC-GEN-VALIDATE [grpc-java],
 MONGO-JAVA-DRIVER, YOKO, JANDEX, THE JAKARTA PROJECT
 [jython-standalone], JFFI, WSS4J, COMMONS-JXPATH, MICROPROFILE
-OPENTRACING, LIBERTY-ARQUILLIAN, ORG.AJAX4JSF.UTIL.BASE64
-[richfaces-core-impl], REVALIDATOR, XALAN, ARIES JNDI URL, FELIX GOGO
+OPENTRACING, LIBERTY-ARQUILLIAN,REVALIDATOR, XALAN, ARIES JNDI URL, FELIX GOGO
 RUNTIME, JETTY [logback], APACHE MYFACES, BASE64CODER [snakeyaml],
 GRAPHQL-JAVA-SERVLET, IDWSFCONSUMER, JOLOKIA [Jetty], LOG4J, NETTY,
 LDAPTIVE, ASCIIDOC [MicroProfile Metrics], JAVASERVER PAGES TAG LIBRARY
 DESCRIPTOR [FreeMarker], COMMONS-BETWIXT, JSONASSERT, ORO,
 FAYE-WEBSOCKET, WELD-API, LOCALSTRINGS_JA.PROPERTIES, WELD [Jetty],
 TILES-CORE, PLEXUS-CIPHER, JAVA-CLASSMATE, PROTO-GOOGLE-COMMONS-PROTOS,
-APACHE-LOG4J-EXTRAS, POWELLOPTIMIZER [Commons-Math], SMALLRYE-OPEN-API,
+APACHE-LOG4J-EXTRAS,SMALLRYE-OPEN-API,
 JSON-SIMPLE [Primefaces], GUAVA, GENERICENTITY [JBoss RESTEasy],
-SNAKEYAML, SWAGGER-UI [OpenLiberty], ATMOSPHERE [richfaces-core],
+SNAKEYAML, SWAGGER-UI [OpenLiberty],
 XMLGRAPHICS-COMMONS, MAVEN-ARTIFACT-MANAGER [JUnit], TOMCAT,
-WEBSOCKET-DRIVER, XML-APIS, QDOX [hamcrest-all], EXCANVAS.JS
-[richfaces], CLASSMATE, COMMONS-LANG, J2OBJC-ANNOTATIONS, AWS-SIGN2,
+WEBSOCKET-DRIVER, XML-APIS, QDOX [hamcrest-all], 
+CLASSMATE, COMMONS-LANG, J2OBJC-ANNOTATIONS, AWS-SIGN2,
 ARRAYELRESOLVER.JAVA [javax.el], TCNATIVE [netty-all], SWAGGER-UI.JS
 [wiremock-standalone], OPTIONS, OAUTH-SIGN, HTTPCOMPONENTS HTTPMIME,
 JCOMMANDER, OKHTTP [grpc-java], OPENTRACING-UTIL, ORG.OSGI.SERVICE.OBR,
@@ -195,8 +192,8 @@ MICROPROFILE [microprofile-graphql], ARIES-JMX, WOODSTOX-CORE-ASL,
 GRAILS [Apache MyFaces], BENCHMARK, SAMPLES [Apache Commons BSF],
 JSR305, ANT, COMMONS-HTTPCLIENT, GERONIMO-JMS_1.1_SPEC, MERSENNE-TWISTER
 [Commons-Math], VELOCITY, JAVAX.WS.RS.CORE [jboss-jaxrs-api_2.1_spec],
-MICROPROFILE.FAULTTOLERANCE, BRACKETFINDER [Commons-Math], CYBERNEKO
-[HttpUnit], SIMPLEXSOLVER [Commons-Math], OSGI [Felix Gogo Runtime],
+MICROPROFILE.FAULTTOLERANCE,CYBERNEKO
+[HttpUnit],OSGI [Felix Gogo Runtime],
 OPENTRACING-JAVA, ORG.APACHE.ARIES.SAMPLES.BLOG.PERSISTENCE.JDBC,
 /COM/SUN/XML/STREAM/BUFFER/SAX/FEATURES.JAVA [StreamBuffer], APACHE
 MAVEN, STRIP_OLSON_COMMENTS.RB [dojo-util], COMMONS-COMPRESS, GSON,
@@ -491,8 +488,7 @@ Terence Parr and Loring Craymer All rights reserved.), HAMCREST-ALL (
 Copyright (c) 2000-2006, Hamcrest  All rights reserved. ), SEMVER
 (Copyright (c) Isaac Z. Schlueter ("Author")), CASELESS (Copyright Not
 Found), JANINO (No copyright statement found), ESCODEGEN (Copyright (c)
-2009-2011 Mozilla Foundation and contributors), YUI LIBRARY [richfaces]
-(Copyright (c) 2009, Yahoo! Inc.), TEXT-MARKDOWN [Markdown] (Copyright
+2009-2011 Mozilla Foundation and contributors),TEXT-MARKDOWN [Markdown] (Copyright
 (c) 2004, John Gruber <http://daringfireball.net/>),
 HOIST-NON-REACT-STATICS (Copyright (c) 2015 Yahoo! Inc. All rights
 reserved.), QS (Copyright (c) 2014 Nathan LaFreniere and other
@@ -506,8 +502,7 @@ BASIC/PAGE.HTML [Metrics] (Copyright 2007-2011 by the Sphinx team),
 PORTIONS OF THE `ASSERT.JS` LIBRARY AND TESTS IN THE GEEZER BRANCH
 [intern] (Copyright (c) [OpenJS Foundation](https://openjsf.org/)),
 ANTLR-RUNTIME (Copyright (c) 2005-2008 Terence Parr  All rights
-reserved. ), ESPRIMA-HARMONY-JSCS (NODE) (Copyright (C) 2011-2013 Ariya
-Hidayat <ariya.hidayat@gmail.com> and others), PROVIDERS/RXE [rdma-core]
+reserved. ), PROVIDERS/RXE [rdma-core]
 (Copyright: 2009-2011, System Fabric Works, Inc. 2009-2011, Mellanox
 Technologies Ltd. 2006-2007, QLogic Corporation. 2005, PathScale, Inc.),
 BURRITO (Copyright 2010 (c) Mihai Bazon <mihai.bazon@gmail.com>),
@@ -542,8 +537,7 @@ MARKDOWN [JUnit] (Copyright (c) 2003-2004 John Gruber), UNIGE.CH
 [Commons-Math] (Copyright (c) 2004, Ernst Hairer), AMDEFINE (Copyright
 (c) 2011 The Dojo Foundation Copyright (c) 2011 The Dojo Foundation),
 ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
-Suzuki](http://github.com/Constellation)), CRYPTO-BROWSERIFY (Copyright
-Not Found), DOJOX [Dojo Toolkit] (Copyright (c) 2005-2013, The Dojo
+Suzuki](http://github.com/Constellation)),DOJOX [Dojo Toolkit] (Copyright (c) 2005-2013, The Dojo
 Foundation All rights reserved.), HOEK (Copyright (c) 2011-2014 Walmart
 and other contributors. Copyright (c) 2011 Yahoo Inc.), JCRAFT JSCH
 [Spring Framework] (Copyright (c) 2002-2015 Atsuhiko Yamanaka,
@@ -572,8 +566,7 @@ OGNL (Copyright (c) 1998-2004, Drew Davidson and Luke Blanshard All
 rights reserved), QS (Copyright (c) 2014  Nathan LaFreniere and other
 [contributors](https://github.com/ljharb/qs/graphs/contributors)),
 MD5.JS [Dojo Toolkit] (Copyright (C) Paul Johnston 1999 - 2002. Other
-contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet), SHA.JS
-[crypto-browserify] (Copyright Paul Johnston 2000 - 2002.),
+contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet), 
 REACT-ADDONS-SHALLOW-COMPARE (Copyright (c) 2013-2015 Facebook Inc.),
 GOGOPROTO [grpc-java] (Copyright (c) 2013, The GoGo Authors. All rights
 reserved.), I18N [Tomahawk] (Copyright (c) 2004, Guido Wesdorp All
@@ -650,8 +643,7 @@ Lawrence Livermore National Security 2013, Oracle and/or its
 affiliates.), CRYPTILES (Copyright (c) 2012-2013 Eran Hammer.),
 NW-PRE-GYP-MODULE-TEST (Copyright (c); Mapbox All rights reserved.),
 CHOWNR (Copyright (c) Isaac Z. Schlueter), INDEX.JS (Copyright (c) 2010,
-Ajax.org B.V.), JQUERY EASING [richfaces-components-ui] (Copyright 2008
-George McGinley Smith), NPM-USER-VALIDATE (Copyright (c) Robert
+Ajax.org B.V.),NPM-USER-VALIDATE (Copyright (c) Robert
 Kowalski), JLINE (Copyright (c) 2002-2012, the original author or
 authors.), HFI1 [rdma-core] (Copyright(c) 2015 Intel Corporation.),
 UGLIFY-JS (<pre class="example">Copyright 2010 (c) Mihai Bazon
@@ -704,8 +696,7 @@ reserved.), UNDERSCORE.STRING/VENDOR/QUNIT (Copyright (c) 2008 Ariel
 Flesler - aflesler(at)gmail(dot)com), IBACM/CMAKELISTS.TXT
 IBACM/IBACM_HOSTS.DATA [rdma-core] (No Copyright Found), SHA (Copyright
 (c) 2013 Forbes Lindesay), PROVIDERS/EFA [rdma-core] (Copyright: 2019
-Amazon.com, Inc. or its affiliates.), HIGHLIGHT.JS [richfaces]
-(Copyright (c) 2006, Ivan Sagalaev.), TABLETOOLS [msf4j] (Copyright
+Amazon.com, Inc. or its affiliates.),TABLETOOLS [msf4j] (Copyright
 2009-2012 Allan Jardine), REACT-ADDONS-PERF (Copyright (c) 2013-present
 Facebook Inc.), ONCE (Copyright (c) Isaac Z. Schlueter ("Author")),
 PROVIDERS/SIW [rdma-core] (Copyright: 2008-2019, IBM Corporation.),
@@ -1271,9 +1262,7 @@ JAVAEE-BC1#10 (See Attached Spreadsheet), JAVAEE XML SCHEMAS [Tomcat]
 (http://xmlns.jcp.org/xml/ns/javaee), JAVAX.SECURITY [Javaee-BC1#10]
 (https://repo1.maven.org/maven2/javax/security/jacc/javax.security.jacc-api/1.5/),
 SERIALIZER [Eclipse yasson]
-(https://github.com/eclipse-ee4j/yasson/tree/1.0.4-RELEASE), UTIL.JAVA
-[richfaces-core-impl]
-(https://repo1.maven.org/maven2/org/richfaces/core/richfaces-core-impl/4.3.7.Final/richfaces-core-impl-4.3.7.Final-sources.jar),
+(https://github.com/eclipse-ee4j/yasson/tree/1.0.4-RELEASE),
 CTYPE/JSSTYLE (http://www.opensolaris.org/os/licensing), JAVAX.WS.RS-API
 (https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.0-m09/),
 JAXB-JXC
@@ -1966,7 +1955,7 @@ JSON LICENSE
 The Program includes some or all of the following works licensed under
 the JSON WITH NO EVIL CLAUSE
 
-ORG.RICHFACES.JSON [richfaces-a4j], JSON [Primefaces]
+JSON [Primefaces]
 
 END OF JSON LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2514,8 +2503,7 @@ REACT-MARKDOWN (Copyright (c) 2015 Espen Hovlandsdal), READDIRP
 (Copyright (c) 2011 Adam Shaw), LEXICAL-SCOPE (No Copyright found),
 COOKIEJAR (Copyright (c) 2013 Bradley Meck), @KYLESHOCKEY/XML (Copyright
 (c) 2011-2017 Dylan Greene <dylang@gmail.com>), UNOBTRUSIVE SLIDER
-CONTROL (Copyright 2010, 2011, Brian McAllister), PICOMODAL [richfaces]
-(Copyright (c) 2012 James Frasca.), PROVIDERS/I40IW [rdma-core]
+CONTROL (Copyright 2010, 2011, Brian McAllister), PROVIDERS/I40IW [rdma-core]
 (Copyright: 2015-2016, Intel Corporation.), D (Copyright (C) 2013
 Mariusz Nowak (www.medikoo.com)), ESCAPE-STRING-REGEXP (Copyright (c)
 Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), I (Copyright
@@ -2538,8 +2526,8 @@ Copyright (c) 2011 LearnBoost Copyright (c) 2011 TJ Holowaychuk
 Copyright (c) 2014-2015 Douglas Christopher Wilson), GOT (? [Sindre
 Sorhus](http://sindresorhus.com)), SPRING (Copyright (c) 2012-2017 Jon
 Leighton), CALL-BIND (Copyright (c) 2020 Jordan Harband), IS-DATE-OBJECT
-(Copyright (c) 2015 Jordan Harband), JCL-OVER-SLF4J (Copyright 2001-2004
-The Apache Software Foundation.), SWAGGER-CLIENT/REF_SEND.JS (Copyright
+(Copyright (c) 2015 Jordan Harband),
+SWAGGER-CLIENT/REF_SEND.JS (Copyright
 2007-2009 Tyler Close), REPEATING (Copyright (c) Sindre Sorhus
 <sindresorhus@gmail.com> (sindresorhus.com)), STRIP-INDENT (Copyright
 (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
@@ -2563,8 +2551,8 @@ R. Holser, Jr.), PROTO-LIST (Copyright 2009 2010 2011 Isaac Z.
 Schlueter.), ESCAPE-HTML (* Copyright (c) 2012-2013 TJ Holowaychuk *
 Copyright (c) 2015 Andreas Lubbe * Copyright (c) 2015 Tiancheng
 "Timothy" Gu), WCWIDTH (Copyright (C) 2012 by Jun Woong.),
-COMMONMARK-REACT-RENDERER (Copyright (c) 2015 Espen Hovlandsdal), NODEJS
-(Copyright Joyent, Inc. and other Node contributors), MAP-OBJ (Copyright
+COMMONMARK-REACT-RENDERER (Copyright (c) 2015 Espen Hovlandsdal),
+MAP-OBJ (Copyright
 (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), JSJWS
 (Copyright (c) 2012 Kenji Urushima), USER-HOME (Copyright (c) Sindre
 Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), LODASH-COMPAT
@@ -2614,15 +2602,12 @@ Node contributors.), FINALHANDLER (Copyright (c) 2014-2015 Douglas
 Christopher Wilson <doug@somethingdoug.com>), ANSISTYLES (Copyright 2013
 Thorsten Lorenz.), OBJECT-IS (Copyright (c) 2014 Jordan Harband),
 DEMO.JS (Copyright (c) 2015, Jon Schlinkert), INDEX.JS (@author Feross
-Aboukhadijeh <feross@feross.org> <http://feross.org>), JQUERY UI
-DRAGGABLE [richfaces-components-ui] (Copyright 2010, AUTHORS.txt
-(http://jqueryui.com/about)), PKGINFO (Copyright (c) 2010 Charlie
+Aboukhadijeh <feross@feross.org> <http://feross.org>), PKGINFO (Copyright (c) 2010 Charlie
 Robbins.), JQPLOT-SUBSET [Primefaces] (Copyright (c) 2010 Scott Prahl),
 NCP (Copyright (C) 2011 by Charlie McConnell), OPTIMIST (Copyright 2010
-James Halliday (mail@substack.net)), CRYPTO-BROWSERIFY (Copyright (c)
-2013 Dominic Tarr), REDUX-LOGGER (Copyright (c) 2016 Eugene Rodionov),
-ATOB (Copyright (c) 2015 AJ Oneal), JQUERY.VALIDATE.JS [Spring-boot]
-(Copyright (c) 2012 JÃ¶rn Zaefferer), GULP-HEADER (Copyright (c)
+James Halliday (mail@substack.net)),REDUX-LOGGER (Copyright (c) 2016 Eugene Rodionov),
+ATOB (Copyright (c) 2015 AJ Oneal), 
+GULP-HEADER (Copyright (c)
 2013-2015 Michael J. Ryan <tracker1> and GoDaddy.com), PROTOTYPE
 [sip-servlets] (Copyright 2009, The Dojo Foundation), SNAPDRAGON-NODE
 (Copyright (c) 2017 Jon Schlinkert), UNDERSCORE.JS, ASYNC, INDEX.JS,
@@ -2646,8 +2631,7 @@ Embrey (hello@blakeembrey.com)), EXTEND-SHALLOW (Copyright (c) 2014-2015
 [wiremock-standalone] (Copyright (c) Feross Aboukhadijeh and other
 contributors.), AUTOLINKER.JS 0.28.1 [swagger-ui] (Copyright (c) 2016
 Gregory Jacobs <greg@greg-jacobs.com>), NETTY.UTIL.INTERNAL.LOGGING
-[Netty] (Copyright (c) 2004-2011 QOS.ch), JQUERY-1.9.0.JS [Spring-boot]
-(Copyright 2005, 2012 jQuery Foundation, Inc. and other contributors),
+[Netty] (Copyright (c) 2004-2011 QOS.ch), 
 NODE-UUID (Copyright (c) 2010-2012 Robert Kieffer), JQUERY.BASE64
 [msf4j] (Copyright (c) 2012 Yannick Albert (http://yckart.com)),
 JS-TOKENS (Copyright (c) 2014 2015 2016 2017 2018 Simon Lydell),
@@ -2675,8 +2659,7 @@ Christopher Wilson), TYPE-IS (Copyright (c) 2014 Jonathan Ong
 (Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>),
 JQUERY [Spring Framework] (Copyright jQuery Foundation and other
 contributors, https://jquery.org/), INTERNAL-IP (Copyright (c) Sindre
-Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), SLF4J-API
-(Copyright (c) 2004-2011 QOS.ch), MIME-TYPES (Copyright (c) 2014
+Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),MIME-TYPES (Copyright (c) 2014
 Jonathan Ong <me@jongleberry.com>Copyright (c) 2015 Douglas Christopher
 Wilson <doug@somethingdoug.com>), CUSTOM-TIMESTAMP-TEST.JS ((C) 2011
 Charlie Robbins Tom Shinnick), DEEP-EQUAL (Copyright (c) 2012 2013 2014
@@ -2700,20 +2683,18 @@ Schlinkert), YARGS (Copyright 2010 James Halliday
 (ben@npmjs.com)), DUPLEXER (Copyright (c) 2012 Raynos.), EXPAND-RANGE
 (Copyright (c) 2014-2016 Jon Schlinkert.), PROVIDERS/HNS [rdma-core]
 (Copyright: 2016, Hisilicon Limited.), JQUERY.JCROP [Primefaces]
-(Copyright (c) 2008-2011 Kelly Hallman), SCRIPTACULOUS [Tomahawk]
-(Copyright (c) 2005 Thomas Fuchs (http://script.aculo.us,
-http://mir.aculo.us)), FSEVENTS (Copyright (C) 2010-2014 Philipp
+(Copyright (c) 2008-2011 Kelly Hallman), 
+FSEVENTS (Copyright (C) 2010-2014 Philipp
 DunkelCopyright), GRACEFUL-READLINK (Copyright (c) 2015 Zhiye Li),
 CONVERT-SOURCE-MAP (Copyright 2013 Thorsten Lorenz.),
 GENERATE-OBJECT-PROPERTY (Copyright (c) 2014 Mathias Buus), SET-VALUE
 (Copyright (c) 2014-2017 Jon Schlinkert), BODY-PARSER (Copyright (c)
 2014 Jonathan Ong <me@jongleberry.com>Copyright (c) 2014-2015 Douglas
 Christopher Wilson <doug@somethingdoug.com>), KOHSUKE/RNGOM (Copyright
-(C) 2004-2011), SLF4J (Copyright (c) 2004-2008 QOS.ch), BALANCED-MATCH
+(C) 2004-2011),BALANCED-MATCH
 (Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;),
 SIMPLE JAVASCRIPT INHERITANCE [Primefaces] (By John Resig
 http://ejohn.org/), GLOB-BASE (Copyright (c) 2015 Jon Schlinkert.),
-FLOT-AXISLABELS [richfaces] (Copyright (c) 2010 Xuan Luo.),
 ISOMORPHIC-FORM-DATA (Copyright (c) 2012 Felix Geisend√∂rfer
 (felix@debuggable.com) and contributors), SWAGGER-UI/HANDLEBARS
 (Copyright (C) 2011-2015 by Yehuda Katz), WEBSOCKETX [netty-all]
@@ -2773,10 +2754,7 @@ of the Bouncy Castle Inc. (http://www.bouncycastle.org)), IS-BUFFER
 (Copyright (c) Feross Aboukhadijeh), COLORPICKER [Primefaces] (Author:
 Stefan Petre www.eyecon.ro), SNAPDRAGON (Copyright (c) 2015-2016 Jon
 Schlinkert.), OBJECT-KEYS (Copyright (C) 2013 Jordan Harband),
-JQUERY.EVENT.DRAG.JS [richfaces] (Copyright (c) 2008, Three Dub Media
-(http://threedubmedia.com)), TOOLBERCONFIGURATOR [richfaces] (Copyright
-(C) 2014 by Marijn Haverbeke <marijnh@gmail.com> and others), JS-YAML
-(Copyright (C) 2011-2015 by Vitaly Puzrin), ESLINT/INDENT (Copyright
+JS-YAML(Copyright (C) 2011-2015 by Vitaly Puzrin), ESLINT/INDENT (Copyright
 2015 Dmitriy Shekhovtsov. All rights reserved. Copyright 2013 Dulin
 Marat and other contributors.), CONCAT-MAP (No copyright), PATH-EXISTS
 (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
@@ -2813,8 +2791,7 @@ Tschan), MERGE-DESCRIPTORS (Copyright (c) 2013 Jonathan Ong
 <doug@somethingdoug.com>), JQUERY COOKIE [Primefaces] (Copyright (c)
 2010 Klaus Hartl (stilbuero.de)), TOUGH-COOKIE (Copyright GoInstant Inc.
 and other contributors. All rights reserved.), COMMON.JS (Copyright
-Joyent, Inc. and other Node contributors.), JQUERY.FLOT.TOOLTIP
-[richfaces] (Copyright (c) 2011-2016 Krzysztof Urbas (@krzysu).),
+Joyent, Inc. and other Node contributors.), 
 METHODS (Copyright (c) 2013-2014 TJ Holowaychuk
 <tj@vision-media.ca>Copyright (c) 2015-2016 Douglas Christopher Wilson
 <doug@somethingdoug.com>), HANDLE-THING (Copyright Fedor Indutny 2015.),
@@ -2826,9 +2803,8 @@ SWAGGER-CLIENT/NODE.JS (Copyright Not Found), WEBSOCKET-MULTIPLEX
 jQuery Foundation and other contributors <https://jquery.org/>Copyright
 and related rights for sample code are waived via CC0. Sample), ISARRAY
 (Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;),
-CROSS-FETCH-POLYFILL (Copyright (c) 2017 Leonardo Quixad�), JQUERY
-JAVASCRIPT LIBRARY [richfaces-core-impl] (Copyright 2012 jQuery
-Foundation and other contributors), IS-GENERATOR-FUNCTION (Copyright (c)
+CROSS-FETCH-POLYFILL (Copyright (c) 2017 Leonardo Quixad),
+IS-GENERATOR-FUNCTION (Copyright (c)
 2014 Jordan Harband), EDITOR (Copyright 2013 James Halliday
 (mail@substack.net)), CHAI (Copyright (c) 2011-2014 Jake Luer
 <jake@alogicalparadox.com>), JQUERY-MOBILE [Esprima (node)] (Copyright
@@ -2853,8 +2829,7 @@ Bjoern Hoehrmann <bjoern@hoehrmann.de>), ASSERTION-ERROR (Copyright (c)
 Jon Schlinkert), IS-DOM (Copyright (c) 2014), JQUERY.FLOT [msf4j]
 (Copyright (c) 2007-2013 IOLA and Ole Laursen), JSON.H [Protobuf]
 (Copyright (c) 2007-2010 by Baptiste Lepilleur), PORTFINDER (Copyright
-(c) 2012 Charlie Robbins), JQUERY HOTKEYS PLUGIN [richfaces] (Copyright
-2010, John Resig), COM.KENAI.CONSTANTINE [jnr-constants] (No Copyright
+(c) 2012 Charlie Robbins), COM.KENAI.CONSTANTINE [jnr-constants] (No Copyright
 Statement found), HAS-SYMBOLS (Copyright (c) 2016 Jordan Harband),
 EVENTSOURCE (Copyright (c) 2012 2013 2014 Aslak Hellesøy), UUID
 (Copyright (c) 2010-2016 Robert Kieffer and other contributors), UTIL.JS
@@ -2875,8 +2850,7 @@ REACT-MOTION (Copyright (c) 2015 React Motion authors), SHALLOWEQUAL
 2010 LearnBoost <dev@learnboost.com>), CTYPE (Copyright 2011 Robert
 Mustacchi. All rights reserved. Copyright 2011 Joyent Inc. All rights
 reserved.), ABBREV (Copyright 2009 2010 2011 Isaac Z. Schlueter.),
-JQUERY.FLOT.CANVAS.JS [richfaces] (Copyright (c) 2007-2014 IOLA and Ole
-Laursen.), UNSET-VALUE (Copyright (c) 2015 2017 Jon Schlinkert), DNS-TXT
+UNSET-VALUE (Copyright (c) 2015 2017 Jon Schlinkert), DNS-TXT
 (Copyright (c) 2015 Thomas Watson Steen), REACT-IMMUTABLE-PROPTYPES
 (Copyright (c) 2015 James Burnett), UTIL-EXTEND (Copyright Joyent Inc.
 and other Node contributors. All rights reserved.), MEMOIZEE (Copyright
@@ -2886,8 +2860,7 @@ rights reserved.), IS-DESCRIPTOR (Copyright (c) 2015-2017 Jon
 Schlinkert.), SPDY-TRANSPORT (Copyright Fedor Indutny 2015.), MIME-DB
 (Copyright (c) 2014 Jonathan Ong me@jongleberry.com),
 PROVIDERS/MLX5/MAN/*.3, PROVIDERS/MLX5/MAN/*.7 [rdma-core] (No Copyright
-Found), CKSOURCE SAMPLES FRAMEWORK [richfaces] (Copyright (c) 2014-2016,
-CKSource - Frederico Knabben.), MODERNIZR 3.0.0PRE. [swagger-ui]
+Found),CKSource - Frederico Knabben.), MODERNIZR 3.0.0PRE. [swagger-ui]
 (Copyright (c) 2009-2018.), BASE64-JS (Copyright (c) 2014 Jameson
 Little), OBJECT-VISIT (Copyright (c) 2015 2017 Jon Schlinkert), PROCESS
 (Copyright (c) 2013 Roman Shtylman <shtylman@gmail.com>), DEBUG
@@ -2899,8 +2872,7 @@ Jordan Harband), MEMORY-FS (Copyright (c) 2012-2014 Tobias Koppers),
 COLUMNIFY (Copyright (c) 2013 Tim Oxley), LODASH/UNDERSCORE.JS
 [wiremock-standalone] (Copyright OpenJS Foundation and other
 contributors Copyright (c) 2009-2020 Jeremy Ashkenas, DocumentCloud and
-Investigative Reporters & Editors), RANDOMBYTES (Copyright (c) 2017
-crypto-browserify), RESELECT (Copyright (c) 2015-2016 Reselect
+Investigative Reporters & Editors),RESELECT (Copyright (c) 2015-2016 Reselect
 Contributors), XMLBUILDER (Copyright (c) 2013 Ozgur Ozcitak), AXIS LABEL
 PLUGINS [msf4j] (Copyright (c) 2010 Xuan Luo), HANDLEBARS-V2.0.0.JS
 [weld] (Copyright (C) 2011-2014 by Yehuda Katz),
@@ -2946,9 +2918,7 @@ Facebook Inc.), JSHINT (Copyright (c) 2002 Douglas Crockford
 2014 Jonathan Ong <me@jongleberry.com>Copyright (c) 2014-2015 Douglas
 Christopher Wilson <doug@somethingdoug.com>), P-MAP (Copyright (c)
 Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), IS-NUMBER
-(Copyright (c) 2014-2017 Jon Schlinkert.), BOOTSTRAP.MIN.CSS
-[Spring-boot] (Copyright 2011-2018 The Bootstrap Authors Copyright
-2011-2018 Twitter, Inc.), BL (Copyright (c) 2014 bl contributors), EYES
+(Copyright (c) 2014-2017 Jon Schlinkert.), BL (Copyright (c) 2014 bl contributors), EYES
 (Copyright (c) 2009 cloudhead), EXTSPRINTF (Copyright (c) 2012 Joyent
 Inc. All rights reserved.), JQUERY.JS (Copyright 2011, John Resig),
 OBJECT-COPY (Copyright (c) 2016 Jon Schlinkert.), CLEDITOR [Primefaces]
@@ -3060,8 +3030,7 @@ Twitter, Inc.), MODERNIZR [swagger-ui] (Copyright © 2009-2018.), IS-GLOB
 (Copyright (c) 2014-2016 Jon Schlinkert.), URL (Copyright Joyent Inc.
 and other Node contributors.), PATH-IS-INSIDE (Copyright © 2013–2016
 Domenic Denicola <d@domenic.me> Copyright (C) 2004 Sam Hocevar
-<sam@hocevar.net>), WATERMARK PLUGIN FOR JQUERY [richfaces] (Copyright
-(c) 2009-2010 Todd Northrop, http://www.speednet.biz/), RANGE-PARSER
+<sam@hocevar.net>),RANGE-PARSER
 (Copyright (c) 2012-2014 TJ Holowaychuk <tj@vision-media.ca>Copyright
 (c) 2015-2016 Douglas Christopher Wilson <doug@somethingdoug.com),
 JSCS/NARWHAL (Copyright (c) 2009 Thomas Robinson <280north.com>
@@ -3224,9 +3193,7 @@ BROWSER-RESOLVE (Copyright (c) 2013-2015 Roman Shtylman
 <shtylman@gmail.com>), SPLIT-STRING (Copyright (c) 2015-2017 Jon
 Schlinkert.), RAW-BODY (Copyright (c) 2013-2014 Jonathan Ong
 <me@jongleberry.com>Copyright (c) 2014-2015 Douglas Christopher Wilson
-<doug@somethingdoug.com>), JQUERY.MOUSEWHEEL.JS
-[richfaces-components-ui] (Copyright (c) 2010 Brandon Aaron
-(http://brandonaaron.net)), METERWARE HTTPUNIT [OpenLiberty] (Copyright
+<doug@somethingdoug.com>), METERWARE HTTPUNIT [OpenLiberty] (Copyright
 (c) 2003-2009, Russell Gold), REACT-HOT-LOADER (No copyright found),
 ORG.BOUNCYCASTLE.ASN1 [iText] (Copyright (c) 2000 - 2006 The Legion Of
 The Bouncy Castle (http://www.bouncycastle.org)), EXPRESS-EXAMPLE-APP
@@ -3273,8 +3240,7 @@ LIVESTAMP.JS [sip-servlets] ((c) 2012 Matt Bradley), ISORELAX (Copyright
 Okajima, Kohsuke Kawaguchi, and MURATA Makoto)), COMBINE-SOURCE-MAP
 (Copyright 2013 Thorsten Lorenz.), CURRENTLY-UNHANDLED (Copyright (c)
 James Talmage <james@talmage.io> (github.com/jamestalmage)),
-JQUERY.FLOT.ORDERBARS.JS [richfaces] (by Benjamin BUFFET, Modifications
-made by Steven Hall <github.com/emmerich>), WEBPACK-DEV-MIDDLEWARE
+WEBPACK-DEV-MIDDLEWARE
 (Copyright JS Foundation and other contributors), CMAKELISTS.TXT
 [rdma-core] (Copyright: 2015-2017, Obsidian Research Corporation.),
 CHECKER-FRAMEWORK [Apache Maven] (No copyright found), UTFSTRING
@@ -3561,8 +3527,6 @@ JQUERY.FLOT.TICKROTOR [msf4j]
 (https://github.com/wso2/msf4j/tree/v2.8.1), RHINO 1.6R1 [javax.xml]
 (http://central.maven.org/maven2/org/eclipse/birt/runtime/javax.xml/1.3.4.v201005080400/),
 ITEXT (https://repo1.maven.org/maven2/com/lowagie/itext/1.4.8/),
-CKEDITOR [richfaces]
-(https://repo1.maven.org/maven2/org/richfaces/richfaces/4.5.17.Final/),
 HTMLUNIT-CORE-JS
 (https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.6/),
 JAVASSIST
@@ -4263,29 +4227,14 @@ SECTIONS:
 
 TABLE OF CONTENTS
 
-AGPL V3 
 CC-BY-2.5  
 CC-BY-3.0  
 CC-BY-4.0  
 CC-BY-SA-3.0  
 CC-BY-SA-4.0  
-GPL V2 
 REDHAT UNIVERSAL BASE IMAGE v 7.6 and 8.3
 SIL OPEN FONT LICENSE 1.1 
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-GNU AFFERO GENERAL PUBLIC LICENSE, VERSION 3
-
-The Program includes some or all of the following licensed to you as
-Separately Licensed Code under the GNU Affero General Public License.
-For copies of the source code for this software, send an email to
-<mbroz@us.ibm.com> identifying the IBM product and the AGPL-licensed 
-program for which you are requesting the source code.
-
-JBOSS-AT-RESTCOMM [sip-servlets]
-
-END OF GNU AFFERO GENERAL PUBLIC LICENSE,VERSION 3 NON-IBM-LICENSE INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 CREATIVE COMMONS ATTRIBUTION 2.5 GENERIC
@@ -4294,12 +4243,8 @@ The Program includes some or all of the following works licensed under
 the Creative Commons.
 The url to the license is https://creativecommons.org/licenses/by/2.5/legalcode
 
-GUARDEDBY.JAVA [JSR305] 
-(http://central.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-sources.jar),
 CONCURRENTLINKEDHASHMAP [Omnifaces] 
-(http://creativecommons.org/licenses/by/2.5), CONCURRENT [JSR305] (Not
-Required)
-(https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305/3.0.0),
+(http://creativecommons.org/licenses/by/2.5),
 GUARDEDBY [HttpCore] (https://jcip.net/)
 
 END OF CREATIVE COMMONS ATTRIBUTION 2.5 GENERIC NON-IBM-LICENSE INFORMATION
@@ -4373,7 +4318,8 @@ of the source code for this software, send an email to <mbroz@us.ibm.com>
 identifying the IBM product and the GPL-licensed program for which you
 are requesting the source code
 
-ADOPTOPENJDK BINARIES FOR ECLIPSE OPENJ9, RDMA-CORE, DEFLATER.JS
+ADOPTOPENJDK BINARIES FOR ECLIPSE OPENJ9,
+RMDA-CORE, DEFLATER.JS  
 [Adm-zip], KERNEL-HEADERS/RDMA/RDMA_NETLINK.H [rdma-core], GETPIDS
 [Arjuna], REDHAT [rdma-core]
 
