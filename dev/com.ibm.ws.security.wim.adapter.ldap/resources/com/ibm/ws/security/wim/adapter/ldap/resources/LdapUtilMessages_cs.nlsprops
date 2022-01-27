@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -55,11 +55,11 @@ ENTITY_IS_NOT_A_GROUP=CWIML4525E: Operaci registru u\u017eivatel\u016f nelze dok
 ENTITY_IS_NOT_A_GROUP.explanation=Operace souvisej\u00edc\u00ed se skupinou, tj. nap\u0159\u00edklad p\u0159i\u0159azov\u00e1n\u00ed \u010dlen\u016f do skupiny nebo vy\u0159azov\u00e1n\u00ed \u010dlen\u016f ze skupiny, lze pou\u017e\u00edt pouze pro typ entity Skupina. Nevykazuje-li zadan\u00e1 entita typ Skupina, dojde k vygenerov\u00e1n\u00ed v\u00fdjimky.
 ENTITY_IS_NOT_A_GROUP.useraction=Zajist\u011bte, aby zadan\u00e1 entita vykazovala typ Skupina. Pro adapt\u00e9r LDAP zajist\u011bte, aby t\u0159\u00edda objekt\u016f, kter\u00e1 je definov\u00e1na pro typ entity Skupina, odpov\u00eddala skute\u010dn\u00e9 t\u0159\u00edd\u011b objektu skupiny.
 
-CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  U\u017eivatel {2} p\u0159edal \u0159\u00edzen\u00ed mezipam\u011bti re\u017eim maz\u00e1n\u00ed mezipam\u011bti {1} pro \u00falo\u017ei\u0161t\u011b {0}. Cel\u00e1 mezipam\u011b\u0165 \u00falo\u017ei\u0161t\u011b LDAP byla vymaz\u00e1na.
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ U\u017eivatel {2} p\u0159edal \u0159\u00edzen\u00ed mezipam\u011bti re\u017eim maz\u00e1n\u00ed mezipam\u011bti {1} pro \u00falo\u017ei\u0161t\u011b {0}. Cel\u00e1 mezipam\u011b\u0165 \u00falo\u017ei\u0161t\u011b LDAP byla vymaz\u00e1na.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Uveden\u00fd u\u017eivatel se pokou\u0161\u00ed vymazat celou mezipam\u011b\u0165 uveden\u00e9ho \u00falo\u017ei\u0161t\u011b pomoc\u00ed re\u017eimu clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Tato zpr\u00e1va je protokolov\u00e1na pro \u00fa\u010dely auditu.
 
-UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  Re\u017eim vymaz\u00e1n\u00ed mezipam\u011bti {1} zadan\u00fd pro \u00falo\u017ei\u0161t\u011b {0} v \u0159\u00edzen\u00ed mezipam\u011bti nen\u00ed podporov\u00e1n. Zadejte podporovan\u00fd re\u017eim maz\u00e1n\u00ed mezipam\u011bti.
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W: \ Re\u017eim vymaz\u00e1n\u00ed mezipam\u011bti {1} zadan\u00fd pro \u00falo\u017ei\u0161t\u011b {0} v \u0159\u00edzen\u00ed mezipam\u011bti nen\u00ed podporov\u00e1n. Zadejte podporovan\u00fd re\u017eim maz\u00e1n\u00ed mezipam\u011bti.
 UNKNOWN_CLEAR_CACHE_MODE.explanation=Uveden\u00fd re\u017eim vymaz\u00e1n\u00ed mezipam\u011bti nen\u00ed podporov\u00e1n pro toto \u00falo\u017ei\u0161t\u011b.
 UNKNOWN_CLEAR_CACHE_MODE.useraction=Zadejte re\u017eim maz\u00e1n\u00ed mezipam\u011bti, kter\u00fd je uveden\u00fdm \u00falo\u017ei\u0161t\u011bm podporov\u00e1n. 
 
@@ -83,7 +83,7 @@ NULL_CHECKPOINT_VALUE=CWIML4550E: Operaci LDAP nelze dokon\u010dit. Pr\u00e1zdn\
 NULL_CHECKPOINT_VALUE.explanation=Pokud \u00falo\u017ei\u0161t\u011b podporuje sledov\u00e1n\u00ed zm\u011bn podle p\u0159\u00edznaku 'supportChangeLog' v souboru server.xml, nem\u011bl by p\u0159\u00edchoz\u00ed kontroln\u00ed bod b\u00fdt pr\u00e1zdn\u00fd ani m\u00edt hodnotu Null.
 NULL_CHECKPOINT_VALUE.useraction=Pokud adapt\u00e9r registru u\u017eivatel\u016f nepodporuje sledov\u00e1n\u00ed zm\u011bn, pokuste se o nov\u00e9 vyhled\u00e1v\u00e1n\u00ed s platn\u00fdm kontroln\u00edm bodem nebo pro doty\u010dn\u00e9 \u00falo\u017ei\u0161t\u011b vypn\u011bte v souboru server.xml p\u0159\u00edznak 'supportChangeLog'.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Heslo bu\u010f chyb\u00ed, nebo je pr\u00e1zdn\u00e9.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze prov\u00e9st, proto\u017ee chyb\u00ed heslo nebo je pr\u00e1zdn\u00e9.
 MISSING_OR_EMPTY_PASSWORD.explanation=Pokud je b\u011bhem p\u0159ihla\u0161ov\u00e1n\u00ed uveden n\u00e1zev \u010dinitele, nem\u016f\u017ee b\u00fdt heslo pr\u00e1zdn\u00e9 nebo null.
 MISSING_OR_EMPTY_PASSWORD.useraction=Zadejte heslo.
 
@@ -104,7 +104,8 @@ CANNOT_CONNECT_TO_LDAP_SERVER.explanation=Nelze se p\u0159ipojit k prim\u00e1rn\
 CANNOT_CONNECT_TO_LDAP_SERVER.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00fd server LDAP spu\u0161t\u011bn a b\u011b\u017e\u00ed.
 
 INVALID_CERTIFICATE_FILTER=CWIML0002E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Syntaxe filtru certifik\u00e1t\u016f {0} je neplatn\u00e1. Spr\u00e1vn\u00e1 syntaxe: atribut LDAP=$[atribut certifik\u00e1tu klienta] (nap\u0159\u00edklad uid=$[SubjectCN]).
-INVALID_CERTIFICATE_FILTER.explanation=Syntaxe nebo struktura tohoto filtru: atribut LDAP=$[atribut certifik\u00e1tu klienta] (nap\u0159\u00edklad uid=$[SubjectCN]). Na lev\u00e9 stran\u011b specifikace filtru je LDAP atribut, kter\u00fd z\u00e1vis\u00ed na sch\u00e9matu, kter\u00e9 m\u00e1 server LDAP pou\u017e\u00edvat. Na prav\u00e9 stran\u011b specifikace filtru je jeden z ve\u0159ejn\u00fdch atribut\u016f va\u0161eho klientsk\u00e9ho certifik\u00e1tu. Prav\u00e1 strana mus\u00ed za\u010d\u00ednat znakem dolaru ($) a levou slo\u017eenou z\u00e1vorkou ({ nebo [) a kon\u010d\u00ed pravou slo\u017eenou z\u00e1vorkou (} nebo ]). Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edvat n\u00e1sleduj\u00edc\u00ed hodnoty atribut\u016f certifik\u00e1tu. Tyto \u0159et\u011bzce rozli\u0161uj\u00ed mal\u00e1 a velk\u00e1 p\u00edsmena: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[SubjectCN], $[Version]. 
+INVALID_CERTIFICATE_FILTER.explanation=Syntaxe nebo struktura tohoto filtru: atribut LDAP=$[atribut certifik\u00e1tu klienta] (nap\u0159\u00edklad uid=$[SubjectCN]). Na lev\u00e9 stran\u011b specifikace filtru je LDAP atribut, kter\u00fd z\u00e1vis\u00ed na sch\u00e9matu, kter\u00e9 m\u00e1 server LDAP pou\u017e\u00edvat. Na prav\u00e9 stran\u011b specifikace filtru je jeden z ve\u0159ejn\u00fdch atribut\u016f va\u0161eho klientsk\u00e9ho certifik\u00e1tu. Prav\u00e1 strana mus\u00ed za\u010d\u00ednat znakem dolaru ($) a levou slo\u017eenou z\u00e1vorkou ({ nebo [) a kon\u010d\u00ed pravou slo\u017eenou z\u00e1vorkou (} nebo ]). Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edvat n\u00e1sleduj\u00edc\u00ed hodnoty atribut\u016f certifik\u00e1tu. Tyto \u0159et\u011bzce rozli\u0161uj\u00ed mal\u00e1 a velk\u00e1 p\u00edsmena: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[Sub\
+    jectCN], $[Version]. 
 INVALID_CERTIFICATE_FILTER.useraction=Ov\u011b\u0159te, \u017ee filtr certifik\u00e1t\u016f odpov\u00edd\u00e1 dokumentovan\u00e9 syntaxi.
 
 TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Operace getTBSCertificate() ve v\u00fdrazu filtru nen\u00ed podporovan\u00e1. Zadejte spr\u00e1vn\u00fd filtr certifik\u00e1t\u016f.
@@ -127,9 +128,9 @@ EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Operaci hled\u00e1n\u00ed nelze dokon\u01
 EXT_ID_HAS_MULTIPLE_VALUES.explanation=LDAP atribut pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor mus\u00ed b\u00fdt jedine\u010dn\u00fd a nesm\u00ed obsahovat v\u00edce hodnot.
 EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ujist\u011bte se, \u017ee pro extern\u00ed identifik\u00e1tor je vybr\u00e1n spr\u00e1vn\u00fd atribut. Pokud \u017e\u00e1dn\u00fd vhodn\u00fd atribut neexistuje, m\u016f\u017ee b\u00fdt jako extern\u00ed identifik\u00e1tor pou\u017eit rozli\u0161uj\u00edc\u00ed n\u00e1zev.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Konfigurovan\u00e1 definice z\u00e1kladn\u00ed polo\u017eky je neplatn\u00e1: {0}. Nakonfigurujte platnou definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml. P\u0159\u00edklad: <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation=Syntaxe pro definov\u00e1n\u00ed z\u00e1kladn\u00ed polo\u017eky je <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction=Opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Definice z\u00e1kladn\u00ed polo\u017eky {0} je neplatn\u00e1.  Opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Zadan\u00e1 definice z\u00e1kladn\u00ed polo\u017eky je neplatn\u00e1.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Nakonfigurujte platnou definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
 
 INVALID_DN_SYNTAX=CWIML4517E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) {0} je neplatn\u00fd. Zadejte spr\u00e1vnou syntaxi rozli\u0161uj\u00edc\u00edho n\u00e1zvu.
 INVALID_DN_SYNTAX.explanation=Uveden\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) je neplatn\u00fd. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez platn\u00e9ho rozli\u0161uj\u00edc\u00edho n\u00e1zvu pokra\u010dovat.
@@ -186,9 +187,9 @@ ENTITY_HAS_DESCENDENTS=CWIML4519E: Operaci registru u\u017eivatel\u016f nelze do
 ENTITY_HAS_DESCENDENTS.explanation=Funkce odstran\u011bn\u00ed nebo p\u0159ejmenov\u00e1n\u00ed m\u016f\u017ee b\u00fdt provedena na koncov\u00e9 entit\u011b, to je entit\u011b bez pod\u0159\u00edzen\u00fdch prvk\u016f. Uveden\u00e1 entita m\u00e1 pod\u0159\u00edzen\u00e9 prvky.
 ENTITY_HAS_DESCENDENTS.useraction=Odstra\u0148te nejprve v\u0161echny pod\u0159\u00edzen\u00e9 prvky entity, potom entitu odstra\u0148te nebo p\u0159ejmenujte.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. {0} nen\u00ed platn\u00fdm typem entity. Vyvolejte operaci zad\u00e1n\u00edm platn\u00e9ho typu entity.
-ENTITY_TYPE_NOT_SUPPORTED.explanation=Byla po\u017eadov\u00e1na operace s entitou, ale tato operace nepodporuje uveden\u00fd typ entity. Pokud nap\u0159\u00edklad vyvol\u00e1te pro entitu Account operaci GET, tato operace se nezda\u0159\u00ed.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Zkontrolujte, zda vyvol\u00e1v\u00e1te operace pro podporovan\u00e9 typy entit, a odeberte ze vstupu v\u0161echny nepodporovan\u00e9 typy entit.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Uveden\u00fd typ entity {0} nen\u00ed pro tuto operaci platn\u00fd.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Byla po\u017eadov\u00e1na operace s entitou, ale tato operace nepodporuje uveden\u00fd typ entity.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Zkontrolujte, zda entity uveden\u00e9 ve vstupu jsou podporovan\u00fdmi typy entit, a odeberte ze vstupu nepodporovan\u00e9 typy entit.
 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Nelze vytvo\u0159it nebo aktualizovat vlastnost {0} v \u00falo\u017ei\u0161ti {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=V operaci vytvo\u0159en\u00ed nebo aktualizace je uvedena hodnota vlastnosti, kterou nelze zapsat do \u00falo\u017ei\u0161t\u011b. Nap\u0159\u00edklad pro operaci CREATE nem\u016f\u017eete zadat principalName.
@@ -242,9 +243,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: P\u0159ihl\u00e1\u0161en\u00ed Kerbe
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Bu\u010f je zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos neplatn\u00fd, nebo je v\u00fdchoz\u00ed mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) neplatn\u00e1 nebo vypr\u0161ela jej\u00ed platnost.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a nevypr\u0161ela v\u00fdchoz\u00ed platnost mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos (ccache).
 
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a v\u00fdchoz\u00ed souboru keytab Kerberos.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos je neplatn\u00fd, nebo je neplatn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a je platn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
+# CWIML4510 already used
 
 KRB5_TICKETCACHE_USED=CWIML4511E: Registr LDAP {0} je nakonfigurov\u00e1n s n\u00e1zvem souboru mezipam\u011bti tiketu Kerberos (ccache) {1} a n\u00e1zvem souboru keytab {2}. Mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) se pou\u017e\u00edv\u00e1 pro ov\u011b\u0159en\u00ed vazeb Kerberos na server LDAP.
 KRB5_TICKETCACHE_USED.explanation=Chcete-li pou\u017e\u00edt keytab, mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru keytab a nesm\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru (ccache) mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos.
@@ -264,17 +263,15 @@ KRB5_FILE_NOT_FOUND=CWIML4515E: Atribut {0} z prvku {1} je nakonfigurov\u00e1n k
 KRB5_FILE_NOT_FOUND.explanation=Konfigurace odkazuje na soubor, kter\u00fd je bu\u010f ne\u010diteln\u00fd, nebo neexistuje.
 KRB5_FILE_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee konfigurace ukazuje na soubor, kter\u00fd existuje a kter\u00fd je \u010diteln\u00fd pro proces aplikace.
 
-KRB5_FILE_FOUND=CWIML4516E: Komponenta registru LDAP je nakonfigurov\u00e1na pro pou\u017eit\u00ed souboru {0} um\u00edst\u011bn\u00e9ho v {1}.
-KRB5_FILE_FOUND.explanation=Nakonfigurovan\u00fd soubor byl \u00fasp\u011b\u0161n\u011b um\u00edst\u011bn.
-KRB5_FILE_FOUND.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
-
+# CWIML4516 already used
 # CWIML4517 already used
 
 IDMAP_INVALID_FORMAT=CWIML4518W: Hodnota {0} {1} je chybn\u00e1. Hodnota mus\u00ed b\u00fdt st\u0159edn\u00edky odd\u011blen\u00fd seznam dvojic ''objectclass: attribute'' nebo ''*:attribute''.
 IDMAP_INVALID_FORMAT.explanation=Hodnota userIdMap mus\u00ed b\u00fdt v platn\u00e9m form\u00e1tu tak, aby bylo mo\u017en\u00e9 analyzovat t\u0159\u00eddu objekt\u016f a atribut.
 IDMAP_INVALID_FORMAT.useraction=Aktualizujte hodnotu userIdMap tak, aby odpov\u00eddala zadan\u00e9mu form\u00e1tu.
 
-# CWIML4519 and CWIML4520 already used
+# CWIML4519 already used
+# CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registr LDAP {0} se pokusil sv\u00e1zat se serverem LDAP s pou\u017eit\u00edm pov\u011b\u0159en\u00ed Kerberos pro n\u00e1zev \u010dinitele {1}, ale slu\u017eba Kerberos, kter\u00e1 poskytuje tato pov\u011b\u0159en\u00ed, nen\u00ed k dispozici. Mechanizmus ov\u011b\u0159ov\u00e1n\u00ed vazby: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Slu\u017eba Kerberos nebyla k dispozici, kdy\u017e se registr LDAP pokusil sv\u00e1zat se serverem LDAP. Nen\u00ed-li slu\u017eba ov\u011b\u0159ov\u00e1n\u00ed Kerberos k dispozici, nemohou prov\u00e9st ov\u011b\u0159en\u00ed \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
@@ -283,3 +280,8 @@ KRB5_SERVICE_NOT_AVAILABLE.useraction=Zkontrolujte nastaven\u00ed konfigurace re
 FILTER_MISSING_PERCENT_V=CWIML4523E: Hodnota {0} pro {1} je neplatn\u00e1. Vy\u017eaduje deklaraci hodnoty atributu, kde deklarace hodnoty je =%v. Nap\u0159. {2}.
 FILTER_MISSING_PERCENT_V.explanation=Registr LDAP nahrad\u00ed %v hodnotou, kterou m\u00e1 hledat p\u0159i vyhled\u00e1v\u00e1n\u00ed u\u017eivatel\u016f nebo skupin.
 FILTER_MISSING_PERCENT_V.useraction=Aktualizujte uveden\u00fd filtr, aby zahrnoval deklaraci hodnoty atributu, kter\u00e1 obsahuje =%v v deklaraci hodnoty.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a v\u00fdchoz\u00ed souboru keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos je neplatn\u00fd, nebo je neplatn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a je platn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
+

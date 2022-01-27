@@ -58,35 +58,35 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
-OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Die Suche nach dem Anwendungsnamen in JNDI hat keinen Wert zur\u00fcckgegeben. Es wird ein Standardname f\u00fcr den Opentracing-Service verwendet.
-OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=Das Feature stellt den Anwendungsnamen f\u00fcr die vom Benutzer bereitgestellte OpentracingTracerFactory-Implementierung bereit. Der Anwendungsname konnte mit der JNDI-Suche nach "java:app/AppName" nicht abgerufen werden. Es wurde ein Standardservicename bereitgestellt.
-OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Stellen Sie fest, warum der Anwendungsname bei der JNDI-Suche nach "java:app/AppName" nicht gefunden wurde.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Die Suche nach dem Anwendungsnamen in JNDI hat keinen Wert ergeben. F\u00fcr den Namen des Opentracing-Service wird ein Standardname verwendet.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=Das Feature stellt den Anwendungsnamen f\u00fcr die vom Benutzer bereitgestellte OpentracingTracerFactory-Implementierung bereit. Der Anwendungsname konnte nicht durch die JNDI-Lookup-Suche f\u00fcr "java:app/AppName" abgerufen werden. Es wurde ein Standardservicename angegeben.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Ermitteln Sie, warum der Anwendungsname nicht \u00fcber die JNDI-Abfrage von "java:app/AppName" verf\u00fcgbar ist.
 
-OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Der Aufruf der vom Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) ist mit einer Ausnahme fehlgeschlagen. Nachricht: {0}
-OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat eine Ausnahme zur\u00fcckgegeben.
-OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance eine Ausnahme zur\u00fcckgegeben hat.
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Der Aufruf der vom Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) schlug mit einer Ausnahme fehl. Nachricht = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Das Feature konstruiert Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance gab eine Ausnahme zur\u00fcck.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Ermitteln Sie, warum die vom Benutzer bereitgestellte Methode newInstance der OpentracingTracerFactory eine Ausnahme zur\u00fcckgegeben hat.
 
-OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Der Aufruf der von der Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) hat null zur\u00fcckgegeben.
-OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat null zur\u00fcckgegeben.
-OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance null zur\u00fcckgegeben hat.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Der Aufruf der vom Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) ergab Null
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Das Feature konstruiert Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Der Aufruf der vom Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) ergab Null.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Ermitteln Sie, warum die vom Benutzer bereitgestellte Methode newInstance der OpentracingTracerFactory Null zur\u00fcckgegeben hat.
 
-OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing kann JAX-RS-Anforderungen nicht verfolgen, weil keine OpentracingTracerFactory-Klasse angegeben wurde.
-OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing funktioniert nicht ordnungsgem\u00e4\u00df, weil keine OpentracingTracerFactory-Klasse angegeben wurde. JAX-RS-Anforderungen werden zwar normal ausgef\u00fchrt, aber sie werden nicht verfolgt.
-OPENTRACING_NO_TRACERFACTORY.useraction=Weitere Informationen finden Sie in der Dokumentation zur Aktivierung des verteilten OpenTracing-Tracings.
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing kann JAX-RS-Anfragen nicht verfolgen, da keine OpentracingTracerFactory-Klasse bereitgestellt wurde.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing funktioniert nicht richtig, weil keine OpentracingTracerFactory-Klasse bereitgestellt wurde. JAX-RS-Anforderungen werden normal ausgef\u00fchrt, aber nicht verfolgt.
+OPENTRACING_NO_TRACERFACTORY.useraction=Weitere Informationen finden Sie in der Dokumentation \u00fcber die Aktivierung der verteilten OpenTracing-Verfolgung.
 
-OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Der OpenTracing-Ausnahme-Mapper hat eine nicht behandelte Ausnahme der JAX-RS-Anwendung entdeckt und verarbeitet.
-OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=In der JAX-RS-basierte Anwendung ist eine Ausnahme eingetreten, die nicht innerhalb der Anwendung verarbeitet wurde. Der OpenTracing-Code verarbeitet sie, indem der Stack-Trace f\u00fcr Ausnahmebedingung protokolliert und eine Antwort des Typs '500 Internal Server Error' zur\u00fcckgegeben wird.
-OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Dieses Verhalten ist m\u00f6glicherweise zul\u00e4ssig. Wenn die Ausnahme anders verarbeitet werden soll, kann der Anwendungsentwickler eine ExceptionMapper-Schnittstelle zur Verarbeitung der Ausnahme hinzuf\u00fcgen und ihr eine andere Antwort zuordnen.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Der OpenTracing Exception Mapper hat eine unbehandelte Ausnahme der JAX-RS-Anwendung erkannt und behandelt diese.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=In der JAX-RS-basierte Anwendung ist eine Ausnahme eingetreten, die nicht innerhalb der Anwendung verarbeitet wurde. Der OpenTracing-Code verarbeitet sie, indem er den Stack-Trace f\u00fcr die Ausnahmebedingung protokolliert und eine 500 Internal Server Error-Antwort zur\u00fcckgibt.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Dieses Verhalten ist m\u00f6glicherweise zul\u00e4ssig. Wenn die Ausnahme anders verarbeitet werden soll, f\u00fcgen Sie eine ExceptionMapper-Schnittstelle zur Verarbeitung der Ausnahme hinzu und ordnen Sie ihr eine andere Antwort zu.
 
-OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing kann JAX-RS-Anforderungen nicht verfolgen, weil keine OpentracingTracerFactory-Klasse angegeben wurde oder weil Clientbibliotheken f\u00fcr das Back-End-Tracing nicht im Klassenpfad enthalten sind.
-OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS-Anforderungen werden normal ausgef\u00fchrt, aber sie werden nicht \u00fcberwacht.
-OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Weitere Informationen zur Aktivierung und Konfiguration des verteilten OpenTracing-Tracings finden Sie in der Dokumentation. Sie k\u00f6nnen diese Warnung ignorieren, wenn OpenTracing nicht verwendet wird.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing kann keine JAX-RS-Anforderungen verfolgen, da keine OpentracingTracerFactory-Klasse bereitgestellt wurde oder Clientbibliotheken f\u00fcr das Tracing-Back-End-Programm nicht im Klassenpfad enthalten sind.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS-Anforderungen werden normal ausgef\u00fchrt, aber sie werden nicht verfolgt.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Lesen Sie in der Dokumentation nach, wie Sie die verteilte Traceerstellung von OpenTracing aktivieren und konfigurieren. Diese Warnung kann sicher ignoriert werden, wenn die OpenTracing-Funktion nicht verwendet wird.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # An Opentracing API error has occurred: {0}
-temporary.CWMOT9999E=CWMOT9999E: In der Opentracing-API ist ein Fehler aufgetreten: {0}
-temporary.CWMOT9999E.explanation=In der Opentracing-API ist ein Fehler aufgetreten, der einen normalen Betrieb verhindert.
-temporary.CWMOT9999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.
+temporary.CWMOT9999E=CWMOT9999E: Ein OpenTracing-API-Fehler ist aufgetreten: {0}
+temporary.CWMOT9999E.explanation=Es ist ein Opentracing-API-Fehler aufgetreten, der den normalen Betrieb verhindert.
+temporary.CWMOT9999E.useraction=\u00dcberpr\u00fcfen Sie die FFDC-Protokolle und den Ausnahmetext, um das Problem zu identifizieren.

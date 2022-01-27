@@ -49,6 +49,7 @@ UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=\u00dcberpr\u00fcfen Sie das P
 UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: Der Server kann den Inhalt der Datei {1} im Paket des JPA-Providers (Java Persistence API) {0} nicht lesen. Es ist der folgende Fehler aufgetreten: {2}
 UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=W\u00e4hrend der Serververarbeitung f\u00fcr den Standard-JPA-Provider konnte der Server den Inhalt einer Datei im Paket des JPA-Providers nicht lesen.
 UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=\u00dcberpr\u00fcfen Sie das Paket des JPA-Providers, um festzustellen, ob die Datei META-INF/services/javax.persistence.spi.PersistenceProvider vorhanden und ordnungsgem\u00e4\u00df formatiert ist. 
+
 #-------------------------------------------------------------------------------
 EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: Der erweiterte Persistenzkontext {0} kann nur innerhalb des Geltungsbereichs einer Stateful-Session-Bean initialisiert werden.
 EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=Die JPA-Spezifikation (Java Persistence API) erfordert, dass ein erweiterter Persistenzkontext nur innerhalb des Geltungsbereichs einer Stateful-Session-Bean initialisiert wird. Die Anwendung versuchte jedoch, den erweiterten Persistenzkontext innerhalb des Geltungsbereichs eines anderen Bean-Typs zu initialisieren.
@@ -63,10 +64,12 @@ NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=Wenden Sie sich an Ihren S
 APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: Die Persistenzeinheit {0} im Modul {1} verwendet den ClassLoader-Typ {2}. Die JPA-Entit\u00e4tsfunktion (Java Persistence API) arbeitet m\u00f6glicherweise nicht wie erwartet.
 APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=Zum Aktivieren der vollst\u00e4ndigen JPA-Unterst\u00fctzung muss der Persistenzprovider eventuell eine Codeinjektion in die JPA-Entit\u00e4t vornehmen. Die JPA-Codeinjektion wird vom aktiven ClassLoader-Typ nicht unterst\u00fctzt. Daher funktioniert eine JPA m\u00f6glicherweise nicht wie erwartet.
 APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: Die Klasse {0} wird als JPA-Standardpersistenzprovider (Java Persistence API) geladen.
 DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: Die Persistenzeinheit {0}  im Modul {2} der Anwendung {1} ist bereits definiert.
 DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=Gem\u00e4\u00df Abschnitt 6.2 der JPA-Spezifikation (Java Persistence API) muss der Name der Persistenzeinheit innerhalb einer EJB-JAR-Datei, einer WAR-Datei, einer Anwendungsclient-JAR- oder einer EAR-Datei eindeutig sein. Die \u00fcberz\u00e4hlige Persistenzeinheit wird ignoriert.
@@ -76,6 +79,7 @@ DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=Bevor Sie die Operation
 NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: Der Server kann die JTA-Registry (Java Transaction API) mit dem Namen {0} f\u00fcr das JNDI-Lookup (Java Naming Directory Interface) nicht lokalisieren. Es ist der folgende Fehler aufgetreten: {1}
 NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=Die Serverlaufzeit kann den Operationsthread keiner Java EE 5-Anwendungskomponente (Java Platform, Enterprise Edition 5) zuordnen. Diese Bedingung kann auftreten, wenn der JNDI-Client, der den java:-Namen verwendet, nicht im Thread einer Serveranwendungsanforderung ausgef\u00fchrt wird.
 NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Stellen Sie sicher, dass eine Java EE 5-Anwendung keine JNDI-Operationen f\u00fcr java:-Namen in statischen Codebl\u00f6cken oder in Threads ausf\u00fchrt, die von dieser Java EE 5-Anwendung erstellt wurden. Solcher Code wird nicht unbedingt im Thread einer Serveranwendungsanforderung ausgef\u00fchrt und wird deshalb von JNDI-Operationen f\u00fcr java:-Namen nicht unterst\u00fctzt. 
+
 #-------------------------------------------------------------------------------
 UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: Der Server kann keine EntityManagerFactory-Factory f\u00fcr die persistente Einheit {0} aus dem Provider {1} im Modul {2} erstellen.
 UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=Die Methode createContainerEntityManagerFactory des JPA-Providers (Java Persistence API) konnte keine EntityManagerFactory zur\u00fcckgeben. Dieser Fall kann eintreten, wenn ein falscher JPA-Provider f\u00fcr die persistente Einheit verwendet wird oder wenn ein Fehler im JPA-Provider aufgetreten ist.
@@ -105,6 +109,7 @@ ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Korrigieren S
 CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: Beim Versuch des Persistenzproviders {0}, die Factory des Containerentit\u00e4tsmanagers f\u00fcr die Persistenzeinheit {1} zu erstellen, trat ein Fehler auf. Es ist der folgende Fehler aufgetreten: {2}
 CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=Die Methode createContainerEntityManagerFactory des JPA-Providers (Java Persistence API) konnte keine EntityManagerFactory zur\u00fcckgeben.
 CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Wenden Sie sich an den JPA-Provider des Ressourcenadapters. 
+
 #-------------------------------------------------------------------------------
 DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: In der Implementierungsbeschreibungsdatei {1} sind mehrere &lt;persistence-context-ref&gt;-Elemente mit dem Namen {0} deklariert.
 DUPL_PCTXT_REF_CWWJP0016W.explanation=In der Implementierungsbeschreibungsdatei sind mehrere Referenzen auf den Persistenzkontext mit dem Namen deklariert. Alle Instanzen au\u00dfer der ersten Instanz werden ignoriert.
@@ -114,6 +119,7 @@ DUPL_PCTXT_REF_CWWJP0016W.useraction=Bevor Sie die Operation wiederholen, sollte
 JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: Die JPA-Komponente (Java Persistence API) wurde gestartet.
 JPA_HAS_STARTED_CWWJP0017I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 JPA_HAS_STARTED_CWWJP0017I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: Es wurde eine falsche Syntax oder ein Fehler in der Datei {0} gefunden. Folgende zugeordnete Fehlernachricht wird angezeigt: {1}
 MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Eine XML-Datei enth\u00e4lt einen oder mehrere Fehler und sie entspricht nicht der Schemadefinition. Die Anwendung funktioniert m\u00f6glicherweise nicht wie erwartet.
@@ -133,10 +139,12 @@ STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=\u00dcberpr\u00fcfen Si
 JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: Die JPA-Komponente (Java Persistence API) ist inaktiviert.
 JPA_IS_DISABLED_CWWJP0022I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 JPA_IS_DISABLED_CWWJP0022I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: Der Server kann keine EntityManagerFactory-Instanz f\u00fcr die Persistenzeinheit {0} f\u00fcr eine Abh\u00e4ngigkeitsinjektion in das Modul {2} der Anwendung {1} erstellen.
 UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=Die Persistenzeinheit und die Annotation zur Abh\u00e4ngigkeitsinjektion m\u00fcssen ordnungsgem\u00e4\u00df definiert sein.
 UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=\u00dcberpr\u00fcfen Sie, ob die Persistenzeinheit und die Annotation zur Abh\u00e4ngigkeitsinjektion ordnungsgem\u00e4\u00df definiert sind. Wiederholen Sie den Prozess. 
+
 #-------------------------------------------------------------------------------
 INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: Die JAR-Dateispezifikation (Java-Archiv) {0} f\u00fcr die Persistenzeinheit {1} ist nicht korrekt.
 INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=Die JAR-Dateispezifikation f\u00fcr die Persistenzeinheit ist fehlerhaft. Daher kann die JPA-Komponente (Java Persistence API) diese Daten nicht an den Persistenzprovider liefern.
@@ -151,14 +159,17 @@ INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
 JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: Die JPA-Komponente (Java Persistence API) wird initialisiert.
 JPA_IS_INITIALIZING_CWWJP0026I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 JPA_IS_INITIALIZING_CWWJP0026I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: Die JPA-Komponente (Java Persistence API) wurde initialisiert.
 JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: Die JPA-Komponente (Java Persistence API) wird gestartet.
 JPA_IS_STARTING_CWWJP0028I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 JPA_IS_STARTING_CWWJP0028I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: Der Server kann die Persistenzeinheit {2} im Modul {1} und in der Anwendung {0} nicht finden.
 PU_NOT_FOUND_CWWJP0029E.explanation=Eine Anwendung hat eine Persistenzeinheitenreferenz f\u00fcr eine Persistenzeinheit definiert, die bei der Suche von META-INF/persistence.xml in allen Dateien und Verzeichnissen im Klassenpfad nicht gefunden wurde.
@@ -178,10 +189,12 @@ DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Stellen Sie siche
 CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: Der Aufruf der Methode "java.sql.Connection" ist mit folgendem Fehler gescheitert: {0}
 CONNECTION_NOT_FOUND_CWWJP0032E.explanation=Eine andere java.sql.Connection-Methode als die Methode close oder die Methode isClosed kann nicht aufgerufen werden, weil die Serverlaufzeit den Operationsthread keiner Java EE 5-Anwendungskomponente (Java Platform, Enterprise Edition 5) zuordnen kann. Diese Bedingung kann auftreten, wenn der JNDI-Client (Java Naming and Directory Interface), der den java:-Namen verwendet, nicht im Thread einer Serveranwendungsanforderung ausgef\u00fchrt wird.
 CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Stellen Sie sicher, dass eine Java EE-5-Anwendung keine JNDI-Operationen f\u00fcr java:-Namen in statischen Codebl\u00f6cken oder in Threads ausf\u00fchrt, die von dieser Java EE 5-Anwendung erstellt wurden. Dieser Code wird nicht unbedingt im Thread einer Serveranwendungsanforderung ausgef\u00fchrt. Deshalb wird er von JNDI-Operationen f\u00fcr java:-Namen nicht unterst\u00fctzt. 
+
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Der Server kann die Datenquelle {0} im Komponenten-Namespace f\u00fcr die Persistenzeinheit {1} nicht lokalisieren, weil im Thread kein Komponentenkontext existiert.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Die Datenquelle wurde nicht gefunden, weil die Serverlaufzeit den Operationsthread keiner Java EE 5-Anwendungskomponente (Java Platform, Enterprise Edition 5) zuordnen kann. Diese Bedingung kann auftreten, wenn der JNDI-Client (Java Naming and Directory Interface), der den \"java:\"-Namen verwendet, nicht im Thread einer Serveranwendungsanforderung ausgef\u00fchrt wird.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Die Datenquelle wurde nicht gefunden, weil die Serverlaufzeit den Operationsthread keiner Java EE 5-Anwendungskomponente (Java Platform, Enterprise Edition 5) zuordnen kann. Diese Bedingung kann auftreten, wenn der JNDI-Client (Java Naming and Directory Interface), der den "java:"-Namen verwendet, nicht im Thread einer Serveranwendungsanforderung ausgef\u00fchrt wird.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Stellen Sie sicher, dass eine Java EE 5-Anwendung keine JNDI-Operationen f\u00fcr java:-Namen in statischen Codebl\u00f6cken oder in Threads ausf\u00fchrt, die von dieser Java EE 5-Anwendung erstellt wurden. Dieser Code wird nicht unbedingt im Thread einer Serveranwendungsanforderung ausgef\u00fchrt. Deshalb wird er von JNDI-Operationen f\u00fcr java:-Namen nicht unterst\u00fctzt. 
+
 #----------------------------------
 ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: This message is an English-only Informational message: {0}.
 ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=This informational message is not translated.
@@ -256,6 +269,7 @@ JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=\u00c4ndern Sie die @Pe
 REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: Der JPA-Service f\u00fcr die JPA-Spezifikationsstufe {0} wurde initialisiert.
 REPORT_JPARUNTIME_CWWJP0048I.explanation=Diese Nachricht ist nur zu Ihrer Information bestimmt.
 REPORT_JPARUNTIME_CWWJP0048I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 # 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
 INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: Die Klasse {0}, die ein integrierter Persistenzprovider f\u00fcr JPA {1} ist, wurde nicht gefunden. Der Server ist momentan f\u00fcr JPA {2} konfiguriert, was dem integrierten Persistenzprovider {3} entspricht. Die JPA-Spezifikationsstufe eines Servers oder Clusters kann \u00fcber die Administrationskonsole oder mit der AdminTask modifyJPASpecLevel ge\u00e4ndert werden. Alternativ k\u00f6nnen Sie die Anwendung so aktualisieren, dass sie einen Persistenzprovider verwendet, der mit JPA {2} kompatibel ist.
@@ -266,19 +280,23 @@ INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=\u00c4ndern Sie den Server bzw. die Ko
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: Der Persistenzprovider {0} wurde nicht gefunden.
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=Die JPA-Providerklasse wurde nicht gefunden.
 JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=\u00c4ndern Sie den Server bzw. die Konfiguration so, dass eine vom angegebenen Persistenzprovider unterst\u00fctzte JPA-Spezifikationsstufe verwendet wird. 
+
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
 NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: Es wurde kein Standardpersistenzprovider in der Serverkonfiguration gefunden. Zum Konfigurieren eines Standardpersistenzproviders verwenden Sie die <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>-Konfiguration oder aktivieren Sie das Feature bells-1.0 und konfigurieren Sie <bell> f\u00fcr die <library> mit dem JPA-Provider. 
 NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=Es wurde keine Implementierung von javax.persistence.spi.PersistenceProvider gefunden.
 NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Zum Konfigurieren eines Standardpersistenzproviders verwenden Sie die <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>-Konfiguration oder aktivieren Sie das Feature bells-1.0 und konfigurieren Sie <bell> f\u00fcr die <library> mit dem JPA-Provider. 
+
 #-------------------------------------------------------------------------------
 JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Es wird ein JPA-Provider eines anderen Anbieters ({0}) verwendet.
 JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Gibt den Klassennamen des verwendeten Persistenzproviders einer JPA-Implementierung eines anderen Anbieters an.
 JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: {0} wird als JPA-Provider eines anderen Anbieters verwendet. Versionsinformation: {1}. 
 JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=Gibt den Namen und die Versionsinformationen einer verwendeten JPA-Implementierung eines anderen Anbieters an.
 JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Es ist keine Aktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Die {0}-Implementierung, {1}, ist nicht kompatibel mit der JPA-2.1-Spezifikation und kann daher nicht verwendet werden. Verwenden Sie eine neuere Version des JPA-Persistenzproviders, der JPA 2.1 implementiert.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Der JPA-Persistenzprovider kann nicht verwendet werden, da er nicht die von der JPA-2.1-Spezifikation erforderlichen Implementierungsmethoden enth\u00e4lt.
@@ -290,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Der Klassencache ist m\u00f6glich
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Eine in der Datei server.xml konfigurierte JPA-Standardeigenschaft enth\u00e4lt einen leeren Namen oder einen leeren Wert: Name = [{0}], Wert = [{1}]. Die Eigenschaft wird ignoriert.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Eine JPA-Standardeigenschaft, die einen leeren Namen oder einen leeren Wert enth\u00e4lt, wird in der Datei server.xml konfiguriert: name = [{0}], value = [{1}]. Diese Eigenschaft wird ignoriert.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Die Namens- und Wertattribute f\u00fcr JPA-Standardeigenschaften d\u00fcrfen nicht leer sein.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=\u00c4ndern Sie die Serverkonfiguration so, dass ein Name und ein Wert f\u00fcr die Eigenschaft angegeben sind, oder entfernen Sie die Eigenschaft.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: Eine JPA-Standardeigenschaft, die nur f\u00fcr die Verwendung in Java-SE-Umgebungen bestimmt ist, wird in der Datei server.xml konfiguriert: name = [{0}], value = [{1}]. Diese Eigenschaft wird ignoriert.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Diese JPA-Standardeigenschaft wird in einer Java-EE-Umgebung verwendet. Sie ist jedoch nur f\u00fcr die Verwendung in Java-SE-Umgebungen vorgesehen.
+JDBC_PROP_NAME_CWWJP0057W.useraction=\u00c4ndern Sie die Server- und Anwendungskonfiguration so, dass sie eine JNDI-Datenquelle verwendet, und entfernen Sie die Eigenschaft.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -152,13 +153,13 @@
 
 7093=A(z) [{0}] nev\u0171 lek\u00e9rdez\u00e9sben a(z) [{1}] nev\u0171 lek\u00e9rdez\u00e9si argumentum [{2}] oszt\u00e1lya nem tal\u00e1lhat\u00f3. Foglalja bele a hi\u00e1nyz\u00f3 oszt\u00e1lyt az oszt\u00e1ly\u00fatvonalba.
 
-7095=A(z) [{0}] sessions.xml er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a SessionManager.getSession met\u00f3dusnak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A sessions.xml f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a sessions.xml az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+7095=A sessions.xml er\u0151forr\u00e1s [{0}] nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Ellen\u0151rizze, hogy a SessionManager.getSession met\u00f3dusnak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1lybet\u00f6lt\u0151 helyes-e.  A sessions.xml f\u00e1jlnak az alkalmaz\u00e1s telep\u00edtett jar f\u00e1jlj\u00e1nak gy\u00f6ker\u00e9ben kell lennie. Ha a sessions.xml az alkalmaz\u00e1s jar egy alk\u00f6nyvt\u00e1r\u00e1ban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes er\u0151forr\u00e1s-\u00fatvonal nem " \\", hanem "/" haszn\u00e1lat\u00e1val lett megadva.
 
 7096=Nem haszn\u00e1lhat\u00f3 commit() met\u00f3dus a UnitOfWork ism\u00e9telt v\u00e9gleges\u00edt\u00e9s\u00e9re.
 
 7097=A m\u0171velet nem t\u00e1mogatott: [{0}].
 
-7099=A(z) [{0}] telep\u00edt\u00e9si projekt XML er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a XMLProjectReader elemnek \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A projekt XML f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a projekt XML az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+7099=A(z) [{0}] telep\u00edt\u00e9si projekt XML er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Ellen\u0151rizze, hogy az XMLProjectReader oszt\u00e1lynak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1lybet\u00f6lt\u0151 helyes-e.  A project.xml f\u00e1jlnak az alkalmaz\u00e1s telep\u00edtett jar f\u00e1jlj\u00e1nak gy\u00f6ker\u00e9ben kell lennie. Ha a project.xml az alkalmaz\u00e1s jar egy alk\u00f6nyvt\u00e1r\u00e1ban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes er\u0151forr\u00e1s-\u00fatvonal nem " \\", hanem "/" haszn\u00e1lat\u00e1val lett megadva.
 
 7100=A(z) [{0}] nev\u0171 munkamenet nem tal\u00e1lhat\u00f3 a session.xml f\u00e1jlban [{1}]
 
@@ -606,7 +607,7 @@
 
 7342=A nat\u00edv sql lek\u00e9rdez\u00e9sek enged\u00e9lyez\u00e9se be\u00e1ll\u00edt\u00e1s\u00e1hoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
 
-7343=T\u00f6bb VPD azonos\u00edt\u00f3 (b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 kontextus tulajdons\u00e1g) lett megadva. A(z) [{1}] entit\u00e1s [{0}] azonos\u00edt\u00f3t haszn\u00e1l, a(z) [{3]} entit\u00e1s pedig [{2}] azonos\u00edt\u00f3t. T\u00f6bb b\u00e9rl\u0151s VPD strat\u00e9gia haszn\u00e1latakor entit\u00e1sonk\u00e9nt csak egyetlen b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlop lehet, \u00e9s a kontextus tulajdons\u00e1g\u00e1nak konzisztensnek kell lennie az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s VPD entit\u00e1sra vonatkoz\u00f3an.
+7343=T\u00f6bb VPD azonos\u00edt\u00f3 (b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 kontextustulajdons\u00e1g) lett megadva. A(z) [{1}] entit\u00e1s a k\u00f6vetkez\u0151t haszn\u00e1lja: [{0}], \u00e9s a(z) [{3}] entit\u00e1s a k\u00f6vetkez\u0151t: [{2}]. T\u00f6bb-b\u00e9rl\u0151s VPD strat\u00e9gia haszn\u00e1latakor entit\u00e1sonk\u00e9nt csak egy b\u00e9rl\u0151megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlop alkalmazhat\u00f3, \u00e9s a hozz\u00e1 tartoz\u00f3 kontextustulajdons\u00e1gnak az \u00f6sszes t\u00f6bbszint\u0171 VPD entit\u00e1sra vonatkoz\u00f3an k\u00f6vetkezetesnek kell lennie.
 
 7344=A VPD (kapcsolatok \u00e9s DDL el\u0151\u00e1ll\u00edt\u00e1s) nem t\u00e1mogatott a platformhoz: [{0}].
 
