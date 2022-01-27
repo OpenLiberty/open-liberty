@@ -212,5 +212,6 @@ error.jacksonproviderregister.exception.useraction= Gondoskodj\u00e9k r\u00f3la,
 
 warn.invalid.authorization.token.type=CWWKW0061W: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott {0} jogosults\u00e1gtoken-t\u00edpus \u00e9rv\u00e9nytelen \u00e9s figyelmen k\u00edv\u00fcl marad.
 warn.invalid.authorization.token.type.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott jogosults\u00e1gtoken-t\u00edpus \u00e9rv\u00e9nytelen.
-warn.invalid.authorization.token.type.useraction=Adjon meg \u00e9rv\u00e9nyes jogosults\u00e1g-token-t\u00edpust. 
-  
+warn.invalid.authorization.token.type.useraction=Adjon meg \u00e9rv\u00e9nyes jogosults\u00e1g-token-t\u00edpust.
+
+continuation.not.supported=A folytat\u00e1s nem t\u00e1mogatott. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00f6sszes szervlet \u00e9s szervletsz\u0171r\u0151 t\u00e1mogatja az aszinkron m\u0171veleteket.

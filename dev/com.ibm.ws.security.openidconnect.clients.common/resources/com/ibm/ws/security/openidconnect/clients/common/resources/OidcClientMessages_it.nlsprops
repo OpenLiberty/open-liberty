@@ -110,7 +110,7 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Il validationEndpointUrl speci
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aggiornare la configurazione del client OpenID Connect modificando il validationMethod o il validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributo di configurazione [{1}] non \u00e8 valido. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributoo di configurazione [{1}] non \u00e8 valido. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Il token di accesso fornito ha un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto per l'attributo.
 

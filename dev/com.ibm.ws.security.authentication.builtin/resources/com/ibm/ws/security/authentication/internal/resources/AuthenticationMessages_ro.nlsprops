@@ -45,8 +45,8 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Autentificarea nu a
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Asigura\u0163i-v\u0103 c\u0103 elementul loginModuleRef are un element jaasLoginModule configurat.
 
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Nu poate \u00eenc\u0103rca modulul de logare JAAS din biblioteca partajat\u0103.  O excep\u0163ie intern\u0103 a survenit.
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=A ap\u0103rut o eroare intern\u0103.
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=S-a produs o eroare intern\u0103.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: Autentificarea nu a avut succes pentru ID-ul utilizator {0}. A fost specificat un ID utilizator invalid.
 JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=Autentificarea nu a avut succes deoarece ID-ul utilizator specificat nu este valid.
@@ -55,10 +55,6 @@ JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Verifica\u0163i c\u0103 ID-ul util
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Op\u0163iunile WSLoginModuleProxy sunt nule sau goale.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Autentificarea nu a reu\u015fit \u00eentruc\u00e2t elementul op\u0163iuni WSLoginModuleProxy este nul sau gol.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Verifica\u0163i c\u0103 configura\u0163ia WSLoginModuleProxy include elementul op\u0163iuni.
-
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Op\u0163iunea de delegare WSLoginModuleProxy nu este setat\u0103.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Autentificarea nu a reu\u015fit \u00eentruc\u00e2t jaasLoginModule cu ID WSLoginModuleProxy nu are atributul de delegare \u00een elementul op\u0163iuni.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verifica\u0163i c\u0103 jaasLoginModule cu ID WSLoginModuleProxy include atributul de delegare pe elementul op\u0163iuni.  
 
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy nu este suportat \u00een jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=WSLoginModuleProxy nu este suportat \u00een jaasLoginContextEntry system.DEFAULT.

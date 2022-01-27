@@ -363,12 +363,12 @@ INVALID_POOLSIZE_COMBO_CNTR0059W.useraction=M\u00f3dos\u00edtsa a maxim\u00e1lis
 # --------------------------------
 POOLSIZE_VALUES_CNTR0060I=CNTR0060I: (Min,Max) t\u00e1rol\u00f3m\u00e9ret ({0},{1}) a(z) {2} komponenshez
 POOLSIZE_VALUES_CNTR0060I.explanation=Ezek a maxim\u00e1lis \u00e9s minim\u00e1lis t\u00e1rol\u00f3\u00e9rt\u00e9kek, amelyek felhaszn\u00e1l\u00e1sra ker\u00fclnek ehhez a komponenst\u00edpushoz.
-POOLSIZE_VALUES_CNTR0060I.useraction=Semmit sem kell tennie.
+POOLSIZE_VALUES_CNTR0060I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 # --------------------------------
 FBPK_READONLY_OVERRIDE_ALL_CNTR0061I=CNTR0061I: A findByPrimaryKey met\u00f3dus csak olvashat\u00f3 attrib\u00fatuma a komponenshez \u00fajradefini\u00e1l\u00e1sra ker\u00fclt true \u00e9rt\u00e9kkel: <All>
 FBPK_READONLY_OVERRIDE_ALL_CNTR0061I.explanation=A felhaszn\u00e1l\u00f3 megadta, hogy a findByPrimaryKey csak olvashat\u00f3 attrib\u00fatum minden entit\u00e1skomponensen \u00fajradefini\u00e1l\u00e1sra ker\u00fclj\u00f6n true (igaz) \u00e9rt\u00e9kkel.
-FBPK_READONLY_OVERRIDE_ALL_CNTR0061I.useraction=Semmit sem kell tennie.
+FBPK_READONLY_OVERRIDE_ALL_CNTR0061I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 # --------------------------------
 POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W=CNTR0062W: Nem tal\u00e1lhat\u00f3 egyenl\u0151s\u00e9gjel a t\u00e1rol\u00f3m\u00e9ret-specifik\u00e1ci\u00f3s karaktersorozatban: {0}
@@ -550,72 +550,72 @@ MISSING_CONTAINER_DRSSETTINGS_CNTR0097W.useraction=Tiltsa le az \u00e1llapot\u01
 #-------------------------------------------------------------------------------
 FBF_DISABLED_CNTR0098I=CNTR0098I: A t\u00e1rol\u00f3kezel\u00e9s\u0171 el\u0151zetesen keresett \u00e1lland\u00f3 t\u00e1rol\u00f3 szinkroniz\u00e1l\u00e1s le van tiltva a(z) "{0}" komponenshez.
 FBF_DISABLED_CNTR0098I.explanation=Az alkalmaz\u00e1s \u00fagy ker\u00fclt be\u00e1ll\u00edt\u00e1sra ezen komponens sz\u00e1m\u00e1ra, hogy az egy\u00e9ni findBy met\u00f3dusok megh\u00edv\u00e1sa el\u0151tt a komponens ne szinkroniz\u00e1ljon az \u00e1lland\u00f3 t\u00e1rol\u00f3val. Ez a viselked\u00e9s nem felel meg az EJB V2.0 \u00e9s k\u00e9s\u0151bbi specifik\u00e1ci\u00f3knak, de jav\u00edthatja a teljes\u00edtm\u00e9nyt.
-FBF_DISABLED_CNTR0098I.useraction=Semmit sem kell tennie.
+FBF_DISABLED_CNTR0098I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_INIT_CNTR0099I=CNTR0099I: {0} szolg\u00e1ltat\u00e1s sikeresen inicializ\u00e1lva lett.
 SFB_CONTROLLER_INIT_CNTR0099I.explanation=A z/OS Controller Service for Stateful SessionBean t\u00e1mogat\u00e1s a DRS-ben sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
-SFB_CONTROLLER_INIT_CNTR0099I.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_INIT_CNTR0099I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_EXCEPTION_CNTR0100E=CNTR0100E: A(z) {0} met\u00f3dus kiv\u00e9telt \u00e9szlelt: {1}
 SFB_CONTROLLER_EXCEPTION_CNTR0100E.explanation=A megadott met\u00f3dusban kiv\u00e9tel t\u00f6rt\u00e9nt.
-SFB_CONTROLLER_EXCEPTION_CNTR0100E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_EXCEPTION_CNTR0100E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_NULLTOKEN_CNTR0101E=CNTR0101E: A(z) {0} met\u00f3dus token null.
 SFB_CONTROLLER_NULLTOKEN_CNTR0101E.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 al\u00e1rendelt tokent kapott.
-SFB_CONTROLLER_NULLTOKEN_CNTR0101E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_NULLTOKEN_CNTR0101E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_ENTRYKEY_CNTR0102E=CNTR0102E: A(z) {0} met\u00f3dus entryKey null.
 SFB_CONTROLLER_ENTRYKEY_CNTR0102E.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 entryKey param\u00e9tert kapott.
-SFB_CONTROLLER_ENTRYKEY_CNTR0102E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_ENTRYKEY_CNTR0102E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_KEYVALUE_CNTR0103E=CNTR0103E: A(z) {0} met\u00f3dus\u00e9rt\u00e9k null.
 SFB_CONTROLLER_KEYVALUE_CNTR0103E.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 entryKey \u00e9rt\u00e9ket kapott.
-SFB_CONTROLLER_KEYVALUE_CNTR0103E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_KEYVALUE_CNTR0103E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_KEYBYTES_CNTR0104E=CNTR0104E: A(z) {0} met\u00f3dus az entryKey param\u00e9tert nem tudta byte-t\u00f6mbb\u00e9 alak\u00edtani.
 SFB_CONTROLLER_KEYBYTES_CNTR0104E.explanation=A megadott met\u00f3dus az entryKey param\u00e9tert nem tudta byte-t\u00f6mbb\u00e9 alak\u00edtani.
-SFB_CONTROLLER_KEYBYTES_CNTR0104E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_KEYBYTES_CNTR0104E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_EXCEPTOKEN_CNTR0105E=CNTR0105E: A(z) {0} met\u00f3dus kiv\u00e9telt \u00e9szlelt: {1}   stoken = {2}.
 SFB_CONTROLLER_EXCEPTOKEN_CNTR0105E.explanation=A megadott met\u00f3dus elfogott egy kiv\u00e9telt az al\u00e1rendelt token feldolgoz\u00e1sakor.
-SFB_CONTROLLER_EXCEPTOKEN_CNTR0105E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_EXCEPTOKEN_CNTR0105E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_NOPROXY_CNTR0106E=CNTR0106E: A(z) {0} az stokenhez nem tud proxyt szerezni = {1}.
 SFB_CONTROLLER_NOPROXY_CNTR0106E.explanation=A megadott met\u00f3dus nem tudott beszerezni proxyt az al\u00e1rendelt token feldolgoz\u00e1s\u00e1hoz.
-SFB_CONTROLLER_NOPROXY_CNTR0106E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_NOPROXY_CNTR0106E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_TOKENBYTES_CNTR0107E=CNTR0107E: A(z) {0} met\u00f3dus nem tudja a tokent byte-t\u00f6mbb\u00e9 alak\u00edtani:  stoken = {1}.
 SFB_CONTROLLER_TOKENBYTES_CNTR0107E.explanation=A megadott met\u00f3dus az al\u00e1rendelt tokent nem tudta byte-t\u00f6mbb\u00e9 alak\u00edtani.
-SFB_CONTROLLER_TOKENBYTES_CNTR0107E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_TOKENBYTES_CNTR0107E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_EXCEPTPROXY_CNTR0108E=CNTR0108E: A(z) {0} met\u00f3dus {1} kiv\u00e9telt \u00e9szlelt a proxy tokenhez lek\u00e9r\u00e9se sor\u00e1n =  {2}.
 SFB_CONTROLLER_EXCEPTPROXY_CNTR0108E.explanation=A megadott met\u00f3dus elfogott egy kiv\u00e9telt proxy beszerz\u00e9se k\u00f6zben az al\u00e1rendelt token feldolgoz\u00e1s\u00e1hoz.
-SFB_CONTROLLER_EXCEPTPROXY_CNTR0108E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_EXCEPTPROXY_CNTR0108E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_EVENT_CNTR0109E=CNTR0109E: A(z) {0} met\u00f3dus esem\u00e9nyparam\u00e9tere null.
 SFB_CONTROLLER_EVENT_CNTR0109E.explanation=A megadott met\u00f3dus null esem\u00e9nyparam\u00e9tert kapott.
-SFB_CONTROLLER_EVENT_CNTR0109E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_EVENT_CNTR0109E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_VALUEBYTES_CNTR0110E=CNTR0110E: A(z) {0} \u00e1talak\u00edt\u00f3 nem tudja az \u00e9rt\u00e9ket byte-t\u00f6mbb\u00e9 alak\u00edtani.
 SFB_CONTROLLER_VALUEBYTES_CNTR0110E.explanation=A megadott met\u00f3dus az \u00e1tadott entryKey param\u00e9ter \u00e9rt\u00e9ket nem tudta byte-t\u00f6mbb\u00e9 alak\u00edtani.
-SFB_CONTROLLER_VALUEBYTES_CNTR0110E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_VALUEBYTES_CNTR0110E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_EVENTBYTES_CNTR0111E=CNTR0111E: A(z) {0} met\u00f3dus nem tud esem\u00e9nyt byte adatt\u00f6mbb\u00e9 alak\u00edtani: stoken = {1}.
 SFB_CONTROLLER_EVENTBYTES_CNTR0111E.explanation=A megadott met\u00f3dus az esem\u00e9nyt nem tudta byte-t\u00f6mbb\u00e9 alak\u00edtani.
-SFB_CONTROLLER_EVENTBYTES_CNTR0111E.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_EVENTBYTES_CNTR0111E.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 MDB_MUST_IMPLEMENT_INTERFACE_CNTR0112E=CNTR0112E: A(z) "{0}" felhaszn\u00e1l\u00f3 \u00e1ltal biztos\u00edtott oszt\u00e1lynak meg kell val\u00f3s\u00edtani a(z) "{1}" fel\u00fcletet.
@@ -625,32 +625,32 @@ MDB_MUST_IMPLEMENT_INTERFACE_CNTR0112E.useraction=M\u00f3dos\u00edtsa az oszt\u0
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_DRSEVENT_REPLICATION_UP_CNTR0113I=CNTR0113I: A(z) {0} SfDRSControllerInstance REPLICATION_UP esem\u00e9nyt kapott.
 SFB_CONTROLLER_DRSEVENT_REPLICATION_UP_CNTR0113I.explanation=A megadott SfDRSControllerInstance REPLICATION_UP esem\u00e9nyt kapott.
-SFB_CONTROLLER_DRSEVENT_REPLICATION_UP_CNTR0113I.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_DRSEVENT_REPLICATION_UP_CNTR0113I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_DRSEVENT_REPLICATION_DOWN_CNTR0114I=CNTR0114I: A(z) {0} SfDRSControllerInstance REPLICATION_DOWN esem\u00e9nyt kapott.
 SFB_CONTROLLER_DRSEVENT_REPLICATION_DOWN_CNTR0114I.explanation=A megadott SfDRSControllerInstance REPLICATION_DOWN esem\u00e9nyt kapott.
-SFB_CONTROLLER_DRSEVENT_REPLICATION_DOWN_CNTR0114I.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_DRSEVENT_REPLICATION_DOWN_CNTR0114I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_DRSEVENT_IS_CONGESTED_CNTR0115I=CNTR0115I: A(z) {0} SfDRSControllerInstance IS_CONGESTED esem\u00e9nyt kapott.
 SFB_CONTROLLER_DRSEVENT_IS_CONGESTED_CNTR0115I.explanation=A megadott SfDRSControllerInstance IS_CONGESTED esem\u00e9nyt kapott.
-SFB_CONTROLLER_DRSEVENT_IS_CONGESTED_CNTR0115I.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_DRSEVENT_IS_CONGESTED_CNTR0115I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 SFB_CONTROLLER_DRSEVENT_NOT_CONGESTED_CNTR0116I=CNTR0116I: A(z) {0} SfDRSControllerInstance NOT_CONGESTED esem\u00e9nyt kapott.
 SFB_CONTROLLER_DRSEVENT_NOT_CONGESTED_CNTR0116I.explanation=A megadott SfDRSControllerInstance NOT_CONGESTED esem\u00e9nyt kapott.
-SFB_CONTROLLER_DRSEVENT_NOT_CONGESTED_CNTR0116I.useraction=Semmit sem kell tennie.
+SFB_CONTROLLER_DRSEVENT_NOT_CONGESTED_CNTR0116I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 EJBSTORE_DISABLED_CNTR0117I=CNTR0117I: A t\u00e1rol\u00f3vez\u00e9relt ejbStore() h\u00edv\u00e1sa a komponensen kihagy\u00e1sra ker\u00fcl: "{0}", ha az aktu\u00e1lis tranzakci\u00f3ban nem lett m\u00f3dos\u00edtva.
 EJBSTORE_DISABLED_CNTR0117I.explanation=A komponens \u00fagy ker\u00fclt be\u00e1ll\u00edt\u00e1sra, hogy az EJB t\u00e1rol\u00f3 ne h\u00edvja meg a ejbStore() met\u00f3dust, amennyiben a komponens nem lett m\u00f3dos\u00edtva. Ez a viselked\u00e9s nem felel meg az EJB V2.0 \u00e9s k\u00e9s\u0151bbi specifik\u00e1ci\u00f3knak, de jav\u00edthatja a teljes\u00edtm\u00e9nyt.
-EJBSTORE_DISABLED_CNTR0117I.useraction=Semmit sem kell tennie.
+EJBSTORE_DISABLED_CNTR0117I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 LIGHTWEIGHT_ENABLED_CNTR0118I=CNTR0118I: A t\u00e1rol\u00f3 met\u00f3dus el\u0151tti \u00e9s ut\u00e1ni feldolgoz\u00e1sa az \u00f6sszes helyi met\u00f3dus \u00e9s helyi alapk\u00f6nyvt\u00e1r-met\u00f3dus sz\u00e1m\u00e1ra kihagy\u00e1sra ker\u00fcl a(z) "{0}" komponensen.
 LIGHTWEIGHT_ENABLED_CNTR0118I.explanation=A komponens \u00fagy ker\u00fclt be\u00e1ll\u00edt\u00e1sra, hogy \u00f6sszefogja a feldolgoz\u00e1st, ami azon met\u00f3dusok megh\u00edv\u00e1sa el\u0151tt \u00e9s ut\u00e1n t\u00f6rt\u00e9nik, amelyek a helyi saj\u00e1t fel\u00fcleten \u00e9s a helyi \u00fczleti fel\u00fcleten meg vannak hat\u00e1rozva. Ez a viselked\u00e9s nem felel meg az EJB V2.0 \u00e9s k\u00e9s\u0151bbi specifik\u00e1ci\u00f3knak, de jav\u00edthatja a teljes\u00edtm\u00e9nyt.
-LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Semmit sem kell tennie.
+LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: Elk\u00e9pzelhet\u0151, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal biztos\u00edtott "{0}" oszt\u00e1ly nem val\u00f3s\u00edtja meg a com.ibm.websphere.ejbcontainer.LightweightLocal fel\u00fcletet.  Az ok k\u00f3dja = {1}.
@@ -694,13 +694,13 @@ NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E.useraction=Ellen\u0151rizze az MDB oszt\
 
 # --------------------------------
 INVALID_MAX_POOLTIMEOUT_CNTR0127W=CNTR0127W: A(z) {0} komponenshez megadott maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret id\u0151korl\u00e1t \u00e9rv\u00e9nytelen eg\u00e9sz sz\u00e1m: {1}. Ehelyett a(z) {2} m\u00e1sodperc alap\u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
-INVALID_MAX_POOLTIMEOUT_CNTR0127W.explanation=A maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret id\u0151korl\u00e1tnak csak pozit\u00edv eg\u00e9sz sz\u00e1m vagy nulla adhat\u00f3 meg.  Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+INVALID_MAX_POOLTIMEOUT_CNTR0127W.explanation=A maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret id\u0151korl\u00e1tnak csak pozit\u00edv eg\u00e9sz sz\u00e1m vagy nulla adhat\u00f3 meg. Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
 INVALID_MAX_POOLTIMEOUT_CNTR0127W.useraction=M\u00f3dos\u00edtsa a maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9t pozit\u00edv eg\u00e9sz sz\u00e1mra.
 
 # --------------------------------
 POOLSIZE_VALUES_CNTR0128I=CNTR0128I: (Min,Max,Id\u0151korl\u00e1t) t\u00e1rol\u00f3m\u00e9ret: ({0},{1},{2}) a(z) {3} komponenshez.
 POOLSIZE_VALUES_CNTR0128I.explanation=Ezek a minim\u00e1lis \u00e9s maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret \u00e9rt\u00e9kek \u00e9s a maxim\u00e1lis t\u00e1rol\u00f3m\u00e9ret id\u0151korl\u00e1t enn\u00e9l a komponenst\u00edpusn\u00e1l.
-POOLSIZE_VALUES_CNTR0128I.useraction=Semmit sem kell tennie.
+POOLSIZE_VALUES_CNTR0128I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #---------------------------------
 # Do NOT translate "JNDI".
@@ -952,7 +952,7 @@ NAME_ALREADY_BOUND_FOR_SAME_EJB_CNTR0173E.useraction=Jav\u00edtsa ki a k\u00e9t 
 #---------------------------------------------------------------------------------
 DEFAULT_EJB_HOME_JNDI_NAME_CNTR0174I=CNTR0174I: A(z) {0} komponens a(z) {1} modulban egy 3.0 v\u00e1ltozatn\u00e1l kor\u00e1bbi EJB-komponens, \u00e9s nem rendelkezik megadott saj\u00e1t k\u00f6nyvt\u00e1r k\u00f6t\u00e9si n\u00e9vvel. A k\u00f6vetkez\u0151 k\u00f6t\u00e9si nevet \u00e1ll\u00edtotta el\u0151 a rendszer a komponenshez: {2}.
 DEFAULT_EJB_HOME_JNDI_NAME_CNTR0174I.explanation=A saj\u00e1t k\u00f6nyvt\u00e1r fel\u00fclet a k\u00f6t\u00f6tt neves\u00edt\u00e9si helyre lesz k\u00f6tve.
-DEFAULT_EJB_HOME_JNDI_NAME_CNTR0174I.useraction=Semmit sem kell tennie.
+DEFAULT_EJB_HOME_JNDI_NAME_CNTR0174I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #---------------------------------------------------------------------------------
 STATEFUL_PERSISTENCE_CONTEXT_ACTIVATE_ONCE_CNTR0175W=CNTR0175W: A be\u00e1ll\u00edtott aktiv\u00e1l\u00e1si ir\u00e1nyelv a(z) {2} aktiv\u00e1l\u00e1s {1} modulj\u00e1nak  {0} komponens\u00e9n megv\u00e1ltozott {3} \u00e9rt\u00e9kr\u0151l ONCE \u00e9rt\u00e9kre. A kiterjesztett megmarad\u00e1si kontextusra hivatkoz\u00f3 \u00e1llapot\u0151rz\u0151 munkamenet-komponenst ONCE aktiv\u00e1l\u00e1si ir\u00e1nyelvvel kell be\u00e1ll\u00edtani.
@@ -983,7 +983,7 @@ NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.useraction=Hat\u00e1rozza meg az id\u0151
 #---------------------------------------------------------------------------------
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I=CNTR0180I: A(z) {0} \u00fczenetvez\u00e9relt komponens a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban a(z) {3} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1shoz van k\u00f6tve.
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I.explanation=Az \u00fczenetvez\u00e9relt komponens indul\u00e1sakor a megadott aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s ker\u00fcl felhaszn\u00e1l\u00e1sra az \u00fczenetv\u00e9gpont aktiv\u00e1l\u00e1s\u00e1hoz.
-MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Semmit sem kell tennie.
+MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Nincs teend\u0151.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
@@ -1157,7 +1157,7 @@ AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.useraction=Ellen\u0151rizze a modul m
 
 AUTOMATIC_TIMER_CREATION_CNTR0219I=CNTR0219I: A kiszolg\u00e1l\u00f3 {0} \u00e1lland\u00f3 id\u0151z\u00edt\u0151t \u00e9s {1} nem \u00e1lland\u00f3 id\u0151z\u00edt\u0151t hozott l\u00e9tre a(z) {2} modul r\u00e9sz\u00e9re.
 AUTOMATIC_TIMER_CREATION_CNTR0219I.explanation=A kiszolg\u00e1l\u00f3 meghat\u00e1rozott sz\u00e1m\u00fa automatikus id\u0151z\u00edt\u0151t hozott l\u00e9tre a megadott modulhoz.  Ha a kiszolg\u00e1l\u00f3 kor\u00e1bban m\u00e1r l\u00e9trehozott \u00e1lland\u00f3 automatikus id\u0151z\u00edt\u0151ket e modul sz\u00e1m\u00e1ra, akkor az alkalmaz\u00e1s tov\u00e1bbi ind\u00edt\u00e1sai sor\u00e1n m\u00e1r nem lehet t\u00f6bb \u00e1lland\u00f3 automatikus id\u0151z\u00edt\u0151t l\u00e9trehozni.
-AUTOMATIC_TIMER_CREATION_CNTR0219I.useraction=Semmit sem kell tennie.
+AUTOMATIC_TIMER_CREATION_CNTR0219I.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 #-------------------------------------------------------------------------------
 # CNTR0220 to CNTR0250 reserved for EJB 3 interceptor related messages.
@@ -1556,16 +1556,12 @@ TIMER_FIRING_LATE_CNTR0333W.useraction=Fontolja meg t\u00f6bb sz\u00e1l lefoglal
 
 #-------------------------------------------------------------------------------
 DUPLICATE_REF_BINDING_WEB_CNTR0334E=CNTR0334E: A(z) {1} alkalmaz\u00e1s {0} WAR modulja egyn\u00e9l t\u00f6bb {3} nev\u0171 {2} \u00f6sszerendel\u00e9ssel rendelkezik.
-DUPLICATE_REF_BINDING_WEB_CNTR0334E.explanation=A modul ibm-web-bnd.xmi vagy \
-ibm-web-bnd.xml f\u00e1jlja egyn\u00e9l t\u00f6bb \u00f6sszerendel\u00e9ssel rendelkezik ugyanahhoz a hivatkoz\u00e1shoz.
+DUPLICATE_REF_BINDING_WEB_CNTR0334E.explanation=A modul ibm-web-bnd.xmi vagy ibm-web-bnd.xml f\u00e1jlja egyn\u00e9l t\u00f6bb \u00f6sszerendel\u00e9ssel rendelkezik ugyanahhoz a hivatkoz\u00e1shoz.
 DUPLICATE_REF_BINDING_WEB_CNTR0334E.useraction=T\u00e1vol\u00edtsa el egy kiv\u00e9tel\u00e9vel az \u00f6sszes \u00f6sszerendel\u00e9st, amely a hivatkoz\u00e1sra vonatkozik.
 
 #-------------------------------------------------------------------------------
-ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak {0} EJB-komponense egy Java EE 7 vagy k\u00e9s\u0151bbi v\u00e1ltozat\u00fa alkalmaz\u00e1sban deklar\u00e1lt p\u00e9ld\u00e1nykomponens.  \
-A p\u00e9ld\u00e1nykomponensek nem t\u00e1mogatottak a Java EE 7. vagy k\u00e9s\u0151bbi v\u00e1ltozat\u00fa alkalmaz\u00e1sok eset\u00e9n. A p\u00e9ld\u00e1nykomponens konfigur\u00e1ci\u00f3ja figyelmen k\u00edv\u00fcl marad, \u00e9s nem lesz neves\u00edt\u00e9si helyhez k\u00f6tve.
-ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Az egyedi EJB-komponensek egyetlen modulv\u00e1ltozatban sem t\u00e1mogatottak, ha a modul Java EE 7. vagy \u00fajabb v\u00e1ltozat\u00fa alkalmaz\u00e1sba van csomagolva.  \
-Egy alkalmaz\u00e1s akkor tekinthet\u0151 Java EE 7. v\u00e1ltozat\u00fanak, ha az application.xml f\u00e1jl deklar\u00e1ltan a \
-7-es v\u00e1ltozat, vagy az alkalmaz\u00e1sba csomagolt b\u00e1rmelyik EJB vagy WAR modul a Java EE a 7. v\u00e1ltozaton van.
+ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak {0} EJB-komponense egy Java EE 7 vagy k\u00e9s\u0151bbi v\u00e1ltozat\u00fa alkalmaz\u00e1sban deklar\u00e1lt p\u00e9ld\u00e1nykomponens. A p\u00e9ld\u00e1nykomponensek nem t\u00e1mogatottak a Java EE 7. vagy k\u00e9s\u0151bbi v\u00e1ltozat\u00fa alkalmaz\u00e1sok eset\u00e9n. A p\u00e9ld\u00e1nykomponens konfigur\u00e1ci\u00f3ja figyelmen k\u00edv\u00fcl marad, \u00e9s nem lesz neves\u00edt\u00e9si helyhez k\u00f6tve.
+ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Az egyedi EJB-komponensek egyetlen modulv\u00e1ltozatban sem t\u00e1mogatottak, ha a modul Java EE 7. vagy \u00fajabb v\u00e1ltozat\u00fa alkalmaz\u00e1sba van csomagolva. Egy alkalmaz\u00e1s akkor tekinthet\u0151 Java EE 7. v\u00e1ltozat\u00fanak, ha az application.xml f\u00e1jl deklar\u00e1ltan a 7-es v\u00e1ltozat, vagy az alkalmaz\u00e1sba csomagolt b\u00e1rmelyik EJB vagy WAR modul a Java EE a 7. v\u00e1ltozaton van.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott egyedi EJB komponenst az alkalmaz\u00e1sb\u00f3l, vagy csomagolja a komponenst 6. vagy r\u00e9gebbi v\u00e1ltozat\u00fa alkalmaz\u00e1sba.
 
 #-------------------------------------------------------------------------------
@@ -1827,16 +1823,16 @@ JIT_INVALID_NOT_EXCEPTION_SUBCLASS_CNTR5107E.useraction=M\u00f3dos\u00edtsa \u00
 #-------------------------------------------------------------------------------
 
 ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I=CNTR8990I: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 inform\u00e1ci\u00f3s \u00fczenet: {0}.
-ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I.explanation=Ez a t\u00e1j\u00e9koztat\u00f3 \u00fczenet nincs leford\u00edtva.
 ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
 
 # ---------------------------------
 ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W=CNTR8991W: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 figyelmeztet\u0151 \u00fczenet: {0}.
-ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W.explanation=Ez a figyelmeztet\u0151 \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W.explanation=Ez a figyelmeztet\u0151 \u00fczenet nincs leford\u00edtva.
 ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
 
 ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E=CNTR8992E: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 hiba\u00fczenet: {0}.
-ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.explanation=Ez a hiba\u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.explanation=Ez a hiba\u00fczenet nincs leford\u00edtva.
 ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
 
 #-------------------------------------------------------------------------------
@@ -2162,7 +2158,7 @@ EAR_LIBRARY_DIRECTORY_DISABLED_CNTR9276I.useraction=Ha a f\u00fcggv\u00e9nyt\u00
 # Do NOT translate "Java", "JAR", or  "WAR"
 NO_REMOTE_INTERFACE_CLASSES_CNTR9277I=CNTR9277I: A(z) {0} Java arch\u00edvum (JAR) vagy Webalkalmaz\u00e1s arch\u00edvum (WAR) f\u00e1jl nem tartalmaz t\u00e1voli fel\u00fcleti oszt\u00e1lyokat EJB-komponensekhez.
 NO_REMOTE_INTERFACE_CLASSES_CNTR9277I.explanation=A megadott JAR vagy WAR f\u00e1jl nem tartalmaz t\u00e1voli fel\u00fcleti oszt\u00e1lyokat EJB-komponensekhez.
-NO_REMOTE_INTERFACE_CLASSES_CNTR9277I.useraction=Ha ennek an modulnak t\u00e1voli fel\u00fcleti oszt\u00e1lyokat kellene tartalmaznia EJB-komponensekhez, akkor adja hozz\u00e1 ezeket az oszt\u00e1lyokat a modulhoz.
+NO_REMOTE_INTERFACE_CLASSES_CNTR9277I.useraction=Ha ennek a modulnak t\u00e1voli fel\u00fcleti oszt\u00e1lyokat kellene tartalmaznia EJB-komponensekhez, akkor adja hozz\u00e1 ezeket az oszt\u00e1lyokat a modulhoz.
 
 #-------------------------------------------------------------------------------
 INCOMPATIABLE_OPTION_WITH_CLASS_NAME_INPUT_CNTR9278E=CNTR9278E: Egy teljes k\u00e9pz\u00e9s\u0171 oszt\u00e1lyn\u00e9v bemeneti t\u00edpusa nem kompatibilis a(z) {0} param\u00e9terrel.
@@ -2179,11 +2175,11 @@ INCOMPATIABLE_OPTION_WITH_CLASS_NAME_INPUT_CNTR9278E.useraction=Vizsg\u00e1lja m
 
 CNTR9400I_SCANNING_MODULES=CNTR9400I: A be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 keresi az ind\u00edtand\u00f3 Enterprise JavaBeans (EJB) modulokat.
 CNTR9400I_SCANNING_MODULES.explanation=A be\u00e1gyazhat\u00f3 t\u00e1rol\u00f3 keresi az \u00e9rv\u00e9nyes Enterprise JavaBeans (EJB) modulok oszt\u00e1ly\u00fatvonalait. Az \u00e9rv\u00e9nyes EJB modulok egy ejb-jar.xml f\u00e1jlt vagy Enterprise JavaBeans (EJB) feljegyz\u00e9seket tartalmaznak.
-CNTR9400I_SCANNING_MODULES.useraction=Semmit sem kell tennie.
+CNTR9400I_SCANNING_MODULES.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 CNTR9401I_INIT=CNTR9401I: A be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa folyik.
 CNTR9401I_INIT.explanation=A be\u00e1gyazhat\u00f3 t\u00e1rol\u00f3nak meg kell adni a kezdeti \u00e9rt\u00e9keket, miel\u0151tt a felhaszn\u00e1l\u00f3i k\u00f3d hozz\u00e1f\u00e9r a v\u00e1llalati komponensekhez.
-CNTR9401I_INIT.useraction=Semmit sem kell tennie.
+CNTR9401I_INIT.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 CNTR9402E_INIT_ERROR=CNTR9402E: Hiba t\u00f6rt\u00e9nt a(z) {0} Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa k\u00f6zben.
 CNTR9402E_INIT_ERROR.explanation=Az Enterprise JavaBeans (EJB) modulok keres\u00e9si folyamata vagy a be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa sikertelen volt, \u00e9s a t\u00e1rol\u00f3 a tov\u00e1bbiakban nem haszn\u00e1lhat\u00f3. Az FFDC kimeneten tov\u00e1bbi diagnosztik\u00e1t lehet tal\u00e1lni.
@@ -2197,7 +2193,7 @@ CNTR9403E_DUPLICATE_MODULE_BASENAME.useraction=Adjon meg egy olyan modullist\u00
 
 CNTR9405I_START_MODULE=CNTR9405I: A(z) {0} Enterprise JavaBeans (EJB) modul elindul.
 CNTR9405I_START_MODULE.explanation=A be\u00e1gyazhat\u00f3 EJB t\u00e1rol\u00f3 elind\u00edtja a meghat\u00e1rozott Enterprise JavaBeans (EJB) modult. Ez tartalmazza az Enterprise JavaBeans (EJB) komponens gy\u00e1rak \u00e9s saj\u00e1t k\u00f6nyvt\u00e1rak hozz\u00e1rendel\u00e9s\u00e9t a JNDI rendszerhez, valamint b\u00e1rmilyen EJB k\u00f3d v\u00e9grehajt\u00e1s\u00e1t, amely az ind\u00edt\u00e1skor futtatand\u00f3k\u00e9nt volt megadva.
-CNTR9405I_START_MODULE.useraction=Semmit sem kell tennie.
+CNTR9405I_START_MODULE.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 # CNTR9406 - Unused/available (F743-29629).
 
@@ -2215,7 +2211,7 @@ CNTR9409W_STOP_FAILURE.useraction=Oldja meg a hib\u00e1t a kiv\u00e9tel, a napl\
 
 CNTR9410I_STOP=CNTR9410I: A be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 bez\u00e1r\u00f3dott.
 CNTR9410I_STOP.explanation=A Bez\u00e1r\u00e1s met\u00f3dus megh\u00edv\u00e1sa k\u00f6vetkezt\u00e9ben a be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 v\u00e9grehajtotta a le\u00e1ll\u00edt\u00e1si rutint.
-CNTR9410I_STOP.useraction=Semmit sem kell tennie.
+CNTR9410I_STOP.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i beavatkoz\u00e1sra.
 
 # CNTR9411 - Unused/available (F743-29629).
 

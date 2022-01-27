@@ -28,189 +28,190 @@ warn.service.ref.dd.service.interface.not.set.useraction=Ad\u0103uga\u0163i elem
 
 warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: Descriptorul de implementare define\u015fte elementul service-ref {0}, dar nu poate g\u0103si clasa {1} specificat\u0103 \u00een elementul service-interface. Prin urmare, referin\u0163a serviciului este ignorat\u0103.
 warn.service.ref.dd.service.interface.class.not.found.explanation=Elementul service-interface specific\u0103 o clas\u0103 care nu poate fi g\u0103sit\u0103 sau \u00eenc\u0103rcat\u0103.
-warn.service.ref.dd.service.interface.class.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa se afl\u0103 \u00een calea de clase a aplica\u0163iei.
+warn.service.ref.dd.service.interface.class.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 respectiva clas\u0103 se afl\u0103 \u00een calea de clase a aplica\u021biei.
 
 warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: Descriptorul de implementare define\u015fte elementul service-ref {0}, dar clasa {1} specificat\u0103 \u00een elementul service-interface nu este o subclas\u0103 a clasei javax.xml.ws.Service. Prin urmare, referin\u0163a serviciului este ignorat\u0103.
-warn.service.ref.dd.service.interface.wrong.value.explanation=Elementul service-interface trebuie s\u0103 specifice o subclas\u0103 a clasei javax.xml.ws.Service.
-warn.service.ref.dd.service.interface.wrong.value.useraction=Specifica\u0163i o subclas\u0103 a clasei javax.xml.ws.Service \u00een elementul service-interface.
+warn.service.ref.dd.service.interface.wrong.value.explanation=Elementul service-interface trebuie s\u0103 specifice o subclas\u0103 a clasei  javax.xml.ws.Service.
+warn.service.ref.dd.service.interface.wrong.value.useraction=Specifica\u021bi o subclas\u0103 a clasei javax.xml.ws.Service \u00een elementul service-interface.
 
 # Merge mismatch check messages ------------------------------------
 
 error.service.interface.mismatch.for.member=CWWKW0003E: Referin\u0163a serviciului {0} pe membrul {1} \u00een clasa {2} specific\u0103 clasa service-interface {3}. Totu\u015fi, exist\u0103 metadate suplimentare pentru aceast\u0103 referin\u0163\u0103 de serviciu care specific\u0103 clasa service-interface {4}.
-error.service.interface.mismatch.for.member.explanation=Clasa service-interface declarat\u0103 \u00een mai multe locuri pentru aceea\u015fi referin\u0163\u0103 de serviciu trebuie s\u0103 fie aceea\u015fi. 
-error.service.interface.mismatch.for.member.useraction=Corecta\u0163i referin\u0163a serviciului pentru a identifica aceea\u015fi clas\u0103 service-interface.
+error.service.interface.mismatch.for.member.explanation=Clasa de service-interface declarat\u0103 \u00een mai multe locuri pentru aceea\u0219i referin\u021b\u0103 a serviciului trebuie s\u0103 fie aceea\u0219i. 
+error.service.interface.mismatch.for.member.useraction=Corecta\u021bi referin\u021ba serviciului pentru a identifica aceea\u0219i clas\u0103 service-interface.
 
 error.service.interface.mismatch.for.class=CWWKW0004E: O referin\u0163\u0103 de serviciu la nivel de clas\u0103 {0} specific\u0103 clasa service-interface {1}. Totu\u015fi, exist\u0103 metadate suplimentare pentru aceast\u0103 referin\u0163\u0103 de serviciu care specific\u0103 clasa service-interface {2}.
-error.service.interface.mismatch.for.class.explanation=Clasa service-interface declarat\u0103 \u00een mai multe locuri pentru aceea\u015fi referin\u0163\u0103 de serviciu trebuie s\u0103 fie aceea\u015fi. 
-error.service.interface.mismatch.for.class.useraction=Corecta\u0163i referin\u0163a serviciului pentru a identifica aceea\u015fi clas\u0103 service-interface.
+error.service.interface.mismatch.for.class.explanation=Clasa de service-interface declarat\u0103 \u00een mai multe locuri pentru aceea\u0219i referin\u021b\u0103 a serviciului trebuie s\u0103 fie aceea\u0219i. 
+error.service.interface.mismatch.for.class.useraction=Corecta\u021bi referin\u021ba serviciului pentru a identifica aceea\u0219i clas\u0103 service-interface.
 
 error.service.ref.type.mismatch.for.member=CWWKW0005E: Referin\u0163a serviciului {0} pe membrul {1} \u00een clasa {2} specific\u0103 clasa service-ref-type {3}. Totu\u015fi, exist\u0103 metadate suplimentare pentru aceast\u0103 referin\u0163\u0103 de serviciu care specific\u0103 clasa service-ref-type {4}.
-error.service.ref.type.mismatch.for.member.explanation=Clasa service-ref-type declarat\u0103 \u00een mai multe locuri pentru aceea\u015fi referin\u0163\u0103 de serviciu trebuie s\u0103 fie aceea\u015fi. 
-error.service.ref.type.mismatch.for.member.useraction=Corecta\u0163i referin\u0163a serviciului pentru a identifica aceea\u015fi clas\u0103 service-ref-type.
+error.service.ref.type.mismatch.for.member.explanation=Clasa service-ref-type declarat\u0103 \u00een mai multe locuri pentru aceea\u0219i referin\u021b\u0103 a serviciului trebuie s\u0103 fie aceea\u0219i. 
+error.service.ref.type.mismatch.for.member.useraction=Corecta\u021bi referin\u021ba serviciului pentru a identifica aceea\u0219i clas\u0103 service-ref-type.
 
 error.service.ref.type.mismatch.for.class=CWWKW0006E: O referin\u0163\u0103 de serviciu la nivel de clas\u0103 {0} specific\u0103 clasa service-ref-type {1}. Totu\u015fi, exist\u0103 metadate suplimentare pentru aceast\u0103 referin\u0163\u0103 de serviciu care specific\u0103 clasa service-ref-type {2}.
-error.service.ref.type.mismatch.for.class.explanation=Clasa service-ref-type declarat\u0103 \u00een mai multe locuri pentru aceea\u015fi referin\u0163\u0103 de serviciu trebuie s\u0103 fie aceea\u015fi. 
-error.service.ref.type.mismatch.for.class.useraction=Corecta\u0163i referin\u0163a serviciului pentru a identifica aceea\u015fi clas\u0103 service-ref-type.
+error.service.ref.type.mismatch.for.class.explanation=Clasa service-ref-type declarat\u0103 \u00een mai multe locuri pentru aceea\u0219i referin\u021b\u0103 a serviciului trebuie s\u0103 fie aceea\u0219i. 
+error.service.ref.type.mismatch.for.class.useraction=Corecta\u021bi referin\u021ba serviciului pentru a identifica aceea\u0219i clas\u0103 service-ref-type.
 
 # Merge validation messages ------------------------------------------
 
 error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: Adnotarea @WebServiceRef sau @Resource se g\u0103se\u015fte \u00een clasa {0}, dar atributul tipului nu poate fi identificat. 
-error.service.ref.class.level.merge.service.ref.type.absent.explanation=Dac\u0103 adnotarea @WebServiceRef sau @Resource se afl\u0103 la nivelul clasei, trebuie identificat atributul tipului. Ar putea fi specificat \u00een adnotarea @WebServiceRef sau prin elementul service-ref-type din descriptorul de implementare.
-error.service.ref.class.level.merge.service.ref.type.absent.useraction=Specifica\u0163i atributul de tip lips\u0103.
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=Dac\u0103 o adnotare @WebServiceRef or @Resource este g\u0103sit\u0103 la nivel de clas\u0103, atributul tip trebuie identificat. Poate fi specificat \u00een cadrul adnot\u0103rii @WebServiceRef sau prin elementul service-ref-type \u00een descriptorul de implementare.
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=Specifica\u021bi atributul tip lips\u0103.
 
 error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: Adnotarea @WebServiceRef sau @Resource se afl\u0103 \u00een clasa {0}, dar atributul valorii identificate este clasa {1}, care nu este o subclas\u0103 a javax.xml.ws.Service. 
-error.service.ref.class.level.merge.service.interface.wrong.value.explanation=Atributul de valoare trebuie s\u0103 fie o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u0163ia cazului \u00een care atributul tipului identificat indic\u0103 la o injec\u0163ie SEI (Interfa\u0163\u0103 punct final serviciu). Pute\u0163i specifica atributul de valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface din descriptorul de implementare.
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=Atributul valoare trebuie s\u0103 fie o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u021bia cazului \u00een care atributul tip identificat indic\u0103 o injec\u021bie Service Endpoint Interface (SEI). Pute\u021bi specifica atributul valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface \u00een descriptorul de implementare.
 error.service.ref.class.level.merge.service.interface.wrong.value.useraction=Specifica\u0163i o subclas\u0103 a clasei javax.xml.ws.Service.
 
 error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: Adnotarea @WebServiceRef sau @Resource se g\u0103se\u015fte \u00een clasa {0}, dar atributele de valoare \u015fi tip identificat nu sunt \u00een aceea\u015fi clas\u0103. 
-error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Dac\u0103 adnotarea indic\u0103 o injec\u0163ie de tip serviciu \u015fi atributul de valoare nu specific\u0103 clasa javax.xml.ws.Service, atributele de tip \u015fi valoare trebuie s\u0103 fie \u00een aceea\u015fi clas\u0103. Pute\u0163i specifica atributul de valoare \u00een adnotare sau prin elementul service-interface din descriptorul de implementare \u015fi specifica\u0163i atributul de tip \u00een adnotarea @WebServiceRef sau prin elementul service-ref-type din descriptorul de implementare.
-error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specifica\u0163i aceea\u015fi clas\u0103 pentru atributele de tip \u015fi valoare.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Dac\u0103 adnotarea indic\u0103 o injec\u021bie tip serviciu, iar atributul valoare nu specific\u0103 clasa javax.xml.ws.Service, atributele tip \u0219i valoare trebuie s\u0103 fie din aceea\u0219i clas\u0103. Pute\u021bi specifica atributul valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface \u00een descriptorul de implementare, iar apoi s\u0103 specifica\u021bi atributul tip \u00een cadrul adnot\u0103rii @WebServiceRef sau prin elementul service-ref-type \u00een descriptorul de implementare.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specifica\u021bi aceea\u0219i clas\u0103 pentru atributele valoare \u0219i tip.
 
 error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: Adnotarea @WebServiceRef sau @Resource se afl\u0103 \u00een membrul {0} din clasa {1}, dar tipul de injec\u0163ie nu poate fi dedus din tipul membrului de clas\u0103 sau atributul tipului. 
-error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Dac\u0103 tipul membrului de clas\u0103 este Obiect, atributul tipului trebuie specificat \u015fi nu poate fi Obiect. Pute\u0163i specifica tipul membrului de clas\u0103 din adnotarea @WebServiceRef sau prin elementul service-ref-type din descriptorul de implementare.
-error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Specifica\u0163i un atribut de alt tip dec\u00e2t Obiect.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Dac\u0103 tipul membru clas\u0103 este Obiect, atributul tip trebuie specificat \u0219i nu poate fi Obiect. Pute\u021bi specifica tipul membru clas\u0103 \u00een cadrul adnot\u0103rii sau prin elementul service-ref-type \u00een descriptorul de implementare.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Specifica\u021bi un atribut tip, altul dec\u00e2t Obiect.
 
 error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: Adnotarea @WebServiceRef sau @Resource se afl\u0103 \u00een membrul {0} din clasa {1}, dar atributul de tip identificat este clasa {2}, care nu este compatibil\u0103 cu clasa {3} a membrului adnotat. 
-error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=Atributul de tip trebuie s\u0103 fie compatibil cu tipul membrului de clas\u0103. Pute\u0163i specifica atributul tipului \u00een adnotarea @WebServiceRef sau prin elementul service-ref-type din descriptorul implement\u0103rii.
-error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Specifica\u0163i un atribut de tip corespunz\u0103tor care este compatibil cu tipul membrului de clas\u0103.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=Atributul tip trebuie s\u0103 fie compatibil cu tipul membru clas\u0103. Pute\u021bi specifica atributul tip \u00een cadrul adnot\u0103rii @WebServiceRef sau prin elementul service-ref-type \u00een descriptorul de implementare.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Specifica\u021bi un atribut tip adecvat, care este compatibil cu tipul membru clas\u0103.
 
 error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: Adnotarea @WebServiceRef sau @Resource se afl\u0103 pe membrul {0} \u00een clasa {1}, dar atributul de valoare identificat este clasa {2}, care nu este o subclas\u0103 a javax.xml.ws.Service.
-error.service.ref.member.level.merge.service.interface.wrong.value.explanation=Atributul de valoare trebuie s\u0103 fie o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u0163ia cazului \u00een care atributul tipului identificat indic\u0103 la o injec\u0163ie SEI (Interfa\u0163\u0103 punct final serviciu). Pute\u0163i specifica atributul de valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface din descriptorul de implementare.
-error.service.ref.member.level.merge.service.interface.wrong.value.useraction=Specifica\u0163i o subclas\u0103 a javax.xml.ws.Service.
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=Atributul valoare trebuie s\u0103 fie o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u021bia cazului \u00een care atributul tip identificat indic\u0103 o injec\u021bie Service Endpoint Interface (SEI). Pute\u021bi specifica atributul valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface \u00een descriptorul de implementare.
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=Specifica\u021bi o subclas\u0103 a javax.xml.ws.Service.
 
 error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: Adnotarea @WebServiceRef sau @Resource se g\u0103se\u015fte \u00een membrul {0} din clasa {1}, dar atributele de valoare \u015fi tip identificat nu sunt \u00een aceea\u015fi clas\u0103. 
-error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Dac\u0103 adnotarea indic\u0103 o injec\u0163ie de tip serviciu \u015fi atributul de valoare nu specific\u0103 clasa javax.xml.ws.Service, atributele de tip \u015fi valoare trebuie s\u0103 fie \u00een aceea\u015fi clas\u0103. Pute\u0163i specifica atributul de valoare \u00een adnotare sau prin elementul service-interface din descriptorul de implementare \u015fi specifica\u0163i atributul de tip \u00een adnotarea @WebServiceRef sau prin elementul service-ref-type din descriptorul de implementare.
-error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specifica\u0163i aceea\u015fi clas\u0103 pentru atributele de tip \u015fi valoare.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Dac\u0103 adnotarea indic\u0103 o injec\u021bie tip serviciu, iar atributul valoare nu specific\u0103 clasa javax.xml.ws.Service, atributele tip \u0219i valoare trebuie s\u0103 fie din aceea\u0219i clas\u0103. Pute\u021bi specifica atributul valoare \u00een cadrul adnot\u0103rii sau prin elementul service-interface \u00een descriptorul de implementare, iar apoi s\u0103 specifica\u021bi atributul tip \u00een cadrul adnot\u0103rii @WebServiceRef sau prin elementul service-ref-type \u00een descriptorul de implementare.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specifica\u021bi aceea\u0219i clas\u0103 pentru atributele valoare \u0219i tip.
 
 # Annotation validation messages ----------------------------------------
 
 error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: Adnotarea @WebServiceRef a specificat incorect atributul de c\u0103utare \u00een plus fa\u0163\u0103 de alte atribute.
-error.service.ref.annotation.lookup.redundant.attributes.explanation=Dac\u0103 atributul de c\u0103utare al adnot\u0103rii @WebServiceRef este specificat, atunci nu este permis nici un alt atribut.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Dac\u0103 atributul c\u0103utare din adnotarea @WebServiceRef este specificat, nu mai sunt permise \u0219i alte atribute.
 error.service.ref.annotation.lookup.redundant.attributes.useraction=\u00cenl\u0103tura\u0163i atributul de c\u0103utare sau celelalte atribute.
 
 error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: Adnotarea @WebServiceRef din clasa {0} nu specific\u0103 o valoare pentru atributul nume sau tip. 
-error.service.ref.class.level.annotation.name.or.type.absent.explanation=Dac\u0103 o adnotare @WebServiceRef se afl\u0103 la nivelul clasei, trebuie specificate atributele nume \u015fi tip.
-error.service.ref.class.level.annotation.name.or.type.absent.useraction=Specifica\u0163i atributul lips\u0103 nume sau tip.
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=Dac\u0103 o adnotare @WebServiceRef este g\u0103sit\u0103 la nivel de clas\u0103, atributele nume \u0219i tip trebuie specificate.
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=Specifica\u021bi atributul nume sau tip lips\u0103.
 
 error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: Adnotarea @WebServiceRef se afl\u0103 \u00een clasa {0}. Totu\u015fi, atributul de valoare nu este specificat sau este specificat \u00een clasa {1} care nu este o subclas\u0103 a javax.xml.ws.Service. 
-error.service.ref.class.level.annotation.wrong.value.explanation=Atributul de valoare al adnot\u0103rii @WebServiceRef trebuie s\u0103 specifice o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u0163ia cazului \u00een care atributul tip indic\u0103 o injec\u0163ie SEI (Interfa\u0163\u0103 punct final serviciu).
-error.service.ref.class.level.annotation.wrong.value.useraction=Specifica\u0163i o subclas\u0103 a clasei javax.xml.ws.Service pentru atributul de valoare.
+error.service.ref.class.level.annotation.wrong.value.explanation=Atributul valoare a adnot\u0103rii @WebServiceRef trebuie s\u0103 specifice o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u021bia cazului \u00een care atributul tip indic\u0103 o injec\u021bie Service Endpoint Interface (SEI).
+error.service.ref.class.level.annotation.wrong.value.useraction=Specifica\u021bi o subclas\u0103 a clasei javax.xml.ws.Service pentru atributul valoare.
 
 error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: Adnotarea @WebServiceRef se afl\u0103 \u00een clasa {0}, dar atributele de valoare \u015fi tip nu specific\u0103 aceea\u015fi clas\u0103.
-error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Dac\u0103 adnotarea @WebServiceRef indic\u0103 o injec\u0163ie de tip serviciu \u015fi atributul de valoare nu specific\u0103 clasa javax.xml.ws.Service, clasa specificat\u0103 de atributele tip \u015fi valoare trebuie s\u0103 fie aceea\u015fi.
-error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Specifica\u0163i aceea\u015fi clas\u0103 pentru atributele de tip \u015fi valoare.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Dac\u0103 adnotarea @WebServiceRef indic\u0103 o injec\u021bie tip serviciu, iar atributul valoare nu specific\u0103 clasa javax.xml.ws.Service, clasa specificat\u0103 de atributele tip \u0219i valoare trebuie s\u0103 fie aceea\u0219i.
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Specifica\u021bi aceea\u0219i clas\u0103 pentru atributele valoare \u0219i tip.
 
 error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: Adnotarea @WebServiceRef se afl\u0103 \u00een metoda {0} a clasei {1}, dar numele metodei nu urmeaz\u0103 conven\u0163ia standard JavaBeans.
-error.service.ref.member.level.annotation.wrong.method.name.explanation=Pentru referin\u0163ele de serviciu JAX-WS, dac\u0103 adnotarea @WebServiceRef este specificat\u0103 pe o metod\u0103, numele metodei trebuie s\u0103 urmeze conven\u0163ia standard JavaBeans, cum ar fi setHelloWorld sau getHelloWorld.
-error.service.ref.member.level.annotation.wrong.method.name.useraction=Asigura\u0163i-v\u0103 c\u0103 numele metodei urmeaz\u0103 conven\u0163iile standard JavaBeans.
+error.service.ref.member.level.annotation.wrong.method.name.explanation=Pentru referin\u021bele serviciului JAX-WS, dac\u0103 adnotarea @WebServiceRef este specificat\u0103 \u00eentr-o metod\u0103, numele metodei trebuie s\u0103 respecte conven\u021bia standard JavaBeans, cum ar fi setHelloWorld sau getHelloWorld.
+error.service.ref.member.level.annotation.wrong.method.name.useraction=Asigura\u021bi-v\u0103 c\u0103 numele de metod\u0103 respect\u0103 conven\u021biile standard JavaBeans.
 
 error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: Adnotarea @WebServiceRef se afl\u0103 \u00een membrul {0} din clasa {1}, dar tipul injec\u0163iei nu poate fi dedus din atributul tip sau tipul membrului de clas\u0103.
-error.service.ref.member.level.annotation.type.not.inferred.explanation=Dac\u0103 tipul membrului de clas\u0103 este Obiect, atributul tip al adnot\u0103rii @WebServiceRef trebuie specificat \u015fi nu poate fi Obiect.
-error.service.ref.member.level.annotation.type.not.inferred.useraction=Specifica\u0163i un atribut tip diferit de Obiect.
+error.service.ref.member.level.annotation.type.not.inferred.explanation=Dac\u0103 tipul de membru clas\u0103 este Obiect, atributul tip al adnot\u0103rii @WebServiceRef trebuie specificat \u0219i nu poate fi Obiect.
+error.service.ref.member.level.annotation.type.not.inferred.useraction=Specifica\u021bi un atribut tip, altul dec\u00e2t Obiect.
 
 error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: Adnotarea @WebServiceRef se afl\u0103 \u00een membrul {0} din clasa {1}, dar clasa {2} specificat\u0103 \u00een atributul tip nu este compatibil\u0103 cu clasa {3} a membrului adnotat.
-error.service.ref.member.level.annotation.type.not.compatible.explanation=Atributul tip trebuie s\u0103 fie compatibil cu tipul membrului de clas\u0103.
-error.service.ref.member.level.annotation.type.not.compatible.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul tip este compatibil cu tipul membrului de clas\u0103.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=Atributul tip trebuie s\u0103 fie compatibil cu tipul membru clas\u0103.
+error.service.ref.member.level.annotation.type.not.compatible.useraction=Asigura\u021bi-v\u0103 ca atributul tip este compatibil cu tipul membru clas\u0103.
 
 error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: Adnotarea @WebServiceRef se afl\u0103 \u00een membrul {0} din clasa {1}. Totu\u015fi, atributul valoare nu este specificat sau este specificat \u00een clasa {2} care nu este o subclas\u0103 a clasei javax.xml.ws.Service. 
-error.service.ref.member.level.annotation.wrong.value.explanation=Atributul de valoare al adnot\u0103rii @WebServiceRef trebuie s\u0103 specifice o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u0163ia cazului \u00een care atributul tip indic\u0103 o injec\u0163ie SEI (Interfa\u0163\u0103 punct final serviciu).
-error.service.ref.member.level.annotation.wrong.value.useraction=Specifica\u0163i o subclas\u0103 a clasei javax.xml.ws.Service pentru atributul de valoare.
+error.service.ref.member.level.annotation.wrong.value.explanation=Atributul valoare a adnot\u0103rii @WebServiceRef trebuie s\u0103 specifice o subclas\u0103 a clasei javax.xml.ws.Service, cu excep\u021bia cazului \u00een care atributul tip indic\u0103 o injec\u021bie Service Endpoint Interface (SEI).
+error.service.ref.member.level.annotation.wrong.value.useraction=Specifica\u021bi o subclas\u0103 a clasei javax.xml.ws.Service pentru atributul valoare.
 
 error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: Adnotarea @WebServiceRef se afl\u0103 \u00een membrul {0} din clasa {1}, dar atributele de tip \u015fi valoare nu specific\u0103 aceea\u015fi clas\u0103.
-error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Dac\u0103 adnotarea @WebServiceRef indic\u0103 o injec\u0163ie de tip serviciu \u015fi atributul de valoare nu specific\u0103 clasa javax.xml.ws.Service, clasa specificat\u0103 de atributele de valoare \u015fi tip trebuie s\u0103 fie aceea\u015fi.
-error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Specifica\u0163i aceea\u015fi clas\u0103 pentru atributele de tip \u015fi valoare.
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Dac\u0103 adnotarea @WebServiceRef indic\u0103 o injec\u021bie tip serviciu, iar atributul valoare nu specific\u0103 clasa javax.xml.ws.Service, clasa specificat\u0103 de atributele tip \u0219i valoare trebuie s\u0103 fie aceea\u0219i.
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Specifica\u021bi aceea\u0219i clas\u0103 pentru atributele valoare \u0219i tip.
 
 
 #{0}=handlerChain file name
 error.no.handlerChainFile.found=CWWKW0030E: Fi\u015fierul defini\u0163ie de lan\u0163 handler {0} nu poate fi g\u0103sit.
-error.no.handlerChainFile.found.explanation=Fi\u015fierul defini\u0163ie de lan\u0163 handler nu poate fi g\u0103sit din atributul de fi\u015fier al adnot\u0103rii handlerChain.
-error.no.handlerChainFile.found.useraction=Specifica\u0163i calea unui fi\u015fier defini\u0163ie de lan\u0163 handler existent. Calea poate fi o cale de fi\u015fier absolut\u0103 sau relativ\u0103 la clasa adnotat\u0103 cu adnotarea handlerChain.
+error.no.handlerChainFile.found.explanation=Fi\u0219ierul defini\u021bie de lan\u021b nu poate fi g\u0103sit din atributul fi\u0219ier al adnot\u0103rii handlerChain.
+error.no.handlerChainFile.found.useraction=Specifica\u021bi calea unui fi\u0219ier defini\u021bie de lan\u021b existent. Calea poate fi o cale de fi\u0219iere absolut\u0103 sau relativ\u0103 pentru clasa adnotat\u0103 cu adnotarea handlerChain.
 
 #{0}=handlerChain file content
 error.invalid.handlerChainFile.content=CWWKW0031E: Elementul r\u0103d\u0103cin\u0103 al fi\u015fierului handlerChain nu este valid: {0}.
-error.invalid.handlerChainFile.content.explanation=Spa\u0163iul de denumire al elementului r\u0103d\u0103cin\u0103 nu este egal cu "http://java.sun.com/xml/ns/javaee" sau numele local al elementului r\u0103d\u0103cin\u0103 nu este egal cu "handler-chain".
-error.invalid.handlerChainFile.content.useraction=Modifica\u0163i spa\u0163iul de denumire al elementului r\u0103d\u0103cin\u0103 s\u0103 fie "http://java.sun.com/xml/ns/javaee" sau numele local al elementului r\u0103d\u0103cin\u0103 la "handler-chain", apoi re\u00eencerca\u0163i.
+error.invalid.handlerChainFile.content.explanation=Spa\u021biul de numire al elementului root nu este egal cu \u201ehttp://java.sun.com/xml/ns/javaee\u201d sau numele local al elementului root nu este egal cu \u201ehandler-chain\u201d.
+error.invalid.handlerChainFile.content.useraction=Modifica\u021bi spa\u021biul de numire al elementului root \u00een \u201ehttp://java.sun.com/xml/ns/javaee\u201d sau numele local al elementului root \u00een \u201ehandler-chain\u201d, apoi \u00eencerca\u021bi din nou.
 
 #{0}=the unknown exception
 error.unknown.exception=CWWKW0032E: Fi\u015fierul lan\u0163 handler nu poate fi parsat din cauza excep\u0163iei {0}.
-error.unknown.exception.explanation=S-a \u00eent\u00e2lnit o excep\u0163ie nea\u015fteptat\u0103 la parsarea fi\u015fierului lan\u0163 handler.
-error.unknown.exception.useraction=Verifica\u0163i c\u0103 formatul fi\u015fierului handler este corect \u015fi verifica\u0163i istoricul ffdc din directorul logs/ffdc corespunz\u0103tor al serverului pentru detalii suplimentare.
+error.unknown.exception.explanation=O excep\u021bie nea\u0219teptat\u0103 a fost \u00eent\u00e2lnit\u0103 la analiza fi\u0219ierului defini\u021bie de lan\u021b handler.
+error.unknown.exception.useraction=Verifica\u021bi ca formatul fi\u0219ierului handler s\u0103 fie corect \u0219i inspecta\u021bi istoricul ffdc \u00een directorul istorice/ffdc corespunz\u0103tor pentru mai multe detalii.
 
 #{0}=the qualified name of the class which the handlerChain annotation is on.
 error.handlerChain.annotation.without.file=CWWKW0033E: Adnotarea handlerChain de pe clasa {0} nu are o proprietate de fi\u015fier.
-error.handlerChain.annotation.without.file.explanation=O proprietate de fi\u015fier este necesar\u0103 \u00een adnotarea handlerChain.
-error.handlerChain.annotation.without.file.useraction=Specifica\u0163i numele de fi\u015fier corespunz\u0103tor \u00een adnotarea handlerChain.
+error.handlerChain.annotation.without.file.explanation=O proprietate de fi\u0219ier este necesar\u0103 \u00een adnotarea handlerChain.
+error.handlerChain.annotation.without.file.useraction=Specifica\u021bi numele de fi\u0219ier corespunz\u0103tor \u00een adnotarea handlerChain.
 
 #{0}=the IOException exception
 warn.catalog.load.exception=CWWKW0034E: Fi\u015fierul de catalog JAX-WS nu poate fi \u00eenc\u0103rcat din cauza excep\u0163iei {0}.
-warn.catalog.load.exception.explanation=A ap\u0103rut o IOException la \u00eenc\u0103rcarea fi\u015fierului de catalog.
-warn.catalog.load.exception.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de catalog JAX-WS exist\u0103 \u015fi sintaxa sa se conformeaz\u0103 specifica\u0163iei Catalogului XML.
+warn.catalog.load.exception.explanation=O IOException a avut loc la \u00eenc\u0103rcarea fi\u0219ierului catalog.
+warn.catalog.load.exception.useraction=Asigura\u021bi-v\u0103 c\u0103 fi\u0219ierul catalog JAX-WS exist\u0103 \u0219i c\u0103 sintaxa acestuia corespunde specifica\u021biei XML Catalog.
 
 #{0}=service impl class
 warn.no.wsdl.generate=CWWKW0035E: Clasa de implementare {0} nu con\u0163ine o adnotare SOAP/1.1 xau wsdlLocation. Prin urmare, nu se poate genera o defini\u0163ie WSDL.
-warn.no.wsdl.generate.explanation=Serviciul web nu con\u0163ine o adnotare SOAP/1.1 sau wsdlLocation.
-warn.no.wsdl.generate.useraction=Specifica\u0163i fie o adnotare SOAP/1.1, fie wsdlLocation pentru serviciul web.
+warn.no.wsdl.generate.explanation=Serviciul web nu con\u021bine o wsdlLocation \u0219i nici o adnotare SOAP/1.1.
+warn.no.wsdl.generate.useraction=Specifica\u021bi o wsdlLocation sau o adnotare SOAP/1.1 c\u0103tre serviciul web.
 
 #{0}=IOException_message
 error.write.wsdl.stream=CWWKW0036E: Defini\u0163ia WSDL complet\u0103 c\u0103tre flux nu poate fi scris\u0103 din cauza {0}.
-error.write.wsdl.stream.explanation=A ap\u0103rut IOException \u00een timpul scrierii defini\u0163iei complete a WSDL-ului \u00een flux.
-error.write.wsdl.stream.useraction=Specifica\u0163i fie o adnotare SOAP/1.1, fie wsdlLocation pentru serviciul web. 
+error.write.wsdl.stream.explanation=A avut loc o IOException la scrierea defini\u021biei complete WSDL \u00een flux.
+error.write.wsdl.stream.useraction=Specifica\u021bi o wsdlLocation sau o adnotare SOAP/1.1 c\u0103tre serviciul web. 
 
 error.no.wsdl.per.specification=CWWKW0037E: WSDL conform cu specifica\u0163ia JAX-WS 2.2 nu poate fi generat.
-error.no.wsdl.per.specification.explanation=Serviciul web nu con\u0163ine o adnotare SOAP/1.1 sau wsdlLocation.
-error.no.wsdl.per.specification.useraction=Specifica\u0163i o adnotare SOAP/1.1, fie wsdlLocation pentru serviciul web.
+error.no.wsdl.per.specification.explanation=Serviciul web nu con\u021bine o wsdlLocation \u0219i nici o adnotare SOAP/1.1.
+error.no.wsdl.per.specification.useraction=Specifica\u021bi o wsdlLocation sau o adnotare SOAP/1.1 c\u0103tre serviciul web.
 
 #reuse CWWKW0038~50!
 
 #{0}=the exception message
 warn.could.not.create.handler=CWWKW0051W: Nu se poate crea handlerul din cauza {0}.
-warn.could.not.create.handler.explanation=Nu se poate crea sau ini\u0163ializa handler-ul.
-warn.could.not.create.handler.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa handler este \u00een calea de clase a aplica\u0163iei sau clasa handler furnizeaz\u0103 un constructor gol.
+warn.could.not.create.handler.explanation=Nu se poate crea sau ini\u021bializa handlerul.
+warn.could.not.create.handler.useraction=Asigura\u021bi-v\u0103 c\u0103 clasa handlerului este \u00een calea de clase a aplica\u021biei sau c\u0103 furnizeaz\u0103 un constructor gol.
 
 #{0}=the handler class name
 #{1}=the exception message
 warn.invoke.handler.predestory=CWWKW0052W: E\u015fuarea apelului metodei preDestory a handlerului {0} din cauza {1}.
-warn.invoke.handler.predestory.explanation=Tipul de returnare al metodei preDestory trebuie s\u0103 fie vid (void) \u015fi resursele care sunt folosite de handler trebuie s\u0103 fie eliberate.
-warn.invoke.handler.predestory.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul de returnare al metodei preDestory este vid (void) \u015fi toate resursele care sunt folosite de clasa handler sunt eliberate. Verifica\u0163i fi\u015fierul istoric din directorul server_name/logs/ffdc pentru detalii suplimentare.
+warn.invoke.handler.predestory.explanation=Tipul retur al metodei preDestory trebuie s\u0103 fie void \u0219i resursele care sunt folosite de handler trebuie eliberate.
+warn.invoke.handler.predestory.useraction=Asigura\u021bi-v\u0103 c\u0103 tipul retur al metodei preDestory este void \u0219i toate resursele care sunt folosite de handler sunt eliberate. Verifica\u021bi fi\u0219ierul istoric \u00een directorul server_name/logs/ffdc pentru mai multe detalii.
 
 #{0}=service class name
 err.unable.set.serviceclass=CWWKW0053E: Clasa de servicii {0} nu a fost setat\u0103 corect.
-err.unable.set.serviceclass.explanation=Clasa de servicii nu a fost g\u0103sit\u0103 \u00een calea de clase a aplica\u0163iei.
-err.unable.set.serviceclass.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa de servicii este \u00een calea de clase a aplica\u0163iei.
+err.unable.set.serviceclass.explanation=Clasa de serviciu nu a fost g\u0103sit\u0103 \u00een calea de clase a aplica\u021biei.
+err.unable.set.serviceclass.useraction=Asigura\u021bi-v\u0103 c\u0103 clasa de serviciu se afl\u0103 \u00een calea de clase a aplica\u021biei.
 
 #reuse CWWKW0054~55!
 
 #{0}=the Web service implement class name
 #{1}=the WSDL location
 warn.endpoint.absolute.wsdllocation=CWWKW0056W: Clasa de implementare a serviciilor web {0} se refer\u0103 la loca\u0163ia WSDL absolut\u0103 {1} prin intermediul adnot\u0103rilor sau al planurilor de implementare. Referin\u0163ele WSDL absolute nu sunt permise \u00een adnot\u0103rile @WebService sau @WebServiceProvider conform specifica\u0163iei JAX-WS.
-warn.endpoint.absolute.wsdllocation.explanation=Este necesar s\u0103 se foloseasc\u0103 URL relativ pentru loca\u0163ia WSDL, care nu va for\u0163a implementarea JAX-WS  s\u0103 extrag\u0103 loca\u0163ii de la distan\u0163\u0103. 
-warn.endpoint.absolute.wsdllocation.useraction=Actualiza\u0163i loca\u0163ia WSDL cu URL relativ prin intermediul adnot\u0103rilor sau al planurilor de implementare. 
+warn.endpoint.absolute.wsdllocation.explanation=Este necesar s\u0103 folosi\u021bi un URL relativ pentru loca\u021bia WSDL, ceea ce nu va obliga implementarea JAX-WS s\u0103 extrag\u0103 loca\u021bii la distan\u021b\u0103. 
+warn.endpoint.absolute.wsdllocation.useraction=Actualiza\u021bi loca\u021bia WSDL cu URL relativ prin adnot\u0103ri sau planuri de implementare. 
 
 #{0}=the value of wsdlLocation 
 #{1}=the implementation class
 error.no.wsdl.find=CWWKW0057E: Fi\u015fierul WSDL {0} specificat pentru clasa de implementare {1} nu poate fi g\u0103sit.
-error.no.wsdl.find.explanation=Fi\u015fierul WSDL specificat pentru clasa de implementare nu poate fi g\u0103sit.
-error.no.wsdl.find.useraction=Specifica\u0163i un fi\u015fier WSDL existent pentru serviciul web.
+error.no.wsdl.find.explanation=Fi\u0219ierul WSDL specificat pentru clasa de implementare nu poate fi g\u0103sit.
+error.no.wsdl.find.useraction=Specifica\u021bi un fi\u0219ier WSDL existent c\u0103tre serviciul web.
 
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Tipul de legare specificat {0} pentru componenta port {1} nu se potrive\u015fte cu defini\u0163ia din documentul WSDL {2}.
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Dac\u0103 tipul de legare este specificat folosind adnotarea BindingType sau din descriptorul de implementare, valoarea sa trebuie s\u0103 se potriveasc\u0103 celei din documentul WSDL.
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualiza\u0163i valoarea tipului de legare s\u0103 se potriveasc\u0103 celui din documentul WSDL.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Dac\u0103 tipul de legare este specificat folosind adnotarea BindingType sau din descriptorul de implementare, valoarea acestuia trebuie s\u0103 se potriveasc\u0103 aceleia din documentul WSDL.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualiza\u021bi valoarea tipului legare pentru a se potrivi aceleia din documentul WSDL.
 
 #{0}=name of JMX operation
 err.unsupported.jmx.operation=CWWKW0059E: Opera\u0163ia {0} nu este suportat\u0103.
-err.unsupported.jmx.operation.explanation=Opera\u0163ia cerut\u0103 nu este permis\u0103 s\u0103 se realizeze.
+err.unsupported.jmx.operation.explanation=Nu este permis ca opera\u021biunea solicitat\u0103 s\u0103 fie efectuat\u0103.
 err.unsupported.jmx.operation.useraction=Nu rula\u0163i opera\u0163ia nesuportat\u0103.
 
 #{0}=the jacksonproviderregister exception name
 #{1}=the jacksonproviderregister exception message
 error.jacksonproviderregister.exception=CWWKW0060E: Furnizorul Jackson nu poate fi \u00eenregistrat din cauza {0}: {1}.
 error.jacksonproviderregister.exception.explanation= Furnizorul Jackson nu este configurat corect.
-error.jacksonproviderregister.exception.useraction= Asigura\u0163i-v\u0103 c\u0103 furnizorul Jackson este configurat corect. Dac\u0103 eroarea persist\u0103, verifica\u0163i istoricul FFDC \u00een directorul logs/ffdc corespunz\u0103tor al serverului pentru detalii suplimentare.
+error.jacksonproviderregister.exception.useraction= Asigura\u0163i-v\u0103 c\u0103 furnizorul Jackson este configurat corect. Dac\u0103 eroarea persist\u0103, verifica\u021bi istoricul FFDC \u00een directorul corespunz\u0103tor istorice/ffdc al serverului pentru mai multe detalii.
 
 warn.invalid.authorization.token.type=CWWKW0061W: Tipul de jeton de autorizare {0} specificat \u00een configura\u0163ia de server este invalid \u015fi va fi ignorat.
-warn.invalid.authorization.token.type.explanation=Tipul de jeton de autorizare specificat \u00een configura\u0163ia de server este invalid.
-warn.invalid.authorization.token.type.useraction=Specifica\u0163i un tip de jeton de autorizare valid. 
-  
+warn.invalid.authorization.token.type.explanation=Tipul de jeton de autorizare specificat \u00een configura\u021bia serverului este nevalid.
+warn.invalid.authorization.token.type.useraction=Specifica\u0163i un tip de jeton de autorizare valid.
+
+continuation.not.supported=Continuarea nu este suportat\u0103. Asigura\u021bi-v\u0103 c\u0103 toate servleturile \u0219i filtrele de servlet suport\u0103 opera\u021biunile asincron.
