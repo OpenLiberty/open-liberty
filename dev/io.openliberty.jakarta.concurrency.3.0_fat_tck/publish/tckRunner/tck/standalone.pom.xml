@@ -21,7 +21,7 @@
         <!-- TODO remove once spec is GAed -->
         <!-- These properties can be overwritten by users -->
         <jakarta.concurrent.groupid>io.openliberty.jakarta.enterprise.concurrent</jakarta.concurrent.groupid>
-        <jakarta.concurrent.version>3.0.0.20220120</jakarta.concurrent.version>
+        <jakarta.concurrent.version>3.0.0.20220126</jakarta.concurrent.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -42,7 +42,7 @@
         <repository>
             <id>ibmdhe</id>
             <name>IBM_DHE File Server</name>
-            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
         </repository>
     </repositories>
 

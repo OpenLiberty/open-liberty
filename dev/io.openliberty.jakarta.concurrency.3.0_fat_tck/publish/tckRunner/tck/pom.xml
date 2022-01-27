@@ -21,7 +21,7 @@
         <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
         
         <!-- TODO: Update this once TCK is GAed -->
-        <jakarta.concurrent.tck.version>3.0.0.20220120</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.tck.version>3.0.0.20220126</jakarta.concurrent.tck.version>
         
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -42,7 +42,7 @@
         <repository>
             <id>ibmdhe</id>
             <name>IBM_DHE File Server</name>
-            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
