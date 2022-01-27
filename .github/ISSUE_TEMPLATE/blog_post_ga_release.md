@@ -3,11 +3,11 @@ name: Open Liberty GA release blog post
 about: Information to be included in the Open Liberty GA release blog post.
 title: GA BLOG - title_of_your_update
 labels: 'Blog, target:ga'
-assignees: ryan-storey
+assignees: @OpenLiberty/blog-issue-assignees
 
 ---
 
-The information you provide here will be included in the Open Liberty GA release blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this newly released feature/function of Open Liberty. For this post to be included in the GA issue please make sure that this is completed by the end of Friday following the GM (Wednesday). 
+The information you provide here will be included in the Open Liberty GA release blog post ([example](https://openliberty.io/blog/2022/01/18/microprofile5-22001.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this newly released feature/function of Open Liberty. For this post to be included in the GA issue please make sure that this is completed by the end of Friday following the GM (Wednesday). 
 
 Please provide the following information the week before the GA date (to allow for review and publishing):
 
@@ -32,7 +32,7 @@ Please provide the following information the week before the GA date (to allow f
 If you have previously provided this information for an Open Liberty beta blog post and nothing has changed since the beta, just provide a link to the published beta blog post and we'll take the information from there.
 
 ## What happens next?
-- Add the label for the beta you're targeting: `target:YY00X-beta`.
+- Add the label for the GA you're targeting: `target:YY00X`.
 - Make sure this blog post is linked back to the Epic for this feature/function.
 - Your paragraph will be included in the GA release blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
