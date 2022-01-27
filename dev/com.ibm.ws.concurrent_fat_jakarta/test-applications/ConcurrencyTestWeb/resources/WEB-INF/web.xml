@@ -50,6 +50,29 @@
     <propagated>Priority</propagated>
     <propagated>Timestamp</propagated>
   </context-service>
+
+  <managed-executor>
+     <name>java:module/concurrent/merged/web/ZLExecutor</name>
+     <max-async>3</max-async>
+  </managed-executor>
+
+  <managed-executor>
+    <name>java:comp/concurrent/merged/web/ZPExecutor</name>
+    <context-service-ref>java:app/concurrent/dd/ZPContextService</context-service-ref>
+    <hung-task-threshold>200000</hung-task-threshold>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:module/concurrent/merged/web/ZLScheduledExecutor</name>
+    <max-async>1</max-async>
+  </managed-scheduled-executor>
+
+  <managed-scheduled-executor>
+    <name>java:app/concurrent/merged/web/LPScheduledExecutor</name>
+    <context-service-ref>java:global/concurrent/anno/ejb/LPContextService</context-service-ref>
+    <hung-task-threshold>140000</hung-task-threshold>
+  </managed-scheduled-executor>
+
 -->
 
 </web-app>

@@ -158,6 +158,24 @@ import test.context.timing.Timestamp;
                           propagated = { "Priority", Timestamp.CONTEXT_NAME }, // TODO ALL_REMAINING, // web.xml replaces with Priority, Timestamp
                           unchanged = APPLICATION)
 
+@ManagedExecutorDefinition(name = "java:module/concurrent/merged/web/ZLExecutor",
+                           context = "java:module/concurrent/ZLContextSvc",
+                           maxAsync = 3, // TODO 6, // web.xml replaces with 3
+                           hungTaskThreshold = 360000)
+
+@ManagedExecutorDefinition(name = "java:comp/concurrent/merged/web/ZPExecutor",
+                           context = "java:app/concurrent/dd/ZPContextService", // TODO "java:comp/concurrent/dd/web/TZContextService", // web.xml replaces with ZPContextService
+                           maxAsync = 2)
+
+@ManagedScheduledExecutorDefinition(name = "java:module/concurrent/merged/web/ZLScheduledExecutor",
+                                    context = "java:module/concurrent/ZLContextSvc",
+                                    maxAsync = 1, // TODO 7, // web.xml replaces with 1
+                                    hungTaskThreshold = 170000)
+
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/merged/web/LPScheduledExecutor",
+                                    context = "java:global/concurrent/anno/ejb/LPContextService", // TODO "java:app/concurrent/dd/ZPContextService", // web.xml replaces with LPContextService
+                                    maxAsync = 4)
+
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrencyTestServlet extends FATServlet {
@@ -2547,6 +2565,279 @@ public class ConcurrencyTestServlet extends FATServlet {
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
             tran.rollback();
+        }
+    }
+
+    /**
+     * Use a ManagedExecutorService that is defined by the merging of a ManagedExecutorDefinition
+     * and a managed-executor in a web module deployment descriptor, which replaces the
+     * maxAsync that it uses.
+     */
+    @Test
+    public void testWebMergedManagedExecutorDefinitionAsync() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/merged/web/ZLExecutor");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch threeRunning = new CountDownLatch(3);
+        CountDownLatch fourRunning = new CountDownLatch(4);
+
+        Supplier<Object[]> task = () -> {
+            threeRunning.countDown();
+            fourRunning.countDown();
+            try {
+                blocker.await(TIMEOUT_NS * 3, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+            return new Object[] { Thread.currentThread().getPriority(), ZipCode.get() };
+        };
+
+        try {
+            // Put some fake context onto the thread:
+            Thread.currentThread().setPriority(6);
+            ZipCode.set(55901);
+
+            CompletableFuture<Object[]> future1 = executor.supplyAsync(task);
+
+            ZipCode.set(55902);
+
+            CompletableFuture<Object[]> future2 = executor.supplyAsync(task);
+
+            CompletableFuture<Object[]> future3 = executor.supplyAsync(task);
+
+            ZipCode.set(55904);
+
+            CompletableFuture<Object[]> future4 = executor.supplyAsync(task);
+
+            ZipCode.set(55906);
+
+            assertTrue(threeRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertFalse(fourRunning.await(1, TimeUnit.SECONDS)); // maxAsync = 3
+
+            blocker.countDown();
+
+            Object[] results;
+            results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[0]); // must be left unchanged
+            assertEquals(Integer.valueOf(55901), results[1]); // must be propagated
+
+            results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[0]); // must be left unchanged
+            assertEquals(Integer.valueOf(55902), results[1]); // must be propagated
+
+            results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[0]); // must be left unchanged
+            assertEquals(Integer.valueOf(55902), results[1]); // must be propagated
+
+            results = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results[0]); // must be left unchanged
+            assertEquals(Integer.valueOf(55904), results[1]); // must be propagated
+        } finally {
+            // Remove fake context
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ManagedExecutorService that is defined by the merging of a ManagedExecutorDefinition
+     * and a managed-executor in a web module deployment descriptor, which replaces the
+     * context service that it uses.
+     */
+    @Test
+    public void testWebMergedManagedExecutorDefinitionContext() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/merged/web/ZPExecutor");
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch twoRunning = new CountDownLatch(2);
+        CountDownLatch threeRunning = new CountDownLatch(3);
+
+        Supplier<Object[]> task = () -> {
+            twoRunning.countDown();
+            threeRunning.countDown();
+            try {
+                blocker.await(TIMEOUT_NS * 3, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+            return new Object[] { Timestamp.get(), Thread.currentThread().getPriority() };
+        };
+
+        try {
+            // Put some fake context onto the thread:
+            Thread.currentThread().setPriority(8);
+            Timestamp.set();
+
+            CompletableFuture<Object[]> future1 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(7);
+
+            CompletableFuture<Object[]> future2 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(6);
+
+            CompletableFuture<Object[]> future3 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(5);
+
+            assertTrue(twoRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertFalse(threeRunning.await(1, TimeUnit.SECONDS)); // maxAsync = 2
+
+            blocker.countDown();
+
+            Object[] results;
+            results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, results[0]); // must be cleared by java:app/concurrent/dd/ZPContextService
+            assertEquals(Integer.valueOf(8), results[1]); // must be propagated by java:app/concurrent/dd/ZPContextService
+
+            results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, results[0]); // must be cleared by java:app/concurrent/dd/ZPContextService
+            assertEquals(Integer.valueOf(7), results[1]); // must be propagated by java:app/concurrent/dd/ZPContextService
+
+            results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, results[0]); // must be cleared by java:app/concurrent/dd/ZPContextService
+            assertEquals(Integer.valueOf(6), results[1]); // must be propagated by java:app/concurrent/dd/ZPContextService
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+        }
+    }
+
+    /**
+     * Use a ManagedScheduledExecutorService that is defined by the merging of a ManagedScheduledExecutorDefinition
+     * and a managed-scheduled-executor in a web module deployment descriptor, which replaces the
+     * maxAsync that it uses.
+     */
+    @Test
+    public void testWebMergedManagedScheduledExecutorDefinitionAsync() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:module/concurrent/merged/web/ZLScheduledExecutor");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch oneRunning = new CountDownLatch(1);
+        CountDownLatch twoRunning = new CountDownLatch(2);
+
+        Consumer<LinkedBlockingQueue<int[]>> task = queue -> {
+            oneRunning.countDown();
+            twoRunning.countDown();
+            try {
+                assertTrue(blocker.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS));
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+            queue.add(new int[] { Thread.currentThread().getPriority(), ZipCode.get() });
+        };
+
+        LinkedBlockingQueue<int[]> queue = new LinkedBlockingQueue<int[]>();
+        CompletionStage<LinkedBlockingQueue<int[]>> stage0 = executor.completedStage(queue);
+
+        try {
+            // Put some fake context onto the thread:
+            Thread.currentThread().setPriority(4);
+            ZipCode.set(55902);
+
+            stage0.thenAcceptAsync(task);
+            stage0.thenAcceptAsync(task);
+
+            assertTrue(oneRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertFalse(twoRunning.await(1, TimeUnit.SECONDS)); // max-async = 1
+
+            blocker.countDown();
+
+            int[] results;
+            assertNotNull(results = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Thread.NORM_PRIORITY, results[0]); // Priority context must be cleared
+            assertEquals(55902, results[1]); // ZipCode context must be propagated
+
+            assertNotNull(results = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Thread.NORM_PRIORITY, results[0]); // Priority context must be cleared
+            assertEquals(55902, results[1]); // ZipCode context must be propagated
+        } finally {
+            // Remove fake context
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ZipCode.clear();
+        }
+    }
+
+    /**
+     * Use a ManagedScheduledExecutorService that is defined by the merging of a ManagedScheduledExecutorDefinition
+     * and a managed-scheduled-executor in a web module deployment descriptor, which replaces the
+     * context service that it uses.
+     */
+    @Test
+    public void testWebMergedManagedScheduledExecutorDefinitionContext() throws Exception {
+        // Ensure annotations from the EJB are processed
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/merged/web/LPScheduledExecutor");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch fourRunning = new CountDownLatch(4);
+        CountDownLatch fiveRunning = new CountDownLatch(5);
+
+        Supplier<Object[]> task = () -> {
+            fourRunning.countDown();
+            fiveRunning.countDown();
+            try {
+                blocker.await(TIMEOUT_NS * 3, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+            return new Object[] { ZipCode.get(), Thread.currentThread().getPriority() };
+        };
+
+        try {
+            // Put some fake context onto the thread:
+            Thread.currentThread().setPriority(1);
+            ZipCode.set(55906);
+
+            CompletableFuture<Object[]> future1 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(2);
+
+            CompletableFuture<Object[]> future2 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(3);
+
+            CompletableFuture<Object[]> future3 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(4);
+
+            CompletableFuture<Object[]> future4 = executor.supplyAsync(task);
+
+            Thread.currentThread().setPriority(6);
+
+            CompletableFuture<Object[]> future5 = executor.supplyAsync(task);
+
+            assertTrue(fourRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertFalse(fiveRunning.await(1, TimeUnit.SECONDS)); // maxAsync = 4
+
+            blocker.countDown();
+
+            Object[] results;
+            results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(0), results[0]); // ZipCode context must be left unchanged
+            assertEquals(Integer.valueOf(1), results[1]); // Priority context must be propagated
+
+            results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(0), results[0]); // ZipCode context must be left unchanged
+            assertEquals(Integer.valueOf(2), results[1]); // Priority context must be propagated
+
+            results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(0), results[0]); // ZipCode context must be left unchanged
+            assertEquals(Integer.valueOf(3), results[1]); // Priority context must be propagated
+
+            results = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(0), results[0]); // ZipCode context must be left unchanged
+            assertEquals(Integer.valueOf(4), results[1]); // Priority context must be propagated
+
+            results = future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Integer.valueOf(0), results[0]); // ZipCode context must be left unchanged
+            assertEquals(Integer.valueOf(6), results[1]); // Priority context must be propagated
+        } finally {
+            // Remove fake context
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            ZipCode.clear();
         }
     }
 }
