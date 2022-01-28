@@ -18,6 +18,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**

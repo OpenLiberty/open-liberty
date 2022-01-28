@@ -15,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,7 +34,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
+
 
 /**
  * This is a test class that runs the whole Jakarta Concurrency TCK. The TCK results
@@ -106,8 +111,31 @@ public class ConcurrentTckLauncher {
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
-        );
+        );  
 
-        assertEquals(0, result);
+        try{
+            Map<String, String> resultInfo = new HashMap<>();
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "Jakarta EE");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Concurrency");
+            resultInfo.put("feature_version", "3.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+                MvnUtils.preparePublicationFile(resultInfo);
+            }
+            finally{
+                assertEquals(0, result);
+            }
     }
 }

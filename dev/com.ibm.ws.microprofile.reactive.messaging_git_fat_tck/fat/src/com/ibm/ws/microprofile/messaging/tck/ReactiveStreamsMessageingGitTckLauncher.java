@@ -20,9 +20,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Stream;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,6 +40,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -118,7 +123,28 @@ public class ReactiveStreamsMessageingGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "org.eclipse.microprofile.reactive.messaging.tck", this
                         .getClass() + ":launchReactiveMessagingTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = new HashMap<>();
+        try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Reactive Messaging");
+            resultInfo.put("feature_version", "1.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };;
     }
 
     @Mode(TestMode.LITE)

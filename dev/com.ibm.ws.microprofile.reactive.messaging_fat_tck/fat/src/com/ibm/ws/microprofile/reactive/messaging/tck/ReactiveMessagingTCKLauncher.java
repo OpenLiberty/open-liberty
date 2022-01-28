@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.tck;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,6 +27,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -47,7 +54,28 @@ public class ReactiveMessagingTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveMessagingTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.messaging_fat_tck", this.getClass() + ":launchReactiveMessagingTck");
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = new HashMap<>();
+        try{
+            JavaInfo javaInfo = JavaInfo.forCurrentVM();
+            String productVersion = "";
+            resultInfo.put("results_type", "MicroProfile");
+            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+            resultInfo.put("feature_name", "Reactive Messaging");
+            resultInfo.put("feature_version", "1.0");
+            resultInfo.put("os_name",System.getProperty("os.name"));
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
+                if (nameMatcher.find()) {
+                    productVersion = nameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            MvnUtils.preparePublicationFile(resultInfo);
+        };
     }
 
 }
