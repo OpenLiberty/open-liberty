@@ -1424,6 +1424,7 @@ public class LibertyServer implements LogMonitorClient {
 
             // If we are running on Java 18+, then we need to explicitly enable the security manager
             if (info.majorVersion() >= 18) {
+                Log.info(c, "startServerWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
         } else if (info.majorVersion() >= 18) {

@@ -622,13 +622,14 @@ public class LibertyClient {
 
                 // If we are running on Java 18+, then we need to explicitly enable the security manager
                 if (javaInfo.majorVersion() >= 18) {
+                    Log.info(c, "startClientWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
                     JVM_ARGS += " -Djava.security.manager=allow";
                 }
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
             }
-        } else {
+        } else if (javaInfo.majorVersion() >= 18) {
             // Check if "websphere.java.security" has been added to bootstrapping.properties
             // as some tests will add it for their own security enable tests
             boolean bootstrapHasJava2SecProps = false;
