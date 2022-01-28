@@ -16,7 +16,7 @@ import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_COMPONENT;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_MODULE;
 import static com.ibm.ws.jbatch.jms.internal.BatchJmsConstants.J2EE_APP_NAME;
-import static com.ibm.ws.jbatch.jms.internal.listener.impl.BatchJmsExecutor.CONN_FACTORY_REF_NAME;
+import static com.ibm.ws.jbatch.jms.internal.listener.impl.JmsExecutor.CONN_FACTORY_REF_NAME;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
@@ -72,9 +72,9 @@ import com.ibm.wsspi.resource.ResourceInfo;
            configurationPolicy = REQUIRE, 
            property = { CONN_FACTORY_REF_NAME+".cardinality.minimum="+Integer.MAX_VALUE, // Prevent this reference from being satisfied before metatype processing
                         "service.vendor=IBM" })
-public class BatchJmsExecutor {
+public class JmsExecutor {
 
-    private static final TraceComponent tc = Tr.register(BatchJmsExecutor.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");
+    private static final TraceComponent tc = Tr.register(JmsExecutor.class, "wsbatch", "com.ibm.ws.jbatch.jms.internal.resources.BatchJmsMessages");
     
     public static final String ACTIVATION_SPEC_REF_NAME = "JmsActivationSpec";
     public static final String CONN_FACTORY_REF_NAME = "JMSConnectionFactory";
@@ -102,7 +102,7 @@ public class BatchJmsExecutor {
     private boolean deactivated = false;
  
     @Activate
-    public BatchJmsExecutor(ComponentContext context, Map<String, Object> config,
+    public JmsExecutor(ComponentContext context, Map<String, Object> config,
             // Anonymous References
             @Reference ApplicationStartBarrier requiredButNotUsed,
             @Reference ServerStartedPhase2 requiredButNotUsed2,
@@ -125,7 +125,7 @@ public class BatchJmsExecutor {
         this.endpointActivationSpecId = (String) jmsActivationSpecRef.getProperty("id");
          
         final String adminId = (String) adminObjectServiceRef.getProperty("id");  
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "BatchJmsExecutor: id=" + adminId);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JmsExecutor: id=" + adminId);
        
         if (null == adminId) { 
             this.jmsQueueJndi = null;
@@ -133,7 +133,7 @@ public class BatchJmsExecutor {
             this.jmsQueueJndi = (String) adminObjectServiceRef.getProperty("jndiName");
         
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "BatchJmsExecutor: jndiName=" + jmsQueueJndi);
+                Tr.debug(tc, "JmsExecutor: jndiName=" + jmsQueueJndi);
             }
             addAdminObjectService(adminObjectServiceRef, adminId, false);
             // If an AdminObjectService has both an id and a jndiName that are
@@ -144,7 +144,7 @@ public class BatchJmsExecutor {
         }
         
         if(FrameworkState.isStopping()) {
-            debug(this, tc, "BatchJmsExecutor" , "Framework stopping");
+            debug(this, tc, "JmsExecutor" , "Framework stopping");
             return;             
         }
             
@@ -528,7 +528,7 @@ public class BatchJmsExecutor {
     }
 
     @Deactivate
-    protected void deactivate() {
+    protected void deactivate() {     
         final String adminId = (String) adminObjectServiceRef.getProperty("id");
     	if (null != adminId) {
             removeAdminObjectService(adminObjectServiceRef, adminId, false);
@@ -536,7 +536,10 @@ public class BatchJmsExecutor {
                 removeAdminObjectService(adminObjectServiceRef, jmsQueueJndi, true);
             }
         }
-    	deactivated = true; 	
+    	deactivated = true; 
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "deactivate",  "deactivated adminId="+adminId+" jmsQueueJndi="+jmsQueueJndi);
+        }	
     }
 
     /**
@@ -617,7 +620,7 @@ public class BatchJmsExecutor {
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(BatchJmsExecutor.this, tc, mef.toString() + " already activated");
+                    Tr.debug(JmsExecutor.this, tc, mef.toString() + " already activated");
                 }
             }
         }

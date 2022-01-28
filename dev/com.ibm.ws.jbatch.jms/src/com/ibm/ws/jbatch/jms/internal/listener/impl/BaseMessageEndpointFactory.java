@@ -150,17 +150,17 @@ public abstract class BaseMessageEndpointFactory implements MessageEndpointFacto
     /**
      * Reference to the batchExecutor that create this object
      */
-    protected BatchJmsExecutor batchExecutor;
+    protected JmsExecutor batchExecutor;
 
     public void setJ2eeName(J2EEName j2eeName) {
         this.j2eeName = j2eeName;
     }
 
-    public BaseMessageEndpointFactory(BatchJmsExecutor batchExecutor) {
+    public BaseMessageEndpointFactory(JmsExecutor batchExecutor) {
         this.batchExecutor = batchExecutor;
     }
 
-    public BatchJmsExecutor getBatchExecutor() {
+    public JmsExecutor getBatchExecutor() {
         return batchExecutor;
     }
     /**

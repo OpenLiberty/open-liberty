@@ -24,7 +24,7 @@ Include-Resource: \
 
 -dsannotations:\
  com.ibm.ws.jbatch.jms.internal.events.impl.BatchEventsPublisherImpl, \
- com.ibm.ws.jbatch.jms.internal.listener.impl.BatchJmsExecutor, \
+ com.ibm.ws.jbatch.jms.internal.listener.impl.JmsExecutor, \
  com.ibm.ws.jbatch.jms.internal.dispatcher.BatchJmsDispatcher
 
 -buildpath: \
@@ -51,5 +51,21 @@ Include-Resource: \
 	com.ibm.websphere.javaee.connector.1.7;version=latest,\
 	com.ibm.ws.jca;version=latest,\
         com.ibm.ws.kernel.boot.core;version=latest
+        
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+    org.hamcrest:hamcrest-all;version=1.3,\
+   	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1,\
+	com.ibm.tx.core;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.jbatch.rest;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	org.jmock:jmock-legacy;version=2.5.0,\
+	com.ibm.ws.org.objenesis:objenesis;version=1.0,\
+	cglib:cglib-nodep;version=2.1.0.3
+	
 
 instrument.classesExcludes: com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages*.class

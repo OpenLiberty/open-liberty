@@ -69,12 +69,12 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     /**
      * runtime information about the activation service.
      */
-    BatchJmsExecutor.EndpointActivationServiceInfo endpointActivationServiceInfo;
+    JmsExecutor.EndpointActivationServiceInfo endpointActivationServiceInfo;
 
     /**
      * runtime information about the destination.
      */
-    BatchJmsExecutor.NamedAdminObjectServiceInfo adminObjectServiceInfo;
+    JmsExecutor.NamedAdminObjectServiceInfo adminObjectServiceInfo;
 
     /**
      * True if the runtime has called activateEndpointInternal but has not
@@ -87,7 +87,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     /*private static final ThreadContextAccessor threadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
     */
-    public MessageEndpointFactoryImpl(BatchJmsExecutor batchExecutor) throws RemoteException {
+    public MessageEndpointFactoryImpl(JmsExecutor batchExecutor) throws RemoteException {
         super(batchExecutor);
         initProxy();
     }
