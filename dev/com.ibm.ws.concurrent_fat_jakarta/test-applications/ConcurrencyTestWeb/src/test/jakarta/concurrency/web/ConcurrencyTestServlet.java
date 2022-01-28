@@ -58,6 +58,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.ejb.EJBException;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
@@ -88,6 +89,7 @@ import componenttest.app.FATServlet;
 import test.context.list.ListContext;
 import test.context.location.ZipCode;
 import test.context.timing.Timestamp;
+import test.jakarta.concurrency.ejb.MTFDBean;
 
 @ContextServiceDefinition(name = "java:app/concurrent/appContextSvc",
                           propagated = APPLICATION,
@@ -217,6 +219,10 @@ public class ConcurrencyTestServlet extends FATServlet {
 
     @Resource(lookup = "java:app/concurrent/lowPriorityThreads")
     ManagedThreadFactory lowPriorityThreads;
+
+    //Do not use for any other tests
+    @EJB
+    MTFDBean testEJBAnnoManagedThreadFactoryInitializationBean;
 
     private ExecutorService unmanagedThreads;
 
@@ -791,6 +797,16 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new EJBException(x);
             }
         });
+    }
+
+    /**
+     * Use a ManagedThreadFactory from a ManagedThreadFactoryDefinition that is defined in an EJB that has
+     * not been previously initialized/invoked.
+     */
+    @Test
+    public void testEJBAnnoManagedThreadFactoryInitialization() throws Exception {
+        Object resultOfLookup = testEJBAnnoManagedThreadFactoryInitializationBean.lookupThreadFactory();
+        assertTrue(resultOfLookup.toString(), resultOfLookup instanceof ManagedThreadFactory);
     }
 
     /**
