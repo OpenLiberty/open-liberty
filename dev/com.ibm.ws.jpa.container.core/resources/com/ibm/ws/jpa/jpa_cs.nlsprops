@@ -96,7 +96,7 @@ PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplikace definova
 PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Upravte aplikaci tak, aby byl pro odkaz ur\u010den n\u00e1zev jednotky perzistence nebo zadejte jedine\u010dnou perzistenci.
 
 #-------------------------------------------------------------------------------
-UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Server nenalezl zdroj dat {0} pro jednotku perzistence {1}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce:\n\ {2}
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Server nenalezl zdroj dat {0} pro jednotku perzistence {1}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce:\n {2}
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Server se pokusil o vyhled\u00e1n\u00ed zdroje dat pro jednotku perzistence. Zdroj dat v\u0161ak nebyl nalezen.
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Ujist\u011bte se, \u017ee po\u017eadovan\u00fd zdroj dat byl vytvo\u0159en a \u017ee je k n\u011bmu vytvo\u0159ena vazba.
 
@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Ov\u011b\u0159te, \u017ee aplikace pr
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Server nenalezl zdroj dat {0} v oboru n\u00e1zv\u016f komponenty pro jednotku perzistence {1}, proto\u017ee kontext komponenty v p\u0159\u00edslu\u0161n\u00e9m podprocesu neexistuje.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Zdroj dat nebyl nalezen, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud nen\u00ed klient rozhran\u00ed JNDI (Java Naming and Directory InterfaceTM) pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev \"java:\" spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Zdroj dat nebyl nalezen, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed serveru nem\u016f\u017ee p\u0159idru\u017eit podproces operace k \u017e\u00e1dn\u00e9 komponent\u011b aplikace prost\u0159ed\u00ed Java Platform, Enterprise Edition 5 (Java EE 5). Tento stav m\u016f\u017ee nastat, pokud nen\u00ed klient rozhran\u00ed JNDI (Java Naming and Directory InterfaceTM) pou\u017e\u00edvaj\u00edc\u00ed n\u00e1zev "java:" spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Ov\u011b\u0159te, \u017ee aplikace prost\u0159ed\u00ed Java EE 5 nespou\u0161t\u00ed operace rozhran\u00ed JNDI pro n\u00e1zvy java: v r\u00e1mci blok\u016f statick\u00e9ho k\u00f3du nebo v podprocesech vytvo\u0159en\u00fdch touto aplikac\u00ed prost\u0159ed\u00ed Java EE 5. Tento k\u00f3d nemus\u00ed b\u00fdt nutn\u011b spou\u0161t\u011bn v r\u00e1mci podprocesu po\u017eadavku aplikace serveru. K\u00f3d proto nen\u00ed podporov\u00e1n operacemi rozhran\u00ed JNDI pro n\u00e1zvy java:.
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Je mo\u017en\u00e9, \u017ee mezip
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: V\u00fdchoz\u00ed vlastnost JPA nakonfigurovan\u00e1 v souboru server.xml obsahuje pr\u00e1zdn\u00fd n\u00e1zev nebo pr\u00e1zdnou hodnotu: n\u00e1zev = [{0}], hodnota = [{1}]. Vlastnost bude ignorov\u00e1na.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: V\u00fdchoz\u00ed vlastnost JPA obsahuj\u00edc\u00ed pr\u00e1zdn\u00fd n\u00e1zev nebo pr\u00e1zdnou hodnotu je konfigurov\u00e1na v souboru server.xml: n\u00e1zev = [{0}], hodnota = [{1}]. Tato vlastnost je ignorov\u00e1na.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atributy n\u00e1zvu a hodnoty pro v\u00fdchoz\u00ed vlastnost JPA nesm\u00ed b\u00fdt pr\u00e1zdn\u00e9.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Zm\u011b\u0148te konfiguraci serveru tak, aby poskytovala nepr\u00e1zdn\u00fd n\u00e1zev a hodnotu vlastnosti, nebo odeberte vlastnost.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: V\u00fdchoz\u00ed vlastnost rozhran\u00ed JPA, kter\u00e1 je ur\u010dena pouze pro pou\u017eit\u00ed v prost\u0159ed\u00edch Java SE, je konfigurov\u00e1na v souboru server.xml: n\u00e1zev = [{0}], hodnota = [{1}]. Tato vlastnost je ignorov\u00e1na.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Tato v\u00fdchoz\u00ed vlastnost rozhran\u00ed JPA se pou\u017e\u00edv\u00e1 v prost\u0159ed\u00ed Java EE, ale je ur\u010dena pro pou\u017eit\u00ed pouze v prost\u0159ed\u00edch Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Zm\u011b\u0148te konfiguraci serveru a aplikace tak, aby pou\u017e\u00edvala zdroj dat JNDI, a odeberte vlastnost.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

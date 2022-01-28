@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Assurez-vous qu'une application Java 
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Le serveur ne parvient pas \u00e0 trouver la source de donn\u00e9es {0} dans l''espace de noms de composants pour l''unit\u00e9 de persistance {1} car il n''existe pas de contexte de composant dans l''unit\u00e9 d''ex\u00e9cution.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=La source de donn\u00e9es est introuvable du fait que le contexte d'ex\u00e9cution du serveur n'est pas en mesure d'associer l'unit\u00e9 d'ex\u00e9cution de l'op\u00e9ration \u00e0 un composant d'application Java EE 5 (Java Platform, Enterprise Edition 5).  Cette condition peut se produire lorsque le client JNDI (Java Naming and Directory InterfaceTM) qui utilise le nom \"java:\" n'est pas ex\u00e9cut\u00e9 sur l'unit\u00e9 d'ex\u00e9cution d'une demande d'application du serveur.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=La source de donn\u00e9es est introuvable du fait que le contexte d'ex\u00e9cution du serveur n'est pas en mesure d'associer l'unit\u00e9 d'ex\u00e9cution de l'op\u00e9ration \u00e0 un composant d'application Java EE 5 (Java Platform, Enterprise Edition 5).  Cette condition peut se produire lorsque le client JNDI (Java Naming and Directory InterfaceTM) qui utilise le nom "java:" n'est pas ex\u00e9cut\u00e9 sur l'unit\u00e9 d'ex\u00e9cution d'une demande d'application du serveur.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Assurez-vous qu'une application Java EE 5 n'ex\u00e9cute pas d'op\u00e9rations JNDI sur des noms "java:" dans des blocs de code statiques ou dans des unit\u00e9s d'ex\u00e9cution cr\u00e9\u00e9es par cette application Java EE 5.  Ce code ne s'ex\u00e9cute pas n\u00e9cessairement sur l'unit\u00e9 d'ex\u00e9cution d'une demande d'application du serveur.  Par cons\u00e9quent, ce code n'est pas pris en charge par les op\u00e9rations JNDI sur les noms "java:".
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Il se peut que le cache de classe
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Une propri\u00e9t\u00e9 par d\u00e9faut JPA configur\u00e9e dans le fichier server.xml contient un nom vide ou une valeur vide : nom = [{0}], valeur = [{1}]. La propri\u00e9t\u00e9 sera ignor\u00e9e.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Une propri\u00e9t\u00e9 JPA par d\u00e9faut contenant un nom vide ou une valeur vide est configur\u00e9e dans le fichier server.xml : nom = [{0}], valeur = [{1}]. Cette propri\u00e9t\u00e9 est ignor\u00e9e.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Les attributs de nom et de valeur d'une propri\u00e9t\u00e9 par d\u00e9faut JPA ne doivent pas \u00eatre vides.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Modifiez la configuration du serveur afin de fournir un nom et une valeur non vides pour la propri\u00e9t\u00e9 ou de supprimer la propri\u00e9t\u00e9.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: Une propri\u00e9t\u00e9 JPA par d\u00e9faut destin\u00e9e \u00e0 \u00eatre utilis\u00e9e uniquement dans les environnements Java SE est configur\u00e9e dans le fichier server.xml : nom = [{0}], valeur = [{1}]. Cette propri\u00e9t\u00e9 est ignor\u00e9e.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Cette propri\u00e9t\u00e9 JPA par d\u00e9faut est utilis\u00e9e dans un environnement Java EE, mais est destin\u00e9e \u00e0 \u00eatre utilis\u00e9e uniquement dans les environnements Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Modifiez la configuration du serveur et de l'application pour utiliser une source de donn\u00e9es JNDI et supprimez la propri\u00e9t\u00e9.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

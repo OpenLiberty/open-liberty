@@ -96,7 +96,7 @@ PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplikacja zdefini
 PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Zmie\u0144 aplikacj\u0119 w taki spos\u00f3b, aby okre\u015bla\u0142a nazw\u0119 jednostki pami\u0119ci trwa\u0142ej dla odwo\u0142ania, albo udost\u0119pnij unikaln\u0105 pami\u0119\u0107 trwa\u0142\u0105.
 
 #-------------------------------------------------------------------------------
-UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} dla jednostki trwa\u0142o\u015bci {1}, poniewa\u017c napotka\u0142 nast\u0119puj\u0105cy wyj\u0105tek: \n \ {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} dla jednostki trwa\u0142o\u015bci {1}, poniewa\u017c napotka\u0142 nast\u0119puj\u0105cy wyj\u0105tek: \n  {2}.
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Serwer usi\u0142owa\u0142 znale\u017a\u0107 \u017ar\u00f3d\u0142o danych dla jednostki pami\u0119ci trwa\u0142ej. \u0179r\u00f3d\u0142o danych nie zosta\u0142o jednak znalezione.
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Sprawd\u017a, czy \u017c\u0105dane \u017ar\u00f3d\u0142o danych zosta\u0142o utworzone i powi\u0105zane.
 
@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Upewnij si\u0119, \u017ce aplikacja J
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} w przestrzeni nazw komponentu dla jednostki trwa\u0142o\u015bci {1}, poniewa\u017c kontekst komponentu nie istnieje w w\u0105tku.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Nie mo\u017cna znale\u017a\u0107 \u017ar\u00f3d\u0142a danych, poniewa\u017c \u015brodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).  Taka sytuacja mo\u017ce wyst\u0105pi\u0107, kiedy klient JNDI (Java Naming and Directory InterfaceTM) u\u017cywaj\u0105cy nazwy \"java:\" nie zosta\u0142 uruchomiony w w\u0105tku \u017c\u0105dania aplikacji serwera.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Nie mo\u017cna znale\u017a\u0107 \u017ar\u00f3d\u0142a danych, poniewa\u017c \u015brodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).  Taka sytuacja mo\u017ce wyst\u0105pi\u0107, kiedy klient JNDI (Java Naming and Directory InterfaceTM) u\u017cywaj\u0105cy nazwy "java:" nie zosta\u0142 uruchomiony w w\u0105tku \u017c\u0105dania aplikacji serwera.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Upewnij si\u0119, \u017ce aplikacja Java EE 5 nie wykonuje operacji JNDI na nazwach java: w blokach kodu statycznego ani w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119 Java EE 5.  Ten kod nie musi by\u0107 wykonywany w w\u0105tku \u017c\u0105dania aplikacji serwera.  Z tego wzgl\u0119du ten kod nie jest obs\u0142ugiwany w operacjach JNDI na nazwach java:.
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=By\u0107 mo\u017ce pami\u0119\u01
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: W\u0142a\u015bciwo\u015b\u0107 domy\u015blna JPA skonfigurowana w pliku server.xml zawiera pust\u0105 nazw\u0119 lub pust\u0105 warto\u015b\u0107, odpowiednio: name = [{0}], value = [{1}]. W\u0142a\u015bciwo\u015b\u0107 zostanie zignorowana.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: W\u0142a\u015bciwo\u015b\u0107 domy\u015blna JPA, kt\u00f3ra zawiera pust\u0105 nazw\u0119 lub pust\u0105 warto\u015b\u0107, jest skonfigurowana w pliku server.xml: name = [{0}], value = [{1}]. Ta w\u0142a\u015bciwo\u015b\u0107 jest ignorowana.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atrybuty name i value w\u0142a\u015bciwo\u015bci domy\u015blnej JPA nie mog\u0105 by\u0107 puste.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Zmie\u0144 konfiguracj\u0119 serwera tak, by nazwa i warto\u015b\u0107 w\u0142a\u015bciwo\u015bci by\u0142y niepuste, albo usu\u0144 w\u0142a\u015bciwo\u015b\u0107.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: W\u0142a\u015bciwo\u015b\u0107 domy\u015blna JPA, kt\u00f3ra jest przeznaczona do u\u017cycia tylko w \u015brodowiskach Java SE, jest skonfigurowana w pliku server.xml: name = [{0}], value = [{1}]. Ta w\u0142a\u015bciwo\u015b\u0107 jest ignorowana.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Ta domy\u015blna w\u0142a\u015bciwo\u015b\u0107 JPA jest u\u017cywana w \u015brodowisku Java EE, ale jest przeznaczona do u\u017cytku wy\u0142\u0105cznie w \u015brodowiskach Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Zmie\u0144 konfiguracj\u0119 serwera i aplikacji w taki spos\u00f3b, aby korzysta\u0107 ze \u017ar\u00f3d\u0142a danych JNDI, i usu\u0144 w\u0142a\u015bciwo\u015b\u0107.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

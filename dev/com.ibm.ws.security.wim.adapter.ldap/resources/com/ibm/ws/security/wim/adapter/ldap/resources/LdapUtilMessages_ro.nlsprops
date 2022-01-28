@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -55,11 +55,11 @@ ENTITY_IS_NOT_A_GROUP=CWIML4525E: Opera\u0163ia de \u00eenregistrare utilizator 
 ENTITY_IS_NOT_A_GROUP.explanation=Opera\u0163iile legate de grup, cum ar fi alocarea membrilor unui grup sau ob\u0163inerea membrilor unui grup, sunt aplicabile numai tipului de entitate Grup. Se arunc\u0103 o excep\u0163ie dac\u0103 entitatea specificat\u0103 nu este de tip Grup.
 ENTITY_IS_NOT_A_GROUP.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul de entitate specificat este de tip Grup. Pentru adaptorul LDAP, asigura\u0163i-v\u0103 c\u0103 clasa de obiecte care este definit\u0103 pentru tipul de entitate Grup se potriv\u015fte cu clasa de obiect real\u0103 a grupului.
 
-CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  Utilizatorul {2} a transmis elementul de control cache specific\u00e2nd modul de cur\u0103\u0163are cache {1} pentru magazia {0}. Este cur\u0103\u0163at \u00eentregul cache al repozitoriului LDAP.
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ Utilizatorul {2} a transmis elementul de control cache specific\u00e2nd modul de cur\u0103\u0163are cache {1} pentru magazia {0}. Este cur\u0103\u0163at \u00eentregul cache al repozitoriului LDAP.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Utilizatorul specificat \u00eencearc\u0103 s\u0103 cure\u0163e \u00eentregul cache al magaziei specificate folosind modul clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Acest mesaj este \u00eenregistrat \u00een istoric \u00een scopul audit\u0103rii.
 
-UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  Modul de cur\u0103\u0163are cache {1} specificat pentru magazia {0} \u00een elementul de control cache nu este suportat. Specifica\u0163i un mod de cur\u0103\u0163are cache suportat.
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W: \ Modul de cur\u0103\u0163are cache {1} specificat pentru magazia {0} \u00een elementul de control cache nu este suportat. Specifica\u0163i un mod de cur\u0103\u0163are cache suportat.
 UNKNOWN_CLEAR_CACHE_MODE.explanation=Modul de cur\u0103\u0163are cache specificat nu este suportat pentru aceast\u0103 magazie.
 UNKNOWN_CLEAR_CACHE_MODE.useraction=Specifica\u0163i un mod de cur\u0103\u0163are cache care este suportat pentru magazia specificat\u0103. 
 
@@ -83,7 +83,7 @@ NULL_CHECKPOINT_VALUE=CWIML4550E: Opera\u0163ia LDAP nu a putut fi finalizat\u01
 NULL_CHECKPOINT_VALUE.explanation=Dac\u0103 repozitoriul suport\u0103 modificarea urm\u0103ririi a\u015fa cum este specificat de steagul 'supportChangeLog' pentru repozitoriul din fi\u015fierul server.xml, atunci punctul de control trecut pentru acesta \u00een ChangeControl nu trebuie s\u0103 fie gol sau null.
 NULL_CHECKPOINT_VALUE.useraction=\u00cencerca\u0163i din nou c\u0103utarea cu un punct de control valid sau dezactiva\u0163i 'supportChangeLog' pentru acel repozitoriu din fi\u015fierul server.xml, dac\u0103 adaptorul de registru utilizator nu este capabil s\u0103 urm\u0103reasc\u0103 modific\u0103rile.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Parola lipse\u015fte sau este goal\u0103.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Opera\u021bia de logare nu a putut fi finalizat\u0103, deoarece parola fie lipse\u0219te, fie este goal\u0103.
 MISSING_OR_EMPTY_PASSWORD.explanation=Dac\u0103 numele principal este specificat \u00een timpul log\u0103rii, parola nu poate fi nul\u0103 sau goal\u0103.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specifica\u0163i parola.
 
@@ -127,9 +127,9 @@ EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Opera\u0163ia de c\u0103utare nu a putut 
 EXT_ID_HAS_MULTIPLE_VALUES.explanation=Atributul LDAP folosit ca identificator extern trebuie s\u0103 fie unic \u015fi s\u0103 nu con\u0163in\u0103 valori multiple.
 EXT_ID_HAS_MULTIPLE_VALUES.useraction=Asigura\u0163i-v\u0103 c\u0103 este ales atributul corect pentru identificatorul extern. Dac\u0103 nu exist\u0103 nici un atribut corespunz\u0103tor, se poate folosi numele distinctiv ca identificator extern.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Intrarea de baz\u0103 configurat\u0103 nu este valid\u0103: {0}. Configura\u0163i o defini\u0163ie a intr\u0103rii de baz\u0103 valide \u00een fi\u015fierul server.xml. De exemplu: <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation=Sintaxa pentru definirea unei intr\u0103ri de baz\u0103 este <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction=Corecta\u0163i defini\u0163ia intr\u0103rii de baz\u0103 \u00een fi\u015fierul server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Opera\u021bia de \u00eenregistrare a utilizatorului nu a putut fi finalizat\u0103. Defini\u021bia de intrare de baz\u0103 {0} nu este valid\u0103.  Corecta\u021bi defini\u021bia de intrare de baz\u0103 \u00een fi\u0219ierul server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Defini\u021bia de intrare de baz\u0103 specificat\u0103 nu este valid\u0103.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Specifica\u021bi o defini\u021bie de intrare de baz\u0103 valid\u0103 \u00een fi\u0219ierul server.xml.
 
 INVALID_DN_SYNTAX=CWIML4517E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Numele distinctiv (DN) {0} nu este valid. Specifica\u0163i sintaxa corect\u0103 a numelui distinctiv.
 INVALID_DN_SYNTAX.explanation=Numele distinctiv (DN) specificat nu este valid. Opera\u0163ia de \u00eenregistrare utilizator nu poate continua f\u0103r\u0103 un DN valid.
@@ -186,9 +186,9 @@ ENTITY_HAS_DESCENDENTS=CWIML4519E: Opera\u0163ia de \u00eenregistrare utilizator
 ENTITY_HAS_DESCENDENTS.explanation=Func\u0163ia de \u015ftergere sau redenumire poate fi realizat\u0103 numai pe o entitate frunz\u0103, adic\u0103 o entitate f\u0103r\u0103 niciun descendent. Entitatea specificat\u0103 are descenden\u0163i.
 ENTITY_HAS_DESCENDENTS.useraction=\u015eterge\u0163i mai \u00eent\u00e2i to\u0163i descenden\u0163ii entit\u0103\u0163ii, apoi \u015fterge\u0163i sau redenumi\u0163i entitatea \u00een sine.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. {0} nu este un tip de entitate valid. Invoca\u0163i opera\u0163ia specific\u00e2nd un tip de entitate valid.
-ENTITY_TYPE_NOT_SUPPORTED.explanation=A fost cerut\u0103 o opera\u0163ie pe o entitate, dar opera\u0163ia nu suport\u0103 tipul de entitate specificat. De exemplu, dac\u0103 o opera\u0163ia GET de magazie este invocat\u0103 pentru o entitate Cont, opera\u0163ia e\u015fueaz\u0103.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 entit\u0103\u0163ile sunt invocate pentru tipuri de entitate suportate \u015fi \u00eenl\u0103tura\u0163i orice tipuri de entitate nesuportate din intrare.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Tipul de entitate specificat, {0}, nu este valid pentru aceast\u0103 opera\u021bie.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=A fost solicitat\u0103 o opera\u021bie pentru o entitate, dar aceast\u0103 opera\u021bie nu accept\u0103 tipul de entitate specificat.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Asigura\u021bi-v\u0103 c\u0103 entit\u0103\u021bile furnizate \u00een intrare au tipuri de entitate acceptate \u0219i \u00eenl\u0103tura\u021bi din intrare orice tip de entitate nesuportat.
 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Nu se poate crea sau actualiza proprietatea {0} din magazia {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=\u00cen opera\u0163ia de creare sau actualizare, este specificat\u0103 o valoare pentru o proprietate care nu poate fi scris\u0103 la magazie. De exemplu, un pricipalName nu poate fi specificat pentru o opera\u0163ie CREATE.
@@ -242,9 +242,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Logarea Kerberos cu principalul Kerb
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Fie principalul Kerberos este invalid, fie cache-ul de acredit\u0103ri Kerberos (ccache) implicit este invalid sau expirat.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi cache-ul de acredit\u0103ri Kerberos implicit (ccache) nu este expirat.
 
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Logarea Kerberos cu principalul Kerberos {0} \u015fi fi\u015fierul keytab Kerberos implicit a e\u015fuat.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Fie principalul Kerberos este invalid, fie fi\u015fierul keytab Kerberos implicit este invalid.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi c\u0103 este valid fi\u015fierul keytab Kerberos implicit.
+# CWIML4510 already used
 
 KRB5_TICKETCACHE_USED=CWIML4511E: Registrul LDAP {0} este configurat cu numele de fi\u015fier cache de tichete Kerberos {1} (ccache) \u015fi numele de fi\u015fier keytab {2}. Cache-ul de acredit\u0103ri Kerberos (ccache) este utilizat pentru autentificarea de legare Kerberos la serverul LDAP.
 KRB5_TICKETCACHE_USED.explanation=Pentru a folosi fi\u015fierul tabel de chei (keytab), trebuie specificat numele de fi\u015fier keytab, iar numele de fi\u015fier cache de acredit\u0103ri Kerberos (ccache) nu trebuie specificat.
@@ -264,17 +262,15 @@ KRB5_FILE_NOT_FOUND=CWIML4515E: Atributul [{0}] de la elementul {1} este configu
 KRB5_FILE_NOT_FOUND.explanation=Configura\u0163ia se refer\u0103 la un fi\u015fier care fie poate fi citit, fie nu exist\u0103.
 KRB5_FILE_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ie se indic\u0103 un fi\u015fier care exist\u0103 \u015fi poate fi citit de procesul aplica\u0163iei.
 
-KRB5_FILE_FOUND=CWIML4516E: Componenta de registru LDAP este configurat\u0103 s\u0103 utilizeze un fi\u015fier {0} care este localizat la {1}.
-KRB5_FILE_FOUND.explanation=Fi\u015fierul configurat a fost localizat cu succes.
-KRB5_FILE_FOUND.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
-
+# CWIML4516 already used
 # CWIML4517 already used
 
 IDMAP_INVALID_FORMAT=CWIML4518W: Valoarea {0} {1} este formatat\u0103 gre\u015fit. Valoarea trebuie s\u0103 fie o list\u0103 separat\u0103 prin punct \u015fi virgul\u0103 a perechilor ''objectclass:attribute'' sau ''*:attribute''.
 IDMAP_INVALID_FORMAT.explanation=Valoarea userIdMap trebuie s\u0103 fie \u00eentr-un format valid, astfel \u00eenc\u00e2t clasa de obiect \u015fi atributul s\u0103 poat\u0103 fi parsate.
 IDMAP_INVALID_FORMAT.useraction=Actualiza\u0163i valoarea userIdMap astfel \u00eenc\u00e2t s\u0103 fie conform\u0103 formatului specificat.
 
-# CWIML4519 and CWIML4520 already used
+# CWIML4519 already used
+# CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registrul LDAP {0} a \u00eencercat s\u0103 se lege la serverul LDAP prin utilizarea acredit\u0103rilor Kerberos pentru numele de principal {1}, dar serviciul Kerberos care furnizeaz\u0103 aceste acredit\u0103ri nu este disponibil. Mecanismul de autentificare pentru legare este {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Serviciul Kerberos nu a fost disponibil c\u00e2nd registrul LDAP a \u00eencercat s\u0103 se lege la serverul LDAP. Dac\u0103 serviciul Kerberos nu este disponibil, niciun utilizator nu se poate autentifica.
@@ -283,3 +279,8 @@ KRB5_SERVICE_NOT_AVAILABLE.useraction=Examina\u0163i set\u0103rile de configura\
 FILTER_MISSING_PERCENT_V=CWIML4523E: Valoarea {0} pentru {1} nu este valid\u0103. Necesit\u0103 o aser\u0163iune de valoare de atribut cu aser\u0163iunea de valoare =%v. De exemplu, {2}.
 FILTER_MISSING_PERCENT_V.explanation=Registrul LDAP \u00eenlocuie\u015fte %v cu valoarea de c\u0103utat atunci c\u00e2nd fac c\u0103ut\u0103ri pentru utilizatori sau grupuri.
 FILTER_MISSING_PERCENT_V.useraction=Actualiza\u0163i filtrul specificat pentru a include o aser\u0163iune de valoare atribut care con\u0163ine =%v \u00een aser\u0163iunea de valoare.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: Logarea Kerberos cu principalul Kerberos {0} \u015fi fi\u015fierul keytab Kerberos implicit a e\u015fuat.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Fie principalul Kerberos este invalid, fie fi\u015fierul keytab Kerberos implicit este invalid.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi c\u0103 este valid fi\u015fierul keytab Kerberos implicit.
+

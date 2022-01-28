@@ -96,7 +96,7 @@ PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplica\u0163ia a 
 PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Modifica\u0163i aplica\u0163ia pentru a specifica un nume de unitate de persisten\u0163\u0103 pentru referin\u0163\u0103 sau furniza\u0163i o persisten\u0163\u0103 unic\u0103.
 
 #-------------------------------------------------------------------------------
-UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serverul nu poate localiza sursa de date {0} pentru unitate a de persisten\u0163\u0103 {1} pentru c\u0103 a \u00eent\u00e2lnit excep\u0163ia urm\u0103toare:\n \ {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serverul nu poate localiza sursa de date {0} pentru unitate a de persisten\u0163\u0103 {1} pentru c\u0103 a \u00eent\u00e2lnit excep\u0163ia urm\u0103toare:\n  {2}.
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Serverul a \u00eencercat s\u0103 localizeze sursa de date pentru unitatea de persisten\u0163\u0103. Totu\u015fi, sursa de date nu a putut fi g\u0103sit\u0103.
 UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Asigura\u0163i-v\u0103 c\u0103 sursa de date necesar\u0103 este creat\u0103 \u015fi legat\u0103.
 
@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Serverul nu poate localiza sursa de date {0} din spa\u0163iul nume al componentei pentru unitatea de persisten\u0163\u0103 {1} deoarece nu exist\u0103 un context component\u0103 pe fir.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Sursa de date nu poate fi g\u0103sit\u0103 pentru c\u0103 runtime-ul serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nici o component\u0103 de aplica\u0163ie de Platform\u0103 Java, Edi\u0163ia Enterprise 5 (Java EE 5).  Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul JNDI (Java Naming and Directory InterfaceTM) care utilizeaz\u0103 numele \"java:\" nu ruleaz\u0103 pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Sursa de date nu poate fi g\u0103sit\u0103 pentru c\u0103 runtime-ul serverului nu poate asocia firul de execu\u0163ie al opera\u0163iei cu nici o component\u0103 de aplica\u0163ie de Platform\u0103 Java, Edi\u0163ia Enterprise 5 (Java EE 5).  Aceast\u0103 condi\u0163ie poate s\u0103 apar\u0103 c\u00e2nd clientul JNDI (Java Naming and Directory InterfaceTM) care utilizeaz\u0103 numele "java:" nu ruleaz\u0103 pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia Java EE 5 nu ruleaz\u0103 opera\u0163ii JNDI pe nume java: \u00een blocuri de cod statice sau \u00een fire de execu\u0163ie care sunt create de acea aplica\u0163ie Java EE 5.  Acest cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server.  Prin urmare, codul nu este suportat de opera\u0163iile JNDI pe nume java:.
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Cache-ul de clase poate fi corupt
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: O proprietate implicit\u0103 JPA configurat\u0103 \u00een fi\u015fierul server.xml con\u0163ine un nume gol sau o valoare goal\u0103: name = [{0}], value = [{1}]. Proprietatea va fi ignorat\u0103.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: \u00cen fi\u0219ierul server.xml: nume = [{0}], valoare = [{1}], este configurat\u0103 o proprietate implicit\u0103 JPA care con\u021bine un nume gol sau o valoare goal\u0103. Aceast\u0103 proprietate este ignorat\u0103.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atributele de nume \u015fi de valoare pentru o proprietate implicit\u0103 JPA nu trebuie s\u0103 fie goale.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Modifica\u0163i configura\u0163ia serverului pentru a furniza pentru proprietate un nume \u015fi o valoare care nu sunt goale sau \u00eenl\u0103tura\u0163i proprietatea.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: \u00cen fi\u0219ierul server.xml: nume = [{0}], valoare = [{1}], este configurat\u0103 o proprietate implicit\u0103 JPA care este destinat\u0103 utiliz\u0103rii numai \u00een mediile Java SE. Aceast\u0103 proprietate este ignorat\u0103.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Aceast\u0103 proprietate implicit\u0103 JPA este utilizat\u0103 \u00eentr-un mediu Java EE, dar ea este destinat\u0103 utiliz\u0103rii numai \u00een mediile Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Modifica\u021bi configura\u021bia serverului \u0219i a aplica\u021biei pentru a utiliza o surs\u0103 de date JNDI \u0219i \u00eenl\u0103tura\u021bi proprietatea.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

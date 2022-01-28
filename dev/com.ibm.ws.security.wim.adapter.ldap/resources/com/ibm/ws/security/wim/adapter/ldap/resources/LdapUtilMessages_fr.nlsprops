@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -55,11 +55,11 @@ ENTITY_IS_NOT_A_GROUP=CWIML4525E: L''op\u00e9ration de registre d''utilisateurs 
 ENTITY_IS_NOT_A_GROUP.explanation=Les op\u00e9rations li\u00e9es aux groupes, telles que l'affectation de membres \u00e0 un groupe ou l'obtention des membres d'un groupe, ne sont applicables qu'au type d'entit\u00e9 Groupe. Une exception est \u00e9mise si l'entit\u00e9 indiqu\u00e9e ne correspond pas au type Groupe.
 ENTITY_IS_NOT_A_GROUP.useraction=Assurez-vous que le type d'entit\u00e9 sp\u00e9cifi\u00e9 est Groupe. Dans le cas de l'adaptateur LDAP, assurez-vous que la classe d'objets d\u00e9finie pour le type d'entit\u00e9 Groupe correspond \u00e0 la classe d'objets r\u00e9elle du groupe.
 
-CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  L''utilisateur {2} a transmis le contr\u00f4le de cache en sp\u00e9cifiant le mode d''effacement de cache {1} pour le r\u00e9f\u00e9rentiel {0}. La m\u00e9moire cache du r\u00e9f\u00e9rentiel LDAP a \u00e9t\u00e9 effac\u00e9e.
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ L''utilisateur {2} a transmis le contr\u00f4le de cache en sp\u00e9cifiant le mode d''effacement de cache {1} pour le r\u00e9f\u00e9rentiel {0}. La m\u00e9moire cache du r\u00e9f\u00e9rentiel LDAP a \u00e9t\u00e9 effac\u00e9e.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=L'utilisateur sp\u00e9cifi\u00e9 tente d'effacer l'ensemble du cache du r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9 \u00e0 l'aide du mode clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Ce message est consign\u00e9 \u00e0 des fins d'audit.
 
-UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  Le mode d''effacement de cache {1} sp\u00e9cifi\u00e9 pour le r\u00e9f\u00e9rentiel {0} dans le contr\u00f4le de cache n''est pas pris en charge. Indiquez un mode d''effacement de cache pris en charge.
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W: \ Le mode d''effacement de cache {1} sp\u00e9cifi\u00e9 pour le r\u00e9f\u00e9rentiel {0} dans le contr\u00f4le de cache n''est pas pris en charge. Indiquez un mode d''effacement de cache pris en charge.
 UNKNOWN_CLEAR_CACHE_MODE.explanation=Le mode d'effacement de cache sp\u00e9cifi\u00e9 n'est pas pris en charge pour ce r\u00e9f\u00e9rentiel.
 UNKNOWN_CLEAR_CACHE_MODE.useraction=Sp\u00e9cifiez un mode d'effacement de cache pris en charge pour le r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9. 
 
@@ -83,7 +83,7 @@ NULL_CHECKPOINT_VALUE=CWIML4550E: L'op\u00e9ration LDAP n'a pas pu \u00eatre eff
 NULL_CHECKPOINT_VALUE.explanation=Si un r\u00e9f\u00e9rentiel prend en charge le suivi comme indiqu\u00e9 par la balise 'supportChangeLog' pour le r\u00e9f\u00e9rentiel dans le fichier server.xml, le point de contr\u00f4le le concernant transmis dans ChangeControl ne doit pas \u00eatre vide ni avoir la valeur NULL.
 NULL_CHECKPOINT_VALUE.useraction=Relancez la recherche avec un point de contr\u00f4le valide ou d\u00e9sactivez la balise 'supportChangeLog' pour ce r\u00e9f\u00e9rentiel dans le fichier server.xml, si l'adaptateur de registre d'utilisateurs ne prend pas en charge le suivi des modifications.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: L'op\u00e9ration de connexion n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Le mot de passe est vide ou absent.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: L'op\u00e9ration de connexion n'a pas pu \u00eatre r\u00e9alis\u00e9e car le mot de passe est manquant ou vide.
 MISSING_OR_EMPTY_PASSWORD.explanation=Si le nom du principal est d\u00e9fini lors de la connexion, le mot de passe ne peut pas \u00eatre null, ni vide.
 MISSING_OR_EMPTY_PASSWORD.useraction=D\u00e9finissez le mot de passe.
 
@@ -127,9 +127,9 @@ EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: L''op\u00e9ration de recherche n''a pas p
 EXT_ID_HAS_MULTIPLE_VALUES.explanation=L'attribut LDAP utilis\u00e9 comme identificateur externe doit \u00eatre unique et ne peut pas contenir plusieurs valeurs.
 EXT_ID_HAS_MULTIPLE_VALUES.useraction=Assurez-vous que l'attribut choisi comme identificateur externe est correct. S'il n'existe aucun identificateur appropri\u00e9, le nom distinctif peut \u00eatre utilis\u00e9 comme identificateur externe.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La d\u00e9finition de l''entr\u00e9e de base configur\u00e9e n''est pas valide : {0}. Configurez une d\u00e9finition d''entr\u00e9e de base valide dans le fichier server.xml. Par exemple : <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation=La syntaxe de la d\u00e9finition d'une entr\u00e9e de base est <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction=Corrigez la d\u00e9finition d'entr\u00e9e de base dans le fichier server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: L''op\u00e9ration du registre d''utilisateurs n''a pas pu \u00eatre effectu\u00e9e. La d\u00e9finition d''entr\u00e9e de base {0} n''est pas valide.  Corrigez la d\u00e9finition d''entr\u00e9e de base dans le fichier server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=La d\u00e9finition d'entr\u00e9e de base sp\u00e9cifi\u00e9e n'est pas valide.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Indiquez une d\u00e9finition d'entr\u00e9e de base valide dans le fichier server.xml.
 
 INVALID_DN_SYNTAX=CWIML4517E: L''op\u00e9ration de connexion n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le nom distinctif {0} n''est pas valide. Indiquez la syntaxe correcte dans le nom distinctif.
 INVALID_DN_SYNTAX.explanation=Le nom distinctif indiqu\u00e9 (DN) n'est pas valide. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans nom distinctif.
@@ -186,9 +186,9 @@ ENTITY_HAS_DESCENDENTS=CWIML4519E: L''op\u00e9ration de registre d''utilisateurs
 ENTITY_HAS_DESCENDENTS.explanation=La fonction de suppression ou de changement de nom ne peut \u00eatre ex\u00e9cut\u00e9e que sur une entit\u00e9 feuille, c'est-\u00e0-dire, une entit\u00e9 sans descendants. L'entit\u00e9 indiqu\u00e9e poss\u00e8de des descendants.
 ENTITY_HAS_DESCENDENTS.useraction=Supprimez d'abord tous les descendants de l'entit\u00e9, puis supprimez ou renommez l'entit\u00e9 elle-m\u00eame.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. {0} n''est pas un type d''entit\u00e9 valide. Appelez l''op\u00e9ration en indiquant un type d''entit\u00e9 valide.
-ENTITY_TYPE_NOT_SUPPORTED.explanation=Une op\u00e9ration a \u00e9t\u00e9 demand\u00e9e sur une entit\u00e9, mais cette op\u00e9ration ne prend pas en charge le type d'entit\u00e9 indiqu\u00e9. Par exemple, si une op\u00e9ration GET du r\u00e9f\u00e9rentiel est appel\u00e9e pour une entit\u00e9 Account, l'op\u00e9ration \u00e9choue.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Assurez-vous que les op\u00e9rations sont appel\u00e9es pour des types d'entit\u00e9 pris en charge et supprimez les types d'entit\u00e9 non pris en charge.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Le type d''entit\u00e9 sp\u00e9cifi\u00e9 {0} n''est pas valide pour cette op\u00e9ration.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Une op\u00e9ration a \u00e9t\u00e9 demand\u00e9e sur une entit\u00e9, mais cette op\u00e9ration ne prend pas en charge le type d'entit\u00e9 sp\u00e9cifi\u00e9.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=V\u00e9rifiez que les entit\u00e9s fournies dans l'entr\u00e9e sont prises en charge et supprimez les types d'entit\u00e9 non pris en charge de l'entr\u00e9e.
 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Elle ne peut pas cr\u00e9er ou mettre \u00e0 jour la propri\u00e9t\u00e9 {0} dans le r\u00e9f\u00e9rentiel {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=Dans l'op\u00e9ration de cr\u00e9ation ou de mise \u00e0 jour, une valeur est sp\u00e9cifi\u00e9e pour une propri\u00e9t\u00e9 qui ne peut pas \u00eatre \u00e9crite dans le r\u00e9f\u00e9rentiel. Par exemple, pricipalName ne peut pas \u00eatre sp\u00e9cifi\u00e9 pour une op\u00e9ration CREATE.
@@ -242,9 +242,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: La connexion Kerberos a \u00e9chou\u
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 n'est pas valide ou le cache de donn\u00e9es d'identification Kerberos (ccache) par d\u00e9faut n'est pas valide ou a expir\u00e9.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le cache de donn\u00e9es d'identification Kerberos (ccache) par d\u00e9faut n'est pas arriv\u00e9 \u00e0 expiration.
 
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le fichier de cl\u00e9s Kerberos par d\u00e9faut.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 ou le fichier de cl\u00e9s Kerberos par d\u00e9faut n'est pas valide.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le fichier de cl\u00e9s Kerberos par d\u00e9faut est valide.
+# CWIML4510 already used
 
 KRB5_TICKETCACHE_USED=CWIML4511E: Le registre LDAP {0} est configur\u00e9 avec le nom de fichier de cache de tickets Kerberos (ccache) {1} et le nom de fichier de cl\u00e9s {2}. Le cache des donn\u00e9es d''identification Kerberos (ccache) est utilis\u00e9 pour l''authentification de liaison Kerberos aupr\u00e8s du serveur LDAP.
 KRB5_TICKETCACHE_USED.explanation=Pour utiliser le fichier de cl\u00e9s, le nom du fichier de cl\u00e9s doit \u00eatre sp\u00e9cifi\u00e9 et le nom du fichier de cache de donn\u00e9es d'identification Kerberos (ccache) ne doit pas \u00eatre sp\u00e9cifi\u00e9.
@@ -264,17 +262,15 @@ KRB5_FILE_NOT_FOUND=CWIML4515E: La configuration de l''attribut {0} de l''\u00e9
 KRB5_FILE_NOT_FOUND.explanation=La configuration fait r\u00e9f\u00e9rence \u00e0 un fichier illisible ou inexistant.
 KRB5_FILE_NOT_FOUND.useraction=Assurez-vous que la configuration d\u00e9signe un fichier qui existe et que le processus applicatif peut lire.
 
-KRB5_FILE_FOUND=CWIML4516E: Le registre LDAP est configur\u00e9 pour utiliser un fichier {0} qui se trouve dans {1}
-KRB5_FILE_FOUND.explanation=Le fichier configur\u00e9 a \u00e9t\u00e9 localis\u00e9.
-KRB5_FILE_FOUND.useraction=Aucune action n'est requise.
-
+# CWIML4516 already used
 # CWIML4517 already used
 
 IDMAP_INVALID_FORMAT=CWIML4518W: La valeur {0} {1} est incorrectement form\u00e9e. La valeur doit \u00eatre une liste de paires ''objectclass:attribute'' ou ''*:attribute'' s\u00e9par\u00e9es par des points-virgules.
 IDMAP_INVALID_FORMAT.explanation=Le format de la valeur userIdMap doit \u00eatre valide pour que la classe d'objets et l'attribut puissent \u00eatre analys\u00e9s.
 IDMAP_INVALID_FORMAT.useraction=Mettez \u00e0 jour la valeur userIdMap de sorte qu'elle respecte le format sp\u00e9cifi\u00e9.
 
-# CWIML4519 and CWIML4520 already used
+# CWIML4519 already used
+# CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Le registre LDAP {0} a tent\u00e9 de se connecter au serveur LDAP \u00e0 l''aide des donn\u00e9es d''identification Kerberos pour le nom principal {1}, mais le service Kerberos qui fournit ces donn\u00e9es d''identification est indisponible. Le m\u00e9canisme d''authentification de liaison est {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Le service Kerberos \u00e9tait indisponible lorsque le registre LDAP a tent\u00e9 d'\u00e9tablir la liaison avec le serveur LDAP. Si le service Kerberos est indisponible, aucun utilisateur ne peut s'authentifier.
@@ -283,3 +279,8 @@ KRB5_SERVICE_NOT_AVAILABLE.useraction=Examinez les attributs bindAuthMechanism, 
 FILTER_MISSING_PERCENT_V=CWIML4523E: La valeur {0} pour {1} n''est pas valide. Elle requiert une assertion de valeur d''attribut dans laquelle l''assertion de valeur est =%v. Exemple : {2}.
 FILTER_MISSING_PERCENT_V.explanation=Le registre LDAP remplace %v par la valeur \u00e0 rechercher lors de la recherche d'utilisateurs ou de groupes.
 FILTER_MISSING_PERCENT_V.useraction=Mettez \u00e0 jour le filtre sp\u00e9cifi\u00e9 afin d'inclure une assertion de valeur d'attribut contenant =%v.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le fichier de cl\u00e9s Kerberos par d\u00e9faut.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 ou le fichier de cl\u00e9s Kerberos par d\u00e9faut n'est pas valide.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le fichier de cl\u00e9s Kerberos par d\u00e9faut est valide.
+

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Impossibile completare l''o
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Il tipo di entit\u00e0 deve essere definito con un nome del tipo di entit\u00e0 e almeno una propriet\u00e0 RDN (Relative Distinguished Name) corrispondente.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modificare e correggere la definizione del tipo di entit\u00e0 nel file server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Impossibile completare l''operazione registro utenti. La definizione della voce di base {0} non \u00e8 valida.  Correggere la definizione della voce di base nel file server.xml. Ad esempio, la sintassi \u00e8 <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= La definizione specificata della voce di base non \u00e8 corretta. La sintassi per definire una voce di base \u00e8 <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Modificare e correggere la definizione della voce di base nel file server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Impossibile completare l''operazione registro utenti. La definizione della voce di base {0} non \u00e8 valida.  Correggere la definizione della voce di base nel file server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=La definizione della voce di base specificata non \u00e8 valida.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Specificare una definizione della voce di base valida nel file server.xml.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: Impossibile completare l''operazione registro utenti. La definizione di realm {0} non \u00e8 valida. Correggere la definizione di realm nel file server.xml.
 INVALID_REALM_DEFINITION.explanation= Il tag realm manca oppure non \u00e8 valido a causa di un attributo obbligatorio mancante.
@@ -220,7 +220,7 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configurazione reposit
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Per il repository non \u00e8 definita alcuna configurazione di gruppo a repository incrociato.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Fare riferimento al file di log per il motivo della mancata riuscita. Controllare la configurazione del repository.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Il tipo di entit\u00e0 specificato {0} non \u00e8 un tipo di entit\u00e0 valido per questa operazione.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Il tipo di entit\u00e0 specificato {0} non \u00e8 valido per questa operazione.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=\u00c8 stata richiesta un'operazione su un'entit\u00e0, ma l'operazione non supporta il tipo di entit\u00e0 specificato.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Assicurarsi che le entit\u00e0 fornite nell'input siano di tipi supportati e rimuovere tutti i tipi non supportati dall'input.
 
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: Impossibile completare l''operazione del regist
 ENTITY_SEARCH_FAILED.explanation=Non \u00e8 stato possibile ricercare nell'entit\u00e0 a causa della motivazione specificata dal registro sottostante.
 ENTITY_SEARCH_FAILED.useraction=Esaminare il messaggio di causa e il file di traccia per determinare la causa dell'errore. Correggere l'errore e tentare nuovamente.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Impossibile completare l'operazione di login poich\u00e9 la password manca o \u00e8 vuota.
-MISSING_OR_EMPTY_PASSWORD.explanation=Se durante il processo di login viene specificato il nome principal, la password non pu\u00f2 essere null o vuota.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Impossibile completare l'operazione di login poich\u00e9 la password \u00e8 mancante o vuota.
+MISSING_OR_EMPTY_PASSWORD.explanation=Se durante il collegamento viene specificato il nome principal, la password non pu\u00f2 essere null o vuota.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specificare la password.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: Impossibile completare l'operazione di login poich\u00e9 la generazione del certificato non \u00e8 riuscita.

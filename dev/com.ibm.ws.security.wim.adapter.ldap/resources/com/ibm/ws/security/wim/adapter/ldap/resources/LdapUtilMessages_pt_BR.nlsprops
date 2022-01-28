@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -55,11 +55,11 @@ ENTITY_IS_NOT_A_GROUP=CWIML4525E: N\u00e3o foi poss\u00edvel concluir a opera\u0
 ENTITY_IS_NOT_A_GROUP.explanation=As opera\u00e7\u00f5es relacionadas a grupos, como designar membros para um grupo ou obter os membros de um grupo, s\u00e3o aplic\u00e1veis somente para o tipo de entidade Group. Uma exce\u00e7\u00e3o \u00e9 lan\u00e7ada se a entidade especificada n\u00e3o for de um tipo Group.
 ENTITY_IS_NOT_A_GROUP.useraction=Assegure-se de que o tipo de entidade especificado seja do tipo Group. Para o adaptador LDAP, assegure-se de que a classe de objeto que \u00e9 definida para o tipo de entidade Group corresponda \u00e0 classe de objeto real do grupo.
 
-CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  O usu\u00e1rio {2} passou o controle de cache especificando o modo de limpeza de cache {1} para o reposit\u00f3rio {0}. O cache de reposit\u00f3rio LDAP inteiro \u00e9 limpo.
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ O usu\u00e1rio {2} passou o controle de cache especificando o modo de limpeza de cache {1} para o reposit\u00f3rio {0}. O cache de reposit\u00f3rio LDAP inteiro \u00e9 limpo.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=O usu\u00e1rio especificado est\u00e1 tentando limpar o cache inteiro do reposit\u00f3rio especificado usando o modo clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Essa mensagem \u00e9 registrada para prop\u00f3sitos de auditoria.
 
-UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  O modo de limpeza de cache {1} especificado para o reposit\u00f3rio {0} no controle de cache n\u00e3o \u00e9 suportado. Especifique um modo de cache de limpeza suportado.
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W: \ O modo de limpeza de cache {1} especificado para o reposit\u00f3rio {0} no controle de cache n\u00e3o \u00e9 suportado. Especifique um modo de cache de limpeza suportado.
 UNKNOWN_CLEAR_CACHE_MODE.explanation=O modo de limpeza de cache especificado n\u00e3o \u00e9 suportado para este reposit\u00f3rio.
 UNKNOWN_CLEAR_CACHE_MODE.useraction=Especifique um modo de limpeza de cache que seja suportado para o reposit\u00f3rio especificado. 
 
@@ -83,7 +83,7 @@ NULL_CHECKPOINT_VALUE=CWIML4550E: A opera\u00e7\u00e3o LDAP n\u00e3o p\u00f4de s
 NULL_CHECKPOINT_VALUE.explanation=Se um reposit\u00f3rio suporta o rastreamento de mudan\u00e7as conforme especificado pelo sinalizador 'supportChangeLog' para o reposit\u00f3rio no arquivo server.xml, o ponto de verifica\u00e7\u00e3o transmitido para ele no ChangeControl n\u00e3o deve ser vazio ou nulo.
 NULL_CHECKPOINT_VALUE.useraction=Tente procurar novamente com um ponto de verifica\u00e7\u00e3o v\u00e1lido ou desative 'supportChangeLog' para esse reposit\u00f3rio no arquivo server.xml, se o adaptador de registro do usu\u00e1rio n\u00e3o for capaz de rastrear as mudan\u00e7as.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. A senha est\u00e1 ausente ou vazia.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de login pois a senha estava ausente ou vazia.
 MISSING_OR_EMPTY_PASSWORD.explanation=Se o nome principal for especificado durante o login, a senha n\u00e3o pode ser nula ou vazia.
 MISSING_OR_EMPTY_PASSWORD.useraction=Especifique a senha.
 
@@ -127,9 +127,9 @@ EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: A opera\u00e7\u00e3o de procura n\u00e3o 
 EXT_ID_HAS_MULTIPLE_VALUES.explanation=O atributo LDAP utilizado como o identificador externo deve ser exclusivo e n\u00e3o pode conter v\u00e1rios valores.
 EXT_ID_HAS_MULTIPLE_VALUES.useraction=Assegure que o atributo correto seja escolhido para o identificador externo. Se nenhum atributo apropriado existe, o nome distinto pode ser utilizado como o identificador externo.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o da entrada de base configurada n\u00e3o \u00e9 v\u00e1lida: {0}. Configure uma defini\u00e7\u00e3o de entrada de base v\u00e1lida no arquivo server.xml. Por exemplo: <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation=A sintaxe para definir uma entrada de base \u00e9 <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction=Corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de entrada de base {0} n\u00e3o \u00e9 v\u00e1lida.  Corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=A defini\u00e7\u00e3o de entrada de base especificada \u00e9 inv\u00e1lida.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Configure uma defini\u00e7\u00e3o de entrada de base v\u00e1lida no arquivo server.xml.
 
 INVALID_DN_SYNTAX=CWIML4517E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. O nome distinto (DN) {0} n\u00e3o \u00e9 v\u00e1lido. Especifique a sintaxe correta do nome distinto.
 INVALID_DN_SYNTAX.explanation=O DN (nome distinto) especificado n\u00e3o \u00e9 v\u00e1lido. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem um DN v\u00e1lido.
@@ -186,9 +186,9 @@ ENTITY_HAS_DESCENDENTS=CWIML4519E: N\u00e3o foi poss\u00edvel concluir a opera\u
 ENTITY_HAS_DESCENDENTS.explanation=A fun\u00e7\u00e3o excluir ou renomear pode ser executada apenas em uma entidade de folha, ou seja, uma entidade sem descendente algum. A entidade especificada tem descendentes.
 ENTITY_HAS_DESCENDENTS.useraction=Primeiro, exclua todos os descendentes da entidade e, depois, exclua ou renomeie a pr\u00f3pria entidade.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. {0} n\u00e3o \u00e9 um tipo de entidade v\u00e1lido. Chame a opera\u00e7\u00e3o especificando um tipo de entidade v\u00e1lido.
-ENTITY_TYPE_NOT_SUPPORTED.explanation=Uma opera\u00e7\u00e3o foi solicitada em uma entidade, mas essa opera\u00e7\u00e3o n\u00e3o suporta o tipo de entidade especificado. Por exemplo, se uma opera\u00e7\u00e3o GET do reposit\u00f3rio for chamada para uma entidade Conta, a opera\u00e7\u00e3o falhar\u00e1.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Assegure-se de que as opera\u00e7\u00f5es sejam chamadas para os tipos de entidade suportados e remova os tipos de entidade n\u00e3o suportados da entrada.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: O tipo de entidade especificado {0} n\u00e3o \u00e9 v\u00e1lido para esta opera\u00e7\u00e3o.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Uma opera\u00e7\u00e3o foi solicitada em uma entidade, mas essa opera\u00e7\u00e3o n\u00e3o suporta o tipo de entidade especificado.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Assegure-se que as entidades fornecidas na entrada sejam de tipos de entidade suportados e remova os tipos de entidade n\u00e3o suportados da entrada.
 
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Algu\u00e9m n\u00e3o pode criar ou atualizar a propriedade {0} no reposit\u00f3rio {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=Na opera\u00e7\u00e3o de cria\u00e7\u00e3o ou atualiza\u00e7\u00e3o, \u00e9 especificado um valor para uma propriedade que n\u00e3o pode ser gravada no reposit\u00f3rio. Por exemplo, um pricipalName n\u00e3o pode ser especificado para uma opera\u00e7\u00e3o CREATE.
@@ -242,9 +242,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Houve uma falha no login do Kerberos
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=O Kerberos principal especificado \u00e9 inv\u00e1lido ou o cache de credenciais (ccache) padr\u00e3o do Kerberos \u00e9 inv\u00e1lido ou expirou.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Assegure-se de que um Kerberos principal v\u00e1lido seja especificado e de que o cache de credenciais do Kerberos (ccache) padr\u00e3o n\u00e3o esteja expirado.
 
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Houve uma falha no login do Kerberos com o Kerberos principal {0} e o keytab do Kerberos padr\u00e3o.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=O Kerberos principal especificado ou o keytab padr\u00e3o do Kerberos \u00e9 inv\u00e1lido.
-KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assegure-se de que um Kerberos principal v\u00e1lido seja especificado e de que o keytab do Kerberos padr\u00e3o seja v\u00e1lido.
+# CWIML4510 already used
 
 KRB5_TICKETCACHE_USED=CWIML4511E: O registro LDAP {0} \u00e9 configurado com o nome do arquivo do cache de chamado do Kerberos {1} (ccache) e com o nome do arquivo do keytab {2}. O cache de credenciais do Kerberos (ccache) \u00e9 usado para a autentica\u00e7\u00e3o de liga\u00e7\u00e3o do Kerberos com o servidor LDAP.
 KRB5_TICKETCACHE_USED.explanation=Para usar o arquivo keytab, o nome do arquivo keytab deve estar especificado, mas n\u00e3o o nome do arquivo do cache de credenciais do Kerberos (ccache).
@@ -264,17 +262,15 @@ KRB5_FILE_NOT_FOUND=CWIML4515E: O atributo {0} do elemento {1} foi configurado p
 KRB5_FILE_NOT_FOUND.explanation=A configura\u00e7\u00e3o refere-se a um arquivo ileg\u00edvel ou que n\u00e3o existe.
 KRB5_FILE_NOT_FOUND.useraction=Certifique-se de que a configura\u00e7\u00e3o aponte para um arquivo que existe e seja leg\u00edvel pelo processo de aplicativo.
 
-KRB5_FILE_FOUND=CWIML4516E: O componente do registro LDAP est\u00e1 configurado para usar um arquivo {0} localizado em {1}.
-KRB5_FILE_FOUND.explanation=O arquivo configurado foi localizado com sucesso.
-KRB5_FILE_FOUND.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
-
+# CWIML4516 already used
 # CWIML4517 already used
 
 IDMAP_INVALID_FORMAT=CWIML4518W: O valor {0} {1} est\u00e1 malformado. O valor deve ser uma lista separada por ponto e v\u00edrgula de pares ''objectclass:attribute'' ou ''*:attribute''.
 IDMAP_INVALID_FORMAT.explanation=O valor userIdMap deve estar em um formato v\u00e1lido para que a classe de objeto e o atributo possam ser analisados.
 IDMAP_INVALID_FORMAT.useraction=Atualize o valor userIdMap para que ele siga o formato especificado.
 
-# CWIML4519 and CWIML4520 already used
+# CWIML4519 already used
+# CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: O registro LDAP {0} tentou ligar-se ao servidor LDAP usando as credenciais do Kerberos referentes ao nome do principal {1}, mas o servi\u00e7o Kerberos que fornece essas credenciais n\u00e3o est\u00e1 dispon\u00edvel. O mecanismo de autentica\u00e7\u00e3o de liga\u00e7\u00e3o \u00e9 o {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=O servi\u00e7o Kerberos n\u00e3o estava dispon\u00edvel quando o registro LDAP tentou se ligar ao servidor LDAP. Se o servi\u00e7o Kerberos n\u00e3o estiver dispon\u00edvel, nenhum usu\u00e1rio poder\u00e1 ser autenticado.
@@ -283,3 +279,8 @@ KRB5_SERVICE_NOT_AVAILABLE.useraction=Revise as defini\u00e7\u00f5es de configur
 FILTER_MISSING_PERCENT_V=CWIML4523E: O valor {0} para {1} \u00e9 inv\u00e1lido. Ele requer uma asser\u00e7\u00e3o de valor de atributo na qual a asser\u00e7\u00e3o de valor \u00e9 =%v. Por exemplo, {2}.
 FILTER_MISSING_PERCENT_V.explanation=O registro LDAP substitui o %v pelo valor a ser procurado ao fazer buscas por usu\u00e1rios ou grupos.
 FILTER_MISSING_PERCENT_V.useraction=Atualize o filtro especificado para incluir uma asser\u00e7\u00e3o de valor de atributo que cont\u00e9m =%v na asser\u00e7\u00e3o de valor.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: Houve uma falha no login do Kerberos com o Kerberos principal {0} e o keytab do Kerberos padr\u00e3o.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=O Kerberos principal especificado ou o keytab padr\u00e3o do Kerberos \u00e9 inv\u00e1lido.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assegure-se de que um Kerberos principal v\u00e1lido seja especificado e de que o keytab do Kerberos padr\u00e3o seja v\u00e1lido.
+

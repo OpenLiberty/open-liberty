@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Aseg\u00farese de que la aplicaci\u00
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: El servidor no puede localizar el origen de datos {0} del espacio de nombres del componente para la unidad de persistencia {1} porque no existe un contexto de componente en la hebra.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=El origen de datos no se encuentra porque el entorno de tiempo de ejecuci\u00f3n del servidor no puede asociar la hebra de la operaci\u00f3n con ning\u00fan componente de la aplicaci\u00f3n Java Platform, Enterprise Edition 5 (Java EE 5).  Esta condici\u00f3n puede producirse cuando el cliente JNDI (Java Naming and Directory InterfaceTM) que est\u00e1 utilizando el nombre \"java:\" no se ejecuta en la hebra de una petici\u00f3n de aplicaci\u00f3n de servidor.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=El origen de datos no se encuentra porque el entorno de tiempo de ejecuci\u00f3n del servidor no puede asociar la hebra de la operaci\u00f3n con ning\u00fan componente de la aplicaci\u00f3n Java Platform, Enterprise Edition 5 (Java EE 5).  Esta condici\u00f3n puede producirse cuando el cliente JNDI (Java Naming and Directory InterfaceTM) que est\u00e1 utilizando el nombre "java:" no se ejecuta en la hebra de una petici\u00f3n de aplicaci\u00f3n de servidor.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Aseg\u00farese de que la aplicaci\u00f3n Java EE 5 no ejecuta operaciones JNDI en nombres java: dentro de bloques de c\u00f3digo est\u00e1tico o en hebras creadas por dicha aplicaci\u00f3n Java EE 5.  Este c\u00f3digo no se ejecuta necesariamente en la hebra de una petici\u00f3n de aplicaci\u00f3n de servidor.  Por lo tanto, las operaciones JNDI en nombres java: no le dan soporte.
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Es posible que la memoria cach\u0
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Una propiedad predeterminada de JPA configurada en el archivo server.xml contiene un nombre vac\u00edo o un valor vac\u00edo: nombre = [{0}], valor = [{1}]. Se ignorar\u00e1 la propiedad.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Una propiedad predeterminada de JPA que contiene un nombre vac\u00edo o un valor vac\u00edo se configura en el archivo server.xml: nombre = [{0}], valor = [{1}]. La propiedad se ignora.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Los atributos de nombre y valor de una propiedad predeterminada de JPA no pueden estar vac\u00edos.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Cambie la configuraci\u00f3n de servidor para proporcionar un nombre y un valor que o est\u00e9n vac\u00edos para la propiedad o elimine la propiedad.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: Una propiedad predeterminada de JPA que est\u00e1 pensada para utilizarse solo en entornos Java SE est\u00e1 configurada en el archivo server.xml: nombre = [{0}], valor = [{1}]. La propiedad se ignora.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Esta propiedad predeterminada de JPA se est\u00e1 utilizando en un entorno Java EE, pero est\u00e1 pensada para utilizarse solo en entornos Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Cambie el servidor y la configuraci\u00f3n de la aplicaci\u00f3n para utilizar un origen de datos JNDI y elimine la propiedad.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
