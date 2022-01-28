@@ -116,7 +116,7 @@ public class KernelResolverEsaTest {
         assertThat(resolverAutoFeature.isCapabilitySatisfied(Collections.<ProvisioningFeatureDefinition> emptySet()), is(false));
         assertThat(resolverAutoFeature.isCapabilitySatisfied(Arrays.<ProvisioningFeatureDefinition> asList(resolverFeatureA, resolverFeatureB)), is(true));
 
-        assertThat(resolverAutoFeature.findFeaturesSatisfyingCapability(Arrays.asList(resolverFeatureA, resolverFeatureB, resolverAutoFeature)),
+        assertThat(CapabilityMatching.findFeaturesSatisfyingCapability(resolverAutoFeature, Arrays.asList(resolverFeatureA, resolverFeatureB, resolverAutoFeature)),
                    Matchers.<ProvisioningFeatureDefinition> containsInAnyOrder(resolverFeatureA, resolverFeatureB));
     }
 

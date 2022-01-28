@@ -15,23 +15,25 @@ import java.util.regex.Pattern;
 
 /**
  * <p>This stores a liberty product version, this looks very similar to an OSGi version but don't be fooled! It is actually of the form:</p>
- * 
+ *
  * <code>d.d.d.d</code>
- * 
+ *
  * <p>Where "d" is an integer digit. OSGi versions are of the form:</p>
- * 
+ *
  * <code>d.d.d.s</code>
- * 
+ *
  * <p>where "s" is a string. This means that 8.5.5.10 is higher than 8.5.5.2 in Liberty but lower in OSGi.</p>
- * 
+ *
  * <p>To follow OSGi's definition:</p>
- * 
- * <pre>version ::=
+ *
+ * <pre>
+ * version ::=
  * major'.'minor'.'micro'.'qualifier
  * major ::= number // See 1.3.2
  * minor ::= number
  * micro ::= number
- * qualifier ::= number</pre>
+ * qualifier ::= number
+ * </pre>
  */
 public class LibertyVersion implements Comparable<LibertyVersion> {
 
@@ -43,7 +45,7 @@ public class LibertyVersion implements Comparable<LibertyVersion> {
 
     /**
      * Parses the supplied string into a LibertyVersion. Will return <code>null</code> if the string is not a valid version string.
-     * 
+     *
      * @param versionString The string to parse
      * @return The version
      */
@@ -56,7 +58,8 @@ public class LibertyVersion implements Comparable<LibertyVersion> {
         if (!versionMatcher.matches()) {
             return null;
         }
-        return new LibertyVersion(Integer.parseInt(versionMatcher.group(1)), Integer.parseInt(versionMatcher.group(2)), Integer.parseInt(versionMatcher.group(3)), Integer.parseInt(versionMatcher.group(4)));
+        return new LibertyVersion(Integer.parseInt(versionMatcher.group(1)), Integer.parseInt(versionMatcher.group(2)), Integer.parseInt(versionMatcher.group(3)),
+                                  Integer.parseInt(versionMatcher.group(4)));
     }
 
     /**
@@ -75,9 +78,9 @@ public class LibertyVersion implements Comparable<LibertyVersion> {
 
     /**
      * Matches the major, minor and micro parts of this version to the other version
-     * 
+     *
      * @param other The other version, can be <code>null</code> in which case this returns true.
-     * @return
+     * @return {@code true} if the major, minor and micro parts of the versions are equal, otherwise {@code false}
      */
     public boolean matchesToMicros(LibertyVersion other) {
         if (other == null) {

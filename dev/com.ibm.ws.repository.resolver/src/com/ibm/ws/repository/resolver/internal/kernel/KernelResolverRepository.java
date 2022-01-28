@@ -132,7 +132,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * Checks whether {@code featureList} contains a feature with the same name and version as {@code feature}.
      *
      * @param featureList the list of features
-     * @param feature     the feature
+     * @param feature the feature
      * @return {@code true} if {@code featureList} contains a feature with the same symbolic name and version as {@code feature}, otherwise {@code false}
      */
     private boolean listContainsDuplicate(List<ProvisioningFeatureDefinition> featureList, ProvisioningFeatureDefinition feature) {
@@ -189,6 +189,8 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * Get a feature by name, but without going and checking the remote repository if we don't know about it
      *
      * @see #getFeature(String)
+     * @param featureName the feature name
+     * @return the feature with the given name, or {@code null} if we don't know about it
      */
     private ProvisioningFeatureDefinition getCachedFeature(String featureName) {
         List<ProvisioningFeatureDefinition> featureList = symbolicNameToFeature.get(featureName);
@@ -319,7 +321,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * When a preferred version is set, {@link #getFeature(String)} will return the preferred version if available, unless another version is already installed.
      *
      * @param featureName the short or symbolic feature name
-     * @param version     the version
+     * @param version the version
      */
     public void setPreferredVersion(String featureName, String version) {
         if (!symbolicNameToFeature.containsKey(featureName)) {
@@ -351,7 +353,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * If no preferred version has been configured for this symbolic name, or if the preferred version cannot be found in the list, return the latest version.
      *
      * @param symbolicName the symbolic name of the feature
-     * @param featureList  the list of features, which should all have the same symbolic name
+     * @param featureList the list of features, which should all have the same symbolic name
      * @return the best feature from the list
      */
     private ProvisioningFeatureDefinition getPreferredVersion(String symbolicName, List<ProvisioningFeatureDefinition> featureList) {
