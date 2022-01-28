@@ -82,6 +82,8 @@ public class RepositoryResolver {
 
     /**
      * Map from symbolic name to feature for all features returned as resolved by the kernel resolver
+     * <p>
+     * Keyset is mutually exclusive with {@link #featuresMissing} and {@link #requirementsFoundForOtherProducts}
      */
     Map<String, ProvisioningFeatureDefinition> resolvedFeatures;
 
@@ -89,6 +91,8 @@ public class RepositoryResolver {
      * List of requested features that were reported missing by the kernel resolver and weren't found in the repository applicable to another product.
      * <p>
      * May include sample names if they were missing
+     * <p>
+     * Mutually exclusive with {@link #resolvedFeatures} and {@link #requirementsFoundForOtherProducts}
      */
     List<String> featuresMissing;
 
@@ -101,6 +105,8 @@ public class RepositoryResolver {
      * List of requirements which couldn't be resolved but for which we found a solution that applied to the wrong product
      * <p>
      * Each requirement will be a symbolic name, feature name or sample name
+     * <p>
+     * Mutually exclusive with {@link #resolvedFeatures} and {@link #featuresMissing}
      */
     Set<String> requirementsFoundForOtherProducts;
 
@@ -547,7 +553,7 @@ public class RepositoryResolver {
                 if (feature == null) {
                     allDependenciesResolved = false;
                     // Unless we know it exists but applies to another product, note the missing requirement as well
-                    if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(featureName)) {
+                    if (featuresMissing.contains(featureName)) {
                         missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
                 } else {
@@ -593,7 +599,7 @@ public class RepositoryResolver {
         if (feature == null) {
             // Feature missing
             missingTopLevelRequirements.add(featureName);
-            if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(featureName)) {
+            if (featuresMissing.contains(featureName)) {
                 missingRequirements.add(new MissingRequirement(featureName, null));
             }
             return Collections.emptyList();
@@ -701,7 +707,7 @@ public class RepositoryResolver {
                 // We found the dependency, continue populating the distance map
                 result &= populateMaxDistanceMap(maxDistanceMap, resolvedFeatureName, currentDistance + 1, currentStack, missingRequirements);
             } else {
-                if (!requirementsFoundForOtherProducts.contains(featureName) && featuresMissing.contains(dependency.getSymbolicName())) {
+                if (featuresMissing.contains(dependency.getSymbolicName())) {
                     // The dependency was totally missing, add it to the list of missing requirements
                     missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
                 }
