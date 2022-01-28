@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.ejb.apps.newtimer;
+package com.ibm.ws.cdi.ejb.apps.timer;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;

@@ -37,12 +37,12 @@ import componenttest.topology.utils.FATServletClient;
  * Test that library jars inside a war can be implicit bean archives.
  */
 @RunWith(FATRunner.class)
-public class NewEjbTimerTest extends FATServletClient {
+public class EjbTimerTest extends FATServletClient {
 
-    private static final Logger LOG = Logger.getLogger(NewEjbTimerTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(EjbTimerTest.class.getName());
 
     public static final String SERVER_NAME = "cdi12EJB32Server";
-    public static final String EJB_TIMER_APP_NAME = "newEjbTimer";
+    public static final String EJB_TIMER_APP_NAME = "EjbTimer";
 
     //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
@@ -50,14 +50,14 @@ public class NewEjbTimerTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.ejb.apps.newtimer.TestEjbTimerServlet.class, contextRoot = EJB_TIMER_APP_NAME)
+                    @TestServlet(servlet = com.ibm.ws.cdi.ejb.apps.timer.TestEjbTimerServlet.class, contextRoot = EJB_TIMER_APP_NAME)
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive ejbTimer = ShrinkWrap.create(WebArchive.class, EJB_TIMER_APP_NAME + ".war")
-                                        .addPackage(com.ibm.ws.cdi.ejb.apps.newtimer.SessionScopedBean.class.getPackage())
+                                        .addPackage(com.ibm.ws.cdi.ejb.apps.timer.SessionScopedBean.class.getPackage())
                                         .add(new FileAsset(new File("test-applications/" + EJB_TIMER_APP_NAME + ".war/resources/META-INF/permissions.xml")),
                                              "/META-INF/permissions.xml");
 

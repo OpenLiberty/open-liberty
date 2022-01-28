@@ -8,13 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.ejb.apps.newtimer;
+package com.ibm.ws.cdi.ejb.apps.timer;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 
-import java.io.Serializable;
+@RequestScoped
+public class RequestScopedBean {
 
-@SessionScoped
-public class SessionScopedBean implements Serializable {
+    private static int globalIndex = 0;
+    private static synchronized int generateIndex() {
+        globalIndex++;
+        return globalIndex;
+    }
+
+    private int index;
+
+    public RequestScopedBean() {
+        index = generateIndex();
+    }
+
+    public int getIndex() {
+        return index;
+    }
 
 }
