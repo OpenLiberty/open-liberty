@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
@@ -147,6 +148,26 @@ public class ThirdPartyContext implements ThreadContext {
         clone.snapshots = snapshots;
         // clone.restorers is left null because the clone will track its own application/removal of the context
         return clone;
+    }
+
+    @Override
+    @Trivial
+    public boolean isSerializable() {
+        UnsupportedOperationException x = null;
+        if (!propagated.isEmpty() || "propagated".equals(remaining)) {
+            List<String> unser = new ArrayList<String>(propagated); // TODO what if configured propagated types aren't available?
+            if ("propagated".equals(remaining)) // TODO avoid failing if no remaining types were found???
+                unser.add(ContextServiceDefinition.ALL_REMAINING);
+
+            x = new UnsupportedOperationException("Thread context configured for propagation is not serializable: " + unser); // TODO NLS
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isSerializable?", propagated, "remaining=" + remaining, x == null ? true : x);
+        if (x == null)
+            return true;
+        else
+            throw x;
     }
 
     @Override

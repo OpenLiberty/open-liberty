@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -97,6 +98,9 @@ import test.context.timing.Timestamp;
                           propagated = { ZipCode.CONTEXT_NAME, ListContext.CONTEXT_NAME },
                           cleared = "Priority",
                           unchanged = { APPLICATION, TRANSACTION })
+@ContextServiceDefinition(name = "java:comp/concurrent/ThirdPartyContextService",
+                          // defaults to all other context types propagated
+                          cleared = { TRANSACTION, SECURITY })
 @ManagedExecutorDefinition(name = "java:module/concurrent/executor5",
                            context = "java:module/concurrent/ZLContextSvc",
                            hungTaskThreshold = 300000,
@@ -2183,6 +2187,55 @@ public class ConcurrencyTestServlet extends FATServlet {
             assertNull(future.join());
         } finally {
             ZipCode.clear();
+        }
+    }
+
+    /**
+     * Third party context types that are configured to be propagated must fail to serialize.
+     */
+    @Test
+    public void testThirdPartyContextForPropagationFailsToSerialize() throws Exception {
+        Object proxy;
+
+        ContextService contextSvcZL = InitialContext.doLookup("java:module/concurrent/ZLContextSvc");
+        try {
+            proxy = contextSvcZL.createContextualProxy(new SameThreadExecutor(), Serializable.class);
+            fail("Must not be able to create Serializable proxy when propagated third-party context types are present. " + proxy);
+        } catch (UnsupportedOperationException x) {
+            // expected TODO check NLS message key once added
+        }
+
+        ContextService contextSvcLT = InitialContext.doLookup("java:app/concurrent/merged/web/LTContextService");
+        try {
+            proxy = contextSvcLT.createContextualProxy(new SameThreadExecutor(), Executor.class, Serializable.class);
+            fail("Must not be able to create Serializable proxy when propagated third-party context types are present. " + proxy);
+        } catch (UnsupportedOperationException x) {
+            // expected, but check the message for names of context that we cannot propagate
+            String message = x.getMessage();
+            if (message == null || !message.contains("List") || !message.contains("Timestamp"))
+                throw x;
+        }
+
+        ContextService contextSvc3P = InitialContext.doLookup("java:comp/concurrent/ThirdPartyContextService");
+        try {
+            proxy = contextSvc3P.createContextualProxy(new SameThreadExecutor(), Collections.emptyMap(), Ser1Executor.class);
+            fail("Must not be able to create Serializable proxy when propagated third-party context types are present. " + proxy);
+        } catch (UnsupportedOperationException x) {
+            // expected, but check the message for names of context that we cannot propagate
+            String message = x.getMessage();
+            if (message == null || !message.contains(ALL_REMAINING))
+                throw x;
+        }
+
+        ContextService contextSvcTZ = InitialContext.doLookup("java:comp/concurrent/dd/web/TZContextService");
+        try {
+            proxy = contextSvcTZ.createContextualProxy(new SameThreadExecutor(), Collections.emptyMap(), Executor.class, Ser2Executor.class);
+            fail("Must not be able to create Serializable proxy when propagated third-party context types are present. " + proxy);
+        } catch (UnsupportedOperationException x) {
+            // expected, but check the message for names of context that we cannot propagate
+            String message = x.getMessage();
+            if (message == null || !message.contains("Timestamp") || !message.contains("ZipCode"))
+                throw x;
         }
     }
 
