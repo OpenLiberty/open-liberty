@@ -16,7 +16,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  devtool: "source-map",
+  devtool: "hidden-source-map",
   performance : {
     // SwaggerUI itself is already big enough to prompt warnings from webpack
     // so webpack's hints aren't helpful to us.

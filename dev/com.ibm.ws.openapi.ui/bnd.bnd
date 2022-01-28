@@ -21,6 +21,6 @@ IBM-Authorization-Roles: com.ibm.ws.management
 
 Include-Resource: \
   WEB-INF=resources/WEB-INF, \
-  swagger-ui/dist;filter:=!*.html, \
+  swagger-ui/dist;filter:=!(*.html|*.map), \
   swagger-ui/dist/oauth2-redirect.html, \
   index.html=swagger-ui/dist/openapi.html
