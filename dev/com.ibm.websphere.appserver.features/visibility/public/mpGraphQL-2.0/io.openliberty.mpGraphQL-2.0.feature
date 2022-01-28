@@ -14,7 +14,7 @@ Subsystem-Name: MicroProfile GraphQL 2.0
   io.openliberty.cdi-3.0, \
   io.openliberty.jakarta.annotation-2.0, \
   io.openliberty.jsonb-2.0, \
-  io.openliberty.mpCompatible-5.0, \
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
   io.openliberty.mpConfig-3.0, \
   io.openliberty.mpContextPropagation-1.3, \
   io.openliberty.org.eclipse.microprofile.graphql-2.0

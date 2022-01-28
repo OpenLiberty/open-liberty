@@ -38,7 +38,7 @@ IBM-API-Package: \
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.restfulWS-3.0, \
-  io.openliberty.mpCompatible-5.0, \
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
   io.openliberty.org.eclipse.microprofile.openapi-3.0
 -bundles=\
     io.openliberty.io.smallrye.openapi.core, \

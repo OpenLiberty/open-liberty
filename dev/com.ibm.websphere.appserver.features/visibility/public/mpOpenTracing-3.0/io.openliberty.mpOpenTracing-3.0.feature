@@ -17,7 +17,7 @@ IBM-API-Package: \
     io.openliberty.restfulWS-3.0, \
     io.openliberty.cdi-3.0, \
     io.openliberty.org.eclipse.microprofile.opentracing-3.0, \
-    io.openliberty.mpCompatible-5.0
+    io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0"
 -bundles= \
     io.openliberty.microprofile.opentracing.2.0.internal.jakarta; apiJar=false; location:="lib/", \
     com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta, \
