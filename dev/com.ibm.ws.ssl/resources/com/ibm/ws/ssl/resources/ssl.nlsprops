@@ -661,14 +661,14 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certificate with the {0} SubjectDN fr
 ssl.certificate.add.CWPKI0830I.explanation=A certificate was retrieved from an environment variable in the configuration and is being added to the keystore file.
 ssl.certificate.add.CWPKI0830I.useraction=No action is required.
 # -------------------------------------------------------------------------------------------------
-ssl.protocol.error.CWPKI0831E=CWPKI0831E: The {0} SSL/TLS protocol cannot be used.  Extended error is: {1} 
-ssl.protocol.error.CWPKI0831E.explanation:The protocol provided cannot be used.  An error occurs when trying to get a SSLContext instance with the protocol value. 
-ssl.protocol.error.CWPKI0831E.useraction:Ensure the configuration uses valid SSL/TLS protocol values for this JVM.
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: The {0} SSL/TLS protocol cannot be used. Extended error is: {1} 
+ssl.protocol.error.CWPKI0831E.explanation:The protocol that is provided cannot be used. An error occurs on trying to get an SSLContext instance with the protocol value. 
+ssl.protocol.error.CWPKI0831E.useraction:Ensure that the configuration uses valid SSL/TLS protocol values for this JVM.
 # -------------------------------------------------------------------------------------------------
-ssl.protocol.error.CWPKI0832E=CWPKI0832E: The {0} SSL/TLS protocol value provided cannot be used when configuring a list of SSL protocols values.
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: The {0} SSL/TLS protocol value that is provided cannot be used for configuring a list of SSL protocols values.
 ssl.protocol.error.CWPKI0832E.explanation:The protocol value is not valid in a protocol list grouping.
-ssl.protocol.error.CWPKI0832E.useraction:Ensure the list of SSL/TLS protocols only includes values appropriate for a protocol list.
+ssl.protocol.error.CWPKI0832E.useraction:Ensure that the list of SSL/TLS protocols includes only values that are appropriate for a protocol list.
 # -------------------------------------------------------------------------------------------------
 ssl.protocol.error.CWPKI0833E=CWPKI0833E: The {0} SSL/TLS configuration has an error that prevents creation of the SSL/TLS configuration. 
-ssl.protocol.error.CWPKI0833E.explanation:The SSL configuration attributes has and error that will prevent the SSLContext from getting created. 
-ssl.protocol.error.CWPKI0833E.useraction:Ensure the SSL configuration attributes are correct.  Review the logs for additional error associated with SSL configuration attributes.
+ssl.protocol.error.CWPKI0833E.explanation:The SSL configuration attributes has an error that prevents SSLContext creation. 
+ssl.protocol.error.CWPKI0833E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for additional errors associated with SSL configuration attributes.

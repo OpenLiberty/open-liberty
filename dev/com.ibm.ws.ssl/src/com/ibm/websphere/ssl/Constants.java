@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -437,28 +437,6 @@ public class Constants {
         }
 
         return sb.toString();
-    }
-
-    public static String[] getSSLProtocol(String protocol) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getSSLProtocol");
-        }
-
-        // First check the properties object for the ciphers.
-        String[] protocols = protocol.split(",");
-
-        // we only want to set the protocol on the engine if it a specific protocol name
-        // don't set to TLS or SSL
-        if (protocols.length == 1) {
-            if (!MULTI_PROTOCOL_LIST.contains(protocols[0])) {
-                protocols = null;
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getSSLProtocol " + protocols);
-        }
-        return protocols;
     }
 
     public static final List<String> MULTI_PROTOCOL_LIST = Arrays.asList(new String[] {

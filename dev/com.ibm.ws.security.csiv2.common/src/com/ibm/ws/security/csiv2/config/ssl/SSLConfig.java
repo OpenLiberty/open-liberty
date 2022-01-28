@@ -101,8 +101,16 @@ public class SSLConfig {
         Properties props = jsseHelper.getProperties(sslAliasName);
         String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
 
-        // only set the protocol on the socket if it is set to a specific protocol
-        String[] protocols = Constants.getSSLProtocol(protocol);
+        // protocol(s) need to be in an array
+        String[] protocols = protocol.split(",");
+
+        // we only want to set the protocol on the socket if it a specific protocol name
+        // don't set to TLS or SSL
+        if (protocols.length == 1) {
+            if (protocols[0].equals(Constants.PROTOCOL_TLS) || protocols[0].equals(Constants.PROTOCOL_SSL)) {
+                protocols = null;
+            }
+        }
 
         return protocols;
     }
