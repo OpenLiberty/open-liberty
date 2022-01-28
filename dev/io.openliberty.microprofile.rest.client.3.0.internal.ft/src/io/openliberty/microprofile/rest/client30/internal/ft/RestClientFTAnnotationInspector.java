@@ -36,6 +36,8 @@ public class RestClientFTAnnotationInspector implements FTAnnotationInspector {
             return null;
         }
 
+        // Rest client proxy objects should have three interfaces: the rest client interface, RestClientProxy and Closable
+        // The order will match the order used when the proxy is created in LibertyRestClientBuilderImpl
         Class<?>[] interfaces = clazz.getInterfaces();
         if (!(interfaces.length == 3
               && interfaces[1] == RestClientProxy.class
