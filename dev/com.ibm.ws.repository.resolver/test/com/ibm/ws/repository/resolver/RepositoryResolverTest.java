@@ -263,7 +263,6 @@ public class RepositoryResolverTest {
      */
     @Test
     public void testCreateInstallListToleratesPartiallyInstalled() {
-        @SuppressWarnings("unused")
         MockFeature base10 = new MockFeature("com.example.base-1.0");
         MockFeature base20 = new MockFeature("com.example.base-2.0");
 
@@ -282,6 +281,7 @@ public class RepositoryResolverTest {
         featureB.addRequireFeatureWithTolerates("com.example.base-2.0", Collections.emptyList());
 
         RepositoryResolver resolver = testResolver().withResolvedInstalledFeature(base20, featureA)
+                                                    .withInstalledFeature(base10, internalA10)
                                                     .withResolvedFeature(internalA20, featureB)
                                                     .build();
 
@@ -318,6 +318,11 @@ public class RepositoryResolverTest {
             for (EsaResource esa : esas) {
                 resolvedFeatures.put(esa.getProvideFeature(), new KernelResolverEsa(esa, resolutionMode));
             }
+            return this;
+        }
+
+        public ResolverBuilder withInstalledFeature(ProvisioningFeatureDefinition... definitions) {
+            installedFeatures.addAll(Arrays.asList(definitions));
             return this;
         }
 
