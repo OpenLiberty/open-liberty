@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
@@ -26,6 +26,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import mpRestClientFT.retry.ClassRetryClient;
 import mpRestClientFT.retry.RetryClient;
 import mpRestClientFT.retry.RetryTestServlet;
 
@@ -55,8 +56,11 @@ public class RetryTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(appName, SERVER_NAME);
-        StringAsset mpConfig = new StringAsset(RetryClient.class.getName() + "/mp-rest/uri=http://localhost:"
-                + server.getHttpDefaultPort() + "/retryApp");
+        PropertiesAsset mpConfig = new PropertiesAsset();
+        mpConfig.addProperty(RetryClient.class.getName() + "/mp-rest/uri",
+                             "http://localhost:" + server.getHttpDefaultPort() + "/retryApp");
+        mpConfig.addProperty(ClassRetryClient.class.getName() + "/mp-rest/uri",
+                             "http://localhost:" + server.getHttpDefaultPort() + "/retryApp");
         war.addAsWebInfResource(mpConfig, "classes/META-INF/microprofile-config.properties");
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
         server.startServer();

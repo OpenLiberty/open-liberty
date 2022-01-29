@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import org.junit.Test;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 @SuppressWarnings("serial")
@@ -37,6 +39,10 @@ public class RetryTestServlet extends FATServlet {
 
     @Inject
     Driver driver;
+    
+    @RestClient
+    @Inject
+    ClassRetryClient classClient;
     /**
      * Tests multi-stage CompletionStage (async) from a Rest Client.
      * Tests baseUri API.
@@ -54,6 +60,15 @@ public class RetryTestServlet extends FATServlet {
     public void testRetryOnceOnFailThenSucceed_separateMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         RetryRemoteResource.failThenSucceed.set(1);
         String success = driver.failThenSucceed();
+        assertEquals("Success", success);
+        assertEquals(3, RetryRemoteResource.failThenSucceed.get());
+    }
+    
+    @Test
+    @SkipForRepeat({EmptyAction.ID, "mpRestClient-1.2", "mpRestClient-1.3", "mpRestClient-1.4", "mpRestClient-2.0"})
+    public void testRetryOnceOnFailThenSucceed_classLevel() {
+        RetryRemoteResource.failThenSucceed.set(1);
+        String success = classClient.failThenSucceed();
         assertEquals("Success", success);
         assertEquals(3, RetryRemoteResource.failThenSucceed.get());
     }
