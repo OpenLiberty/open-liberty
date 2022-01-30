@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,7 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 
-import com.ibm.ws.cdi.ejb.apps.timer.view.EjbSessionBean2Local;
-import com.ibm.ws.cdi.ejb.apps.timer.view.EjbSessionBeanLocal;
+import javax.enterprise.context.ContextNotActiveException;
 
 /**
  * Session Bean implementation class EjbSessionBean
@@ -32,71 +31,63 @@ import com.ibm.ws.cdi.ejb.apps.timer.view.EjbSessionBeanLocal;
 @Stateless
 @Local(EjbSessionBeanLocal.class)
 @LocalBean
+@MyCDIInterceptorBinding
 public class EjbSessionBean implements EjbSessionBeanLocal {
-    @Resource
-    TimerService timerService;
-    @Inject
-    SessionScopedCounter sesCounter;
-    @EJB
-    EjbSessionBean2Local bean2;
-
     private static final long TIMEOUT = 1;
 
-    /**
-     * Default constructor.
-     */
-    public EjbSessionBean() {
-        // TODO Auto-generated constructor stub
-    }
+    @Resource
+    TimerService timerService;
 
-    @Override
-    public String getStack() {
-        return sesCounter.getStack();
-    }
+    @Inject RequestScopedBean rsb;
 
-    @Override
-    public int getSesCount() {
-        return sesCounter.get();
-    }
+    @Inject SessionScopedBean ssb;
 
-    @Override
-    public void incCounters() {
-        incRequestCounter();
-        sesCounter.increment();
-    }
+    private int requestScopedIndex = -1;
+    public static Boolean canAccessRequestScope = null;
+    public static Boolean seperateRequestScopes = null;
+    public static Boolean sessionScopeInactive = null;
+
 
     @Timeout
     void ping(Timer timer) {
-        System.out.println("Timeout occurred");
-        incRequestCounter();
+        //Test One. Is a request scope active in the context of an EJB timer?
+        try {
+            if (rsb.toString() != null) {
+                canAccessRequestScope = true;
+            } else {
+                canAccessRequestScope = false;
+            }
+        } catch (ContextNotActiveException e) {
+            canAccessRequestScope = false;
+        }
+
+        //Test two. Is it a different request scope to outside the timer?
+        try {
+            if (rsb.getIndex() != requestScopedIndex) {
+                seperateRequestScopes = true;
+            } else {
+                seperateRequestScopes = false;
+            }
+        } catch (ContextNotActiveException e) {
+            canAccessRequestScope = false;
+        }
+
+        //Test three. Is the session scope inactive in the context of an EJB timer?
+        try {
+            ssb.toString();
+            sessionScopeInactive = false;
+        } catch (ContextNotActiveException e) {
+            sessionScopeInactive = true;
+        }
     }
 
     @Override
-    public void incRequestCounter() {
-        bean2.incCount();
-    }
+    public void initTimer() {
+        requestScopedIndex = rsb.getIndex();
 
-    @PostConstruct
-    void postConstruct() {
-        System.out.println(String.format("%s@%08x created", this.getClass().getSimpleName(), System.identityHashCode(this)));
-    }
-
-    @PreDestroy
-    void preDestroy() {
-        System.out.println(String.format("%s@%08x destroyed", this.getClass().getSimpleName(), System.identityHashCode(this)));
-    }
-
-    @Override
-    public int getReqCount() {
-        return bean2.getCount();
-    }
-
-    @Override
-    public void incCountersViaTimer() {
         System.out.println("CL: " + timerService.getClass().getClassLoader());
         TimerConfig config = new TimerConfig();
         config.setPersistent(false);
         timerService.createSingleActionTimer(TIMEOUT, config);
-        sesCounter.increment();
     }
 }
