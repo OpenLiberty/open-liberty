@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -68,6 +69,7 @@ public class AccessTokenAuthenticator {
     private static final String INVALID_TOKEN = "invalid_token";
     private static final String JWT_SEGMENTS = "-segments";
     private static final String JWT_SEGMENT_INDEX = "-";
+    private static final String BEARER_SCHEME = "Bearer ";
 
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
@@ -236,7 +238,6 @@ public class AccessTokenAuthenticator {
      * @return
      */
     private String getAccessTokenFromReqAsAttribute(HttpServletRequest req) {
-        // TODO Auto-generated method stub
         String token = null;
         if (req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN) != null) {
             token = (String) req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN);
@@ -551,7 +552,6 @@ public class AccessTokenAuthenticator {
      * @return
      */
     private boolean isErrorResponse(HttpResponse response) {
-        // TODO Auto-generated method stub
         // Check the response from the endpoint to see if there was an error
         StatusLine status = response.getStatusLine();
         if (status == null || status.getStatusCode() != 200) {
@@ -931,67 +931,97 @@ public class AccessTokenAuthenticator {
     }
 
     public static String getBearerAccessTokenToken(HttpServletRequest req, OidcClientConfig clientConfig) {
-
         String headerName = clientConfig.getHeaderName();
+
         if (headerName != null) {
-            String hdrValue = req.getHeader(headerName);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, headerName + " content=", hdrValue);
+            return getAccessTokenFromConfiguredHeader(req, headerName);
+        } else {
+            return getAccessTokenFromAuthorizationHeaderOrPostParameter(req);
+        }
+    }
+
+    @Trivial
+    static String getAccessTokenFromConfiguredHeader(HttpServletRequest req, String headerName) {
+        String hdrValue = req.getHeader(headerName);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, headerName + " content=", hdrValue);
+        }
+
+        if (hdrValue != null) {
+            if (isBearerToken(hdrValue)) {
+                hdrValue = hdrValue.substring(7);
             }
-            if (hdrValue != null) {
-                if (hdrValue.startsWith("Bearer ")) {
+            return hdrValue.trim();
+        } else {
+            return getAccessTokenFromHeaderSegments(req, headerName);
+        }
+    }
+
+    @Trivial
+    private static String getAccessTokenFromHeaderSegments(HttpServletRequest req, String headerName) {
+        String hdrValue = null;
+        StringBuffer sb1 = new StringBuffer(headerName);
+        sb1.append(JWT_SEGMENTS);
+        String headerSegments = req.getHeader(sb1.toString());
+
+        if (headerSegments != null) {
+            try {
+                int iSegs = Integer.parseInt(headerSegments);
+                StringBuffer sb3 = new StringBuffer();
+
+                for (int i = 1; i < iSegs + 1; i++) {
+                    StringBuffer sb2 = new StringBuffer(headerName);
+                    sb2.append(JWT_SEGMENT_INDEX).append(i);
+                    String segHdrValue = req.getHeader(sb2.toString());
+
+                    if (segHdrValue != null) {
+                        sb3.append(segHdrValue.trim());
+                    }
+                }
+
+                hdrValue = sb3.toString();
+
+                if (hdrValue != null && hdrValue.isEmpty()) {
+                    hdrValue = null;
+                } else if (isBearerToken(hdrValue)) {
                     hdrValue = hdrValue.substring(7);
                 }
-                return hdrValue.trim();
-            } else {
-                StringBuffer sb1 = new StringBuffer(headerName);
-                sb1.append(JWT_SEGMENTS);
-                String headerSegments = req.getHeader(sb1.toString());
-                if (headerSegments != null) {
-                    try {
-                        int iSegs = Integer.parseInt(headerSegments);
-                        StringBuffer sb3 = new StringBuffer();
-                        for (int i = 1; i < iSegs + 1; i++) {
-                            StringBuffer sb2 = new StringBuffer(headerName);
-                            sb2.append(JWT_SEGMENT_INDEX).append(i);
-                            String segHdrValue = req.getHeader(sb2.toString());
-                            if (segHdrValue != null) {
-                                sb3.append(segHdrValue.trim());
-                            }
-                        }
-                        hdrValue = sb3.toString();
-                        if (hdrValue != null && hdrValue.isEmpty()) {
-                            hdrValue = null;
-                        }
-                    } catch (Exception e) {
-                        //can be ignored
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Fail to read Header Segments:", e);
-                        }
-                    }
-                    return hdrValue;
-                } else {
-                    return null;
+            } catch (Exception e) {
+                //can be ignored
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Fail to read Header Segments:", e);
                 }
             }
-        } else {
-            String hdrValue = req.getHeader(Authorization_Header);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Authorization header=", hdrValue);
-            }
-            if (hdrValue != null && hdrValue.startsWith("Bearer ")) {
-                hdrValue = hdrValue.substring(7);
-            } else {
-                String reqMethod = req.getMethod();
-                if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
-                    String contentType = req.getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
-                    if (ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
-                        hdrValue = req.getParameter(ACCESS_TOKEN);
-                    }
-                }
-            }
-            return hdrValue;
         }
+
+        return hdrValue;
+    }
+
+    @Trivial
+    private static String getAccessTokenFromAuthorizationHeaderOrPostParameter(HttpServletRequest req) {
+        String hdrValue = req.getHeader(Authorization_Header);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Authorization header=", hdrValue);
+        }
+
+        if (isBearerToken(hdrValue)) {
+            hdrValue = hdrValue.substring(7);
+        } else {
+            String reqMethod = req.getMethod();
+            if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
+                String contentType = req.getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
+                if (ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
+                    hdrValue = req.getParameter(ACCESS_TOKEN);
+                }
+            }
+        }
+
+        return hdrValue;
+    }
+
+    @Trivial
+    private static boolean isBearerToken(String hdrValue) {
+        return hdrValue != null && hdrValue.startsWith(BEARER_SCHEME);
     }
 
     // do not show the error in messages.log yet. Since this will fall down to
