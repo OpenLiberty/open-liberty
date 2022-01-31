@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
 
 import com.google.gson.JsonArray;
 import com.ibm.oauth.core.api.attributes.AttributeList;
@@ -128,32 +133,60 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
     private void cacheThirdPartyTokens(OAuth20Token code, OAuth20TokenCache tokenCache) {
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> hashtableFromRunAsSubject = subjectHelper.getHashtableFromRunAsSubject();
-        if (hashtableFromRunAsSubject != null && hashtableFromRunAsSubject.containsKey(OAuth20Constants.EXPIRES_IN)) {
-            int expiresIn = Integer.parseInt((String) hashtableFromRunAsSubject.get(OAuth20Constants.EXPIRES_IN));
-
+        if (hashtableFromRunAsSubject != null) {
             String thirdPartyIdTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
             String thirdPartyIdTokenString = (String) hashtableFromRunAsSubject.get(OAuth20Constants.ID_TOKEN);
-            cacheThirdPartyToken(code, thirdPartyIdTokenId, thirdPartyIdTokenString, expiresIn, tokenCache);
+            cacheThirdPartyToken(code, thirdPartyIdTokenId, thirdPartyIdTokenString, tokenCache);
         }
     }
 
-    private void cacheThirdPartyToken(OAuth20Token code, String thirdPartyTokenId, String thirdPartyTokenString, int expiresIn, OAuth20TokenCache tokenCache) {
+    private void cacheThirdPartyToken(OAuth20Token code, String thirdPartyTokenId, String thirdPartyTokenString, OAuth20TokenCache tokenCache) {
         if (thirdPartyTokenString != null) {
+            int lifetimeSeconds = getLifetimeSeconds(thirdPartyTokenString);
+
             OAuth20Token tokenCacheEntry = new OAuth20BearerTokenImpl(
                     thirdPartyTokenId,
                     thirdPartyTokenString,
-                    code.getComponentId(), // TODO: revisit appropriate values (currently reusing a bunch of values from auth code)
+                    code.getComponentId(),
                     code.getClientId(),
                     code.getUsername(),
                     code.getRedirectUri(),
                     code.getStateId(),
                     code.getScope(),
-                    expiresIn, // TODO: revisit appropriate value here (currently using expires in from hashtable)
+                    lifetimeSeconds,
                     null,
                     OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
             // save third-party token in token cache to pick up when token endpoint is called
             tokenCache.add(tokenCacheEntry.getId(), tokenCacheEntry, tokenCacheEntry.getLifetimeSeconds());
+        }
+    }
+
+    private static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
+        JwtConsumer consumer = new JwtConsumerBuilder()
+                .setSkipAllValidators()
+                .setDisableRequireSignature()
+                .setSkipSignatureVerification()
+                .build();
+
+        return consumer.process(jwtString);
+    }
+
+    private int getLifetimeSeconds(String jwtString) {
+        try {
+            JwtContext context = parseJwtWithoutValidation(jwtString);
+            JwtClaims claims = context.getJwtClaims();
+
+            long now = System.currentTimeMillis();
+            long expiresAt = claims.getExpirationTime().getValueInMillis();
+            long expiresIn = expiresAt - now;
+
+            if (expiresIn < 0) {
+                return 0;
+            }
+            return (int) expiresIn / 1000;
+        } catch (Exception e) {
+            return 0;
         }
     }
 
