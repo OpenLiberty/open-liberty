@@ -1424,6 +1424,35 @@ public class LibertyServer implements LogMonitorClient {
 
             // If we are running on Java 18+, then we need to explicitly enable the security manager
             if (info.majorVersion() >= 18) {
+                Log.info(c, "startServerWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
+                JVM_ARGS += " -Djava.security.manager=allow";
+            }
+        } else if (info.majorVersion() >= 18) {
+            boolean bootstrapHasJava2SecProps = false;
+            // Check if "websphere.java.security" has been added to bootstrapping.properties
+            // as some tests will add it for their own security enable tests
+            RemoteFile f = getServerBootstrapPropertiesFile();
+            java.io.BufferedReader reader = null;
+            try {
+                reader = new java.io.BufferedReader(new java.io.InputStreamReader(f.openForReading()));
+                String line = reader.readLine();
+                while (line != null) {
+                    if (line != null && line.trim().equals("websphere.java.security")) {
+                        bootstrapHasJava2SecProps = true;
+                        break;
+                    }
+                    line = reader.readLine();
+                }
+            } catch (Exception e) {
+                Log.info(c, "startServerWithArgs", "caught exception checking bootstap.properties file for Java 2 Security properties, e: ", e.getMessage());
+            } finally {
+                if (reader != null)
+                    reader.close();
+            }
+
+            if (bootstrapHasJava2SecProps) {
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
         }
