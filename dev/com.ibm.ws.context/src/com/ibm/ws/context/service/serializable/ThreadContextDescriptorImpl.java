@@ -247,7 +247,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
     public final boolean isSerializable() {
         // All other thread context providers should always return true
         int i = providerNames.indexOf("io.openliberty.thirdparty.context.provider");
-        return i >= 0 && threadContext.get(i).isSerializable();
+        return i < 0 || threadContext.get(i).isSerializable();
     }
 
     /**
