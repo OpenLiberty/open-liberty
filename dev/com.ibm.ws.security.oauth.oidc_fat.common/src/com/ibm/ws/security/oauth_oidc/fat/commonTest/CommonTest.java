@@ -830,7 +830,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         msgUtils.printTestSettings(settings);
         msgUtils.printOAuthOidcExpectations(expectations, testActions, settings);
 
-        Object thePage = null;
+        Object thePage = response;
 
         try {
 
@@ -925,7 +925,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             //            }
             //
             if (validationTools.isInList(testActions, Constants.LOGOUT)) {
-                response = helpers.processLogout(testcase, webClient, logoutIdToken, settings, expectations);
+                thePage = helpers.processLogout(testcase, webClient, logoutIdToken, settings, expectations);
             }
 
             return thePage;
@@ -1029,8 +1029,12 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @throws Exception
      */
     public Object genericRP(String testcase, WebClient webClient, TestSettings settings, String[] testActions, List<validationData> expectations) throws Exception {
+        return genericRP(testcase, webClient, settings, null, testActions, expectations);
+    }
 
-        Object thePage = null;
+    public Object genericRP(String testcase, WebClient webClient, TestSettings settings, Object startPage, String[] testActions, List<validationData> expectations) throws Exception {
+
+        Object thePage = startPage;
         String thisMethod = "genericRP";
         msgUtils.printMethodName(thisMethod);
 

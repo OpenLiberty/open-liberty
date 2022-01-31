@@ -88,7 +88,8 @@ task formlogin_ZIP (type: Zip, dependsOn: classes) {
   from (new File(projectDir, 'build/classes/java/main')) {
     include 'web/BaseServlet.class', 'web/FlexibleBaseServlet*.class'
     include 'web/FormLoginServlet.class', 'web/FormLoginServlet2.class', 'web/Base64.class',
-            'web/manual_IntrospectRequester*.class', 'web/manual_IntrospectServlet.class'
+            'web/manual_IntrospectRequester*.class', 'web/manual_IntrospectServlet.class',
+            'web/LogoutServlet.class'
     into 'WEB-INF/classes'
   }
 }

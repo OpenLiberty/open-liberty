@@ -62,6 +62,12 @@
     </security-role-ref>
   </servlet>
 
+  <servlet id="LogoutServlet">
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>web.LogoutServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_1">
     <servlet-name>FormLoginServlet</servlet-name>
@@ -90,6 +96,10 @@
   <servlet-mapping id="SimpleMapping">
     <servlet-name>FormLoginServlet</servlet-name>
     <url-pattern>/simple/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="LogoutMapping">
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
   </servlet-mapping>
 
   <!-- SECURITY CONSTRAINTS -->  
