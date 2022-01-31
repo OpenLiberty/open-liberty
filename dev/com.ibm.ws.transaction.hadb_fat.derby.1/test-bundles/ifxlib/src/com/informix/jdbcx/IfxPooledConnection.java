@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -205,6 +205,18 @@ public class IfxPooledConnection implements PooledConnection {
                         SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
 
                         throw sqlex;
+                    } else if (testTypeInt == 6) { // Lease Log tests
+                        // We abuse the failovervalInt parameter.
+                        // 770 - lease update test
+                        if (failingOperation == 770) {
+                            IfxConnection.setTestingLeaselogUpdateFlag(true);
+                        } else if (failingOperation == 771) {
+                            IfxConnection.setTestingLeaselogDeleteFlag(true);
+                        } else if (failingOperation == 772) {
+                            IfxConnection.setTestingLeaselogClaimFlag(true);
+                        } else if (failingOperation == 773) {
+                            IfxConnection.setTestingLeaselogGetFlag(true);
+                        }
                     }
                 } else {
                     System.out.println("SIMHADB: Empty result set");

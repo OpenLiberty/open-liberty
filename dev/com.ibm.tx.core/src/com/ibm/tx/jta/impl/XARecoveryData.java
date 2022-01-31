@@ -153,7 +153,7 @@ public class XARecoveryData extends PartnerLogData {
      */
     @Override
     protected void preLogData() throws Exception {
-        _fsc.getRecoveryManager().waitForReplayCompletion();
+        _fsc.getRecoveryManager().waitForReplayCompletion(true);
     }
 
     /*

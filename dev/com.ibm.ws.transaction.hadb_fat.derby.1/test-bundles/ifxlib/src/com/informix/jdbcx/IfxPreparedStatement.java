@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     private static Map<Integer, Object> _cachedRow;
 
     private boolean _tranlogInsertFlag = false;
+    private boolean _leaselogUpdateFlag = false;
+    private boolean _leaselogClaimFlag = false;
+
     /**
      * Lookup string that allows character digit lookup by index value.
      * ie _digits[9] == '9' etc.
@@ -773,38 +776,58 @@ public class IfxPreparedStatement implements PreparedStatement {
     }
 
     private void simQueryFailover() throws SQLException {
+        boolean failOver = false;
+
+        if (IfxConnection.getTestingLeaselogUpdateFlag() && _leaselogUpdateFlag) {
+            System.out.println("SIMHADB: simQueryFailover, for Lease Log Update");
+            _leaselogUpdateFlag = false;
+            IfxConnection.setTestingLeaselogUpdateFlag(false);
+            failOver = true;
+        }
+
+        if (IfxConnection.getTestingLeaselogClaimFlag() && _leaselogClaimFlag) {
+            System.out.println("SIMHADB: simQueryFailover, for Lease Log Claim");
+            _leaselogClaimFlag = false;
+            IfxConnection.setTestingLeaselogClaimFlag(false);
+            failOver = true;
+        }
+
         if (IfxConnection.isQueryFailoverEnabled() && IfxConnectionPoolDataSource.isTestingFailoverAtRuntime()) {
             System.out.println("SIMHADB: simQueryFailover, failover Enabled, Counter -"
                                + IfxConnection.getQueryFailoverCounter());
             IfxConnection.incrementQueryFailoverCounter();
 
             if (IfxConnection.getQueryFailoverCounter() == 7) {
-                System.out.println("SIMHADB: Feigning executequery/Update failover, rollback on connection");
-                IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
-                Connection myconn = getConnection();
-                try {
-                    myconn.rollback();
-                    // myconn.close();
-
-                } catch (Exception ex) {
-                    System.out.println("SIMHADB: on close connection, caught exc: " + ex);
-                }
-                String sqlReason = "Generated internally";
-                String sqlState = "Generated reason";
-                int reasonCode = IfxConnection.getSimSQLCode(); // FOR DB2
-                                                                // should be
-                                                                // -4498, Oracle
-                                                                // 17410
-                                                                // if reason code is "-3" then exception is non-transient, otherwise it is transient
-                SQLException sqlex;
-                if (reasonCode == -3)
-                    // A hard, non-recoverable exception
-                    sqlex = new SQLException(sqlReason, sqlState, reasonCode);
-                else
-                    // A transient, recoverable exception
-                    sqlex = new SQLTransientException("A simulated transient SQL Exception");
-                throw sqlex;
+                failOver = true;
             }
+        }
+
+        if (failOver) {
+            System.out.println("SIMHADB: Feigning executequery/Update failover, rollback on connection");
+            IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
+            Connection myconn = getConnection();
+            try {
+                myconn.rollback();
+                // myconn.close();
+
+            } catch (Exception ex) {
+                System.out.println("SIMHADB: on close connection, caught exc: " + ex);
+            }
+            String sqlReason = "Generated internally";
+            String sqlState = "Generated reason";
+            int reasonCode = IfxConnection.getSimSQLCode(); // FOR DB2
+                                                            // should be
+                                                            // -4498, Oracle
+                                                            // 17410
+                                                            // if reason code is "-3" then exception is non-transient, otherwise it is transient
+            SQLException sqlex;
+            if (reasonCode == -3)
+                // A hard, non-recoverable exception
+                sqlex = new SQLException(sqlReason, sqlState, reasonCode);
+            else
+                // A transient, recoverable exception
+                sqlex = new SQLTransientException("A simulated transient SQL Exception");
+            throw sqlex;
         }
     }
 
@@ -984,4 +1007,13 @@ public class IfxPreparedStatement implements PreparedStatement {
         _tranlogInsertFlag = true;
     }
 
+    public void setLeaselogUpdateFlag() {
+        System.out.println("SIMHADB: setLeaselogUpdateFlag, this - " + this + ", wrapped - " + wrappedPS);
+        _leaselogUpdateFlag = true;
+    }
+
+    public void setLeaselogClaimFlag() {
+        System.out.println("SIMHADB: setLeaselogClaimFlag, this - " + this + ", wrapped - " + wrappedPS);
+        _leaselogClaimFlag = true;
+    }
 }

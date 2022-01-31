@@ -81,12 +81,15 @@ public class LeaseTimeoutManager {
                 Tr.debug(tc, "LeaseRenewal",
                          new Object[] { _recoveryIdentity, _recoveryGroup });
 
-            boolean leaseRenewed = renewLease();
+            if (!_recoveryAgent.isServerStopping()) {
+                boolean leaseRenewed = renewLease();
 
-            // Disable lease checking if we failed to renew our own lease;
-            _recoveryAgent.setCheckingLeases(leaseRenewed);
+                // Disable lease checking if we failed to renew our own lease;
+                _recoveryAgent.setCheckingLeases(leaseRenewed);
+            }
 
-            schedule((int) delay);
+            if (!_recoveryAgent.isServerStopping())
+                schedule((int) delay);
         }
 
         void schedule(int delay) {
@@ -157,7 +160,7 @@ public class LeaseTimeoutManager {
                 Tr.debug(tc, "LeaseCheck",
                          new Object[] { _recoveryGroup });
 
-            if (_recoveryAgent != null && _recoveryAgent.checkingLeases()) {
+            if (_recoveryAgent != null && _recoveryAgent.checkingLeases() && !_recoveryAgent.isServerStopping()) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
                 if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
                     try {
@@ -169,7 +172,8 @@ public class LeaseTimeoutManager {
                 }
             }
 
-            schedule((int) delay);
+            if (!_recoveryAgent.isServerStopping())
+                schedule((int) delay);
         }
 
         void schedule(int delay) {

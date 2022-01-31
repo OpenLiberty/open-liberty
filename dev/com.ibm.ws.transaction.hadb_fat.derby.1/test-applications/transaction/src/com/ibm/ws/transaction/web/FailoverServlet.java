@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.web;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -36,7 +38,7 @@ import componenttest.app.FATServlet;
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE
     };
 
     /**
@@ -103,6 +105,30 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: drive setupForHalt");
         setupTestParameters(request, response, TestType.HALT, 0, 12, 1); // set the ioperation to the duplicate test value + 2
         System.out.println("FAILOVERSERVLET: setupForHalt complete");
+    }
+
+    public void setupForLeaseUpdate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseUpdate");
+        setupTestParameters(request, response, TestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
+        System.out.println("FAILOVERSERVLET: setupForLeaseUpdate complete");
+    }
+
+    public void setupForLeaseDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseDelete");
+        setupTestParameters(request, response, TestType.LEASE, 0, 771, 1); // 771 interpreted as lease delete
+        System.out.println("FAILOVERSERVLET: setupForLeaseDelete complete");
+    }
+
+    public void setupForLeaseClaim(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseClaim");
+        setupTestParameters(request, response, TestType.LEASE, 0, 772, 1); // 772 interpreted as lease claim
+        System.out.println("FAILOVERSERVLET: setupForLeaseClaim complete");
+    }
+
+    public void setupForLeaseGet(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseGet");
+        setupTestParameters(request, response, TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
+        System.out.println("FAILOVERSERVLET: setupForLeaseGet complete");
     }
 
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
@@ -302,6 +328,41 @@ public class FailoverServlet extends FATServlet {
                 recoveryStmt.close();
         }
 
+    }
+
+    public void insertStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+        boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+        PreparedStatement specStatement = null;
+        try {
+            String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                  " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                  " VALUES (?,?,?,?)";
+
+            long fir1 = System.currentTimeMillis() - (1000 * 300);
+
+            System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + fir1);
+            specStatement = con.prepareStatement(insertString);
+            specStatement.setString(1, "cloudstale");
+            specStatement.setString(2, "defaultGroup");
+            specStatement.setString(3, "cloudstale");
+            specStatement.setLong(4, fir1);
+
+            int ret = specStatement.executeUpdate();
+
+            System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
+            con.commit();
+        } catch (Exception ex) {
+            System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+        } finally {
+            if (specStatement != null && !specStatement.isClosed())
+                specStatement.close();
+        }
     }
 
     public static String toHexString(byte[] byteSource, int bytes) {

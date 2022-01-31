@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,197 +172,370 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "initiateRecovery", fs);
         String recoveredServerIdentity = null;
+        FailureScopeController fsc = null;
+        ConfigurationProvider cp = null;
+        recoveredServerIdentity = fs.serverName();
+        final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
+
         try {
-            recoveredServerIdentity = fs.serverName();
+            synchronized (this) {
 
-            // Big message if Peer recovery is supported, just debug otherwise
-            if (_isPeerRecoverySupported) {
-                // If we are attempting to recover a peer and the home server is stopping, then do not continue
-                if (_serverStopping) {
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "initiateRecovery", "server stopping");
-                    return;
-                }
-                Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Recovery initiated for server -  ", recoveredServerIdentity);
-            }
-            // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
-            boolean isCustom = false;
-            final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-
-            String logDir = cp.getTransactionLogDirectory();
-            int logSize = cp.getTransactionLogSize();
-
-            if (logDir.startsWith("custom")) {
-                isCustom = true;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Found a custom tran log directory");
-            }
-
-            // Retrieve the recovery log configuration information for this failure scope. This will
-            // be retrieved from WCCM if its not been encountered before on this run.
-            TranLogConfiguration tlc = null;
-
-            // We now need to determine the properties and instantiate an appropriate TranLogConfiguration object
-            if (isCustom) {
-                // Create "custom" tlc.
-                tlc = createCustomTranLogConfiguration(recoveredServerIdentity, logDir, _isPeerRecoverySupported);
-            } else {
-                // Create File tlc
-                tlc = createFileTranLogConfiguration(recoveredServerIdentity, fs, logDir, logSize, _isPeerRecoverySupported);
-            }
-
-            // Retrieve any existing failureScopeController for this FailureScope. The only occasion where we expect to find
-            // one is local recovery where its pre-created at server startup. If it does exist in this case it should
-            // not have been populated with a RecoveryManager.
-            FailureScopeController fsc = failureScopeControllerTable.get(recoveredServerIdentity);
-
-            if (fsc != null) {
-                if (fsc.getRecoveryManager() != null) {
-                    if (_isPeerRecoverySupported) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Where peer recovery is supported, a pre-existing RM is ok");
-
-                        //TODO: Just how safe is this? suppose some asynch recovery is still going on?
-                        // If I try to terminate current recovery by calling terminateRecovery() a can of worms opens up
-                        // but do I need some kind of better policing of this?
-                    } else {
+                // Big message if Peer recovering, just debug otherwise
+                if (!localRecovery) {
+                    // If we are attempting to recover a peer and the home server is stopping, then do not continue
+                    if (_serverStopping) {
                         if (tc.isEntryEnabled())
-                            Tr.exit(tc, "initiateRecovery", "already recovering failure scope " + fs);
-                        throw new RecoveryFailedException("Already recovering failure scope " + fs);
+                            Tr.exit(tc, "initiateRecovery", "server stopping");
+                        throw new RecoveryFailedException("server stopping");
+                    }
+                    Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Recovery initiated for server -  ", recoveredServerIdentity);
+                }
+
+                // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
+                boolean isCustom = false;
+
+                cp = ConfigurationProviderManager.getConfigurationProvider();
+                if (cp == null) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                    throw new RecoveryFailedException("ConfigurationProvider is null");
+                }
+
+                String logDir = cp.getTransactionLogDirectory();
+                int logSize = cp.getTransactionLogSize();
+
+                if (logDir.startsWith("custom")) {
+                    isCustom = true;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Found a custom tran log directory");
+                }
+
+                // Retrieve the recovery log configuration information for this failure scope. This will
+                // be retrieved from WCCM if its not been encountered before on this run.
+                TranLogConfiguration tlc = null;
+
+                // We now need to determine the properties and instantiate an appropriate TranLogConfiguration object
+                if (isCustom) {
+                    // Create "custom" tlc.
+                    tlc = createCustomTranLogConfiguration(recoveredServerIdentity, logDir, _isPeerRecoverySupported);
+                } else {
+                    // Create File tlc
+                    tlc = createFileTranLogConfiguration(recoveredServerIdentity, fs, logDir, logSize, _isPeerRecoverySupported);
+                }
+
+                // Retrieve any existing failureScopeController for this FailureScope. The only occasion where we expect to find
+                // one is local recovery where its pre-created at server startup. If it does exist in this case it should
+                // not have been populated with a RecoveryManager.
+                fsc = failureScopeControllerTable.get(recoveredServerIdentity);
+
+                if (fsc != null) {
+                    if (fsc.getRecoveryManager() != null) {
+                        if (_isPeerRecoverySupported) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Where peer recovery is supported, a pre-existing RM is ok");
+
+                            //TODO: Just how safe is this? suppose some asynch recovery is still going on?
+                            // If I try to terminate current recovery by calling terminateRecovery() a can of worms opens up
+                            // but do I need some kind of better policing of this?
+                        } else {
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", "already recovering failure scope " + fs);
+                            throw new RecoveryFailedException("Already recovering failure scope " + fs);
+                        }
+                    }
+                } else {
+                    try {
+                        fsc = createFailureScopeController(fs);
+                    } catch (Exception exc) {
+                        FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
+                        throw new RecoveryFailedException(exc);
+                    }
+                    failureScopeControllerTable.put(recoveredServerIdentity, fsc);
+                }
+
+                // If we are going to recover the home server then further transactions can be started. For this we need to
+                // generate XIDs which contain the servers APPLID. As a result we must pass to the recovery manager the
+                // defaults that have been stored in the Configuration class. These may be overwritten later if this is
+                // a real recovery rather than a cold start - in which case the recovery log would contain the APPLID
+                // used on the last run of the server. For peer recovery, we ignore these fields and just leave them null.
+                cp = ConfigurationProviderManager.getConfigurationProvider();
+                if (cp == null) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                    throw new RecoveryFailedException("ConfigurationProvider is null");
+                }
+                byte[] applId = cp.getApplId();
+                int epoch = Configuration.getCurrentEpoch();
+
+                // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
+                // has not specified ";0" as the log location string for a file based log) then create the
+                if ((tlc != null) && (tlc.enabled())) {
+                    final LogProperties transactionLogProps;
+                    final LogProperties partnerLogProps;
+
+                    if (tlc.type() == TranLogConfiguration.TYPE_CUSTOM) {
+                        // Set up CustomLogProperties
+                        transactionLogProps = new CustomLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tlc.customId(), tlc.customProperties());
+                        partnerLogProps = new CustomLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, tlc.customId(), tlc.customProperties());
+                        // For Liberty we need to retrieve the resource factory associated with the non transactional datasource
+                        // and set it into the CustomLogProperties. This specific property is currently only referenced in the Liberty
+                        // specific SQLNonTransactionalDataSource class, which overrides the tWAS equivalent.
+                        cp = ConfigurationProviderManager.getConfigurationProvider();
+                        if (cp == null) {
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                            throw new RecoveryFailedException("ConfigurationProvider is null");
+                        }
+                        ResourceFactory nontranDSResourceFactory = cp.getResourceFactory();
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
+                        ((CustomLogProperties) transactionLogProps).setResourceFactory(nontranDSResourceFactory);
+                        ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
+                    } else {
+                        // Set up FileLogProperties
+                        String tranLogDirStem = tlc.expandedLogDirectory();
+                        tranLogDirStem = tranLogDirStem.trim();
+                        String tranLogDirToUse = tranLogDirStem + File.separator + TransactionImpl.TRANSACTION_LOG_NAME;
+
+                        transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), tranLogDirStem);
+
+                        String partnerLogDirToUse = tlc.expandedLogDirectory();
+                        partnerLogDirToUse = partnerLogDirToUse.trim() + File.separator + TransactionImpl.PARTNER_LOG_NAME;
+
+                        partnerLogProps = new FileLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, partnerLogDirToUse, tlc.logFileSize());
+                    }
+
+                    final RecoveryLogManager rlm = Configuration.getLogManager();
+
+                    //
+                    // Create the Transaction log
+                    //
+                    _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
+
+                    // Configure the SQL HADB Retry parameters
+                    if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
+                        HeartbeatLog heartbeatLog = (HeartbeatLog) _transactionLog;
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
+                        configureSQLHADBRetryParameters(heartbeatLog, cp);
+                    }
+
+                    //
+                    // Create the Partner (XAResources) log
+                    //
+                    _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+
+                    // Configure the SQL HADB Retry parameters
+                    if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+                        HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
+                        cp = ConfigurationProviderManager.getConfigurationProvider();
+                        if (cp == null) {
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                            throw new RecoveryFailedException("ConfigurationProvider is null");
+                        }
+                        configureSQLHADBRetryParameters(heartbeatLog, cp);
+                    }
+
+                    // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
+                    cp = ConfigurationProviderManager.getConfigurationProvider();
+                    if (cp == null) {
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                        throw new RecoveryFailedException("ConfigurationProvider is null");
+                    }
+                    if (_isPeerRecoverySupported) {
+                        _leaseLog = rlm.getLeaseLog(localRecoveryIdentity,
+                                                    _recoveryGroup,
+                                                    cp.getLeaseCheckInterval(),
+                                                    cp.getLeaseCheckStrategy(),
+                                                    cp.getLeaseLength(),
+                                                    transactionLogProps);
                     }
                 }
-            } else {
-                try {
-                    fsc = createFailureScopeController(fs);
-                } catch (Exception exc) {
-                    FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
-                    throw new RecoveryFailedException(exc);
+
+                //
+                // Create the RecoveryManager and associate it with the logs
+                //
+                if (fsc != null) {
+                    fsc.createRecoveryManager(this, _transactionLog, _partnerLog, null, applId, epoch);
+
+                    // Initiate recovery on a separate thread.
+                    // Cannot use default threadpool threads as these are subject to hang detection and if we
+                    // fail to recover, we leave the group, suspend the thread awhile and the rejoin the group.
+                    // The hang detection logic will scream if we suspend too long.  Also do not want to drain
+                    // default thread pool, nor do we want to create recovery pools that may never get used and
+                    // just absorb resource.
+
+                    _recoveryManager = fsc.getRecoveryManager();
                 }
-                failureScopeControllerTable.put(recoveredServerIdentity, fsc);
+
+                // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
+                if (_leaseLog != null) {
+                    // If this is the local server and we're operating with lightweight peer recovery, we need to
+                    // acquire a lock against the lease log.
+                    if (localRecovery) {
+                        if (!_leaseLog.lockLocalLease(localRecoveryIdentity)) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Cannot lock server's own logs");
+                            Object[] errorObject = new Object[] { localRecoveryIdentity };
+                            RecoveryFailedException rex = new RecoveryFailedException("Cannot lock server's own logs");
+                            Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
+                                     errorObject);
+                            Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
+
+                            // Drive recovery failure processing
+                            _recoveryManager.recoveryFailed(rex);
+
+                            // Check the system property but by default we want the server to be shutdown if we, the server
+                            // that owns the logs is not able to recover them. The System Property supports the tWAS style
+                            // of processing.
+                            if (!doNotShutdownOnRecoveryFailure()) {
+                                cp = ConfigurationProviderManager.getConfigurationProvider();
+                                if (cp == null) {
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                                    throw new RecoveryFailedException("ConfigurationProvider is null");
+                                }
+                                cp.shutDownFramework();
+                            }
+
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", rex);
+
+                            // Output a message as to why we are terminating the server as in
+                            Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
+                            throw rex;
+                        }
+                    }
+
+                    _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
+                }
             }
 
-            // If we are going to recover the home server then further transactions can be started. For this we need to
-            // generate XIDs which contain the servers APPLID. As a result we must pass to the recovery manager the
-            // defaults that have been stored in the Configuration class. These may be overwritten later if this is
-            // a real recovery rather than a cold start - in which case the recovery log would contain the APPLID
-            // used on the last run of the server. For peer recovery, we ignore these fields and just leave them null.
-            byte[] applId = ConfigurationProviderManager.getConfigurationProvider().getApplId();
-            int epoch = Configuration.getCurrentEpoch();
+            synchronized (this) {
+                // Check that peer recovery is continuing as it may be interrupted by shutdown of the home server in which case we stop recovery processing.
+                if (!localRecovery && _serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "server stopping");
+                    throw new RecoveryFailedException("server stopping");
+                }
 
-            // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
-            // has not specified ";0" as the log location string for a file based log) then create the
-            if ((tlc != null) && (tlc.enabled())) {
-                final LogProperties transactionLogProps;
-                final LogProperties partnerLogProps;
+                final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
+                    @Override
+                    public Thread run() {
+                        return new Thread(_recoveryManager, "Recovery Thread");
+                    }
+                });
 
-                if (tlc.type() == TranLogConfiguration.TYPE_CUSTOM) {
-                    // Set up CustomLogProperties
-                    transactionLogProps = new CustomLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tlc.customId(), tlc.customProperties());
-                    partnerLogProps = new CustomLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, tlc.customId(), tlc.customProperties());
-                    // For Liberty we need to retrieve the resource factory associated with the non transactional datasource
-                    // and set it into the CustomLogProperties. This specific property is currently only referenced in the Liberty
-                    // specific SQLNonTransactionalDataSource class, which overrides the tWAS equivalent.
-                    ResourceFactory nontranDSResourceFactory = ConfigurationProviderManager.getConfigurationProvider().getResourceFactory();
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
-                    ((CustomLogProperties) transactionLogProps).setResourceFactory(nontranDSResourceFactory);
-                    ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+                    @Override
+                    public Void run() throws RecoveryFailedException {
+                        // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
+                        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+                        if (cp == null) {
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery.run", "ConfigurationProvider is null");
+                            throw new RecoveryFailedException("ConfigurationProvider is null");
+                        }
+
+                        if (!(cp.getClass().getCanonicalName().equals(DefaultConfigurationProvider.class.getCanonicalName()))) {
+                            final ClassLoader cl = getThreadContextClassLoader(TxRecoveryAgentImpl.class);
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+
+                            t.setContextClassLoader(cl);
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
+                        }
+
+                        return null;
+                    }
+                });
+
+                t.start();
+
+                // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
+                // essentially means that other components can have a go at recovery now.
+                _recoveryDirector.serialRecoveryComplete(this, fs);
+            }
+
+            //RTC170534 - wait for Replay Completion before spawning the timout manager to monitor leases.
+            // Peer recovery may be interrupted by shutdown of the home server in which case we stop replay processing.
+            if (!localRecovery && _serverStopping) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "initiateRecovery", "server stopping");
+                throw new RecoveryFailedException("server stopping");
+            }
+
+            if (fsc != null)
+                fsc.getRecoveryManager().waitForReplayCompletion(localRecovery);
+
+            // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
+            if (!localRecovery) {
+                if (!_serverStopping) {
+                    if (fsc != null)
+                        fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
                 } else {
-                    // Set up FileLogProperties
-                    String tranLogDirStem = tlc.expandedLogDirectory();
-                    tranLogDirStem = tranLogDirStem.trim();
-                    String tranLogDirToUse = tranLogDirStem + File.separator + TransactionImpl.TRANSACTION_LOG_NAME;
-
-                    transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), tranLogDirStem);
-
-                    String partnerLogDirToUse = tlc.expandedLogDirectory();
-                    partnerLogDirToUse = partnerLogDirToUse.trim() + File.separator + TransactionImpl.PARTNER_LOG_NAME;
-
-                    partnerLogProps = new FileLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, partnerLogDirToUse, tlc.logFileSize());
-                }
-
-                final RecoveryLogManager rlm = Configuration.getLogManager();
-
-                //
-                // Create the Transaction log
-                //
-                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
-
-                // Configure the SQL HADB Retry parameters
-                if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
-                    HeartbeatLog heartbeatLog = (HeartbeatLog) _transactionLog;
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
-                    configureSQLHADBRetryParameters(heartbeatLog, cp);
-                }
-
-                //
-                // Create the Partner (XAResources) log
-                //
-                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
-
-                // Configure the SQL HADB Retry parameters
-                if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
-                    HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
-                    configureSQLHADBRetryParameters(heartbeatLog, cp);
-                }
-
-                // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
-                if (_isPeerRecoverySupported) {
-                    _leaseLog = rlm.getLeaseLog(localRecoveryIdentity,
-                                                _recoveryGroup,
-                                                cp.getLeaseCheckInterval(),
-                                                cp.getLeaseCheckStrategy(),
-                                                cp.getLeaseLength(),
-                                                transactionLogProps);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "server stopping");
+                    throw new RecoveryFailedException("server stopping");
                 }
             }
-
-            //
-            // Create the RecoveryManager and associate it with the logs
-            //
-            fsc.createRecoveryManager(this, _transactionLog, _partnerLog, null, applId, epoch);
-
-            // Initiate recovery on a separate thread.
-            // Cannot use default threadpool threads as these are subject to hang detection and if we
-            // fail to recover, we leave the group, suspend the thread awhile and the rejoin the group.
-            // The hang detection logic will scream if we suspend too long.  Also do not want to drain
-            // default thread pool, nor do we want to create recovery pools that may never get used and
-            // just absorb resource.
-
-            _recoveryManager = fsc.getRecoveryManager();
-            final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
-            if (_leaseLog != null) {
-                // If this is the local server and we're operating with lightweight peer recovery, we need to
-                // acquire a lock against the lease log.
-                if (localRecovery) {
-                    if (!_leaseLog.lockLocalLease(localRecoveryIdentity)) {
+            synchronized (this) {
+                // Again, peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
+                if (!localRecovery && _serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "server stopping");
+                    throw new RecoveryFailedException("server stopping");
+                }
+
+                if (_leaseLog != null) {
+                    // Release the lock on the lease log. This could be the local server or a peer.
+                    try {
+                        if (localRecovery) {
+                            if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Have released locallease lock");
+                            }
+                        } else {
+                            if (_leaseLog.releasePeerLease(recoveredServerIdentity)) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Have released peer lease lock");
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Note the error but continue
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Cannot lock server's own logs");
-                        Object[] errorObject = new Object[] { localRecoveryIdentity };
-                        RecoveryFailedException rex = new RecoveryFailedException("Cannot lock server's own logs");
-                        Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
-                                 errorObject);
-                        Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
+                            Tr.debug(tc, "Caught exception on lock release - " + e);
+                    }
 
-                        // Drive recovery failure processing
-                        _recoveryManager.recoveryFailed(rex);
-
+                    // If Recovery Failed, then by default we shall bring down the Liberty Server
+                    if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
+                        RecoveryFailedException rex = new RecoveryFailedException();
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
-                        if (!doNotShutdownOnRecoveryFailure()) {
+                        if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
+                            cp = ConfigurationProviderManager.getConfigurationProvider();
+                            if (cp == null) {
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                                throw new RecoveryFailedException("ConfigurationProvider is null");
+                            }
                             cp.shutDownFramework();
                         }
 
@@ -373,106 +546,32 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
                         throw rex;
                     }
-                }
 
-                _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
-            }
-
-            final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
-                @Override
-                public Thread run() {
-                    return new Thread(_recoveryManager, "Recovery Thread");
-                }
-            });
-
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-
-                @Override
-                public Void run() throws RecoveryFailedException {
-                    // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
-                    if (!(cp.getClass().getCanonicalName().equals(DefaultConfigurationProvider.class.getCanonicalName()))) {
-                        final ClassLoader cl = getThreadContextClassLoader(TxRecoveryAgentImpl.class);
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
-
-                        t.setContextClassLoader(cl);
-                    } else {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
-                    }
-
-                    return null;
-                }
-            });
-
-            t.start();
-
-            // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
-            // essentially means that other components can have a got at recovery now.
-            _recoveryDirector.serialRecoveryComplete(this, fs);
-
-            //RTC170534 - wait for Replay Completion before spawning the timout manager to monitor leases.
-            fsc.getRecoveryManager().waitForReplayCompletion();
-
-            if (!localRecovery) {
-                fsc.getRecoveryManager().waitForRecoveryCompletion();
-            }
-
-            // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
-            if (_leaseLog != null) {
-                // Release the lock on the lease log. This could be the local server or a peer.
-                try {
+                    // Only spawn timeout manager if this is the local server and recovery succeeded
                     if (localRecovery) {
-                        if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have released locallease lock");
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Local server recovery identity so spawn lease timeout manager");
+
+                        cp = ConfigurationProviderManager.getConfigurationProvider();
+                        if (cp == null) {
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                            throw new RecoveryFailedException("ConfigurationProvider is null");
                         }
-                    } else {
-                        if (_leaseLog.releasePeerLease(recoveredServerIdentity)) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have released peer lease lock");
-                        }
+                        LeaseTimeoutManager.setTimeouts(_leaseLog,
+                                                        recoveredServerIdentity,
+                                                        _recoveryGroup,
+                                                        this,
+                                                        _recoveryDirector,
+                                                        cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
+                                                        cp.getLeaseCheckInterval());
                     }
-                } catch (Exception e) {
-                    // Note the error but continue
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught exception on lock release - " + e);
-                }
-
-                // If Recovery Failed, then by default we shall bring down the Liberty Server
-                if (fsc.getRecoveryManager().recoveryFailed()) {
-                    RecoveryFailedException rex = new RecoveryFailedException();
-                    // Check the system property but by default we want the server to be shutdown if we, the server
-                    // that owns the logs is not able to recover them. The System Property supports the tWAS style
-                    // of processing.
-                    if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
-                        cp.shutDownFramework();
-                    }
-
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "initiateRecovery", rex);
-
-                    // Output a message as to why we are terminating the server as in
-                    Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
-                    throw rex;
-                }
-
-                // Only spawn timeout manager if this is the local server and recovery succeeded
-                if (localRecovery) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Local server recovery identity so spawn lease timeout manager");
-
-                    LeaseTimeoutManager.setTimeouts(_leaseLog,
-                                                    recoveredServerIdentity,
-                                                    _recoveryGroup,
-                                                    this,
-                                                    _recoveryDirector,
-                                                    cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
-                                                    cp.getLeaseCheckInterval());
                 }
             }
 
-        } catch (InvalidFailureScopeException e) {
+        } catch (
+
+        InvalidFailureScopeException e) {
             FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
 
@@ -601,7 +700,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.exit(tc, "terminateRecovery");
     }
 
-    public void stop(boolean immediate) {
+    public synchronized void stop(boolean immediate) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "stop", new Object[] { Boolean.valueOf(immediate) });
 
@@ -877,15 +976,33 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         RecoveryLog partnerLog = null;
         HeartbeatLog heartbeatLog = null;
         String recoveredServerIdentity = null;
+        ConfigurationProvider cp = null;
+        recoveredServerIdentity = fs.serverName();
+        final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
         try {
-            recoveredServerIdentity = fs.serverName();
-
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "getHeartbeatLog for server -  ", recoveredServerIdentity);
 
+            cp = ConfigurationProviderManager.getConfigurationProvider();
+            // Big message if Peer recovering, just debug otherwise
+            if (!localRecovery) {
+                // If we are attempting to recover a peer and the home server is stopping, then do not continue
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "getHeartbeatLog", "server stopping");
+                    throw new RecoveryFailedException("server stopping");
+                }
+            }
+
+            if (cp == null) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getHeartbeatLog", "ConfigurationProvider is null");
+                throw new RecoveryFailedException("ConfigurationProvider is null");
+            }
+
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
-            String logDir = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDirectory();
+            String logDir = cp.getTransactionLogDirectory();
 
             if (logDir.startsWith("custom")) {
                 isCustom = true;
@@ -915,7 +1032,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // For Liberty we need to retrieve the resource factory associated with the non transactional datasource
                         // and set it into the CustomLogProperties. This specific property is currently only referenced in the Liberty
                         // specific SQLNonTransactionalDataSource class, which overrides the tWAS equivalent.
-                        ResourceFactory nontranDSResourceFactory = ConfigurationProviderManager.getConfigurationProvider().getResourceFactory();
+                        ResourceFactory nontranDSResourceFactory = cp.getResourceFactory();
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
 
@@ -934,13 +1051,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
-                            // Configure the log
-                            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
-                            // SQL Peer Locking parameters
+                            // Configure the log's SQL Peer Locking parameters
                             configureSQLPeerLockParameters(heartbeatLog, cp);
 
-                            // SQL HADB Retry parameters
+                            // Configure the log's SQL HADB Retry parameters
                             configureSQLHADBRetryParameters(heartbeatLog, cp);
                             configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
                         }
@@ -1096,4 +1211,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.debug(tc, "terminateServer");
         ConfigurationProviderManager.getConfigurationProvider().shutDownFramework();
     }
+
+    @Override
+    public boolean isServerStopping() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isServerStopping", _serverStopping);
+        return _serverStopping;
+    }
+
 }

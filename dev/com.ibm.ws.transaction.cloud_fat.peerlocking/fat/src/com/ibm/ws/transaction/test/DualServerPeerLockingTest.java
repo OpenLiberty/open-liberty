@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -299,9 +299,9 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                     testFailed = true;
                     testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
                 }
-                if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer locking failed for server") == null)) {
+                if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer Recovery failed for server") == null)) {
                     testFailed = true;
-                    testFailureString = "Server2 did not report that HADB Peer locking had failed";
+                    testFailureString = "Server2 did not report that HADB Peer recovery had failed";
                 }
 
                 //Stop server2
@@ -767,6 +767,5 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     @Override
-    protected void setUp(LibertyServer server) throws Exception {
-    }
+    protected void setUp(LibertyServer server) throws Exception {}
 }
