@@ -320,7 +320,7 @@ public abstract class WebContainer extends BaseContainer {
                 sessionAttributeListeners.add(listener);
             }
             
-            // Servlet 3.1 start.  ONly want to look for HttpSessionIdListener if Servlet 3.1 or later
+            // Servlet 3.1 start.  Only want to look for HttpSessionIdListener if Servlet 3.1 or later
             // is the Servlet implementation being used. 
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 
                             com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_31) {
