@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,9 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 		 */
 		if (!(ste[0].getClassName().startsWith(metricCDIBundles[0]) || ste[0].getClassName().startsWith(metricCDIBundles[1]))) {
 			Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
-			registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
+			if (classXmethod != null) {
+			    registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
+			}
 		}
 
 		Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
@@ -95,6 +97,12 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 	}
 	
 	
+	/**
+	 * This method resolves the fully qualified class name and method signature  
+	 * 
+	 * @param resourceInfo ResourceInfo obj which contains data regarding class and method 
+	 * @return Map.Entry<String, String> Fully qualified class name as the key and the method as value
+	 */
 	private Map.Entry<String, String> resolveSimpleTimerClassMethodTags(ResourceInfo resourceInfo) {
 		Class<?> resourceClass = resourceInfo.getResourceClass();
 
@@ -117,8 +125,8 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 
 		if (fullMethodSignature == null || fullyQualifiedClassName == null || fullMethodSignature.isEmpty()
 				|| fullyQualifiedClassName.isEmpty()) {
-			throw new IllegalStateException("The following values are either null or empty - fullyQualifiedClassName: "
-					+ fullyQualifiedClassName + " fullMethodSignature: " + fullMethodSignature);
+		    Tr.warning(tc, "Could not resolve the class name or method signature class:[" + fullMethodSignature + "] method:[" +  fullMethodSignature+"]");
+		    return null;
 		}
 
 		return new AbstractMap.SimpleEntry<String, String>(fullyQualifiedClassName, fullMethodSignature);
