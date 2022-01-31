@@ -24,7 +24,6 @@ Import-Package: \
   javax.xml.namespace, \
   javax.xml.stream, \
   org.glassfish.hk2.osgiresourcelocator, \
-  org.glassfish.jaxb*, \
   *
 
 DynamicImport-Package: \
