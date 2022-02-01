@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,11 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     @Trivial
     public Map<String, String> getExecutionProperties() {
         return EMPTY_MAP;
+    }
+
+    @Override
+    public boolean isSerializable() {
+        return false;
     }
 
     @Override
