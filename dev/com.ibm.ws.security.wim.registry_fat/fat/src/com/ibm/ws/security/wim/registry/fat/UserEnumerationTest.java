@@ -267,16 +267,16 @@ public class UserEnumerationTest {
 
         int numTimesValid = 0;
         int numTimesInvalid = 0;
-        int allowedRatioMin = 70;
-        int allowedRatioMax = 130;
+        final int allowedRatioMin = 70;
+        final int allowedRatioMax = 130;
 
-        int validityCheckRounds = 15;
+        final int validityCheckRounds = 15;
+        final int loopTries = 3;
 
         for (int j = 0; j < validityCheckRounds; j++) {
             /*
              * Record the average timing for an unknown user (1 call to Ldap)
              */
-            int loopTries = 3;
             long timePerUnknownUsers = 0;
             for (int i = 0; i < loopTries; i++) {
                 long timeStart = System.currentTimeMillis();
@@ -290,21 +290,25 @@ public class UserEnumerationTest {
             Log.info(c, methodName, "average timePerUnknownUsers: " + timePerUnknownUsers);
 
             /*
-             * Record the timing for a known user with a bad password (2 calls to Ldap). This user is
+             * Record the average timing for a known user with a bad password (2 calls to Ldap). This user is
              * valid, but we should not be able to consistently detect than when comparing it to
              * unknown users.
              */
-            long userToTestForValidity = 0;
-            long timeStart = System.currentTimeMillis();
-            servlet.checkPassword("vmmtestuser", "notapassword");
-            long timeEnd = System.currentTimeMillis();
-            Log.info(c, methodName, "Time for known user with a bad password: " + (timeEnd - timeStart));
-            userToTestForValidity = timeEnd - timeStart;
+            long timePerKnownUser = 0;
+            for (int i = 0; i < loopTries; i++) {
+                long timeStart = System.currentTimeMillis();
+                servlet.checkPassword("vmmtestuser", "notapassword");
+                long timeEnd = System.currentTimeMillis();
+                Log.info(c, methodName, "Time for known user with a bad password: " + (timeEnd - timeStart));
+                timePerKnownUser = timePerKnownUser + (timeEnd - timeStart);
+            }
+            timePerKnownUser = timePerKnownUser / loopTries;
+            Log.info(c, methodName, "average timePerKnownUser: " + timePerKnownUser);
 
             /*
              * Calculate if the percentage of the known user versus unknown user
              */
-            long ratioOfUsers = 100 * timePerUnknownUsers / userToTestForValidity;
+            long ratioOfUsers = 100 * timePerUnknownUsers / timePerKnownUser;
 
             /*
              * Mark whether we estimate the user is valid or invalid
