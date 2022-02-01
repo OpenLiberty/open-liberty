@@ -21,7 +21,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -94,6 +98,14 @@ import test.context.timing.Timestamp;
                           propagated = APPLICATION,
                           cleared = { TRANSACTION, SECURITY },
                           unchanged = ALL_REMAINING)
+@ContextServiceDefinition(name = "java:module/concurrent/clearRemainingContextSvc",
+                          propagated = { APPLICATION, "Bogus" },
+                          cleared = ALL_REMAINING,
+                          unchanged = { Timestamp.CONTEXT_NAME, "Priority", TRANSACTION })
+@ContextServiceDefinition(name = "java:comp/concurrent/propagateRemainingContextSvc",
+                          propagated = ALL_REMAINING,
+                          cleared = { "Priority", Timestamp.CONTEXT_NAME },
+                          unchanged = { ListContext.CONTEXT_NAME, TRANSACTION, ZipCode.CONTEXT_NAME })
 @ContextServiceDefinition(name = "java:module/concurrent/ZLContextSvc",
                           propagated = { ZipCode.CONTEXT_NAME, ListContext.CONTEXT_NAME },
                           cleared = "Priority",
@@ -1053,7 +1065,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                         results.add(Thread.currentThread().getPriority());
 
                         Long timestamp = Timestamp.get();
-                        results.add(timestamp == null ? "null" : timestamp);
+                        results.add(timestamp == null ? "none" : timestamp);
 
                         try {
                             results.add(InitialContext.doLookup("java:module/concurrent/anno/ejb/ZLThreadFactory"));
@@ -1068,7 +1080,7 @@ public class ConcurrencyTestServlet extends FATServlet {
 
                     // Verify that custom thread context type TimestampContext is cleared
                     Object timestamp = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-                    assertEquals("null", timestamp);
+                    assertEquals("none", timestamp);
 
                     // Verify that Application component context is propagated,
                     Object resultOfLookup = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -2191,6 +2203,344 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * An application defined ContextService that either clears or leaves unchanged
+     * all third party context types must be able to create serializable contextual proxies.
+     */
+    @Test
+    public void testSerializeProxyFromAppDefinedContextServiceClearRemaining() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/clearRemainingContextSvc");
+
+        Executor proxy = (Executor) contextSvc.createContextualProxy(new SameThreadExecutor(),
+                                                                     Serializable.class, Executor.class);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(proxy);
+        oout.flush();
+        byte[] bytes = bout.toByteArray();
+        oout.close();
+
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Executor copy = (Executor) oin.readObject();
+        oin.close();
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable task = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:module/concurrent/clearRemainingContextSvc"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            try {
+                results.add(tran.getStatus());
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            results.add(ListContext.asString());
+            results.add(Thread.currentThread().getPriority());
+            results.add(Timestamp.get() == null ? "none" : Timestamp.get());
+            results.add(ZipCode.get());
+        };
+
+        Long expectedTimestamp = unmanagedThreads.submit(() -> {
+            tran.begin();
+            try {
+                // Put some fake context onto the thread:
+                ListContext.newList();
+                ListContext.add(25);
+                Thread.currentThread().setPriority(2);
+                Timestamp.set();
+                Long ts0 = Timestamp.get();
+                ZipCode.set(55902);
+
+                copy.execute(task);
+
+                return ts0;
+            } finally {
+                // Remove fake context
+                ListContext.clear();
+                Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                Timestamp.clear();
+                ZipCode.clear();
+
+                tran.rollback();
+            }
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        Object result;
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+        // TODO enable once update is made
+        // assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
+
+        assertEquals("[]", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ListContext must be cleared
+        assertEquals(Integer.valueOf(2), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Priority context must be unchanged
+        assertEquals(expectedTimestamp, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Timestamp context must be unchanged
+        assertEquals(Integer.valueOf(0), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ZipCode context must be cleared
+    }
+
+    /**
+     * An application defined ContextService that only propagates built-in types
+     * must be able to create serializable contextual proxies.
+     */
+    @Test
+    public void testSerializeProxyFromAppDefinedContextServicePropagateAppOnly() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/appContextSvc");
+
+        Executor proxy = (Executor) contextSvc.createContextualProxy(new SameThreadExecutor(),
+                                                                     Collections.singletonMap(ManagedTask.IDENTITY_NAME, "SerializableTaskA"),
+                                                                     Serializable.class, Executor.class);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(proxy);
+        oout.flush();
+        byte[] bytes = bout.toByteArray();
+        oout.close();
+
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Executor copy = (Executor) oin.readObject();
+        oin.close();
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable task = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/ThirdPartyContextService"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            try {
+                results.add(tran.getStatus());
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            results.add(ListContext.asString());
+            results.add(Thread.currentThread().getPriority());
+            results.add(Timestamp.get() == null ? "none" : Timestamp.get());
+            results.add(ZipCode.get());
+        };
+
+        Long expectedTimestamp = unmanagedThreads.submit(() -> {
+            tran.begin();
+            try {
+                // Put some fake context onto the thread:
+                ListContext.newList();
+                ListContext.add(46);
+                Thread.currentThread().setPriority(4);
+                Timestamp.set();
+                Long ts0 = Timestamp.get();
+                ZipCode.set(55904);
+
+                copy.execute(task);
+
+                return ts0;
+            } finally {
+                // Remove fake context
+                ListContext.clear();
+                Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                Timestamp.clear();
+                ZipCode.clear();
+
+                tran.rollback();
+            }
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        Object result;
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+        assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), result); // Transaction context must be cleared
+
+        assertEquals("[46]", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ListContext must be unchanged
+        assertEquals(Integer.valueOf(4), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Priority context must be unchanged
+        assertEquals(expectedTimestamp, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Timestamp context must be unchanged
+        assertEquals(Integer.valueOf(55904), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ZipCode context must be unchanged
+    }
+
+    /**
+     * An application defined ContextService that either clears or leaves unchanged
+     * all third party context types must be able to create serializable contextual proxies.
+     */
+    @Test
+    public void testSerializeProxyFromAppDefinedContextServicePropagateRemaining() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/propagateRemainingContextSvc");
+
+        Executor proxy = (Executor) contextSvc.createContextualProxy(new SameThreadExecutor(),
+                                                                     Serializable.class, Executor.class);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(proxy);
+        oout.flush();
+        byte[] bytes = bout.toByteArray();
+        oout.close();
+
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Executor copy = (Executor) oin.readObject();
+        oin.close();
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable task = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/propagateRemainingContextSvc"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            try {
+                results.add(tran.getStatus());
+            } catch (Throwable x) {
+                results.add(x);
+            }
+            results.add(ListContext.asString());
+            results.add(Thread.currentThread().getPriority());
+            results.add(Timestamp.get() == null ? "none" : Timestamp.get());
+            results.add(ZipCode.get());
+        };
+
+        unmanagedThreads.submit(() -> {
+            tran.begin();
+            try {
+                // Put some fake context onto the thread:
+                ListContext.newList();
+                ListContext.add(31);
+                Thread.currentThread().setPriority(3);
+                Timestamp.set();
+                Long ts0 = Timestamp.get();
+                ZipCode.set(55901);
+
+                copy.execute(task);
+
+                return ts0;
+            } finally {
+                // Remove fake context
+                ListContext.clear();
+                Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+                Timestamp.clear();
+                ZipCode.clear();
+
+                tran.rollback();
+            }
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        Object result;
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+        // TODO enable once update is made
+        // assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
+
+        assertEquals("[31]", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ListContext must be left unchanged
+        assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Priority context must be cleared
+        assertEquals("none", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Timestamp context must be cleared
+        assertEquals(Integer.valueOf(55901), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ZipCode context must be left unchanged
+    }
+
+    /**
+     * The default ContextService, java:comp/DefaultContextService, must be able to
+     * create serializable contextual proxies.
+     */
+    @Test
+    public void testSerializeProxyFromDefaultContextService() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
+
+        Ser1Executor proxy = contextSvc.createContextualProxy(new SameThreadExecutor(), Ser1Executor.class);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(proxy);
+        oout.flush();
+        byte[] bytes = bout.toByteArray();
+        oout.close();
+
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Ser1Executor copy = (Ser1Executor) oin.readObject();
+        oin.close();
+
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable javaCompLookup = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/ThirdPartyContextService"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        };
+
+        unmanagedThreads.submit(() -> copy.execute(javaCompLookup));
+
+        Object result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(result);
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+    }
+
+    /**
+     * A ContextService from server configuration must be able to create serializable contextual proxies.
+     */
+    @Test
+    public void testSerializeProxyFromServerConfigContextService() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("concurrent/appContext");
+
+        Ser2Executor proxy = contextSvc.createContextualProxy(new SameThreadExecutor(), Collections.emptyMap(), Ser2Executor.class);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(proxy);
+        oout.flush();
+        byte[] bytes = bout.toByteArray();
+        oout.close();
+
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        Ser2Executor copy = (Ser2Executor) oin.readObject();
+        oin.close();
+
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable javaCompLookup = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/ThirdPartyContextService"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        };
+
+        unmanagedThreads.submit(() -> copy.execute(javaCompLookup));
+
+        Object result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(result);
+        if (result instanceof Throwable)
+            throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
+                            .initCause((Throwable) result);
+    }
+
+    /**
      * Third party context types that are configured to be propagated must fail to serialize.
      */
     @Test
@@ -2453,7 +2803,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                     results.add(Thread.currentThread().getPriority()); // unchanged
 
                     Long timestamp = Timestamp.get(); // propagated
-                    results.add(timestamp == null ? "null" : timestamp);
+                    results.add(timestamp == null ? "none" : timestamp);
 
                     results.add(ZipCode.get()); // propagated
                 }).start();
