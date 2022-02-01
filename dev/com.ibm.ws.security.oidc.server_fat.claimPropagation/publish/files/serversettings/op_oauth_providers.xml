@@ -72,6 +72,21 @@
         </localStore>
     </oauthProvider>
 
+    <oauthProvider 
+    	id="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" 
+    	jwtAccessToken="true"
+    	autoAuthorize="true"
+    	>
+    	<autoAuthorizeClient>oidcclient_propagate3TestClaimsIdTokenClaims</autoAuthorizeClient>
+        <localStore>
+            <client 
+            	name="oidcclient_propagate3TestClaimsIdTokenClaims"  
+            	secret="password" 
+            	scope="openid" 
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"/>
+        </localStore>
+    </oauthProvider>
+
 <!-- For use with thrid party OP that does propagate test claims -->
     <oauthProvider 
     	id="oauth_noExtraClaims_3rdPartyPropagates" 
@@ -134,6 +149,21 @@
         </localStore>
     </oauthProvider>
 
+    <oauthProvider 
+    	id="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates" 
+    	jwtAccessToken="true"
+    	autoAuthorize="true"
+    	>
+    	<autoAuthorizeClient>oidcclient_propagate3TestClaimsIdTokenClaims</autoAuthorizeClient>
+        <localStore>
+            <client 
+            	name="oidcclient_propagate3TestClaimsIdTokenClaims"  
+            	secret="password" 
+            	scope="openid" 
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"/>
+        </localStore>
+    </oauthProvider>
+
 <!-- override claims OPs -->
 <!-- iss -->
     <oauthProvider 
@@ -150,21 +180,6 @@
             	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInIdToken"/>
         </localStore>
     </oauthProvider>
-
-    <oauthProvider 
-    	id="oauth_issClaimInAccessToken" 
-    	jwtAccessToken="true"
-    	autoAuthorize="true"
-    	>
-    	<autoAuthorizeClient>oidcclient_issClaimInAccessToken</autoAuthorizeClient>
-        <localStore>
-            <client 
-            	name="oidcclient_issClaimInAccessToken"  
-            	secret="password" 
-            	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInAccessToken"/>
-        </localStore>
-    </oauthProvider>    
 
 <!-- sub -->    
     <oauthProvider 

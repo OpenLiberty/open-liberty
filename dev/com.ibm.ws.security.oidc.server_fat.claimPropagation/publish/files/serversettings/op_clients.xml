@@ -78,6 +78,22 @@
         authFilterRef="authFilterThirdPartyOP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
     </openidConnectClient>
 
+    <authFilter 
+    	id="authFilterThirdPartyOP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/authorize" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        discoveryEndpointUrl="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/OP_3rdParty_propagateNoClaims/.well-known/openid-configuration"
+        authFilterRef="authFilterThirdPartyOP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
 <!-- RP Does propagate -->
 
     <authFilter 
@@ -142,6 +158,22 @@
         grantType="${testGrantType}"
         discoveryEndpointUrl="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/OP_3rdParty_propagateAllClaims/.well-known/openid-configuration"
         authFilterRef="authFilterThirdPartyOP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+    <authFilter 
+    	id="authFilterThirdPartyOP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates/authorize" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        clientId="oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        discoveryEndpointUrl="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/OP_3rdParty_propagateAllClaims/.well-known/openid-configuration"
+        authFilterRef="authFilterThirdPartyOP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates">
     </openidConnectClient>
 
 <!-- override claims clients -->

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.fat.claimPropagation.CommonTests;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -41,8 +43,12 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static final Boolean thirdPartyPropagatedIdTokenFalse = false;
     protected static final String[] noThirdPartyParm = null;
     protected static final String[] oneThirdPartyParm = new String[] { "testProp1" };
-    protected static final String[] allThirdPartyParms = new String[] { "testProp1", "testProp2" };
-    protected static final String[] allIntermedParms = new String[] { "testProp3", "testProp4" };
+    protected static final String[] allUniqueThirdPartyParms = new String[] { "testProp1", "testProp2" };
+    protected static final String[] allUniqueIntermedParms = new String[] { "testProp3", "testProp4" };
+    protected static final String[] allThirdPartyParms = new String[] { "testProp1", "testProp2", "testProp5" };
+    protected static final String[] allIntermedParms = new String[] { "testProp3", "testProp4", "testProp5" };
+    protected static final String[] allSharedParms = new String[] { "testProp5" };
+
     protected static String repeatAction = null;
 
     // create vars that extending method can set to allow use of test cases for oidc, and maybe some day saml
@@ -53,6 +59,24 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static String ExternalOPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op.external";
     protected static String RPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp";
     public static TestServer testExternalOPServer = null;
+    protected static Map<String, String> externalProps = new HashMap<String, String>();
+    protected static Map<String, String> intermedProps = new HashMap<String, String>();
+
+    private void setParmValues(String user) {
+        // Intermediate OP server properties
+        intermedProps.put("testProp1", "N/A");
+        intermedProps.put("testProp2", "N/A");
+        intermedProps.put("testProp3", user);
+        intermedProps.put("testProp4", user);
+        intermedProps.put("testProp5", user);
+
+        // External OP server properties
+        externalProps.put("testProp1", "1 919 555 5555");
+        externalProps.put("testProp2", user + "@ibm.com");
+        externalProps.put("testProp3", "N/A");
+        externalProps.put("testProp4", "N/A");
+        externalProps.put("testProp5", "1 919 555 5555");
+    }
 
     /**
      * Add an expectation for a claim that should be found in the ID_Token
@@ -94,19 +118,33 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         return expectations;
     }
 
+    /**
+     * Set expectations for groupIds.
+     * The user that is used for most of the tests is a member of a group and the external OP will ALWAYS return that group info.
+     * The intermed OP may or may not include that claim based on:
+     * 1) the setting of thirdPartyIDTokenClaims in the OIDC config
+     * 2) grant type (auth_code vs implicit)
+     * If the intermed OP will use its own group info, the inclusion of the intermed group value will depend on that OP using a
+     * registry or using a registry with the test user
+     *
+     * @param expectations
+     *            - existing expectations that we'll add to
+     * @param thirdPartyPropagatedIdToken
+     *            - flag indicating if the external OP's claims will be propagated (means the external OP returns the claim & the
+     *            intermed OP includes gorupIds in thirdPartyIDTokenClaims)
+     * @return The updated set of expecations
+     * @throws Exception
+     */
     private List<validationData> setGroupIdsExpectations(List<validationData> expectations, boolean thirdPartyPropagatedIdToken) throws Exception {
 
         Log.info(thisClass, "setGroupIdsExpectations", "Propagate Id Token: " + thirdPartyPropagatedIdToken);
-        // TODO - should I add a check for groupIds=[group:SomeRealm/group2, group:SomeRealm/group1] (realm and group, not just group)?
-        // Update for propagated groups and local groups
 
         // if groupIds is in the third party token, that will override the local value
         if (thirdPartyPropagatedIdToken || repeatAction.contains(Constants.IMPLICIT_GRANT_TYPE)) {
             expectations = addShouldMatch_idToken(expectations, "groupIds", "group1");
-            expectations = addShouldMatch_idToken(expectations, "groupIds", "group2");
         } else {
             if (repeatAction.contains(WithRegistry_withUser)) {
-                expectations = addShouldMatch_idToken(expectations, "groupIds", "group3");
+                expectations = addShouldMatch_idToken(expectations, "groupIds", "groupA");
             } else {
                 expectations = addShouldNotContain_idToken(expectations, "groupIds");
             }
@@ -115,12 +153,111 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         return expectations;
     }
 
-    private List<validationData> setTestParmExpectations(List<validationData> expectations, String[] thirdPartyParms, boolean thirdPartyPropagatedIdToken) throws Exception {
+    /**
+     * Set expectations for groupIds for cases where the user is NOT in a group on the thrid party OP
+     * The user that is used for the tests that use this method are NOT in a group in the registry of the third party OP
+     * and therefore the ID token returned will NOT have groupIds set.
+     * If the intermed OP will use its own group info when it has the user and group(s) in its own registry and the flow is NOT
+     * implicit
+     *
+     * @param expectations
+     *            - existing expectations that we'll add to
+     * @return The updated set of expectations
+     * @throws Exception
+     */
+    private List<validationData> setGroupIdsExpectations(List<validationData> expectations) throws Exception {
+        if (repeatAction.contains(WithRegistry_withUser) && !repeatAction.contains(Constants.IMPLICIT_GRANT_TYPE)) {
+            expectations = addShouldMatch_idToken(expectations, "groupIds", "groupA");
+            expectations = addShouldMatch_idToken(expectations, "groupIds", "groupB");
+        } else {
+            expectations = addShouldNotContain_idToken(expectations, "groupIds");
+        }
+        return expectations;
 
-        for (String parm : allThirdPartyParms) {
-            if (thirdPartyParms != null && validationTools.isInList(thirdPartyParms, parm)) {
+    }
+
+    /**
+     * Set expectations for claims (testParms) that are to be included in the ID token when both the external OP and the intermed
+     * OP generate claims with the same name.
+     * if the external OP returns the claim, and the intermed OP propagates it, the ID token will contain the claim with the value
+     * from the 2rd party OP
+     * If the external OP does not return the claim, or the intermed OP does not propagate the claim, we expect the claim to
+     * contain the intermed OP value when the intermed OP's registry contains the user that will populate the claim, otherwise,
+     * expect the claim to not exist in the ID Token.
+     * This method will call the method that sets the expectations for claims that are exclusive to the third party OP or intermed
+     * OP after setting the expectations for shared claims
+     *
+     * @param expectationsexisting
+     *            - expectations that we'll add to
+     * @param thirdPartyParms
+     *            - all 3rd party OP claims that should be found in the ID Token
+     * @param thirdPartyPropagatedIdToken
+     *            - flag indicating if the external OP's claims will be propagated (means the external OP returns the claim & the
+     *            intermed OP includes the claim in thirdPartyIDTokenClaims)
+     * @return The updated set of expectations
+     * @throws Exception
+     */
+    private List<validationData> setTestParmExpectationsWithConflict(List<validationData> expectations, String[] thirdPartyParms, boolean thirdPartyPropagatedIdToken) throws Exception {
+
+        for (String parm : allSharedParms) {
+            if (thirdPartyPropagatedIdToken) {
+                expectations = addShouldContain_idToken(expectations, parm, externalProps.get(parm));
+            } else {
+                if (repeatAction.contains(WithRegistry_withUser)) {
+                    expectations = addShouldContain_idToken(expectations, parm, intermedProps.get(parm));
+                } else {
+                    expectations = addShouldNotContain_idToken(expectations, parm);
+                }
+            }
+        }
+        return setTestParmExpectations(expectations, thirdPartyParms, thirdPartyPropagatedIdToken, false);
+
+    }
+
+    /**
+     * cases calling this method should not expect the shared claim
+     *
+     * @param expectations
+     *            - expectations that we'll add to
+     * @param thirdPartyParms
+     * @param thirdPartyPropagatedIdToken
+     * @return
+     * @throws Exception
+     */
+    private List<validationData> setTestParmExpectations(List<validationData> expectations, String[] thirdPartyParms, boolean thirdPartyPropagatedIdToken) throws Exception {
+        return setTestParmExpectations(expectations, thirdPartyParms, thirdPartyPropagatedIdToken, true);
+    }
+
+    //TODO
+    /**
+     * Create expectations for (non groupIds) test claims.
+     * Ensure that the claims created by the 3rd party OP ARE included when they are in the exteral OP's ID Token and then
+     * propagated by the intermed OP
+     * Ensure that the claims created by the 3rd party OP ARE NOT included when they are either NOT in the exteral OP's ID Token
+     * or not propagated by the intermed OP
+     * Ensure that the claims created by the intermed OP ARE included when they are created because the local user exists
+     * Ensure that the claims created by the intermed OP ARE NOT included when they can't be created because the local user does
+     * not exist
+     * Ensure that the shared claim does not exist if the setTestProp5DoesNotExist flag is true
+     *
+     * @param expectations
+     *            - expectations that we'll add to
+     * @param parmList
+     *            - the third party claims that are included in the 3rd party ID Token and propagated by the intermed OP
+     * @param thirdPartyPropagatedIdToken
+     *            -
+     * @param setTestProp5DoesNotExist
+     *            - flag indicating that the prop that could be shared between the two OPs will not exist for this test case -
+     *            create an expectation that ensures that it does not exist
+     * @return The updated set of expectations
+     * @throws Exception
+     */
+    private List<validationData> setTestParmExpectations(List<validationData> expectations, String[] parmList, boolean thirdPartyPropagatedIdToken, boolean setTestProp5DoesNotExist) throws Exception {
+        // set expectations for all 3rd party only claims - claims that both OPs can return are handled separately
+        for (String parm : allUniqueThirdPartyParms) {
+            if (parmList != null && validationTools.isInList(parmList, parm)) {
                 if (thirdPartyPropagatedIdToken) {
-                    expectations = addShouldContain_idToken(expectations, parm, testSettings.getUserName());
+                    expectations = addShouldContain_idToken(expectations, parm, externalProps.get(parm));
                 } else {
                     expectations = addShouldNotContain_idToken(expectations, parm);
                 }
@@ -131,19 +268,32 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         }
 
         // add checks for parms defined by the intermediate OP (no propagation involved)
-        for (String parm : allIntermedParms) {
+        for (String parm : allUniqueIntermedParms) {
 
             if (repeatAction.contains(WithRegistry_withUser)) {
-                expectations = addShouldContain_idToken(expectations, parm, testSettings.getUserName());
+                expectations = addShouldContain_idToken(expectations, parm, intermedProps.get(parm));
             } else {
                 expectations = addShouldNotContain_idToken(expectations, parm);
             }
 
         }
 
+        if (setTestProp5DoesNotExist) {
+            expectations = addShouldNotContain_idToken(expectations, "testProp5");
+        }
         return expectations;
     }
 
+    /**
+     * Set expecatations to ensure the proper iss value
+     *
+     * @param expectations
+     *            - expectations that we'll add to
+     * @param provider
+     *            - the provider value we expect
+     * @returnThe updated set of expectations
+     * @throws Exception
+     */
     private List<validationData> setIssExpectations(List<validationData> expectations, String provider) throws Exception {
 
         expectations = addShouldContain_idToken(expectations, "iss", testOPServer.getHttpsString() + "/oidc/endpoint/OP_" + provider);
@@ -152,7 +302,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     }
 
     private String getRealmName() throws Exception {
-        String realmName = "SomeRealm";
+        String realmName = "BasicRealm";
 
         if (repeatAction.contains(WithoutRegistry)) {
             realmName = "WIMRegistry";
@@ -165,6 +315,14 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         return realmName;
     }
 
+    /**
+     * Set expecatations to ensure the proper realm name value
+     *
+     * @param expectations
+     *            - expectations that we'll add to
+     * @returnThe updated set of expectations
+     * @throws Exception
+     */
     private List<validationData> setRealmNameExpectations(List<validationData> expectations) throws Exception {
 
         expectations = addShouldContain_idToken(expectations, "realmName", getRealmName());
@@ -172,6 +330,16 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         return expectations;
     }
 
+    /**
+     * Set expecatations to ensure the proper realm name value
+     *
+     * @param expectations
+     *            - expectations that we'll add to
+     * @param appName
+     *            - aud contains part of the appname, so the passed appName can be use to create the aud to valdiate
+     * @returnThe updated set of expectations
+     * @throws Exception
+     */
     private List<validationData> setAudExpectations(List<validationData> expectations, String appName) throws Exception {
 
         // tests are set up to use clients and providers whose names are based off of the appNames
@@ -184,11 +352,20 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     /***************************************************** Tests *****************************************************/
 
     /**
-     * The Third part OP will populate the idToken and access_token that it creates with the groupIds claim (by default)
-     * and 2 other test specified claims.
-     * The intermediate OP does not have thirdPartyIDTokenClaims or thirdPartyAccessTokenClaims configured. The groupIds
-     * claim from the thrid party OP will not be included in the idToken or access_token produced by the intermediate OP.
-     * Test confirms that the groupIds claim is NOT in either the idToken nor the access_token
+     * All of the tests are run with the intermed OP configured in 3 different ways
+     * 1) with a registry that contains the user that we test with
+     * 2) with a registry that does not contain the user that we test with
+     * 3) without a registry
+     * Each of these different variations are also run using either the auth_code or implicit flows.
+     * The flow and registry setup will affect what we expect in the resulting ID token.
+     * The set<...>Expectation methods that are called will set their specific expectations appropriately
+     */
+
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does not have thirdPartyIDTokenClaims configured.
+     * No third party OP claims will be included in the idToken produced by the intermediate OP.
      *
      * @throws Exception
      */
@@ -200,6 +377,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -212,14 +390,14 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     }
 
     /**
-     * The Third part OP will populate the idToken and access_token that it creates with the groupIds claim (by default)
-     * and 2 other test specified claims.
-     * The intermediate OP does not have thirdPartyIDTokenClaims or thirdPartyAccessTokenClaims configured. The groupIds
-     * claim from the thrid party OP will not be included in the idToken or access_token produced by the intermediate OP.
-     * Test confirms that the groupIds claim is NOT in either the idToken nor the access_token
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "groupIds".
+     * Only the third party OP groupIds claim will be included in the idToken produced by the intermediate OP.
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate() throws Exception {
 
@@ -227,10 +405,11 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenTrue);
-        expectations = setTestParmExpectations(expectations, allIntermedParms, thirdPartyPropagatedIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -238,13 +417,47 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     }
 
     /**
-     * Test that the intermediate OP will not contain the test claim that it says to propagate when that claim
-     * does NOT exist in the token returned from the third party OP. Make sure that there are no error messages
-     * logged in the intermediate OP server log (the framework searches for unexpected messages automatically)
+     * The Third party OP can not populate the idToken that it creates with the groupIds claim because the user that this test
+     * case uses does not belong to a group.
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "groupIds".
+     * No third party OP claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
      *
      * @throws Exception
      */
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
+    @Test
+    public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate_3rdPartyUserNotInGroup() throws Exception {
+
+        String appName = "propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate";
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        updatedTestSettings.setUserName("LDAPUser5");
+        updatedTestSettings.setUserPassword("security");
+        setParmValues(updatedTestSettings.getUserName());
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        expectations = setGroupIdsExpectations(expectations);
+        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedIdTokenFalse);
+        expectations = setRealmNameExpectations(expectations);
+        expectations = setIssExpectations(expectations, appName);
+        expectations = setAudExpectations(expectations, appName);
+        genericRP(_testName, wc, updatedTestSettings, steps, expectations);
+    }
+
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProp1".
+     * NO third party claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
     @Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyDoesNotPropagate() throws Exception {
 
@@ -252,6 +465,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -262,6 +476,16 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProp1,testProp2".
+     * NO third party claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
     @Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyDoesNotPropagate() throws Exception {
 
@@ -269,6 +493,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -279,6 +504,44 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP does not populate the idToken that it creates with the any extra claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProp1,testProp2,testProp5".
+     * NO third party claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ThirdPartyIDTokenClaims_conflictingTestClaims_3rdPartyDoesNotPropagate() throws Exception {
+
+        String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate";
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
+        expectations = setTestParmExpectationsWithConflict(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setRealmNameExpectations(expectations);
+        expectations = setIssExpectations(expectations, appName);
+        expectations = setAudExpectations(expectations, appName);
+        genericRP(_testName, wc, updatedTestSettings, steps, expectations);
+    }
+
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does not have thirdPartyIDTokenClaims configured.
+     * No third party OP claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
     @Test
     public void ThirdPartyIDTokenClaims_none_3rdPartyPropagates() throws Exception {
 
@@ -286,6 +549,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -297,6 +561,15 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "groupIds".
+     * Only the third party OP groupIds claim will be included in the idToken produced by the intermediate OP.
+     * (testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test instance)
+     *
+     * @throws Exception
+     */
     @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates() throws Exception {
 
@@ -304,6 +577,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenTrue);
@@ -315,6 +589,48 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
+    /**
+     * The Third party OP can not populate the idToken that it creates with the groupIds claim because the user that this test
+     * case uses does not belong to a group.
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "groupIds".
+     * No third party OP claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates_3rdPartyUserNotInGroup() throws Exception {
+
+        String appName = "propagateGroupIdsIdTokenClaims_3rdPartyPropagates";
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        updatedTestSettings.setUserName("LDAPUser5");
+        updatedTestSettings.setUserPassword("security");
+        setParmValues(updatedTestSettings.getUserName());
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        expectations = setGroupIdsExpectations(expectations);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setRealmNameExpectations(expectations);
+        expectations = setIssExpectations(expectations, appName);
+        expectations = setAudExpectations(expectations, appName);
+
+        genericRP(_testName, wc, updatedTestSettings, steps, expectations);
+    }
+
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProps1".
+     * Only the third party OP testProp1 claim will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
     @Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyPropagates() throws Exception {
 
@@ -322,6 +638,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -333,6 +650,17 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProps1,testProp2".
+     * The third party OP testProp1 and testProp2 claims will be included in the idToken produced by the intermediate OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyPropagates() throws Exception {
 
@@ -340,10 +668,11 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, allThirdPartyParms, thirdPartyPropagatedIdTokenTrue);
+        expectations = setTestParmExpectations(expectations, allUniqueThirdPartyParms, thirdPartyPropagatedIdTokenTrue);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -351,9 +680,43 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
-    // add test to propagate testProp that was not included in thrid party token
+    /**
+     * The Third party OP will populate the idToken that it creates with the groupIds claim (by default)
+     * The Third party OP populate the idToken with all extra test claims
+     * The intermediate OP does have thirdPartyIDTokenClaims configured with "testProps1,testProp2, testProp5".
+     * Tthe third party OP testProp1, testProp2 and testProp5 claims will be included in the idToken produced by the intermediate
+     * OP.
+     * (groupIds, testProps3, testProps4 will exist in the idToken based on the registry used by the intermed OP in the test
+     * instance)
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void ThirdPartyIDTokenClaims_ConflictingTestClaims_3rdPartyPropagates() throws Exception {
 
-    // Test claims from 3rd Party OP override local OP value (ie: iss)
+        String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyPropagates";
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
+        expectations = setTestParmExpectationsWithConflict(expectations, allThirdPartyParms, thirdPartyPropagatedIdTokenTrue);
+        expectations = setRealmNameExpectations(expectations);
+        expectations = setIssExpectations(expectations, appName);
+        expectations = setAudExpectations(expectations, appName);
+
+        genericRP(_testName, wc, updatedTestSettings, steps, expectations);
+    }
+
+    /**
+     * Test that the iss claim that is included in the intermed OP id token is the value from the external OP
+     * even when no extra claims are propagated from the external OP
+     *
+     * @throws Exception
+     */
     @Mode(TestMode.LITE)
     @Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_issClaim() throws Exception {
@@ -362,6 +725,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
@@ -373,24 +737,12 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         genericRP(_testName, wc, updatedTestSettings, steps, expectations);
     }
 
-    //    //    @Mode(TestMode.LITE)
-    //    @Test
-    //    public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_subClaim() throws Exception {
-    //
-    //        WebClient webClient = getAndSaveWebClient(true);
-    //        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-    //        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/subClaimInIdToken"));
-    //
-    //        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-    //        // sub is not propagated, so we should find the intermediate OP's value (not the third party value)
-    //        expectations = addShouldContain_both(expectations, "sub", updatedTestSettings.getUserName());
-    //        expectations = addShouldNotContain_both(expectations, "testProp1");
-    //        expectations = addShouldNotContain_both(expectations, "testProp2");
-    //        expectations = addShouldNotContain_both(expectations, "groupIds");
-    //        genericRP(_testName, wc, updatedTestSettings, steps, expectations);
-    //    }
-    //
-
+    /**
+     * Test that the aud claim that is included in the intermed OP id token is the value from the external OP
+     * even when no extra claims are propagated from the external OP
+     *
+     * @throws Exception
+     */
     @Mode(TestMode.LITE)
     @Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_audClaim() throws Exception {
@@ -399,6 +751,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + appName));
+        setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);

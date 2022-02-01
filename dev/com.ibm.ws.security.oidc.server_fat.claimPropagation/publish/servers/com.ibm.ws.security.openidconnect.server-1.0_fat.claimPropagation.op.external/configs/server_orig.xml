@@ -15,6 +15,6 @@
 	<include location="${server.config.dir}/imports/op_external_fatTestPorts.xml" />
 	<include location="${server.config.dir}/imports/op_external_provider.xml" />
 	<include location="${server.config.dir}/imports/oauth_roles.xml" />
-	<include location="${server.config.dir}/imports/ExtendedRegistry.xml" />
+	<include location="${server.config.dir}/imports/LdapRegistry.xml" />
 
 </server>

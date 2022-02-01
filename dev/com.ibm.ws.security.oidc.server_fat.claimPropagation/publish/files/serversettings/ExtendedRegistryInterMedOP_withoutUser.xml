@@ -13,7 +13,7 @@
 
 	<basicRegistry
 		id="basic"
-		realm="SomeRealm"
+		realm="BasicRealm"
 	>
 		<user
 			name="diffuser"
@@ -25,8 +25,8 @@
 			name="user4"
 			password="user4pwd" />
 		<group 
-			id="group_3" 
-			name="group3">
+			id="group_A" 
+			name="groupA">
             		<member name="user3"/>
             		<member name="user4"/>
 		</group>

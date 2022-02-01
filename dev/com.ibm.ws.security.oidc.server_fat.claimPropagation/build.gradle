@@ -76,6 +76,15 @@ autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.doLast {
 
   /*
+   * Copy the local ApacheDS LDAP instances.
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+
+  /*
    * Copy common artifacts to test servers.
    */
   def servers = [

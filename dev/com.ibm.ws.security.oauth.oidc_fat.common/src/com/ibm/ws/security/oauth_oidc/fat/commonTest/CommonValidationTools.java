@@ -1448,8 +1448,8 @@ public class CommonValidationTools {
 
         // validate specific key's value
         String expectKeysValue = expected.getValidationValue();
-        Log.info(thisClass, thisMethod, "expectKeysValue: " + expectKeysValue);
         Log.info(thisClass, thisMethod, "expectKey: " + expected.getValidationKey());
+        Log.info(thisClass, thisMethod, "expectKeysValue: " + expectKeysValue);
 
         Log.info(thisClass, thisMethod, "passed tokenInfo: " + tokenInfo);
         String actualKeysValue = null;

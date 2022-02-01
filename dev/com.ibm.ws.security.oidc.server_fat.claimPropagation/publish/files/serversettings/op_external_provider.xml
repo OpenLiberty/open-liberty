@@ -26,9 +26,7 @@
      	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsIdTokenClaims</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimIdTokenClaims</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims</autoAuthorizeClient>
         <localStore>
             <client 
                 name="oidcclient_thirdparty_noExtraClaims"
@@ -55,38 +53,29 @@
                 preAuthorizedScope="openid"
                 redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" />
             <client 
-                name="oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims"
+                name="oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims"
                 secret="password"
                 scope="openid"
                 preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsAccessTokenClaims_3rdPartyDoesNotPropagate" />
-            <client 
-                name="oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimAccessTokenClaims_3rdPartyDoesNotPropagate" />
-            <client 
-                name="oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsAccessTokenClaims_3rdPartyDoesNotPropagate" />
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" />
         </localStore>
     </oauthProvider>
 
     <openidConnectProvider 
     	id="OP_3rdParty_propagateAllClaims" 
     	oauthProviderRef="oauth_for_propagateAllClaims"
-     	customClaims="testProp1,testProp2"
+     	customClaims="testProp1,testProp2,testProp5"
     	>
     	<claimToUserRegistryMap>
 			<property
 				name="testProp1"
-				value="displayName" />
+				value="telephoneNumber" />
 			<property
 				name="testProp2"
-				value="uid" />
+				value="mail" />
+			<property
+				name="testProp5"
+				value="telephoneNumber" />				
 		</claimToUserRegistryMap>
     </openidConnectProvider>
     
@@ -99,15 +88,10 @@
      	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsIdTokenClaims</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimIdTokenClaims</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsIdTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims</autoAuthorizeClient>
+     	<autoAuthorizeClient>oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_issClaimInIdToken</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_issClaimInAccessToken</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_subClaimInIdToken</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_subClaimInAccessToken</autoAuthorizeClient>
      	<autoAuthorizeClient>oidcclient_thirdparty_audClaimInIdToken</autoAuthorizeClient>
-     	<autoAuthorizeClient>oidcclient_thirdparty_audClaimInAccessToken</autoAuthorizeClient>
         <localStore>
             <client 
                 name="oidcclient_thirdparty_noExtraClaims"
@@ -134,23 +118,11 @@
                 preAuthorizedScope="openid"
                 redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates" />
             <client 
-                name="oidcclient_thirdparty_propagateGroupIdsAccessTokenClaims"
+                name="oidcclient_thirdparty_propagate3TestClaimsIdTokenClaims"
                 secret="password"
                 scope="openid"
                 preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsAccessTokenClaims_3rdPartyPropagates" />
-            <client 
-                name="oidcclient_thirdparty_propagate1TestClaimAccessTokenClaims"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimAccessTokenClaims_3rdPartyPropagates" />
-            <client 
-                name="oidcclient_thirdparty_propagate2TestClaimsAccessTokenClaims"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsAccessTokenClaims_3rdPartyPropagates" />
+                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates" />
             <client 
                 name="oidcclient_thirdparty_issClaimInIdToken"
                 secret="password"
@@ -158,35 +130,17 @@
                 preAuthorizedScope="openid"
                 redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInIdToken" />
             <client 
-                name="oidcclient_thirdparty_issClaimInAccessToken"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInAccessToken" />
-            <client 
                 name="oidcclient_thirdparty_subClaimInIdToken"
                 secret="password"
                 scope="openid"
                 preAuthorizedScope="openid"
                 redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInIdToken" />
             <client 
-                name="oidcclient_thirdparty_subClaimInAccessToken"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInAccessToken" />
-            <client 
                 name="oidcclient_thirdparty_audClaimInIdToken"
                 secret="password"
                 scope="openid"
                 preAuthorizedScope="openid"
                 redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInIdToken" />
-            <client 
-                name="oidcclient_thirdparty_audClaimInAccessToken"
-                secret="password"
-                scope="openid"
-                preAuthorizedScope="openid"
-                redirect="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInAccessToken" />
         </localStore>
     </oauthProvider>
 

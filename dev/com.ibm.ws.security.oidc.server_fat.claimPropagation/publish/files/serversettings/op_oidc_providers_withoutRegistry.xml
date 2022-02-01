@@ -38,6 +38,12 @@
         thirdPartyIDTokenClaims="testProp1,testProp2">
     </openidConnectProvider>
 
+    <openidConnectProvider 
+        id="OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        thirdPartyIDTokenClaims="testProp1,testProp2,testProp5">
+    </openidConnectProvider>
+
 <!-- For use with thrid party OP that does propagate test claims -->
     <openidConnectProvider 
         id="OP_noExtraClaims_3rdPartyPropagates"
@@ -61,6 +67,12 @@
         id="OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"
         oauthProviderRef="oauth_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"
         thirdPartyIDTokenClaims="testProp1,testProp2">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        thirdPartyIDTokenClaims="testProp1,testProp2,testProp5">
     </openidConnectProvider>
 
 <!-- override claims OPs -->

@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -37,7 +38,7 @@ import componenttest.rules.repeater.RepeatTests;
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite {
+public class FATSuite extends CommonLocalLDAPServerSuite {
 
     /*
      * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.

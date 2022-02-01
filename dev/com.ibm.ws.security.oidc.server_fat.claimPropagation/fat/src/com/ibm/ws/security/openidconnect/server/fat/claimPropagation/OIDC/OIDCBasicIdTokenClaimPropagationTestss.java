@@ -95,6 +95,9 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
 
         testSettings.setFlowType(Constants.RP_FLOW);
 
+        testSettings.setUserName("LDAPUser1");
+        testSettings.setUserPassword("security");
+
         steps = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
         loginStep = Constants.LOGIN_USER;
 

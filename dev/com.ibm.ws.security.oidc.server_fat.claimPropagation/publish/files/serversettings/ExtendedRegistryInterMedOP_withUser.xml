@@ -13,7 +13,7 @@
 
 	<basicRegistry
 		id="basic"
-		realm="SomeRealm"
+		realm="BasicRealm"
 	>
 		<user
 			name="testuser"
@@ -22,20 +22,28 @@
 			name="diffuser"
 			password="diffuserpwd" />
 		<user
-			name="user3"
-			password="user3pwd" />
+			name="LDAPUser1"
+			password="security" />
 		<user
-			name="user4"
-			password="user4pwd" />
+			name="LDAPUser2"
+			password="security" />
+		<user
+			name="LDAPUser5"
+			password="security" />
 		<group 
-			id="group_3" 
-			name="group3">
-            		<member name="user3"/>
-            		<member name="user4"/>
+			id="group_A" 
+			name="groupA">
+            		<member name="LDAPUser1"/>
+            		<member name="LDAPUser2"/>
+            		<member name="LDAPUser5"/>
             		<member name="testuser"/>
+		</group>
+		<group 
+			id="group_B" 
+			name="groupB">
+            		<member name="LDAPUser5"/>
 		</group>
 		
 	</basicRegistry>
-
 
 </server>
