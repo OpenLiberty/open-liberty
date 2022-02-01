@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ if (parseBoolean(bnd('globalize', 'true'))) {
     def quotationExcludes = bnd('globalize.quotation.excludes')
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
-    
+
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
@@ -170,7 +170,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
     doLast {
       fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
 
-      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
+      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }
       bundles.each { bundleJar ->
 
         println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
@@ -278,7 +278,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
           def directBundleDataKey = initialBundleId
           def directBundleDataValue =
             finalBundleId + ',' +
-            finalBundleVersion + ',' + 
+            finalBundleVersion + ',' +
             finalBundleShortName + ',' +
             finalBundleDescription
 

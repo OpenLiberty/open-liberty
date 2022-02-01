@@ -32,7 +32,7 @@ dependencies {
                 fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.6R5',
-                'org.apache.commons:commons-compress:1.20'
+                'org.apache.commons:commons-compress:1.21'
  
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.
