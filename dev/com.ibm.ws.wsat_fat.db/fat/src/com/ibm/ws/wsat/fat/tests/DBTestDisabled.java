@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,8 +73,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class DBTestDisabled extends DBTestBase {
 
-	public static String notInstalled = "WS-AT Feature is not installed";
-
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
@@ -147,7 +145,7 @@ public class DBTestDisabled extends DBTestBase {
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port
 				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, notInstalled, "1", "0");
+		commonTest(appName, wsatURL, WSAT_NOT_INSTALLED, "1", "0");
 	}
 
 	@Test
@@ -156,7 +154,7 @@ public class DBTestDisabled extends DBTestBase {
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ rollback + ":" + basicURL + ":" + server1Port
 				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, notInstalled, "1", "0");
+		commonTest(appName, wsatURL, WSAT_NOT_INSTALLED, "1", "0");
 	}
 
 	@Test
@@ -181,7 +179,7 @@ public class DBTestDisabled extends DBTestBase {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port;
-		commonTest(appName, wsatURL, notInstalled, "0");
+		commonTest(appName, wsatURL, WSAT_NOT_INSTALLED, "0");
 	}
 
 	@Test
@@ -190,7 +188,7 @@ public class DBTestDisabled extends DBTestBase {
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
 				+ commit + ":" + basicURL + ":" + server1Port
 				+ "&" + clientName + "=" + rollback;
-		commonTest(appName, wsatURL, notInstalled, "0");
+		commonTest(appName, wsatURL, WSAT_NOT_INSTALLED, "0");
 	}
 	
 	@Override
