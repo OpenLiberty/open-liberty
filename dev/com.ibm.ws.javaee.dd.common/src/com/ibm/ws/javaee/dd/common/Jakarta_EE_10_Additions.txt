@@ -1,0 +1,209 @@
+jakartaee_10.xsd - jakartaee_9.xsd 
+
+  <xsd:group name="jndiEnvironmentRefsGroup">
+      <xsd:element name="context-service" type="jakartaee:context-serviceType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-executor" type="jakartaee:managed-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-scheduled-executor" type="jakartaee:managed-scheduled-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-thread-factory" type="jakartaee:managed-thread-factoryType" minOccurs="0" maxOccurs="unbounded"/>
+
+---
+
+  <xsd:complexType name="context-serviceType">
+    <xsd:sequence>
+      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
+      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
+      <xsd:element name="cleared" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            Types of context to clear whenever a thread runs a
+            contextual task or action. The thread's previous context
+            is restored afterward. Context types that are defined by
+            the Jakarta EE Concurrency specification include:
+            Application, Security, Transaction,
+            and Remaining, which means all available thread context
+            types that are not specified elsewhere. You can also specify
+            vendor-specific context types. Absent other configuration,
+            cleared context defaults to Transaction. You can specify
+            a single cleared element with no value to indicate an
+            empty list of context types to clear. If neither
+            propagated nor unchanged specify (or default to) Remaining,
+            then Remaining is automatically appended to the list of
+            cleared context types.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="propagated" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            Types of context to capture from the requesting thread
+            and propagate to a thread that runs a contextual task
+            or action. The captured context is re-established
+            when threads run the contextual task or action,
+            with the respective thread's previous context being
+            restored afterward. Context types that are defined by
+            the Jakarta EE Concurrency specification include:
+            Application, Security,
+            and Remaining, which means all available thread context
+            types that are not specified elsewhere. You can also specify
+            vendor-specific context types. Absent other configuration,
+            propagated context defaults to Remaining. You can specify
+            a single propagated element with no value to indicate that
+            no context types should be propagated.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="unchanged" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+
+            Types of context that are left alone when a thread runs a
+            contextual task or action. Context types that are defined
+            by the Jakarta EE Concurrency specification include:
+            Application, Security, Transaction,
+            and Remaining, which means all available thread context
+            types that are not specified elsewhere. You can also specify
+            vendor-specific context types. Absent other configuration,
+            unchanged context defaults to empty. You can specify
+            a single unchanged element with no value to indicate that
+            no context types should be left unchanged.
+
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:ID"/>
+  </xsd:complexType>
+
+---
+
+  <xsd:complexType name="managed-executorType">
+    <xsd:sequence>
+      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
+      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
+      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Refers to the name of a ContextServiceDefinition or
+            context-service deployment descriptor element,
+            which determines how context is applied to tasks and actions
+            that run on this executor.
+            The name must be in a valid Jakarta EE namespace,
+            such as java:comp, java:module, java:app, or java:global.
+            In the absence of a configured value,
+            java:comp/DefaultContextService is used.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="max-async" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Upper bound on contextual tasks and actions that this executor
+            will simultaneously execute asynchronously. This constraint does
+            not apply to tasks and actions that the executor runs inline,
+            such as when a thread requests CompletableFuture.join and the
+            action runs inline if it has not yet started.
+            The default is unbounded, although still subject to
+            resource constraints of the system.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="hung-task-threshold" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            The amount of time in milliseconds that a task or action
+            can execute before it is considered hung.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+
+    <xsd:attribute name="id" type="xsd:ID"/>
+  </xsd:complexType>
+
+---
+
+  <xsd:complexType name="managed-scheduled-executorType">
+    <xsd:sequence>
+      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
+      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
+      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Refers to the name of a ContextServiceDefinition or
+            context-service deployment descriptor element,
+            which determines how context is applied to tasks and actions
+            that run on this executor.
+            The name must be in a valid Jakarta EE namespace,
+            such as java:comp, java:module, java:app, or java:global.
+            In the absence of a configured value,
+            java:comp/DefaultContextService is used.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="max-async" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Upper bound on contextual tasks and actions that this executor
+            will simultaneously execute asynchronously. This constraint does
+            not apply to tasks and actions that the executor runs inline,
+            such as when a thread requests CompletableFuture.join and the
+            action runs inline if it has not yet started. This constraint also
+            does not apply to tasks that are scheduled via the schedule methods.
+            The default is unbounded, although still subject to
+            resource constraints of the system.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="hung-task-threshold" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            The amount of time in milliseconds that a task or action
+            can execute before it is considered hung.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:ID"/>
+  </xsd:complexType>
+
+---
+
+  <xsd:complexType name="managed-thread-factoryType">
+    <xsd:sequence>
+      <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0">
+      <xsd:element name="name" type="jakartaee:jndi-nameType"/>
+      <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Refers to the name of a ContextServiceDefinition or
+            context-service deployment descriptor element,
+            which determines how context is applied to threads
+            from this thread factory.
+            The name must be in a valid Jakarta EE namespace,
+            such as java:comp, java:module, java:app, or java:global.
+            In the absence of a configured value,
+            java:comp/DefaultContextService is used.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="priority" type="jakartaee:priorityType" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Priority for threads created by this thread factory.
+            The default is 5 (java.lang.Thread.NORM_PRIORITY).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:ID"/>
+  </xsd:complexType>

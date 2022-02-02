@@ -1,0 +1,100 @@
+Test plan: Web module context root configuration:
+
+The test mode is FULL, except where indicated.
+
+    War, no definitions
+    (0) DDSimpleWarTests LITE
+
+    War, single definition
+    (1) DDSimpleWarTests_Web LITE
+    (2) DDSimpleWarTests_Config LITE
+    (3) DDSimpleWarTests_ConfigExt LITE
+    (3') DDSimpleWarTests_ConfigExt_Exp LITE
+
+    War, two definitions
+    (1, 2) DDSimpleWarTests_Web_Config
+    (1, 3) DDSimpleWarTests_Web_ConfigExt
+    (1, 3') DDSimpleWarTests_Web_ConfigExt_Exp    
+    (2, 3) DDSimpleWarTests_Config_ConfigExt
+    (2, 3') DDSimpleWarTests_Config_ConfigExt_Exp
+
+    War, three definitions
+    (1, 2, 3) DDSimpleWarTests_Web_Config_ConfigExt
+    (1, 2, 3') DDSimpleWarTests_Web_Config_ConfigExt_Exp LITE
+
+    Ear, no definitions
+    (0) DDSimpleEarTests LITE
+
+    Ear, single definition
+    (1) DDSimpleEarTests_Web LITE
+    (2) DDSimpleEarTests_App LITE
+    (3) DDSimpleEarTests_ConfigExt LITE
+    (3') DDSimpleEarTests_ConfigExt_Exp LITE
+
+    Ear, two definitions, web
+    (1, 2) DDSimpleEarTests_Web_App    
+    (1, 3) DDSimpleEarTests_Web_ConfigExt
+    (1, 3') DDSimpleEarTests_Web_ConfigExt_Exp
+
+    Ear, two definitions, app
+    (2, 3) DDSimpleEarTests_App_ConfigExt
+    (2, 3') DDSimpleEarTests_App_ConfigExt_Exp
+
+    Ear, three definitions 
+    (1, 2, 3) DDSimpleEarTests_Web_App_ConfigExt
+    (1, 2, 3') DDSimpleEarTests_Web_App_ConfigExt_Exp LITE    
+
+Notes:
+
+WAR placements of context root:
+
+(0) Default
+(1) Module extension (WEB-INF/ibm-web-ext.xml)
+(2) Server configuration module (server.xml)
+(3) Server configuration module extension (server.xml)
+(3') Server configuration module extension with auto-expand (server.xml)
+
+EAR placements of context root:
+
+(0) Default
+(1) Module extension (WEB-INF/ibm-web-ext.xml)
+(2) Application extension (META-INF/ibm-application-ext.xml)
+(3) Server configuration module extension (server.xml)
+(3') Server configuration module extension with auto-expand (server.xml)
+
+The default (0) is to assign the simple module name as the context root.
+
+Because problems have occurred when auto-expand is enabled with EAR case (3),
+a variation of the server configuration module extension case is added.
+
+In all cases, a higher numbered placement overrides a lower number placement.
+
+For example:
+
+(1): Module extension (WEB-INF/ibm-web-ext.xml):
+
+     <context-root uri="web"/>
+  
+(2): Application extension (META-INF/ibm-application-ext.xml):
+
+    <module>
+        <web>
+            <web-uri>Simple.war</web-uri>
+            <context-root>app</context-root>
+        </web>
+    </module>
+
+(3): Server configuration module extension (server.xml):
+
+    <enterpriseApplication id="simpleEar" location="Simple.ear" name="Simple">
+        <web-ext id="simpleWar" moduleName="Simple" context-root="ext"/>
+    </enterpriseApplication>
+    
+(4') Server configuration module extension with auto-expand (server.xml):
+
+    <applicationManager autoExpand="true"/>
+
+    <enterpriseApplication id="simpleEar" location="Simple.ear" name="Simple">
+        <web-ext id="simpleWar" moduleName="Simple" context-root="exp"/>
+    </enterpriseApplication>    
+

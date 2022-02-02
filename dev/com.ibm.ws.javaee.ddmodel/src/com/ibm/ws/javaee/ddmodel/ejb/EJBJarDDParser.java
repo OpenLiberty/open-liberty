@@ -31,11 +31,10 @@ public class EJBJarDDParser extends DDParserSpec {
         new VersionData("3.2", null, NAMESPACE_JCP_JAVAEE, EJBJar.VERSION_3_2, VERSION_7_0_INT),
 
         new VersionData("4.0", null, NAMESPACE_JAKARTA, EJBJar.VERSION_4_0, VERSION_9_0_INT),
-        new VersionData("5.0", null, NAMESPACE_JAKARTA, EJBJar.VERSION_5_0, VERSION_10_0_INT)
     };
 
     public static int getMaxTolerated() {
-        return EJBJar.VERSION_5_0;
+        return EJBJar.VERSION_4_0;
     }
     
     public static int getMaxImplemented() {

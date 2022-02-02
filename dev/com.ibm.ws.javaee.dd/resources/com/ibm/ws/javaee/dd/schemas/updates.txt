@@ -1,0 +1,17 @@
+jakartaee_9 -> jakartaee_10
+
+Additions:
+
+  <xsd:group name="jndiEnvironmentRefsGroup">
+      <xsd:element name="context-service" type="jakartaee:context-serviceType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-executor" type="jakartaee:managed-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-scheduled-executor" type="jakartaee:managed-scheduled-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-thread-factory" type="jakartaee:managed-thread-factoryType" minOccurs="0" maxOccurs="unbounded"/>
+
+  <xsd:complexType name="context-serviceType">
+  <xsd:complexType name="managed-executorType">
+  <xsd:complexType name="managed-scheduled-executorType">
+  <xsd:complexType name="managed-thread-factoryType">
+      <xsd:element name="priority" type="jakartaee:priorityType" minOccurs="0" maxOccurs="1">
+
+  <xsd:complexType name="priorityType">

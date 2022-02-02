@@ -27,8 +27,6 @@
         <feature>libertyinternals-1.0</feature>
     </featureManager>
 
-    <!-- -->
-
     <authData id="resRefAuthData" user="foo" password="bar"/>
 
 	<webApplication location="ServletTest.war" contextRoot="autoctx">
@@ -121,6 +119,7 @@
 					isolation-level="TRANSACTION_READ_COMMITTED"/>
 			</session>
 		</ejb-jar-ext>
+
 	</ejbApplication>
 
 </server>

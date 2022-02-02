@@ -28,15 +28,14 @@ public interface EJBJar extends ModuleDeploymentDescriptor, DeploymentDescriptor
     int VERSION_3_1 = 31;
     int VERSION_3_2 = 32;
     int VERSION_4_0 = 40;
-    int VERSION_5_0 = 50;
 
-    int MAX_VERSION = 50;
+    int MAX_VERSION = 40;
     
     int[] VERSIONS = {
         VERSION_1_1, VERSION_2_0,
         VERSION_2_1,
         VERSION_3_0, VERSION_3_1, VERSION_3_2,
-        VERSION_4_0, VERSION_5_0,
+        VERSION_4_0
     };
     
     int[] DTD_VERSION = {
@@ -46,7 +45,7 @@ public interface EJBJar extends ModuleDeploymentDescriptor, DeploymentDescriptor
     int[] SCHEMA_VERSIONS = {
         VERSION_2_1,
         VERSION_3_0, VERSION_3_1, VERSION_3_2,
-        VERSION_4_0, VERSION_5_0
+        VERSION_4_0
     };
     
     int[] ANNOTATION_ENABLED_VERSIONS = {

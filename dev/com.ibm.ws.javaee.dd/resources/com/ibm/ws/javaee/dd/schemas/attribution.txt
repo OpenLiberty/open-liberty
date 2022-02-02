@@ -1,0 +1,10 @@
+https://jakarta.ee/xml/ns/jakartaee/#9
+https://jakarta.ee/xml/ns/jakartaee/jakartaee_9.xsd
+https://jakarta.ee/xml/ns/jakartaee/application-client_9.xsd
+https://jakarta.ee/xml/ns/jakartaee/application_9.xsd
+https://jakarta.ee/xml/ns/jakartaee/jsp_3_0.xsd
+https://jakarta.ee/xml/ns/jakartaee/permissions_9.xsd
+https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd
+https://jakarta.ee/xml/ns/jakartaee/web-common_5_0.xsd
+https://jakarta.ee/xml/ns/jakartaee/web-fragment_5_0.xsd
+https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_0.xsd

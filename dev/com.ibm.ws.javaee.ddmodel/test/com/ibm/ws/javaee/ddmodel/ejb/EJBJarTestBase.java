@@ -224,16 +224,6 @@ public class EJBJarTestBase extends DDTestBase {
                ">";
     }
     
-    protected static String ejbJar50Head(String attrs) {
-        return "<ejb-jar" + '\n' +
-               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" + '\n' +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
-               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" + '\n' +
-               " version=\"5.0\"" + '\n' +
-               " " + attrs +
-               ">";
-    }
-    
     protected static String ejbJarTail() {
         return "</ejb-jar>";
     }
@@ -268,10 +258,6 @@ public class EJBJarTestBase extends DDTestBase {
         return ejbJar40Head(attrs) + body + ejbJarTail();
     }
     
-    protected static String ejbJar50(String attrs, String body) {
-        return ejbJar50Head(attrs) + body + ejbJarTail();
-    }
-
     protected static String ejbJar(int version, String attrs, String body) {
         String head;
 
@@ -289,8 +275,6 @@ public class EJBJarTestBase extends DDTestBase {
             head = ejbJar32Head(attrs);
         } else if ( version == EJBJar.VERSION_4_0 ) {
             head = ejbJar40Head(attrs);
-        } else if ( version == EJBJar.VERSION_5_0 ) {
-            head = ejbJar50Head(attrs);            
         } else {
             throw new IllegalArgumentException("Unknown EJBJar version [ " + version + " ]");
         }

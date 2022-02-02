@@ -13,7 +13,6 @@ import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
-import com.ibm.ws.javaee.dd.ws.Webservices;
 import com.ibm.ws.javaee.ddmodel.DDParser.VersionData;
 import com.ibm.ws.javaee.ddmodel.app.ApplicationDDParser;
 import com.ibm.ws.javaee.ddmodel.bval.ValidationConfigDDParser;
@@ -22,7 +21,6 @@ import com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParser;
 import com.ibm.ws.javaee.ddmodel.jsf.FacesConfigDDParser;
 import com.ibm.ws.javaee.ddmodel.web.WebAppDDParser;
 import com.ibm.ws.javaee.ddmodel.web.WebFragmentDDParser;
-import com.ibm.ws.javaee.ddmodel.ws.WebservicesAdapter;
 import com.ibm.ws.javaee.ddmodel.permissions.PermissionsConfigDDParser;
 
 public class DDParserSpecList implements PlatformVersion {
@@ -30,14 +28,14 @@ public class DDParserSpecList implements PlatformVersion {
     public static enum DDType {
         DD_APPLICATION("Application", Application.DD_SHORT_NAME),
         DD_APPLICATION_CLIENT("Application client", ApplicationClient.DD_SHORT_NAME),
-        DD_CONNECTOR("Connector", "ra.xml"),
+        DD_CONNECTOR("Connector", "ra.xml"), // Not visible
         DD_EJB("EJB jar", EJBJar.DD_SHORT_NAME),   
         DD_FACES("Faces Config", FacesConfig.DD_SHORT_NAME),
         DD_PERMISSIONS("Permissions Config", PermissionsConfig.DD_SHORT_NAME),
         DD_VALIDATION("Validation Config", ValidationConfig.DD_SHORT_NAME),
         DD_WEB("Web Module", WebApp.DD_SHORT_NAME),
         DD_WEB_FRAGMENT("Web Fragment", WebFragment.DD_SHORT_NAME),
-        DD_WEB_SERVICES("Web Services", Webservices.DD_SHORT_NAME);
+        DD_WEB_SERVICES("Web Services", "webservices.xml"); // Not visible
 
         private DDType(String shortName, String resource) {
             this.shortName = shortName;
@@ -71,6 +69,9 @@ public class DDParserSpecList implements PlatformVersion {
         }
     }
 
+    // JCA has an entirely different parser implementation which
+    // is not visible from here.
+
     public static final String jca10DTD = "http://java.sun.com/dtd/connector_1_0.dtd";
     public static final String jca15NamespaceURI = "http://java.sun.com/xml/ns/j2ee";
     public static final String jca16NamespaceURI = "http://java.sun.com/xml/ns/javaee";
@@ -85,7 +86,7 @@ public class DDParserSpecList implements PlatformVersion {
             new VersionData("2.0", null, connectors20NamespaceURI, 20, VERSION_9_0_INT),
             new VersionData("2.1", null, connectors20NamespaceURI, 21, VERSION_10_0_INT),
     };
-
+    
     // JCA 1.0 - J2EE Version 1.3
     // JCA 1.5 - J2EE Version 1.4
     // JCA 1.6 - Java EE Version 6
@@ -93,6 +94,17 @@ public class DDParserSpecList implements PlatformVersion {
     // JCA 2.0 - Jakarta 9
     // JCA 2.1 - Jakarta 10    
     
+    // Webservices is also not visible from here.
+
+    public static VersionData[] WEBSERVICES_DATA = {
+            new VersionData("1.1", null, DDParser.NAMESPACE_SUN_J2EE, 11, 14),
+            new VersionData("1.2", null, DDParser.NAMESPACE_SUN_JAVAEE, 12, 50),
+            new VersionData("1.3", null, DDParser.NAMESPACE_SUN_JAVAEE, 13, 60),
+            new VersionData("1.4", null, DDParser.NAMESPACE_JCP_JAVAEE, 14, 70),
+            new VersionData("2.0", null, DDParser.NAMESPACE_JAKARTA, 20, 90),
+            // No new data for Jakarta 10
+        };
+
     public static final EnumMap<DDType, DDInfo> DD_INFO;
     
     static {
@@ -113,8 +125,7 @@ public class DDParserSpecList implements PlatformVersion {
                 ApplicationClientDDParser.getMaxTolerated(),
                 ApplicationClientDDParser.getMaxImplemented()));
 
-        ddInfo.put(DDType.DD_CONNECTOR, new DDInfo(DDType.DD_CONNECTOR,
-                CONNECTOR_DATA, 21, 20));
+        ddInfo.put(DDType.DD_CONNECTOR, new DDInfo(DDType.DD_CONNECTOR, CONNECTOR_DATA, 21, 20));
 
         ddInfo.put(DDType.DD_EJB, new DDInfo(DDType.DD_EJB,
                 EJBJarDDParser.VERSION_DATA,
@@ -147,9 +158,8 @@ public class DDParserSpecList implements PlatformVersion {
                 WebFragmentDDParser.getMaxImplemented() ) );
 
         ddInfo.put(DDType.DD_WEB_SERVICES, new DDInfo(DDType.DD_WEB_SERVICES,
-                WebservicesAdapter.VERSION_DATA,
-                WebservicesAdapter.getMaxTolerated(),
-                WebservicesAdapter.getMaxImplemented() ) );
+                WEBSERVICES_DATA, 20, 20));
+
         
         DD_INFO = ddInfo;
     }

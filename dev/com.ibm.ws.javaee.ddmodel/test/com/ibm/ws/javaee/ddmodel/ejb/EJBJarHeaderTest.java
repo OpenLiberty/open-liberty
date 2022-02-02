@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
     //  31   +   +   +   +    +  | -   +  +   |
     //  32   +   +   +   +    +  | -   +  +   |
     //  40   +   +   +   +    +  | +   +  +   |
-    //  50   +   +   +   +    +  | -   +  +   |
     //  99                       |            | +   +
     // ================================================
 
@@ -367,68 +366,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
         
     //
     
-    protected static String ejbJar50NoNamespace =
-            ejbJarWithout(EJBJar.VERSION_5_0, HeaderLine.NS, ejbJarBody);
-    
-//            "<ejb-jar" +
-//                    // " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-//                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-//                    " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" +
-//                    " version=\"5.0\"" +
-//            ">" + '\n' +
-//                ejbJarBody + '\n' +
-//            "</ejb-jar>";
-    
-    protected static String ejbJar50NoSchemaInstance =
-            ejbJarWithout(EJBJar.VERSION_5_0, HeaderLine.SI, ejbJarBody);
-    
-//            "<ejb-jar" +
-//                    " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-//                    // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-//                    " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" +
-//                    " version=\"5.0\"" +
-//            ">" + '\n' +
-//                ejbJarBody + '\n' +
-//            "</ejb-jar>";
-    
-    protected static String ejbJar50NoSchemaLocation =
-            ejbJarWithout(EJBJar.VERSION_5_0, HeaderLine.SL, ejbJarBody);
-    
-//            "<ejb-jar" +
-//                    " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-//                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-//                    // " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" +
-//                    " version=\"5.0\"" +
-//            ">" + '\n' +
-//                ejbJarBody + '\n' +
-//            "</ejb-jar>";
-    
-    protected static String ejbJar50NoXSI =
-            ejbJarWithout(EJBJar.VERSION_5_0, HeaderLine.XSI, ejbJarBody);
-    
-//            "<ejb-jar" +
-//                    " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-//                    // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-//                    // " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" +
-//                    " version=\"5.0\"" +
-//            ">" + '\n' +
-//                ejbJarBody + '\n' +
-//            "</ejb-jar>";
-    
-    protected static String ejbJar50NoVersion =
-            ejbJarWithout(EJBJar.VERSION_5_0, HeaderLine.V, ejbJarBody);
-    
-//            "<ejb-jar" +
-//                    " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-//                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-//                    " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_5_0.xsd\"" +
-//                    // " version=\"5.0\"" +
-//            ">" + '\n' +
-//                ejbJarBody + '\n' +
-//            "</ejb-jar>";
-
-    //
-    
     protected static String ejbJar21NamespaceOnly =
             "<ejb-jar xmlns=\"http://java.sun.com/xml/ns/j2ee\">" + '\n' +
                 ejbJarBody + '\n' +
@@ -519,23 +456,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
     
     //
     
-    protected static String ejbJar50VersionOnly =
-            "<ejb-jar version=\"5.0\">" + '\n' +
-                ejbJarBody + '\n' +
-            "</ejb-jar>";
-
-    protected static String ejbJar50VersionMismatch =
-            "<ejb-jar" +
-                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-                " version=\"5.0\"" +
-            ">" + '\n' +    
-                ejbJarBody + '\n' +
-            "</ejb-jar>";
-
-    //
-
     protected static String ejbJarUnknownNamespace =
             "<ejb-jar xmlns=\"http://junk\">" + '\n' +
                 ejbJarBody + '\n' +
@@ -618,12 +538,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
         Assert.assertEquals( 31, ejbJar.getVersionID() );
     }        
 
-    @Test
-    public void testEJB30NamespaceOnlyAt50() throws Exception {
-        EJBJar ejbJar = parseEJBJar(ejbJar30NamespaceOnly, EJBJar.VERSION_5_0);
-        Assert.assertEquals( 31, ejbJar.getVersionID() );
-    }        
-    
     @Test
     public void testEJB30VersionOnly() throws Exception {
         EJBJar ejbJar = parseEJBJarMax(ejbJar30VersionOnly);
@@ -739,23 +653,11 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
     }
 
     @Test
-    public void testEJB40NoVersionAt50() throws Exception {
-        EJBJar ejbJar = parseEJBJar(ejbJar40NoVersion, EJBJar.VERSION_5_0);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-    
-    @Test
     public void testEJB40NamespaceOnlyAt40() throws Exception {
         EJBJar ejbJar = parseEJBJar(ejbJar40NamespaceOnly, EJBJar.VERSION_4_0);
         Assert.assertEquals( 40, ejbJar.getVersionID() );
     }
     
-    @Test
-    public void testEJB40NamespaceOnlyAt50() throws Exception {
-        EJBJar ejbJar = parseEJBJar(ejbJar40NamespaceOnly, EJBJar.VERSION_5_0);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }    
-
     @Test
     public void testEJB40VersionOnly() throws Exception {
         EJBJar ejbJar = parseEJBJarMax(ejbJar40VersionOnly);
@@ -764,44 +666,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
     
     //
     
-    @Test
-    public void testEJB50NoNamespace() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50NoNamespace);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-
-    @Test
-    public void testEJB50NoSchemaInstance() throws Exception {
-        parseEJBJar(ejbJar50NoSchemaInstance, EJBJar.VERSION_3_0,
-                    "xml.error", "CWWKC2272E");
-    }
-
-    @Test
-    public void testEJB50NoSchemaLocation() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50NoSchemaLocation);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-
-    @Test
-    public void testEJB50NoXSI() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50NoXSI);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-
-    @Test
-    public void testEJB50NoVersion() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50NoVersion);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-
-    @Test
-    public void testEJB50VersionOnly() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50VersionOnly);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
-    }
-    
-    //
-
     // A warning is issued, but otherwise the mismatch is ignored
     // and the version has precedence.
 
@@ -827,12 +691,6 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
     public void testEJB40VersionMismatch() throws Exception {
         EJBJar ejbJar = parseEJBJarMax(ejbJar40VersionMismatch);
         Assert.assertEquals( 40, ejbJar.getVersionID() );
-    }
-
-    @Test
-    public void testEJB50VersionMismatch() throws Exception {
-        EJBJar ejbJar = parseEJBJarMax(ejbJar50VersionMismatch);
-        Assert.assertEquals( 50, ejbJar.getVersionID() );
     }
 
     //

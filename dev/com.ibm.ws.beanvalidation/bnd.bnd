@@ -59,6 +59,7 @@ instrument.classesExcludes: com/ibm/ws/beanvalidation/resources/nls/*.class
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.beanvalidation.core;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
