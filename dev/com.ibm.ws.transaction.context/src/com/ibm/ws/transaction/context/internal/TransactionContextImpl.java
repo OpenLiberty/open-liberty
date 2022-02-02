@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.transaction.context.internal;
 
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.io.ObjectOutputStream;
+import java.io.ObjectOutputStream.PutField;
 import java.io.ObjectStreamField;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -37,9 +39,24 @@ public class TransactionContextImpl implements ThreadContext {
     private static final long serialVersionUID = -6094017242267061944L;
 
     /**
-     * Fields to serialize
+     * Values for serializable fields.
+     * A single character is used for each to reduce the space required.
      */
+    private static final String CLEARED = "C",
+                    UNCHANGED = "U";
+
+    /**
+     * Names for serializable fields.
+     * A single character is used for each to reduce the space required.
+     */
+    private static final String TYPE = "T";
+
+    /**
+     * Fields to serialize.
+     */
+
     private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
+                                                                                                new ObjectStreamField(TYPE, String.class)
     };
 
     /**
@@ -53,7 +70,7 @@ public class TransactionContextImpl implements ThreadContext {
      * by default an LTC is put in place for the task to run under.
      * In the future, we leave open the possibility that some other action could be taken in place of the LTC.
      */
-    transient boolean suspendTranOfExecutionThread;
+    transient Boolean suspendTranOfExecutionThread;
 
     TransactionContextImpl(boolean suspendTranOfExecuctionThread) {
         this.suspendTranOfExecutionThread = suspendTranOfExecuctionThread;
@@ -150,7 +167,14 @@ public class TransactionContextImpl implements ThreadContext {
      * @throws ClassNotFoundException
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.readFields();
+        GetField fields = in.readFields();
+
+        Object type = fields.get(TYPE, null);
+        if (CLEARED.equals(type))
+            suspendTranOfExecutionThread = true;
+        else if (UNCHANGED.equals(type))
+            suspendTranOfExecutionThread = false;
+        // else null value will cause TransactionContextProviderImpl to recompute from the execution property
     }
 
     @Override
@@ -168,7 +192,8 @@ public class TransactionContextImpl implements ThreadContext {
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream outStream) throws IOException {
-        outStream.putFields();
+        PutField fields = outStream.putFields();
+        fields.put(TYPE, suspendTranOfExecutionThread ? CLEARED : UNCHANGED);
         outStream.writeFields();
     }
 }

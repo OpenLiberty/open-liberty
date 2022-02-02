@@ -150,7 +150,7 @@ public class ThirdPartyContext implements ThreadContext {
     }
 
     /**
-     * This method is invoked after deserialization to initializes the context types to clear.
+     * This method is invoked after deserialization to initialize the context types to clear.
      *
      * @param coordinator coordinates all third-party context types
      * @param execProps   execution properties

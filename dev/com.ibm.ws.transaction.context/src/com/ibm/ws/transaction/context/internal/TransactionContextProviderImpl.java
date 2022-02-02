@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 /**
  * Transaction context service provider.
  */
+@SuppressWarnings("deprecation")
 public class TransactionContextProviderImpl implements JCAContextProvider, ThreadContextProvider {
     // Constant for ManagedTask.TRANSACTION in whichever of Jakarta vs Java EE is NOT enabled
     private static final String OTHER_SPEC_TRANSACTION_CONSTANT;
@@ -123,23 +124,25 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         try {
             context = (TransactionContextImpl) in.readObject();
 
-            // Determine the value of the ManagedTask.TRANSACTION execution property, if present
-            String key, value;
-            if (info == null) {
-                key = null;
-                value = null;
-            } else { // prefer the enabled spec
-                value = info.getExecutionProperty(key = ManagedTask.TRANSACTION);
-                if (value == null)
-                    value = info.getExecutionProperty(key = OTHER_SPEC_TRANSACTION_CONSTANT);
-            }
+            if (context.suspendTranOfExecutionThread == null) {
+                // Determine the value of the ManagedTask.TRANSACTION execution property, if present
+                String key, value;
+                if (info == null) {
+                    key = null;
+                    value = null;
+                } else { // prefer the enabled spec
+                    value = info.getExecutionProperty(key = ManagedTask.TRANSACTION);
+                    if (value == null)
+                        value = info.getExecutionProperty(key = OTHER_SPEC_TRANSACTION_CONSTANT);
+                }
 
-            if (value == null || ManagedTask.SUSPEND.equals(value))
-                context.suspendTranOfExecutionThread = true;
-            else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
-                context.suspendTranOfExecutionThread = false;
-            else
-                throw new IllegalArgumentException(key + '=' + value);
+                if (value == null || ManagedTask.SUSPEND.equals(value))
+                    context.suspendTranOfExecutionThread = true;
+                else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
+                    context.suspendTranOfExecutionThread = false;
+                else
+                    throw new IllegalArgumentException(key + '=' + value);
+            }
         } finally {
             in.close();
         }
