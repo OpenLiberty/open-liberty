@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -406,5 +406,16 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     @Reference
     protected void setClassLoadingSvc(ClassLoadingService classLoadingService) {
         this.classLoadingService = classLoadingService;
+    }
+
+    @Override
+    public void reloadDelegateClass() {
+        String targetClass = ((Class<?>) options.get(LoginModuleProxy.KERNEL_DELEGATE)).getName();
+        if (targetClass != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Reloading delegate class: " + targetClass);
+            }
+            options.put(LoginModuleProxy.KERNEL_DELEGATE, getTargetClassForName(targetClass));
+        }
     }
 }

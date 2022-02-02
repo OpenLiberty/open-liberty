@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -46,11 +46,12 @@ Service-Component: \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService;\
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
     webAppSecurityConfigChangeListener=com.ibm.ws.webcontainer.security.WebAppSecurityConfigChangeListener;\
+    loggedOutCookieJCacheService=io.openliberty.jcache.JCacheService;\
     multiple:='interceptorService, webAuthenticator, unprotectedResourceService, webAppSecurityConfigChangeListener'; \
     greedy:='ssoAuthFilter,interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
-    optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener'; \
+    optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener,loggedOutCookieJCacheService'; \
     dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
-    properties:="service.vendor=IBM", \
+    properties:="service.vendor=IBM,loggedOutCookieJCacheService.target=(id=unbound)", \
   com.ibm.ws.webcontainer.security.ServletStartedListener; \
     implementation:=com.ibm.ws.webcontainer.security.ServletStartedListener; \
     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator'; \

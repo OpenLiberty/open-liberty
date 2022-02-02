@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinis
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,6 +25,7 @@ import java.util.concurrent.Future;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,7 +34,9 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,7 +55,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static ExecutorService executor;
 
-    private static final Class<?> c = SessionCacheOneServerTest.class;
+    @ClassRule
+    public static RepeatTests repeatRule = RepeatTests.withoutModification().andWith(new JCacheManagerRepeatAction());
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,9 +72,16 @@ public class SessionCacheOneServerTest extends FATServletClient {
             ResourceTransformationHelper.transformResourcestoEE9(originalResourceDir, jakartaResourceDir, server, null);
         }
 
+        String sessionCacheConfigFile = "httpSessionCache_1.xml";
+        if (RepeatTestFilter.isRepeatActionActive(JCacheManagerRepeatAction.ID)) {
+            sessionCacheConfigFile = "httpSessionCache_2.xml";
+        }
+
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
 
         server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        server.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
+                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
         server.startServer();
 
     }
@@ -408,7 +420,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * can be obtained and report statistics about the cache.
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES }) //Needs further attention for jakartaee 9
+    @SkipForRepeat({ EE9_FEATURES, //Needs further attention for jakartaee 9
+                     JCacheManagerRepeatAction.ID }) // Passes when run alone, fails when repeated
     public void testMXBeansEnabled() throws Exception {
         app.invokeServlet("testMXBeansEnabled", new ArrayList<>());
     }
@@ -452,7 +465,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES }) //Needs further attention for jakartaee 9
+    @SkipForRepeat({ EE9_FEATURES, //Needs further attention for jakartaee 9
+                     JCacheManagerRepeatAction.ID }) // Passes when run alone, fails when repeated
     public void testInfinispanClassCastException() throws Exception {
         //This should not fail here as this is the first test suite running.
         app.invokeServlet("testInfinispanClassCastException&shouldFail=false", null);

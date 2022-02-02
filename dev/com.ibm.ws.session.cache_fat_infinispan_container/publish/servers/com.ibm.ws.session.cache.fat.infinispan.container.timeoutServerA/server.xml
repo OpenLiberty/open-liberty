@@ -1,8 +1,17 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
 	<!-- Used for SessionCacheTimeoutTest and SessionCacheTwoServerTimeoutTest suite -->
     <featureManager>
         <feature>servlet-3.1</feature>
-        <feature>sessionCache-1.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>jndi-1.0</feature>
     </featureManager>
@@ -11,13 +20,10 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
     
-    <httpSessionCache libraryRef="InfinispanLib" writeContents="ALL_SESSION_ATTRIBUTES"> 
-    	<properties infinispan.client.hotrod.server_list="${INF_SERVERLIST}"/>
-		<properties infinispan.client.hotrod.auth_username="user"/> <!-- set in users.properties -->
-		<properties infinispan.client.hotrod.auth_password="pass"/> <!-- set in users.properties -->
-		<properties infinispan.client.hotrod.auth_realm="default"/>
-		<properties infinispan.client.hotrod.sasl_mechanism="PLAIN"/>
-    </httpSessionCache>
+    <!-- 
+         Include the session cache configuration file for this specific run.
+     -->
+    <include location="${server.config.dir}/configs/${session.cache.config.file}" />
 
     <application location="sessionCacheApp.war">
         <classloader commonLibraryRef="InfinispanLib"/>
