@@ -50,7 +50,7 @@ public class OIDCResponseTypeHandlerCodeImpl extends OAuth20ResponseTypeHandlerC
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> hashtableFromRunAsSubject = subjectHelper.getHashtableFromRunAsSubject();
         if (hashtableFromRunAsSubject != null) {
-            String thirdPartyIdTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
+            String thirdPartyIdTokenId = OAuth20Constants.THIRD_PARTY_ID_TOKEN_PREFIX + code.getTokenString();
             String thirdPartyIdTokenString = (String) hashtableFromRunAsSubject.get(OAuth20Constants.ID_TOKEN);
             if (thirdPartyIdTokenString != null) {
                 int lifetimeSeconds = getLifetimeSeconds(thirdPartyIdTokenString);
