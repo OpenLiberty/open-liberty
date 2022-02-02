@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.common;
 
+// import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,6 +64,19 @@ public abstract class BndExtAdapter<ConfigType>
 
     protected static final TraceComponent tc = Tr.register(BndExtAdapter.class);
 
+// Debugging added for issue 19937:
+// https://github.com/OpenLiberty/open-liberty/issues/19937
+// Please leave in case other problems are found.
+
+//    private final String className = getClass().getSimpleName();
+//    
+//    private void debug(String methodName, String message, Object... parms) {
+//        if ( parms.length > 0 ) {
+//            message = MessageFormat.format(message, parms);
+//        }
+//        System.out.println(className + "::" + methodName + " " + message);
+//    }
+    
     // Subclass APIs ...
 
     /**
@@ -115,9 +129,16 @@ public abstract class BndExtAdapter<ConfigType>
             String ddPath,
             boolean xmi) throws UnableToAdaptException {
 
+        // String methodName = "process";
+
+        // debug(methodName, "ddPath [ {0} ]", ddPath);
+
         // Always try to get both the override and the parsed data.
         ConfigType fromConfig = getConfigOverrides(ddOverlay, ddArtifactRoot);
         ConfigType fromModule = parse(ddAdaptRoot, ddPath, xmi);
+
+        // debug(methodName, "Config [ {0} ]", fromConfig);
+        // debug(methodName, "Module [ {0} ]", fromModule);
 
         // Answer whichever was obtained.  If both were obtained, set
         // the parsed data as the delegate of the override, and answer
@@ -155,13 +176,17 @@ public abstract class BndExtAdapter<ConfigType>
             OverlayContainer ddOverlay,
             ArtifactContainer ddArtifactRoot) throws UnableToAdaptException {
 
+        // String methodName = "getConfigOverrides";
+        
         List<? extends ConfigType> configurations = getConfigurations();
         if ( (configurations == null) || configurations.isEmpty() ) {
+            // debug(methodName, "ENTER/RETURN [ {0} ] [ null ]: No configurations", ddArtifactRoot.getPath());
             return null;
         }
 
         String cachePath = ddArtifactRoot.getPath();
-
+        // debug(methodName, "ENTER [ {0} ]", cachePath);
+        
         // The logic, below, is convoluted:
         //
         // If the current container is an application container, application
@@ -185,35 +210,77 @@ public abstract class BndExtAdapter<ConfigType>
         // be available.
 
         ApplicationInfo appInfo = (ApplicationInfo)
-            ddOverlay.getFromNonPersistentCache(cachePath, ApplicationInfo.class);        
+            ddOverlay.getFromNonPersistentCache(cachePath, ApplicationInfo.class);
+
         ModuleInfo moduleInfo = null;
-        if ( (appInfo == null) && (ddOverlay.getParentOverlay() != null) ) {
+        if ( appInfo == null ) {
+            // Issue 19937:
+            //
+            // Retrieval of the module overlay was only performed
+            // if the parent overlay was not null.  That is consistent with
+            // earlier behavior in EJBJarBndAdapter, and inconsistent with
+            // earlier behavior in WebExtAdapter.
+            //
+            // Very likely, EJB bindings and extensions configuration
+            // overrides did not work.
+            //
+            // The code has been updated to remove the parent overlay check,
+            // which unifies the EJB, Web, MBean, and WebServices behavior.
+            // The other cases, app and app-client, override 'getConfigOverrides',
+            // giving them distinct behavior.
+
+            // OverlayContainer parentOverlay = ddOverlay.getParentOverlay();
+            // debug(methodName, "Parent overlay [ {0} ]", parentOverlay);
+
             moduleInfo = (ModuleInfo)
                 ddOverlay.getFromNonPersistentCache(cachePath, ModuleInfo.class);
             if ( moduleInfo == null ) {
+                // debug(methodName, "RETURN [ null ]: No moduleInfo; no appInfo");
                 return null;
+            } else {
+                // debug(methodName, "ModuleInfo [ {0} ][ {0} ]", moduleInfo.getName(), moduleInfo);
             }
             appInfo = moduleInfo.getApplicationInfo();
         }
-        if ( (appInfo == null) || !(appInfo instanceof ExtendedApplicationInfo) ) {
+
+        if ( appInfo == null ) {
+            // debug(methodName, "RETURN [ null ]: No appInfo");
             return null;
         }
+        // debug(methodName, "AppInfo [ {0} ]", appInfo);
+        // debug(methodName, "AppInfo.name [ {0} ]", appInfo.getName());        
+        // debug(methodName, "AppInfo.deploymentName [ {0} ]", appInfo.getDeploymentName());
 
+        if ( !(appInfo instanceof ExtendedApplicationInfo) ) {
+            // debug(methodName, "RETURN [ null ]: Incorrectly typed appInfo");
+            return null;
+        }
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         NestedConfigHelper configHelper = extAppInfo.getConfigHelper();
         if ( configHelper == null ) {
+            // debug(methodName, "RETURN [ null ]: No config helper");            
             return null;
         }
         String appServicePid = (String) configHelper.get("service.pid");
         String appExtendsPid = (String) configHelper.get("ibm.extends.source.pid");
+        // debug(methodName, "service.pid [ {0} ]", appServicePid);        
+        // debug(methodName, "ibm.extends.source.pid [ {0} ]", appExtendsPid);        
 
         if ( moduleInfo == null ) {
-            return getFirstConfig(appInfo, appServicePid, appExtendsPid);
+            ConfigType result = getFirstConfig(appInfo, appServicePid, appExtendsPid);
+            // debug(methodName, "RETURN [ {0} ] (first)", result);
+            return result;
 
         } else {
             Map<String, ConfigType> configs =
                 getConfigOverrides(appInfo, ddOverlay, appServicePid, appExtendsPid);
-            return ( (configs == null) ? null : configs.get( moduleInfo.getName() ) );
+            if ( configs == null ) {
+                // debug(methodName, "RETURN [ null ] (no overrides)");
+                return null;
+            }
+            ConfigType result = configs.get( moduleInfo.getName() );
+            // debug(methodName, "RETURN [ {0} ] (matches)", result);
+            return result;
         }
     }
 
@@ -342,7 +409,8 @@ public abstract class BndExtAdapter<ConfigType>
      *
      * @param appInfo Current application information.
      * @param ddOverlay The module overlay.  Note that message recording is done
-     *     in the application overlay, which is the parent of this module overlay. 
+     *     in the application overlay, which is the parent of this module overlay,
+     *     except when no parent overlay is available. 
      * @param appServicePid The application service PID.
      * @param appExtendsPid The application extends PID.
      *
@@ -454,14 +522,14 @@ public abstract class BndExtAdapter<ConfigType>
 
     protected boolean alreadyRecorded(OverlayContainer ddOverlay, String overlayMessage) {
         Class<?> cacheType = getCacheType();
-        
+
         OverlayContainer appOverlay = ddOverlay.getParentOverlay();
+        OverlayContainer messageOverlay = (appOverlay == null) ? ddOverlay : appOverlay;
 
-        if ( appOverlay.getFromNonPersistentCache(overlayMessage, cacheType) != null) {
+        if ( messageOverlay.getFromNonPersistentCache(overlayMessage, cacheType) != null) {
             return true;
-
         } else {
-            appOverlay.addToNonPersistentCache(overlayMessage, cacheType, overlayMessage);
+            messageOverlay.addToNonPersistentCache(overlayMessage, cacheType, overlayMessage);
             return false;
         }
     }
@@ -508,5 +576,5 @@ public abstract class BndExtAdapter<ConfigType>
 
     public Integer getEJBVersion(Container ddAdaptRoot) throws UnableToAdaptException {
         return AppStructureHelper.getEJBVersion(ddAdaptRoot);
-    }    
+    }
 }
