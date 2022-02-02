@@ -143,6 +143,13 @@ autoFVT.doLast {
       into new File(autoFvtDir, "publish/servers/" + server + "/imports")
       include 'oidc_features.xml', 'provider_OAuthConfigTai.xml', 'provider_OAuthMediatorProvider.xml'
     }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, "publish/servers/" + server + "/imports")
+      include 'op_fatTestPorts.xml'
+    }
+
   }
   
   copy {
