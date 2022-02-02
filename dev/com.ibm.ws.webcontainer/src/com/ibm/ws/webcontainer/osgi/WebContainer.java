@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,14 @@
 package com.ibm.ws.webcontainer.osgi;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -58,7 +60,6 @@ import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threading.FutureMonitor;
@@ -226,7 +227,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private AsyncContextFactory asyncContextFactory;
     
     private static final int DEFAULT_MAX_VERSION = 30;
-    private ServiceReference<ServletVersion> versionRef;
     
     private static boolean serverStopping = false;
 
@@ -236,6 +236,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private URIMatcherFactory uriMatcherFactory;
     
     
+    public static final int SPEC_LEVEL_30 = 30;
+    public static final int SPEC_LEVEL_31 = 31;
+    public static final int SPEC_LEVEL_40 = 40;
+    public static final int SPEC_LEVEL_50 = 50;
+    private static final int DEFAULT_SPEC_LEVEL = 30;
+
+    private static int loadedContainerSpecLevel = loadServletVersion();
+
     /**
      * Constructor.
      * 
@@ -1568,52 +1576,39 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         // no-op intended here to avoid cacheServletWrapperFactory being null when switching service implementations
     }
 
-    
-    @Reference(service=ServletVersion.class, cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
-    protected synchronized void setVersion(ServiceReference<ServletVersion> reference) {
-        String methodName = "setVersion";
-        versionRef = reference;
-        WebContainer.loadedContainerSpecLevel = (Integer) reference.getProperty("version");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
-        }
-    }
 
-    protected synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            WebContainer.loadedContainerSpecLevel = DEFAULT_MAX_VERSION;
+    private static synchronized int loadServletVersion(){
+        String methodName = "loadServletVersion";
+
+        try (InputStream input = WebContainer.class.getClassLoader().getResourceAsStream("com/ibm/ws/webcontainer/speclevel/servletSpecLevel.properties")) {
+
+            // null check fixes errors in wc unit tests 
+            if(input != null){
+                Properties prop = new Properties();
+                prop.load(input);
+                int loadedVersion = Integer.parseInt(prop.getProperty("version"));
+                return loadedVersion;
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName, "InputStream was null for servletSpecLevel.properties");
+                }
+            }
+
+        } catch (Exception ex) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "Exception occured: " + ex.getCause());
+            }
+        } 
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + DEFAULT_SPEC_LEVEL + " ]");
         }
+
+        return DEFAULT_SPEC_LEVEL;
     }
-    
-    public static final int SPEC_LEVEL_UNLOADED = -1;
-    public static final int SPEC_LEVEL_30 = 30;
-    public static final int SPEC_LEVEL_31 = 31;
-    public static final int SPEC_LEVEL_40 = 40;
-    public static final int SPEC_LEVEL_50 = 50;
-    private static final int DEFAULT_SPEC_LEVEL = 30;
-    
-    private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;
-    
+        
     public static int getServletContainerSpecLevel() {
         String methodName = "getServletContainerSpecLevel";
-
-        if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-            CountDownLatch currentLatch = selfInit;
-            // wait for activation
-            try {
-                currentLatch.await(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // auto-FFDC
-                Thread.currentThread().interrupt();
-            }
-            currentLatch.countDown(); // don't wait again
-
-            if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-                logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
-                return WebContainer.DEFAULT_SPEC_LEVEL;
-            }
-        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
