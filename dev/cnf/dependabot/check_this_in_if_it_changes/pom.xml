@@ -729,7 +729,12 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>4.0.0.Beta3</version>
+      <version>4.0.0-RC3</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.lang-model</artifactId>
+      <version>4.0.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>
@@ -740,6 +745,11 @@
       <groupId>jakarta.interceptor</groupId>
       <artifactId>jakarta.interceptor-api</artifactId>
       <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.interceptor</groupId>
+      <artifactId>jakarta.interceptor-api</artifactId>
+      <version>2.1.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.jms</groupId>
@@ -2619,7 +2629,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>5.0.0.Alpha2</version>
+      <version>5.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -2639,7 +2649,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>5.0.0.Alpha2</version>
+      <version>5.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>
