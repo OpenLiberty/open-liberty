@@ -692,6 +692,11 @@
       <version>2.0.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.1.0-RC1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.annotation</groupId>
       <artifactId>jakarta.annotation-api</artifactId>
       <version>2.0.0</version>
@@ -1750,6 +1755,11 @@
       <groupId>org.cryptacular</groupId>
       <artifactId>cryptacular</artifactId>
       <version>1.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-activation</artifactId>
+      <version>1.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.birt.runtime.3_7_1</groupId>

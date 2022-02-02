@@ -126,8 +126,8 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got jakarta.activation from location=" + apiLocation);
 
         assertTrue("Expected jakarta.activation to come from Liberty JDK classloader, but it came from: " + apiLoader,
-                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.activation.2.0"));
+                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.activation.2."));
         assertTrue("Expected jakarta.activation to come from Liberty, but it came from: " + apiLocation,
-                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.activation.2.0"));
+                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.activation.2."));
     }
 }
