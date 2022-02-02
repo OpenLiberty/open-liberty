@@ -76,7 +76,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
     private static final Class<?> c = EE9FeatureCompatibilityTest.class;
 
-    static final List<String> features = new ArrayList<>();
+    static final Set<String> features = new HashSet<>();
 
     static final Set<String> nonEE9JavaEEFeatures = new HashSet<>();
 
@@ -294,7 +294,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // jsonp-2.0 will conflict with itself
         specialEE9Conflicts.put("jsonp-2.0", "io.openliberty.jsonp");
         specialEE9Conflicts.put("jsonp-2.1", "io.openliberty.jsonp");
-        testCompatibility("jsonp-2.0", specialEE9Conflicts);
+        testCompatibility("jsonp-2.0", features, specialEE9Conflicts);
     }
 
     @Test
@@ -305,7 +305,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         specialEE9Conflicts.put("servlet-4.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
 
-        testCompatibility("servlet-5.0", specialEE9Conflicts);
+        testCompatibility("servlet-5.0", features, specialEE9Conflicts);
     }
 
     /**
@@ -318,6 +318,12 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
     @Test
     @Mode(TestMode.FULL)
     public void testJakarta91ConvenienceFeature() throws Exception {
+        Set<String> featureSet = new HashSet<>(features);
+        // opentracing-1.3 and jakartaee-9.1 take over an hour to run on power linux system.
+        // For now excluding opentracing-1.3 in order to not go past the 3 hour limit for a
+        // Full FAT to run.
+        featureSet.remove("opentracing-1.3");
+
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         // faces and facesContainer conflict with each other
         specialEE9Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
@@ -344,10 +350,10 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
-        testCompatibility("jakartaee-9.1", specialEE9Conflicts);
+        testCompatibility("jakartaee-9.1", featureSet, specialEE9Conflicts);
     }
 
-    private void testCompatibility(String featureName, Map<String, String> specialConflicts) throws Exception {
+    private void testCompatibility(String featureName, Set<String> featureSet, Map<String, String> specialConflicts) throws Exception {
         final List<String> errors = new CopyOnWriteArrayList<>();
 
         int threadCount = Runtime.getRuntime().availableProcessors() - 1;
@@ -355,9 +361,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             threadCount = 4;
         }
         if (threadCount <= 1) {
-            checkFeatures(featureName, new ArrayDeque<String>(features), specialConflicts, errors);
+            checkFeatures(featureName, new ArrayDeque<String>(featureSet), specialConflicts, errors);
         } else {
-            final ConcurrentLinkedQueue<String> featuresQueue = new ConcurrentLinkedQueue<>(features);
+            final ConcurrentLinkedQueue<String> featuresQueue = new ConcurrentLinkedQueue<>(featureSet);
             Thread[] threads = new Thread[threadCount];
             for (int i = 0; i < threadCount; ++i) {
                 threads[i] = new Thread(new Runnable() {
