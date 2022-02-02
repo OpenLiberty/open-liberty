@@ -33,13 +33,11 @@ import com.ibm.ws.jbatch.jms.internal.BatchJmsConstants;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 import test.common.ComponentContextMockery;
 import test.common.SharedOutputManager;
 
-/**
- *
- */
 public class MessageEndpointFactoryImplTest {
     private class TestMessageEndpointFactory extends com.ibm.ws.jbatch.jms.internal.listener.impl.MessageEndpointFactoryImpl {
         private final String activationSpecId;
@@ -114,7 +112,6 @@ public class MessageEndpointFactoryImplTest {
     private static final class ServerStartedPhase2Impl implements ServerStartedPhase2 {}
 
     @Rule
-    //public final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     public final SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
     private final Mockery mockery = new Mockery();
     private final ComponentContextMockery ccMockery = new ComponentContextMockery(mockery);
@@ -185,28 +182,31 @@ public class MessageEndpointFactoryImplTest {
 
     @Test
     public void testAddRemoveEndpointActivationService() throws Exception {
-
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setContext(cc);
-        ServiceReference<EndpointActivationService> easSR = mockEASSR("as");
-//        runtime.addEndPointActivationService(easSR);
-//        runtime.removeEndPointActivationService(easSR);
-        runtime.setJmsActivationSpec(easSR);
-        runtime.unsetJmsActivationSpec(easSR);
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("as"));
+        // new style executor no longer permits removal of activation spec
     }
 
     @Test
     public void testActivateEndpoint() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-
-        runtime.setContext(cc);
-
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("batchActivationSpec")); 
 
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
         mef.allowActivate = true;
@@ -217,220 +217,57 @@ public class MessageEndpointFactoryImplTest {
 
     @Test(expected = ResourceException.class)
     public void testActivateEndpointException() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("batchActivationSpec"));
 
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
         mef.allowActivate = true;
         mef.activateThrows = true;
         runtime.activateEndpoint(mef);
-    }
-
-    @Test
-    public void testActivateEndpointNoEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec", null));
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        runtime.setEndpointActivationSpecId("batchActivationSpec");
-        runtime.activateEndpoint(mef);
-
-        mef.allowActivate = true;
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        mef.assertActivated();
-    }
-
-    @Ignore
-    //fail
-    public void testActivateEndpointBeforeEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("", runtime);
-        runtime.activateEndpoint(mef);
-
-        //outputMgr.expectWarning("CNTR4015W");
-        outputMgr.expectOutput("ActivationSpect not found:");
-        mef.allowActivate = true;
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        mef.assertActivated();
-    }
-
-    @Ignore
-    //fail
-    public void testActivateEndpointExceptionBeforeEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("as", runtime);
-        runtime.activateEndpoint(mef);
-
-        mef.allowActivate = true;
-        mef.activateThrows = true;
-        runtime.setJmsActivationSpec(mockEASSR("as"));
-        mef.assertActivated();
-        // Exception from deferred activation should be swallowed.
-    }
-
-    @Test
-    public void testActivateEndpointBeforeEASAndServerStarted() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        runtime.setEndpointActivationSpecId("batchActivationSpec");
-        runtime.activateEndpoint(mef);
-
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-
-        mef.allowActivate = true;
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        mef.assertActivated();
-    }
-
-    @Test
-    public void testActivateEndpointBeforeServerStarted() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        runtime.activateEndpoint(mef);
-
-        mef.allowActivate = true;
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        mef.assertActivated();
-    }
-
-    @Test
-    public void testActivateEndpointBeforeServerStartedAndEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        runtime.setEndpointActivationSpecId("batchActivationSpec");
-        runtime.activateEndpoint(mef);
-
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-
-        mef.allowActivate = true;
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        mef.assertActivated();
     }
 
     @Test
     public void testDeactivateEndpoint() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("batchActivationSpec"));
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
         mef.allowActivate = true;
         runtime.activateEndpoint(mef);
         mef.assertActivated();
 
         mef.allowDeactivate = true;
-        runtime.deactivateEndpoint(mef);
+        runtime.deactivate();
         mef.assertDeactivated();
-    }
-
-    @Test
-    public void testDeactivateEndpointViaEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        ServiceReference<EndpointActivationService> easSR = mockEASSR("batchActivationSpec");
-        runtime.setJmsActivationSpec(easSR);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        runtime.unsetJmsActivationSpec(easSR);
-        mef.assertDeactivated();
-    }
-
-    @Test
-    public void testDeactivateEndpointViaReplaceEAS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        ServiceReference<EndpointActivationService> easSR = mockEASSR("batchActivationSpec");
-        runtime.setJmsActivationSpec(easSR);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        ServiceReference<EndpointActivationService> easSR2 = mockEASSR("batchActivationSpec");
-        mef.allowDeactivate = true;
-        mef.allowActivate = true;
-        runtime.setJmsActivationSpec(easSR2);
-        mef.assertDeactivated();
-        mef.assertActivated();
-
-        runtime.unsetJmsActivationSpec(easSR);
-    }
-
-    @Test
-    public void testDeactivateEndpointBeforeActivate() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", runtime);
-        runtime.setEndpointActivationSpecId("batchActivationSpec");
-        runtime.activateEndpoint(mef);
-        runtime.deactivateEndpoint(mef);
-
-        // Ensure MEF is not activated when EAS becomes available.
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-    }
-
-    @Test
-    public void testAddRemoveAdminObjectService() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-
-        ServiceReference<AdminObjectService> aosSR = mockAOSSR("batchJobSubmissionQueue", null);
-        runtime.setJmsQueue(aosSR);
-        runtime.unsetJmsQueue(aosSR);
-
-        aosSR = mockAOSSR("batchJobSubmissionQueue", "jms/batch/jobSubmissionQueue");
-        runtime.setJmsQueue(aosSR);
-        runtime.unsetJmsQueue(aosSR);
     }
 
     @Test
     public void testActivateEndpointWithDestinationId() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        runtime.setJmsQueue(mockAOSSR("batchJobSubmissionQueue", null));
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("batchActivationSpec")); 
 
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
         mef.allowActivate = true;
@@ -438,14 +275,18 @@ public class MessageEndpointFactoryImplTest {
         mef.assertActivated();
     }
 
-    @Ignore
+    @Test
     public void testActivateEndpointWithDestinationJndiName() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        runtime.setJmsQueue(mockAOSSR("jbatchRequestsQueue", "jms/batch/jobSubmissionQueue"));
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("jbatchRequestsQueue", "jms/batch/jobSubmissionQueue"),
+                mockEASSR("batchActivationSpec"));
 
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "jms/batch/jobSubmissionQueue", runtime);
         mef.allowActivate = true;
@@ -454,13 +295,17 @@ public class MessageEndpointFactoryImplTest {
     }
 
     @Test
-    public void testDeActivateEndpointWithDestination() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        runtime.setJmsQueue(mockAOSSR("batchJobSubmissionQueue", null));
+    public void testDeactivateEndpointWithDestination() throws Exception {
+        BatchJmsExecutor runtime = new BatchJmsExecutor(cc, config, 
+                new ApplicationStartBarrier() {},
+                new ServerStartedPhase2() {},
+                mockJ2EENameFactory(),
+                null, // resource config factory
+                null, // job repository
+                null, // XA resource factory
+                null, // connection factory
+                mockAOSSR("batchJobSubmissionQueue", null),
+                mockEASSR("batchActivationSpec"));
 
         TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
         mef.allowActivate = true;
@@ -468,130 +313,7 @@ public class MessageEndpointFactoryImplTest {
         mef.assertActivated();
 
         mef.allowDeactivate = true;
-        runtime.deactivateEndpoint(mef);
-        mef.assertDeactivated();
-    }
-
-    @Ignore
-    public void testActivateEndpointBeforeAOS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
-        //outputMgr.expectWarning("CNTR4016W");
-        outputMgr.expectOutput("destination not found: ");
-        runtime.activateEndpoint(mef);
-
-        mef.allowActivate = true;
-        runtime.setJmsQueue(mockAOSSR("batchJobSubmissionQueue", null));
-        mef.assertActivated();
-    }
-
-    @Test
-    public void testAddRemoveAdminObjectServiceNoop() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        runtime.setJmsQueue(mockAOSSR("batchJobSubmissionQueue", null));
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        ServiceReference<AdminObjectService> aosSR2 = mockAOSSR("batchJobSubmissionQueue", null);
-        runtime.setJmsQueue(aosSR2);
-        runtime.unsetJmsQueue(aosSR2);
-    }
-
-    @Test
-    public void testDeactivateEndpointViaAOS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        ServiceReference<AdminObjectService> aosSR = mockAOSSR("batchJobSubmissionQueue", null);
-        runtime.setJmsQueue(aosSR);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        runtime.unsetJmsQueue(aosSR);
-        mef.assertDeactivated();
-    }
-
-    @Ignore
-    public void testDeactivateEndpointViaReplaceAOS() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        ServiceReference<AdminObjectService> aosSR = mockAOSSR("batchJobSubmissionQueue", null);
-        ServiceReference<AdminObjectService> aosSR2 = mockAOSSR("batchJobSubmissionQueue", null);
-        runtime.setJmsQueue(aosSR2);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "batchJobSubmissionQueue", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        mef.allowActivate = true;
-        runtime.setJmsQueue(aosSR);
-        mef.assertDeactivated();
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        mef.allowActivate = true;
-        runtime.unsetJmsQueue(aosSR);
-        mef.assertDeactivated();
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        runtime.unsetJmsQueue(aosSR2);
-        mef.assertDeactivated();
-    }
-
-    @Ignore
-    public void testDeactivateEndpointViaReplaceAOSIdVsJndiName() throws Exception {
-        BatchJmsExecutor runtime = new BatchJmsExecutor();
-        runtime.setJEENameFactory(mockJ2EENameFactory());
-        runtime.setContext(cc);
-        runtime.setServerStartedPhase2(new ServerStartedPhase2Impl());
-        runtime.setJmsActivationSpec(mockEASSR("batchActivationSpec"));
-        ServiceReference<AdminObjectService> aosSR = mockAOSSR("batchJobSubmissionQueue", "jms/batch/jobSubmissionQueue");
-        ServiceReference<AdminObjectService> aosSR2 = mockAOSSR("jms/batch/jobSubmissionQueue", null);
-        runtime.setJmsQueue(aosSR);
-
-        TestMessageEndpointFactory mef = new TestMessageEndpointFactory("batchActivationSpec", "jms/batch/jobSubmissionQueue", runtime);
-        mef.allowActivate = true;
-        runtime.activateEndpoint(mef);
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        mef.allowActivate = true;
-        runtime.setJmsQueue(aosSR2);
-        mef.assertDeactivated();
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        mef.allowActivate = true;
-        runtime.unsetJmsQueue(aosSR2);
-        mef.assertDeactivated();
-        mef.assertActivated();
-
-        mef.allowDeactivate = true;
-        runtime.unsetJmsQueue(aosSR);
+        runtime.deactivate();
         mef.assertDeactivated();
     }
 }

@@ -25,6 +25,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.jms.ConnectionFactory;
@@ -125,16 +126,13 @@ public class BatchJmsExecutor {
         this.endpointActivationSpecId = (String) jmsActivationSpecRef.getProperty("id");
 
         final String adminId = (String) adminObjectServiceRef.getProperty("id");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "BatchJmsExecutor: id=" + adminId);
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "BatchJmsExecutor: id=" + adminId);
 
         if (null == adminId) {
             this.jmsQueueJndi = null;
         } else {
             this.jmsQueueJndi = (String) adminObjectServiceRef.getProperty("jndiName");
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "BatchJmsExecutor: jndiName=" + jmsQueueJndi);
-            }
+            
             addAdminObjectService(adminObjectServiceRef, adminId, false);
             // If an AdminObjectService has both an id and a jndiName that are
             // different, it will be added to the set twice.
@@ -142,14 +140,14 @@ public class BatchJmsExecutor {
                 addAdminObjectService(adminObjectServiceRef, jmsQueueJndi, true);
             }
         }
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "BatchJmsExecutor: id = " + adminId + " jndiName=" + jmsQueueJndi);
 
         if(FrameworkState.isStopping()) {
             debug(this, tc, "BatchJmsExecutor" , "Framework stopping");
             return;
         }
 
-        setOperationGroup(config);
-    
+        this.batchOperationGroup = createBatchOperationGroup(config);    
 
         try {
             activateEndpoint();
@@ -171,6 +169,9 @@ public class BatchJmsExecutor {
             if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "easInfo=" + easInfo);
 
             activateDeferredEndpoints(easInfo.endpointFactories);
+        } else {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "endpoint activation spec id was null");
+
         }
 
     }
@@ -445,8 +446,9 @@ public class BatchJmsExecutor {
     private synchronized NamedAdminObjectServiceInfo createNamedAdminObjectServiceInfo(String id) {
         NamedAdminObjectServiceInfo aosInfo = adminObjectServices.get(id);
         if (aosInfo == null) {
-            aosInfo = new NamedAdminObjectServiceInfo(id, new ConcurrentServiceReferenceSet<AdminObjectService>(JMS_QUEUE_REF_NAME),
-                    new ConcurrentServiceReferenceSet<AdminObjectService>(JMS_QUEUE_REF_NAME));
+            aosInfo = new NamedAdminObjectServiceInfo(id, 
+                    new ConcurrentServiceReferenceSet<>(JMS_QUEUE_REF_NAME),
+                    new ConcurrentServiceReferenceSet<>(JMS_QUEUE_REF_NAME));
             adminObjectServices.put(id, aosInfo);
         }
         return aosInfo;
@@ -459,34 +461,6 @@ public class BatchJmsExecutor {
     private synchronized void cleanupAdminObjectServiceInfo(NamedAdminObjectServiceInfo aosInfo) {
         if (aosInfo.serviceRef == null && aosInfo.endpointFactories.isEmpty()) {
             endpointActivationServices.remove(aosInfo.id);
-        }
-    }
-
-    /**
-     * Declarative service method for removing an EndpointActivationService.
-     */
-    protected synchronized void unsetJmsActivationSpec(ServiceReference<EndpointActivationService> reference) {
-        String activationSvcId = (String) reference.getProperty("id");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "activationSvcId : " + activationSvcId);
-        }
-
-        EndpointActivationServiceInfo easInfo = endpointActivationServices.get(activationSvcId);
-        if (easInfo != null) {
-            // If the service was being replaced, then the add method would
-            // have been called first, and this reference would no longer be
-            // set. If it's still set, then the service is being removed and
-            // there is no replacement, so just deactivate all endpoints.
-            if (easInfo.serviceRef.equals(reference)) {
-                deactivateEndpoints(easInfo.endpointFactories);
-
-                easInfo.setReference(null);
-                cleanupEndpointActivationServiceInfo(easInfo);
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "unset reference already removed");
-                }
-            }
         }
     }
 
@@ -514,17 +488,17 @@ public class BatchJmsExecutor {
     }
 
     @Modified
-    protected void setOperationGroup(Map<String, Object> config) {
-    	String[] opGroups = (String[])config.get(OPERATION_GROUP);
-	BatchOperationGroup newBatchOperationGroup = new BatchOperationGroup();
-        if (opGroups != null) {
-		for (String group : opGroups) {
-			newBatchOperationGroup.addGroup(group);
-		}
-        }
-        // Doesn't seem to be any need for any synchronization here.  Up until this assignment is made it seems fine to use
+    protected void modified(Map<String, Object> config) {
+    	// Doesn't seem to be any need for any synchronization here.  Up until this assignment is made it seems fine to use
         // the old value, even though the modified method may have already been called.
-        this.batchOperationGroup = newBatchOperationGroup;
+        this.batchOperationGroup = createBatchOperationGroup(config);
+    }
+
+    private static BatchOperationGroup createBatchOperationGroup(Map<String, Object> config) {
+        return Optional.ofNullable(config.get(OPERATION_GROUP))
+                .map(String[].class::cast)
+                .map(BatchOperationGroup::new) // pass some strings to the constructor
+                .orElseGet(BatchOperationGroup::new); // pass no strings to the constructor
     }
 
     @Deactivate
@@ -536,7 +510,25 @@ public class BatchJmsExecutor {
                 removeAdminObjectService(adminObjectServiceRef, jmsQueueJndi, true);
             }
         }
+	
+	
+	
 	deactivated = true;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "activationSvcId : " + endpointActivationSpecId);
+        }
+
+        EndpointActivationServiceInfo easInfo = endpointActivationServices.get(endpointActivationSpecId);
+        if (easInfo != null) {
+            // If the service was being replaced, then the add method would
+            // have been called first, and this reference would no longer be
+            // set. If it's still set, then the service is being removed and
+            // there is no replacement, so just deactivate all endpoints.
+            deactivateEndpoints(easInfo.endpointFactories);
+            easInfo.setReference(null);
+            cleanupEndpointActivationServiceInfo(easInfo);
+        }
     }
 
     /**
