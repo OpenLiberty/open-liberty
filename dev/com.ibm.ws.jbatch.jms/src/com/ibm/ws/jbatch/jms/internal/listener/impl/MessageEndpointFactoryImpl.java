@@ -74,7 +74,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     /**
      * runtime information about the destination.
      */
-    BatchJmsExecutor.NamedAdminObjectServiceInfo adminObjectServiceInfo;
+//    BatchJmsExecutor.NamedAdminObjectServiceInfo adminObjectServiceInfo; // TODO: remove
 
     /**
      * True if the runtime has called activateEndpointInternal but has not
@@ -109,7 +109,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         // proxy instance is created. The Proxy Constructor takes a single
         // parameter of type InvocationHandler.
         try {
-            ivProxyCTOR = proxyClass.getConstructor(new Class[] { InvocationHandler.class });
+            ivProxyCTOR = proxyClass.getConstructor(InvocationHandler.class);
         } catch (Throwable t) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(MessageEndpointFactoryImpl.this, tc, "MEF initialization for JmsEndpointListener " + " with messaging listener interface of "
@@ -263,19 +263,15 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      *             if a failure occurs deactivating the endpoint
      */
     protected void deactivateEndpointInternal(EndpointActivationService eas) throws ResourceException {
-        Object deactivationKey;
         ResourceException rex = null;
 
         synchronized (ivProxyCTOR) {
             if ((ivState == ACTIVE_STATE) || (ivState == DEACTIVATE_PENDING_STATE)) {
                 ivState = DEACTIVATING_STATE;
-                deactivationKey = activationSpec;
-                if (deactivationKey == null) {
+                if (null == activationSpec) {
                     // This occurs when the endpoint activation service
-                    // forcefully
-                    // deactivates the endpoint. When this occurs all we need to
-                    // do is change state since the endpoint was already
-                    // deactivated.
+                    // forcefully deactivates the endpoint. When this occurs all we need to
+                    // do is change state since the endpoint was already deactivated.
                     ivState = INACTIVE_STATE; // d450478
                 }
 
