@@ -24,7 +24,7 @@ import org.objectweb.asm.Type;
 
 import com.ibm.ws.annocache.info.internal.AnnotationVisitorImpl_Info.AnnotationInfoVisitor;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 // Visit rules:
 //

@@ -15,7 +15,7 @@ import org.objectweb.asm.Opcodes;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 /**
  * <p>Core detail text generating visitor for annotations. Used for annotation

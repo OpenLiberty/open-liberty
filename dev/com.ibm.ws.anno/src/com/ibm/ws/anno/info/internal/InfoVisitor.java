@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.info.internal.InfoVisitor_Annotation.AnnotationInfoVisitor;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 // Visit rules:
 //

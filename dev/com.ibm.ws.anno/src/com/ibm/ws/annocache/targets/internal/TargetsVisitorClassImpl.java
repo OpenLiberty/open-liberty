@@ -29,7 +29,7 @@ import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
 import com.ibm.ws.annocache.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 // Visit rules:
 //

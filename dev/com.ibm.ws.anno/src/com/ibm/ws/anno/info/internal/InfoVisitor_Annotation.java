@@ -19,7 +19,7 @@ import org.objectweb.asm.Type;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 // An annotation visitor is used for all processing of annotation occurrences.
 //

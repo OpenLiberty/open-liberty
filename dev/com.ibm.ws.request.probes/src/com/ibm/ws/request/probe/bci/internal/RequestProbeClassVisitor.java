@@ -18,8 +18,10 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor;
+
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.wsspi.request.probe.bci.RequestProbeHelper;
-import com.ibm.ws.asm.ASMHelper;
 
 /**
  *

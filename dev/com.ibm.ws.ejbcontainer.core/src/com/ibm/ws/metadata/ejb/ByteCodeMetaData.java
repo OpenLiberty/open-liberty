@@ -27,8 +27,9 @@ import org.objectweb.asm.Opcodes;
 import com.ibm.ejs.container.util.MethodAttribUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * Metadata obtained by scanning the bytecode of an EJB implementation class.

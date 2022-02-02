@@ -39,12 +39,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentException;
 
-import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.monitor.internal.bci.ProbeMethodAdapter;
 import com.ibm.ws.monitor.internal.bci.remap.AddVersionFieldClassAdapter;
 import com.ibm.ws.monitor.internal.boot.templates.ClassAvailableProxy;
 import com.ibm.ws.monitor.internal.boot.templates.ProbeProxy;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * Component that is responsible for generating and installing the

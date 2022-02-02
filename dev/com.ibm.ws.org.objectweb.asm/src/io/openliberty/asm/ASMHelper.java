@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.asm;
+package io.openliberty.asm;
 
 import org.objectweb.asm.Opcodes;
 

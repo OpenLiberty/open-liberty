@@ -27,7 +27,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
-import com.ibm.ws.asm.ASMHelper;
+import io.openliberty.asm.ASMHelper;
 
 // Visit rules:
 //

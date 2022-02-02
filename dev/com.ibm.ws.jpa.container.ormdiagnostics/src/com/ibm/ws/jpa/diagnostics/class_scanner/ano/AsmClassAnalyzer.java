@@ -24,7 +24,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 
-import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationInfoType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationValueType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.AnnotationsType;
@@ -44,6 +43,8 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ParameterTy
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ParametersType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueInstanceType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueType;
+
+import io.openliberty.asm.ASMHelper;
 
 public class AsmClassAnalyzer {
     private final static String JavaLangObject = "java.lang.Object";

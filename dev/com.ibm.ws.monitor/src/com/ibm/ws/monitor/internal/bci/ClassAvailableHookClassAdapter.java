@@ -22,8 +22,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.monitor.internal.MonitoringProxyActivator;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * Class adapter to hook the class static initializer to call the monitoring

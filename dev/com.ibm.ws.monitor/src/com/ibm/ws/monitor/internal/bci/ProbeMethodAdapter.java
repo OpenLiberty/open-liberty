@@ -31,11 +31,12 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import com.ibm.ws.asm.ASMHelper;
 import com.ibm.ws.monitor.internal.MonitoringProxyActivator;
 import com.ibm.ws.monitor.internal.ProbeImpl;
 import com.ibm.ws.monitor.internal.ProbeListener;
 import com.ibm.ws.monitor.internal.ProbeManagerImpl;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * Base class for method adapters that inject code to fire probes. The class

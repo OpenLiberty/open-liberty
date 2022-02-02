@@ -1,3 +1,6 @@
+# IMPORTANT: Remember to update io.openliberty.asm.ASMHelper.CURRENT_ASM to the value of the most current
+# org.objectweb.asm.Opcodes.ASM## constant when updating the ASM dependency.
+
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
@@ -9,4 +12,4 @@ DynamicImport-Package: *
 
 Export-Package: \
   org.objectweb.asm.*;version="9.2",\
-  com.ibm.ws.asm;version="1.0"
+  io.openliberty.asm;version="1.0"
