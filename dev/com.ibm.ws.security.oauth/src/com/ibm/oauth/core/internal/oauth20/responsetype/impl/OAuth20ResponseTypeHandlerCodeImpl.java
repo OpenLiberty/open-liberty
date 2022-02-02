@@ -11,15 +11,9 @@
 package com.ibm.oauth.core.internal.oauth20.responsetype.impl;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.jwt.consumer.JwtContext;
 
 import com.google.gson.JsonArray;
 import com.ibm.oauth.core.api.attributes.AttributeList;
@@ -27,13 +21,10 @@ import com.ibm.oauth.core.api.error.OAuthException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20AccessDeniedException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
-import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
-import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.oauth20.plugins.OAuth20BearerTokenImpl;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
 public class OAuth20ResponseTypeHandlerCodeImpl implements
@@ -120,74 +111,10 @@ public class OAuth20ResponseTypeHandlerCodeImpl implements
 
             result = new ArrayList<OAuth20Token>();
             result.add(code);
-
-            OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
-            cacheThirdPartyTokens(code, tokenCache);
-
         } finally {
             _log.exiting(CLASS, methodName);
         }
         return result;
-    }
-
-    private void cacheThirdPartyTokens(OAuth20Token code, OAuth20TokenCache tokenCache) {
-        SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> hashtableFromRunAsSubject = subjectHelper.getHashtableFromRunAsSubject();
-        if (hashtableFromRunAsSubject != null) {
-            String thirdPartyIdTokenId = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
-            String thirdPartyIdTokenString = (String) hashtableFromRunAsSubject.get(OAuth20Constants.ID_TOKEN);
-            cacheThirdPartyToken(code, thirdPartyIdTokenId, thirdPartyIdTokenString, tokenCache);
-        }
-    }
-
-    private void cacheThirdPartyToken(OAuth20Token code, String thirdPartyTokenId, String thirdPartyTokenString, OAuth20TokenCache tokenCache) {
-        if (thirdPartyTokenString != null) {
-            int lifetimeSeconds = getLifetimeSeconds(thirdPartyTokenString);
-
-            OAuth20Token tokenCacheEntry = new OAuth20BearerTokenImpl(
-                    thirdPartyTokenId,
-                    thirdPartyTokenString,
-                    code.getComponentId(),
-                    code.getClientId(),
-                    code.getUsername(),
-                    code.getRedirectUri(),
-                    code.getStateId(),
-                    code.getScope(),
-                    lifetimeSeconds,
-                    null,
-                    OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
-
-            // save third-party token in token cache to pick up when token endpoint is called
-            tokenCache.add(tokenCacheEntry.getId(), tokenCacheEntry, tokenCacheEntry.getLifetimeSeconds());
-        }
-    }
-
-    private static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
-        JwtConsumer consumer = new JwtConsumerBuilder()
-                .setSkipAllValidators()
-                .setDisableRequireSignature()
-                .setSkipSignatureVerification()
-                .build();
-
-        return consumer.process(jwtString);
-    }
-
-    private int getLifetimeSeconds(String jwtString) {
-        try {
-            JwtContext context = parseJwtWithoutValidation(jwtString);
-            JwtClaims claims = context.getJwtClaims();
-
-            long now = System.currentTimeMillis();
-            long expiresAt = claims.getExpirationTime().getValueInMillis();
-            long expiresIn = expiresAt - now;
-
-            if (expiresIn < 0) {
-                return 0;
-            }
-            return (int) expiresIn / 1000;
-        } catch (Exception e) {
-            return 0;
-        }
     }
 
     /**
