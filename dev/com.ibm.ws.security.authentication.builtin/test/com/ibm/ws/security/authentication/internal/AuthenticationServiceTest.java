@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -59,7 +58,6 @@ import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
-import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -83,7 +81,6 @@ public class AuthenticationServiceTest {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
     private AuthenticationServiceImpl authenticationServiceImpl;
     private final JAASServiceImpl jaasService = mockery.mock(JAASServiceImpl.class);
     private final String jaasEntryName = "TestLogin";
@@ -109,7 +106,6 @@ public class AuthenticationServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        LoginModuleHelper.setTestJaasService(jaasService); // No OSGi component to lookup in the runtime, so override
         authenticationServiceImpl = createActivatedAuthenticationServiceImpl(new HashMap<String, Object>());
         authenticationData = createAuthenticationData(GOOD_USER, GOOD_USER_PWD);
         callbackHandler = createCallbackHandler(GOOD_USER, GOOD_USER_PWD);
@@ -373,31 +369,29 @@ public class AuthenticationServiceTest {
     public void testSetJaasServiceSetsReferenceToAuthenticationService() throws Exception {
         final String methodName = "testSetJaasServiceSetsReferenceToAuthenticationService";
         try {
-            assertSame("The authentication service must be set in the JAAS Service.", authenticationServiceImpl, jaasService.getAuthenticationService());
+            assertSame("The authentication service must be set in the JAAS Service.", authenticationServiceImpl, JAASServiceImpl.getAuthenticationService());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
     }
 
     @Test
-    @Ignore("Ignoring since the jaasService is a mock object, and the AuthenticationService is no longer stored in JAASServiceImpl statically.")
     public void testUnsetJaasServiceRemovesReferenceToAuthenticationService() throws Exception {
         final String methodName = "testUnsetJaasServiceRemovesReferenceToAuthenticationService";
         try {
             authenticationServiceImpl.unsetJaasService(jaasService);
-            assertNull("The authentication service must not be set in the JAAS Service.", jaasService.getAuthenticationService());
+            assertNull("The authentication service must not be set in the JAAS Service.", JAASServiceImpl.getAuthenticationService());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
     }
 
     @Test
-    @Ignore("Ignoring since the jaasService is a mock object, and the AuthenticationService is no longer stored in JAASServiceImpl statically.")
     public void testDeactivateRemovesReferenceToAuthenticationService() throws Exception {
         final String methodName = "testDeactivateRemovesReferenceToAuthenticationService";
         try {
             authenticationServiceImpl.deactivate();
-            assertNull("The authentication service must not be set in the JAAS Service.", jaasService.getAuthenticationService());
+            assertNull("The authentication service must not be set in the JAAS Service.", JAASServiceImpl.getAuthenticationService());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -417,16 +411,6 @@ public class AuthenticationServiceTest {
 
     private AuthenticationServiceImpl createActivatedAuthenticationServiceImpl(Map<String, Object> props) {
         AuthenticationServiceImpl authenticationServiceImpl = new AuthenticationServiceImpl();
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(jaasService).setAuthenticationService(authenticationServiceImpl);
-                allowing(jaasService).unsetAuthenticationService(authenticationServiceImpl);
-                allowing(jaasService).getAuthenticationService();
-                will(returnValue(authenticationServiceImpl));
-            }
-        });
-
         authenticationServiceImpl.setAuthCacheService(authCacheServiceReference);
         authenticationServiceImpl.setJaasService(jaasService);
         authenticationServiceImpl.setUserRegistryService(userRegistryServiceReference);

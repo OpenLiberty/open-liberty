@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,12 +49,13 @@ public class JAASConfigurationFactory {
 
     private static final AtomicServiceReference<JAASConfiguration> jaasConfigurationRef = new AtomicServiceReference<JAASConfiguration>(KEY_JAAS_CONFIGURATION);
 
-    // jaas.conf file
+    // jaas.conf file 
     private static final AtomicServiceReference<JAASLoginConfig> jaasLoginConfigRef = new AtomicServiceReference<JAASLoginConfig>(KEY_JAAS_LOGIN_CONFIG);
 
     private JAASSecurityConfiguration jaasSecurityConfiguration = null;
+    private JAASConfiguration jaasConfiguration = null;
 
-    private Map<String, List<AppConfigurationEntry>> jaasConfigurationEntriesFromJaasConfig = null;
+    Map<String, List<AppConfigurationEntry>> jaasConfigurationEntriesFromJaasConfig = null;
 
     @Reference(service = JAASLoginConfig.class,
                     name = KEY_JAAS_LOGIN_CONFIG,
@@ -87,9 +88,6 @@ public class JAASConfigurationFactory {
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         jaasConfigurationRef.deactivate(cc);
-        jaasLoginConfigRef.deactivate(cc);
-        jaasSecurityConfiguration = null;
-        jaasConfigurationEntriesFromJaasConfig = null;
     }
 
     public JAASConfigurationFactory() {}
@@ -98,7 +96,7 @@ public class JAASConfigurationFactory {
      * This method install the JAAS configuration that specified in the server.xml/client.xml file
      */
     public synchronized void installJAASConfiguration(ConcurrentServiceReferenceMap<String, JAASLoginContextEntry> jaasLoginContextEntries) {
-        JAASConfiguration jaasConfiguration = jaasConfigurationRef.getServiceWithException();
+        jaasConfiguration = jaasConfigurationRef.getServiceWithException();
         jaasConfiguration.setJaasLoginContextEntries(jaasLoginContextEntries);
         Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries = jaasConfiguration.getEntries();
 

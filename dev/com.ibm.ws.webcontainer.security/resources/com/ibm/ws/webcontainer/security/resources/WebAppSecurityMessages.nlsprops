@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,11 +153,3 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Use the HTTPS protocol or set the jwtSso
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
-
-JCACHE_PUT_FAILURE=CWWKS9130E: The logged-out-cookie cache could not put the logged-out cookie into the JCache cache. The error is: {0}
-JCACHE_PUT_FAILURE.explanation=The logged-out-cookie cache encountered an error when it tried to put the logged-out cookie into the JCache cache.
-JCACHE_PUT_FAILURE.useraction=Address the cause of the error.
-
-JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: The logged-out-cookie cache was unable to check the JCache cache for the cookie. The error is: {0}
-JCACHE_CONTAINSKEY_FAILURE.explanation=The logged-out-cookie cache encountered an error when it tried to check the JCache cache for the cookie. 
-JCACHE_CONTAINSKEY_FAILURE.useraction=Address the cause of the error.

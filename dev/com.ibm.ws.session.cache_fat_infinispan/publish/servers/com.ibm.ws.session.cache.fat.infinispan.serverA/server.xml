@@ -1,13 +1,3 @@
-<!--
-    Copyright (c) 2021 IBM Corporation and others.
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
- -->
 <server>
 
     <featureManager>
@@ -16,16 +6,16 @@
         <feature>componenttest-1.0</feature>
         <feature>mpMetrics-2.0</feature> <!-- one of the Infinispan JARs has a hard dependency on MicroProfile Metrics API -->
         <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
+        <feature>sessionCache-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>
 
-    <!-- 
-         Include the session cache configuration file for this specific run.
-     -->
-    <include location="${server.config.dir}/configs/${session.cache.config.file}" />
+    <httpSessionCache libraryRef="InfinispanLib" writeContents="GET_AND_SET_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml">
+        <properties/>
+    </httpSessionCache>
 
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>

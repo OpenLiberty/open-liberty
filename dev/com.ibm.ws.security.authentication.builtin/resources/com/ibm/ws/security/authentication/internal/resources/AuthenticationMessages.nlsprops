@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,7 +79,3 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=No action is required.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: The collective authentication plugin with class name {0} has been deactivated. 
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=A collective authentication plugin has been deactivated, and is no longer available to authenticate collective requests.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=No action is required.
-
-JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: The authentication cache cleared all entries in the {0} JCache cache. 
-JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=The authentication cache clears all entries in the backing JCache cache when security or user registry configuration is modified, or when the DeleteAuthCache MBean is called. 
-JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=No action is required.

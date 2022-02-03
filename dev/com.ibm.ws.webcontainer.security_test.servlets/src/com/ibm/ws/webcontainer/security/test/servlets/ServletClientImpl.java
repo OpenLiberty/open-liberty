@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public abstract class ServletClientImpl implements ServletClient {
     protected String authType;
     protected Logger logger;
     protected LibertyServer server = null;
-    protected String ssoCookieName = DEFAULT_LTPA_COOKIE_NAME;
+    protected String ssoCookieName = "LtpaToken2";
     protected String ssoCookie;
     protected DefaultHttpClient client;
 

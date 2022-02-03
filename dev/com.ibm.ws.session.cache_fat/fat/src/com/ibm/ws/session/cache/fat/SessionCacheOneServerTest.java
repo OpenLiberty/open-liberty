@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,14 +24,11 @@ import java.util.concurrent.Future;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,9 +42,6 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static ExecutorService executor;
 
-    @ClassRule
-    public static RepeatTests repeatRule = RepeatTests.withoutModification().andWith(new JCacheManagerRepeatAction());
-
     @BeforeClass
     public static void setUp() throws Exception {
         executor = Executors.newFixedThreadPool(12);
@@ -60,18 +54,11 @@ public class SessionCacheOneServerTest extends FATServletClient {
 //            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
 //        }
 
-        String sessionCacheConfigFile = "httpSessionCache_1.xml";
-        if (RepeatTestFilter.isRepeatActionActive(JCacheManagerRepeatAction.ID)) {
-            sessionCacheConfigFile = "httpSessionCache_2.xml";
-        }
-
         String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
 
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-                                           "-Dhazelcast.config=" + configLocation,
-                                           "-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+                                           "-Dhazelcast.config=" + configLocation));
 
         server.startServer();
     }

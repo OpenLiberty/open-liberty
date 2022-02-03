@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
     @SuppressWarnings("unchecked")
     private final ServiceReference<CredentialsService> credentialsServiceRef = mock.mock(ServiceReference.class, "credentialsServiceRef");
     private final CredentialsService credentialsService = mock.mock(CredentialsService.class);
+    @SuppressWarnings("unchecked")
     private final CollectiveAuthenticationPlugin collectiveAuthenticationPlugin = mock.mock(CollectiveAuthenticationPlugin.class);
     private final JAASServiceImpl jaasService = new JAASServiceImpl();
     private final X509Certificate cert = mock.mock(X509Certificate.class);
@@ -106,8 +107,6 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
 
     @Before
     public void setUp() throws Exception {
-        LoginModuleHelper.setTestJaasService(jaasService); // No OSGi component to lookup in the runtime, so override
-
         mock.checking(new Expectations() {
             {
                 allowing(cc).getBundleContext();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
-import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -101,8 +100,6 @@ public class IdentityAssertionLoginModuleTest {
     @SuppressWarnings("static-access")
     @Before
     public void setUp() throws Exception {
-        LoginModuleHelper.setTestJaasService(jaasServiceCollab); // No OSGi component to lookup in the runtime, so override
-
         authenticatedSubject = createAuthenticatedSubject();
 
         mockery.checking(new Expectations() {
@@ -360,8 +357,7 @@ public class IdentityAssertionLoginModuleTest {
 
         /** {@inheritDoc} */
         @Override
-        public void describeTo(Description description) {
-        }
+        public void describeTo(Description description) {}
     }
 
 }
