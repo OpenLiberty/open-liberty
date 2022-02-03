@@ -114,8 +114,6 @@ public class HandlerChainTest {
             se.printStackTrace();
             throw se;
         }
-        // Uninstall Applications
-        server.deleteAllDropinApplications();
         
         // Test invoke sequence
         assertStatesExistedFromMark(true, new String[] {
@@ -126,10 +124,16 @@ public class HandlerChainTest {
         // Test initParams
         assertStatesExisted(".*init param \"arg0\" = testInitParam");
 
-        // Test postConstruct and preDestroy
+        // Test postConstruct 
         assertStatesExisted(new String[] {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
-                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked",
+                                                "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked"});
+
+	// Stop server, with option to preserve logs 
+	server.stopServer(false, null);
+
+        // Test preDestroy  
+        assertStatesExisted(new String[] {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: PreDestroy is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: PreDestroy is invoked"
         });
