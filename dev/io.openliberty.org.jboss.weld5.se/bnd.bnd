@@ -11,20 +11,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 11
-javac.target: 11
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
--include= jar:${fileuri;${repo;org.jboss.weld.se:weld-se-core;[5.0,5.1)}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.jboss.weld.se:weld-se-core;[5.0.0,5.1.0)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld5.se; singleton:=true
 
 -includeresource: \
-  @${repo;org.jboss.weld.se:weld-se-core;[5.0,5.1)}
+  @${repo;org.jboss.weld.se:weld-se-core;[5.0.0,5.1.0)}
 
 instrument.disabled: true
 
 -buildpath: \
-	org.jboss.weld.se:weld-se-core;version="[5.0,5.1)", \
+	org.jboss.weld.se:weld-se-core;version=5.0.0, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
