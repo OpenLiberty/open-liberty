@@ -53,7 +53,6 @@ public class OIDCResponseTypeHandlerCodeImpl extends OAuth20ResponseTypeHandlerC
             String thirdPartyIdTokenId = OAuth20Constants.THIRD_PARTY_ID_TOKEN_PREFIX + code.getTokenString();
             String thirdPartyIdTokenString = (String) hashtableFromRunAsSubject.get(OAuth20Constants.ID_TOKEN);
             if (thirdPartyIdTokenString != null) {
-                int lifetimeSeconds = getLifetimeSeconds(thirdPartyIdTokenString);
                 OAuth20Token tokenCacheEntry = new IDTokenImpl(
                         thirdPartyIdTokenId,
                         thirdPartyIdTokenString,
@@ -63,31 +62,13 @@ public class OIDCResponseTypeHandlerCodeImpl extends OAuth20ResponseTypeHandlerC
                         code.getRedirectUri(),
                         code.getStateId(),
                         code.getScope(),
-                        lifetimeSeconds,
+                        code.getLifetimeSeconds(),
                         null,
                         OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
 
                 // save third-party token in token cache to pick up when token endpoint is called
                 tokenCache.add(tokenCacheEntry.getId(), tokenCacheEntry, tokenCacheEntry.getLifetimeSeconds());
             }
-        }
-    }
-
-    private int getLifetimeSeconds(String jwtString) {
-        try {
-            JwtContext context = Jose4jUtil.parseJwtWithoutValidation(jwtString);
-            JwtClaims claims = context.getJwtClaims();
-
-            long now = System.currentTimeMillis();
-            long expiresAt = claims.getExpirationTime().getValueInMillis();
-            long expiresIn = expiresAt - now;
-
-            if (expiresIn < 0) {
-                return 0;
-            }
-            return (int) expiresIn / 1000;
-        } catch (Exception e) {
-            return 0;
         }
     }
 
