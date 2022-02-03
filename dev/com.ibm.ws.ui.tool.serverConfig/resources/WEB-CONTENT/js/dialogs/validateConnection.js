@@ -337,6 +337,10 @@
             url: VALIDATION_API_URI + form.nodeName + "/" + form.nodeIdString + queryParameters,
             type: "get",
             dataType: "json",
+            crossDomain: true,
+            headers: {
+                "Access-Control-Allow-Origin":"*"
+            },
             beforeSend: function(jqXHR) {
                 if(core.collectiveRoutingRequired() ) {
                     core.applyRestRoutingHeaders(jqXHR);
@@ -718,8 +722,10 @@
             type: "get",
             dataType: "json",
             contentType: "application/json",
+            crossDomain: true,
             headers: {          
-                Accept: "application/json"   
+                Accept: "application/json"   ,
+                "Access-Control-Allow-Origin":"*"
             },
             beforeSend: function(jqXHR) {
                 if(core.collectiveRoutingRequired() ) {
