@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2021 IBM Corporation and others.
+# Copyright (c) 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,14 +15,14 @@ Bundle-Name: JCache Store for HTTP Sessions
 Bundle-SymbolicName: com.ibm.ws.session.cache
 Bundle-Description: Allows persistence of sessions via a JCache provider, version ${bVersion}
 
+
+
 Private-Package: \
     com.ibm.ws.session.store.cache,\
     com.ibm.ws.session.store.cache.resources
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
-
-instrument.classesExcludes: com/ibm/ws/session/store/cache/resources/*.class
 
 -dsannotations: \
   com.ibm.ws.session.store.cache.DefaultCachingProviderSupport,\
@@ -36,11 +36,10 @@ Service-Component=com.ibm.ws.session.cache;\
   monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\
   serializationService=com.ibm.ws.serialization.SerializationService;\
   userTransaction=javax.transaction.UserTransaction;\
-  jCacheManagerService=io.openliberty.jcache.JCacheManagerService;\
   dynamic:="monitor,userTransaction";\
   greedy:="library,monitor,userTransaction";\
-  optional:="monitor,userTransaction,jCacheManagerService";\
-  properties:="library.target=(id=unbound),monitor.target=(id=unbound),jCacheManagerService.target=(id=unbound)"
+  optional:="monitor,userTransaction";\
+  properties:="library.target=(id=unbound),monitor.target=(id=unbound)"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
@@ -59,7 +58,6 @@ Service-Component=com.ibm.ws.session.cache;\
 	com.ibm.ws.session;version=latest,\
 	com.ibm.ws.session.store;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.runtime.update;version=latest,\
-	io.openliberty.jcache.internal;version=latest
+	com.ibm.ws.runtime.update;version=latest
 
 jakartaeeMe: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,16 +21,13 @@ import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -46,33 +43,17 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     public static SessionCacheApp appA;
     public static SessionCacheApp appB;
 
-    @ClassRule
-    public static RepeatTests repeatRule = RepeatTests.withoutModification().andWith(new JCacheManagerRepeatAction());
-
     @BeforeClass
     public static void setUp() throws Exception {
         appA = new SessionCacheApp(serverA, true, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
-
-        String sessionCacheConfigFile = "httpSessionCache_1.xml";
-        if (RepeatTestFilter.isRepeatActionActive(JCacheManagerRepeatAction.ID)) {
-            sessionCacheConfigFile = "httpSessionCache_2.xml";
-        }
-
         String rand = UUID.randomUUID().toString();
         Map<String, String> options = serverA.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
-        options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Dcom.ibm.ws.beta.edition", "true"); // TODO Remove when JCache is GA'd
-        options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
         serverA.setJvmOptions(options);
-
         options = serverB.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
-        options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Dcom.ibm.ws.beta.edition", "true"); // TODO Remove when JCache is GA'd
-        options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
         serverB.setJvmOptions(options);
 
         serverA.startServer();

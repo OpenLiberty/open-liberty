@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.helper.AuthenticateUserHelper;
-import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
+import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -89,12 +89,12 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * they can be ignored.
      * </p>
      *
-     * @param subject         The subject to be authenticated.
+     * @param subject The subject to be authenticated.
      * @param callbackHandler
-     *                            A <code>CallbackHandler</code> for communicating with the end user to gather login information (e.g., username and password).
+     *            A <code>CallbackHandler</code> for communicating with the end user to gather login information (e.g., username and password).
      * @param sharedState
-     *                            The state shared with other configured login modules.
-     * @param options         The options specified in the login configuration for this particular login module.
+     *            The state shared with other configured login modules.
+     * @param options The options specified in the login configuration for this particular login module.
      */
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
@@ -118,7 +118,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * @return <code><b>true</b></code> if the authentication succeeded, or <code><b>false</b></code>
      *         if this login module should be ignored.
      * @exception WSLoginFailedException
-     *                                       If the authentication fails.
+     *                If the authentication fails.
      */
     @Override
     @FFDCIgnore(WSLoginFailedException.class)
@@ -307,11 +307,11 @@ public class IdentityAssertionLoginModule implements LoginModule {
     }
 
     private UserRegistry getUserRegistry() throws RegistryException {
-        return LoginModuleHelper.getJAASService().getUserRegistry();
+        return JAASServiceImpl.getUserRegistry();
     }
 
     private AuthenticationService getAuthenticationService() {
-        return LoginModuleHelper.getJAASService().getAuthenticationService();
+        return JAASServiceImpl.getAuthenticationService();
     }
 
     private void cleanUpSubject() {

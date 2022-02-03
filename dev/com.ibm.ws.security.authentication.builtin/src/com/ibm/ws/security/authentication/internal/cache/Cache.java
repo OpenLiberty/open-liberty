@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,11 +23,16 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
 
 /**
- * Local in-memory key-value cache containing three internal tables in order to implement a least-recently-used removal algorithm.
+ * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
  */
-public class InMemoryAuthCache implements AuthCache {
+public class Cache {
 
-    private static final TraceComponent tc = Tr.register(InMemoryAuthCache.class, "Authentication");
+    private static final TraceComponent tc = Tr.register(Cache.class, "Authentication");
+
+    /**
+     * Default cache timeout.
+     */
+    private static long defaultTimeout;
 
     /**
      * Primary hash table containing the most recently used entries.
@@ -65,11 +70,11 @@ public class InMemoryAuthCache implements AuthCache {
      */
     private Timer timer;
 
-    public InMemoryAuthCache(int initialSize, int entryLimit, long timeoutInMilliSeconds) {
+    public Cache(int initialSize, int entryLimit, long timeoutInMilliSeconds) {
         this(initialSize, entryLimit, timeoutInMilliSeconds, null);
     }
 
-    public InMemoryAuthCache(int initialSize, int entryLimit, long timeoutInMilliSeconds, Set<CacheEvictionListener> callbackSet) {
+    public Cache(int initialSize, int entryLimit, long timeoutInMilliSeconds, Set<CacheEvictionListener> callbackSet) {
         primaryTable = new ConcurrentHashMap<Object, Object>(initialSize);
         secondaryTable = new ConcurrentHashMap<Object, Object>(initialSize);
         tertiaryTable = new ConcurrentHashMap<Object, Object>(initialSize);
@@ -94,7 +99,6 @@ public class InMemoryAuthCache implements AuthCache {
     /**
      * Remove an object from the Cache.
      */
-    @Override
     public synchronized void remove(Object key) {
         Object victim = null;
         if (cacheEvictionListenerSet.isEmpty() == false) {
@@ -117,7 +121,6 @@ public class InMemoryAuthCache implements AuthCache {
     /**
      * Find and return the object associated with the specified key.
      */
-    @Override
     public synchronized Object get(Object key) {
         ConcurrentHashMap<Object, Object> tableRef = primaryTable;
         Entry curEntry = (Entry) primaryTable.get(key);
@@ -162,7 +165,6 @@ public class InMemoryAuthCache implements AuthCache {
     /**
      * Insert the value into the Cache using the specified key.
      */
-    @Override
     public synchronized void insert(Object key, Object value) {
         // evict until size < maxSize
         while (isEvictionRequired() && entryLimit > 0 && entryLimit < Integer.MAX_VALUE) {
@@ -242,8 +244,8 @@ public class InMemoryAuthCache implements AuthCache {
      * behave the same way the the expiration of all entries from
      * the cache.
      */
-    @Override
-    public synchronized void clearAllEntries() {
+    protected synchronized void clearAllEntries() {
+
         tertiaryTable.putAll(primaryTable);
         tertiaryTable.putAll(secondaryTable);
 
@@ -253,12 +255,19 @@ public class InMemoryAuthCache implements AuthCache {
         evictStaleEntries();
     }
 
+    public static long getDefaultTimeout() {
+        return defaultTimeout;
+    }
+
+    public static void setDefaultTimeout(long timeout) {
+        defaultTimeout = timeout;
+    }
+
     public static class Entry {
-
         public Object value;
+        public int timesAccessed;
 
-        public Entry() {
-        }
+        public Entry() {}
 
         public Entry(Object value) {
             this.value = value;
@@ -279,8 +288,7 @@ public class InMemoryAuthCache implements AuthCache {
 
     }
 
-    @Override
-    public void stopEvictionTask() {
+    protected void stopEvictionTask() {
         if (timer != null) {
             timer.cancel();
         }

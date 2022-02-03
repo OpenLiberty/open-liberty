@@ -65,7 +65,6 @@ import com.ibm.ws.webcontainer.security.internal.DenyReply;
 import com.ibm.ws.webcontainer.security.internal.FormLoginExtensionProcessor;
 import com.ibm.ws.webcontainer.security.internal.FormLogoutExtensionProcessor;
 import com.ibm.ws.webcontainer.security.internal.HTTPSRedirectHandler;
-import com.ibm.ws.webcontainer.security.internal.JCacheLoggedOutCookieCache;
 import com.ibm.ws.webcontainer.security.internal.PermitReply;
 import com.ibm.ws.webcontainer.security.internal.ReturnReply;
 import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
@@ -99,8 +98,6 @@ import com.ibm.wsspi.webcontainer.security.SecurityViolationException;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
-
-import io.openliberty.jcache.JCacheService;
 
 public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator, WebAppAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(WebAppSecurityCollaboratorImpl.class);
@@ -334,24 +331,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         webAppSecurityConfigchangeListenerRef.removeReference(ref);
     }
 
-    /**
-     * Set the {@link JCacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
-     *
-     * @param service the {@link JCacheService}
-     */
-    protected void setLoggedOutCookieJCacheService(JCacheService service) {
-        LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(new JCacheLoggedOutCookieCache(service));
-    }
-
-    /**
-     * Unset the {@link JCacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
-     *
-     * @param service the {@link JCacheService}
-     */
-    protected void unsetLoggedOutCookieJCacheService(JCacheService service) {
-        LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(null);
-    }
-
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         isActive = true;
         locationAdminRef.activate(cc);
@@ -399,7 +378,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         webAppSecConfig = newWebAppSecConfig;
         updateComponents();
         if (deltaMap != null) {
-            notifyWebAppSecurityConfigChangeListeners(new ArrayList<String>(deltaMap.keySet()));
+            notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
         }
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }

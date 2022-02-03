@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -652,7 +652,6 @@ public class FormLoginClient extends ServletClientImpl {
      * Performs a form login to PROTECTED_SIMPLE then a form logout,
      * all using the same HttpClient.
      *
-     * @param logoutOption
      * @param user
      * @param password
      */
@@ -660,22 +659,13 @@ public class FormLoginClient extends ServletClientImpl {
         logger.info("formLogout: logoutOption=" + logoutOption
                     + " user=" + user + " password=" + password);
 
-        accessAndAuthenticate(client, servletURL + PROTECTED_SIMPLE, user, password, 200);
-        // Ensure we have a non-null, populated cookie value
-        assertNotNull("The SSO cookie was null", getCookieFromLastLogin());
-        assertFalse("The SSO cookie had an empty String value", "".equals(getCookieFromLastLogin()));
-
-        formLogout(logoutOption);
-    }
-
-    /**
-     * Performs a form logout.
-     *
-     * @param logoutOption
-     */
-    public void formLogout(LogoutOption logoutOption) {
         try {
-            //  Get the form logout page
+            accessAndAuthenticate(client, servletURL + PROTECTED_SIMPLE, user, password, 200);
+            // Ensure we have a non-null, populated cookie value
+            assertNotNull("The SSO cookie was null", getCookieFromLastLogin());
+            assertFalse("The SSO cookie had an empty String value", "".equals(getCookieFromLastLogin()));
+
+            // Validate we have the form login page
             HttpGet getMethod = new HttpGet(servletURLForLogout());
             HttpResponse response = client.execute(getMethod);
 

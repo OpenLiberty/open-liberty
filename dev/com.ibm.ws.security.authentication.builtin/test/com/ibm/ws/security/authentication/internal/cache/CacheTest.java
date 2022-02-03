@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,12 +34,12 @@ import com.ibm.ws.security.authentication.cache.CacheObject;
 /**
  *
  */
-public class InMemoryCacheTest {
+public class CacheTest {
     private final Mockery context = new JUnit4Mockery();
 
     private final long defaultTimeoutInMilliSeconds = 600000;
 
-    private final Set<InMemoryAuthCache> registeredCachesForStoppingEvictionTasks = new HashSet<InMemoryAuthCache>();
+    private final Set<Cache> registeredCachesForStoppingEvictionTasks = new HashSet<Cache>();
 
     @After
     public void tearDown() throws Exception {
@@ -48,7 +48,7 @@ public class InMemoryCacheTest {
     }
 
     private void stopEvictionTasks() {
-        for (InMemoryAuthCache cache : registeredCachesForStoppingEvictionTasks) {
+        for (Cache cache : registeredCachesForStoppingEvictionTasks) {
             cache.stopEvictionTask();
         }
     }
@@ -59,7 +59,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void constructor_IntIntLong() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 12345, 0);
+        Cache cache = new Cache(0, 12345, 0);
         assertEquals(12345, cache.getEntryLimit());
     }
 
@@ -78,7 +78,7 @@ public class InMemoryCacheTest {
                 never(mockListener).evicted(with(any(ArrayList.class)));
             }
         });
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 0, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
+        Cache cache = new Cache(0, 0, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
         cache.insert("1", 1);
     }
@@ -97,7 +97,7 @@ public class InMemoryCacheTest {
                 allowing(mockListener).evicted(with(any(ArrayList.class)));
             }
         });
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 0, 5, mockCacheEvictionListenerSet);
+        Cache cache = new Cache(0, 0, 5, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
         cache.insert("1", 1);
     }
@@ -118,7 +118,7 @@ public class InMemoryCacheTest {
                 one(mockListener).evicted(with(any(ArrayList.class)));
             }
         });
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 1, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
+        Cache cache = new Cache(0, 1, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
         cache.insert("1", 1);
         cache.insert("2", 2);
@@ -132,7 +132,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_limitIsZero() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 0, 0);
+        Cache cache = new Cache(0, 0, 0);
         assertFalse(cache.isEvictionRequired());
     }
 
@@ -142,7 +142,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_limitIsMaxInt() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, Integer.MAX_VALUE, 0);
+        Cache cache = new Cache(0, Integer.MAX_VALUE, 0);
         assertFalse(cache.isEvictionRequired());
     }
 
@@ -152,7 +152,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_empty() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(0, 12345, 0);
+        Cache cache = new Cache(0, 12345, 0);
         assertFalse(cache.isEvictionRequired());
     }
 
@@ -162,7 +162,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_underByOne() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
+        Cache cache = new Cache(10, 2, 0);
         cache.insert("1", 1);
         assertFalse(cache.isEvictionRequired());
     }
@@ -173,7 +173,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_equals() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
+        Cache cache = new Cache(10, 2, 0);
         cache.insert("1", 1);
         cache.insert("2", 2);
         assertFalse(cache.isEvictionRequired());
@@ -185,7 +185,7 @@ public class InMemoryCacheTest {
      */
     @Test
     public void isEvictionRequired_overByOne() {
-        InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
+        Cache cache = new Cache(10, 2, 0);
         cache.insert("1", 1);
         cache.insert("2", 2);
         cache.insert("3", 3);
@@ -203,7 +203,7 @@ public class InMemoryCacheTest {
                 never(mockListener).evicted(with(any(ArrayList.class)));
             }
         });
-        InMemoryAuthCache cache = new InMemoryAuthCache(10, Integer.MAX_VALUE, 0, mockCacheEvictionListenerSet);
+        Cache cache = new Cache(10, Integer.MAX_VALUE, 0, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
         cache.remove("keyForEntryThatDoesNotExist");
     }
@@ -214,7 +214,7 @@ public class InMemoryCacheTest {
         Set<CacheEvictionListener> evictionListeners = new HashSet<CacheEvictionListener>();
         evictionListeners.add(cacheEvictionListener);
 
-        InMemoryAuthCache cache = new InMemoryAuthCache(10, Integer.MAX_VALUE, 0, evictionListeners);
+        Cache cache = new Cache(10, Integer.MAX_VALUE, 0, evictionListeners);
         cache.insert("1", new CacheObject(new Subject()));
         cache.evictStaleEntries();
         cache.evictStaleEntries();

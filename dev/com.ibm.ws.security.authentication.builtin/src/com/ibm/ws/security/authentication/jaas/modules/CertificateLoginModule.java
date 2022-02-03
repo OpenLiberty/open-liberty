@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.CertificateAuthenticator;
 import com.ibm.ws.security.authentication.collective.CollectiveAuthenticationPlugin;
+import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.registry.CertificateMapFailedException;
@@ -199,7 +200,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      */
     private CertificateAuthenticator getCertificateAuthenticator(X509Certificate[] certChain) throws LoginException {
         CertificateAuthenticator certAuthen = null;
-        ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certAuthens = LoginModuleHelper.getJAASService().getCertificateAuthenticators();
+        ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certAuthens = JAASServiceImpl.getCertificateAuthenticators();
         Set<String> keys = certAuthens.keySet();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "CertificateAuthenticator keys:", keys);
@@ -227,8 +228,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      */
     private void handleCollectiveLogin(X509Certificate certChain[], CollectiveAuthenticationPlugin plugin,
                                        boolean collectiveCert) throws InvalidNameException, AuthenticationException, Exception {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "inbound-collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.debug(tc, "inbound-collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
         // If the chain is not authenticated, it will throw an AuthenticationException
         plugin.authenticateCertificateChain(certChain, collectiveCert);
         X509Certificate cert = certChain[0];
@@ -240,8 +240,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         authenticatedId = x509Subject.getName();
         addCredentials(accessId);
         collectiveCertificate.set(true);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.debug(tc, "collectiveCertificate=" + CertificateLoginModule.collectiveCertificate.get());
     }
 
     /**

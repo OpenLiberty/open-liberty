@@ -1,16 +1,7 @@
-<!--
-    Copyright (c) 2021 IBM Corporation and others.
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
- -->
 <server>
 
     <featureManager>
+        <feature>bells-1.0</feature>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jdbc-4.1</feature>
@@ -18,17 +9,17 @@
         <feature>monitor-1.0</feature>
         <feature>mpMetrics-2.0</feature> <!-- one of the Infinispan JARs has a hard dependency on MicroProfile Metrics API -->
         <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
+        <feature>sessionCache-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
     
-    <!-- 
-         Include the session cache configuration file for this specific run.
-     -->
-    <include location="${server.config.dir}/configs/${session.cache.config.file}" />
+    <httpSessionCache uri="file:///${shared.resource.dir}/infinispan/infinispan-attr-meta-configuration.xml"/>
     
+    <bell libraryRef="InfinispanLib" service="javax.cache.spi.CachingProvider"/>
+
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>

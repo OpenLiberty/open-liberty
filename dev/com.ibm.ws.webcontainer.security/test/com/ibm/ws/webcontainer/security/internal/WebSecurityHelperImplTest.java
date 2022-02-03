@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 
+import javax.servlet.http.Cookie;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -71,8 +71,8 @@ public class WebSecurityHelperImplTest {
     public void getLTPACookie_multipleSSOToken() throws Exception {
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         Subject subject = new Subject();
-        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null, null));
-        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null, null));
+        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null));
+        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null));
         WebSecurityHelperImpl.getLTPACookie(subject);
     }
 
@@ -83,7 +83,7 @@ public class WebSecurityHelperImplTest {
     public void getLTPACookie_oneSSOToken() throws Exception {
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         Subject subject = new Subject();
-        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null, null));
+        subject.getPrivateCredentials().add(new SingleSignonTokenImpl(null));
 
         final String cookieName = "mySSOCookie";
         mock.checking(new Expectations() {

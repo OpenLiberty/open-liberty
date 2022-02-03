@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.CertificateAuthenticator;
@@ -75,13 +74,14 @@ import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.security.auth.callback.WSX509CertificateChainCallback;
+import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 
 import test.common.SharedOutputManager;
 
 /**
  *
  */
-@SuppressWarnings({ "unchecked", "restriction" })
+@SuppressWarnings("unchecked")
 public class JAASServiceTest {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -110,8 +110,7 @@ public class JAASServiceTest {
     protected final Library sharedLibrary = mock.mock(Library.class);
 
     final ClassLoader loader1 = Thread.currentThread().getContextClassLoader();
-    final ClassLoader loader2 = new ClassLoader() {
-    };
+    final ClassLoader loader2 = new ClassLoader() {};
 
     protected final JAASLoginModuleConfig jaasLoginModuleConfig = mock.mock(JAASLoginModuleConfig.class);
     protected final ServiceReference<JAASLoginModuleConfig> jaasLoginModuleConfigRef = mock.mock(ServiceReference.class, JAASServiceImpl.KEY_JAAS_LOGIN_MODULE_CONFIG + "Ref");
@@ -316,7 +315,7 @@ public class JAASServiceTest {
         final String methodName = "testPerformLogin";
         try {
             JAASServiceTestDoubleWithConfiguration jaasServiceDouble = createActivatedJAASServiceTestDouble();
-            jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, partialSubject);
+            Subject authenticatedSubject = jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, partialSubject);
             jaasServiceDouble.deactivate(componentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -328,7 +327,7 @@ public class JAASServiceTest {
         final String methodName = "testPerformLoginForToken";
         try {
             JAASServiceTestDoubleWithConfiguration jaasServiceDouble = createActivatedJAASServiceTestDouble();
-            jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
+            Subject authenticatedSubject = jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
             jaasServiceDouble.deactivate(componentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -340,7 +339,7 @@ public class JAASServiceTest {
         final String methodName = "testPerformLoginForCert";
         try {
             JAASServiceTestDoubleWithConfiguration jaasServiceDouble = createActivatedJAASServiceTestDouble();
-            jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, certAuthenticationData, partialSubject);
+            Subject authenticatedSubject = jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, certAuthenticationData, partialSubject);
             jaasServiceDouble.deactivate(componentContext);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -530,7 +529,7 @@ public class JAASServiceTest {
             });
             JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
             jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-            jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
+            JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
             jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
             jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, partialSubject);
             boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -553,7 +552,7 @@ public class JAASServiceTest {
             });
             JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
             jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-            jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
+            JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
             jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
             jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
             boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -576,7 +575,7 @@ public class JAASServiceTest {
             });
             JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
             jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-            jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
+            JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
             jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
             jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
             boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -634,7 +633,7 @@ public class JAASServiceTest {
         try {
             JAASServiceTestDoubleWithConfiguration jaasServiceDouble = createActivatedJAASServiceTestDouble();
             jaasServiceDouble.deactivate(componentContext);
-            Configuration.getConfiguration();
+            Configuration jaasConfiguration = Configuration.getConfiguration();
         } catch (Throwable t) {
             try {
                 assertTrue(t.toString(), t instanceof java.lang.SecurityException);
@@ -667,7 +666,7 @@ public class JAASServiceTest {
 
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
         jaasService.activate(componentContext, new HashMap<String, Object>());
-        TokenManager actualTokenManager = jaasService.getTokenManager();
+        TokenManager actualTokenManager = JAASServiceImpl.getTokenManager();
         jaasService.deactivate(componentContext);
         assertNotNull("There must be a token manager.", actualTokenManager);
     }
@@ -688,10 +687,10 @@ public class JAASServiceTest {
             }
         });
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        jaasService.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         jaasService.activate(componentContext, new HashMap<String, Object>());
         jaasService.unsetTokenManager(tokenManagerServiceReference);
-        TokenManager actualTokenManager = jaasService.getTokenManager();
+        TokenManager actualTokenManager = JAASServiceImpl.getTokenManager();
         jaasService.deactivate(componentContext);
         assertNull("There must not be a token manager.", actualTokenManager);
     }
@@ -712,9 +711,9 @@ public class JAASServiceTest {
             }
         });
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        jaasService.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         jaasService.activate(componentContext, new HashMap<String, Object>());
-        CredentialsService actualCredentialsService = jaasService.getCredentialsService();
+        CredentialsService actualCredentialsService = JAASServiceImpl.getCredentialsService();
         jaasService.deactivate(componentContext);
         assertNotNull("There must be a credentials service.", actualCredentialsService);
     }
@@ -735,10 +734,10 @@ public class JAASServiceTest {
             }
         });
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        jaasService.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         jaasService.activate(componentContext, new HashMap<String, Object>());
         jaasService.unsetCredentialsService(credentialsServiceReference);
-        CredentialsService actualCredentialsService = jaasService.getCredentialsService();
+        CredentialsService actualCredentialsService = JAASServiceImpl.getCredentialsService();
         jaasService.deactivate(componentContext);
         assertNull("There must not be a credentials service.", actualCredentialsService);
     }
@@ -805,7 +804,7 @@ public class JAASServiceTest {
             }
         });
         JAASServiceImpl jaasService = createActivatedJAASServiceWithNotifier();
-        jaasService.unsetAuthenticationService(authenticationService);
+        JAASServiceImpl.unsetAuthenticationService(authenticationService);
         jaasService.configReady();
         jaasService.deactivate(componentContext);
     }
@@ -813,7 +812,7 @@ public class JAASServiceTest {
     private JAASServiceImpl createActivatedJAASService() throws IOException {
         JAASServiceImpl jaasService = new JAASServiceImpl();
         jaasService.jaasLoginContextEntries = jaasLoginContextEntries;
-        jaasService.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         final String custom = "custom";
         final String pid = "pid";
         mock.checking(new Expectations() {
@@ -842,9 +841,9 @@ public class JAASServiceTest {
     private JAASServiceImpl createActivatedJAASServiceWithNotifier() throws Exception {
         JAASServiceImpl jaasService = new JAASServiceImpl();
         jaasService.jaasLoginContextEntries = jaasLoginContextEntries;
-        jaasService.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         // Clear any existing authentication service from the JAASServiceImpl class.
-        jaasService.unsetAuthenticationService(jaasService.getAuthenticationService());
+        JAASServiceImpl.unsetAuthenticationService(JAASServiceImpl.getAuthenticationService());
         final String custom = "custom";
         final String pid = "pid";
         final String[] loginModuleIds = new String[] { pid };
@@ -864,9 +863,6 @@ public class JAASServiceTest {
                 will(returnValue(1L));
                 allowing(jaasLoginContextEntryRef).getProperty("service.ranking");
                 will(returnValue(1L));
-                allowing(componentContext).locateService(JAASServiceImpl.KEY_JAAS_LOGIN_CONTEXT_ENTRY + "s", jaasLoginContextEntryRef);
-                will(returnValue(jaasLoginContextEntry));
-                allowing(jaasLoginContextEntry).getLoginModules();
                 allowing(jaasConfiguration).setJaasLoginContextEntries(jaasLoginContextEntries);
 //                allowing(jaasConfiguration).setJaasLoginModuleConfigs(jaasLoginModuleConfigs);
                 allowing(jaasConfiguration).getEntries();
@@ -879,14 +875,14 @@ public class JAASServiceTest {
         jaasService.setJaasChangeNotifier(jaasChangeNotifierRef);
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
         jaasService.activate(componentContext, null);
-        jaasService.setAuthenticationService(authenticationService);
+        JAASServiceImpl.setAuthenticationService(authenticationService);
         return jaasService;
     }
 
     private JAASServiceTestDoubleWithConfiguration createActivatedJAASServiceTestDouble() throws IOException {
         JAASServiceTestDoubleWithConfiguration jaasServiceDouble = new JAASServiceTestDoubleWithConfiguration();
         jaasServiceDouble.jaasLoginContextEntries = jaasLoginContextEntries;
-        jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
+        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
         final Map<String, Object> someProps = new Hashtable<String, Object>();
         String[] values = { "value1", "value2" };
         someProps.put("otherProps", values);
