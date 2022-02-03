@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,13 @@ package com.ibm.ws.cdi.provider.service;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import jakarta.enterprise.inject.spi.CDIProvider;
-import jakarta.enterprise.inject.spi.CDI;
-
-import org.osgi.service.component.annotations.Component;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDIProvider;
 /**
  * This is a thin wrapper to get hold of the real CDIProvider. It is loaded via ServiceLoader to workaround https://github.com/eclipse-ee4j/cdi/issues/461
  */
