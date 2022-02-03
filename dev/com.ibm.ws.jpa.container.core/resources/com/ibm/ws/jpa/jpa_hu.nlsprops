@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3l
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes a(z) {0} adatforr\u00e1s kikeres\u00e9s\u00e9re a(z) {1} perzisztens egys\u00e9g \u00f6sszetev\u0151 n\u00e9vter\u00e9ben, mivel nem l\u00e9tezik \u00f6sszetev\u0151 kontextus a sz\u00e1lon.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Az adatforr\u00e1s nem tal\u00e1lhat\u00f3, mert a kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1lat egy Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151h\u00f6z t\u00e1rs\u00edtani.  Ez a helyzet akkor \u00e1llhat el\u0151, amikor a \"java:\" nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n ker\u00fcl futtat\u00e1sra.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Az adatforr\u00e1s nem tal\u00e1lhat\u00f3, mert a kiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezete nem k\u00e9pes a m\u0171velet sz\u00e1lat egy Java Platform, Enterprise Edition 5 (Java EE 5) alkalmaz\u00e1s \u00f6sszetev\u0151h\u00f6z t\u00e1rs\u00edtani.  Ez a helyzet akkor \u00e1llhat el\u0151, amikor a "java:" nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n ker\u00fcl futtat\u00e1sra.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE 5 alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket java: neveken statikus k\u00f3dblokkok belsej\u00e9ben vagy a Java EE 5 alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban.  Ez a k\u00f3d nem felt\u00e9tlen\u00fcl a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s\u00e9nek sz\u00e1l\u00e1n fut.  Ez\u00e9rt a k\u00f3dot a JNDI m\u0171veletek sem t\u00e1mogatj\u00e1k java: neveken.
 
 #----------------------------------
@@ -308,9 +308,15 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Lehets\u00e9ges, hogy az oszt\u00
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: A server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik JPA alap\u00e9rtelmezett tulajdons\u00e1g \u00fcres nevet vagy \u00fcres \u00e9rt\u00e9ket tartalmaz: n\u00e9v = [{0}], \u00e9rt\u00e9k = [{1}]. A tulajdons\u00e1g figyelmen k\u00edv\u00fcl marad.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Az \u00fcres nevet vagy \u00fcres \u00e9rt\u00e9ket tartalmaz\u00f3 alap\u00e9rtelmezett JPA tulajdons\u00e1g be\u00e1ll\u00edt\u00e1sa a server.xml f\u00e1jlban t\u00f6rt\u00e9nik: name = [{0}], value = [{1}]. Ez a tulajdons\u00e1g figyelmen k\u00edv\u00fcl marad.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=A JPA alap\u00e9rtelmezett tulajdons\u00e1g n\u00e9v- \u00e9s \u00e9rt\u00e9kattrib\u00fatumai nem lehetnek \u00fcresek.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t nem \u00fcres n\u00e9v \u00e9s \u00e9rt\u00e9k megad\u00e1s\u00e1val a tulajdons\u00e1gra vonatkoz\u00f3an, vagy t\u00e1vol\u00edtsa el a tulajdons\u00e1got.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: A csak Java SE k\u00f6rnyezetekben haszn\u00e1latos alap\u00e9rtelmezett JPA tulajdons\u00e1g be\u00e1ll\u00edt\u00e1sa a server.xml f\u00e1jlban t\u00f6rt\u00e9nik: name = [{0}], \u00e9rt\u00e9k = [{1}]. Ez a tulajdons\u00e1g figyelmen k\u00edv\u00fcl marad.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Ez az alap\u00e9rtelmezett JPA tulajdons\u00e1g a Java EE k\u00f6rnyezetben ker\u00fcl alkalmaz\u00e1sra, de haszn\u00e1lat\u00e1t csak Java SE k\u00f6rnyezetekre sz\u00e1nt\u00e1k.
+JDBC_PROP_NAME_CWWJP0057W.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3- \u00e9s alkalmaz\u00e1skonfigur\u00e1ci\u00f3t JNDI adatforr\u00e1s haszn\u00e1lat\u00e1ra, majd t\u00e1vol\u00edtsa el a tulajdons\u00e1got.
+
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
 #-------------------------------------------------------------------------------

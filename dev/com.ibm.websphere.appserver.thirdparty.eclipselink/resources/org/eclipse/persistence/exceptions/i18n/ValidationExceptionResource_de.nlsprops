@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -152,13 +153,13 @@
 
 7093=In der Abfrage mit dem Namen [{0}] konnte die Klasse [{2}] f\u00fcr das Abfrageargument mit dem Namen [{1}] nicht gefunden werden. Schlie\u00dfen Sie die fehlende Klasse in Ihren Klassenpfad ein.
 
-7095=Die Ressource [{0}] der sessions.xml wurde nicht im Ressourcenpfad gefunden. Vergewissern Sie sich, dass der Ressourcenname/-pfad und das Klassenladeprogramm, die an SessionManager.getSession \u00fcbergeben wurden, richtig sind. Die sessions.xml muss im Stammverzeichnis der implementierten JAR-Datei der Anwendung enthalten sein. Wenn die sessions.xml in einem Unterverzeichnis in der JAR-Datei der Anwendung implementiert ist, vergewissern Sie sich, dass der richtige Ressourcenpfad mit "/" und nicht mit "\" verwendet wird.
+7095=Die Ressource [{0}] der sessions.xml wurde nicht im Ressourcenpfad gefunden.  Vergewissern Sie sich, dass der Ressourcenname/-pfad und das Klassenladeprogramm, die an SessionManager.getSession \u00fcbergeben wurden, richtig sind.  Die sessions.xml muss im Stammelement der implementierten JAR-Datei der Anwendung enthalten sein. Wenn die sessions.xml in einem Unterverzeichnis in der JAR-Datei der Anwendung implementiert ist, vergewissern Sie sich, dass der richtige Ressourcenpfad mit "/" und nicht mit "" verwendet wird.
 
 7096=Die Methode commit() kann nicht verwendet werden, um die UnitOfWork erneut festzuschreiben.
 
 7097=Die Operation [{0}] wird nicht unterst\u00fctzt.
 
-7099=Die XML-Ressource [{0}] des Implementierungsprojekts wurde nicht im Ressourcenpfad gefunden. Vergewissern Sie sich, dass der Ressourcenname/-pfad und das Klassenladeprogramm, die an XMLProjectReader \u00fcbergeben wurden, richtig sind. Die Projekt-XML muss im Stammverzeichnis der implementierten JAR-Datei der Anwendung enthalten sein. Wenn die Projekt-XML in einem Unterverzeichnis in der JAR-Datei der Anwendung implementiert ist, vergewissern Sie sich, dass der richtige Ressourcenpfad mit "/" und nicht mit "\" verwendet wird.
+7099=Die XML-Ressource des Bereitstellungsprojekts [{0}] wurde auf dem Ressourcenpfad nicht gefunden.  Vergewissern Sie sich, dass der Ressourcenname/-pfad und das Klassenladeprogramm, die an XMLProjectReader \u00fcbergeben wurden, richtig sind.  Die Projekt-XML muss im Stammelement der implementierten JAR-Datei der Anwendung enthalten sein. Wenn die Projekt-XML in einem Unterverzeichnis in der JAR-Datei der Anwendung implementiert ist, vergewissern Sie sich, dass der richtige Ressourcenpfad mit "/" und nicht mit "" verwendet wird.
 
 7100=Die Sitzung mit dem Namen [{0}] wurde nicht in der Datei session.xml gefunden [{1}].
 
@@ -606,7 +607,7 @@
 
 7342=Der angegebene boolesche Wert [{0}] zum Festlegen, dass native SQL-Abfragen zul\u00e4ssig sind, ist ung\u00fcltig. Der Wert muss "true" oder "false" sein.
 
-7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t [{3]} [{2}]. Bei der Verwendung einer VPD-Multitenantstrategie darf pro Entit\u00e4t nur eine einzige Tenantdiskriminatorspalte vorhanden sein und die zugeh\u00f6rige Kontexteigenschaft muss f\u00fcr alle VPD-Multitenantentit\u00e4ten konsistent sein.
+7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t verwendet [{3}] [{2}]. Bei der Verwendung einer VPD-Multitenantstrategie darf pro Entit\u00e4t nur eine einzige Tenantdiskriminatorspalte vorhanden sein und die zugeh\u00f6rige Kontexteigenschaft muss f\u00fcr alle VPD-Multitenantentit\u00e4ten konsistent sein.
 
 7344=VPD (Verbindungen und DDL-Generierung) wird nicht f\u00fcr die Plattform [{0}] unterst\u00fctzt.
 

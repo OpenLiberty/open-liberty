@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021,2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@
 
   <managed-executor>
     <name>java:global/concurrent/dd/web/LPExecutor</name>
-    <context-service-ref>java:global/concurrent/dd/ejb/LPContextService</context-service-ref>
+    <context-service-ref>java:global/concurrent/anno/ejb/LPContextService</context-service-ref>
     <max-async>3</max-async>
   </managed-executor>
 
@@ -37,4 +37,51 @@
     <priority>10</priority>
   </managed-thread-factory>
 -->
+
+<!-- TODO enable to test merging
+  <context-service>
+    <name>java:app/concurrent/merged/web/LTContextService</name>
+    <cleared></cleared>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+
+  <context-service>
+    <name>java:comp/concurrent/merged/web/PTContextService</name>
+    <propagated>Priority</propagated>
+    <propagated>Timestamp</propagated>
+  </context-service>
+
+  <managed-executor>
+     <name>java:module/concurrent/merged/web/ZLExecutor</name>
+     <max-async>3</max-async>
+  </managed-executor>
+
+  <managed-executor>
+    <name>java:comp/concurrent/merged/web/ZPExecutor</name>
+    <context-service-ref>java:app/concurrent/dd/ZPContextService</context-service-ref>
+    <hung-task-threshold>200000</hung-task-threshold>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:module/concurrent/merged/web/ZLScheduledExecutor</name>
+    <max-async>1</max-async>
+  </managed-scheduled-executor>
+
+  <managed-scheduled-executor>
+    <name>java:app/concurrent/merged/web/LPScheduledExecutor</name>
+    <context-service-ref>java:global/concurrent/anno/ejb/LPContextService</context-service-ref>
+    <hung-task-threshold>140000</hung-task-threshold>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/merged/web/TZThreadFactory</name>
+    <context-service-ref>java:comp/concurrent/dd/web/TZContextService</context-service-ref>
+  </managed-thread-factory>
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/merged/web/LTThreadFactory</name>
+    <priority>8</priority>
+  </managed-thread-factory>
+-->
+
 </web-app>

@@ -107,12 +107,16 @@
 		</condition>
 		<property name="illegal.access.permit" value=""/>
 		
+		
 		<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
 			     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
 				 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
 				 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
 		<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
-			<istrue value="${is.java15.orHigher}"/>
+			<and>
+				<istrue value="${is.java15.orHigher}"/>
+				<not><istrue value="${supports.framework.java}"/></not>
+			</and>
 		</condition>
 		<property name="use.java.security.manager" value=""/>
 		

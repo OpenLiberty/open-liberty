@@ -56,10 +56,6 @@ JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Volby WSLoginModuleProxy maj\
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee prvek voleb WSLoginModuleProxy maj\u00ed hodnotu null nebo jsou pr\u00e1zdn\u00e9.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Ov\u011b\u0159te, zda konfigurace WSLoginModuleProxy obsahuje prvek voleb.
 
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Nen\u00ed nastavena volba delegov\u00e1n\u00ed WSLoginModuleProxy.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee modul jaasLoginModule s ID WSLoginModuleProxy nem\u00e1 v prvku voleb delegovan\u00fd atribut.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Ov\u011b\u0159te, \u017ee modul jaasLoginModule s ID WSLoginModuleProxy zahrnuje v prvku voleb delegovan\u00fd atribut. 
-
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: Z\u00e1stupce WSLoginModuleProxy nen\u00ed v jaasLoginContextEntry system.DEFAULT podporov\u00e1n.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=Z\u00e1stupce WSLoginModuleProxy nen\u00ed v jaasLoginContextEntry system.DEFAULT podporov\u00e1n.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Odeberte polo\u017eku serveru proxy z atributu loginModuleRef polo\u017eky jaasLoginContextEntry system.DEFAULT.

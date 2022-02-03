@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -152,13 +153,13 @@
 
 7093=En la consulta denominada [{0}], no se encuentra la clase [{2}] para el argumento de consulta denominado [{1}]. Incluya la clase que falta en la classpath.
 
-7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso del recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  El archivo sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
 
 7096=No se puede utilizar el m\u00e9todo commit() para confirmar UnitOfWork de nuevo.
 
 7097=La operaci\u00f3n no est\u00e1 soportada: [{0}].
 
-7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+7099=No se ha encontrado el recurso XML del proyecto de despliegue [{0}] en la v\u00eda de acceso del recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
 
 7100=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
 
@@ -606,7 +607,7 @@
 
 7342=El valor booleano especificado [{0}] para establecer las consultas SQL nativas de permiso no es v\u00e1lido; el valor debe ser "true" o "false".
 
-7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de inquilino). La entidad [{1}] utiliza [{0}] y la entidad [{3]} utiliza [{2}]. Cuando se utiliza una estrategia de VPD de varios inquilinos, s\u00f3lo puede haber una columna de discriminador de inquilino por entidad y su propiedad de contexto debe ser coherente en todas las entidades de VPD de varios inquilinos.
+7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de arrendatario). La entidad [{1}] utiliza [{0}] y la entidad [{3}] utiliza [{2}]. Cuando se utiliza una estrategia VPD de varios arrendatarios, solo puede haber una columna de discriminador de arrendatario por entidad y su propiedad de contexto debe ser coherente en todas las entidades de VPD de Multiarrendatario.
 
 7344=VPD (conexiones y generaci\u00f3n DDL) no est\u00e1 soportado para la plataforma: [{0}].
 

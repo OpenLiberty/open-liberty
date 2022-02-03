@@ -74,6 +74,7 @@
         </security-role>
     </authorization-roles>
 
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
   	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
   	<javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>

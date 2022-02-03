@@ -12,6 +12,7 @@
 	    <file name="${shared.resource.dir}/derby/derby.jar"/>
 	</library>
 
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
 
 </server>

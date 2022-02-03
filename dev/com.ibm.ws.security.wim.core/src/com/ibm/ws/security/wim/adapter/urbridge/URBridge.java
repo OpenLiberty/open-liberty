@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,7 +222,7 @@ public class URBridge implements Repository {
      *
      * @return
      */
-
+    @SuppressWarnings("unchecked")
     public void initialize(Map<String, Object> configProps) throws WIMException {
         try {
             reposId = (String) configProps.get(KEY_ID);
@@ -287,7 +287,7 @@ public class URBridge implements Repository {
      * should have only 1 baseEntry
      *
      * @param configProps Map containing the configuration information
-     *            for the baseEntries.
+     *                        for the baseEntries.
      * @throws WIMException Exception is thrown if no baseEntry is set.
      */
     private void setBaseEntry(Map<String, Object> configProps) throws WIMException {
@@ -340,7 +340,7 @@ public class URBridge implements Repository {
      * @param configProps map containing the configuration information.
      *
      * @throws WIMException throw when there is not a mapping for a user
-     *             or not a mapping for a group.
+     *                          or not a mapping for a group.
      */
     private void setConfigEntityMapping(Map<String, Object> configProps) throws WIMException {
         List<String> entityTypes = getSupportedEntityTypes();
@@ -384,11 +384,11 @@ public class URBridge implements Repository {
      * Get the information about Users and Groups from the underlying User Registry
      *
      * @param root Input object containing set identifiers of objects to be fetched,
-     *            and optionally control objects.
+     *                 and optionally control objects.
      *
      * @throws WIMException improper control objects are in the input datagraph,
-     *             invalid properties are in a propertyControl object,or the underlying
-     *             user registry throws an exception.
+     *                          invalid properties are in a propertyControl object,or the underlying
+     *                          user registry throws an exception.
      *
      * @return A Root object containing the required Person(s) or Group(s)
      *
@@ -520,7 +520,7 @@ public class URBridge implements Repository {
      * Get the attributes requested for the entity.
      *
      * @param controlObject the control object containing the attributes.
-     * @param type the type of object the attributes are requested for. Group or Person.
+     * @param type          the type of object the attributes are requested for. Group or Person.
      */
     private List<String> getAttributes(PropertyControl control, String type) throws WIMException {
         List<String> attrList = new ArrayList<String>(10);
@@ -708,7 +708,7 @@ public class URBridge implements Repository {
                 }
             } else {
                 if (entityType.contains(personAccountType) || noSpecificEntityType) {
-                    List<String> resultList =  searchUsers(secName, 1).getList();
+                    List<String> resultList = searchUsers(secName, 1).getList();
 
                     if (resultList.size() > 0) {
                         typeList.add(personAccountType);
@@ -1279,26 +1279,6 @@ public class URBridge implements Repository {
     }
 
     /**
-     * @param returnRoot
-     */
-    private boolean isURBridgeResult(Root returnRoot) {
-        // Check if there is a valid response
-        if (returnRoot != null && !returnRoot.getEntities().isEmpty()) {
-            // Determine if the return object to check if the context was set.
-            List<Context> contexts = returnRoot.getContexts();
-            for (Context context : contexts) {
-                String key = context.getKey();
-
-                if (key != null && SchemaConstantsInternal.IS_URBRIDGE_RESULT.equals(key)) {
-                    if ("true".equalsIgnoreCase((String) context.getValue()))
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Is the entity in this realm?
      *
      * @param uniqueName The entity unique name.
@@ -1309,29 +1289,35 @@ public class URBridge implements Repository {
 
         if (isSafRegistry()) {
             try {
-                return userRegistry.isValidUser(uniqueName);
+                if (userRegistry.isValidUser(uniqueName)) {
+                    return true;
+                }
             } catch (Exception e) {
                 /* Ignore. */
             }
 
             try {
-                return userRegistry.isValidGroup(uniqueName);
+                if (userRegistry.isValidGroup(uniqueName)) {
+                    return true;
+                }
             } catch (Exception e) {
                 /* Ignore. */
             }
         } else {
             try {
                 SearchResult result = userRegistry.getUsers(uniqueName, 1);
-                if (result != null && result.getList().size() > 0)
+                if (result != null && result.getList().size() > 0) {
                     return true;
+                }
             } catch (Exception e) {
                 /* Ignore. */
             }
 
             try {
                 SearchResult result = userRegistry.getGroups(uniqueName, 1);
-                if (result != null && result.getList().size() > 0)
+                if (result != null && result.getList().size() > 0) {
                     return true;
+                }
             } catch (Exception e) {
                 /* Ignore. */
             }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Die Benutzerregistry-Operat
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Der Entit\u00e4tstyp muss mit einem Entit\u00e4tstypnamen und mindestens einer entsprechenden RDN-Eigenschaft definiert werden.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=\u00c4ndern und korrigieren Sie die Entit\u00e4tstypdefinition in der Datei server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Basiseintragsdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Basiseintragsdefinition in der Datei server.xml. Die Syntax ist beispielsweise <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= Die angegebene Basiseintragsdefinition ist falsch. Die Syntax f\u00fcr die Definition eines Basiseintrags ist <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= \u00c4ndern und korrigieren Sie die Basiseintragsdefinition in der Datei server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Der Vorgang der Benutzerregistrierung konnte nicht abgeschlossen werden. Die Basiseintragsdefinition {0} ist nicht g\u00fcltig.  Korrigieren Sie die Basiseintragsdefinition in der Datei server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Die angegebene Basiseintragsdefinition ist ung\u00fcltig.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Geben Sie eine g\u00fcltige Basiseintragsdefinition in der Datei server.xml an.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Realmdefinition {0} ist nicht g\u00fcltig. Korrigieren Sie die Realmdefinition in der Datei server.xml.
 INVALID_REALM_DEFINITION.explanation= Der Realm-Tag fehlt oder ist ung\u00fcltig, weil ein erforderliches Attribut fehlt.
@@ -102,9 +102,7 @@ MISSING_COOKIE.useraction=Stellen Sie sicher, dass die Cookieeigenschaft mit dem
 
 INVALID_COOKIE=CWIML1041E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Cookie im Steuerungsobjekt page ist nicht g\u00fcltig oder abgelaufen.
 INVALID_COOKIE.explanation=Die Benutzerregistry kann die n\u00e4chste Seite mit den Suchergebnissen nicht abrufen. Der Cookieparameter, der zum Abrufen der n\u00e4chsten Seite mit den Suchergebnissen \u00fcber das Objekt PageControl verwendet wird, ist ung\u00fcltig.
-
 INVALID_COOKIE.useraction=Stellen Sie sicher, dass im Objekt PageControl ein g\u00fcltiges Cookie angegeben ist.
-
 
 INCORRECT_COUNT_LIMIT=CWIML1022E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Z\u00e4hlergrenze {0} im Steuerungsobjekt search ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind 0 und positive Zahlen.
 INCORRECT_COUNT_LIMIT.explanation=Die Begrenzung f\u00fcr die Anzahl bei einer Suchoperation darf keine negative Zahl sein. Eine positive Zahl definiert die maximale Anzahl von Eintr\u00e4gen, die als Ergebnis vom Suchvorgang zur\u00fcckgegeben werden k\u00f6nnen. Der Wert 0 gibt keine Begrenzung an. Alle Eintr\u00e4ge werden zur\u00fcckgegeben, wenn das Suchlimit auf 0 gesetzt wird.
@@ -147,7 +145,6 @@ ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=Die Operation unterst\u00fctzt nu
 ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Stellen Sie sicher, dass nur eine einzige Entit\u00e4t f\u00fcr die Benutzerregistry-Operation \u00fcbergeben wird.
 
 MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der Name des Principals fehlt oder ist leer.
-
 MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=F\u00fcr die Anmeldung mit einem Kennwort ist ein Principalname erforderlich.
 MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Stellen Sie sicher, dass der Name des Principals angegeben wird.
 
@@ -202,9 +199,11 @@ MISSING_MANDATORY_PROPERTY.useraction=Geben Sie einen Wert f\u00fcr die verbindl
 CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Benutzer mit dem eindeutigen Namen (uniqueName) {0} kann nicht gel\u00f6scht werden, weil es sich dabei um den angemeldeten Benutzer handelt. Melden Sie sich mit einem anderen Benutzernamen an, um diesen Benutzer zu l\u00f6schen.
 CANNOT_DELETE_LOGGED_IN_USER.explanation=Der Benutzer hat versucht, sich selbst aus Virtual Member Manager zu l\u00f6schen. Diese Aktion ist nicht zul\u00e4ssig.
 CANNOT_DELETE_LOGGED_IN_USER.useraction=Melden Sie sich als anderer Benutzer an, um den aktuellen Benutzer zu l\u00f6schen.
-AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Beim Abrufen der Berechtigungsnachweise des Subjekts ist ein unerwarteter Fehler aufgetreten.	\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Beim Abrufen der Berechtigungsnachweise des Subjekts ist ein unerwarteter Fehler aufgetreten.\t\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln.
 AUTH_SUBJECT_CRED_FAILURE.explanation=Die Berechtigungsnachweise des Subjekts k\u00f6nnen auf Grund eines unbekannten Fehlers nicht abgerufen werden.
 AUTH_SUBJECT_CRED_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln. M\u00f6glicherweise liegt ein Problem bei der WebSphere-Sicherheitskonfiguration vor. 
+
 AUTH_SUBJECT_FAILURE=CWIML2004E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Beim Abrufen des Subjekts des Aufrufenden ist ein unerwarteter Fehler aufgetreten. \u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln.
 AUTH_SUBJECT_FAILURE.explanation=Das Subjekt des Aufrufenden kann auf Grund eines unbekannten Fehlers nicht abgerufen werden.
 AUTH_SUBJECT_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Traceprotokolle, um die Ursache des Fehlers zu ermitteln. M\u00f6glicherweise liegt ein Problem bei der WebSphere-Sicherheitskonfiguration vor.
@@ -221,7 +220,7 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Die repositoriesForGro
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Es ist keine repository-\u00fcbergreifende Gruppenkonfiguration f\u00fcr das Repository definiert.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Suchen Sie in der Protokolldatei nach der Fehlerursache. \u00dcberpr\u00fcfen Sie Ihre Repository-Konfiguration.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Der angegebene Entit\u00e4tstyp {0} ist kein g\u00fcltiger Entit\u00e4tstyp f\u00fcr diese Operation.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Der angegebene Entit\u00e4tstyp {0} ist f\u00fcr diese Operation nicht g\u00fcltig.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Es wurde eine Operation f\u00fcr eine Entit\u00e4t angefordert, aber diese Operation unterst\u00fctzt den angegebenen Entit\u00e4tstyp nicht.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass die in der Eingabe angegebenen Entit\u00e4ten unterst\u00fctzte Entit\u00e4tstypen haben, und entfernen Sie alle unterst\u00fctzten Entit\u00e4tstypen aus der Eingabe.
 
@@ -254,7 +253,7 @@ ENTITY_SEARCH_FAILED.explanation=Die Entit\u00e4t konnte wegen der von der zugru
 ENTITY_SEARCH_FAILED.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
 
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil das Kennwort fehlt oder leer ist.
-MISSING_OR_EMPTY_PASSWORD.explanation=Wenn der Principalname w\u00e4hrend des Anmeldeprozesses angegeben wird, darf das Kennwort weder null noch leer sein.
+MISSING_OR_EMPTY_PASSWORD.explanation=Wenn der Name des Principals bei der Anmeldung angegeben wird, darf das Kennwort nicht null oder leer sein.
 MISSING_OR_EMPTY_PASSWORD.useraction=Geben Sie das Kennwort an.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil die Generierung des Zertifikats fehlgeschlagen ist.

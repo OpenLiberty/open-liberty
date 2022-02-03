@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ /*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.apps.timer;
+
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
@@ -20,43 +23,51 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.ws.cdi.ejb.apps.timer.view.EjbSessionBeanLocal;
+import componenttest.app.FATServlet;
+import org.junit.Test;
 
-/**
- * Servlet implementation class TestEjbTimerServlet
- */
 @WebServlet("/Timer")
-public class TestEjbTimerServlet extends HttpServlet {
+public class TestEjbTimerServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
     @EJB
     EjbSessionBeanLocal bean;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public TestEjbTimerServlet() {
-        super();
-        // TODO Auto-generated constructor stub
+    private static boolean needToSetUp = true;
+
+    private synchronized void setUp() {
+        if (needToSetUp) {
+            bean.initTimer();
+            needToSetUp = false;
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                fail("The timer exploded");
+            }
+        }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ServletOutputStream os = response.getOutputStream();
-        os.println(String.format("session = %d request = %d", bean.getSesCount(), bean.getReqCount()));
-        os.println();
-        os.println(bean.getStack());
-        bean.incCountersViaTimer();
+    @Test
+    public void testRequestScopeActiveWithinTimeout() throws ServletException, IOException {
+        setUp();
+        assertEquals("The request scope was not active inside a timeout method", Boolean.TRUE, EjbSessionBean.canAccessRequestScope);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
+    @Test
+    public void testRequestScopeNotPropagatedIntoTimeout() throws ServletException, IOException {
+        setUp();
+        assertEquals("The request scope was propagated into a timeout method", Boolean.TRUE, EjbSessionBean.seperateRequestScopes);
+    }
+
+    @Test
+    public void testSessionScopeNotActiveWithinTimeout() throws ServletException, IOException {
+        setUp();
+        assertEquals("The session scope was active inside a timeout method", Boolean.TRUE, EjbSessionBean.sessionScopeInactive);
+    }
+
+    @Test
+    public void testInterceptorFiresOnTimeout() throws ServletException, IOException {
+        setUp();
+        assertEquals("The interceptor was not called", Boolean.TRUE, MyCDIInterceptor.interceptorCalled);
     }
 
 }

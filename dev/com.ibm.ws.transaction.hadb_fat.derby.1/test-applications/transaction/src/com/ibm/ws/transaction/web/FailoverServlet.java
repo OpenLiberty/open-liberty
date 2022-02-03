@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Resource;
-import javax.annotation.Resource.AuthenticationType;
-import javax.servlet.annotation.WebServlet;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -35,7 +33,6 @@ import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/FailoverServlet")
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
@@ -47,9 +44,6 @@ public class FailoverServlet extends FATServlet {
      * ie _digits[9] == '9' etc.
      */
     private final static String _digits = "0123456789abcdef";
-
-    @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
-    DataSource ds;
 
     public void setupForRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailover");
@@ -115,8 +109,8 @@ public class FailoverServlet extends FATServlet {
                                      int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupTestParameters");
 
-        Connection con = ds.getConnection();
         try {
+            Connection con = getConnection();
             // Set up statement to use for table delete/recreate
             Statement stmt = con.createStatement();
 
@@ -255,14 +249,14 @@ public class FailoverServlet extends FATServlet {
 
     public void checkForDuplicates(HttpServletRequest request,
                                    HttpServletResponse response) throws Exception {
-        Connection conn = ds.getConnection();
-        conn.setAutoCommit(false);
         Set<List> resultSet;
         List row;
         Statement recoveryStmt = null;
         ResultSet recoveryRS = null;
 
         try {
+            Connection conn = getConnection();
+            conn.setAutoCommit(false);
             recoveryStmt = conn.createStatement();
             String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
                                  " FROM WAS_TRAN_LOG" +
@@ -340,5 +334,21 @@ public class FailoverServlet extends FATServlet {
         }
 
         return (result.toString());
+    }
+
+    private Connection getConnection() throws SQLException {
+        Connection conn = null;
+        try {
+            InitialContext context = new InitialContext();
+
+            DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/tranlogDataSource");
+            System.out.println("FAILOVERSERVLET: getConnection called against resource - " + ds);
+            conn = ds.getConnection();
+        } catch (Exception ex) {
+            System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
+        }
+
+        System.out.println("FAILOVERSERVLET: getConnection returned connection - " + conn);
+        return conn;
     }
 }

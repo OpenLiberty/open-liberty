@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,7 +172,13 @@ public class ApacheDSandKDC {
                                          new File(directoryService.getInstanceLayout().getPartitionsDirectory(), "example"));
         pf.addIndex(p, "krb5PrincipalName", 10);
 
-        directoryService.addPartition(p);
+        try {
+            directoryService.addPartition(p);
+        } catch (Exception e) {
+            Log.error(c, "createPartition", e, "Partition creation failed, trying a second time");
+            Thread.sleep(5000);
+            directoryService.addPartition(p);
+        }
 
         Entry entry = directoryService.newEntry(new Dn(BASE_DN));
         entry.add("objectclass", "domain");

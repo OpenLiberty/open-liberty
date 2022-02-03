@@ -652,6 +652,18 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             applicationBDAsVisible = internalExtension.applicationBeansVisible();
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "newSPIExtensionArchive", "***We are creating a new CDI Extension Archive***");
+            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as beans: " + String.join(", ", extra_classes));
+            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as extensions: " + String.join(", ", extensionClassNames));
+            Tr.debug(tc, "newSPIExtensionArchive", "The following annotations will be registered as bean defining annotations: " + String.join(", ", extraAnnotations));
+            if (applicationBDAsVisible) {
+                Tr.debug(tc, "newSPIExtensionArchive", "The extension will be able to see and inject beans provided by the application and other extensions");
+            } else {
+                Tr.debug(tc, "newSPIExtensionArchive", "The extension will **NOT** be able to see and inject beans provided by the application and other extensions");
+            }
+        }
+
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                     applicationBDAsVisible,
                                                                                     extClassesOnly, extensionClassNames);

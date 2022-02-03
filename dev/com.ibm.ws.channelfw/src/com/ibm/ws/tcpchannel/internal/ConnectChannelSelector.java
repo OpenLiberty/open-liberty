@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,16 @@ public class ConnectChannelSelector extends ChannelSelector {
      */
     public ConnectChannelSelector(WorkQueueManager _wqm, int _index, int _channelType) throws IOException {
         super(false);
+        this.wqm = _wqm;
+        this.countIndex = _index;
+        this.channelType = _channelType;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Created Connect selector: " + this);
+        }
+    }
+
+    public ConnectChannelSelector(WorkQueueManager _wqm, int _index, int _channelType, boolean _startImmediately) throws IOException {
+        super(false, _startImmediately);
         this.wqm = _wqm;
         this.countIndex = _index;
         this.channelType = _channelType;

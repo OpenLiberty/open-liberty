@@ -69,7 +69,6 @@
         ibm:type="pid"
         ibm:reference="com.ibm.ws.jpacomponent.defaultProperties"
         ibmui:group="Advanced"
-        ibm:beta="true"
         ibm:flat="true" />
 
   </OCD>
@@ -83,18 +82,18 @@
     <Object ocdref="com.ibm.ws.jpacomponent.defaultProperties" />
   </Designate>
 
-  <OCD id="com.ibm.ws.jpacomponent.defaultProperties" name="%default.properties" description="%default.properties.desc" ibm:beta="true" >
-    <AD id="property" name="%default.properties.property" ibm:type="pid" ibm:flat="true" ibm:reference="com.ibm.ws.jpacomponent.defaultProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%default.properties.property.desc" ibm:beta="true"/>
+  <OCD id="com.ibm.ws.jpacomponent.defaultProperties" name="%default.properties" description="%default.properties.desc" >
+    <AD id="property" name="%default.properties.property" ibm:type="pid" ibm:flat="true" ibm:reference="com.ibm.ws.jpacomponent.defaultProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%default.properties.property.desc" />
   </OCD>
 
   <Designate factoryPid="com.ibm.ws.jpacomponent.defaultProperties.property">
     <Object ocdref="com.ibm.ws.jpacomponent.defaultProperties.property"/>
   </Designate>
  
-  <OCD id="com.ibm.ws.jpacomponent.defaultProperties.property" name="%default.properties.property" description="%default.properties.property.desc" ibm:beta="true" >
-    <AD id="name" required="false" type="String" default="" name="%default.properties.property.name" description="%default.properties.property.name.desc" ibm:beta="true"/>
+  <OCD id="com.ibm.ws.jpacomponent.defaultProperties.property" name="%default.properties.property" description="%default.properties.property.desc" >
+    <AD id="name" required="false" type="String" default="" name="%default.properties.property.name" description="%default.properties.property.name.desc" />
     <!-- The value may contain a password, so we need to obscure trace. JPAComponent trace will log the values -->
-    <AD id="value" required="false" type="String" default="" name="%default.properties.property.value" description="%default.properties.property.value.desc" ibm:obscure="true" ibm:beta="true"/>
+    <AD id="value" required="false" type="String" default="" name="%default.properties.property.value" description="%default.properties.property.value.desc" ibm:obscure="true" />
   </OCD>
 
 </metatype:MetaData>

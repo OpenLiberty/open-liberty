@@ -64,12 +64,12 @@ OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Zkontrolujte, zda jsou v soubo
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Po\u017eadavek na p\u0159ipojen\u00ed OpenID byl u\u017eivatelem odm\u00edtnut, nebo do\u0161lo k jin\u00e9 chyb\u011b, jej\u00edm\u017e v\u00fdsledkem bylo zam\u00edtnut\u00ed po\u017eadavku.
-OAUTH_REQUEST_ACCESS_DENIED.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i souhlasu s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
+OAUTH_REQUEST_ACCESS_DENIED.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i se souhlasem s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=U\u017eivatel mus\u00ed povolit poskytovateli p\u0159ipojen\u00ed OpenID sd\u00edlet obory platnosti, kter\u00e9 klient vy\u017eaduje, aby byl po\u017eadavek na p\u0159ipojen\u00ed OpenID \u00fasp\u011b\u0161n\u00fd. Pokud u\u017eivatel tento po\u017eadavek schv\u00e1lil, zkontrolujte protokoly na poskytovateli OP, zda tam nejsou dal\u0161\u00ed chyby.
 
 #used_by_client_project
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Po\u017eadavek zam\u00edtl u\u017eivatel, nebo do\u0161lo k jin\u00e9 chyb\u011b, jej\u00edm\u017e v\u00fdsledkem bylo zam\u00edtnut\u00ed po\u017eadavku.
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i souhlasu s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=U\u017eivatel bu\u010f zam\u00edtl po\u017eadavek na p\u0159ipojen\u00ed OpenID stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i se souhlasem s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zam\u00edtla p\u0159\u00edstup po\u017eadavku na p\u0159ipojen\u00ed OpenID.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=U\u017eivatel mus\u00ed povolit poskytovateli p\u0159ipojen\u00ed OpenID sd\u00edlet obory platnosti, kter\u00e9 klient vy\u017eaduje, aby byl po\u017eadavek na p\u0159ipojen\u00ed OpenID \u00fasp\u011b\u0161n\u00fd. Pokud u\u017eivatel tento po\u017eadavek schv\u00e1lil, zkontrolujte protokoly na poskytovateli OP, zda tam nejsou dal\u0161\u00ed chyby.
 
 # 1712,13,14 are used in the clients.common bundle. Do not use here.
@@ -106,7 +106,7 @@ PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Zajist\u011bte, aby poskytovan\u00fd p\u
 
 #used_by_client_project
 OIDC_PROPAGATION_FAIL=CWWKS1721E: Server prost\u0159edk\u016f p\u0159ijal chybu [{0}] b\u011bhem pokusu ov\u011b\u0159it p\u0159\u00edstupov\u00fd prvek. Bu\u010f vypr\u0161ela platnost, nebo nem\u016f\u017ee b\u00fdt rozpozn\u00e1n koncov\u00fdm bodem ov\u011b\u0159en\u00ed [{1}].
-OIDC_PROPAGATION_FAIL.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd prvek nelze ov\u011b\u0159it kv\u016fli odezv\u011b na chybu od poskytovatele p\u0159ipojen\u00ed OpenID. 
+OIDC_PROPAGATION_FAIL.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token nelze ov\u011b\u0159it kv\u016fli odezv\u011b na chybu od poskytovatele p\u0159ipojen\u00ed OpenID. 
 OIDC_PROPAGATION_FAIL.useraction=Ov\u011b\u0159te platnost tokenu \u0161\u00ed\u0159en\u00ed a pokud je to mo\u017en\u00e9, zkontrolujte protokoly u poskytovatele p\u0159ipojen\u00ed OpenID, kde jsou dal\u0161\u00ed podrobnosti o chyb\u011b.
 
 # 1722 is used in clients.common bundle, do not use here.
@@ -128,12 +128,12 @@ PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Ujist\u011bte se, \u017ee js
 
 #used_by_client_project
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee tato \u017e\u00e1dost nem\u011bla nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159. p\u0159\u00edstupov\u00fd prvek nebo token jwt.
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=\u017d\u00e1dost mus\u00ed obsahovat nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159.: p\u0159\u00edstupov\u00fd prvek nebo token jwt tak, aby server prost\u0159edk\u016f mohl zpracovat ov\u011b\u0159en\u00ed a \u0161\u00ed\u0159en\u00ed tokenu.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=\u017d\u00e1dost mus\u00ed obsahovat nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159.: p\u0159\u00edstupov\u00fd token nebo token jwt tak, aby server prost\u0159edk\u016f mohl zpracovat ov\u011b\u0159en\u00ed a \u0161\u00ed\u0159en\u00ed tokenu.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Ujist\u011bte se, \u017ee m\u00e1 \u017e\u00e1dost platn\u00fd token \u0161\u00ed\u0159en\u00ed.
 
 # USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee nelze ov\u011b\u0159it p\u0159\u00edstupov\u00fd prvek kv\u016fli chyb\u011b [{0}]. Metoda ov\u011b\u0159en\u00ed je [{1}] a adresa URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed je [{2}].
-PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd prvek nelze ov\u011b\u0159it kv\u016fli intern\u00ed chyb\u011b, b\u011bhov\u00fd modul tak nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed. 
+PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token nelze ov\u011b\u0159it kv\u016fli intern\u00ed chyb\u011b, b\u011bhov\u00fd modul tak nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed. 
 PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Kontrolou protokol\u016f serveru prost\u0159edk\u016f zjist\u011bte, zda nebyly p\u0159edt\u00edm zaprotokolov\u00e1ny n\u011bjak\u00e9 dal\u0161\u00ed chyby.
 
 
@@ -144,15 +144,15 @@ PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Kontrolou protokol\u016f serveru prost
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159il po\u017eadavek na ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
-PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Atribut validationEndpointUrl ur\u010den\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID nen\u00ed vhodn\u00fdm koncov\u00fdm bodem pro ur\u010denou metodu validationMethod.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualizuje konfiguraci klienta pro p\u0159ipojen\u00ed OpenID
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Atribut validationEndpointUrl ur\u010den\u00fd v konfiguraci klienta OpenID Connect nen\u00ed vhodn\u00fdm koncov\u00fdm bodem pro ur\u010denou metodu validationMethod.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualizuje konfiguraci klienta OpenID Connect zm\u011bnou metody validationMethod nebo validationEndpointUrl.
  
 # 1730 used in clients.common, don't use here.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee p\u0159\u00edstupov\u00fd token neobsahuje n\u00e1rok [{0}] uveden\u00fd atributem [{1}].
-PROPAGATION_TOKEN_MISSING_REALM.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd prvek neobsahuje uveden\u00fd n\u00e1rok k identifikaci sf\u00e9ry a b\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed.
-PROPAGATION_TOKEN_MISSING_REALM.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1)Ov\u011b\u0159te, \u017ee konfigurace klienta pro p\u0159ipojen\u00ed OpenID uv\u00e1d\u00ed atribut realmName. 2)Ov\u011b\u0159te, \u017ee poskytovatel p\u0159ipojen\u00ed OpenID (OP) emituje p\u0159\u00edstupov\u00fd prvek s ur\u010den\u00fdm n\u00e1rokem. 3) Ov\u011b\u0159te, \u017ee p\u0159ipojen\u00ed OpenID m\u016f\u017ee emitovat p\u0159\u00edstupov\u00fd prvek s n\u00e1rokem "iss". 
+PROPAGATION_TOKEN_MISSING_REALM.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token neobsahuje uveden\u00fd n\u00e1rok k identifikaci sf\u00e9ry a b\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed.
+PROPAGATION_TOKEN_MISSING_REALM.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1)Ov\u011b\u0159te, \u017ee konfigurace klienta OpenID Connect uv\u00e1d\u00ed atribut realmName. 2)Ov\u011b\u0159te, \u017ee poskytovatel OpenID Connect (OP) emituje p\u0159\u00edstupov\u00fd token s ur\u010den\u00fdm n\u00e1rokem. 3) Ov\u011b\u0159te, \u017ee OpenID Connect m\u016f\u017ee emitovat p\u0159\u00edstupov\u00fd token s n\u00e1rokem "iss". 
 
 # do not translate the quoted "required"
 #used_by_client_project
@@ -215,7 +215,7 @@ OIDC_CLIENT_NONE_ALG.useraction=Neo\u010dek\u00e1v\u00e1-li se, \u017ee p\u0159\
 #used_by_client_project and clients project
 OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Soubor cookie WASOidcCode [{0}] v odezv\u011b na klienta pro p\u0159ipojen\u00ed OpenID [{1}] je neplatn\u00fd. Jeho hodnota mohla b\u00fdt upravena.
 OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Klient pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e1 strana nebo RP) obdr\u017eel soubor cookies WASOidcCode, kter\u00fd nebyl platn\u00fd. Jeho hodnota mohla b\u00fdt upravena.
-OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Ov\u011b\u0159te, \u017ee soubor cookie nebyl zm\u011bn\u011bn a \u017ee dek\u00f3dovan\u00fd obsah tohoto souboru cookie za\u010d\u00edn\u00e1 \u0159\u00e1dn\u011b naform\u00e1tovan\u00fdm objektem JSON. 
+OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Ov\u011b\u0159te, \u017ee soubor cookie nebyl zm\u011bn\u011bn a \u017ee dek\u00f3dovan\u00fd obsah tohoto souboru cookie za\u010d\u00edn\u00e1 \u0159\u00e1dn\u011b naform\u00e1tovan\u00fdm objektem JSON.
 
 #1746, 1747  used in clients.common, do not use here. 
 
@@ -263,11 +263,11 @@ OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Klient OpenID Connect kontaktuje konc
 OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Informa\u010dn\u00ed zpr\u00e1va. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: Konfigurace klienta OpenID Connect [{0}] byla aktualizov\u00e1na nov\u00fdmi informacemi p\u0159ijat\u00fdmi z adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed [{1}].
-OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect, 1), pokud existuje probl\u00e9m s kontaktov\u00e1n\u00edm koncov\u00fdch bod\u016f autorizace nebo tokenu poskytovatele OpenID Connect 2), pokud je aktu\u00e1ln\u00ed \u010das pozd\u011bj\u0161\u00ed ne\u017e \u010das p\u0159\u00ed\u0161t\u00edho zji\u0161\u0165ov\u00e1n\u00ed. Dal\u0161\u00ed doba zji\u0161\u0165ov\u00e1n\u00ed se vypo\u010d\u00edt\u00e1 p\u0159id\u00e1n\u00edm hodnoty discoveryPollingRate k aktu\u00e1ln\u00edmu \u010dasu po ka\u017ed\u00e9m vol\u00e1n\u00ed zji\u0161\u0165ov\u00e1n\u00ed.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect, 1), pokud existuje probl\u00e9m s kontaktov\u00e1n\u00edm koncov\u00fdch bod\u016f autorizace nebo tokenu poskytovatele OpenID Connect 2), pokud je aktu\u00e1ln\u00ed \u010das pozd\u011bj\u0161\u00ed ne\u017e \u010das p\u0159\u00ed\u0161t\u00edho zji\u0161\u0165ov\u00e1n\u00ed. Dal\u0161\u00ed doba zji\u0161\u0165ov\u00e1n\u00ed se vypo\u010d\u00edt\u00e1 p\u0159id\u00e1n\u00edm hodnoty discoveryPollingRate k aktu\u00e1ln\u00edmu \u010dasu po ka\u017ed\u00e9m zji\u0161\u0165ovac\u00edm vol\u00e1n\u00ed.
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Informa\u010dn\u00ed zpr\u00e1va. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Konfigurace klienta OpenID Connect [{0}] je konzistentn\u00ed s informacemi z adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed [{1}], a proto nejsou pot\u0159eba \u017e\u00e1dn\u00e9 aktualizace konfigurace.
-OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect, 1), pokud existuje probl\u00e9m s kontaktov\u00e1n\u00edm koncov\u00fdch bod\u016f autorizace nebo tokenu poskytovatele OpenID Connect 2), pokud je aktu\u00e1ln\u00ed \u010das pozd\u011bj\u0161\u00ed ne\u017e \u010das p\u0159\u00ed\u0161t\u00edho zji\u0161\u0165ov\u00e1n\u00ed. Dal\u0161\u00ed doba zji\u0161\u0165ov\u00e1n\u00ed se vypo\u010d\u00edt\u00e1 p\u0159id\u00e1n\u00edm hodnoty discoveryPollingRate k aktu\u00e1ln\u00edmu \u010dasu po ka\u017ed\u00e9m vol\u00e1n\u00ed zji\u0161\u0165ov\u00e1n\u00ed. Kdy\u017e se nejnov\u011bj\u0161\u00ed informace ze zji\u0161\u0165ov\u00e1n\u00ed shoduj\u00ed s p\u0159edchoz\u00edmi, aktualizace konfigurace se neprov\u00e1d\u00ed.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect, 1), pokud existuje probl\u00e9m s kontaktov\u00e1n\u00edm koncov\u00fdch bod\u016f autorizace nebo tokenu poskytovatele OpenID Connect 2), pokud je aktu\u00e1ln\u00ed \u010das pozd\u011bj\u0161\u00ed ne\u017e \u010das p\u0159\u00ed\u0161t\u00edho zji\u0161\u0165ov\u00e1n\u00ed. Dal\u0161\u00ed doba zji\u0161\u0165ov\u00e1n\u00ed se vypo\u010d\u00edt\u00e1 p\u0159id\u00e1n\u00edm hodnoty discoveryPollingRate k aktu\u00e1ln\u00edmu \u010dasu po ka\u017ed\u00e9m zji\u0161\u0165ovac\u00edm vol\u00e1n\u00ed. Kdy\u017e se nejnov\u011bj\u0161\u00ed informace ze zji\u0161\u0165ov\u00e1n\u00ed shoduj\u00ed s p\u0159edchoz\u00edmi, aktualizace konfigurace se neprov\u00e1d\u00ed.
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informa\u010dn\u00ed zpr\u00e1va. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Nezbytn\u00fd atribut konfigurace [{0}] chyb\u00ed nebo je pr\u00e1zdn\u00fd a nen\u00ed zad\u00e1na v\u00fdchoz\u00ed hodnota. Ov\u011b\u0159te, zda je tento atribut nakonfigurovan\u00fd nebo zji\u0161t\u011bn od poskytovatele, \u017ee nen\u00ed pr\u00e1zdn\u00fd a neobsahuje pouze pr\u00e1zdn\u00e9 znaky.
@@ -288,11 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0} OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky JWT (JSON Web Token) z webov\u00e9 odezvy. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
-
-#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
+# 1533-1540 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

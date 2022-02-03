@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: N\u00e3o foi poss\u00edvel 
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= O tipo de entidade deve ser definido com um nome de tipo de entidade e pelo menos uma propriedade de Nome Distinto Relativo (RDN) correspondente.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modifique e corrija a defini\u00e7\u00e3o de tipo de entidade no arquivo server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de entrada de base {0} n\u00e3o \u00e9 v\u00e1lida.  Corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml. Por exemplo, a sintaxe \u00e9 <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= A defini\u00e7\u00e3o especificada da entrada de base est\u00e1 incorreta. A sintaxe para definir uma entrada de base \u00e9 <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Modifique e corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de entrada de base {0} n\u00e3o \u00e9 v\u00e1lida.  Corrija a defini\u00e7\u00e3o de entrada de base no arquivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=A defini\u00e7\u00e3o de entrada de base especificada \u00e9 inv\u00e1lida.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Configure uma defini\u00e7\u00e3o de entrada de base v\u00e1lida no arquivo server.xml.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A defini\u00e7\u00e3o de dom\u00ednio {0} n\u00e3o \u00e9 v\u00e1lida. Corrija a defini\u00e7\u00e3o da regi\u00e3o no arquivo server.xml.
 INVALID_REALM_DEFINITION.explanation= A identifica\u00e7\u00e3o da regi\u00e3o est\u00e1 ausente ou \u00e9 inv\u00e1lida devido \u00e0 aus\u00eancia de um atributo requerido.
@@ -220,9 +220,9 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configura\u00e7\u00e3o
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=N\u00e3o h\u00e1 configura\u00e7\u00e3o entre grupos de reposit\u00f3rios definida para o reposit\u00f3rio.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Consulte o arquivo de log para obter o motivo da falha. Verifique a configura\u00e7\u00e3o do reposit\u00f3rio.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: O tipo de entidade {0} especificado n\u00e3o \u00e9 um tipo de entidade v\u00e1lido para esta opera\u00e7\u00e3o.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: O tipo de entidade especificado {0} n\u00e3o \u00e9 v\u00e1lido para esta opera\u00e7\u00e3o.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Uma opera\u00e7\u00e3o foi solicitada em uma entidade, mas essa opera\u00e7\u00e3o n\u00e3o suporta o tipo de entidade especificado.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Assegure-se de que as entidades fornecidas na entrada sejam de tipos de entidade suportados e remova os tipos de entidade n\u00e3o suportados da entrada.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Assegure-se que as entidades fornecidas na entrada sejam de tipos de entidade suportados e remova os tipos de entidade n\u00e3o suportados da entrada.
 
 CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: A propriedade RDN {0} para o tipo de entidade {1} foi fornecida na entrada. O nome exclusivo n\u00e3o pode ser criado no reposit\u00f3rio subjacente porque as informa\u00e7\u00f5es do RDN especificadas na entrada s\u00e3o amb\u00edguas.
 CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Ao criar uma entidade, o nome distinto relativo (RDN) deve estar devidamente formado e conter propriedades que n\u00e3o sejam amb\u00edguas. Por exemplo, o tipo de entidade OrgContainer pode representar uma organiza\u00e7\u00e3o (que usa a propriedade RDN 'o') ou uma unidade organizacional (que usa a propriedade RDN 'ou') em um reposit\u00f3rio subjacente. Se ambos 'o' e 'ou' forem especificados no RDN para o objeto de dados de entrada da nova entidade, um nome exclusivo para a nova entidade n\u00e3o poder\u00e1 ser criado.
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: N\u00e3o foi poss\u00edvel concluir a opera\u00
 ENTITY_SEARCH_FAILED.explanation=A entidade n\u00e3o pode ser procurada por causa do motivo especificado pelo registro subjacente.
 ENTITY_SEARCH_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha.  Corrija o erro e tente novamente.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois a senha estava ausente ou vazia.
-MISSING_OR_EMPTY_PASSWORD.explanation=Se o nome do principal for especificado durante o processo de login, a senha n\u00e3o poder\u00e1 ser nula ou vazia.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de login pois a senha estava ausente ou vazia.
+MISSING_OR_EMPTY_PASSWORD.explanation=Se o nome principal for especificado durante o login,\na senha n\u00e3o pode ser nula ou vazia.
 MISSING_OR_EMPTY_PASSWORD.useraction=Especifique a senha.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois a gera\u00e7\u00e3o de certificado falhou.

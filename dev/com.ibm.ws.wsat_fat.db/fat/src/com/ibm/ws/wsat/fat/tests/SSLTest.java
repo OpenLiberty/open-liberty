@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.tests;
 
-import org.junit.After;
+import java.util.Hashtable;
+
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.SSL;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
@@ -70,23 +73,46 @@ public class SSLTest extends DBTestBase {
 		DBTestBase.cleanupWSATTest(server1);
 		DBTestBase.cleanupWSATTest(server2);
 	}
-	
-	@Before
-	public void saveServerConfigs() throws Exception {
-		client.saveServerConfiguration();
-		server1.saveServerConfiguration();
-		server2.saveServerConfiguration();
+
+	static ServerConfiguration clientAuthentify(LibertyServer server) throws Exception {
+        ServerConfiguration originalConfig = null;
+		try {
+			ServerConfiguration config = server.getServerConfiguration();
+			originalConfig = config.clone();
+			SSL ssl = config.getSSLById("myDefaultSSLConfig");
+			ssl.setClientAuthentication(true);
+			ssl.setClientAuthenticationSupported(true);
+			server.setMarkToEndOfLog();
+			server.setConfigUpdateTimeout(180000);
+			server.updateServerConfiguration(config);
+			server.waitForConfigUpdateInLogUsingMark(null, false);
+		} catch (Exception e) {
+            try {
+                server.updateServerConfiguration(originalConfig);
+            } catch (Exception e1) {
+                e.addSuppressed(e1);
+            }
+            throw e;
+		}
+        
+        return originalConfig;
 	}
-	
-	@After
-	public void restoreServerConfigs() throws Exception {
-		client.restoreServerConfiguration();
-		server1.restoreServerConfiguration();
-		server2.restoreServerConfiguration();
-		client.waitForStringInLog("CWWKG001[78]I");
-		server1.waitForStringInLog("CWWKG001[78]I");
-		server2.waitForStringInLog("CWWKG001[78]I");
-	}
+
+	private static AutoCloseable clientAuthentify() throws Exception {
+		Hashtable<LibertyServer, ServerConfiguration> originalConfigs = new Hashtable<LibertyServer, ServerConfiguration>();
+
+		originalConfigs.put(client,  clientAuthentify(client));
+		originalConfigs.put(server1,  clientAuthentify(server1));
+		originalConfigs.put(server2,  clientAuthentify(server2));
+
+        return () -> {
+        	for (LibertyServer server : originalConfigs.keySet()) {
+                server.setMarkToEndOfLog();
+                server.updateServerConfiguration(originalConfigs.get(server));
+                server.waitForConfigUpdateInLogUsingMark(null, true);
+        	}
+        };
+    }
 
 	@Test
     @Mode(TestMode.LITE)
@@ -129,65 +155,41 @@ public class SSLTest extends DBTestBase {
 	@Test
     @Mode(TestMode.LITE)
 	public void testSSL_AllCommitByProx_WithClientAuth() throws Exception {
-		client.waitForStringInLog("CWLIB0206I");
-		client.setMarkToEndOfLog();
-		client.setServerConfigurationFile("ssl/server_client.xml");
-		server1.setMarkToEndOfLog();
-		server1.setServerConfigurationFile("ssl/server_server1.xml");
-		server2.setMarkToEndOfLog();
-		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
-		final String testURL = "/" + appName + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name
-				+ "p=" + commit + ":" + basicURL + ":"
-				+ server1Port + "&" + server2Name + "p="
-				+ commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
+		try (AutoCloseable x = clientAuthentify()) {
+			final String testURL = "/" + appName + "/ClientServlet";
+			String wsatURL = CLient_URL + testURL + "?" + server1Name
+					+ "p=" + commit + ":" + basicURL + ":"
+					+ server1Port + "&" + server2Name + "p="
+					+ commit + ":" + basicURL + ":"
+					+ server2Port;
+			commonTest(appName, wsatURL, goodResult, "1");
+		}
 	}
 
 	@Test
 	public void testSSL_ClientRollbackByProxy_WithClientAuth() throws Exception {
-		server1.waitForStringInLog("CWLIB0206I");
-		client.setMarkToEndOfLog();
-		client.setServerConfigurationFile("ssl/server_client.xml");
-		server1.setMarkToEndOfLog();
-		server1.setServerConfigurationFile("ssl/server_server1.xml");
-		server2.setMarkToEndOfLog();
-		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
-		final String testURL = "/" + appName + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name
-				+ "p=" + commit + ":" + basicURL + ":"
-				+ server1Port + "&" + server2Name + "p="
-				+ commit + ":" + basicURL + ":"
-				+ server2Port + "&" + clientName + "="
-				+ rollback;
-		commonTest(appName, wsatURL, goodResult, "0");
+		try (AutoCloseable x = clientAuthentify()) {
+			final String testURL = "/" + appName + "/ClientServlet";
+			String wsatURL = CLient_URL + testURL + "?" + server1Name
+					+ "p=" + commit + ":" + basicURL + ":"
+					+ server1Port + "&" + server2Name + "p="
+					+ commit + ":" + basicURL + ":"
+					+ server2Port + "&" + clientName + "="
+					+ rollback;
+			commonTest(appName, wsatURL, goodResult, "0");
+		}
 	}
-	
+
 	@Test
 	public void testSSL_Server2RollbackByProxy_WithClientAuth() throws Exception {
-		server2.waitForStringInLog("CWLIB0206I");
-		client.setMarkToEndOfLog();
-		client.setServerConfigurationFile("ssl/server_client.xml");
-		server1.setMarkToEndOfLog();
-		server1.setServerConfigurationFile("ssl/server_server1.xml");
-		server2.setMarkToEndOfLog();
-		server2.setServerConfigurationFile("ssl/server_server2.xml");
-		client.waitForStringInLogUsingMark("CWWKG0017I");
-		server1.waitForStringInLogUsingMark("CWWKG0017I");
-		server2.waitForStringInLogUsingMark("CWWKG0017I");
-		final String testURL = "/" + appName + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name
-				+ "p=" + commit + ":" + basicURL + ":"
-				+ server1Port + "&" + server2Name + "p="
-				+ rollback + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, "Throw exception for rollback from server side!", "0");
+		try (AutoCloseable x = clientAuthentify()) {
+			final String testURL = "/" + appName + "/ClientServlet";
+			String wsatURL = CLient_URL + testURL + "?" + server1Name
+					+ "p=" + commit + ":" + basicURL + ":"
+					+ server1Port + "&" + server2Name + "p="
+					+ rollback + ":" + basicURL + ":"
+					+ server2Port;
+			commonTest(appName, wsatURL, "Throw exception for rollback from server side!", "0");
+		}
 	}
 }

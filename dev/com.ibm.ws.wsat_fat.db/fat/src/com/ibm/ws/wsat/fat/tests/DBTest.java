@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.tests;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,12 +25,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.WsAtomicTransaction;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
@@ -221,24 +232,46 @@ public class DBTest extends DBTestBase {
 		DBTestBase.cleanupWSATTest(server1);
 		DBTestBase.cleanupWSATTest(server2);
 	}
-	
-	@Before
-	public void saveServerConfigs() throws Exception {
-		client.saveServerConfiguration();
-		server1.saveServerConfiguration();
-		server2.saveServerConfiguration();
+
+	static ServerConfiguration proxify(LibertyServer server, String UrlPrefix) throws Exception {
+        ServerConfiguration originalConfig = null;
+		try {
+			ServerConfiguration config = server.getServerConfiguration();
+			originalConfig = config.clone();
+			WsAtomicTransaction wsat = config.getWsAtomicTransaction();
+			wsat.setSslEnabled(false);
+			wsat.setExternalURLPrefix(UrlPrefix);
+			server.setMarkToEndOfLog();
+			server.updateServerConfiguration(config);
+			server.waitForConfigUpdateInLogUsingMark(null, false);
+		} catch (Exception e) {
+            try {
+                server.updateServerConfiguration(originalConfig);
+            } catch (Exception e1) {
+                e.addSuppressed(e1);
+            }
+            throw e;
+		}
+        
+        return originalConfig;
 	}
-	
-	@After
-	public void restoreServerConfigs() throws Exception {
-		client.restoreServerConfiguration();
-		server1.restoreServerConfiguration();
-		server2.restoreServerConfiguration();
-		client.waitForStringInLog("CWWKG001[78]I");
-		server1.waitForStringInLog("CWWKG001[78]I");
-		server2.waitForStringInLog("CWWKG001[78]I");
-	}
-	
+
+	private static AutoCloseable proxify() throws Exception {
+		Hashtable<LibertyServer, ServerConfiguration> originalConfigs = new Hashtable<LibertyServer, ServerConfiguration>();
+
+		originalConfigs.put(client,  proxify(client, "http://localhost:${bvt.prop.HTTP_default}"));
+		originalConfigs.put(server1,  proxify(server1, "http://localhost:8091"));
+		originalConfigs.put(server2,  proxify(server2, "http://localhost:8092"));
+
+        return () -> {
+        	for (LibertyServer server : originalConfigs.keySet()) {
+                server.setMarkToEndOfLog();
+                server.updateServerConfiguration(originalConfigs.get(server));
+                server.waitForConfigUpdateInLogUsingMark(null, false);
+        	}
+        };
+    }
+
 	@Test
 	public void test3DBs01_AllCommitByProxy() {
 		String testURL = "/" + appName + "/ClientServlet";
@@ -582,32 +615,30 @@ public class DBTest extends DBTestBase {
 
 	@Test
 	public void test3DBs30_AllCommitWithProxyServerByProxy() throws Exception {
-		client.setServerConfigurationFile("proxy/server_client.xml");
-		server1.setServerConfigurationFile("proxy/server_server1.xml");
-		server2.setServerConfigurationFile("proxy/server_server2.xml");
+		try (AutoCloseable x = proxify()) {
 
-		final String testURL = "/" + appName + "/ClientServlet";
+			final String testURL = "/" + appName + "/ClientServlet";
 
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
+			String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
+					+ commit + ":" + basicURL + ":" + server1Port + "&"
+					+ server2Name + "p=" + commit + ":" + basicURL + ":"
+					+ server2Port;
+			commonTest(appName, wsatURL, goodResult, "1");
+		}
 	}
 
 	@Test
 	public void test3DBs31_ClientRollbackWithProxyServerByProxy() throws Exception {
-		client.setServerConfigurationFile("proxy/server_client.xml");
-		server1.setServerConfigurationFile("proxy/server_server1.xml");
-		server2.setServerConfigurationFile("proxy/server_server2.xml");
+		try (AutoCloseable x = proxify()) {
 
-		final String testURL = "/" + appName + "/ClientServlet";
+			final String testURL = "/" + appName + "/ClientServlet";
 
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port + "&" + clientName + "=" + rollback;
-		commonTest(appName, wsatURL, goodResult, "0");
+			String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
+					+ commit + ":" + basicURL + ":" + server1Port + "&"
+					+ server2Name + "p=" + commit + ":" + basicURL + ":"
+					+ server2Port + "&" + clientName + "=" + rollback;
+			commonTest(appName, wsatURL, goodResult, "0");
+		}
 	}
 	
 	@Test

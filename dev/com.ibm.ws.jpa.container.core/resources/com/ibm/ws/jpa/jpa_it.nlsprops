@@ -192,7 +192,7 @@ CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Accertarsi che un'applicazione Java E
 
 #-------------------------------------------------------------------------------
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Il server non riesce ad individuare l''origine dati {0} nello spazio nomi del componente dell''unit\u00e0 di persistenza {1} poich\u00e9 non esiste un contesto del componente sul thread.
-NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Non \u00e8 possibile individuare l'origine dati perch\u00e9 l'ambiente runtime del server non \u00e8 in grado di associare il thread dell'operazione ad un componente dell'applicazione Java Platform, Enterprise Edition 5 (Java EE 5).  Questa condizione pu\u00f2 verificarsi quando il client JNDI (Java Naming and Directory Interface) che utilizza il nome \"java:\" non viene eseguito sul thread di una richiesta dell'applicazione server.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Non \u00e8 possibile individuare l'origine dati perch\u00e9 l'ambiente runtime del server non \u00e8 in grado di associare il thread dell'operazione ad un componente dell'applicazione Java Platform, Enterprise Edition 5 (Java EE 5).  Questa condizione pu\u00f2 verificarsi quando il client JNDI (Java Naming and Directory Interface) che utilizza il nome "java:" non viene eseguito sul thread di una richiesta dell'applicazione server.
 NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Accertarsi che un'applicazione Java EE 5 non esegua operazioni JNDI su nomi java: all'interno di blocchi di codice statici oppure in thread creati da quell'applicazione Java EE 5.  Tale codice non viene necessariamente eseguito sul thread di una richiesta di applicazione server.  Quindi il codice non \u00e8 supportato dalle operazioni JNDI sui nomi java:.
 
 #----------------------------------
@@ -308,9 +308,14 @@ ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=La cache della classe potrebbe es
 
 #-------------------------------------------------------------------------------
 # 0=property name, 1=property value
-EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Una propriet\u00e0 predefinita JPA configurata nel file server.xml contiene un nome o un valore vuoto: nome = [{0}], valore = [{1}]. La propriet\u00e0 verr\u00e0 ignorata.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Una propriet\u00e0 predefinita JPA che contiene un nome o un valore vuoto \u00e8 configurata nel file server.xml: nome = [{0}], valore = [{1}]. Questa propriet\u00e0 viene ignorata.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Gli attributi nome e valore per una propriet\u00e0 predefinita JPA non devono essere vuoti.
 EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Modificare la configurazione del server per fornire un nome e un valore non vuoti per la propriet\u00e0, oppure rimuoverla.
+
+# 0=property name, 1=property value
+JDBC_PROP_NAME_CWWJP0057W=CWWJP0057W: Una propriet\u00e0 predefinita JPA che deve essere utilizzata solo in ambienti Java SE \u00e8 configurata nel file server.xml: nome = [{0}], valore = [{1}]. Questa propriet\u00e0 viene ignorata.
+JDBC_PROP_NAME_CWWJP0057W.explanation=Questa propriet\u00e0 predefinita JPA viene utilizzata in un ambiente Java EE, ma deve essere utilizzata solo in ambienti Java SE.
+JDBC_PROP_NAME_CWWJP0057W.useraction=Modificare la configurazione del server e dell'applicazione per utilizzare un'origine dati JNDI e rimuovere la propriet\u00e0.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,12 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
  * <p>
  * E.g. {@code result().withErrors().withResolvedFeatures("a")}
  */
-public class KernelResolverResultMatcher extends TypeSafeMatcher<FeatureResolver.Result> {
+public class KernelResolverResultMatcher extends TypeSafeMatcher<Result> {
 
     private boolean hasErrors = false;
+    private Collection<String> conflicts;
     private Collection<String> resolvedFeatures;
+    private Collection<String> missingFeatures;
 
     public static KernelResolverResultMatcher result() {
         return new KernelResolverResultMatcher();
@@ -47,6 +49,18 @@ public class KernelResolverResultMatcher extends TypeSafeMatcher<FeatureResolver
         return this;
     }
 
+    public KernelResolverResultMatcher withMissingFeatures(String... missingFeatures) {
+        this.missingFeatures = Arrays.asList(missingFeatures);
+        this.hasErrors = true;
+        return this;
+    }
+
+    public KernelResolverResultMatcher withConflicts(String... conflicts) {
+        this.conflicts = Arrays.asList(conflicts);
+        this.hasErrors = true;
+        return this;
+    }
+
     @Override
     public void describeTo(Description description) {
         description.appendText("Result")
@@ -56,6 +70,16 @@ public class KernelResolverResultMatcher extends TypeSafeMatcher<FeatureResolver
         if (resolvedFeatures != null) {
             description.appendText("\n\tResolved features: ")
                        .appendValueList("[", ", ", "]", resolvedFeatures);
+        }
+
+        if (missingFeatures != null) {
+            description.appendText("\n\tMissing features: ")
+                       .appendValueList("[", ", ", "]", missingFeatures);
+        }
+
+        if (conflicts != null) {
+            description.appendText("\n\tConflicts: ")
+                       .appendValueList("[", ", ", "]", conflicts);
         }
     }
 
@@ -69,12 +93,20 @@ public class KernelResolverResultMatcher extends TypeSafeMatcher<FeatureResolver
             return false;
         }
 
+        if (missingFeatures != null && !containsInAnyOrder(missingFeatures.toArray()).matches(item.getMissing())) {
+            return false;
+        }
+
+        if (conflicts != null && !containsInAnyOrder(conflicts.toArray()).matches(item.getConflicts().keySet())) {
+            return false;
+        }
+
         return true;
     }
 
     @Override
     protected void describeMismatchSafely(Result item, Description description) {
-        description.appendText("Result")
+        description.appendText("was Result")
                    .appendText("\n\tHas errors: ")
                    .appendValue(item.hasErrors())
                    .appendText("\n\tResolved features: ")
@@ -82,7 +114,9 @@ public class KernelResolverResultMatcher extends TypeSafeMatcher<FeatureResolver
                    .appendText("\n\tMissing features: ")
                    .appendValueList("[", ", ", "]", item.getMissing())
                    .appendText("\n\tNon public roots: ")
-                   .appendValueList("[", ", ", "]", item.getNonPublicRoots());
+                   .appendValueList("[", ", ", "]", item.getNonPublicRoots())
+                   .appendText("\n\tConflicts: ")
+                   .appendValueList("[", ", ", "]", item.getConflicts().keySet());
     }
 
 }

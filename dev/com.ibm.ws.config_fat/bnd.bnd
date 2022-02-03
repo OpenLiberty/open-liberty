@@ -20,7 +20,6 @@ src: \
 	test-applications/configdropins/src,\
 	test-applications/mbeans/src,\
 	test-applications/mergedconfig/src,\
-	test-applications/metatypeprovider/src,\
 	test-applications/restart/src,\
 	test-applications/varmerge/src,\
 	test-bundles/metatype/src,\
@@ -30,7 +29,6 @@ src: \
 	test-bundles/test.config.extensions/src,\
 	test-bundles/test.config.extensions.schema.generator/src,\
 	test-bundles/test.config.variables/src,\
-	test-bundles/test.metatype.provider/src,\
 	test-bundles/test.prod.extensions/src,\
 	test-bundles/test.user.prod.extensions/src
 	

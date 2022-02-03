@@ -13,7 +13,6 @@ bVersion=1.0
 
 src: \
   fat/src, \
-  test-applications/rs20ApplicationWithClient/src, \
   test-applications/rsApplication/src, \
   test-applications/EJBHandler/src, \
   test-applications/TransportSecurityProvider/src, \

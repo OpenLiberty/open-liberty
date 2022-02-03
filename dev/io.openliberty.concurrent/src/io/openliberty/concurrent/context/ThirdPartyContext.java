@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package io.openliberty.concurrent.context;
 import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
 import java.io.ObjectOutputStream;
+import java.io.ObjectOutputStream.PutField;
 import java.io.ObjectStreamField;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
@@ -61,7 +63,7 @@ public class ThirdPartyContext implements ThreadContext {
     };
 
     transient List<String> cleared, propagated, unchanged;
-    transient ThirdPartyContextCoordinator coordinator;
+    transient boolean isAnyPropagated;
     transient String remaining;
     transient ArrayList<ThreadContextRestorer> restorers;
     transient ArrayList<ThreadContextSnapshot> snapshots;
@@ -80,8 +82,6 @@ public class ThirdPartyContext implements ThreadContext {
      */
     ThirdPartyContext(ThirdPartyContextCoordinator coordinator, Map<String, String> execProps) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
-
-        this.coordinator = coordinator;
 
         cleared = propagated = unchanged = Collections.emptyList();
         remaining = "cleared";
@@ -102,10 +102,10 @@ public class ThirdPartyContext implements ThreadContext {
      * @param execProps           execution properties
      * @param threadContextConfig configuration for context providers. Null to indicate that all third-party types should be cleared
      */
+    @SuppressWarnings("unchecked")
     ThirdPartyContext(ThirdPartyContextCoordinator coordinator, Map<String, String> execProps, Map<String, ?> threadContextConfig) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        this.coordinator = coordinator;
         cleared = (List<String>) threadContextConfig.get("cleared");
         propagated = (List<String>) threadContextConfig.get("propagated");
         unchanged = (List<String>) threadContextConfig.get("unchanged");
@@ -129,6 +129,7 @@ public class ThirdPartyContext implements ThreadContext {
                 snapshots.add(snapshot);
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "will propagate " + type + " context " + snapshot);
+                isAnyPropagated = true;
             } else {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "will ignore " + type + " context");
@@ -139,7 +140,6 @@ public class ThirdPartyContext implements ThreadContext {
     @Override
     public ThirdPartyContext clone() {
         ThirdPartyContext clone = new ThirdPartyContext();
-        clone.coordinator = coordinator;
         clone.cleared = cleared;
         clone.propagated = propagated;
         clone.unchanged = unchanged;
@@ -147,6 +147,55 @@ public class ThirdPartyContext implements ThreadContext {
         clone.snapshots = snapshots;
         // clone.restorers is left null because the clone will track its own application/removal of the context
         return clone;
+    }
+
+    /**
+     * This method is invoked after deserialization to initialize the context types to clear.
+     *
+     * @param coordinator coordinates all third-party context types
+     * @param execProps   execution properties
+     */
+    void initPostDeserialize(ThirdPartyContextCoordinator coordinator, Map<String, String> execProps) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        snapshots = new ArrayList<ThreadContextSnapshot>();
+        for (ThreadContextProvider provider : coordinator.getProviders()) {
+            // Context types that were previously unavailable to be captured for propagation must be cleared if available now.
+            String type = provider.getThreadContextType();
+            boolean clear = Collections.binarySearch(cleared, type) >= 0 || //
+                            Collections.binarySearch(propagated, type) >= 0 || //
+                            Collections.binarySearch(unchanged, type) < 0 && !"unchanged".equals(remaining);
+
+            if (clear) {
+                ThreadContextSnapshot snapshot = provider.clearedContext(execProps);
+                snapshots.add(snapshot);
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "will clear " + type + " context " + snapshot);
+            } else {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "will ignore " + type + " context");
+            }
+        }
+    }
+
+    @Override
+    @Trivial
+    public boolean isSerializable() {
+        UnsupportedOperationException x = null;
+        if (isAnyPropagated) {
+            List<String> unser = new ArrayList<String>(propagated);
+            if ("propagated".equals(remaining))
+                unser.add(ContextServiceDefinition.ALL_REMAINING);
+
+            x = new UnsupportedOperationException("Thread context configured for propagation is not serializable: " + unser); // TODO NLS
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isSerializable?", propagated, "remaining=" + remaining, x == null ? true : x);
+        if (x == null)
+            return true;
+        else
+            throw x;
     }
 
     @Override
@@ -191,10 +240,16 @@ public class ThirdPartyContext implements ThreadContext {
      * @throws IOException
      * @throws ClassNotFoundException
      */
+    @SuppressWarnings("unchecked")
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         GetField fields = in.readFields();
-        // TODO
-        throw new UnsupportedOperationException();
+        cleared = (List<String>) fields.get(CLEARED, Collections.EMPTY_LIST);
+        propagated = (List<String>) fields.get(PROPAGATED, Collections.EMPTY_LIST);
+        unchanged = (List<String>) fields.get(UNCHANGED, Collections.EMPTY_LIST);
+        remaining = (String) fields.get(REMAINING, cleared);
+
+        // ThirdPartyContextCoordinator.deserializeThreadContext continues initializing this
+        // instance after the readObject method ends.
     }
 
     /**
@@ -203,12 +258,17 @@ public class ThirdPartyContext implements ThreadContext {
      * @param outStream The stream to write the serialized data.
      *
      * @throws IOException
+     * @throws UnsupportedOperationException if not serializable
      */
     private void writeObject(ObjectOutputStream outStream) throws IOException {
-        //PutField fields = outStream.putFields();
-        //fields.put(...);
-        //outStream.writeFields();
-        // TODO
-        throw new UnsupportedOperationException();
+        if (!isSerializable())
+            throw new UnsupportedOperationException();
+
+        PutField fields = outStream.putFields();
+        fields.put(CLEARED, cleared);
+        fields.put(PROPAGATED, propagated);
+        fields.put(UNCHANGED, unchanged);
+        fields.put(REMAINING, remaining);
+        outStream.writeFields();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ public class SSL extends ConfigElement {
     private String sslProtocol;
     private String keyStoreRef;
     private String trustStoreRef;
+    private Boolean clientAuthentication;
+    private Boolean clientAuthenticationSupported;
 
     @XmlElement(name = "outboundConnection")
     private ConfigElementList<OutboundConnection> outboundConnections;
@@ -54,6 +56,24 @@ public class SSL extends ConfigElement {
     @XmlAttribute(name = "trustStoreRef")
     public void setTrustStoreRef(String trustStoreRef) {
         this.trustStoreRef = trustStoreRef;
+    }
+
+    @XmlAttribute(name = "clientAuthentication")
+    public void setClientAuthentication(Boolean clientAuthentication) {
+        this.clientAuthentication = clientAuthentication;
+    }
+
+    public Boolean getClientAuthentication() {
+        return this.clientAuthentication;
+    }
+
+    @XmlAttribute(name = "clientAuthenticationSupported")
+    public void setClientAuthenticationSupported(Boolean clientAuthenticationSupported) {
+        this.clientAuthenticationSupported = clientAuthenticationSupported;
+    }
+
+    public Boolean getClientAuthenticationSupported() {
+        return this.clientAuthenticationSupported;
     }
 
     /**
@@ -107,6 +127,10 @@ public class SSL extends ConfigElement {
             buf.append("keyStoreRef=\"" + keyStoreRef + "\" ");
         if (trustStoreRef != null)
             buf.append("trustStoreRef=\"" + trustStoreRef + "\" ");
+        if (clientAuthentication != null)
+            buf.append("clientAuthentication=\"" + clientAuthentication + "\" ");
+        if (clientAuthenticationSupported != null)
+            buf.append("clientAuthenticationSupported=\"" + clientAuthenticationSupported + "\" ");
         if (sslProtocol != null)
             buf.append("sslProtocol=\"" + sslProtocol + "\" ");
         if (outboundConnections != null)

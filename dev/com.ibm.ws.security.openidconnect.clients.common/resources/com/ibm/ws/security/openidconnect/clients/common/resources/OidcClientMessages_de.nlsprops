@@ -23,8 +23,8 @@
 
 # used by clients project
 OIDC_CLIENT_AUTHORIZE_ERR=CWWKS1702E: Der OpenID Connect-Client [{0}] mit der Codierung [{2}] kann die Verarbeitung aus dem folgenden Grund nicht weiter verarbeiten: [{1}].
-OIDC_CLIENT_AUTHORIZE_ERR.explanation=Im OpenID Connect-Client (Relying Party, RP) ist bei der Verarbeitung einer Anforderung ein Fehler aufgetreten. Bei dem Fehler handelt es sich wahrscheinlich um einen Codierungsfehler. Die Fehlerursache ist hinter der Nachricht angegeben. 
-OIDC_CLIENT_AUTHORIZE_ERR.useraction=Wiederholen Sie die Anforderung mit anderen OpenID Connect-Clientkonfigurationsattributen wie Client-ID oder Geltungsbereich. Lesen Sie die empfohlene Benutzeraktion zu dem Fehler, der hinter dieser Fehlernachricht angezeigt wird.
+OIDC_CLIENT_AUTHORIZE_ERR.explanation=Im OpenID Connect-Client (Relying Party, RP) ist bei der Verarbeitung einer Anforderung ein Fehler aufgetreten.  Bei dem Fehler handelt es sich wahrscheinlich um einen Codierungsfehler.  Die Fehlerursache ist hinter der Nachricht angegeben. 
+OIDC_CLIENT_AUTHORIZE_ERR.useraction=Wiederholen Sie die Anforderung mit anderen OpenID Connect-Clientkonfigurationsattributen wie Client-ID oder Geltungsbereich.  Lesen Sie die empfohlene Benutzeraktion zu dem Fehler, der hinter dieser Fehlernachricht angezeigt wird.
 
 
 #do not translate enforceHTTPS
@@ -37,8 +37,8 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Der OpenID Connect-Client (Relyin
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: Stellen Sie zuerst sicher, dass der OpenID Connect-Provider SSL unterst\u00fctzt. Wenn der OpenID Connector-Provider SSL nicht unterst\u00fctzt, verwenden Sie das OpenID Connect Client-Feature und setzen Sie den Wert f\u00fcr enforceHTTPS in der OpenID Connect Client-Featurekonfiguration auf false.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Der aktuelle Status [{0}] f\u00fcr den OpenID Connect-Client [{2}] und der Statusparameter [{1}] in der Antwort des OpenID Connect-Providers stimmen nicht \u00fcberein. Diese Bedingung ist nicht zul\u00e4ssig.
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) hat eine Anforderung an einen OpenID Connect-Provider (OP) gesendet und der OP hat eine Antwort mit einem Statusparameter zur\u00fcckgesendet, der nicht mit dem Status der RP zu dem Zeitpunkt \u00fcbereinstimmt, zu dem die Anforderung gesendet wurde. Der OP muss in der Antwort denselben Status zur\u00fccksenden, der gesendet wurde. Der Status wird auf diese Weise verwendet, um Cross-Site Request Forgery zu verhindern. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Der aktuelle Status [{0}] f\u00fcr den OpenID Connect-Client [{2}] und der Statusparameter [{1}] in der Antwort des OpenID Connect-Providers stimmen nicht \u00fcberein.  Diese Bedingung ist nicht zul\u00e4ssig.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) hat eine Anforderung an einen OpenID Connect-Provider (OP) gesendet und der OP hat eine Antwort mit einem Statusparameter zur\u00fcckgesendet, der nicht mit dem Status der RP zu dem Zeitpunkt \u00fcbereinstimmt, zu dem die Anforderung gesendet wurde. Der OP muss in der Antwort denselben Status zur\u00fccksenden, der gesendet wurde.  Der Status wird auf diese Weise verwendet, um Cross-Site Request Forgery zu verhindern. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Stellen Sie sicher, dass Ihre OP-URL korrekt ist. \u00dcberpr\u00fcfen Sie die Protokolle in Ihrem OP, um sicherzustellen, dass er die Anforderung empfangen hat.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
@@ -53,7 +53,7 @@ OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Stellen Sie sicher, dass die Systemuhr
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Der OpenID Connect-Client [{1}] konnte aus dem folgenden Grund keinen SSL-Kontext erstellen: [{0}]. Stellen Sie sicher, dass Ihr SSL-Feature ordnungsgem\u00e4\u00df konfiguriert ist.
-OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) ist f\u00fcr die Verwendung des HTTPS-Schemas konfiguriert, aber es konnte keine HTTPS-Verbindung aufgebaut werden. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert. M\u00f6glicherweise fehlt das Element keyStore oder es ist falsch angegeben. 
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) ist f\u00fcr die Verwendung des HTTPS-Schemas konfiguriert, aber es konnte keine HTTPS-Verbindung aufgebaut werden. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert. M\u00f6glicherweise fehlt das Element keyStore oder es ist falsch angegeben.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Stellen Sie sicher, dass die richtigen Informationen in der Datei server.xml enthalten sind. Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
 
 #used_by_clients
@@ -128,7 +128,7 @@ OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=Konfigurieren Sie das angegebene A
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil die Antwort des Validierungsendpunkts [{0}] den Anspruch [{1}] hat, aber das Attribut [{2}] auf true gesetzt ist.
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Da in der OpenID Connect-Clientkonfiguration "disableIssChecking" angegeben ist, erwartet der Ressourcenserver, dass die JSON-Antwort des Validierungsendpunkts keinen "iss"-Anspruch enth\u00e4lt. 
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Da in der OpenID Connect-Clientkonfiguration "disableIssChecking" angegeben ist, erwartet der Ressourcenserver, dass die JSON-Antwort des Validierungsendpunkts keinen "iss"-Anspruch enth\u00e4lt.  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Aktualisieren Sie die OpenID Connect-Clientkonfiguration und setzen Sie "disableIssChecking" auf "false". 2) Sorgen Sie daf\u00fcr, dass der Validierungsendpunkt nicht den Anspruch "iss" ausgibt.
 
 # Do not translate "JSON Web Token"
@@ -189,7 +189,7 @@ OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=\u00dcberpr\u00fcfen Sie, dass das Cooki
 
 # used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG=CWWKS1746E: Es konnten keine Token aus der HTTP-Antwort extrahiert werden. \u00dcberpr\u00fcfen Sie das Format der Antwort.
-OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG.explanation=Das Format der Antwort ist nicht g\u00fcltig und kann nicht verarbeitet werden. 
+OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG.explanation=Das Format der Antwort ist nicht g\u00fcltig und kann nicht verarbeitet werden.  
 OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG.useraction=\u00dcberpr\u00fcfen Sie das Format der Antwort und wenden Sie sich an den Partner, der die Nachricht gesendet hat.
 
 # 0=JWK URL, 1=Response status, 2=Response content
@@ -199,7 +199,7 @@ JWK_RETRIEVE_FAILED.explanation=\u00dcber die angegebene URL kann kein JSON Web 
 JWK_RETRIEVE_FAILED.useraction=Vergewissern Sie sich, dass die URL ordnungsgem\u00e4\u00df formatiert ist und eine Position angibt, die JSON Web Keys zur\u00fcckgeben kann. \u00dcberpr\u00fcfen Sie den Statuscode und den Inhalt der Antwort, um weitere Informationen zu erhalten.
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-USERINFO_RETREIVE_FAILED=CWWKS1748E: Es konnte keine Verbindung zur URL f\u00fcr Benutzerinformationen [{0}] hergestellt werden. Der Antwortstatus [{1}] und Inhalt [{2}] wurden zur\u00fcckgegeben.
+USERINFO_RETREIVE_FAILED=CWWKS1748E: Es konnte keine Verbindung zur URL f\u00fcr Benutzerinformationen [{0}] hergestellt werden.  Der Antwortstatus [{1}] und Inhalt [{2}] wurden zur\u00fcckgegeben.
 USERINFO_RETREIVE_FAILED.explanation=Es konnten keine Benutzerinformationen  von der angegebenen URL abgerufen werden. Die URL ist m\u00f6glicherweise nicht g\u00fcltig, das angegebene Zugriffstoken ist m\u00f6glicherweise nicht g\u00fcltig, die Antwort von der URL ist m\u00f6glicherweise leer oder es ist ein unbekannter Fehler aufgetreten.
 USERINFO_RETREIVE_FAILED.useraction=Vergewissern Sie sich, dass die URL ordnungsgem\u00e4\u00df formatiert ist und eine Position angibt, die Benutzerinformationen zur\u00fcckgeben kann. \u00dcberpr\u00fcfen Sie den Statuscode und den Inhalt der Antwort, um weitere Informationen zu erhalten.
 
@@ -209,6 +209,11 @@ USERINFO_INVALID.explanation=Der untergeordnete Anspruch muss mit dem untergeord
 USERINFO_INVALID.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider g\u00fcltige Benutzerinformationen generiert.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Der OpenID Connect-Client {0} kann die JWT-Anspr\u00fcche (JSON Web Token) nicht aus der Webantwort extrahieren. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Die Webantwort muss ein JWT im JWE-Format (JSON Web Encryption) oder JWS-Format (JSON Web Signature) sein. M\u00f6glicherweise ist die Antwort fehlerhaft oder im OpenID Connect-Client ist w\u00e4hrend der Verarbeitung der Antwort ein anderer Fehler aufgetreten.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. Vergewissern Sie sich, dass die Antwort das JWT-Format hat.
 
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: Der OpenID Connect-Client [{0}] erfordert eine Berechtigungsendpunkt-URL, aber diese ist nicht gesetzt.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Zum Abrufen eines Autorisierungscodes oder der erforderlichen Token muss eine Berechtigungsendpunkt-URL gesetzt werden.
@@ -228,5 +233,21 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Um JWE-Token zu akzeptiere
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: Das Token befindet sich nicht im JSON Web Encryption-Format (JWE), da es keine f\u00fcnf Teile enth\u00e4lt, aber der OpenID Connect-Client [{0}] akzeptiert nur Token, die im JWE-Format vorliegen.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Das Token k\u00f6nnte fehlerhaft sein oder im oder im JSON Web Signature-Format (JWS) sein. Token m\u00fcssen im JWE-Format vorliegen, wenn das Attribut keyManagementKeyAlias konfiguriert ist.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Wenn Sie JWS-Token anstelle von JWE-Token akzeptieren m\u00f6chten, entfernen Sie das Attribut keyManagementKeyAlias in der OpenID Connect-Clientkonfiguration. Stellen Sie andernfalls sicher, dass nur JWE-Tokens an diese Ressource gesendet werden.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: Die Daten, die aus der Antwort des UserInfo-Endpunkts extrahiert wurden, weisen nicht das JSON-Format auf. Die extrahierten Daten sind [{0}]. Der Fehler ist [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=Der UserInfo-Endpunkt muss Anforderungen als Mitglieder eines JSON-Objekts oder eines JSON-Web-Tokens (JWT) zur\u00fcckgeben. Das Format der Antwort ist m\u00f6glicherweise nicht g\u00fcltig, oder die Antwort stimmt nicht mit dem Format \u00fcberein, das mit dem Header f\u00fcr den Inhaltstyp angegeben wird.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=\u00dcberpr\u00fcfen Sie das Format der Antwort vom UserInfo-Endpunkt, um sicherzustellen, dass es das JSON- oder JWT-Format aufweist.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: Es wird erwartet, dass die Webantwort [{0}] ein JSON-Web-Token (JWT) ist, aber die Antwort weist nicht das Format JWS (JSON Web Signature) oder JWE (JSON Web Encryption) auf.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=Vom Header f\u00fcr den Inhaltstyp in der Webantwort wird angegeben, dass die Antwort ein JWT enth\u00e4lt, aber der Antworthauptteil weist kein g\u00fcltiges JWT-Format auf.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Stellen Sie sicher, dass die Webantwort das Format aufweist, das vom OpenID Connect-Client erwartet wird.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Der OpenID Connect-Client {0} kann keine Informationen zum Zugriffstoken vom UserInfo-Endpunkt abrufen: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Die Antwort vom UserInfo-Endpunkt weist m\u00f6glicherweise nicht das Format auf, das erwartet wird. M\u00f6glicherweise wurde vom OpenID Connect-Client beim \u00dcbergeben der UserInfo-Anforderung ein Fehler festgestellt.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=\u00dcberpr\u00fcfen Sie die Fehlernachricht auf weitere Informationen. Stellen Sie sicher, dass der Inhalt der UserInfo-Antwort mit dem HTTP-Header f\u00fcr den Inhaltstyp \u00fcbereinstimmt.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

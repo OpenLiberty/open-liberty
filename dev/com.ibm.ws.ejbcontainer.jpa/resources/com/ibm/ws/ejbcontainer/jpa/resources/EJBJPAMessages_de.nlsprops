@@ -55,5 +55,5 @@
 
 # --------------------------------
 PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Die Stateful Session-Bean {0} im Modul {1} der Anwendung {2} hat keine Abh\u00e4ngigkeit von der Persistenzreferenz {3} deklariert.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Eine Stateful Session-Bean in einem Webarchiv muss die Abh\u00e4ngigkeiten von allen Persistenzkontextreferenzen und Persistenzeinheiten deklarieren, auf die es zugreifen m\u00f6chte.
-PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=f\u00fcgen Sie der Stateful-Session-Bean die entsprechende Quellcodeannotation @PersistenceContext oder @PersistenceUnit hinzu, oder f\u00fcgen Sie dem entsprechenden Element <session> in der Datei ejb-jar.xml das entsprechende Element <persistence-context-ref> oder <persistence-unit-ref> hinzu.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Wenn eine Stateful-Session-Bean in einer WAR-Datei enthalten ist, muss sie alle Abh\u00e4ngigkeiten von allen Persistenzkontextreferenzen und Persistenzeinheitenreferenzen deklarieren, auf die sie zugreifen will.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=F\u00fcgen Sie der Stateful-Session-Bean die entsprechende Quellcodeannotation @PersistenceContext oder @PersistenceUnit hinzu oder f\u00fcgen Sie dem entsprechenden Element <session> in der Datei ejb-jar.xml das entsprechende Element <persistence-context-ref> oder <persistence-unit-ref> hinzu.
