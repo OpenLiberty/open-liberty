@@ -102,6 +102,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              * bin/server checkpoint <server name> --at=<phase> -Dio.openliberty.checkpoint.stub.criu=true
              */
             this.criu = new ExecuteCRIU() {
+                @Override
+                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+                    prepare.run();
+                    restore.run();
+                }
             };
         } else {
             this.criu = (criu == null) ? J9CRIUSupport.create() : criu;
