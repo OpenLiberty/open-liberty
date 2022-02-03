@@ -41,6 +41,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
         ClassLoader.registerAsParallelCapable();
     }
     private final static TraceComponent tc = Tr.register(UnifiedClassLoader.class);
+    private final ClassLoader parent;
 
     /**
      * Spring to register the given ClassFileTransformer on this ClassLoader
@@ -61,7 +62,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
      */
     @Override
     public ClassLoader getThrowawayClassLoader() {
-        ClassLoader newParent = getThrowawayVersion(getParent());
+        ClassLoader newParent = getThrowawayVersion(parent);
         ClassLoader[] newFollowOns = new ClassLoader[followOnClassLoaders.size()];
         for (int i = 0; i < newFollowOns.length; i++) {
             newFollowOns[i] = getThrowawayVersion(followOnClassLoaders.get(i));
@@ -94,6 +95,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
      */
     public UnifiedClassLoader(ClassLoader parent, ClassLoader... followOns) {
         super(parent);
+        this.parent = parent;
         followOnClassLoaders = new ArrayList<ClassLoader>();
         Collections.addAll(followOnClassLoaders, followOns);
     }
@@ -112,29 +114,51 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     Class<?> loadClass0(String name, boolean resolve) throws ClassNotFoundException {
-        try {
+        if (parent == null) {
             return super.loadClass(name, resolve);
-        } catch (ClassNotFoundException ex) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "CNFE from super classloader " + super.toString(), ex);
+        }
+        Object lock = getClassLoadingLock(name);
+        synchronized (lock) {
+            Class<?> result = findLoadedClass(name);
+            if (result != null) {
+                return result;
             }
-            throw ex;
+            if (parent instanceof NoClassNotFoundLoader) {
+                result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
+            } else {
+                try {
+                    result = parent.loadClass(name);
+                } catch (ClassNotFoundException e) {
+                    // move on to local findClass
+                }
+            }
+            if (result != null) {
+                return result;
+            }
+            return findClass(name);
         }
     }
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
-    protected Class<?> findClass(String arg0) throws ClassNotFoundException {
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
         for (ClassLoader cl : followOnClassLoaders) {
             try {
-                return cl.loadClass(arg0);
+                if (cl instanceof NoClassNotFoundLoader) {
+                    Class<?> result = ((NoClassNotFoundLoader) cl).loadClassNoException(name);
+                    if (result != null) {
+                        return result;
+                    }
+                } else {
+                    return cl.loadClass(name);
+                }
             } catch (ClassNotFoundException swallowed) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "CNFE from followOnClassLoader " + cl, swallowed);
                 }
             }
         }
-        throw new ClassNotFoundException(arg0);
+        throw new ClassNotFoundException(name);
     }
 
     @Override
@@ -197,27 +221,12 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
      */
     @Override
     @FFDCIgnore(PrivilegedActionException.class)
-    public Enumeration<URL> getResources(String name) throws IOException {
+    public Enumeration<URL> getResources(final String name) throws IOException {
         /*
          * The default implementation of getResources never calls getResources on it's parent, instead it just calls findResources on all of the loaders parents. We know that our
          * parent will be a gateway class loader that changes the order that resources are loaded but it does this in getResources (as that is where the order *should* be changed
          * according to the JavaDoc). Therefore call getResources on our parent and then findResources on ourself.
          */
-
-        ClassLoader parent = null;
-        try {
-            final ClassLoader thisClassLoader = this;
-
-            parent = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() throws Exception {
-                    return thisClassLoader.getParent();
-                }
-            });
-
-        } catch (PrivilegedActionException pae) {
-            //return null;
-        }
 
         if (parent == null) {
             // If there's no parent there is nothing to worry about so use the super.getResources
@@ -225,13 +234,10 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
         }
 
         try {
-            final String f_name = name;
-            final ClassLoader f_parent = parent;
-
             Enumeration<URL> eURL = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Enumeration<URL>>() {
                 @Override
                 public Enumeration<URL> run() throws Exception {
-                    return f_parent.getResources(f_name);
+                    return parent.getResources(name);
                 }
             });
 

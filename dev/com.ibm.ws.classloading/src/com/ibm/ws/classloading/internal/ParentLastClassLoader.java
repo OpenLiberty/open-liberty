@@ -74,27 +74,39 @@ class ParentLastClassLoader extends AppClassLoader {
     @Override
     @Trivial
     protected Class<?> findOrDelegateLoadClass(String className) throws ClassNotFoundException {
+        ClassNotFoundException findClassException = null;
         // search order: 1) my class path 2) parent loader
         Class<?> rc;
-        synchronized (getClassLoadingLock(className)) {
-            // first check whether we already loaded this class
-            rc = findLoadedClass(className);
-            if (rc == null) {
-                try {
-                    // first check our classpath
-                    rc = findClass(className);
-                } catch (ClassNotFoundException cnfe) {
-                    // See if we can generate the class here before
-                    // checking the parent:
-                    Class<?> generatedClass = generateClass(className);
-                    if (generatedClass != null)
-                        return generatedClass;
 
-                    // no luck? try the parent next
-                }
+        // first check whether we already loaded this class
+        rc = findLoadedClass(className);
+        if (rc == null) {
+            try {
+                // first check our classpath
+                rc = findClass(className);
+            } catch (ClassNotFoundException cnfe) {
+                findClassException = cnfe;
+                // See if we can generate the class here before
+                // checking the parent:
+                Class<?> generatedClass = generateClass(className);
+                if (generatedClass != null)
+                    return generatedClass;
+                // no luck? try the parent next
             }
         }
-        return rc == null ? this.parent.loadClass(className) : rc;
+
+        if (rc != null) {
+            return rc;
+        }
+        if (this.parent instanceof NoClassNotFoundLoader) {
+            rc = ((NoClassNotFoundLoader) this.parent).loadClassNoException(className);
+            if (rc != null) {
+                return rc;
+            }
+            throw findClassException;
+        } else {
+            return this.parent.loadClass(className);
+        }
     }
 
 }
