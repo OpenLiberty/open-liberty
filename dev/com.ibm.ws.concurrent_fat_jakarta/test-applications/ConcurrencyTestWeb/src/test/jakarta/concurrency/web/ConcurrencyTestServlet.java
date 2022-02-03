@@ -2280,8 +2280,8 @@ public class ConcurrencyTestServlet extends FATServlet {
         if (result instanceof Throwable)
             throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
                             .initCause((Throwable) result);
-        // TODO enable once update is made
-        // assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
+
+        assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
 
         assertEquals("[]", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ListContext must be cleared
         assertEquals(Integer.valueOf(2), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Priority context must be unchanged
@@ -2454,8 +2454,8 @@ public class ConcurrencyTestServlet extends FATServlet {
         if (result instanceof Throwable)
             throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
                             .initCause((Throwable) result);
-        // TODO enable once update is made
-        // assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
+
+        assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), result); // Transaction context must be unchanged
 
         assertEquals("[31]", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // ListContext must be left unchanged
         assertEquals(Integer.valueOf(Thread.NORM_PRIORITY), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // Priority context must be cleared
