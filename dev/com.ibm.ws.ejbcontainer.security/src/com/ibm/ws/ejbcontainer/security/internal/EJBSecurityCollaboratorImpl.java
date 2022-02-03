@@ -19,12 +19,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
@@ -46,6 +49,7 @@ import com.ibm.ws.ejbcontainer.EJBRequestData;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.EJBJaccAuthorizationHelper;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.JaccUtil;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
@@ -74,11 +78,11 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected static final String KEY_UNAUTHENTICATED_SUBJECT_SERVICE = "unauthenticatedSubjectService";
     protected static final String KEY_JACC_SERVICE = "jaccService";
     protected static final String KEY_SECURITY_READY_SERVICE = "securityReadyService";
+    private SecurityReadyService securityReadyService;
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
     private final AtomicServiceReference<UnauthenticatedSubjectService> unauthenticatedSubjectServiceRef = new AtomicServiceReference<UnauthenticatedSubjectService>(KEY_UNAUTHENTICATED_SUBJECT_SERVICE);
     private final AtomicServiceReference<JaccService> jaccService = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
-    private final AtomicServiceReference<SecurityReadyService> securityReadyServiceRef = new AtomicServiceReference<SecurityReadyService>(KEY_SECURITY_READY_SERVICE);
 
     protected SubjectManager subjectManager;
     protected CollaboratorUtils collabUtils;
@@ -121,13 +125,12 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         securityServiceRef.unsetReference(ref);
     }
 
-    protected void setSecurityReadyService(ServiceReference<SecurityReadyService> ref) {
-        securityReadyServiceRef.setReference(ref);
+    @Reference
+    protected void setSecurityReadyService(SecurityReadyService ref) {
+        this.securityReadyService = ref;
     }
 
-    protected void unsetSecurityReadyService(ServiceReference<SecurityReadyService> ref) {
-        securityReadyServiceRef.unsetReference(ref);
-    }
+    protected void unsetSecurityReadyService(SecurityReadyService ref) {}
 
     protected void setUnauthenticatedSubjectService(ServiceReference<UnauthenticatedSubjectService> ref) {
         unauthenticatedSubjectServiceRef.setReference(ref);
@@ -149,7 +152,6 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         securityServiceRef.activate(cc);
-        securityReadyServiceRef.activate(cc);
         credServiceRef.activate(cc);
         unauthenticatedSubjectServiceRef.activate(cc);
         jaccService.activate(cc);
@@ -166,7 +168,6 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     protected void deactivate(ComponentContext cc) {
         securityServiceRef.deactivate(cc);
-        securityReadyServiceRef.deactivate(cc);
         credServiceRef.deactivate(cc);
         unauthenticatedSubjectServiceRef.deactivate(cc);
         jaccService.deactivate(cc);
@@ -758,32 +759,30 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     }
 
+    @FFDCIgnore(InterruptedException.class)
     private void waitForSecurity() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        SecurityReadyService readyService = securityReadyServiceRef.getService();
-        if (waitedForSecurity || readyService.isSecurityReady()) {
+
+        if (waitedForSecurity || securityReadyService.isSecurityReady()) {
             waitedForSecurity = true;
             return;
         }
 
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting up to 30 seconds for Security Service to be ready");
+        CountDownLatch securityReadyCDL = securityReadyService.getSecurityReadyCDL();
+        if (securityReadyCDL != null) {
+            try {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "Waiting " + securityWaitTime + " seconds for Security Service to be ready");
+                if (securityReadyCDL.await(securityWaitTime, TimeUnit.SECONDS) == false) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Security Service did not come up within " + securityWaitTime + " seconds");
+                }
+            } catch (InterruptedException e) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "Waiting for Security Service failed: " + e);
+            }
         }
 
-        try {
-            //check every 5 seconds
-            for (int i = 0; i < securityWaitTime / 5; i++) {
-                Thread.sleep(5000);
-                if (readyService.isSecurityReady()) {
-                    waitedForSecurity = true;
-                    return;
-                }
-            }
-        } catch (InterruptedException e) {
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "InterruptedException from Thread.sleep");
-            }
-        }
         waitedForSecurity = true;
     }
 }
