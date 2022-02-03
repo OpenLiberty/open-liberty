@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData
+	xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+	localization="OSGI-INF/l10n/metatype">
+
+
+    <!-- 
+         jCachingProvider
+     -->
+	<Designate factoryPid="io.openliberty.jcache.cachingprovider">
+		<Object ocdref="io.openliberty.jcache.cachingprovider.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.cachingprovider.metatype"
+		ibm:alias="jCachingProvider" name="internal"
+		description="internal use only">
+
+		<AD id="providerClass" type="String" required="false"
+			name="%providerClass" description="%providerClass.desc" />
+
+		<AD id="libraryRef" type="String" required="false" ibm:type="pid"
+			ibm:reference="com.ibm.ws.classloading.sharedlibrary"
+			cardinality="2147483647" name="%libraryRef"
+			description="%libraryRef.desc" />
+
+		<AD id="library.target" type="String"
+			default="${servicePidOrFilter(libraryRef)}" ibm:final="true"
+			name="internal" description="internal use only" />
+
+		<AD id="library.cardinality.minimum" type="String" required="false"
+			name="internal" description="internal use only" ibm:final="true"
+			default="${count(libraryRef)}" />
+
+	</OCD>
+
+
+    <!-- 
+         jCacheManager
+     -->
+	<Designate factoryPid="io.openliberty.jcache.cachemanager">
+		<Object ocdref="io.openliberty.jcache.cachemanager.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.cachemanager.metatype"
+		ibm:alias="jCacheManager" name="internal"
+		description="internal use only">
+
+		<AD id="jCachingProviderRef" required="true" type="String"
+			name="%jCachingProviderRef" description="%jCachingProviderRef.desc"
+			ibm:type="pid" ibm:reference="io.openliberty.jcache.cachingprovider" />
+
+		<AD id="properties" required="false" type="String" cardinality="1"
+			ibm:type="pid" ibm:reference="io.openliberty.jcache.properties"
+			ibm:flat="true" />
+
+		<AD id="uri" type="String" ibm:type="location" required="false"
+			name="%uri" description="%uri.desc" />
+
+	</OCD>
+
+
+    <!-- 
+         jCache
+     -->
+	<Designate factoryPid="io.openliberty.jcache.cache">
+		<Object ocdref="io.openliberty.jcache.cache.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.cache.metatype" ibm:alias="jCache"
+		name="internal" description="internal use only">
+
+		<AD id="jCacheManagerRef" required="true" type="String"
+			name="%jCacheManagerRef" description="%jCacheManagerRef.desc"
+			ibm:type="pid" ibm:reference="io.openliberty.jcache.cachemanager" />
+
+		<AD id="name" type="String" required="true" name="%name"
+			description="%name.desc" />
+
+	</OCD>
+
+
+    <!-- 
+         properties
+     -->
+	<Designate pid="io.openliberty.jcache.properties">
+		<Object ocdref="io.openliberty.jcache.properties.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.properties.metatype"
+		name="internal" description="internal use only"
+		ibmui:extraProperties="true"
+		ibmui:localization="OSGI-INF/l10n/metatype" />
+
+</metatype:MetaData>
