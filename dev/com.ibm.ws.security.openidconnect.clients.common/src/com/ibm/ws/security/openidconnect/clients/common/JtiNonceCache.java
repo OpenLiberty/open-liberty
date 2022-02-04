@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -24,9 +22,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 
-/**
- * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
- */
 public class JtiNonceCache {
 
     private static final TraceComponent tc = Tr.register(JtiNonceCache.class);
@@ -40,6 +35,7 @@ public class JtiNonceCache {
      * Maximum number of entries allowed in the cache.
      */
     private int entryLimit = 100000;
+
     /**
      * Default cache timeout.
      */
@@ -68,10 +64,6 @@ public class JtiNonceCache {
 
     }
 
-    public int size() {
-        return this.entryLimit;
-    }
-
     private void scheduleEvictionTask(long timeoutInMilliSeconds) {
         EvictionTask evictionTask = new EvictionTask();
         timer = new Timer(true);
@@ -80,70 +72,44 @@ public class JtiNonceCache {
         timer.schedule(evictionTask, delay, period);
     }
 
-    /**
-     * Remove an object from the Cache.
-     */
-    public void remove(Object key) {
-        primaryTable.remove(key);
-    }
-
-    /**
-     * Find and return the object associated with the specified key.
-     */
-    public Object get(String key) {
+    protected Object get(String key) {
         Object curEntry = primaryTable.get(key);
         return curEntry;
     }
 
     /**
-     * Find and return the object associated with the specified key. Add it if not already present.
+     * Determine if the token's jti is in the cache, remove entry if expired, and add it if not already present.
      */
-    public boolean contain(OidcTokenImplBase token) { //(IdToken token) {
-
+    public boolean contain(OidcTokenImplBase token) {
         String key = token.getJwtId();
         if (key == null) {
             return false;
         }
         key = getCacheKey(token);
-        long currentTimeMilliseconds = (new Date()).getTime();
+
         synchronized (primaryTable) {
-            Long exp = (Long) primaryTable.get(key); // milliseconds
-            if (exp != null) {
-                if (exp.longValue() > currentTimeMilliseconds) { // not expired yet // milliseconds
+            long currentTimeInMilliseconds = (new Date()).getTime();
+            Long expInMilliseconds = (Long) primaryTable.get(key);
+            if (expInMilliseconds != null) {
+                if (expInMilliseconds.longValue() > currentTimeInMilliseconds) {
                     return true;
                 } else {
                     primaryTable.remove(key);
                 }
             }
-            // cache the jwt
-            long tokenExp = token.getExpirationTimeSeconds() * 1000; // milliseconds
-            if (tokenExp == 0) { // in case it's not set, let's give it one hour
-                tokenExp = currentTimeMilliseconds + 60 * 60 * 1000; // 1 hour
+
+            long tokenExpInMilliseconds = token.getExpirationTimeSeconds() * 1000;
+            if (tokenExpInMilliseconds == 0) {
+                long oneHour = 60 * 60 * 1000;
+                tokenExpInMilliseconds = currentTimeInMilliseconds + oneHour;
             }
-            primaryTable.put(key, Long.valueOf(tokenExp));
+            primaryTable.put(key, Long.valueOf(tokenExpInMilliseconds));
         }
 
         return false;
     }
 
-    /**
-     * Insert the value into the Cache using the specified key.
-     */
-    public void cache(OidcTokenImplBase token) { //(IdToken token) {
-
-        String jti = token.getJwtId();
-        if (jti == null) {
-            return;
-        }
-        String key = getCacheKey(token);
-        long tokenExp = token.getExpirationTimeSeconds() * 1000; // milliseconds
-        if (tokenExp == 0) { // in case it's not set, let's give it one hour
-            tokenExp = (new Date()).getTime() + 60 * 60 * 1000; // 1 hour
-        }
-        primaryTable.put(key, Long.valueOf(tokenExp));
-    }
-
-    protected String getCacheKey(OidcTokenImplBase token) { //(IdToken token) {
+    protected String getCacheKey(OidcTokenImplBase token) {
         String key = token.getJwtId();
         if (key == null) {
             return null;
@@ -152,48 +118,31 @@ public class JtiNonceCache {
         return key;
     }
 
-    /**
-     * Implementation of the eviction strategy.
-     */
     protected synchronized void evictStaleEntries() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            int size = primaryTable.size();
-            Tr.debug(tc, "The current cache size is " + size);
+        synchronized (primaryTable) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                int size = primaryTable.size();
+                Tr.debug(tc, "The current cache size is " + size);
+            }
+
+            removeExpiredTokens(primaryTable);
         }
-
-        Map<String, Object> secondaryTable = new HashMap<String, Object>();
-        secondaryTable.putAll(primaryTable); //create 2nd map to avoid concurrent during entry manipulation
-        Set<String> keysToRemove = findExpiredTokens(secondaryTable);
-        removeExpiredTokens(keysToRemove);
-        secondaryTable.clear();
-
     }
 
-    protected Set<String> findExpiredTokens(Map<String, Object> allTokens) {
+    private void removeExpiredTokens(Map<String, Object> allTokens) {
         Set<String> keys = allTokens.keySet();
-        Set<String> keysToRemove = new HashSet<String>();
-        long lCurrentTimeMilliseconds = (new Date()).getTime();
+        long currentTimeInMilliseconds = (new Date()).getTime();
         for (Iterator<String> i = keys.iterator(); i.hasNext();) {
             String key = i.next();
-            Long exp = (Long) allTokens.get(key);
-            if (exp.longValue() < lCurrentTimeMilliseconds) {
-                keysToRemove.add(key);
+            Long tokenExpInMilliseconds = (Long) allTokens.get(key);
+            if (tokenExpInMilliseconds.longValue() < currentTimeInMilliseconds) {
+                primaryTable.remove(key);
             }
-        }
-
-        return keysToRemove;
-    }
-
-    protected void removeExpiredTokens(Set<String> keysToRemove) {
-        for (Iterator<String> i = keysToRemove.iterator(); i.hasNext();) {
-            String key = i.next();
-            primaryTable.remove(key);
         }
     }
 
     private class EvictionTask extends TimerTask {
 
-        /** {@inheritDoc} */
         @Override
         public void run() {
             evictStaleEntries();
