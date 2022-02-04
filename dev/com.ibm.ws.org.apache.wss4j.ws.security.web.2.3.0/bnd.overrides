@@ -22,7 +22,7 @@ Export-Package: \
  org.apache.wss4j.web.*
  
 Import-Package: \
- javax.servlet, \
+  javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
  *
  
 jakartaeeMe: true

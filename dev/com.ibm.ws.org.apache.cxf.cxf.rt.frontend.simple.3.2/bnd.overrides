@@ -30,10 +30,12 @@ Import-Package: \
  !org.apache.aries.*,\
  !org.apache.cxf.transport.https,\
  !org.osgi.service.blueprint.*,\
- javax.servlet.*;version="[0.0,4)", \
  org.apache.cxf.*;version="[3.2,4.0)", \
  !com.sun.tools.xjc.*,\
  *
+
+DynamicImport-Package: \
+ javax.servlet.*;version="[0.0,4)"
 
 Export-Package: \
   org.apache.cxf.frontend.*;version=${cxfVersion},\

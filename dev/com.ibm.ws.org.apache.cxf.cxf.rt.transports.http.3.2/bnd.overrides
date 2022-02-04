@@ -26,9 +26,9 @@ Import-Package: \
   org.apache.cxf.ws.policy.*;resolution:=optional, \
   org.apache.cxf.wsdl;resolution:=optional, \
   !org.osgi.service.blueprint.*,\
-  com.ibm.ws.cxf.client.*,\
+  javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
   *
-
+  
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \

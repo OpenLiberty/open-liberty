@@ -28,4 +28,6 @@ Import-Package:  \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
+  javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
+  javax.servlet.http;version="[0,3.0.0)",\
   *
