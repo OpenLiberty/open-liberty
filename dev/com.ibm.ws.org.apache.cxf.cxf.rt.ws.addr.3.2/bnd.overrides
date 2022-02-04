@@ -32,7 +32,7 @@ javax.xml.bind;version=!,\
 javax.xml.bind.annotation;version=!,\
 javax.xml.bind.annotation.adapters;version=!,\
 javax.xml.bind.attachment;version=!,\
-javax.xml.ws.*;version="[2.3,3)", \
+javax.xml.ws.*;version="[2.2,3)", \
 *
 
 Export-Package: \

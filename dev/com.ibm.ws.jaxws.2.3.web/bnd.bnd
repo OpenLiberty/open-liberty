@@ -47,7 +47,7 @@ Import-Package: \
    com.ibm.wsspi.adaptable.module.adapters, \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \
-   javax.xml.ws.*;version="[2.3,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[3.2,4)", \
    *
 
