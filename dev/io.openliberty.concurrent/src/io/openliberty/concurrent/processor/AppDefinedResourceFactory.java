@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2021 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package io.openliberty.concurrent.processor;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -89,7 +90,7 @@ public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFa
         Object resource;
 
         try {
-            ResourceFactory factory = tracker.waitForService(5000);
+            ResourceFactory factory = tracker.waitForService(TimeUnit.MINUTES.toMillis(1));
             if (factory == null) // TODO this was MISSING_RESOURCE_J2CA8030 in com.ibm.ws.jca.cm messages
                 throw new Exception("Unable to find " + (info == null ? id : info.getType() + ' ' + id) + " for application " + appName);
             resource = factory.createResource(info);
