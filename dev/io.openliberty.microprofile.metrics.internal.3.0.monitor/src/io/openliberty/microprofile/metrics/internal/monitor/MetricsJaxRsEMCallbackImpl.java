@@ -17,8 +17,6 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -36,101 +34,109 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-
-
 @Component(service = {
-		DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = {
-				"service.vendor=IBM" })
-public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallback {
+        DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = {
+                "service.vendor=IBM" })
+public class MetricsJaxRsEMCallbackImpl implements DefaultExceptionMapperCallback {
 
-	private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);
+    private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);
 
-	public static final String EXCEPTION_KEY = MetricsJaxRsEMCallbackImpl.class.getName() + ".Exception";
-	private static final String[] metricCDIBundles = {"io.astefanutti.metrics.cdi30", "io.openliberty.microprofile.metrics.internal.cdi30.interceptors"};
-	
-	public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName, String methodSignature) {
-		MetricRegistry baseMetricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.BASE.getName());
-		
-		Metadata metadata = Metadata.builder().withType(MetricType.COUNTER).withName("REST.request.unmappedException.total").withDescription("REST.request.unmappedException.description").withDisplayName("Total Unmapped Exception Requests").build();
-		
-		Tag classTag = new Tag("class", fullyQualifiedClassName);
-		Tag methodTag = new Tag("method", methodSignature);
-		
-		Counter counter = baseMetricRegistry.counter(metadata, classTag, methodTag);
-		
-		ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-		
-		sharedMetricRegistry.associateMetricIDToApplication(new MetricID(metadata.getName(), classTag, methodTag), cmd.getJ2EEName().getApplication(), baseMetricRegistry);
-		
-		return counter;
-	}
+    public static final String EXCEPTION_KEY = MetricsJaxRsEMCallbackImpl.class.getName() + ".Exception";
+    private static final String[] metricCDIBundles = { "io.astefanutti.metrics.cdi30",
+            "io.openliberty.microprofile.metrics.internal.cdi30.interceptors" };
 
-	@Override
-	public Map<String, Object> onDefaultMappedException(Throwable throwable, int statusCode, ResourceInfo resourceInfo) {
+    public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName,
+            String methodSignature) {
+        MetricRegistry baseMetricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.BASE.getName());
 
-		StackTraceElement[] ste = throwable.getStackTrace();
+        Metadata metadata = Metadata.builder().withType(MetricType.COUNTER)
+                .withName("REST.request.unmappedException.total")
+                .withDescription("REST.request.unmappedException.description")
+                .withDisplayName("Total Unmapped Exception Requests").build();
 
-		/*
-		 * If the Exception originates from the Metrics CDI Bundle we do not want to count
-		 * the exception.
-		 * 
-		 * Validate by checking the first element on the stack to see if it came from the two packages
-		 * in the Metrics CDI bundle that throws Exceptions.
-		 */
-		if (!(ste[0].getClassName().startsWith(metricCDIBundles[0]) || ste[0].getClassName().startsWith(metricCDIBundles[1]))) {
-			Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
-			if (classXmethod != null) {
-			    registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
-			}
-		}
+        Tag classTag = new Tag("class", fullyQualifiedClassName);
+        Tag methodTag = new Tag("method", methodSignature);
 
-		Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
+        Counter counter = baseMetricRegistry.counter(metadata, classTag, methodTag);
 
-		return Collections.singletonMap(EXCEPTION_KEY, throwable);
-	}
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
 
-	static SharedMetricRegistries sharedMetricRegistry;
-	
-	@Reference
-	public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
-		MetricsJaxRsEMCallbackImpl.sharedMetricRegistry = sharedMetricRegistry;
-	}
-	
-	
-	/**
-	 * This method resolves the fully qualified class name and method signature  
-	 * 
-	 * @param resourceInfo ResourceInfo obj which contains data regarding class and method 
-	 * @return Map.Entry<String, String> Fully qualified class name as the key and the method as value
-	 */
-	private Map.Entry<String, String> resolveSimpleTimerClassMethodTags(ResourceInfo resourceInfo) {
-		Class<?> resourceClass = resourceInfo.getResourceClass();
+        sharedMetricRegistry.associateMetricIDToApplication(new MetricID(metadata.getName(), classTag, methodTag),
+                cmd.getJ2EEName().getApplication(), baseMetricRegistry);
 
-		String fullyQualifiedClassName = null;
-		String fullMethodSignature = null;
+        return counter;
+    }
 
-		if (resourceClass != null) {
-			fullyQualifiedClassName = resourceClass.getName();
-			Method resourceMethod = resourceInfo.getResourceMethod();
+    @Override
+    public Map<String, Object> onDefaultMappedException(Throwable throwable, int statusCode,
+            ResourceInfo resourceInfo) {
 
-			Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
-			String parameter;
-			fullMethodSignature = resourceMethod.getName();
+        StackTraceElement[] ste = throwable.getStackTrace();
 
-			for (Class<?> p : parameterClasses) {
-				parameter = p.getCanonicalName();
-				fullMethodSignature = fullMethodSignature + "_" + parameter;
-			}
-		}
+        /*
+         * If the Exception originates from the Metrics CDI Bundle we do not want to
+         * count the exception.
+         * 
+         * Validate by checking the first element on the stack to see if it came from
+         * the two packages in the Metrics CDI bundle that throws Exceptions.
+         */
+        if (!(ste[0].getClassName().startsWith(metricCDIBundles[0])
+                || ste[0].getClassName().startsWith(metricCDIBundles[1]))) {
+            Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
+            if (classXmethod != null) {
+                registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey(), classXmethod.getValue()).inc();
+            }
+        }
 
-		if (fullMethodSignature == null || fullyQualifiedClassName == null || fullMethodSignature.isEmpty()
-				|| fullyQualifiedClassName.isEmpty()) {
-		    Tr.warning(tc, "Could not resolve the class name or method signature class:[" + fullMethodSignature + "] method:[" +  fullMethodSignature+"]");
-		    return null;
-		}
+        Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
 
-		return new AbstractMap.SimpleEntry<String, String>(fullyQualifiedClassName, fullMethodSignature);
+        return Collections.singletonMap(EXCEPTION_KEY, throwable);
+    }
 
-	}
+    static SharedMetricRegistries sharedMetricRegistry;
+
+    @Reference
+    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        MetricsJaxRsEMCallbackImpl.sharedMetricRegistry = sharedMetricRegistry;
+    }
+
+    /**
+     * This method resolves the fully qualified class name and method signature
+     * 
+     * @param resourceInfo ResourceInfo obj which contains data regarding class and
+     *                     method
+     * @return Map.Entry<String, String> Fully qualified class name as the key and
+     *         the method as value
+     */
+    private Map.Entry<String, String> resolveSimpleTimerClassMethodTags(ResourceInfo resourceInfo) {
+        Class<?> resourceClass = resourceInfo.getResourceClass();
+
+        String fullyQualifiedClassName = null;
+        String fullMethodSignature = null;
+
+        if (resourceClass != null) {
+            fullyQualifiedClassName = resourceClass.getName();
+            Method resourceMethod = resourceInfo.getResourceMethod();
+
+            Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
+            String parameter;
+            fullMethodSignature = resourceMethod.getName();
+
+            for (Class<?> p : parameterClasses) {
+                parameter = p.getCanonicalName();
+                fullMethodSignature = fullMethodSignature + "_" + parameter;
+            }
+        }
+
+        if (fullMethodSignature == null || fullyQualifiedClassName == null || fullMethodSignature.isEmpty()
+                || fullyQualifiedClassName.isEmpty()) {
+            if (tc.isAnyTracingEnabled()) {
+                Tr.debug(tc, "Could not resolve the class name or method signature class:[" + fullMethodSignature
+                        + "] method:[" + fullMethodSignature + "]");
+            }
+            return null;
+        }
+        return new AbstractMap.SimpleEntry<String, String>(fullyQualifiedClassName, fullMethodSignature);
+    }
 
 }
