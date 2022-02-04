@@ -45,6 +45,8 @@ import com.ibm.ws.monitor.internal.bci.remap.AddVersionFieldClassAdapter;
 import com.ibm.ws.monitor.internal.boot.templates.ClassAvailableProxy;
 import com.ibm.ws.monitor.internal.boot.templates.ProbeProxy;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Component that is responsible for generating and installing the
  * bootstrap class loader proxy for the probes infrastructure.
@@ -316,7 +318,7 @@ public class MonitoringProxyActivator {
         InputStream inputStream = classUrl.openStream();
 
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM8) {
+        reader.accept(new ClassVisitor(ASMHelper.getCurrentASM()) {
         }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
 

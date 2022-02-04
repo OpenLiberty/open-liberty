@@ -7,5 +7,8 @@ Implementation-Title: ASM all classes
 
 DynamicImport-Package: *
 
+# IMPORTANT: Remember to update io.openliberty.asm.ASMHelper.CURRENT_ASM to the value of the most current
+# org.objectweb.asm.Opcodes.ASM## constant when updating the ASM dependency.
 Export-Package: \
-  org.objectweb.asm.*;version="9.2"
+  org.objectweb.asm.*;version="9.2",\
+  io.openliberty.asm;version="1.0"

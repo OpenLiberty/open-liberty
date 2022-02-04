@@ -13,7 +13,6 @@ package io.openliberty.checkpoint.internal;
 import static io.openliberty.checkpoint.internal.CheckpointImpl.debug;
 import static org.objectweb.asm.Opcodes.ACC_INTERFACE;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ASM8;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
@@ -27,6 +26,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import io.openliberty.asm.ASMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -45,15 +45,15 @@ public class CheckpointTransformer implements ClassFileTransformer {
         debug(tc, () -> "transforming class" + className);
 
         ClassReader cr = new ClassReader(classfileBuffer);
-        ClassWriter cw = new ClassWriter(cr, ASM8);
-        ClassVisitor cv = new ClassVisitor(ASM8, cw) {
+        ClassWriter cw = new ClassWriter(cr, ASMHelper.getCurrentASM());
+        ClassVisitor cv = new ClassVisitor(ASMHelper.getCurrentASM(), cw) {
             boolean visitedStaticBlock = false;
             private boolean isStaticClass;
             private boolean isInterface;
 
             class StaticBlockMethodVisitor extends MethodVisitor {
                 StaticBlockMethodVisitor(MethodVisitor mv) {
-                    super(ASM8, mv);
+                    super(ASMHelper.getCurrentASM(), mv);
                 }
 
                 @Override

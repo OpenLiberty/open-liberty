@@ -15,6 +15,8 @@ import org.objectweb.asm.Opcodes;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * <p>Core detail text generating visitor for annotations. Used for annotation
  * and array visit steps.</p>
@@ -31,7 +33,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      * @param parentVisitor The parent of the new visitor.
      */
     public TargetsVisitorAnnotationBaseImpl(TargetsVisitorClassImpl parentVisitor) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         this.parentVisitor = parentVisitor;
 
@@ -46,7 +48,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      * @param parentEncoder Reused string builder from the parent visitor.
      */
     public TargetsVisitorAnnotationBaseImpl(StringBuilder parentDetailText, StringBuilder parentEncoder) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         this.parentVisitor = null;
 

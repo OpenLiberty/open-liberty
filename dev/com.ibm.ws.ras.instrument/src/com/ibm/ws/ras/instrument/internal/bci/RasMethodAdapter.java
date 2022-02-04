@@ -21,7 +21,7 @@ import org.objectweb.asm.Type;
 public abstract class RasMethodAdapter extends MethodVisitor {
 
     public RasMethodAdapter(MethodVisitor visitor) {
-        super(Opcodes.ASM8, visitor);
+        super(Opcodes.ASM9, visitor);
     }
 
     /**

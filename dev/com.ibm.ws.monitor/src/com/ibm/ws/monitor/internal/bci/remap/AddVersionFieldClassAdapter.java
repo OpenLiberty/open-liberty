@@ -16,6 +16,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Simple adapter that adds a field to hold a version string. This is used
  * where mapping the template classes into the bootstrap package so we can
@@ -48,7 +50,7 @@ public class AddVersionFieldClassAdapter extends ClassVisitor {
      * @param versionFieldValue the value to associate with the version field
      */
     public AddVersionFieldClassAdapter(ClassVisitor delegate, String versionFieldName, String versionFieldValue) {
-        super(Opcodes.ASM8, delegate);
+        super(ASMHelper.getCurrentASM(), delegate);
         this.versionFieldName = versionFieldName;
         this.versionFieldValue = versionFieldValue;
     }

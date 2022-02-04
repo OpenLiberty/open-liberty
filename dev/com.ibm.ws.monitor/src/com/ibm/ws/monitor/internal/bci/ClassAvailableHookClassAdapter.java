@@ -24,6 +24,8 @@ import org.objectweb.asm.Type;
 
 import com.ibm.ws.monitor.internal.MonitoringProxyActivator;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Class adapter to hook the class static initializer to call the monitoring
  * subsystem with a reference to the initialized {@code Class} instance.
@@ -38,11 +40,11 @@ public class ClassAvailableHookClassAdapter extends ClassVisitor {
 
     /**
      * Create a new class adapter to hook the static initializer.
-     * 
+     *
      * @param delegate the class adapter to delegate to
      */
     public ClassAvailableHookClassAdapter(ClassVisitor delegate) {
-        super(Opcodes.ASM8, delegate);
+        super(ASMHelper.getCurrentASM(), delegate);
     }
 
     @Override
@@ -88,7 +90,7 @@ class ProcessCandidateHookMethodAdapter extends MethodVisitor {
     boolean supportsClassLiterals;
 
     protected ProcessCandidateHookMethodAdapter(MethodVisitor visitor, Type classType, boolean supportsClassLiterals) {
-        super(Opcodes.ASM8, visitor);
+        super(ASMHelper.getCurrentASM(), visitor);
         this.classType = classType;
         this.supportsClassLiterals = supportsClassLiterals;
     }
