@@ -310,6 +310,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         }
         builder.append(LoggingConstants.nl);
 
+        builder.append("Classpath = ").append(System.getProperty(("java.class.path"))).append(LoggingConstants.nl);
+        builder.append("Java Library path = ").append((System.getProperty("java.library.path"))).append(LoggingConstants.nl);
+
         return builder.toString();
     }
 
