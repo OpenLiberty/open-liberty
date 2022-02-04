@@ -27,6 +27,9 @@ Export-Package: \
  com.ibm.ws.wssecurity.signature,\
  com.ibm.ws.wssecurity.cxf.interceptor
 
+DynamicImport-Package: \ 
+ io.openliberty.wssecurity; version="[1.0.0,2.0.0)"
+ 
 Include-Resource: \
   @./resources!/META-INF/**, \
   OSGI-INF=resources/OSGI-INF

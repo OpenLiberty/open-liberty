@@ -54,7 +54,7 @@ Export-Package: \
 
 Import-Package: \
   !com.ibm.ws.jaxws.ejb, \
-  javax.xml.ws.*;version="[2.3,3)", \
+  javax.xml.ws.*;version="[2.2,3)", \
   org.apache.cxf.*;version="[3.2,4.0)", \
   *
 

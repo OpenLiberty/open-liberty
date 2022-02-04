@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.nowssec;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -31,13 +29,12 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 //Note: the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
 //12/2020 Setting this test class for LITE bucket
-@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+//@SkipForRepeat({ NO_MODIFICATION })
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
