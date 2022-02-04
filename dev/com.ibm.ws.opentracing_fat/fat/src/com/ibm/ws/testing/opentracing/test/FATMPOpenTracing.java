@@ -121,7 +121,7 @@ public class FATMPOpenTracing {
             ex.printStackTrace();
         }
 
-        String line = server.waitForStringInLog("HTTP 404 Not Found", consoleLogFile);
+        String line = server.waitForStringInLog("HTTP 404 Not Found", 15000, consoleLogFile);
         assertNull("HTTP 404 Not Found exception appeared in the logs", line);
     }
 
