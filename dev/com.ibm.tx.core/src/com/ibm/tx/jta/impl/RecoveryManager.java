@@ -16,6 +16,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.transaction.SystemException;
 import javax.transaction.xa.Xid;
@@ -24,7 +25,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
@@ -149,7 +149,7 @@ public class RecoveryManager implements Runnable {
     /**
      * This set contains a list of all recovering transactions.
      */
-    protected ConcurrentHashSet<TransactionImpl> _recoveringTransactions;
+    protected Set<TransactionImpl> _recoveringTransactions;
 
     protected final Object _recoveryMonitor = new Object();
 
@@ -181,7 +181,7 @@ public class RecoveryManager implements Runnable {
         _ourApplId = defaultApplId;
         _ourEpoch = defaultEpoch;
 
-        _recoveringTransactions = new ConcurrentHashSet<TransactionImpl>();
+        _recoveringTransactions = Utils.createConcurrentSet();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "RecoveryManager", this);
@@ -1435,7 +1435,7 @@ public class RecoveryManager implements Runnable {
                 // later.
                 if (!XArecovered) {
                     // Build a list of transaction Xids to check with each recovered RM
-                    final ConcurrentHashSet<Xid> txnXids = new ConcurrentHashSet<Xid>();
+                    final Set<Xid> txnXids = Utils.createConcurrentSet();
                     for (TransactionImpl t : _recoveringTransactions) {
                         txnXids.add(t.getXid());
                     }
@@ -1671,7 +1671,7 @@ public class RecoveryManager implements Runnable {
         TxTMHelper.resyncComplete(r);
     }
 
-    protected ConcurrentHashSet<TransactionImpl> getRecoveringTransactions() {
+    protected Set<TransactionImpl> getRecoveringTransactions() {
         return _recoveringTransactions;
     }
 

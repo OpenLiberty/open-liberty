@@ -11,13 +11,13 @@
 package com.ibm.tx.jta.impl;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -346,7 +346,7 @@ public class PartnerLogTable {
      *
      * @param cl A class loader for contacting XA RMs
      */
-    public boolean recover(RecoveryManager recoveryManager, ClassLoader cl, ConcurrentHashSet<Xid> xids) {
+    public boolean recover(RecoveryManager recoveryManager, ClassLoader cl, Set<Xid> xids) {
         boolean success = true; // flag to indicate that we recovered all RMs
 
         if (tc.isEntryEnabled())

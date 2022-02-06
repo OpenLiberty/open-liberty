@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@ package com.ibm.tx.jta.impl;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  * Maintains a table of local TIDs mapped to Transactions. Every transaction running on
@@ -33,20 +33,7 @@ public class LocalTIDTable {
      */
     private static TransactionImpl[] noTxns = new TransactionImpl[0];
 
-    protected static final ConcurrentHashMap<Integer, TransactionImpl> localTIDMap = new ConcurrentHashMap<Integer, TransactionImpl>(256, 0.75f, getNumCHBuckets());
-
-    // Calculate number of concurrent hash buckets as a factor of
-    // the number of available processors.
-    static int getNumCHBuckets() {
-        // determine number of processors
-        final int baseVal = CpuInfo.getAvailableProcessors().get() * 20;
-
-        // determine next power of two
-        int pow = 2;
-        while (pow < baseVal)
-            pow *= 2;
-        return pow;
-    }
+    protected static final Map<Integer, TransactionImpl> localTIDMap = Utils.createConcurrentMap();
 
     private static int _baseSeed = (int) System.currentTimeMillis();
 
@@ -59,14 +46,14 @@ public class LocalTIDTable {
      * creation of a new transaction.
      *
      * @param tran The transaction to be associated
-     *                 with the local TID
+     *            with the local TID
      *
-     *                 As suggested by the performance team, the LocalTIDTable used to maintain
-     *                 an AtomicLong to maintain a unique value for transaction IDs in multiple threads.
-     *                 This is a bottleneck, especially on Power/AIX environments where AtomicLong is
-     *                 more costly. The performance team has now provided an implementation that does
-     *                 not require any j.u.c. classes, so is more lightweight on all systems, providing
-     *                 1%-1.5% performance improvement on the DayTrader benchmark.
+     *            As suggested by the performance team, the LocalTIDTable used to maintain
+     *            an AtomicLong to maintain a unique value for transaction IDs in multiple threads.
+     *            This is a bottleneck, especially on Power/AIX environments where AtomicLong is
+     *            more costly. The performance team has now provided an implementation that does
+     *            not require any j.u.c. classes, so is more lightweight on all systems, providing
+     *            1%-1.5% performance improvement on the DayTrader benchmark.
      *
      * @return The next available local TID
      */
