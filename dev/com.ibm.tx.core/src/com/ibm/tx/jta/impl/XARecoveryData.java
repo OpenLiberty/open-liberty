@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.transaction.Status;
@@ -26,7 +27,6 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.JTAResource;
@@ -371,7 +371,7 @@ public class XARecoveryData extends PartnerLogData {
     }
 
     @Override
-    public boolean recover(ClassLoader cl, ConcurrentHashSet<Xid> knownXids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
+    public boolean recover(ClassLoader cl, Set<Xid> knownXids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recover", new Object[] { cl, knownXids, failedStoken, cruuid, restartEpoch, this });
 
@@ -634,8 +634,8 @@ public class XARecoveryData extends PartnerLogData {
      * their bqual. Assumes that all Xids are XidImpls.
      *
      * @param xidList A list of XidImpls.
-     * @param cruuid  The cruuid to filter.
-     * @param epoch   The epoch number to filter.
+     * @param cruuid The cruuid to filter.
+     * @param epoch The epoch number to filter.
      * @return An ArrayList of XidImpl objects.
      */
     protected ArrayList filterXidsByCruuidAndEpoch(ArrayList xidList,
@@ -681,11 +681,11 @@ public class XARecoveryData extends PartnerLogData {
      * service, and tries to match the given javax.transaction.xa.Xid
      * with one of them.
      *
-     * @param ourXid    The javax.transaction.xa.Xid we are trying to match.
+     * @param ourXid The javax.transaction.xa.Xid we are trying to match.
      * @param knownXids The array of Xids that are possible matches.
      * @return true if we find a match, false if not.
      */
-    protected boolean canWeForgetXid(XidImpl ourXid, ConcurrentHashSet<Xid> knownXids) {
+    protected boolean canWeForgetXid(XidImpl ourXid, Set<Xid> knownXids) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "canWeForgetXid", new Object[] {
                                                           ourXid,
@@ -899,7 +899,7 @@ public class XARecoveryData extends PartnerLogData {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "fsc, rm", new Object[] { _fsc, _fsc.getRecoveryManager() });
         // Get current list of recovering txns
-        final ConcurrentHashSet<TransactionImpl> trans = _fsc.getRecoveryManager().getRecoveringTransactions();
+        final Set<TransactionImpl> trans = _fsc.getRecoveryManager().getRecoveringTransactions();
         // Go through list and look for a match.  We should find a match as we are called on the "recover" thread
         // and we have already found a match of the XID with a transaction XID.  Note: the XID matching is common
         // with ZOS which is why we need to go back and look for the TransactionImpl again.
@@ -927,7 +927,7 @@ public class XARecoveryData extends PartnerLogData {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "fsc, rm", new Object[] { _fsc, _fsc.getRecoveryManager() });
         // Get current list of recovering txns
-        final ConcurrentHashSet<TransactionImpl> trans = (_fsc.getRecoveryManager().getRecoveringTransactions());
+        final Set<TransactionImpl> trans = (_fsc.getRecoveryManager().getRecoveringTransactions());
         // Go through list and look for a match.  We should find a match as we are called on the "recover" thread
         // and we have already found a match of the XID with a transaction XID.  Note: the XID matching is common
         // with ZOS which is why we need to go back and look for the TransactionImpl again.
