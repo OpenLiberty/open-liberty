@@ -133,48 +133,6 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Applicati
     }
 
     /**
-     * This method is call by the declarative service when there is
-     * configuration change
-     */
-    //TODO Consider disallowing modification of this service, remove modified() and force creation of a new JsMainAdmin.
-    @Modified
-    protected void modified(ComponentContext context,
-                            Map<String, Object> properties) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, CLASS_NAME + "modified", new Object[] { context,
-                                                                   properties });
-        }
-
-        try {
-
-            // If ME is stopped we start it again.This happens when ME might have
-            // not started during activate() and user changes the server.xml, we
-            // attempt to start it again(thinking user have reactified any
-            // server.xml issue if any )
-            if (service.getMeState().equals(ME_STATE.STOPPED.toString())) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.debug(tc, "Starting ME", service.getMeState());
-                SibTr.info(tc, "RESTART_ME_SIAS0106");
-                service.start(properties);
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.debug(tc, "Modifying the configuration", service
-                                    .getMeState());
-                service.modify(properties);
-            }
-
-        } catch (Exception e) {
-            SibTr.exception(tc, e);
-            FFDCFilter.processException(e, this.getClass().getName(), "187", this);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, CLASS_NAME + "modified");
-        }
-
-    }
-
-    /**
      * This method is call by the declarative service when the feature is
      * removed
      */
