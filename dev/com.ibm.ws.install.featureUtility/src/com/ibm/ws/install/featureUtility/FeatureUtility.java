@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -449,6 +449,10 @@ public class FeatureUtility {
         map.put("is.install.server.feature", isInstallServerFeature);
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         checkResolvedFeatures(resolvedFeatures);
+		if (resolvedFeatures.isEmpty()) { // all features are already installed
+			return;
+		}
+
         boolean upgraded = (boolean) map.get("upgrade.complete");
         List<String> causedUpgrade = (List<String>) map.get("caused.upgrade");
         if (upgraded) {
@@ -558,8 +562,13 @@ public class FeatureUtility {
         } else if (resolvedFeatures.isEmpty()) {
             String exceptionMessage = (String) map.get("action.error.message");
             if (exceptionMessage == null) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
-                                                                                          map.get("features.to.resolve")));
+				if (isInstallServerFeature) {
+					logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES
+							.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
+				} else {
+					throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
+							map.get("features.to.resolve")), InstallException.ALREADY_EXISTS);
+				}
             } else if (exceptionMessage.contains("CWWKF1250I")) {
                 throw new InstallException(exceptionMessage);
 
