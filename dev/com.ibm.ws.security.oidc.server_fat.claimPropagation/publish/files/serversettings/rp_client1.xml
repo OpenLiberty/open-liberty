@@ -1,0 +1,233 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+
+    <authFilter id="authFilter_noExtraClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/noExtraClaims_3rdPartyPropagates" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_noExtraClaims_3rdPartyPropagates"
+        clientId="oidcclient_noExtraClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyPropagates/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyPropagates/token" 
+        authFilterRef="authFilter_noExtraClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+
+    <authFilter id="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagateGroupIdsIdTokenClaims_3rdPartyPropagates" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates"
+        clientId="oidcclient_propagateGroupIdsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates/token" 
+        authFilterRef="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+    <authFilter id="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate1TestClaimIdTokenClaims_3rdPartyPropagates" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates"
+        clientId="oidcclient_propagate1TestClaimIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates/token" 
+        authFilterRef="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+    <authFilter id="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate2TestClaimsIdTokenClaims_3rdPartyPropagates" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"
+        clientId="oidcclient_propagate2TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates/token" 
+        authFilterRef="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+
+    <authFilter id="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate3TestClaimsIdTokenClaims_3rdPartyPropagates" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        clientId="oidcclient_propagate3TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates/token" 
+        authFilterRef="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates">
+    </openidConnectClient>
+
+
+    <authFilter id="authFilter_noExtraClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/noExtraClaims_3rdPartyDoesNotPropagate" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_noExtraClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_noExtraClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyDoesNotPropagate/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyDoesNotPropagate/token" 
+        authFilterRef="authFilter_noExtraClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
+
+    <authFilter id="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_propagateGroupIdsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
+        authFilterRef="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
+    <authFilter id="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_propagate1TestClaimIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate/token" 
+        authFilterRef="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
+    <authFilter id="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_propagate2TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
+        authFilterRef="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
+
+    <authFilter id="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        clientId="oidcclient_propagate3TestClaimsIdTokenClaims"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
+        authFilterRef="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
+    </openidConnectClient>
+
+
+<!-- Override claims RP's -->
+<!-- iss -->
+    <authFilter id="authFilter_issClaimInIdToken">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/issClaimInIdToken" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_issClaimInIdToken"
+        clientId="oidcclient_issClaimInIdToken"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_issClaimInIdToken/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_issClaimInIdToken/token" 
+        authFilterRef="authFilter_issClaimInIdToken">
+    </openidConnectClient>
+
+<!-- sub -->
+    <authFilter id="authFilter_subClaimInIdToken">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/subClaimInIdToken" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_subClaimInIdToken"
+        clientId="oidcclient_subClaimInIdToken"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_subClaimInIdToken/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_subClaimInIdToken/token" 
+        authFilterRef="authFilter_subClaimInIdToken">
+    </openidConnectClient>
+
+<!-- aud -->
+    <authFilter id="authFilter_audClaimInIdToken">
+        <requestUrl
+            matchType="contains"
+            urlPattern="/simple/audClaimInIdToken" />
+    </authFilter>
+
+    <openidConnectClient 
+    	id="RP_audClaimInIdToken"
+        clientId="oidcclient_audClaimInIdToken"
+        clientSecret="password"
+        grantType="${testGrantType}"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_audClaimInIdToken/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_audClaimInIdToken/token" 
+        authFilterRef="authFilter_audClaimInIdToken">
+    </openidConnectClient>
+
+</server>
