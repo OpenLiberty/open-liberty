@@ -18,7 +18,8 @@
         </failoverServers>
         <ldapCache>
         <searchResultsCache enabled="false" />
-      </ldapCache>
+        </ldapCache>
+        <contextPool enabled="false" />
 	</ldapRegistry>
 
     <federatedRepository>
