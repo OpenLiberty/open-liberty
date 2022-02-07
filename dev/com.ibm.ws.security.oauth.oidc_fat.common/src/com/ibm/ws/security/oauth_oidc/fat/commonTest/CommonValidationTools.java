@@ -2463,6 +2463,7 @@ public class CommonValidationTools {
      *            List of cookie name prefixes or regular expressions to match against existing cookie names.
      */
     public void verifyOnlyAllowedCookiesStillPresent(WebClient webClient, List<String> onlyAllowedCookies) {
+        Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Verifying that the web client contains only a subset of the following allowed cookies: " + onlyAllowedCookies);
         List<String> unexpectedCookiesFound = new ArrayList<>();
         Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
         for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
@@ -2476,6 +2477,7 @@ public class CommonValidationTools {
                 }
             }
             if (!isCookieAllowed) {
+                Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Found unexpected cookie: " + cookieName);
                 unexpectedCookiesFound.add(cookieName);
             }
         }
