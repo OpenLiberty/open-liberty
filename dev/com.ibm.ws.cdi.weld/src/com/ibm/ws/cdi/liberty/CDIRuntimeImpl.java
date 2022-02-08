@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi.liberty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.proxy.ProxyServicesImpl;
@@ -113,6 +115,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference(name = "beanParser", service = BeanParser.class)
     private BeanParser beanParser;
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile List<ExtensionArchiveProvider> extensionArchiveProviders;
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
@@ -660,6 +665,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public BeanParser getBeanParser() {
         return this.beanParser;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders() {
+        return extensionArchiveProviders;
     }
 
 }
