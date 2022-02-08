@@ -26,6 +26,7 @@ Subsystem-Name: Jakarta EE Platform 10.0
   io.openliberty.messagingServer-3.0, \
   io.openliberty.connectorsInboundSecurity-2.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
+  io.openliberty.globalHandler-2.0, \
   io.openliberty.expressionLanguage-5.0
 kind=noship
 edition=full

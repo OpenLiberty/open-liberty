@@ -70,6 +70,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "enterpriseBeansPersistentTimer-4.0",
                                                   "enterpriseBeansRemote-4.0",
                                                   "enterpriseBeansTest-2.0",
+                                                  "globalHandler-2.0",
                                                   "mail-2.1",
                                                   "persistence-3.1",
                                                   "persistenceContainer-3.1",
