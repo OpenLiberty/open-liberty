@@ -177,9 +177,9 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
             }
 
             if (jsonFromSpi == null) {
-                Map<String, Object> userClaims = getCustomClaims(tokenMap, thirdPartyIDToken, oidcServerConfig);
+                Map<String, Object> customClaims = getCustomClaims(tokenMap, thirdPartyIDToken, oidcServerConfig);
                 if (accessTokenHash != null) {
-                    userClaims.put(AT_HASH, accessTokenHash);
+                    customClaims.put(AT_HASH, accessTokenHash);
                 }
                 OAuth20Provider oauth20Provider = ProvidersService.getOAuth20Provider(componentId);
                 boolean useMicroProfileTokenFormat = false;//oauth20Provider == null? false: oauth20Provider.isMpJwt(); //Aruna TODO:
@@ -190,7 +190,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                                                              scopes,
                                                              lifetime,
                                                              tokenMap,
-                                                             userClaims,
+                                                             customClaims,
                                                              jwtData,
                                                              useMicroProfileTokenFormat);
             }
