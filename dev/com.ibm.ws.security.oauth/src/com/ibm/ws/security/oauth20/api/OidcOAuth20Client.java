@@ -100,4 +100,6 @@ public interface OidcOAuth20Client extends OAuth20Client {
 
     public String getBackchannelLogoutUri();
 
+    public boolean isBackchannelLogoutSessionRequired();
+
 }
