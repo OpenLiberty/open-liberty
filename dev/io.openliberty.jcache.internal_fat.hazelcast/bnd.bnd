@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/subjectcast/src
+
+fat.project: true
+
+-buildpath: \
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.ws.com.meterware.httpunit.1.7;version=latest, \
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
+    com.ibm.ws.security.common;version=latest, \
+    com.ibm.ws.security.fat.common;version=latest, \
+    com.ibm.ws.serialization;version=latest, \
+    com.ibm.ws.webcontainer.security;version=latest, \
+    com.ibm.ws.webcontainer.security_test.servlets;version=latest, \
+    io.openliberty.jcache.internal;version=latest
+    

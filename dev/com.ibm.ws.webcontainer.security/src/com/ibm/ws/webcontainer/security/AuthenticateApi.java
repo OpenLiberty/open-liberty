@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -322,7 +322,7 @@ public class AuthenticateApi {
      */
     private void addToLoggedOutTokenCache(String tokenString) {
         String tokenValue = "userName";
-        LoggedOutTokenCacheImpl.getInstance().addTokenToDistributedMap(tokenString, tokenValue);
+        LoggedOutTokenCacheImpl.getInstance().put(tokenString, tokenValue);
     }
 
     /**
@@ -371,9 +371,14 @@ public class AuthenticateApi {
                     if (val != null && val.length() > 0) {
                         try {
                             authCacheService.remove(val);
-                            //Add token to the logged out cache if enabled
-                            if (config.isTrackLoggedOutSSOCookiesEnabled())
+
+                            /*
+                             * Add token to the logged out cache if enabled. It will be enabled if the trackLoggedOutSSOCookies
+                             * configuration attribute is set to true or if we are using JCache.
+                             */
+                            if (config.isTrackLoggedOutSSOCookiesEnabled() || LoggedOutTokenCacheImpl.getInstance().shouldTrackTokens()) {
                                 addToLoggedOutTokenCache(val);
+                            }
                         } catch (Exception e) {
                             String user = req.getRemoteUser();
                             if (user == null) {

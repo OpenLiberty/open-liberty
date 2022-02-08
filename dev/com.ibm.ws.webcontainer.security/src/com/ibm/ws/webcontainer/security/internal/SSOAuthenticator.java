@@ -165,7 +165,13 @@ public class SSOAuthenticator implements WebAuthenticator {
                 if (hdrVal != null && hdrVal.length() > 0) {
                     String ltpa64 = hdrVal;
 
-                    boolean checkLoggedOutToken = webAppSecurityConfig != null && webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled();
+                    /*
+                     * Track logged out LTPA tokens if webAppSecurityConfig is not null, AND either:
+                     * 1. wsAppSecurity->trackLoggedOutSSOCookies == true
+                     * 2. loggedOutTokenCache is present in the configuration.
+                     */
+                    boolean checkLoggedOutToken = webAppSecurityConfig != null && (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()
+                                                                                   || LoggedOutTokenCacheImpl.getInstance().shouldTrackTokens());
                     if (checkLoggedOutToken && isTokenLoggedOut(ltpa64)) {
                         cleanupLoggedOutToken(req, res);
                         return authResult;
@@ -227,11 +233,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param ltpaToken
      */
     private boolean isTokenLoggedOut(String ltpaToken) {
-        boolean loggedOut = false;
-        Object entry = LoggedOutTokenCacheImpl.getInstance().getDistributedObjectLoggedOutToken(ltpaToken);
-        if (entry != null)
-            loggedOut = true;
-        return loggedOut;
+        return LoggedOutTokenCacheImpl.getInstance().contains(ltpaToken);
     }
 
     /*

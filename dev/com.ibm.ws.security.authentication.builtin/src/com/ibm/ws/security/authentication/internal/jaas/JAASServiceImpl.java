@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.jaas;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -41,6 +42,7 @@ import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.jaas.common.JAASChangeNotifier;
 import com.ibm.ws.security.jaas.common.JAASConfigurationFactory;
 import com.ibm.ws.security.jaas.common.JAASLoginContextEntry;
+import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.callback.AuthenticationDataCallbackHandler;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -69,24 +71,24 @@ public class JAASServiceImpl implements JAASService {
     static final String KEY_COMPONENT_NAME = "component.name";
     public static final String KEY_CERT_AUTHENTICATOR = "certificateAuthenticator";
 
-    private static final AtomicServiceReference<TokenManager> tokenManager = new AtomicServiceReference<TokenManager>(KEY_TOKEN_MANAGER);
-    private static final AtomicServiceReference<CredentialsService> credentialService = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
-    private static final AtomicServiceReference<UserRegistryService> userRegistryService = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
-    private static final AtomicServiceReference<CollectiveAuthenticationPlugin> collectiveAuthenticationPlugin = new AtomicServiceReference<CollectiveAuthenticationPlugin>(KEY_COLLECTIVE_AUTHENTICATON_PLUGIN);
-    private static final AtomicServiceReference<JAASConfigurationFactory> jaasConfigurationFactoryRef = new AtomicServiceReference<JAASConfigurationFactory>(KEY_JAAS_CONFIG_FACTORY);
+    private final AtomicServiceReference<TokenManager> tokenManager = new AtomicServiceReference<TokenManager>(KEY_TOKEN_MANAGER);
+    private final AtomicServiceReference<CredentialsService> credentialService = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
+    private final AtomicServiceReference<UserRegistryService> userRegistryService = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
+    private final AtomicServiceReference<CollectiveAuthenticationPlugin> collectiveAuthenticationPlugin = new AtomicServiceReference<CollectiveAuthenticationPlugin>(KEY_COLLECTIVE_AUTHENTICATON_PLUGIN);
+    private final AtomicServiceReference<JAASConfigurationFactory> jaasConfigurationFactoryRef = new AtomicServiceReference<JAASConfigurationFactory>(KEY_JAAS_CONFIG_FACTORY);
 
     /** Map of login context entries -- BY ID: login contexts are only in this list when all of their login modules are found */
     public ConcurrentServiceReferenceMap<String, JAASLoginContextEntry> jaasLoginContextEntries = new ConcurrentServiceReferenceMap<String, JAASLoginContextEntry>(KEY_JAAS_LOGIN_CONTEXT_ENTRY);
 
     private final AtomicServiceReference<JAASChangeNotifier> jaasChangeNotifierService = new AtomicServiceReference<JAASChangeNotifier>(KEY_CHANGE_SERVICE);
 
-    public static ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators = new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(KEY_CERT_AUTHENTICATOR);
+    public ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators = new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(KEY_CERT_AUTHENTICATOR);
 
     protected ComponentContext cc;
     protected Map<String, Object> properties;
     private JAASConfigurationFactory jaasConfigurationFactory;
-    private static CollectiveAuthenticationPlugin cap = null;
-    private static AuthenticationService authenticationService;
+    private CollectiveAuthenticationPlugin cap = null;
+    private AuthenticationService authenticationService;
 
     @Reference(service = CollectiveAuthenticationPlugin.class,
                name = KEY_COLLECTIVE_AUTHENTICATON_PLUGIN,
@@ -104,7 +106,8 @@ public class JAASServiceImpl implements JAASService {
         }
     }
 
-    public static CollectiveAuthenticationPlugin getCollectiveAuthenticationPlugin() {
+    @Override
+    public CollectiveAuthenticationPlugin getCollectiveAuthenticationPlugin() {
         return cap;
     }
 
@@ -117,9 +120,9 @@ public class JAASServiceImpl implements JAASService {
         userRegistryService.unsetReference(ref);
     }
 
-    public static UserRegistry getUserRegistry() throws RegistryException {
-        UserRegistryService urs = userRegistryService.getService();
-        return urs.getUserRegistry();
+    @Override
+    public UserRegistry getUserRegistry() throws RegistryException {
+        return userRegistryService.getService().getUserRegistry();
     }
 
     @Reference(service = TokenManager.class, name = KEY_TOKEN_MANAGER)
@@ -127,7 +130,8 @@ public class JAASServiceImpl implements JAASService {
         tokenManager.setReference(ref);
     }
 
-    public static TokenManager getTokenManager() {
+    @Override
+    public TokenManager getTokenManager() {
         return tokenManager.getService();
     }
 
@@ -144,20 +148,22 @@ public class JAASServiceImpl implements JAASService {
         credentialService.unsetReference(ref);
     }
 
-    public static CredentialsService getCredentialsService() {
+    @Override
+    public CredentialsService getCredentialsService() {
         return credentialService.getService();
     }
 
     // THIS IS NOT A DS-CALLED METHOD
-    public static void setAuthenticationService(AuthenticationService authService) {
+    public void setAuthenticationService(AuthenticationService authService) {
         authenticationService = authService;
     }
 
-    public static AuthenticationService getAuthenticationService() {
+    @Override
+    public AuthenticationService getAuthenticationService() {
         return authenticationService;
     }
 
-    public static void unsetAuthenticationService(AuthenticationService authService) {
+    public void unsetAuthenticationService(AuthenticationService authService) {
         if (authenticationService == authService) {
             authenticationService = null;
         }
@@ -199,7 +205,8 @@ public class JAASServiceImpl implements JAASService {
         certificateAuthenticators.removeReference(ref.getProperty(KEY_COMPONENT_NAME).toString(), ref);
     }
 
-    public static ConcurrentServiceReferenceMap<String, CertificateAuthenticator> getCertificateAuthenticators() {
+    @Override
+    public ConcurrentServiceReferenceMap<String, CertificateAuthenticator> getCertificateAuthenticators() {
         return certificateAuthenticators;
     }
 
@@ -210,7 +217,7 @@ public class JAASServiceImpl implements JAASService {
      * <li>If there are module pids, and some can't be found, add the entry to the pending list.
      * <li>If all is well, add it to the map.
      * </ul>
-     * 
+     *
      * @param ref JAASLoginContextEntry service reference
      */
     private void processContextEntry(ServiceReference<JAASLoginContextEntry> ref) {
@@ -272,6 +279,23 @@ public class JAASServiceImpl implements JAASService {
         jaasConfigurationFactoryRef.activate(cc);
         certificateAuthenticators.activate(cc);
 
+        /*
+         * If this service is restarting, it is possible the bundle reloaded. This means that the
+         * LoginModules might be configured with a KERNEL_DELEGATE option that contains a class
+         * from the old bundle. We need to ensure we have the correct class from the new bundle.
+         *
+         * Long story short, we use this service to indicate when we should refresh the classes
+         * stored in the KERNEL_DELEGATE option for the LoginModules.
+         */
+        Iterator<JAASLoginContextEntry> iter = jaasLoginContextEntries.getServices();
+        while (iter.hasNext()) {
+            JAASLoginContextEntry entry = iter.next();
+
+            for (JAASLoginModuleConfig config : entry.getLoginModules()) {
+                config.reloadDelegateClass();
+            }
+        }
+
         modified(properties);
     }
 
@@ -316,7 +340,7 @@ public class JAASServiceImpl implements JAASService {
 
     /**
      * Performs a JAAS login.
-     * 
+     *
      * @param jaasEntryName
      * @param callbackHandler
      * @param partialSubject
