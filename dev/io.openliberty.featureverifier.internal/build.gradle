@@ -1,0 +1,11 @@
+// Special publish feature task since this is a test feature
+task publishFeatureManifests(type: Copy) {
+    dependsOn jar
+    from project.file('publish/features')
+    into buildImage.file('wlp/lib/features')
+    include '*.mf'
+    filter(org.apache.tools.ant.filters.ReplaceTokens,
+            tokens: [ VERSION: bnd.bFullVersion ])
+}
+
+assemble.dependsOn publishFeatureManifests 

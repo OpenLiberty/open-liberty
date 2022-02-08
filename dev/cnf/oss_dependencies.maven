@@ -84,6 +84,7 @@ httpunit:httpunit:1.5.4
 httpunit:httpunit:1.6.2
 httpunit:httpunit:1.7
 io.dropwizard.metrics:metrics-core:4.1.5
+io.github.java-diff-utils:java-diff-utils:4.11
 io.grpc:grpc-api:1.38.1
 io.grpc:grpc-census:1.38.1
 io.grpc:grpc-context:1.38.1
@@ -675,6 +676,7 @@ org.testcontainers:postgresql:1.16.2
 org.testcontainers:selenium:1.16.2
 org.testcontainers:testcontainers:1.16.2
 org.testng:testng:6.14.3
+org.xmlunit:xmlunit-core:2.9.0
 org.yaml:snakeyaml:1.27
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.2
