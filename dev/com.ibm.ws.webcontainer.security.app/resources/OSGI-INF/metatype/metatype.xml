@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2021 IBM Corporation and others.
+    Copyright (c) 2011, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -139,11 +139,11 @@
         <!-- 
               JCache configuration.
         -->
-        <AD id="loggedOutCookieJCacheRef" type="String" required="false" ibm:type="pid"
+        <AD id="loggedOutCookieCacheRef" type="String" required="false" ibm:type="pid"
             ibm:reference="io.openliberty.jcache.cache" name="internal" description="internal use only" />
-        <AD id="loggedOutCookieJCacheService.target" type="String" default="(service.pid=${loggedOutCookieJCacheRef})"
+        <AD id="loggedOutCookieCacheService.target" type="String" default="(service.pid=${loggedOutCookieCacheRef})"
             ibm:final="true" name="internal" description="internal use only" />
-        <AD id="loggedOutCookieJCacheService.cardinality.minimum" type="String"  default="${count(loggedOutCookieJCacheRef)}" 
+        <AD id="loggedOutCookieCacheService.cardinality.minimum" type="String"  default="${count(loggedOutCookieCacheRef)}" 
             ibm:final="true" name="internal" description="internal use only"/>
             
     </OCD>

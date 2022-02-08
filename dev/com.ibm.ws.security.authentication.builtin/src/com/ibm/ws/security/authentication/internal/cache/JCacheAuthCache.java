@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.jcache.JCacheService;
+import io.openliberty.jcache.CacheService;
 
 /**
  * JCache-backed key-value authentication cache that can be used to provide distributed caching.
@@ -27,23 +27,23 @@ public class JCacheAuthCache implements AuthCache {
     private static final TraceComponent tc = Tr.register(JCacheAuthCache.class);
 
     /**
-     * The {@link JCacheService} being used, if one is provided.
+     * The {@link CacheService} being used, if one is provided.
      */
-    private JCacheService jCacheService = null;
+    private CacheService cacheService = null;
 
     private AuthCache inMemoryCache = null; // TODO Need to use this for at minimum serialization failures.
 
     /**
      * Instantiate a new {@link JCacheAuthCache} instance.
      *
-     * @param jCacheService The {@link JCacheService} to use to connect to the backing JCache implementation.
+     * @param cacheService The {@link CacheService} to use to connect to the backing JCache implementation.
      * @param inMemoryCache An in-memory cache to store objects that cannot be stored in the JCache.
      */
-    public JCacheAuthCache(JCacheService jCacheService, AuthCache inMemoryCache) {
+    public JCacheAuthCache(CacheService cacheService, AuthCache inMemoryCache) {
         /*
          * Eviction, map sizing, etc are all handled by the JCache implementation.
          */
-        this.jCacheService = jCacheService;
+        this.cacheService = cacheService;
         this.inMemoryCache = inMemoryCache;
     }
 
@@ -60,7 +60,7 @@ public class JCacheAuthCache implements AuthCache {
                 jCache.removeAll(); // Notifies listeners, clear() does not.
             }
 
-            Tr.info(tc, "JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES", jCacheService.getCache().getName());
+            Tr.info(tc, "JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES", cacheService.getCache().getName());
         }
     }
 
@@ -110,8 +110,8 @@ public class JCacheAuthCache implements AuthCache {
      */
     private Cache<Object, Object> getJCache() {
         Cache<Object, Object> jCache = null;
-        if (jCacheService != null) {
-            jCache = jCacheService.getCache();
+        if (cacheService != null) {
+            jCache = cacheService.getCache();
         }
 
         return jCache;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.serialization.SerializationService;
 
-import io.openliberty.jcache.JCacheObject;
+import io.openliberty.jcache.CacheObject;
 
 /**
  * Proxy class for {@link javax.cache.Cache} that will handle all serialization
@@ -39,51 +39,50 @@ import io.openliberty.jcache.JCacheObject;
  *
  * @see Cache
  */
-public class JCacheProxy implements Cache<Object, Object> {
+public class CacheProxy implements Cache<Object, Object> {
 
     @SuppressWarnings("unused")
-    private final static TraceComponent tc = Tr.register(JCacheProxy.class);
+    private final static TraceComponent tc = Tr.register(CacheProxy.class);
 
-    private final Cache<Object, Object> jCache;
-    private final JCacheServiceImpl jCacheService;
+    private final Cache<Object, Object> cache;
+    private final CacheServiceImpl cacheService;
 
     /**
-     * Instantiate a new {@link JCacheProxy}.
+     * Instantiate a new {@link CacheProxy}.
      *
-     * @param jCache        The {@link Cache} that this instance will proxy requests to.
-     * @param jCacheService The {@link JCacheServiceImpl} that manages the {@link Cache}.
+     * @param cache        The {@link Cache} that this instance will proxy requests to.
+     * @param cacheService The {@link CacheServiceImpl} that manages the {@link Cache}.
      */
-    public JCacheProxy(Cache<Object, Object> jCache, JCacheServiceImpl jCacheService) {
-        if (jCache == null) {
-            throw new NullPointerException("The JCache cannot be null.");
+    public CacheProxy(Cache<Object, Object> cache, CacheServiceImpl cacheService) {
+        if (cache == null) {
+            throw new NullPointerException("The Cache cannot be null.");
         }
-        if (jCacheService == null) {
-            throw new NullPointerException("The JCacheConfig cannot be null.");
+        if (cacheService == null) {
+            throw new NullPointerException("The CacheService cannot be null.");
         }
 
-        this.jCache = jCache;
-        this.jCacheService = jCacheService;
+        this.cache = cache;
+        this.cacheService = cacheService;
     }
 
     @Override
     public void clear() {
-        jCache.clear();
+        cache.clear();
     }
 
     @Override
     public void close() {
-        jCache.close();
+        cache.close();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return jCache.containsKey(key);
+        return cache.containsKey(key);
     }
 
     @Override
-    public void deregisterCacheEntryListener(
-                                             CacheEntryListenerConfiguration<Object, Object> cacheEntryListenerConfiguration) {
-        jCache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
+    public void deregisterCacheEntryListener(CacheEntryListenerConfiguration<Object, Object> cacheEntryListenerConfiguration) {
+        cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class JCacheProxy implements Cache<Object, Object> {
         /*
          * Get the object, and deserialize it if it has not already been deserialized.
          */
-        JCacheObject jObject = (JCacheObject) jCache.get(key);
+        CacheObject jObject = (CacheObject) cache.get(key);
         return deserializeIfNecessary(jObject);
     }
 
@@ -103,10 +102,10 @@ public class JCacheProxy implements Cache<Object, Object> {
         /*
          * Deserialize all of the values.
          */
-        Map<Object, Object> values = jCache.getAll(keys);
+        Map<Object, Object> values = cache.getAll(keys);
         Map<Object, Object> results = new HashMap<Object, Object>();
         for (Map.Entry<Object, Object> entry : values.entrySet()) {
-            results.put(entry.getKey(), deserializeIfNecessary((JCacheObject) entry.getValue()));
+            results.put(entry.getKey(), deserializeIfNecessary((CacheObject) entry.getValue()));
         }
 
         return results;
@@ -115,8 +114,8 @@ public class JCacheProxy implements Cache<Object, Object> {
     @Override
     @Sensitive
     public Object getAndPut(Object key, @Sensitive Object value) {
-        JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
-        JCacheObject oldValue = (JCacheObject) jCache.getAndPut(key, newValue);
+        CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
+        CacheObject oldValue = (CacheObject) cache.getAndPut(key, newValue);
 
         if (oldValue != null) {
             return deserializeIfNecessary(oldValue);
@@ -128,14 +127,14 @@ public class JCacheProxy implements Cache<Object, Object> {
     @Override
     @Sensitive
     public Object getAndRemove(Object key) {
-        return deserializeIfNecessary((JCacheObject) jCache.getAndRemove(key));
+        return deserializeIfNecessary((CacheObject) cache.getAndRemove(key));
     }
 
     @Override
     @Sensitive
     public Object getAndReplace(Object key, @Sensitive Object value) {
-        JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
-        JCacheObject oldValue = (JCacheObject) jCache.getAndReplace(key, newValue);
+        CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
+        CacheObject oldValue = (CacheObject) cache.getAndReplace(key, newValue);
 
         if (oldValue != null) {
             return deserializeIfNecessary(oldValue);
@@ -146,50 +145,50 @@ public class JCacheProxy implements Cache<Object, Object> {
 
     @Override
     public CacheManager getCacheManager() {
-        return jCache.getCacheManager();
+        return cache.getCacheManager();
     }
 
     @Override
     public <C extends Configuration<Object, Object>> C getConfiguration(Class<C> clazz) {
-        return jCache.getConfiguration(clazz);
+        return cache.getConfiguration(clazz);
     }
 
     @Override
     public String getName() {
-        return jCache.getName();
+        return cache.getName();
     }
 
     @Override
     public <T> T invoke(Object key, EntryProcessor<Object, Object, T> entryProcessor, Object... arguments) throws EntryProcessorException {
-        return jCache.invoke(arguments, entryProcessor, arguments);
+        return cache.invoke(arguments, entryProcessor, arguments);
     }
 
     @Override
     public <T> Map<Object, EntryProcessorResult<T>> invokeAll(Set<? extends Object> keys,
                                                               EntryProcessor<Object, Object, T> entryProcessor, Object... arguments) {
-        return jCache.invokeAll(keys, entryProcessor, arguments);
+        return cache.invokeAll(keys, entryProcessor, arguments);
     }
 
     @Override
     public boolean isClosed() {
-        return jCache.isClosed();
+        return cache.isClosed();
     }
 
     @Override
     public Iterator<Cache.Entry<Object, Object>> iterator() {
-        return new JCacheProxyIterator(jCache.iterator());
+        return new CacheProxyIterator(cache.iterator());
     }
 
     @Override
     public void loadAll(Set<? extends Object> keys, boolean replaceExistingValues,
                         CompletionListener completionListener) {
-        jCache.loadAll(keys, replaceExistingValues, completionListener);
+        cache.loadAll(keys, replaceExistingValues, completionListener);
     }
 
     @Override
     public void put(Object key, @Sensitive Object value) {
-        JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
-        jCache.put(key, newValue);
+        CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
+        cache.put(key, newValue);
     }
 
     @Override
@@ -198,72 +197,72 @@ public class JCacheProxy implements Cache<Object, Object> {
         for (Map.Entry<? extends Object, ? extends Object> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
-            JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
+            CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
             values.put(key, newValue);
         }
 
-        jCache.putAll(values);
+        cache.putAll(values);
     }
 
     @Override
     public boolean putIfAbsent(Object key, @Sensitive Object value) {
-        JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
-        return jCache.putIfAbsent(key, newValue);
+        CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
+        return cache.putIfAbsent(key, newValue);
     }
 
     @Override
     public void registerCacheEntryListener(
                                            CacheEntryListenerConfiguration<Object, Object> cacheEntryListenerConfiguration) {
-        jCache.registerCacheEntryListener(cacheEntryListenerConfiguration);
+        cache.registerCacheEntryListener(cacheEntryListenerConfiguration);
     }
 
     @Override
     public boolean remove(Object key) {
-        return jCache.remove(key);
+        return cache.remove(key);
     }
 
     @Override
     public boolean remove(Object key, @Sensitive Object oldValue) {
-        JCacheObject oldValue1 = new JCacheObject(oldValue, jCacheService.serialize(oldValue));
-        return jCache.remove(key, oldValue1);
+        CacheObject oldValue1 = new CacheObject(oldValue, cacheService.serialize(oldValue));
+        return cache.remove(key, oldValue1);
     }
 
     @Override
     public void removeAll() {
-        jCache.removeAll();
+        cache.removeAll();
     }
 
     @Override
     public void removeAll(Set<? extends Object> keys) {
-        jCache.removeAll(keys);
+        cache.removeAll(keys);
     }
 
     @Override
     public boolean replace(Object key, @Sensitive Object value) {
-        JCacheObject newValue = new JCacheObject(value, jCacheService.serialize(value));
-        return jCache.replace(key, newValue);
+        CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
+        return cache.replace(key, newValue);
     }
 
     @Override
     public boolean replace(Object key, @Sensitive Object oldValue, @Sensitive Object newValue) {
-        JCacheObject oldValue1 = new JCacheObject(oldValue, jCacheService.serialize(oldValue));
-        JCacheObject newValue1 = new JCacheObject(newValue, jCacheService.serialize(newValue));
-        return jCache.replace(key, oldValue1, newValue1);
+        CacheObject oldValue1 = new CacheObject(oldValue, cacheService.serialize(oldValue));
+        CacheObject newValue1 = new CacheObject(newValue, cacheService.serialize(newValue));
+        return cache.replace(key, oldValue1, newValue1);
     }
 
     @Override
     public <T> T unwrap(Class<T> clazz) {
-        return jCache.unwrap(clazz);
+        return cache.unwrap(clazz);
     }
 
     /**
-     * Deserialize the object contained within the {@link JCacheObject}.
+     * Deserialize the object contained within the {@link CacheObject}.
      *
-     * @param jObject The {@link JCacheObject} to deserialize the object within.
-     * @return The deserialized object that was in the {@link JCacheObject}.
+     * @param jObject The {@link CacheObject} to deserialize the object within.
+     * @return The deserialized object that was in the {@link CacheObject}.
      */
     @Sensitive
-    private Object deserializeIfNecessary(@Sensitive JCacheObject jObject) {
+    private Object deserializeIfNecessary(@Sensitive CacheObject jObject) {
 
         if (jObject == null) {
             return null;
@@ -279,7 +278,7 @@ public class JCacheProxy implements Cache<Object, Object> {
                  * object.
                  */
                 if (jObject.getObject() == null) {
-                    jObject.setObject(jCacheService.deserialize(jObject.getObjectBytes()));
+                    jObject.setObject(cacheService.deserialize(jObject.getObjectBytes()));
                 }
             }
         }
@@ -291,11 +290,11 @@ public class JCacheProxy implements Cache<Object, Object> {
      * An iterator that will proxy requests to the JCache provider's iterator.
      */
     @Trivial // If ever removed, consider @Sensitive for values.
-    private class JCacheProxyIterator implements Iterator<Cache.Entry<Object, Object>> {
+    private class CacheProxyIterator implements Iterator<Cache.Entry<Object, Object>> {
 
         private Iterator<Cache.Entry<Object, Object>> iterator;
 
-        JCacheProxyIterator(Iterator<Cache.Entry<Object, Object>> iterator) {
+        CacheProxyIterator(Iterator<Cache.Entry<Object, Object>> iterator) {
             this.iterator = iterator;
         }
 
@@ -307,18 +306,18 @@ public class JCacheProxy implements Cache<Object, Object> {
         @Override
         public Cache.Entry<Object, Object> next() {
             Cache.Entry<Object, Object> entry = iterator.next();
-            return entry != null ? new JCacheEntryProxy(entry) : null;
+            return entry != null ? new CacheEntryProxy(entry) : null;
         }
 
         /**
          * A Cache.Entry that will proxy requests to the JCache provider's Cache.Entry.
          * Most importantly, it handles deserialization on {@link #getValue()} calls.
          */
-        private class JCacheEntryProxy implements Cache.Entry<Object, Object> {
+        private class CacheEntryProxy implements Cache.Entry<Object, Object> {
 
             private Cache.Entry<Object, Object> entry;
 
-            JCacheEntryProxy(Cache.Entry<Object, Object> entry) {
+            CacheEntryProxy(Cache.Entry<Object, Object> entry) {
                 this.entry = entry;
             }
 
@@ -329,7 +328,7 @@ public class JCacheProxy implements Cache<Object, Object> {
 
             @Override
             public Object getValue() {
-                return deserializeIfNecessary((JCacheObject) entry.getValue());
+                return deserializeIfNecessary((CacheObject) entry.getValue());
             }
 
             @Override

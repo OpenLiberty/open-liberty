@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,7 +89,7 @@ public class FATSuite {
     }
 
     /**
-     * Checks if multicast should be disabled in Hazelcast. We want to disable multicase on z/OS,
+     * Checks if multicast should be disabled in Hazelcast. We want to disable multicast on z/OS,
      * and when the environment variable disable_multicast_in_fats=true.
      *
      * If you are seeing a lot of NPE errors while running this FAT bucket you might need to set

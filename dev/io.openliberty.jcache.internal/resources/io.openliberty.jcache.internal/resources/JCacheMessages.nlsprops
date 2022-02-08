@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 # This was moved from com.ibm.ws.session.cache
 #
 # do not translate: httpSessionCache, uri
-SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Generated Infinispan configuration for HTTP session persistence: {0}. To override, configure the uri attribute of either the httpSessionCache configuration element or the jCacheManager configuration element.
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Generated Infinispan configuration for HTTP session persistence: {0}. To override, configure the uri attribute of either the httpSessionCache configuration element or the cacheManager configuration element.
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=The Infinispan caches that are used for HTTP session persistence require additional configuration to persist sessions across servers. Liberty generates this configuration when it is not provided by the user.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=No action is required if you are satisfied with the generated configuration. Otherwise, the generated configuration can be used as a starting point.
 
@@ -41,7 +41,7 @@ CWLJC0003_USING_PROVIDER.explanation=The named JCache is using the specified pro
 CWLJC0003_USING_PROVIDER.useraction=No user action required. 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: The {0} caching provider failed to load. {1}
-CWLJC0004_GET_PROVIDER_FAILED.explanation=The jCachingProvider configuration failed to load.
+CWLJC0004_GET_PROVIDER_FAILED.explanation=The cachingProvider configuration failed to load.
 CWLJC0004_GET_PROVIDER_FAILED.useraction=Address the error included in the message and retry.
 
 CWLJC0005_MANAGER_LOADED=CWLJC0005I: The {0} JCache CacheManager took {1} ms to load. 
@@ -52,7 +52,7 @@ CWLJC0005_MANAGER_LOADED.useraction=No user action required.
 # CWLJC0006 IS AVAILABLE.
 #
 
-CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Invalid syntax in jCacheManager URI.  Cause is {0}.
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Invalid syntax in cacheManager URI.  Cause is {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=The syntax of the specified JCache configuration URI is invalid.
 CWLJC0007_URI_INVALID_SYNTAX.useraction=Correct the syntax of the specified configuration URI.
 

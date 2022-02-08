@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -34,25 +34,25 @@
 	<include location="${shared.resource.dir}/configs/ssl.xml" />
 
     <!-- 
-        Configure the JCachingProvider and JCacheManager.
+        Configure the CachingProvider and CacheManager.
      -->
-	<jCachingProvider id="CachingProvider"
+	<cachingProvider id="CachingProvider"
 		libraryRef="HazelcastClientLib,CustomLoginLib" />
-	<jCacheManager id="CacheManager"
-		jCachingProviderRef="CachingProvider">
+	<cacheManager id="CacheManager"
+		cachingProviderRef="CachingProvider">
 
 		<properties
 			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
 
-	</jCacheManager>
+	</cacheManager>
 
 	<!--
 		Configure the JCache instances.
 	 -->
-	<jCache id="AuthCache" name="AuthCache"
-		jCacheManagerRef="CacheManager" />
-	<jCache id="LoggedOutCookieCache" name="LoggedOutCookieCache"
-		jCacheManagerRef="CacheManager" />
+	<cache id="AuthCache" name="AuthCache"
+		cacheManagerRef="CacheManager" />
+	<cache id="LoggedOutCookieCache" name="LoggedOutCookieCache"
+		cacheManagerRef="CacheManager" />
 
 	<!--
 		Configure the authentication cache and the logged out cookie cache to use
@@ -61,8 +61,8 @@
 		Set trackLoggedOutSSOCookies to false to demonstrate that it is ignored
         when the distributed logged out cookie cache is configured.
 	 -->
-	<authCache jCacheRef="AuthCache" />
-	<webAppSecurity	loggedOutCookieJCacheRef="LoggedOutCookieCache" trackLoggedOutSSOCookies="false" />
+	<authCache cacheRef="AuthCache" />
+	<webAppSecurity	loggedOutCookieCacheRef="LoggedOutCookieCache" trackLoggedOutSSOCookies="false" />
 
 	<!-- 
 		Applications.

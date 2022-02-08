@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,22 +20,22 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * CachingProvider, but it is best to be safe.
  */
 @Trivial
-public class JCacheServiceClassLoader extends ClassLoader {
+public class CacheServiceClassLoader extends ClassLoader {
     private ClassLoader parent;
 
     /**
-     * Create a new {@link JCacheServiceClassLoader} instance with the parent
+     * Create a new {@link CacheServiceClassLoader} instance with the parent
      * classloader.
      *
      * @param parent The parent {@link ClassLoader}.
      */
-    public JCacheServiceClassLoader(ClassLoader parent) {
+    public CacheServiceClassLoader(ClassLoader parent) {
         super(parent);
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("JCacheServiceClassLoader@")
+        return new StringBuilder("CacheServiceClassLoader@")
                         .append(Integer.toHexString(System.identityHashCode(this)))
                         .append(" for ")
                         .append(parent)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,10 +34,10 @@ import com.ibm.wsspi.library.Library;
 /**
  * Service that configures a {@link CachingProvider} to use with JCache caching.
  */
-@Component(service = JCachingProviderService.class, immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachingprovider",
+@Component(service = CachingProviderService.class, immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachingprovider",
            property = { "service.vendor=IBM" })
-public class JCachingProviderService {
-    private static final TraceComponent tc = Tr.register(JCachingProviderService.class);
+public class CachingProviderService {
+    private static final TraceComponent tc = Tr.register(CachingProviderService.class);
 
     private static final String KEY_PROVIDER_CLASS = "providerClass";
     private static final String KEY_ID = "id";
@@ -107,7 +107,7 @@ public class JCachingProviderService {
          * Not running beta edition, throw exception
          */
         if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The jCachingProvider feature is beta and is not available.");
+            throw new UnsupportedOperationException("The cachingProvider feature is beta and is not available.");
         } else {
             /*
              * Running beta exception, issue message if we haven't already issued one for
@@ -145,18 +145,18 @@ public class JCachingProviderService {
         /*
          * Create the unified classloader.
          */
-        ClassLoader unifiedClassLoader = classLoadingService.unify(JCachingProviderService.class.getClassLoader(),
+        ClassLoader unifiedClassLoader = classLoadingService.unify(CachingProviderService.class.getClassLoader(),
                                                                    followOns);
 
         /*
          * Wrap the unified classloader with a dummy/delegating classloader.
          */
-        classLoader = new JCacheServiceClassLoader(unifiedClassLoader);
+        classLoader = new CacheServiceClassLoader(unifiedClassLoader);
         return classLoader;
     }
 
     /**
-     * Get the {@link CachingProvider} for this {@link JCachingProviderService}.
+     * Get the {@link CachingProvider} for this {@link CachingProviderService}.
      *
      * @return The {@link CachingProvider}.
      */
@@ -165,7 +165,7 @@ public class JCachingProviderService {
     }
 
     /**
-     * Set the {@link Library} for this {@link JCachingProviderService}.
+     * Set the {@link Library} for this {@link CachingProviderService}.
      *
      * @param library The {@link Library}.
      */
@@ -179,7 +179,7 @@ public class JCachingProviderService {
     }
 
     /**
-     * Unset the {@link Library} for this {@link JCachingProviderService}.
+     * Unset the {@link Library} for this {@link CachingProviderService}.
      *
      * @param library The {@link Library}.
      */
@@ -192,7 +192,7 @@ public class JCachingProviderService {
     }
 
     /**
-     * Set the {@link ClassLoadingService} for this {@link JCachingProviderService}.
+     * Set the {@link ClassLoadingService} for this {@link CachingProviderService}.
      *
      * @param classLoadingService The {@link ClassLoadingService}.
      */
@@ -202,7 +202,7 @@ public class JCachingProviderService {
     }
 
     /**
-     * Unset the {@link ClassLoadingService} for this {@link JCachingProviderService}.
+     * Unset the {@link ClassLoadingService} for this {@link CachingProviderService}.
      *
      * @param classLoadingService The {@link ClassLoadingService}.
      */

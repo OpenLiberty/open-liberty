@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,13 @@ package io.openliberty.jcache;
 
 import javax.cache.CacheManager;
 
-import io.openliberty.jcache.internal.JCachingProviderService;
+import io.openliberty.jcache.internal.CachingProviderService;
 
 /**
  * Interface that represents service to interact with a {@link CacheManager}
  * instance.
  */
-public interface JCacheManagerService {
+public interface CacheManagerService {
 
     /**
      * Get the {@link CacheManager} this service represents.
@@ -28,10 +28,10 @@ public interface JCacheManagerService {
     public CacheManager getCacheManager();
 
     /**
-     * Get the {@link JCachingProviderService} that is the parent of this
-     * {@link JCacheManagerService}.
+     * Get the {@link CachingProviderService} that is the parent of this
+     * {@link CacheManagerService}.
      *
-     * @return The parent {@link JCachingProviderService}.
+     * @return The parent {@link CachingProviderService}.
      */
-    public JCachingProviderService getJCachingProviderService();
+    public CachingProviderService getCachingProviderService();
 }

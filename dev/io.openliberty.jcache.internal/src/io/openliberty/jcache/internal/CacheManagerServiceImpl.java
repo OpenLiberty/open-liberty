@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,16 +32,16 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
-import io.openliberty.jcache.JCacheManagerService;
-import io.openliberty.jcache.utils.JCacheConfigUtil;
+import io.openliberty.jcache.CacheManagerService;
+import io.openliberty.jcache.utils.CacheConfigUtil;
 
 /**
  * Service that configures a {@link CacheManager} to use with JCache caching.
  */
 @Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cachemanager",
            property = { "service.vendor=IBM" })
-public class JCacheManagerServiceImpl implements JCacheManagerService {
-    private static final TraceComponent tc = Tr.register(JCacheManagerServiceImpl.class);
+public class CacheManagerServiceImpl implements CacheManagerService {
+    private static final TraceComponent tc = Tr.register(CacheManagerServiceImpl.class);
 
     private static final String KEY_URI = "uri";
     private static final String KEY_ID = "id";
@@ -54,13 +54,13 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
     private URI configuredUri = null;
     private CacheManager cacheManager = null;
 
-    private JCachingProviderService jCachingProviderService = null;
+    private CachingProviderService cachingProviderService = null;
     private ScheduledExecutorService scheduledExecutorService = null;
 
     private Object syncObject = new Object();
     private String id = null;
 
-    private JCacheConfigUtil jcacheConfigUtil = null;
+    private CacheConfigUtil cacheConfigUtil = null;
 
     /** Flag tells us if the message for a call to a beta method has been issued. */
     private static boolean issuedBetaMessage = false;
@@ -152,7 +152,7 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
          * Not running beta edition, throw exception
          */
         if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The jCachingProvider feature is beta and is not available.");
+            throw new UnsupportedOperationException("The cachingProvider feature is beta and is not available.");
         } else {
             /*
              * Running beta exception, issue message if we haven't already issued one for
@@ -175,9 +175,9 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
                         /*
                          * Perform some custom configuration updates for the CacheManager.
                          */
-                        jcacheConfigUtil = new JCacheConfigUtil();
-                        URI uri = jcacheConfigUtil.preConfigureCacheManager(configuredUri,
-                                                                            jCachingProviderService.getCachingProvider(), properties);
+                        cacheConfigUtil = new CacheConfigUtil();
+                        URI uri = cacheConfigUtil.preConfigureCacheManager(configuredUri,
+                                                                           cachingProviderService.getCachingProvider(), properties);
 
                         /*
                          * Get the CacheManager instance. We don't provide the ClassLoader to the
@@ -192,12 +192,12 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
                          *
                          * In the future, if we need to provide the ClassLoader to the getCacheManager
                          * method, call replace null with
-                         * jCachingProviderService.getUnifiedClassLoader() and update the tests that
+                         * cachingProviderService.getUnifiedClassLoader() and update the tests that
                          * will now fail. Note: This might also cause issues running mixed levels since
                          * the cache scope will now be different based on the new ClassLoader.
                          */
                         long loadTimeMs = System.currentTimeMillis();
-                        cacheManager = jCachingProviderService.getCachingProvider()
+                        cacheManager = cachingProviderService.getCachingProvider()
                                         .getCacheManager(uri, null,
                                                          properties);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
@@ -221,31 +221,31 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
     }
 
     @Override
-    public JCachingProviderService getJCachingProviderService() {
-        return jCachingProviderService;
+    public CachingProviderService getCachingProviderService() {
+        return cachingProviderService;
     }
 
     /**
-     * Set the {@link JCachingProviderService} for this {@link JCacheManagerService}.
+     * Set the {@link CachingProviderService} for this {@link CacheManagerService}.
      *
-     * @param service The {@link JCachingProviderService}.
+     * @param service The {@link CachingProviderService}.
      */
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    public void setJCachingProviderService(JCachingProviderService service) {
-        this.jCachingProviderService = service;
+    public void setCachingProviderService(CachingProviderService service) {
+        this.cachingProviderService = service;
     }
 
     /**
-     * Unset the {@link JCachingProviderService} for this {@link JCacheManagerService}.
+     * Unset the {@link CachingProviderService} for this {@link CacheManagerService}.
      *
-     * @param service The {@link JCachingProviderService}.
+     * @param service The {@link CachingProviderService}.
      */
-    public void unsetJCachingProviderService(JCachingProviderService service) {
-        this.jCachingProviderService = null;
+    public void unsetCachingProviderService(CachingProviderService service) {
+        this.cachingProviderService = null;
     }
 
     /**
-     * Set the {@link ScheduledExecutorService} for this {@link JCacheManagerService}.
+     * Set the {@link ScheduledExecutorService} for this {@link CacheManagerService}.
      *
      * @param scheduledExecutorService The {@link ScheduledExecutorService}.
      */
@@ -255,7 +255,7 @@ public class JCacheManagerServiceImpl implements JCacheManagerService {
     }
 
     /**
-     * Unset the {@link ScheduledExecutorService} for this {@link JCacheManagerService}.
+     * Unset the {@link ScheduledExecutorService} for this {@link CacheManagerService}.
      *
      * @param scheduledExecutorService The {@link ScheduledExecutorService}.
      */

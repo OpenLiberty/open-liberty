@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
-import io.openliberty.jcache.JCacheService;
+import io.openliberty.jcache.CacheService;
 
 public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator, WebAppAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(WebAppSecurityCollaboratorImpl.class);
@@ -335,20 +335,20 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     /**
-     * Set the {@link JCacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
+     * Set the {@link CacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
      *
-     * @param service the {@link JCacheService}
+     * @param service the {@link CacheService}
      */
-    protected void setLoggedOutCookieJCacheService(JCacheService service) {
+    protected void setLoggedOutCookieCacheService(CacheService service) {
         LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(new JCacheLoggedOutCookieCache(service));
     }
 
     /**
-     * Unset the {@link JCacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
+     * Unset the {@link CacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
      *
-     * @param service the {@link JCacheService}
+     * @param service the {@link CacheService}
      */
-    protected void unsetLoggedOutCookieJCacheService(JCacheService service) {
+    protected void unsetLoggedOutCookieCacheService(CacheService service) {
         LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(null);
     }
 

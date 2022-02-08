@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.serialization.SerializationService;
 
-import io.openliberty.jcache.JCacheManagerService;
-import io.openliberty.jcache.JCacheService;
+import io.openliberty.jcache.CacheManagerService;
+import io.openliberty.jcache.CacheService;
 
 /**
  * Service that configures an individual {@link Cache} instance for JCache
@@ -48,13 +48,13 @@ import io.openliberty.jcache.JCacheService;
  */
 @Component(immediate = true, configurationPolicy = REQUIRE, configurationPid = "io.openliberty.jcache.cache",
            property = { "service.vendor=IBM" })
-public class JCacheServiceImpl implements JCacheService {
+public class CacheServiceImpl implements CacheService {
 
-    private static final TraceComponent tc = Tr.register(JCacheServiceImpl.class);
+    private static final TraceComponent tc = Tr.register(CacheServiceImpl.class);
     private static final String KEY_CACHE_NAME = "name";
     private static final String KEY_ID = "id";
 
-    private JCacheManagerService jCacheManagerService = null;
+    private CacheManagerService cacheManagerService = null;
     private SerializationService serializationService = null;
     private ScheduledExecutorService scheduledExecutorService = null;
 
@@ -109,7 +109,7 @@ public class JCacheServiceImpl implements JCacheService {
          * Not running beta edition, throw exception
          */
         if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The jCache feature is beta and is not available.");
+            throw new UnsupportedOperationException("The cache feature is beta and is not available.");
         } else {
             /*
              * Running beta exception, issue message if we haven't already issued one for
@@ -132,7 +132,7 @@ public class JCacheServiceImpl implements JCacheService {
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = serializationService.createObjectInputStream(bais,
-                                                                                 jCacheManagerService.getJCachingProviderService().getUnifiedClassLoader());
+                                                                                 cacheManagerService.getCachingProviderService().getUnifiedClassLoader());
             return ois.readObject();
         } catch (ClassNotFoundException e) {
             Tr.error(tc, "CWLJC0008_DESERIALIZE_ERR", cacheName, e);
@@ -179,13 +179,13 @@ public class JCacheServiceImpl implements JCacheService {
                      * Search for an existing cache.
                      */
                     try {
-                        CacheManager cacheManager = jCacheManagerService.getCacheManager();
+                        CacheManager cacheManager = cacheManagerService.getCacheManager();
                         loadTimeMs = System.currentTimeMillis();
                         Cache<Object, Object> jCache = cacheManager.getCache(cacheName, Object.class, Object.class);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                         if (jCache != null) {
-                            cache = new JCacheProxy(jCache, this);
+                            cache = new CacheProxy(jCache, this);
                         }
                     } catch (Throwable e) {
                         // Have seen classcastexception if hazelcast key / value types don't match in the configuration.
@@ -206,9 +206,9 @@ public class JCacheServiceImpl implements JCacheService {
                         /*
                          * Finally, create the JCache instance.
                          */
-                        CacheManager cacheManager = jCacheManagerService.getCacheManager();
+                        CacheManager cacheManager = cacheManagerService.getCacheManager();
                         loadTimeMs = System.currentTimeMillis();
-                        cache = new JCacheProxy(cacheManager.createCache(cacheName, config), this);
+                        cache = new CacheProxy(cacheManager.createCache(cacheName, config), this);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
@@ -224,7 +224,7 @@ public class JCacheServiceImpl implements JCacheService {
                      * Output trace to mark the caching provider class in use for this cache.
                      */
                     if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                        Tr.info(tc, "CWLJC0003_USING_PROVIDER", cacheName, jCacheManagerService.getJCachingProviderService()
+                        Tr.info(tc, "CWLJC0003_USING_PROVIDER", cacheName, cacheManagerService.getCachingProviderService()
                                         .getCachingProvider()
                                         .getClass()
                                         .getName());
@@ -242,12 +242,12 @@ public class JCacheServiceImpl implements JCacheService {
     }
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    public void setJCachingProviderService(JCacheManagerService service) {
-        this.jCacheManagerService = service;
+    public void setCachingProviderService(CacheManagerService service) {
+        this.cacheManagerService = service;
     }
 
-    public void unsetJCachingProviderService(JCacheManagerService service) {
-        this.jCacheManagerService = null;
+    public void unsetCachingProviderService(CacheManagerService service) {
+        this.cacheManagerService = null;
     }
 
     @Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class, target = "(deferrable=false)")
@@ -270,6 +270,6 @@ public class JCacheServiceImpl implements JCacheService {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{id=" + id + ", cacheName=" + cacheName + "}";
+        return super.toString() + "{id=" + id + ", cacheName=" + cacheName + "}";
     }
 }
