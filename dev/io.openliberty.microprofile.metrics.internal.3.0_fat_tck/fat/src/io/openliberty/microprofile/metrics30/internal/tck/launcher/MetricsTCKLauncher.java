@@ -70,12 +70,7 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.metrics.internal.3.0_fat_tck", "launchTck", additionalProps);
-        Map<String, String> resultInfo = new HashMap<>();
-        try{
-            String productVersion = "";
-            resultInfo.put("results_type", "MicroProfile");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
         resultInfo.put("results_type", "MicroProfile");
         resultInfo.put("feature_name", "Metrics");
         resultInfo.put("feature_version", "3.0");

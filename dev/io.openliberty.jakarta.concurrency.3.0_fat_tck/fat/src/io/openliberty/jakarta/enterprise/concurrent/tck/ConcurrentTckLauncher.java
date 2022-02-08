@@ -98,6 +98,7 @@ public class ConcurrentTckLauncher {
             Log.info(getClass(), "launchConcurrentTCK", "Running lite tests");
             suiteXmlFile = "tck-suite-lite.xml";
         }
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
 
         /**
          * The runTCKMvnCmd will set the following properties for use by arquillian
@@ -112,7 +113,7 @@ public class ConcurrentTckLauncher {
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
         );  
-
+        
         resultInfo.put("results_type", "Jakarta");
         resultInfo.put("feature_name", "Concurrency");
         resultInfo.put("feature_version", "3.0");
