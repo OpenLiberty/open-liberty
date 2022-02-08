@@ -14,9 +14,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.JwtContext;
-
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
@@ -24,7 +21,8 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.responsetype.impl.OAuth20ResponseTypeHandlerCodeImpl;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.security.oauth20.util.ConfigUtils;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 public class OIDCResponseTypeHandlerCodeImpl extends OAuth20ResponseTypeHandlerCodeImpl {
 
@@ -39,11 +37,23 @@ public class OIDCResponseTypeHandlerCodeImpl extends OAuth20ResponseTypeHandlerC
         List<OAuth20Token> tokens = super.buildTokensResponseType(attributeList, tokenFactory, redirectUri);
         
         OAuth20Token code = tokens.get(0);
-        OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
-        cacheThirdPartyIDToken(code, tokenCache);
+
+        OidcServerConfig oidcServerConfig = OIDCProvidersConfig.getOidcServerConfigForOAuth20Provider(code.getComponentId());
+        if (hasThirdPartyClaims(oidcServerConfig) || hasMediatorSPI()) {
+            OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
+            cacheThirdPartyIDToken(code, tokenCache);
+        }
 
         log.exiting(CLASS, methodName);
         return tokens;
+    }
+
+    private boolean hasThirdPartyClaims(OidcServerConfig oidcServerConfig) {
+        return oidcServerConfig != null && !oidcServerConfig.getThirdPartyIDTokenClaims().isEmpty();
+    }
+
+    private boolean hasMediatorSPI() {
+        return ConfigUtils.getIdTokenMediatorService().size() > 0;
     }
 
     private void cacheThirdPartyIDToken(OAuth20Token code, OAuth20TokenCache tokenCache) {
