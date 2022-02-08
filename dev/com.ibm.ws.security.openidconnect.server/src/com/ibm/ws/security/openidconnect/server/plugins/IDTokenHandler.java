@@ -375,12 +375,10 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         if (oidcServerConfig.isCustomClaimsEnabled()) {
             Map<String, Object> userClaims = getUserClaims(tokenMap, oidcServerConfig);
             customClaims.putAll(userClaims);
+
+            Map<String, Object> thirdPartyClaims = getThirdPartyIDTokenClaims(thirdPartyIDToken, oidcServerConfig);
+            customClaims.putAll(thirdPartyClaims);
         }
-
-        // TODO: see if we need some condition to get third party claims
-        Map<String, Object> thirdPartyClaims = getThirdPartyIDTokenClaims(thirdPartyIDToken, oidcServerConfig);
-        customClaims.putAll(thirdPartyClaims);
-
         return customClaims;
     }
 
