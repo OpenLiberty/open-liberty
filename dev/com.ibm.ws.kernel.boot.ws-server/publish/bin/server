@@ -1340,7 +1340,7 @@ restoreServer()
 {
   BACKGROUND_RESTORE=$1
 
-  if [ "${ACTION}" = "checkpoint" ] || ! serverHasCheckpoint ; then
+  if [ "${ACTION}" = "checkpoint" ] || [ ! serverHasCheckpoint ]; then
     return 1
   fi
 
