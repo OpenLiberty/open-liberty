@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018,2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,8 +62,9 @@ public class MPContextPropagationTCKLauncher {
             resultInfo.put("results_type", "MicroProfile");
             resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
             resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "Context Propogation");
-            resultInfo.put("feature_version", "1.3");
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Context Propogation");
+        resultInfo.put("feature_version", "1.3");
             resultInfo.put("os_name",System.getProperty("os.name"));
             List<String> matches = server.findStringsInLogs("product =");
             if(!matches.isEmpty()){

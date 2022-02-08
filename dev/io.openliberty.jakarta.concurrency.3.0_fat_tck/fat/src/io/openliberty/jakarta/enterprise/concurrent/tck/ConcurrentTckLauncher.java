@@ -113,29 +113,10 @@ public class ConcurrentTckLauncher {
                                            Collections.emptySet() //additional jars
         );  
 
-        try{
-            Map<String, String> resultInfo = new HashMap<>();
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
-            String productVersion = "";
-            resultInfo.put("results_type", "Jakarta EE");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "Concurrency");
-            resultInfo.put("feature_version", "3.0");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-                MvnUtils.preparePublicationFile(resultInfo);
-            }
-            finally{
-                assertEquals(0, result);
-            }
+        resultInfo.put("results_type", "Jakarta");
+        resultInfo.put("feature_name", "Concurrency");
+        resultInfo.put("feature_version", "3.0");
+        MvnUtils.preparePublicationFile(resultInfo);
+        assertEquals(0, result);
     }
 }

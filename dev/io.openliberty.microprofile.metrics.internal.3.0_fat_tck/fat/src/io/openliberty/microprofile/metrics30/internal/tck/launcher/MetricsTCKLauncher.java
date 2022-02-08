@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,21 +76,10 @@ public class MetricsTCKLauncher {
             resultInfo.put("results_type", "MicroProfile");
             resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
             resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "Metrics");
-            resultInfo.put("feature_version", "3.0");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-        }finally{
-            MvnUtils.preparePublicationFile(resultInfo);
-        };
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Metrics");
+        resultInfo.put("feature_version", "3.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
 }
