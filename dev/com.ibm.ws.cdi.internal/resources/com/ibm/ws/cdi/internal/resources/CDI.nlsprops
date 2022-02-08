@@ -80,3 +80,11 @@ spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Move the affected 
 exception.creating.extensions.CWOWB1012E=CWOWB1012E: CDI encountered an exception when it created extensions for the {0} archive. The error was: {1}
 exception.creating.extensions.CWOWB1012E.explanation=CDI failed to load or invoke the construction of an extension class.
 exception.creating.extensions.CWOWB1012E.useraction=Fix the error that is preventing the extension from being created.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: The {0} BuildCompatibleExtension class cannot not be loaded.
+bce.not.loadable.CWOWB1013E.explanation=The application includes a META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension file that includes the class, but CDI could not load the class.
+bce.not.loadable.CWOWB1013E.useraction=Ensure the class is present in the application and can be loaded. If the class is present in the application, an FFDC file might have more information about why the class could not be loaded.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: The {0} class does not implement the BuildCompatibleExtension interface.
+bce.does.not.implement.bce.CWOWB1014E.explanation=The application includes a META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension file that includes the class, but the class does not implement jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
+bce.does.not.implement.bce.CWOWB1014E.useraction=Change the class so that it implements jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
