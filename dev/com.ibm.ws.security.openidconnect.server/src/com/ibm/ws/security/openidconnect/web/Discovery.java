@@ -99,6 +99,8 @@ public class Discovery {
 
         discoveryObj.setPkceCodeChallengeMethodsSupported(OIDCConstants.OIDC_DISC_PKCE_CODE_CHALLENGE_METHODS_SUPPORTED);
 
+        discoveryObj.setBackchannelLogoutSupported(provider.isBackchannelLogoutSupported());
+
         String discoverJSONString = discoveryObj.toJSONString();
 
         if (tc.isDebugEnabled()) {

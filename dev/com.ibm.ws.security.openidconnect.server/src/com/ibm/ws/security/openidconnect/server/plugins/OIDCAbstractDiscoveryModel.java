@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,12 @@ package com.ibm.ws.security.openidconnect.server.plugins;
 
 import java.util.Arrays;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
+
+import io.openliberty.security.common.serialization.Beta;
+import io.openliberty.security.common.serialization.GsonStrategies;
 
 /**
  * OIDC Discovery Service Bean
@@ -23,6 +28,9 @@ import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
  * Note that several properties have been commented out because they are currently not being utilized.
  */
 public abstract class OIDCAbstractDiscoveryModel {
+
+    public static final Gson GSON = new GsonBuilder().addSerializationExclusionStrategy(GsonStrategies.BETA_STRATEGY).create();
+
     private String issuer;
     private String authorization_endpoint;
     private String token_endpoint;
@@ -52,6 +60,8 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String users_token_mgmt_endpoint;
     private String client_mgmt_endpoint;
     private String[] code_challenge_methods_supported;
+    @Beta
+    private boolean backchannel_logout_supported;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -481,11 +491,20 @@ public abstract class OIDCAbstractDiscoveryModel {
         this.code_challenge_methods_supported = defensiveCopy(pkceCodeChallengeMethodsSupported);
     }
 
+    public boolean isBackchannelLogoutSupported() {
+        return this.backchannel_logout_supported;
+    }
+
+    public void setBackchannelLogoutSupported(boolean backchannelLogoutSupported) {
+        this.backchannel_logout_supported = backchannelLogoutSupported;
+    }
+
     private String[] defensiveCopy(String[] strArr) {
         return Arrays.copyOf(strArr, strArr.length);
     }
 
     public String toJSONString() {
-        return JsonTokenUtil.toJsonFromObj(this);
+        return JsonTokenUtil.toJsonFromObj(GSON, this);
     }
+
 }

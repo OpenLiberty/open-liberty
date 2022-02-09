@@ -31,6 +31,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.oauth20.TraceConstants;
 
+import io.openliberty.security.common.serialization.GsonStrategies;
+
 /**
  *
  */
@@ -191,6 +193,7 @@ public class OidcOAuth20Util extends OAuth20Util {
 
     public static final Gson GSON_RAW = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
+            .addSerializationExclusionStrategy(GsonStrategies.BETA_STRATEGY)
             .create();
 
     public static final Gson GSON_RAWEST = new GsonBuilder().create();

@@ -53,6 +53,8 @@ import com.ibm.ws.security.oauth20.util.Base64;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
+import io.openliberty.security.common.serialization.GsonStrategies;
+
 /**
  *
  */
@@ -73,6 +75,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
     // Configured GSON (De)Serializer for OidcBaseClient objects (Thread Safe according to documentation)
     public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
+            .addSerializationExclusionStrategy(GsonStrategies.BETA_STRATEGY)
             .registerTypeAdapter(OidcBaseClient.class, new OidcBaseClientSerializer())
             .create();
 
