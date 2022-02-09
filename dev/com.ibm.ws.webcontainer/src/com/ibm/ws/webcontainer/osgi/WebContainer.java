@@ -1600,11 +1600,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             }
         } 
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + DEFAULT_SPEC_LEVEL + " ]");
-        }
+        logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
 
-        return DEFAULT_SPEC_LEVEL;
+        return WebContainer.DEFAULT_SPEC_LEVEL;
     }
         
     public static int getServletContainerSpecLevel() {
