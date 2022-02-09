@@ -122,6 +122,7 @@ import componenttest.topology.utils.FATServletClient;
  */
 @Mode
 @RunWith(FATRunner.class)
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
 public class FailoverTest2 extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
@@ -199,7 +200,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBRetriableSqlCodeRuntimeFailover() throws Exception {
         final String method = "testHADBRetriableSqlCodeRuntimeFailover";
@@ -237,7 +237,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBRetriableSqlCodeBatchFailover() throws Exception {
         final String method = "testHADBRetriableSqlCodeBatchFailover";
@@ -281,7 +280,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNonRetriableRuntimeFailover() throws Exception {
         final String method = "testHADBNonRetriableRuntimeFailover";
@@ -333,7 +331,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNonRetriableBatchFailover() throws Exception {
         final String method = "testHADBNonRetriableBatchFailover";
@@ -386,7 +383,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNewBehaviourRuntimeFailover() throws Exception {
         final String method = "testHADBNewBehaviourRuntimeFailover";
@@ -425,7 +421,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
     public void testHADBNewBehaviourUpdateConfigFailover() throws Exception {
         final String method = "testHADBNewBehaviourUpdateConfigFailover";
@@ -514,7 +509,6 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
     })
 
     // Defect RTC171085 - an XAException may or may not be generated during
@@ -606,8 +600,7 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
-                           "javax.resource.spi.ResourceAllocationException"
+                           "java.sql.SQLException",
     })
     public void testHADBConnectFailover() throws Exception {
         final String method = "testHADBConnectFailover";
@@ -645,8 +638,7 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
-                           "javax.resource.spi.ResourceAllocationException"
+                           "java.sql.SQLException",
     })
     public void testHADBNewBehaviourConnectFailover() throws Exception {
         final String method = "testHADBNewBehaviourConnectFailover";
@@ -681,8 +673,7 @@ public class FailoverTest2 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
-                           "javax.resource.spi.ResourceAllocationException"
+                           "java.sql.SQLException",
     })
     public void testHADBNewBehaviourMultiConnectFailover() throws Exception {
         final String method = "testHADBNewBehaviourMultiConnectFailover";
