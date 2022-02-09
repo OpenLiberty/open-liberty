@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -199,31 +202,25 @@ public class FailoverTest1 extends FATServletClient {
         final String method = "testHADBRecoverableRuntimeFailover";
         StringBuilder sb = null;
         FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "Call setupForRecoverableFailover");
 
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForRecoverableFailover");
-
-        Log.info(this.getClass(), method, "setupForRecoverableFailover returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver on " + defaultServer);
+        assertTrue("setupForRecoverableFailover did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
 
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
 
-        Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, defaultServer);
 
-        Log.info(this.getClass(), method, "Call driveTransactions");
-
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+        assertTrue("driveTransactions did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No warning message signifying failover", defaultServer.waitForStringInLog("Have recovered from SQLException"));
-        Log.info(this.getClass(), method, "call stopserver");
+        assertNotNull("No warning message signifying failover", defaultServer.waitForStringInLog("Have recovered from SQLException when forcing SQL RecoveryLog"));
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-        Log.info(this.getClass(), method, "Complete");
     }
 
     /**
@@ -234,54 +231,45 @@ public class FailoverTest1 extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
-                           "javax.resource.spi.ResourceAllocationException"
+                           "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
     })
     public void testHADBRecoverableFailureMultipleRetries() throws Exception {
         final String method = "testHADBRecoverableFailureMultipleRetries";
         StringBuilder sb = null;
 
         FATUtils.startServers(runner, retriesServer);
-        Log.info(this.getClass(), method, "Call setupForRecoverableFailureMultipleRetries");
 
         sb = runTestWithResponse(retriesServer, SERVLET_NAME, "setupForRecoverableFailureMultipleRetries");
+        assertTrue("setupForRecoverableFailureMultipleRetries did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        Log.info(this.getClass(), method, "setupForRecoverableFailureMultipleRetries returned: " + sb);
-        Log.info(this.getClass(), method, "Call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
 
         Log.info(this.getClass(), method, "set timeout");
         retriesServer.setServerStartTimeout(30000);
 
-        Log.info(this.getClass(), method, "call startserver");
-
         FATUtils.startServers(runner, retriesServer);
 
-        Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
         // An unhandled sqlcode will lead to a failure to write to the log, the
         // invalidation of the log and the throwing of Internal LogExceptions
         sb = runTestWithResponse(retriesServer, SERVLET_NAME, "driveTransactionsWithFailure");
+        assertTrue("driveTransactionsWithFailure did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         // Should see a message like
         // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No error message signifying log failure", retriesServer.waitForStringInLog("Cannot recover from SQLException"));
+        assertNotNull("No error message signifying log failure", retriesServer.waitForStringInLog("Cannot recover from SQLException when forcing SQL RecoveryLog"));
 
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
-        Log.info(this.getClass(), method, "call stopserver");
-
         FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
-        Log.info(this.getClass(), method, "set timeout");
-        retriesServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, retriesServer);
 
         // RTC defect 170741
         // Wait for recovery to be driven - this may suffer from a delay (see
         // RTC 169082), so wait until the "recover("
         // string appears in the messages.log
-        retriesServer.waitForStringInLog("recover\\(");
-        Log.info(this.getClass(), method, "call stopserver");
+        assertNotNull("Recovery didn't happen for " + retriesServer.getServerName(), retriesServer.waitForStringInTrace("Performed recovery for " + retriesServer.getServerName()));
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriesServer);
     }
@@ -303,37 +291,32 @@ public class FailoverTest1 extends FATServletClient {
     public void testHADBNonRecoverableRuntimeFailover() throws Exception {
         final String method = "testHADBNonRecoverableRuntimeFailover";
         StringBuilder sb = null;
+
         FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "call setupForNonRecoverableFailover");
 
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForNonRecoverableFailover");
-
-        Log.info(this.getClass(), method, "call stopserver");
+        assertTrue("setupForNonRecoverableFailover did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
 
-        Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
         // An unhandled sqlcode will lead to a failure to write to the log, the
         // invalidation of the log and the throwing of Internal LogExceptions
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactionsWithFailure");
+        assertTrue("driveTransactionsWithFailure did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         // Should see a message like
         // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No error message signifying log failure", defaultServer.waitForStringInLog("Cannot recover from SQLException"));
+        assertNotNull("No error message signifying log failure", defaultServer.waitForStringInLog("Cannot recover from SQLException when forcing SQL RecoveryLog"));
 
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
-        Log.info(this.getClass(), method, "call stopserver");
-
         FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-        Log.info(this.getClass(), method, "set timeout");
-        defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
 
         FATUtils.startServers(runner, defaultServer);
 
@@ -341,8 +324,7 @@ public class FailoverTest1 extends FATServletClient {
         // Wait for recovery to be driven - this may suffer from a delay (see
         // RTC 169082), so wait until the "recover("
         // string appears in the messages.log
-        defaultServer.waitForStringInLog("recover\\(");
-        Log.info(this.getClass(), method, "call stopserver");
+        assertNotNull("Recovery didn't happen for " + defaultServer.getServerName(), defaultServer.waitForStringInTrace("Performed recovery for " + defaultServer.getServerName()));
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
     }
@@ -358,25 +340,22 @@ public class FailoverTest1 extends FATServletClient {
         final String method = "testHADBRecoverableStartupFailover";
         StringBuilder sb = null;
 
-        Log.info(this.getClass(), method, "call setupForStartupFailover");
-
         FATUtils.startServers(runner, defaultServer);
 
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForStartupFailover");
+        assertTrue("setupForStartupFailover did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "call driveTransactions");
+
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+        assertTrue("driveTransactions did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-
-        Log.info(this.getClass(), method, "complete");
     }
 
     /**
@@ -393,42 +372,40 @@ public class FailoverTest1 extends FATServletClient {
 
         FATUtils.startServers(runner, defaultServer);
 
-        Log.info(this.getClass(), method, "call setupForDuplicationRestart");
-
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRestart");
+        assertTrue("setupForDuplicationRestart did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
+
         Log.info(this.getClass(), method, "call driveTransactions");
         try {
             sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+            fail("driveTransactions did not throw an Exception");
         } catch (Exception e) {
             // Halting the server generates a java.net.SocketException
             Log.info(this.getClass(), method, "driveTransactions caught exception " + e);
         }
-        Log.info(this.getClass(), method, "See if the Server has halted");
+
         // Server should have halted, check for message
         assertNotNull("Server has not been halted", defaultServer.waitForStringInTrace("duplicateAndHalt, now HALT", LOG_SEARCH_TIMEOUT));
 
-        Log.info(this.getClass(), method, "Call postStopServerArchive");
         defaultServer.postStopServerArchive(); // must explicitly collect since server start failed
 
         // The server has been halted but its status variable won't have been reset because we crashed it. In order to
         // setup the server for a restart, set the server state manually.
         defaultServer.setStarted(false);
 
-        Log.info(getClass(), method, "restart server");
         FATUtils.startServers(runner, defaultServer);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         assertNotNull("No evidence of duplication", defaultServer.waitForStringInTrace("NMTEST: Replacing item", LOG_SEARCH_TIMEOUT));
-        Log.info(this.getClass(), method, "call stopserver");
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-        Log.info(this.getClass(), method, "complete");
     }
 
     /**
@@ -442,29 +419,32 @@ public class FailoverTest1 extends FATServletClient {
     public void testDuplicationInRecoveryLogsRuntime() throws Exception {
         final String method = "testDuplicationInRecoveryLogsRuntime";
         StringBuilder sb = null;
+
         FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "call setupForDuplicationRuntime");
 
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForDuplicationRuntime");
+        assertTrue("setupForDuplicationRuntime did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
 
         Log.info(this.getClass(), method, "call checkForDuplicates");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+        assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         List<String> lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
-        Assert.assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
+        assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
 
-        Log.info(this.getClass(), method, "call driveSixTransactions");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+        assertTrue("driveSixTransactions did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         Log.info(this.getClass(), method, "call checkForDuplicates");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+        assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
         Assert.assertTrue("Unexpectedly found no duplicates", lines.size() > 0);
@@ -472,15 +452,16 @@ public class FailoverTest1 extends FATServletClient {
 
         Log.info(this.getClass(), method, "call driveSixTransactions");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveSixTransactions");
+        assertTrue("driveSixTransactions did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         Log.info(this.getClass(), method, "call checkForDuplicates");
         sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+        assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
         lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
-        Assert.assertFalse("Unexpectedly found duplicates on test completion", lines.size() > numDups);
-        Log.info(this.getClass(), method, "call stopserver");
+        assertFalse("Unexpectedly found duplicates on test completion", lines.size() > numDups);
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-        Log.info(this.getClass(), method, "complete");
     }
 
     /**
@@ -494,20 +475,22 @@ public class FailoverTest1 extends FATServletClient {
     public void testAbsenceOfDuplicatesInRecoveryLogs() throws Exception {
         final String method = "testAbsenceOfDuplicatesInRecoveryLogs";
         StringBuilder sb = null;
-        FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "call setupForHalt");
-        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForHalt");
 
-        Log.info(this.getClass(), method, "call stopserver");
+        FATUtils.startServers(runner, defaultServer);
+
+        sb = runTestWithResponse(defaultServer, SERVLET_NAME, "setupForHalt");
+        assertTrue("setupForHalt did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
         Log.info(this.getClass(), method, "set timeout");
         defaultServer.setServerStartTimeout(30000);
-        Log.info(this.getClass(), method, "call startserver");
+
         FATUtils.startServers(runner, defaultServer);
-        Log.info(this.getClass(), method, "call driveTransactions");
 
         try {
             sb = runTestWithResponse(defaultServer, SERVLET_NAME, "driveTransactions");
+            fail("driveTransactions did not throw an Exception");
         } catch (Exception e) {
             // Halting the server generates a java.net.SocketException
             Log.info(this.getClass(), method, "driveTransactions caught exception " + e);
@@ -523,18 +506,15 @@ public class FailoverTest1 extends FATServletClient {
         // setup the server for a restart, set the server state manually.
         defaultServer.setStarted(false);
 
-        Log.info(getClass(), method, "restart server");
         FATUtils.startServers(runner, defaultServer);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNotNull("Recovery failed", defaultServer.waitForStringInLog("recover\\("));
+        assertNotNull("Recovery didn't happen for " + defaultServer.getServerName(), defaultServer.waitForStringInTrace("Performed recovery for " + defaultServer.getServerName()));
+
         // Check that there were no duplicates
         List<String> lines = defaultServer.findStringsInLogs("NMTEST: Replacing item");
-        Assert.assertFalse("Unexpectedly found duplicates on recovery", lines.size() > 0);
+        assertFalse("Unexpectedly found duplicates on recovery", lines.size() > 0);
 
-        Log.info(this.getClass(), method, "call stopserver");
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-
-        Log.info(this.getClass(), method, "complete");
     }
 }
