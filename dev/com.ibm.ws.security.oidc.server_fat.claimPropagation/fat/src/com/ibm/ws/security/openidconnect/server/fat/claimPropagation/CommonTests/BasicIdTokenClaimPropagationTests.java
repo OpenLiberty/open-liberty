@@ -39,8 +39,10 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static String WithRegistry_withUser_implicit = "WithRegistry_withUser_implicit";
     protected static String WithRegistry_withoutUser_implicit = "WithRegistry_withoutUser_implicit";
     protected static String WithoutRegistry_implicit = "WithoutRegistry_implicit";
-    protected static final Boolean thirdPartyPropagatedIdTokenTrue = true;
-    protected static final Boolean thirdPartyPropagatedIdTokenFalse = false;
+    protected static final Boolean thirdPartyPropagatedTestClaimsInIdTokenTrue = true;
+    protected static final Boolean thirdPartyPropagatedTestClaimsInIdTokenFalse = false;
+    protected static final Boolean thirdPartyPropagatedGroupIdsInIdTokenTrue = true;
+    protected static final Boolean thirdPartyPropagatedGroupIdsInIdTokenFalse = false;
     protected static final String[] noThirdPartyParm = null;
     protected static final String[] oneThirdPartyParm = new String[] { "testProp1" };
     protected static final String[] allUniqueThirdPartyParms = new String[] { "testProp1", "testProp2" };
@@ -58,6 +60,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static String OPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op";
     protected static String ExternalOPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op.external";
     protected static String RPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp";
+    protected static String SocialServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social";
     public static TestServer testExternalOPServer = null;
     protected static Map<String, String> externalProps = new HashMap<String, String>();
     protected static Map<String, String> intermedProps = new HashMap<String, String>();
@@ -255,16 +258,11 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> setTestParmExpectations(List<validationData> expectations, String[] parmList, boolean thirdPartyPropagatedIdToken, boolean setTestProp5DoesNotExist) throws Exception {
         // set expectations for all 3rd party only claims - claims that both OPs can return are handled separately
         for (String parm : allUniqueThirdPartyParms) {
-            if (parmList != null && validationTools.isInList(parmList, parm)) {
-                if (thirdPartyPropagatedIdToken) {
-                    expectations = addShouldContain_idToken(expectations, parm, externalProps.get(parm));
-                } else {
-                    expectations = addShouldNotContain_idToken(expectations, parm);
-                }
+            if (parmList != null && validationTools.isInList(parmList, parm) && thirdPartyPropagatedIdToken) {
+                expectations = addShouldContain_idToken(expectations, parm, externalProps.get(parm));
             } else {
                 expectations = addShouldNotContain_idToken(expectations, parm);
             }
-
         }
 
         // add checks for parms defined by the intermediate OP (no propagation involved)
@@ -380,8 +378,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -398,7 +396,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -408,8 +406,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenTrue);
-        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenTrue);
+        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -428,7 +426,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate_3rdPartyUserNotInGroup() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -441,7 +439,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations);
-        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, allUniqueIntermedParms, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -458,7 +456,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -468,8 +466,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -486,7 +484,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -496,8 +494,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -514,7 +512,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_conflictingTestClaims_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -524,8 +522,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectationsWithConflict(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectationsWithConflict(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -542,7 +540,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_none_3rdPartyPropagates() throws Exception {
 
         String appName = "noExtraClaims_3rdPartyPropagates";
@@ -552,8 +550,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -570,7 +568,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyPropagates";
@@ -580,8 +578,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenTrue);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenTrue);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -600,7 +598,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates_3rdPartyUserNotInGroup() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyPropagates";
@@ -613,7 +611,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = setGroupIdsExpectations(expectations);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -631,7 +629,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate1TestClaimIdTokenClaims_3rdPartyPropagates";
@@ -641,8 +639,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, oneThirdPartyParm, thirdPartyPropagatedIdTokenTrue);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, oneThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenTrue);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -661,7 +659,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate2TestClaimsIdTokenClaims_3rdPartyPropagates";
@@ -671,8 +669,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, allUniqueThirdPartyParms, thirdPartyPropagatedIdTokenTrue);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, allUniqueThirdPartyParms, thirdPartyPropagatedTestClaimsInIdTokenTrue);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -692,7 +690,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_ConflictingTestClaims_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyPropagates";
@@ -702,8 +700,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectationsWithConflict(expectations, allThirdPartyParms, thirdPartyPropagatedIdTokenTrue);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectationsWithConflict(expectations, allThirdPartyParms, thirdPartyPropagatedTestClaimsInIdTokenTrue);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -718,7 +716,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_issClaim() throws Exception {
 
         String appName = "issClaimInIdToken";
@@ -728,8 +726,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);
@@ -744,7 +742,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //chc@Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_audClaim() throws Exception {
 
         String appName = "audClaimInIdToken";
@@ -754,8 +752,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
         setParmValues(updatedTestSettings.getUserName());
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedIdTokenFalse);
-        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedIdTokenFalse);
+        expectations = setGroupIdsExpectations(expectations, thirdPartyPropagatedGroupIdsInIdTokenFalse);
+        expectations = setTestParmExpectations(expectations, noThirdPartyParm, thirdPartyPropagatedTestClaimsInIdTokenFalse);
         expectations = setRealmNameExpectations(expectations);
         expectations = setIssExpectations(expectations, appName);
         expectations = setAudExpectations(expectations, appName);

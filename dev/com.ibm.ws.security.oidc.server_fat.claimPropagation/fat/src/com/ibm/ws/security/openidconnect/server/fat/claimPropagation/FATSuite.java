@@ -11,18 +11,13 @@
 
 package com.ibm.ws.security.openidconnect.server.fat.claimPropagation;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
-
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.RepeatTests;
+import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.Social.SocialBasicIdTokenClaimPropagationTestss;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -31,6 +26,9 @@ import componenttest.rules.repeater.RepeatTests;
 
         // specify OIDC tests
         OIDCBasicIdTokenClaimPropagationTestss.class,
+
+        // specify Social client tests
+        SocialBasicIdTokenClaimPropagationTestss.class,
 
 // specify OIDC with SAML tests - N/A as SAML doesn't have an ID Token
 
@@ -47,9 +45,9 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      *
      */
 
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
+    //    @ClassRule
+    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+    //            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
 
 }

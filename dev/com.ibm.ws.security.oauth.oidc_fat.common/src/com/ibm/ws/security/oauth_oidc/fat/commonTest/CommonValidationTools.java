@@ -1017,9 +1017,14 @@ public class CommonValidationTools {
                             String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length() - 1);
                             String[] splitLine = part1.split(",");
                             if (splitLine != null) {
-                                Log.info(thisClass, thisMethod, "token: " + splitLine[0]);
-                                printJWTToken(splitLine[0]);
-                                return splitLine[0];
+                                if (splitLine[0] != null) {
+                                    String token = splitLine[0].replace("with value:", "").trim();
+                                    Log.info(thisClass, thisMethod, "token: " + token);
+                                    printJWTToken(token);
+                                    return token;
+                                } else {
+                                    return null;
+                                }
                             }
                         }
                     }

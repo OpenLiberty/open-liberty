@@ -23,7 +23,8 @@
             	name="oidcclient_noExtraClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyDoesNotPropagate" />
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyDoesNotPropagate,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_noExtraClaims_3rdPartyDoesNotPropagate" />
         </localStore>
     </oauthProvider>
 
@@ -38,7 +39,8 @@
             	name="oidcclient_propagateGroupIdsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate"/>
         </localStore>
     </oauthProvider>
 
@@ -53,7 +55,8 @@
             	name="oidcclient_propagate1TestClaimIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate"/>
         </localStore>
     </oauthProvider>
 
@@ -68,7 +71,8 @@
             	name="oidcclient_propagate2TestClaimsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"/>
         </localStore>
     </oauthProvider>
 
@@ -83,7 +87,8 @@
             	name="oidcclient_propagate3TestClaimsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"/>
         </localStore>
     </oauthProvider>
 
@@ -100,6 +105,7 @@
             	secret="password" 
             	scope="openid" 
             	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyPropagates" />
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_noExtraClaims_3rdPartyPropagates" />
         </localStore>
     </oauthProvider>
 
@@ -115,7 +121,8 @@
             	name="oidcclient_propagateGroupIdsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates"/>
         </localStore>
     </oauthProvider>
 
@@ -130,7 +137,8 @@
             	name="oidcclient_propagate1TestClaimIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates"/>
         </localStore>
     </oauthProvider>
 
@@ -145,7 +153,8 @@
             	name="oidcclient_propagate2TestClaimsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"/>
         </localStore>
     </oauthProvider>
 
@@ -160,7 +169,8 @@
             	name="oidcclient_propagate3TestClaimsIdTokenClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"/>
         </localStore>
     </oauthProvider>
 
@@ -177,7 +187,8 @@
             	name="oidcclient_issClaimInIdToken"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInIdToken"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_issClaimInIdToken,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_issClaimInIdToken"/>
         </localStore>
     </oauthProvider>
 
@@ -193,7 +204,8 @@
             	name="oidcclient_subClaimInIdToken"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInIdToken"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_subClaimInIdToken,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_subClaimInIdToken"/>
         </localStore>
     </oauthProvider>
 
@@ -209,7 +221,8 @@
             	name="oidcclient_audClaimInIdToken"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInIdToken"/>
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_audClaimInIdToken,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_audClaimInIdToken"/>
         </localStore>
     </oauthProvider>
       

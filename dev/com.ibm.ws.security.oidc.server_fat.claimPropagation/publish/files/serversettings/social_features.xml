@@ -12,9 +12,17 @@
 <server>
 
 	<featureManager>
-		<feature>timedexit-1.0</feature>
+        	<feature>socialLogin-1.0</feature>
+        	<feature>appSecurity-2.0</feature>
+        	<feature>oauth-2.0</feature>
 	</featureManager>
 
-	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve" />
+        	<!-- 
+			<feature>jwt-1.0</feature>
+			<feature>jaxrs-2.0</feature>
+			<feature>jsonp-1.0</feature>
+			<feature>jsp-2.3</feature>
+			-->
 
 </server>
+    

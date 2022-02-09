@@ -9,11 +9,11 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-	<include location="${server.config.dir}/imports/rp_features.xml" />
+	<include location="${server.config.dir}/imports/social_features.xml" />
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 	<include location="${server.config.dir}/imports/rp_misc.xml" />
 	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
-	<include location="${server.config.dir}/imports/rp_client.xml" />
+	<include location="${server.config.dir}/imports/social_client.xml" />
 	<include location="${server.config.dir}/imports/formlogin_1.xml" />
 
 </server>

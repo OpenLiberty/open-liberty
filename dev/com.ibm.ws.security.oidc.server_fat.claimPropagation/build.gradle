@@ -90,7 +90,8 @@ autoFVT.doLast {
   def servers = [
     'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op',
 	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op.external',
-	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp'
+	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp',
+	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social'
   ]
 
   servers.each { server ->
@@ -124,7 +125,8 @@ autoFVT.doLast {
    * Copy formlogin application to the applicable test server.
    */
   servers = [
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp'
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp',
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social'
   ]
   servers.each { server ->
     copy {
