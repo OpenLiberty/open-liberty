@@ -128,6 +128,8 @@ public class HpelHelper {
 //        addSystemPropertyIfPresent(result, "ws.ext.dirs"); // WAS specific
         addSystemPropertyIfPresent(result, "java.class.path");
         addSystemPropertyIfPresent(result, "java.library.path");
+        addSystemPropertyIfPresent(result, "wlp.install.dir");
+        addSystemPropertyIfPresent(result, "server.config.dir");
         // Add property to know if server is configured to convert depricated
         // messages or not.
 //        addSystemPropertyIfPresent(result, "com.ibm.websphere.logging.messageId.version");// WAS specific
