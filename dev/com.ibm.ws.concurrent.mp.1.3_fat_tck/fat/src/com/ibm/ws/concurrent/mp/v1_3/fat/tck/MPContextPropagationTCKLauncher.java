@@ -54,29 +54,10 @@ public class MPContextPropagationTCKLauncher {
         // TODO use this to only test with local build (when tckRunner/tck.pom.xml specifies a #.#-SNAPSHOT version)
         //if (FATRunner.FAT_TEST_LOCALRUN)
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.3_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
-        Map<String, String> resultInfo = new HashMap<>();
-        try{
-           
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
-            String productVersion = "";
-            resultInfo.put("results_type", "MicroProfile");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
         resultInfo.put("results_type", "MicroProfile");
         resultInfo.put("feature_name", "Context Propogation");
         resultInfo.put("feature_version", "1.3");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-            }finally{
-                MvnUtils.preparePublicationFile(resultInfo);
-            };
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 }
