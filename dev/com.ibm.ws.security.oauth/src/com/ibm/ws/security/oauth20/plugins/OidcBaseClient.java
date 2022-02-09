@@ -137,11 +137,9 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     @SerializedName(OAuth20Constants.HASH_LENGTH)
     private int length = HashSecretUtils.DEFAULT_KEYSIZE;
 
-    @Expose
     @SerializedName(SN_BACKCHANNEL_LOGOUT_URI)
     private String backchannelLogoutUri = null;
 
-    @Expose
     @SerializedName(SN_BACKCHANNEL_LOGOUT_SESSION_REQUIRED)
     private boolean backchannelLogoutSessionRequired = false;
 
