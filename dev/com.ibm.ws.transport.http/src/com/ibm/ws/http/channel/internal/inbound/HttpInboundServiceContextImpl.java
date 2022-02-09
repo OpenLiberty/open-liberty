@@ -1221,7 +1221,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         // request is not lost.
         if (!this.myLink.getChannel().isRunning()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Channel stopped, sending error instead of 100-continue");
+                Tr.debug(tc, "Channel stopped or stopping, sending error instead of 100-continue");
             }
             try {
                 sendError(StatusCodes.UNAVAILABLE.getHttpError());
