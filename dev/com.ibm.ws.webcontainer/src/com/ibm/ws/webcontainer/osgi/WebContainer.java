@@ -1577,12 +1577,11 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
 
 
-    private static synchronized int loadServletVersion(){
+    private static int loadServletVersion(){
         String methodName = "loadServletVersion";
 
         try (InputStream input = WebContainer.class.getClassLoader().getResourceAsStream("com/ibm/ws/webcontainer/speclevel/servletSpecLevel.properties")) {
 
-            // null check fixes errors in wc unit tests 
             if(input != null){
                 Properties prop = new Properties();
                 prop.load(input);

@@ -19,15 +19,11 @@ import java.lang.reflect.Method;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 
-/**
- * OLGH PR 20004 -- Removed ServiceReference
- */
 public class SRTServletContainerVersionTest {
 
     private final Mockery context = new Mockery();
@@ -43,7 +39,7 @@ public class SRTServletContainerVersionTest {
         Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.set(webContainer, 50);
+        versionSetter.set(null, 50);
 
         assertTrue("Returned webApp container version should be 50", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_50);
 
@@ -55,22 +51,13 @@ public class SRTServletContainerVersionTest {
     @Test
     public void testServlet40ObjectCreation() throws Exception {
         WebContainer webContainer = new WebContainer();
-        // final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
-
-        // context.checking(new Expectations() {
-        //     {
-        //         // allowing(versionRef).getProperty(ServletVersion.VERSION);
-        //         allowing(webContainer).setVersion(40);
-        //         will(returnValue(WebContainer.SPEC_LEVEL_40));
-        //     }
-        // });
 
         Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
 
         Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.set(webContainer, 40);
+        versionSetter.set(null, 40);
 
         assertTrue("Returned webApp container version should be 40", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_40);
 
@@ -82,22 +69,13 @@ public class SRTServletContainerVersionTest {
     @Test
     public void testServlet31ObjectCreation() throws Exception {
         WebContainer webContainer = new WebContainer();
-        // final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
-
-        // context.checking(new Expectations() {
-        //     {
-        //         allowing(versionRef).getProperty(ServletVersion.VERSION);
-        //         will(returnValue(WebContainer.SPEC_LEVEL_31));
-
-        //     }
-        // });
 
         Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
 
         Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.set(webContainer, 31);
+        versionSetter.set(null, 31);
 
         assertTrue("Returned webApp container version should be 31", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_31);
 
@@ -109,21 +87,13 @@ public class SRTServletContainerVersionTest {
     @Test
     public void testServlet30ObjectCreation() throws Exception {
         WebContainer webContainer = new WebContainer();
-        // final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
-
-        // context.checking(new Expectations() {
-        //     {
-        //         allowing(versionRef).getProperty(ServletVersion.VERSION);
-        //         will(returnValue(WebContainer.SPEC_LEVEL_30));
-        //     }
-        // });
 
         Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
 
         Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.set(webContainer, 30);
+        versionSetter.set(null, 30);
 
         assertTrue("Returned webApp container version should be 30", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_30);
 
@@ -131,30 +101,4 @@ public class SRTServletContainerVersionTest {
         ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
     }
 
-    // @SuppressWarnings("unchecked")
-    // @Test
-    // public void testServletErrorVersion() throws Exception {
-    //     WebContainer webContainer = new WebContainer();
-    //     // final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
-
-    //     // context.checking(new Expectations() {
-    //     //     {
-
-    //     //         allowing(versionRef).getProperty(ServletVersion.VERSION);
-    //     //         will(returnValue(WebContainer.SPEC_LEVEL_UNLOADED));
-    //     //     }
-    //     // });
-
-    //     Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
-
-    //     Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
-
-    //     versionSetter.setAccessible(true);
-    //     versionSetter.set(webContainer, -1);
-
-    //     assertTrue("Returned webApp container version should be 30", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_30);
-
-    //     context.assertIsSatisfied();
-    //     ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
-    // }
 }

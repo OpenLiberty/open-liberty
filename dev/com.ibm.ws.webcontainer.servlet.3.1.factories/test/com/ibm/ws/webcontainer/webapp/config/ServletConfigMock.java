@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
@@ -89,11 +88,6 @@ public class ServletConfigMock {
 
         context.checking(new Expectations() {
             {
-            
-                // OLGH PR 20004 -- Removed ServiceReference
-                // allowing(versionRef).getProperty(ServletVersion.VERSION);
-                // will(returnValue(version));
-
                 // The Fragment merging requires annotations to function. We're
                 // mocking out all use of annotations and making this XML only,
                 // so some stubs are required.
@@ -205,7 +199,7 @@ public class ServletConfigMock {
         Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.set(webContainer, version);
+        versionSetter.set(null, version);
 
         //With the above object structure, we pass in a mock container with a LIVE nonpersistent cache.
         //The cache is a simple in-memory set of hashmaps used for storing data.
