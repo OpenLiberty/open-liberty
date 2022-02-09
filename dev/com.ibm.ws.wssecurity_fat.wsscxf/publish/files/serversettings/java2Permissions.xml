@@ -11,6 +11,8 @@
 
 <server>
 
+<!-- 2/09/2022 investigating RTC 288794 -->
+
         <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/> 
         <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
         <javaPermission className="java.net.URLPermission" name="http://localhost:8010/-" actions="POST:*"/>
