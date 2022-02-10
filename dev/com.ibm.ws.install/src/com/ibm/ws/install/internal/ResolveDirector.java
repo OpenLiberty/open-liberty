@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -628,6 +628,10 @@ class ResolveDirector extends AbstractDirector {
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
         try {
+            Collection<String> assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
+            if (assetsToInstall.isEmpty()) {
+                return new ArrayList<List<RepositoryResource>>(0);
+            }
             Map<String, ProvisioningFeatureDefinition> installedFeatureDefinitions = product.getFeatureDefinitions();
             Collection<ProvisioningFeatureDefinition> installedFeatures = download
                                                                           && System.getProperty("INTERNAL_DOWNLOAD_FROM_FOR_BUILD") == null ? Collections.<ProvisioningFeatureDefinition> emptySet() : installedFeatureDefinitions.values();
@@ -636,13 +640,9 @@ class ResolveDirector extends AbstractDirector {
             if (InstallUtils.isServerXmlInstall()) {
                 // call resolveAsSet --> detects singleton exceptions and tolerated features
                 log(Level.FINE, "Calling resolveAsSet api");
-                installResources = resolver.resolveAsSet(assetNamesProcessed);
+                installResources = resolver.resolveAsSet(assetsToInstall); // use new api
                 resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
             } else {
-                Collection<String> assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
-                if (assetsToInstall.isEmpty()) {
-                    return new ArrayList<List<RepositoryResource>>(0);
-                }
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
             }
