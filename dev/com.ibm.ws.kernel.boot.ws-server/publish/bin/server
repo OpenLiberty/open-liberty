@@ -1328,11 +1328,6 @@ criuRestore()
   return $rc
 }         
 
-serverHasCheckpoint()
-{
-  [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]
-}
-
 ## restoreServer: restore a server from a checkpoint image if it exists
 ##
 
@@ -1340,7 +1335,7 @@ restoreServer()
 {
   BACKGROUND_RESTORE=$1
 
-  if [ "${ACTION}" = "checkpoint" ] || ! serverHasCheckpoint ; then
+  if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
     return 1
   fi
 
@@ -1408,7 +1403,7 @@ case "$ACTION" in
       exit $?
     fi
 
-    if serverHasCheckpoint && [ ${ACTION} != "checkpoint" ]; then
+    if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
       # If there is no checkpoint, then maintain legacy behavior of 
       # allowing server launch to check for already running instance.
