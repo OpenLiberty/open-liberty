@@ -98,12 +98,14 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> addShouldContain_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
+        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
         return expectations;
     }
 
     private List<validationData> addShouldMatch_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
+        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
         return expectations;
     }
 
@@ -120,6 +122,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> addShouldNotContain_idToken(List<validationData> expectations, String claim) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS, "\"" + claim + "\" was found in the id_token and should NOT have been", claim, null);
+        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "\"" + claim + "\" was found in the subject and should NOT have containted", null, claim);
         return expectations;
     }
 
@@ -398,7 +401,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -428,7 +431,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyDoesNotPropagate_3rdPartyUserNotInGroup() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -458,7 +461,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -486,7 +489,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -514,7 +517,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_conflictingTestClaims_3rdPartyDoesNotPropagate() throws Exception {
 
         String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate";
@@ -542,7 +545,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_none_3rdPartyPropagates() throws Exception {
 
         String appName = "noExtraClaims_3rdPartyPropagates";
@@ -570,7 +573,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyPropagates";
@@ -600,7 +603,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_groupIds_3rdPartyPropagates_3rdPartyUserNotInGroup() throws Exception {
 
         String appName = "propagateGroupIdsIdTokenClaims_3rdPartyPropagates";
@@ -631,7 +634,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate1TestClaimIdTokenClaims_3rdPartyPropagates";
@@ -661,7 +664,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate2TestClaimsIdTokenClaims_3rdPartyPropagates";
@@ -692,7 +695,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_ConflictingTestClaims_3rdPartyPropagates() throws Exception {
 
         String appName = "propagate3TestClaimsIdTokenClaims_3rdPartyPropagates";
@@ -718,7 +721,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_issClaim() throws Exception {
 
         String appName = "issClaimInIdToken";
@@ -744,7 +747,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void ThirdPartyIDTokenClaims_none_thirdPartyIdTokenClaims_audClaim() throws Exception {
 
         String appName = "audClaimInIdToken";

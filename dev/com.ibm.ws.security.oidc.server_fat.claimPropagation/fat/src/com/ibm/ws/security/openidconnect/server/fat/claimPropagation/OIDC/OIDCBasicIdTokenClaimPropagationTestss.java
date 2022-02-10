@@ -39,17 +39,17 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
     private static final Class<?> thisClass = OIDCBasicIdTokenClaimPropagationTestss.class;
     static HashMap<String, String> bootstrapProps = new HashMap<String, String>();
 
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
-
     //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_rp"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser + "_rp"))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry + "_rp"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_rp"))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_rp"));
+    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
+    //    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_rp"))
+            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser + "_rp"))
+            .andWith(new SecurityTestRepeatAction(WithoutRegistry + "_rp"))
+            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"))
+            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_rp"))
+            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_rp"));
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
