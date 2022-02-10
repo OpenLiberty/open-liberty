@@ -17,12 +17,5 @@
         	<feature>oauth-2.0</feature>
 	</featureManager>
 
-        	<!-- 
-			<feature>jwt-1.0</feature>
-			<feature>jaxrs-2.0</feature>
-			<feature>jsonp-1.0</feature>
-			<feature>jsp-2.3</feature>
-			-->
-
 </server>
     

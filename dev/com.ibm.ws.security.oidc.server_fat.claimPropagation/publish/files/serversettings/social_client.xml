@@ -23,7 +23,7 @@
         clientId="oidcclient_noExtraClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyPropagates/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyPropagates/token" 
         authFilterRef="authFilter_noExtraClaims_3rdPartyPropagates">
@@ -41,7 +41,7 @@
         clientId="oidcclient_propagateGroupIdsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates/token" 
         authFilterRef="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyPropagates">
@@ -58,7 +58,7 @@
         clientId="oidcclient_propagate1TestClaimIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates/token" 
         authFilterRef="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyPropagates">
@@ -75,7 +75,7 @@
         clientId="oidcclient_propagate2TestClaimsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates/token" 
         authFilterRef="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates">
@@ -93,7 +93,7 @@
         clientId="oidcclient_propagate3TestClaimsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates/token" 
         authFilterRef="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates">
@@ -111,7 +111,7 @@
         clientId="oidcclient_noExtraClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyDoesNotPropagate/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_noExtraClaims_3rdPartyDoesNotPropagate/token" 
         authFilterRef="authFilter_noExtraClaims_3rdPartyDoesNotPropagate">
@@ -129,7 +129,7 @@
         clientId="oidcclient_propagateGroupIdsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
         authFilterRef="authFilter_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate">
@@ -146,7 +146,7 @@
         clientId="oidcclient_propagate1TestClaimIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate/token" 
         authFilterRef="authFilter_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate">
@@ -163,7 +163,8 @@
         clientId="oidcclient_propagate2TestClaimsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
+         groupNameAttribute="groupIds"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
         authFilterRef="authFilter_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
@@ -181,7 +182,7 @@
         clientId="oidcclient_propagate3TestClaimsIdTokenClaims"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate/token" 
         authFilterRef="authFilter_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate">
@@ -201,7 +202,7 @@
         clientId="oidcclient_issClaimInIdToken"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_issClaimInIdToken/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_issClaimInIdToken/token" 
         authFilterRef="authFilter_issClaimInIdToken">
@@ -219,7 +220,7 @@
         clientId="oidcclient_subClaimInIdToken"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_subClaimInIdToken/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_subClaimInIdToken/token" 
         authFilterRef="authFilter_subClaimInIdToken">
@@ -237,7 +238,7 @@
         clientId="oidcclient_audClaimInIdToken"
         clientSecret="password"
         signatureAlgorithm="HS256"
-        responseType="id_token token"
+        responseType="${responseType}"
         authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_audClaimInIdToken/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP_audClaimInIdToken/token" 
         authFilterRef="authFilter_audClaimInIdToken">

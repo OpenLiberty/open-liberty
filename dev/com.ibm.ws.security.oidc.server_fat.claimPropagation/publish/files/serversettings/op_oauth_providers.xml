@@ -104,8 +104,8 @@
             	name="oidcclient_noExtraClaims"  
             	secret="password" 
             	scope="openid" 
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyPropagates" />
-            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_noExtraClaims_3rdPartyPropagates" />
+            	redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP_noExtraClaims_3rdPartyPropagates,
+            		https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_noExtraClaims_3rdPartyPropagates" />
         </localStore>
     </oauthProvider>
 

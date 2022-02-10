@@ -51,6 +51,8 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static final String[] allIntermedParms = new String[] { "testProp3", "testProp4", "testProp5" };
     protected static final String[] allSharedParms = new String[] { "testProp5" };
 
+    protected static final String socialFlow = "Social_Flow";
+
     protected static String repeatAction = null;
 
     // create vars that extending method can set to allow use of test cases for oidc, and maybe some day saml

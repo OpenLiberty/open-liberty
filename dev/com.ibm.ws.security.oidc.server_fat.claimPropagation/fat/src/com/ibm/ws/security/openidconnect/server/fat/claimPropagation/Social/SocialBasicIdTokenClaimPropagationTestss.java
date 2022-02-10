@@ -40,16 +40,18 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
     static HashMap<String, String> bootstrapProps = new HashMap<String, String>();
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"));
+    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"));
     //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser))
     //            .andWith(new SecurityTestRepeatAction(WithoutRegistry));
+
     //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry));
-    //    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit))
-    //    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit))
-    //    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit));
+    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_socialClient"))
+    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser + "_socialClient"))
+    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry + "_socialClient"))
+    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"))
+    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_socialClient"))
+    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_socialClient"));
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
@@ -69,11 +71,13 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
 
         Log.info(thisClass, "setupBeforeTest", "actions: " + RepeatTestFilter.getRepeatActionsAsString());
         repeatAction = RepeatTestFilter.getRepeatActionsAsString(); // only really returns the current action
-        //        if (repeatAction.contains(Constants.IMPLICIT_GRANT_TYPE)) {
-        //            bootstrapProps.put("testGrantType", Constants.IMPLICIT_GRANT_TYPE);
-        //        } else {
-        bootstrapProps.put("testGrantType", Constants.AUTH_CODE_GRANT_TYPE);
-        //        }
+        if (repeatAction.contains(Constants.IMPLICIT_GRANT_TYPE)) {
+            bootstrapProps.put("testGrantType", Constants.IMPLICIT_GRANT_TYPE); // RP client in OP setting
+            bootstrapProps.put("responseType", "id_token token"); // Social client setting
+        } else {
+            bootstrapProps.put("testGrantType", Constants.AUTH_CODE_GRANT_TYPE); // RP client in OP setting
+            bootstrapProps.put("responseType", "code"); // Social client setting
+        }
         setMiscBootstrapParms(bootstrapProps);
 
         testSettings = new TestSettings();
@@ -98,7 +102,7 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
         testRPServer = commonSetUp(SocialServerName, "server_orig.xml", Constants.OIDC_RP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
 
         //        testSettings.setFlowType(Constants.RP_FLOW);
-        testSettings.setFlowType("Social_Flow");
+        testSettings.setFlowType(socialFlow);
 
         testSettings.setUserName("LDAPUser1");
         testSettings.setUserPassword("security");
