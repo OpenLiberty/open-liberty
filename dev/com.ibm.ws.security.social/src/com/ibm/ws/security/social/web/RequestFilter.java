@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ public class RequestFilter implements Filter {
     public static final int REDIRECT_LEN = REDIRECT.length();
     public static final String WELLKNOWN_CONFIG = "/.well-known/configuration";
     public static final String LOGOUT = "/logout";
+    public static final String BACKCHANNEL_LOGOUT = "/backchannel_logout";
     public static final String UNKNOWN = "UNKNOWN";
 
     /**
@@ -87,6 +88,8 @@ public class RequestFilter implements Filter {
             socialLoginRequest = new SocialLoginRequest(WELLKNOWN_CONFIG, request, response);
         } else if (pathInfo.startsWith(LOGOUT)) {
             socialLoginRequest = new SocialLoginRequest(LOGOUT, request, response);
+        } else if (pathInfo.startsWith(BACKCHANNEL_LOGOUT)) {
+            socialLoginRequest = new SocialLoginRequest(BACKCHANNEL_LOGOUT, request, response);
         } else {
             socialLoginRequest = new SocialLoginRequest(UNKNOWN, request, response);
         }
