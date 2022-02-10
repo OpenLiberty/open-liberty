@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,13 +57,14 @@ public class RestClientTckPackageTest {
     	    Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
     	    Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
     	}
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
-//            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+//            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
         }
     }
 
