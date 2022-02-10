@@ -4,12 +4,12 @@
   <include location="../fatTestPorts.xml"/>
 
   <featureManager>
-    <feature>componentTest-1.0</feature>
-    <feature>cdi-2.0</feature>
-    <feature>ejbLite-3.2</feature>
-    <feature>jpaContainer-2.2</feature>
-    <feature>servlet-4.0</feature>
-    <feature>localConnector-1.0</feature>
+    <feature>componenttest-2.0</feature>
+    <feature>servlet-5.0</feature>
+    <feature>enterpriseBeansLite-4.0</feature>
+    <feature>persistenceContainer-3.0</feature>
+    <feature>localconnector-1.0</feature>
+    <feature>cdi-3.0</feature>
   </featureManager>
 
   <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
@@ -19,7 +19,7 @@
   </library>
 
   <library id="JbossLib">
-      <fileset dir="${shared.resource.dir}/hibernatejavax" includes="*.jar"/>
+      <fileset dir="${shared.resource.dir}/hibernatejakarta" includes="*.jar"/>
   </library>
 
   <application location="hibernateSearchTest.war">
@@ -33,7 +33,7 @@
 
     <SSLDefault/>
     <javaPermission codebase="${server.config.dir}/apps/hibernateSearchTest.war" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernatejavax/jboss-logging.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/jboss-logging.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernatejavax/hibernate-core.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/hibernate-core.jar" className="java.security.AllPermission"/>
 </server>

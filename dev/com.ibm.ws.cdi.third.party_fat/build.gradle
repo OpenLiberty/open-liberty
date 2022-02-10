@@ -59,7 +59,7 @@ dependencies {
 
 task downloadHibernateSearchLibs(type: Copy) {
   from configurations.hibernateSearchLibs
-  into new File(autoFvtDir, 'publish/shared/resources/hibernate')
+  into new File(autoFvtDir, 'publish/shared/resources/hibernatejavax')
   rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
   rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
 }
