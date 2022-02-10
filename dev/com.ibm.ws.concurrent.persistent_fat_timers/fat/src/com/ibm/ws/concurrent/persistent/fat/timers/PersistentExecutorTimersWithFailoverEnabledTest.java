@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.timers;
+
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -61,6 +63,12 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
         // configure server.xml to enable failover
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
+
+        // Run with EE 10 features, including concurrent-3.0
+        Set<String> features = config.getFeatureManager().getFeatures();
+        features.add("concurrent-3.0");
+        features.add("servlet-6.0");
+        features.remove("servlet-5.0");
 
         PersistentExecutor defaultEJBPersistentTimerExecutor = new PersistentExecutor();
         defaultEJBPersistentTimerExecutor.setId("defaultEJBPersistentTimerExecutor");
