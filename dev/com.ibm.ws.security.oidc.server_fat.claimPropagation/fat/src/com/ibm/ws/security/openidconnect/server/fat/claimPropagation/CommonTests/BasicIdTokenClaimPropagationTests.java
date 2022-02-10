@@ -122,7 +122,11 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> addShouldNotContain_idToken(List<validationData> expectations, String claim) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS, "\"" + claim + "\" was found in the id_token and should NOT have been", claim, null);
-        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "\"" + claim + "\" was found in the subject and should NOT have containted", null, claim);
+        if (claim.equals("groupIds")) {
+            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "\"" + claim + "\" was found in the subject with a value that it should NOT have", null, claim + "=[]");
+        } else {
+            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "\"" + claim + "\" was found in the subject and should NOT have been", null, claim);
+        }
         return expectations;
     }
 
