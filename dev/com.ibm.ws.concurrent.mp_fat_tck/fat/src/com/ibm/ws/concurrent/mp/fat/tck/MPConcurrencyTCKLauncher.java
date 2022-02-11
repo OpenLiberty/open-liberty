@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019,2022 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,11 +51,10 @@ public class MPConcurrencyTCKLauncher {
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);;
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
         resultInfo.put("results_type", "MicroProfile");
         resultInfo.put("feature_name", "Concurrency");
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "1.0");
+        resultInfo.put("feature_version", "1.0");
         MvnUtils.preparePublicationFile(resultInfo);
         
     }
