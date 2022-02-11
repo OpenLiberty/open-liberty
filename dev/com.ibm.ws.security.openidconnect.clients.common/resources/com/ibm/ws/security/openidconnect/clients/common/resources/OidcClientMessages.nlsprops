@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,13 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Ensure that the web response is
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: The {0} OpenID Connect client cannot retrieve information about the access token from the UserInfo endpoint: {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=The response from the UserInfo endpoint might not be in a format that is expected. The OpenID Connect client might have encountered an error while submitting the UserInfo request.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Check the error message for more information. Verify that the content of the UserInfo response matches the Content-Type HTTP header.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: The back-channel logout request sent to [{0}] encountered an error. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=The request does not use the HTTP POST method, the request is missing a logout token or the logout token cannot be validated, or the logout request did not complete successfully.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Verify that the HTTP POST method is used to submit the back-channel logout request. Otherwise, see the user action for the error that is included in this message.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: The back-channel logout request is not valid because the logout_token parameter is missing or empty.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=The back-channel logout request must include a logout_token parameter whose value is a valid logout token.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Update the request to include a logout token.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

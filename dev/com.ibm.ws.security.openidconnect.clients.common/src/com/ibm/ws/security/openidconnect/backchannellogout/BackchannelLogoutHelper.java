@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class BackchannelLogoutHelper {
@@ -31,29 +33,50 @@ public class BackchannelLogoutHelper {
         this.response = response;
     }
 
+    @FFDCIgnore({ BackchannelLogoutException.class })
     public void handleBackchannelLogoutRequest() {
+        try {
+            String logoutTokenParameter = validateRequestAndGetLogoutTokenParameter();
+            validateLogoutToken(logoutTokenParameter);
+            performLogout();
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (BackchannelLogoutException e) {
+            Tr.error(tc, "BACKCHANNEL_LOGOUT_REQUEST_FAILED", new Object[] { request.getRequestURI(), e.getMessage() });
+            response.setStatus(e.getResponseCode());
+        }
+        response.setHeader("Cache-Control", "no-cache, no-store");
+        response.setHeader("Pragma", "no-cache");
+    }
+
+    /**
+     * Validates:
+     * - Server is running in BETA mode
+     * - Request uses the HTTP POST method
+     * - Request includes a non-empty logout_token parameter
+     */
+    String validateRequestAndGetLogoutTokenParameter() throws BackchannelLogoutException {
         if (!ProductInfo.getBetaEdition()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            throw new BackchannelLogoutException("BETA: The back-channel logout feature is only available in the beta edition.");
         }
         String httpMethod = request.getMethod();
         if (!"POST".equalsIgnoreCase(httpMethod)) {
-            response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
+            throw new BackchannelLogoutException(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
-
         String logoutTokenParameter = request.getParameter(LOGOUT_TOKEN_PARAM_NAME);
         if (logoutTokenParameter == null || logoutTokenParameter.isEmpty()) {
-            // TODO
-            Tr.formatMessage(tc, "", new Object[] { request.getPathInfo() });
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER");
+            throw new BackchannelLogoutException(errorMsg);
         }
+        return logoutTokenParameter;
+    }
 
+    JwtToken validateLogoutToken(String logoutTokenString) throws BackchannelLogoutException {
+        LogoutTokenValidator validator = new LogoutTokenValidator();
+        return validator.validateToken(logoutTokenString);
+    }
+
+    void performLogout() throws BackchannelLogoutException {
         // TODO
-
-        response.setHeader("Cache-Control", "no-cache, no-store");
-        response.setHeader("Pragma", "no-cache=");
     }
 
 }
