@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -918,20 +918,24 @@ public class InstallKernelMap implements Map {
                 }
             }
 
-            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
-            for (ProvisioningFeatureDefinition feature : installedFeatures) {
-                if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
-                    alreadyInstalled += 1;
-                    if (feature.getIbmShortName() == null) {
-                        featuresAlreadyPresent.add(feature.getFeatureName());
-                    } else {
-                        featuresAlreadyPresent.add(feature.getIbmShortName());
+            boolean isInstallServerFeature = (Boolean) this.get(IS_INSTALL_SERVER_FEATURE);
+            if (!isInstallServerFeature) {
+                Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+                for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                    if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                        alreadyInstalled += 1;
+                        if (feature.getIbmShortName() == null) {
+                            featuresAlreadyPresent.add(feature.getFeatureName());
+                        } else {
+                            featuresAlreadyPresent.add(feature.getIbmShortName());
+                        }
                     }
                 }
+                if (alreadyInstalled == featureToInstall.size()) {
+                    throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
+                }
             }
-            if (alreadyInstalled == featureToInstall.size()) {
-                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
-            }
+
             boolean isFeatureUtility = (Boolean) this.get(IS_FEATURE_UTILITY);
             boolean isJsonProvided = (Boolean) this.get(JSON_PROVIDED);
             data.put(UPGRADE_COMPLETE, false);
@@ -951,7 +955,7 @@ public class InstallKernelMap implements Map {
                 }
             }
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
-            boolean isInstallServerFeature = (Boolean) this.get(IS_INSTALL_SERVER_FEATURE);
+
             if (!isInstallServerFeature) {
                 resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
             } else {
