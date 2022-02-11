@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
+import com.ibm.ws.classloading.internal.util.Keyed;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
@@ -73,10 +74,11 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
+import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
-abstract class ContainerClassLoader extends IdentifiedLoader {
+abstract class ContainerClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdentity> {
     static {
         ClassLoader.registerAsParallelCapable();
     }
