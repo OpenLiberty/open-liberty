@@ -254,8 +254,16 @@ public class EJBJarTestBase extends DDTestBase {
         return ejbJar32Head(attrs) + body + ejbJarTail();
     }
     
+    protected static String ejbJar32(String body) {
+        return ejbJar32Head("") + body + ejbJarTail();
+    }
+    
     protected static String ejbJar40(String attrs, String body) {
         return ejbJar40Head(attrs) + body + ejbJarTail();
+    }
+
+    protected static String ejbJar40(String body) {
+        return ejbJar40Head("") + body + ejbJarTail();
     }
     
     protected static String ejbJar(int version, String attrs, String body) {

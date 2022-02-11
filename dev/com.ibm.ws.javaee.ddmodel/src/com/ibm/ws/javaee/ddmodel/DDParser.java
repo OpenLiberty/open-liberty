@@ -615,9 +615,11 @@ public abstract class DDParser implements PlatformVersion {
     
     // XML header values ...
 
-    public int version; // Schema version
-    public int eePlatformVersion; // Schema version turned into a platform version.
-
+    // Schema version    
+    public int version;
+    // Schema version turned into a platform version.    
+    public int eePlatformVersion;
+    
     public String dtdPublicId;
     public String namespace;
     public String namespaceOriginal;

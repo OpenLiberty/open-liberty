@@ -29,6 +29,7 @@ import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.Interceptor;
 import com.ibm.ws.javaee.dd.ejb.Interceptors;
+import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
 
 @RunWith(Parameterized.class)
 public class EJBJarInterceptorTest extends EJBJarTestBase {
@@ -159,6 +160,19 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
             "</interceptor>" +
         "</interceptors>";
     
+    //
+    
+    protected static final String interceptorsEE10XML =
+            "<interceptors>" +
+                "<interceptor>" +
+                    "<interceptor-class>interceptor0</interceptor-class>" +
+                    DDJakarta10Elements.CONTEXT_SERVICE_XML +
+                    DDJakarta10Elements.MANAGED_EXECUTOR_XML +
+                    DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML +
+                    DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML +                
+                "</interceptor>" +
+            "</interceptors>";
+
     //
 
     @Test
@@ -362,5 +376,35 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
         parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
                      EJBJar.VERSION_3_2,
                      "unexpected.child.element", "CWWKC2259E"); 
+    }
+    
+    //
+
+    @Test
+    public void testEE10InterceptorsEJB32() throws Exception {
+        parseEJBJar( ejbJar32(interceptorsEE10XML), EJBJar.VERSION_3_2,
+                "unexpected.child.element",
+                "CWWKC2259E", "context-service", "ejb-jar.xml" );
+    }
+            
+    @Test
+    public void testEE10InterceptorsEJB40() throws Exception {
+        parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_4_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "context-service", "ejb-jar.xml" );
+    }
+
+    @Test
+    public void testEE10InterceptorsEJB50() throws Exception {
+        EJBJar ejbJar = parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_5_0);
+
+        List<String> names = DDJakarta10Elements.names("EJBJar", "interceptors");
+
+        List<Interceptor> interceptors = ejbJar.getInterceptors().getInterceptorList();
+        DDJakarta10Elements.verifySize(names, 1, interceptors);
+
+        Interceptor interceptor = interceptors.get(0);
+        DDJakarta10Elements.withName(names, "[0]",
+                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, interceptor) );
     }
 }

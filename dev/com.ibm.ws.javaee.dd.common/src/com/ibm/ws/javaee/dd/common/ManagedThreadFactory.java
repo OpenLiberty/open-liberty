@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,30 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.dd.common;
 
-import java.util.List;
-
 /**
- * Represents &lt;managed-thread-factory>.
+ * Represents &lt;managed-thread-factory&gt;.
  */
-public interface ManagedThreadFactory extends JNDIEnvironmentRef, Describable {
+public interface ManagedThreadFactory extends JNDIContextServiceRef {
     /**
-     * @return &lt;context-service-ref>, or null if unspecified
-     */
-    String getContextServiceRef();
-
-    /**
-     * @return &lt;priority> if specified
+     * @return &lt;priority&gt; if specified
      * @see #isSetPriority
      */
     int getPriority();
 
     /**
-     * @return &lt;property> elements as a read-only list
-     */
-    List<Property> getProperties();
-
-    /**
-     * @return true if &lt;priority> is specified
+     * @return true if &lt;priority&gt; is specified
      * @see #getPriority
      */
     boolean isSetPriority();

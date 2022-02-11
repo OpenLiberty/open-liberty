@@ -8,6 +8,45 @@ jakartaee_10.xsd - jakartaee_9.xsd
 
 ---
 
+j2ee_1_4.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+javaee_5.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+javaee_6.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+javaee_7.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+javaee_8.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+jakartaee_9.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+jakartaee_10.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+
+ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+
+web-app_2_4.xsd:      <xsd:group ref="j2ee:jndiEnvironmentRefsGroup"/>
+web-app_2_5.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
+
+web-common_3_0.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
+  --> web-app_3_0.xsd
+  --> web-fragment_3_0.xsd
+web-common_5_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+  --> web-app_5_0.xsd
+  --> web-fragment_5_0.xsd
+web-common_6_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+  --> web-app_6_0.xsd
+  --> web-fragment_6_0.xsd
+
+ejb-jar_4_0.xsd
+  <xsd:complexType name="entity-beanType">
+  <xsd:complexType name="interceptorType">
+  <xsd:complexType name="message-driven-beanType">
+  <xsd:complexType name="session-beanType">
+      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+
+web-common_6_0.xsd:
+  <xsd:group name="web-commonType">
+      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+
+---
+
   <xsd:complexType name="context-serviceType">
     <xsd:sequence>
       <xsd:element name="description" type="jakartaee:descriptionType" minOccurs="0"/>
@@ -15,7 +54,7 @@ jakartaee_10.xsd - jakartaee_9.xsd
       <xsd:element name="cleared" type="jakartaee:string" minOccurs="0" maxOccurs="unbounded">
         <xsd:annotation>
           <xsd:documentation>
-            Types of context to clear whenever a thread runs a
+            Types of context to clear whenever a thread runs ag
             contextual task or action. The thread's previous context
             is restored afterward. Context types that are defined by
             the Jakarta EE Concurrency specification include:
@@ -207,3 +246,5 @@ jakartaee_10.xsd - jakartaee_9.xsd
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID"/>
   </xsd:complexType>
+
+---

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,42 +10,30 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.dd.common;
 
-import java.util.List;
-
 /**
- * Represents &lt;managed-executor>.
+ * Represents &lt;managed-executor&gt;.
  */
-public interface ManagedExecutor extends JNDIEnvironmentRef, Describable {
+public interface ManagedExecutor extends JNDIContextServiceRef {
     /**
-     * @return &lt;context-service-ref>, or null if unspecified
-     */
-    String getContextServiceRef();
-
-    /**
-     * @return &lt;hung-task-threshold> if specified
+     * @return &lt;hung-task-threshold&gt; if specified
      * @see #isSetHungTaskThreshold
      */
-    long getHungTaskThreshold();
+    int getHungTaskThreshold();
 
     /**
-     * @return &lt;max-async> if specified
-     * @see #isSetMaxAsync
-     */
-    int getMaxAsync();
-
-    /**
-     * @return &lt;property> elements as a read-only list
-     */
-    List<Property> getProperties();
-
-    /**
-     * @return true if &lt;hung-task-threshold> is specified
+     * @return true if &lt;hung-task-threshold&gt; is specified
      * @see #getHungTaskThreshold
      */
     boolean isSetHungTaskThreshold();
 
     /**
-     * @return true if &lt;max-async> is specified
+     * @return &lt;max-async&gt; if specified
+     * @see #isSetMaxAsync
+     */
+    int getMaxAsync();
+
+    /**
+     * @return true if &lt;max-async&gt; is specified
      * @see #getMaxAsync
      */
     boolean isSetMaxAsync();
