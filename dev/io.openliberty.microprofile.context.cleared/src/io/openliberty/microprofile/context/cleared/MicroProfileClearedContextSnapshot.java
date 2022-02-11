@@ -8,27 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.contextpropagation;
+package io.openliberty.microprofile.context.cleared;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.eclipse.microprofile.context.ThreadContext;
 import org.eclipse.microprofile.context.spi.ThreadContextController;
-import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
-import com.ibm.ws.microprofile.context.ThreadIdentityContextProvider;
-import com.ibm.ws.microprofile.context.WLMContextProvider;
 
 /**
  * Multi-context snapshot that clears MicroProfile context types when server config is used.
@@ -39,33 +31,10 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
 
     private static final TraceComponent tc = Tr.register(MicroProfileClearedContextSnapshot.class);
 
-    /**
-     * Most of these are skipped because Liberty already provides most these (they inherit from
-     * ContainerContextProvider). CDI is also skipped for compatibility purposes.
-     */
-    private static final HashSet<String> DO_NOT_CLEAR = new HashSet<String>(Arrays.asList //
-    (
-     ThreadContext.APPLICATION,
-     ThreadContext.CDI,
-     EmptyHandleListContextProvider.EMPTY_HANDLE_LIST,
-     ThreadContext.SECURITY,
-     ThreadIdentityContextProvider.SYNC_TO_OS_THREAD,
-     ThreadContext.TRANSACTION,
-     WLMContextProvider.CLASSIFICATION //
-    ));
-
     private final ArrayList<ThreadContextController> contextRestorers = new ArrayList<ThreadContextController>();
     private final ArrayList<ThreadContextSnapshot> contextSnapshots;
 
-    MicroProfileClearedContextSnapshot(ContextManagerImpl contextMgr) {
-        contextSnapshots = new ArrayList<ThreadContextSnapshot>();
-        for (ThreadContextProvider provider : contextMgr.contextProviders)
-            if (!DO_NOT_CLEAR.contains(provider.getThreadContextType()))
-                contextSnapshots.add(provider.clearedContext(Collections.emptyMap()));
-    }
-
-    // constructor for clone method
-    private MicroProfileClearedContextSnapshot(ArrayList<ThreadContextSnapshot> contextSnapshots) {
+    public MicroProfileClearedContextSnapshot(ArrayList<ThreadContextSnapshot> contextSnapshots) {
         this.contextSnapshots = contextSnapshots; // shallow copy is okay here
     }
 
