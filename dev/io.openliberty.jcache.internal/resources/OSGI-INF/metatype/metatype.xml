@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -18,14 +18,14 @@
 
 
     <!-- 
-         jCachingProvider
+         cachingProvider
      -->
 	<Designate factoryPid="io.openliberty.jcache.cachingprovider">
 		<Object ocdref="io.openliberty.jcache.cachingprovider.metatype" />
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.cachingprovider.metatype"
-		ibm:alias="jCachingProvider" name="internal"
+		ibm:alias="cachingProvider" name="internal"
 		description="internal use only">
 
 		<AD id="providerClass" type="String" required="false"
@@ -48,18 +48,18 @@
 
 
     <!-- 
-         jCacheManager
+         cacheManager
      -->
 	<Designate factoryPid="io.openliberty.jcache.cachemanager">
 		<Object ocdref="io.openliberty.jcache.cachemanager.metatype" />
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.cachemanager.metatype"
-		ibm:alias="jCacheManager" name="internal"
+		ibm:alias="cacheManager" name="internal"
 		description="internal use only">
 
-		<AD id="jCachingProviderRef" required="true" type="String"
-			name="%jCachingProviderRef" description="%jCachingProviderRef.desc"
+		<AD id="cachingProviderRef" required="true" type="String"
+			name="%cachingProviderRef" description="%cachingProviderRef.desc"
 			ibm:type="pid" ibm:reference="io.openliberty.jcache.cachingprovider" />
 
 		<AD id="properties" required="false" type="String" cardinality="1"
@@ -73,17 +73,17 @@
 
 
     <!-- 
-         jCache
+         cache
      -->
 	<Designate factoryPid="io.openliberty.jcache.cache">
 		<Object ocdref="io.openliberty.jcache.cache.metatype" />
 	</Designate>
 
-	<OCD id="io.openliberty.jcache.cache.metatype" ibm:alias="jCache"
+	<OCD id="io.openliberty.jcache.cache.metatype" ibm:alias="cache"
 		name="internal" description="internal use only">
 
-		<AD id="jCacheManagerRef" required="true" type="String"
-			name="%jCacheManagerRef" description="%jCacheManagerRef.desc"
+		<AD id="cacheManagerRef" required="true" type="String"
+			name="%cacheManagerRef" description="%cacheManagerRef.desc"
 			ibm:type="pid" ibm:reference="io.openliberty.jcache.cachemanager" />
 
 		<AD id="name" type="String" required="true" name="%name"

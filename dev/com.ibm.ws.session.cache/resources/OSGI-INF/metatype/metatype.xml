@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2018,2021 IBM Corporation and others.
+    Copyright (c) 2018, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -43,11 +43,11 @@
   <!-- 
        JCache configuration.
    -->
-  <AD id="jCacheManagerRef" type="String" required="false" cardinality="1" ibm:type="pid"
+  <AD id="cacheManagerRef" type="String" required="false" cardinality="1" ibm:type="pid"
       ibm:reference="io.openliberty.jcache.cachemanager" name="internal" description="internal use only" />
-  <AD id="jCacheManagerService.target" type="String" default="(service.pid=${jCacheManagerRef})"
+  <AD id="cacheManagerService.target" type="String" default="(service.pid=${cacheManagerRef})"
       ibm:final="true" name="internal" description="internal use only" />
-  <AD id="jCacheManagerService.cardinality.minimum" type="String"  default="${count(jCacheManagerRef)}" 
+  <AD id="cacheManagerService.cardinality.minimum" type="String"  default="${count(cacheManagerRef)}" 
       ibm:final="true" name="internal" description="internal use only"/>
  </OCD>
  

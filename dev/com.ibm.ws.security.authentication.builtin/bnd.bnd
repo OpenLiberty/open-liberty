@@ -73,13 +73,13 @@ Service-Component: \
     modified:='modified'; \
     cacheKeyProvider=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     cacheEvictionListener=com.ibm.ws.security.authentication.cache.CacheEvictionListener; \
-    jCacheService=io.openliberty.jcache.JCacheService; \
+    cacheService=io.openliberty.jcache.CacheService; \
     credentialService=com.ibm.ws.security.credentials.CredentialsService; \
     serverStartedPhase2=com.ibm.ws.kernel.feature.ServerStartedPhase2; \
-    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService,jCacheService,serverStartedPhase2'; \
+    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService,cacheService,serverStartedPhase2'; \
     multiple:='cacheKeyProvider,cacheEvictionListener'; \
     dynamic:='serverStartedPhase2'; \
-    properties:="service.vendor=IBM,jCacheService.target=(id=unbound)", \
+    properties:="service.vendor=IBM,cacheService.target=(id=unbound)", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \

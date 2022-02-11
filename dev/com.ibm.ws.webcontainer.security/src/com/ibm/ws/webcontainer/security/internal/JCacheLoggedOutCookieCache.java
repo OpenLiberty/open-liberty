@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.LoggedOutCookieCache;
 
-import io.openliberty.jcache.JCacheService;
+import io.openliberty.jcache.CacheService;
 
 /**
  * A JCache backed {@link LoggedOutCookieCache} implementation.
@@ -22,10 +22,10 @@ import io.openliberty.jcache.JCacheService;
 public class JCacheLoggedOutCookieCache implements LoggedOutCookieCache {
 
     private static final TraceComponent tc = Tr.register(JCacheLoggedOutCookieCache.class, "LoggedOutCookieCache");
-    private final JCacheService jCacheService;
+    private final CacheService cacheService;
 
-    public JCacheLoggedOutCookieCache(JCacheService jCacheService) {
-        this.jCacheService = jCacheService;
+    public JCacheLoggedOutCookieCache(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class JCacheLoggedOutCookieCache implements LoggedOutCookieCache {
         boolean contains = false;
 
         try {
-            contains = jCacheService.getCache().containsKey(key);
+            contains = cacheService.getCache().containsKey(key);
 
             if (tc.isDebugEnabled()) {
                 if (contains) {
@@ -62,7 +62,7 @@ public class JCacheLoggedOutCookieCache implements LoggedOutCookieCache {
     @Override
     public void put(String key, Object value) {
         try {
-            jCacheService.getCache().put(key, value);
+            cacheService.getCache().put(key, value);
         } catch (Exception e) {
             /*
              * Don't let a JCache failure propagate up the call stack. Log it and move on.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import com.ibm.ws.serialization.SerializationService;
  * so the same object instance is returned each time a value for a single key
  * is fetched.
  */
-public class JCacheObject implements Serializable {
+public class CacheObject implements Serializable {
 
     /*
      * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -51,7 +51,7 @@ public class JCacheObject implements Serializable {
      */
 
     @SuppressWarnings("unused")
-    private static final TraceComponent tc = Tr.register(JCacheObject.class);
+    private static final TraceComponent tc = Tr.register(CacheObject.class);
     private static final long serialVersionUID = 1L;
 
     /** The bytes that comprise the serialized object. */
@@ -65,12 +65,12 @@ public class JCacheObject implements Serializable {
     private transient Object object;
 
     /**
-     * Create a new {@link JCacheObject} instance.
+     * Create a new {@link CacheObject} instance.
      *
      * @param object      The object to wrap. May be null and set later.
      * @param objectBytes A serialized view of <code>object</code>.
      */
-    public JCacheObject(@Sensitive Object object, @Sensitive byte[] objectBytes) {
+    public CacheObject(@Sensitive Object object, @Sensitive byte[] objectBytes) {
         if (objectBytes == null) {
             throw new IllegalArgumentException("The objectBytes argument cannot be null.");
         }
@@ -112,14 +112,14 @@ public class JCacheObject implements Serializable {
     @Override
     @Trivial
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JCacheObject)) {
+        if (obj == null || !(obj instanceof CacheObject)) {
             return false;
         }
         if (this == obj) {
             return true;
         }
 
-        return Arrays.equals(objectBytes, ((JCacheObject) (obj)).objectBytes);
+        return Arrays.equals(objectBytes, ((CacheObject) (obj)).objectBytes);
     }
 
     @Override

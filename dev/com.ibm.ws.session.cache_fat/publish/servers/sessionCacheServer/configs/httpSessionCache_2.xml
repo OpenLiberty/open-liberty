@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -14,10 +14,11 @@
         <feature>sessionCache-1.0</feature>
     </featureManager>
 
-    <httpSessionCache jCacheManagerRef="CacheManager" />
-    
-    <jCachingProvider id="CachingProvider" libraryRef="HazelcastLib" />
-    <jCacheManager id="CacheManager" jCachingProviderRef="CachingProvider" />
+    <httpSessionCache cacheManagerRef="CacheManager" />
+
+    <cacheManager id="CacheManager">
+        <cachingProvider libraryRef="HazelcastLib" />
+    </cacheManager>
 
     <!-- 
          This bell is only required for testing, as one of the test servlets uses JCache directly so

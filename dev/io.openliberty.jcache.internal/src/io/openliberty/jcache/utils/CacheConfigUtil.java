@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,9 @@ import com.ibm.websphere.ras.TraceComponent;
  * Configuration utility class that contains logic that is to be shared between
  * the HTTP session cache code, and the new generic JCache configuration code.
  */
-public class JCacheConfigUtil {
+public class CacheConfigUtil {
 
-    private static final TraceComponent tc = Tr.register(JCacheConfigUtil.class);
+    private static final TraceComponent tc = Tr.register(CacheConfigUtil.class);
     private static final String INFINISPAN_EMBEDDED_PROVIDER = "org.infinispan.jcache.embedded.JCachingProvider";
     private static final String INFINISPAN_REMOTE_PROVIDER = "org.infinispan.jcache.remote.JCachingProvider";
 

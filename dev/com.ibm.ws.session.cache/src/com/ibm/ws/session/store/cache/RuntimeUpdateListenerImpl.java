@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,8 +49,14 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
     private ConfigurationAdmin configAdmin = null;
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
     final static String EOL = System.lineSeparator();
-    final static String sampleConfig = EOL + EOL + "    <httpSessionCache libraryRef=\"JCacheLib\"/>" + EOL + EOL + "   <library id=\"JCacheLib\">" + EOL
-                                       + "        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>" + EOL + "    </library>" + EOL;
+    final static String sampleConfig = EOL + EOL + "    <httpSessionCache cacheManagerRef=\"CacheManager\"/>" +
+                                       EOL + EOL + "    <cacheManager id=\"CacheManager\">" +
+                                       EOL + "        <cachingProvider libraryRef=\"JCacheLib\"/>" +
+                                       EOL + "    </cacheManager>" +
+                                       EOL + EOL + "    <library id=\"JCacheLib\">" +
+                                       EOL + "        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>" +
+                                       EOL + "    </library>" + EOL;
+
 
     private ComponentContext componentContext;
     private ServiceRegistration<Library> libraryRegistration;
@@ -119,9 +125,9 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
 
                         Dictionary<String, Object> props = configuration.getProperties();
                         String[] libraryRefs = (String[]) props.get("libraryRef");
-                        String[] jCacheManagerRefs = (String[]) props.get("jCacheManagerRef");
+                        String[] cacheManagerRefs = (String[]) props.get("cacheManagerRef");
 
-                        if (jCacheManagerRefs == null) {
+                        if (cacheManagerRefs == null) {
                             if (libraryRefs == null) {
                                 if (!isSessionCacheBellConfigured()) {
                                     Tr.error(tc, "ERROR_CONFIG_INVALID_HTTPSESSIONCACHE", Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", sampleConfig));
@@ -147,14 +153,14 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
                                                            + "This should never happen.");
                                 }
                             }
-                        } else if (jCacheManagerRefs.length == 0) {
-                            Tr.debug(tc, "The jCacheManagerRef attribute of the httpSessionCache in the server configuration could not be resolved. "
+                        } else if (cacheManagerRefs.length == 0) {
+                            Tr.debug(tc, "The cacheManagerRef attribute of the httpSessionCache in the server configuration could not be resolved. "
                                          + "Check for possible CWWKG0033W messages.");
                         } else {
                             /*
-                             * If we are using jCacheManagerRef, we still need a library so that the we can fulfill the library dependency
+                             * If we are using cacheManagerRef, we still need a library so that the we can fulfill the library dependency
                              * of CacheStoreService. We will just register the global library since it doesn't matter as it will not be
-                             * used and it would be much more difficult to pull a library from the JCachingProviderService.
+                             * used and it would be much more difficult to pull a library from the CachingProviderService.
                              */
                             libraryRegistration = DefaultCachingProviderSupport.registerLibrary(componentContext.getBundleContext(), "global");
                             Tr.debug(tc, "Registered the global library under service registration: " + libraryRegistration);

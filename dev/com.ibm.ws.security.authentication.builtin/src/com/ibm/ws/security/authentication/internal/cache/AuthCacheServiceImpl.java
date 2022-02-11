@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ import com.ibm.ws.security.registry.UserRegistryChangeListener;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-import io.openliberty.jcache.JCacheService;
+import io.openliberty.jcache.CacheService;
 
 /**
  * Implements the authentication cache.
@@ -60,7 +60,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     private AuthCacheConfig authCacheConfig;
     private final Set<CacheEvictionListener> cacheEvictionListenerSet = new HashSet<CacheEvictionListener>();
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
-    private JCacheService jCacheService = null;
+    private CacheService cacheService = null;
     private static boolean isServerStarted = false;
 
     /** {@inheritDoc} */
@@ -208,8 +208,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
          * we also use the in-memory cache in certain select scenarios (serialization errors, etc).
          */
         AuthCache inMemoryCache = new InMemoryAuthCache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
-        if (jCacheService != null) {
-            cache = new JCacheAuthCache(jCacheService, inMemoryCache);
+        if (cacheService != null) {
+            cache = new JCacheAuthCache(cacheService, inMemoryCache);
         } else {
             cache = inMemoryCache;
         }
@@ -251,21 +251,21 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     }
 
     /**
-     * Set the {@link JCacheService}.
+     * Set the {@link CacheService}.
      *
-     * @param jCacheService the {@link JCacheService}
+     * @param cacheService the {@link CacheService}
      */
-    protected void setJCacheService(JCacheService jCacheService) {
-        this.jCacheService = jCacheService;
+    protected void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     /**
-     * Unset the {@link JCacheService}.
+     * Unset the {@link CacheService}.
      *
-     * @param jCacheService the {@link JCacheService}
+     * @param cacheService the {@link CacheService}
      */
-    protected void unsetJCacheService(JCacheService jCacheService) {
-        this.jCacheService = null;
+    protected void unsetCacheService(CacheService cacheService) {
+        this.cacheService = null;
     }
 
     /** {@inheritDoc} */

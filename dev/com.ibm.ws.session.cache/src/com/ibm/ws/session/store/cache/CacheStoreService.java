@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,8 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
-import io.openliberty.jcache.JCacheManagerService;
-import io.openliberty.jcache.utils.JCacheConfigUtil;
+import io.openliberty.jcache.CacheManagerService;
+import io.openliberty.jcache.utils.CacheConfigUtil;
 
 /**
  * Constructs CacheStore instances.
@@ -89,7 +89,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
 
     SerializationService serializationService;
-    private JCacheManagerService jCacheManagerService;
+    private CacheManagerService cacheManagerService;
 
     /**
      * Indicates whether or not the caching provider supports store by reference.
@@ -101,7 +101,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      */
     volatile String tcCacheManager; // requires lazy activation
 
-    private JCacheConfigUtil jcacheConfigUtil = null;
+    private CacheConfigUtil cacheConfigUtil = null;
     private boolean isLibraryRefSet = false;
 
     /**
@@ -152,14 +152,14 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         /*
-         * This logic will configure the CachingProvider and JCacheManager in one of two ways:
+         * This logic will configure the CachingProvider and CacheManager in one of two ways:
          *
          * 1. Using the uri, properties and libraryRef configuration elements/attributes.
-         * 2. Using the referenced JCacheManagerService, which is the newer and recommended approach.
+         * 2. Using the referenced CacheManagerService, which is the newer and recommended approach.
          */
-        if (jCacheManagerService == null) {
+        if (cacheManagerService == null) {
             /*
-             * No JCacheManagerService reference was provided. This service will handle management of the
+             * No CacheManagerService reference was provided. This service will handle management of the
              * provider and manager.
              */
             Properties vendorProperties = new Properties();
@@ -204,8 +204,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
                     tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
 
-                    jcacheConfigUtil = new JCacheConfigUtil();
-                    URI uri = jcacheConfigUtil.preConfigureCacheManager(configuredURI, cachingProvider, vendorProperties);
+                    cacheConfigUtil = new CacheConfigUtil();
+                    URI uri = cacheConfigUtil.preConfigureCacheManager(configuredURI, cachingProvider, vendorProperties);
 
                     if (trace && tc.isDebugEnabled()) {
                         CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
@@ -255,7 +255,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             }
         } else {
             /*
-             * Issue warning messages for all configuration attributes that can be defined in the jCacheManager element.
+             * Issue warning messages for all configuration attributes that can be defined in the cacheManager element.
              */
             if (configurationProperties.containsKey(CONFIG_KEY_URI)) {
                 Tr.warning(tc, "CONFIG_ATTRIBUTE_IGNORED", CONFIG_KEY_URI);
@@ -277,9 +277,9 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             }
 
             /*
-             * Use the JCacheManagerService to get the CachingProvider and CacheManager.
+             * Use the CacheManagerService to get the CachingProvider and CacheManager.
              */
-            cacheManager = jCacheManagerService.getCacheManager();
+            cacheManager = cacheManagerService.getCacheManager();
             cachingProvider = cacheManager.getCachingProvider();
 
             tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
@@ -352,14 +352,14 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
                 /*
-                 * Only close the CachingProvider if the JCacheManagerService is null. Otherwise;
+                 * Only close the CachingProvider if the CacheManagerService is null. Otherwise;
                  * let the service handle closing it.
                  */
-                if (jCacheManagerService == null) {
+                if (cacheManagerService == null) {
                     cachingProvider.close();
                 }
-                if (jcacheConfigUtil != null) {
-                    jcacheConfigUtil.cleanup();
+                if (cacheConfigUtil != null) {
+                    cacheConfigUtil.cleanup();
                 }
                 return null;
             });
@@ -369,7 +369,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             cachingProvider = null;
             cacheManager = null;
-            jcacheConfigUtil = null;
+            cacheConfigUtil = null;
         }
     }
 
@@ -587,22 +587,22 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     }
 
     /**
-     * Set the {@link JCacheManagerService} on this {@link CacheStoreService}.
+     * Set the {@link CacheManagerService} on this {@link CacheStoreService}.
      * 
-     * @param jCacheManagerService the {@link JCacheManagerService}
+     * @param cacheManagerService the {@link CacheManagerService}
      */
-    protected void setJCacheManagerService(JCacheManagerService jCacheManagerService) {
-        this.jCacheManagerService = jCacheManagerService;
+    protected void setCacheManagerService(CacheManagerService cacheManagerService) {
+        this.cacheManagerService = cacheManagerService;
         cacheManager = null;
     }
 
     /**
-     * Unset the {@link JCacheManagerService} on this {@link CacheStoreService}.
+     * Unset the {@link CacheManagerService} on this {@link CacheStoreService}.
      * 
-     * @param jCacheManagerService the {@link JCacheManagerService}
+     * @param cacheManagerService the {@link CacheManagerService}
      */
-    protected void unsetJCacheManagerService(JCacheManagerService jCacheManagerService) {
-        this.jCacheManagerService = null;
+    protected void unsetCacheManagerService(CacheManagerService cacheManagerService) {
+        this.cacheManagerService = null;
         cacheManager = null;
     }
 }
