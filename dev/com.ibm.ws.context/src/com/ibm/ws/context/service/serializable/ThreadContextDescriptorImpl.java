@@ -147,7 +147,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < contextBytes.length; i++) {
                         String providerName = providerNames.get(i);
                         ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
-                        if (contextProvider == null && !"com.ibm.ws.concurrent.mp.cleared.context.provider".equals(providerName))
+                        if (contextProvider == null && !"io.openliberty.microprofile.context.cleared.provider".equals(providerName))
                             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
                         contextProviders[i] = contextProvider;
                         if (trace && tc.isDebugEnabled())

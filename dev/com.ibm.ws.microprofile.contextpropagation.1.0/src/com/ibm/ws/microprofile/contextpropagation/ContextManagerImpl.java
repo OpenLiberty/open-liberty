@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.contextpropagation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,7 +34,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
  * Context manager, which includes the collection of ThreadContextProviders
  * for a particular class loader.
  */
-public class ContextManagerImpl implements ContextManager {
+public class ContextManagerImpl implements ContextManager, Iterable<ThreadContextProvider> {
     private static final TraceComponent tc = Tr.register(ContextManagerImpl.class);
 
     // Counter of managed executor & thread context instances created
@@ -52,7 +53,7 @@ public class ContextManagerImpl implements ContextManager {
      * This is the order in which thread context should be captured and applied to threads.
      * It is the reverse of the order in which thread context is restored on threads.
      */
-    final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
+    private final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
 
     /**
      * Lazily initialized reference to MicroProfile Config, if available.
@@ -165,6 +166,11 @@ public class ContextManagerImpl implements ContextManager {
             }
         }
         return defaultValue;
+    }
+
+    @Override
+    public Iterator<ThreadContextProvider> iterator() {
+        return contextProviders.iterator();
     }
 
     @Override
