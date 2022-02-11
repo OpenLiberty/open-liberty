@@ -21,11 +21,11 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * The Liberty implementation of the
  * org.jboss.weld.security.spi.SecurityContext interface
  */
-class CDI20SecurityContext implements SecurityContext {
+class CDI40SecurityContext implements SecurityContext {
     private ThreadContextDescriptor threadContextDesc = null;
     private ArrayList<ThreadContext> threadContext = null;
 
-    CDI20SecurityContext(ThreadContextDescriptor tcd) {
+    CDI40SecurityContext(ThreadContextDescriptor tcd) {
         threadContextDesc = tcd;
     }
 

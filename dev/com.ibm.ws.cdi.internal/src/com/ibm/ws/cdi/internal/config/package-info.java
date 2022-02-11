@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.internal.resources.CDI")
-package com.ibm.ws.cdi;
+package com.ibm.ws.cdi.internal.config;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

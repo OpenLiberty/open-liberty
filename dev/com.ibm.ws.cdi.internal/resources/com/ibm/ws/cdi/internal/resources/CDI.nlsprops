@@ -88,3 +88,16 @@ bce.not.loadable.CWOWB1013E.useraction=Ensure the class is present in the applic
 bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: The {0} class does not implement the BuildCompatibleExtension interface.
 bce.does.not.implement.bce.CWOWB1014E.explanation=The application includes a META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension file that includes the class, but the class does not implement jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
 bce.does.not.implement.bce.CWOWB1014E.useraction=Change the class so that it implements jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: The configuration element type cdi12 has been superceded by the element type cdi.
+cdi12.element.type.superceded.CWOWB1015W.explanation=The cdi configuration element type completely replaces the old cdi12 element. The cdi configuration element type contains all the same options as the old one, plus some new ones.
+cdi12.element.type.superceded.CWOWB1015W.useraction=Change your server.xml configuration to use the cdi element type instead of the cdi12 element type.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: The attribute emptyBeansXMLExplicitArchive of element type cdi is only supported on CDI 4.0 and newer. The attribute will be ignored.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=The attribute emptyBeansXMLExplicitArchive has no effect when using a CDI version lower than 4.0.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Update your server.xml configuration to either remove the attribute or use CDI version 4.0 or newer.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. Using the value from the cdi element. Removing the cdi12 element is recommended.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Although enableImplicitBeanArchives can be set on both of the cdi12 and cdi configuration element types, they must not be set at the same time.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Update your server.xml to avoid the conflict. The recommended action is to remove the cdi12 element as it has been superceded by the cdi element.
+

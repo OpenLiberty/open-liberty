@@ -17,13 +17,15 @@ Bundle-SymbolicName: com.ibm.ws.cdi.2.0.weld
 Bundle-Description:cdi 2.0 weld impl, version ${bVersion}
 
 -dsannotations: com.ibm.ws.cdi.impl.DefaultCDI20SecurityService,\
-                com.ibm.ws.cdi.impl.CDI20BeanParserImpl
+                com.ibm.ws.cdi.impl.CDI20BeansXmlParserImpl,\
+                com.ibm.ws.cdi.impl.CDI20AggregatedConfigurationImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
                 com.ibm.ws.cdi.proxy
 
-Import-Package: *
+Import-Package: com.ibm.ws.cdi.internal.resources,\
+                *
                                
 Private-Package: \
                 com.ibm.ws.cdi.impl

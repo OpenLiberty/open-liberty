@@ -37,7 +37,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.CDIContainerConfig;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -45,9 +44,10 @@ import com.ibm.ws.cdi.impl.AbstractCDIRuntime;
 import com.ibm.ws.cdi.impl.CDIContainerImpl;
 import com.ibm.ws.cdi.internal.archive.liberty.CDILibertyRuntime;
 import com.ibm.ws.cdi.internal.archive.liberty.RuntimeFactory;
+import com.ibm.ws.cdi.internal.config.CDIConfiguration;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
-import com.ibm.ws.cdi.internal.interfaces.BeanParser;
+import com.ibm.ws.cdi.internal.interfaces.BeansXmlParser;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
@@ -108,13 +108,15 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
     private final AtomicServiceReference<ExecutorService> managedExecutorServiceRef = new AtomicServiceReference<ExecutorService>("managedExecutorService");
 
-    private final AtomicServiceReference<CDIContainerConfig> containerConfigRef = new AtomicServiceReference<CDIContainerConfig>("containerConfig");
     private final AtomicServiceReference<ResourceRefConfigFactory> resourceRefConfigFactoryRef = new AtomicServiceReference<ResourceRefConfigFactory>("resourceRefConfigFactory");
 
     private final AtomicServiceReference<DeferredMetaDataFactory> deferredMetaDataFactoryRef = new AtomicServiceReference<DeferredMetaDataFactory>("cdiDeferredMetaDataFactoryImpl");
 
-    @Reference(name = "beanParser", service = BeanParser.class)
-    private BeanParser beanParser;
+    @Reference(name = "beansXmlParser", service = BeansXmlParser.class)
+    private BeansXmlParser beansXmlParser;
+
+    @Reference(name = "cdiContainerConfig", service = CDIConfiguration.class)
+    private CDIConfiguration cdiContainerConfig;
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile List<ExtensionArchiveProvider> extensionArchiveProviders;
@@ -126,7 +128,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private final Map<String, ClassLoader> appTccls = new ConcurrentHashMap<>();
 
     public void activate(ComponentContext cc) {
-        containerConfigRef.activate(cc);
         metaDataSlotServiceSR.activate(cc);
         ejbEndpointServiceSR.activate(cc);
         classLoadingSRRef.activate(cc);
@@ -169,19 +170,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         executorServiceRef.deactivate(cc);
         adaptableModuleFactorySRRef.deactivate(cc);
         injectionEngineServiceRef.deactivate(cc);
-        containerConfigRef.deactivate(cc);
         resourceRefConfigFactoryRef.deactivate(cc);
         managedExecutorServiceRef.deactivate(cc);
         deferredMetaDataFactoryRef.deactivate(cc);
-    }
-
-    @Reference(name = "containerConfig", service = CDIContainerConfig.class)
-    protected void setContainerConfig(ServiceReference<CDIContainerConfig> ref) {
-        containerConfigRef.setReference(ref);
-    }
-
-    protected void unsetContainerConfig(ServiceReference<CDIContainerConfig> ref) {
-        containerConfigRef.unsetReference(ref);
     }
 
     @Reference(name = "cdiDeferredMetaDataFactoryImpl", service = DeferredMetaDataFactory.class, target = "(deferredMetaData=CDI)")
@@ -558,7 +549,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public boolean isImplicitBeanArchivesScanningDisabled(CDIArchive archive) {
         //TODO check this per archive rather than for the whole server
-        return this.containerConfigRef.getService().isImplicitBeanArchivesScanningDisabled();
+        return this.cdiContainerConfig.isImplicitBeanArchivesScanningDisabled();
     }
 
     /** {@inheritDoc} */
@@ -663,8 +654,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     /** {@inheritDoc} */
     @Override
-    public BeanParser getBeanParser() {
-        return this.beanParser;
+    public BeansXmlParser getBeansXmlParser() {
+        return this.beansXmlParser;
     }
 
     /** {@inheritDoc} */

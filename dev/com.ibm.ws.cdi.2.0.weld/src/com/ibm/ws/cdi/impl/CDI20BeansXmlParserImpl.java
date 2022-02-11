@@ -8,30 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.cdi40.internal.weld;
+package com.ibm.ws.cdi.impl;
 
 import java.net.URL;
 
-import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.cdi.internal.interfaces.BeanParser;
+import com.ibm.ws.cdi.internal.interfaces.BeansXmlParser;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 
 /**
  *
  */
-@Component(name = "io.openliberty.cdi40.internal.weld.CDI40BeanParserImpl", service = { BeanParser.class }, property = { "service.vendor=IBM" })
-public class CDI40BeanParserImpl implements BeanParser {
+@Component(name = "com.ibm.ws.cdi.impl.CDI20BeansXmlParserImpl", service = { BeansXmlParser.class }, property = { "service.vendor=IBM" })
+public class CDI20BeansXmlParserImpl implements BeansXmlParser {
 
     /** {@inheritDoc} */
     @Override
     public BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl) {
-        //TODO: The BeanDiscoveryMode for an empty beans.xml needs to be configurable in order to maintain compatibility
-        //Prior to CDI 4.0 an empty beans.xml meant an explicit archive (mode=ALL)
-        //In CDI 4.0 the default becomes implicit (mode=ANNOTATED)
-        return cdiDeployment.getBootstrap().parse(beansXmlUrl, BeanDiscoveryMode.ALL);
+        return cdiDeployment.getBootstrap().parse(beansXmlUrl);
     }
 
 }

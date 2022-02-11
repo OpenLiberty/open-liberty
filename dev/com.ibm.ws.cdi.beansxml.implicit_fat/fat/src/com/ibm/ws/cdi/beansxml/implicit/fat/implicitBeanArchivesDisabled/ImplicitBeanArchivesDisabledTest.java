@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.beansxml.implicit.fat.implicitBeanArchivesDisabled;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -17,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
@@ -80,6 +86,13 @@ public class ImplicitBeanArchivesDisabledTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchiveDisabledEar, DeployOptions.SERVER_ONLY);
         server.startServer();
+    }
+
+    @Test
+    public void testWarningMessage() throws Exception {
+        List<String> msgs = server.findStringsInLogs("CWOWB1009W: Implicit bean archives are disabled.");
+        assertTrue("Message not found in logs: CWOWB1009W: Implicit bean archives are disabled.", msgs.size() > 0);
+        assertEquals("Message CWOWB1009W was found more than once", 1, msgs.size());
     }
 
     @AfterClass

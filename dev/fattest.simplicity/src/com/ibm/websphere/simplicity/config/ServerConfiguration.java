@@ -56,6 +56,12 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "bell")
     private ConfigElementList<Bell> bells;
 
+    @XmlElement(name = "cdi")
+    private ConfigElementList<Cdi> cdi;
+
+    @XmlElement(name = "cdi12")
+    private ConfigElementList<Cdi12> cdi12;
+
     @XmlElement(name = "httpEndpoint")
     private ConfigElementList<HttpEndpoint> httpEndpoints;
 
@@ -389,6 +395,20 @@ public class ServerConfiguration implements Cloneable {
             this.bells = new ConfigElementList<Bell>();
         }
         return this.bells;
+    }
+
+    public ConfigElementList<Cdi> getCdi() {
+        if (this.cdi == null) {
+            this.cdi = new ConfigElementList<Cdi>();
+        }
+        return this.cdi;
+    }
+
+    public ConfigElementList<Cdi12> getCdi12() {
+        if (this.cdi12 == null) {
+            this.cdi12 = new ConfigElementList<Cdi12>();
+        }
+        return this.cdi12;
     }
 
     public ConfigElementList<Cloudant> getCloudants() {

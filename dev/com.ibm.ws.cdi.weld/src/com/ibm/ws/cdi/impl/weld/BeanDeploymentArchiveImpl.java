@@ -670,7 +670,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     // that we load Liberty's XML parser rather than any parser defined
                     // in the application.
                     setContextClassLoader(BeanDeploymentArchiveImpl.class.getClassLoader());
-                    beansXml = getCDIRuntime().getBeanParser().parse(getCDIDeployment(), beansXmlUrl);
+                    beansXml = getCDIRuntime().getBeansXmlParser().parse(getCDIDeployment(), beansXmlUrl);
                 } finally {
                     setContextClassLoader(origTCCL);
                 }

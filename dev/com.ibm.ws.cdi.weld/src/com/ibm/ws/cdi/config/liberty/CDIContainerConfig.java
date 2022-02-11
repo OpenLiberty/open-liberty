@@ -25,8 +25,8 @@ import com.ibm.ws.cdi.internal.config.AggregatedConfiguration;
 /**
  * DS for custom CDI properties. The active instance can either be retrieved through DS or through a static getter method.
  */
-@Component(name = "com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig", service = CDI12ContainerConfig.class, configurationPid = "com.ibm.ws.cdi12.cdiContainer", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
-public class CDI12ContainerConfig {
+@Component(name = "com.ibm.ws.cdi.config.liberty.CDIContainerConfig", service = CDIContainerConfig.class, configurationPid = "io.openliberty.cdi.configuration", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+public class CDIContainerConfig {
 
     /*-
      * This example demonstrates how to add a new property.
@@ -70,9 +70,10 @@ public class CDI12ContainerConfig {
      *      won't need to check for null either.
      */
 
-    private static final TraceComponent tc = Tr.register(CDI12ContainerConfig.class);
+    private static final TraceComponent tc = Tr.register(CDIContainerConfig.class);
 
     private Boolean enableImplicitBeanArchives = null;
+    private Boolean emptyBeansXMLExplicitArchive = null;
 
     @Reference
     private AggregatedConfiguration aggregatedConfig;
@@ -86,10 +87,6 @@ public class CDI12ContainerConfig {
     protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Activating " + this);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-            //CWOWB1012W: The configuration element type cdi12 has been superceded by the element type cdi.
-            Tr.warning(tc, "cdi12.element.type.superceded.CWOWB1015W");
         }
         this.updateConfiguration(properties);
     }
@@ -127,14 +124,17 @@ public class CDI12ContainerConfig {
      */
     protected void updateConfiguration(Map<String, Object> properties) {
         if (properties != null) {
-            //we actually only care about one property so read it here
+            //we actually only care about two properties so read them here
             this.enableImplicitBeanArchives = (Boolean) properties.get(AggregatedConfiguration.ENABLE_IMPLICIT_BEAN_ARCHIVES);
+            this.emptyBeansXMLExplicitArchive = (Boolean) properties.get(AggregatedConfiguration.EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE);
         } else {
             this.enableImplicitBeanArchives = null;
+            this.emptyBeansXMLExplicitArchive = null;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "cdi12." + AggregatedConfiguration.ENABLE_IMPLICIT_BEAN_ARCHIVES + ": " + this.enableImplicitBeanArchives);
+            Tr.debug(tc, "cdi." + AggregatedConfiguration.ENABLE_IMPLICIT_BEAN_ARCHIVES + ": " + this.enableImplicitBeanArchives);
+            Tr.debug(tc, "cdi." + AggregatedConfiguration.EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE + ": " + this.emptyBeansXMLExplicitArchive);
         }
-        this.aggregatedConfig.setCdi12Config(this.enableImplicitBeanArchives);
+        this.aggregatedConfig.setCdiConfig(this.enableImplicitBeanArchives, this.emptyBeansXMLExplicitArchive);
     }
 }

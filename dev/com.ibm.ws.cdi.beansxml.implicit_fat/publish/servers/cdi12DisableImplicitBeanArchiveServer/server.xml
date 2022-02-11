@@ -15,4 +15,6 @@
 
 	<cdi12 enableImplicitBeanArchives="false"/>
     
+    <logging traceSpecification="com.ibm.ws.cdi.config.*=all"></logging>
+    
 </server>

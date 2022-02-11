@@ -8,26 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.impl;
+package com.ibm.ws.cdi.internal.interfaces;
 
 import java.net.URL;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.osgi.service.component.annotations.Component;
-
-import com.ibm.ws.cdi.internal.interfaces.BeanParser;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 
 /**
  *
  */
-@Component(name = "com.ibm.ws.cdi.impl.BeanParserImpl", service = { BeanParser.class }, property = { "service.vendor=IBM" })
-public class BeanParserImpl implements BeanParser {
+public interface BeansXmlParser {
 
-    /** {@inheritDoc} */
-    @Override
-    public BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl) {
-        return cdiDeployment.getBootstrap().parse(beansXmlUrl);
-    }
+    /**
+     * Parse a BeansXml from the given URL resource
+     *
+     * @param cdiDeployment The CDI Deployment that the beans.xml is part of
+     * @param beansXmlUrl   A URL where the beans.xml file can be found
+     * @return A BeansXml instance
+     */
+    BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl);
 
 }
