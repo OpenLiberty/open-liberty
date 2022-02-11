@@ -120,7 +120,8 @@ public class EndpointServices {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "backchannel logout:" + socialLoginRequest.getRequestUrl());
             }
-            handleBackchannelLogoutRequest(request, response);
+            SocialLoginConfig config = socialLoginRequest.getSocialLoginConfig();
+            handleBackchannelLogoutRequest(request, response, config);
         } else if (socialLoginRequest.isWellknownConfig()) {
             // handle /.well-known/config
             if (tc.isDebugEnabled()) {
@@ -387,8 +388,13 @@ public class EndpointServices {
         writeToResponse(json, response);
     }
 
-    protected void handleBackchannelLogoutRequest(HttpServletRequest request, HttpServletResponse response) {
-        BackchannelLogoutHelper logoutHelper = new BackchannelLogoutHelper(request, response);
+    protected void handleBackchannelLogoutRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig config) {
+        if (config != null && !(config instanceof ConvergedClientConfig)) {
+            Tr.error(tc, "BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG", new Object[] { request.getRequestURI(), config.getUniqueId() });
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        BackchannelLogoutHelper logoutHelper = new BackchannelLogoutHelper(request, response, (ConvergedClientConfig) config);
         logoutHelper.handleBackchannelLogoutRequest();
     }
 

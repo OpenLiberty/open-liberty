@@ -258,4 +258,12 @@ BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: The back-channel logout
 BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=The back-channel logout request must include a logout_token parameter whose value is a valid logout token.
 BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Update the request to include a logout token.
 
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: The logout token in the back-channel logout request cannot be validated: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=The logout token might be malformed, the token might be in an unexpected format, or another error occurred validating the signature or claims of the token.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=See the user action for the error that is included in this message.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: The back-channel logout request is not valid because there is no OpenID Connect client that matches the request.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=The OpenID Connect feature expects the back-channel request URI to include an OpenID Connect client ID to determine which client to log out.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verify that the request URI includes the OpenID Connect client ID to use for logging out the user.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

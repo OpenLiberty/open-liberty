@@ -24,7 +24,11 @@ public class BackchannelLogoutException extends Exception {
     }
 
     public BackchannelLogoutException(String errorMsg) {
-        super(errorMsg);
+        this(errorMsg, HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    public BackchannelLogoutException(String errorMsg, Throwable cause) {
+        super(errorMsg, cause);
         this.responseCode = HttpServletResponse.SC_BAD_REQUEST;
     }
 

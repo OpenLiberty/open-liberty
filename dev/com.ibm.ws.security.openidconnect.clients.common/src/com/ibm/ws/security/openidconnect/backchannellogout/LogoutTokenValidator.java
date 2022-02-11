@@ -15,7 +15,7 @@ import com.ibm.websphere.security.jwt.JwtToken;
 public class LogoutTokenValidator {
 
     public JwtToken validateToken(String logoutTokenString) throws BackchannelLogoutException {
-        // TODO;
+        // TODO
         return null;
     }
 

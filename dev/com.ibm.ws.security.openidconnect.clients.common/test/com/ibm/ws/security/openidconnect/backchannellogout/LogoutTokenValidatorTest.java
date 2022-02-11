@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -24,6 +25,8 @@ import test.common.SharedOutputManager;
 public class LogoutTokenValidatorTest extends CommonTestClass {
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.openidconnect.common.*=all=enabled");
+
+    final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
 
     LogoutTokenValidator validator;
 

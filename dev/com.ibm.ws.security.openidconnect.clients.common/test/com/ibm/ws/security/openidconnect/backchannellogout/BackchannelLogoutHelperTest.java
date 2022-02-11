@@ -24,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -37,6 +38,7 @@ public class BackchannelLogoutHelperTest extends CommonTestClass {
 
     final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
+    final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
 
     BackchannelLogoutHelper helper;
 
@@ -49,7 +51,7 @@ public class BackchannelLogoutHelperTest extends CommonTestClass {
     @Before
     public void before() {
         System.out.println("Entering test: " + testName.getMethodName());
-        helper = new BackchannelLogoutHelper(request, response);
+        helper = new BackchannelLogoutHelper(request, response, clientConfig);
     }
 
     @After

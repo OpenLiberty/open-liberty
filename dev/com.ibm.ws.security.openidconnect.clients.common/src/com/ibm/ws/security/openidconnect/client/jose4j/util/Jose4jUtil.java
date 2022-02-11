@@ -203,7 +203,7 @@ public class Jose4jUtil {
         return clientConfig.getUseAccessTokenAsIdToken();
     }
 
-    void checkJwtFormatAgainstConfigRequirements(String jwtString, ConvergedClientConfig clientConfig) throws JWTTokenValidationFailedException {
+    public void checkJwtFormatAgainstConfigRequirements(String jwtString, ConvergedClientConfig clientConfig) throws JWTTokenValidationFailedException {
         if (JweHelper.isJwsRequired(clientConfig) && !JweHelper.isJws(jwtString)) {
             String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS", new Object[] { clientConfig.getId() });
             throw new JWTTokenValidationFailedException(errorMsg);

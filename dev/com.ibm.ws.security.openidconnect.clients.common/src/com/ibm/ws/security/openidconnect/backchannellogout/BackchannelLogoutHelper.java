@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 
 public class BackchannelLogoutHelper {
 
@@ -27,15 +28,21 @@ public class BackchannelLogoutHelper {
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+    private final ConvergedClientConfig clientConfig;
 
-    public BackchannelLogoutHelper(HttpServletRequest request, HttpServletResponse response) {
+    public BackchannelLogoutHelper(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
         this.request = request;
         this.response = response;
+        this.clientConfig = clientConfig;
     }
 
     @FFDCIgnore({ BackchannelLogoutException.class })
     public void handleBackchannelLogoutRequest() {
         try {
+            if (clientConfig == null) {
+                String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG");
+                throw new BackchannelLogoutException(errorMsg);
+            }
             String logoutTokenParameter = validateRequestAndGetLogoutTokenParameter();
             validateLogoutToken(logoutTokenParameter);
             performLogout();
