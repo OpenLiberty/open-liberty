@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.test.context.priority;
+package org.test.ee.context.priority;
 
-import org.eclipse.microprofile.context.spi.ThreadContextController;
-import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
+import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
+import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 
 /**
  * Example third-party thread context snapshot, to be used for testing purposes.
@@ -33,9 +33,9 @@ public class PriorityContextSnapshot implements ThreadContextSnapshot {
     }
 
     @Override
-    public ThreadContextController begin() {
+    public ThreadContextRestorer begin() {
         Thread thread = Thread.currentThread();
-        ThreadContextController priorityContextRestorer = new PriorityContextRestorer(thread.getPriority());
+        ThreadContextRestorer priorityContextRestorer = new PriorityContextRestorer(thread.getPriority());
         thread.setPriority(priorityForPropagation);
         return priorityContextRestorer;
     }
