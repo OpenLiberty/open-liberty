@@ -15,6 +15,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
@@ -2851,7 +2852,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "RetryAlarm.stop");
             if (!_finished) {
-                _finished = true;
                 if (_alarm != null) {
                     _alarm.cancel();
                     _alarm = null;
@@ -2906,7 +2906,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                             // destroy remaining resources ?
                             getResources().destroyResources();
                             finishTransaction();
-                            _finished = true;
                             getResources().updateHeuristicOutcome(StatefulResource.HEURISTIC_MIXED);
                             return;
                         } // end if
@@ -2924,19 +2923,19 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                                 Tr.debug(tc, "Retrying in {0} seconds", _wait);
                             _alarm = _alarmManager.scheduleDeferrableAlarm(_wait * 1000L, this);
                         }
-                    } else // finished!
-                    {
-                        _finished = true;
+                    } else {
                         // clean up ... after_completion etc
                         finishTransaction();
                     }
+                } catch (RejectedExecutionException e) {
+                    // We are shutting down. No need for FFDC
+                    finishTransaction();
                 } catch (Throwable ex) {
                     FFDCFilter.processException(ex, "com.ibm.tx.jta.TransactionImpl.RetryAlarm", "1327", this);
                     // probably want to save this exception for sync use
                     // discard if async?
                     // give up at this point?  ... could be transient?
 
-                    _finished = true;
                     // what cleanup to do? ... after_completion, destroy resources?`
                     finishTransaction();
                 }
@@ -2954,6 +2953,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "RetryAlarm.finishTransaction");
 
+            _finished = true;
             notifyCompletion();
 
             if (tc.isEntryEnabled())
