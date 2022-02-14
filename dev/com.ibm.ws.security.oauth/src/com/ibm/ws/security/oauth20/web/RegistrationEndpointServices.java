@@ -50,10 +50,9 @@ import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientSerializer;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.util.Base64;
+import com.ibm.ws.security.oauth20.util.GsonStrategies;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
-
-import io.openliberty.security.common.serialization.GsonStrategies;
 
 /**
  *

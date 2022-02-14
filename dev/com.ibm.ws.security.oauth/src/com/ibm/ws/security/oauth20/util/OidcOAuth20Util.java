@@ -31,8 +31,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.oauth20.TraceConstants;
 
-import io.openliberty.security.common.serialization.GsonStrategies;
-
 /**
  *
  */

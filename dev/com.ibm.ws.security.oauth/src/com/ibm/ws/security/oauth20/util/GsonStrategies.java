@@ -8,11 +8,13 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.common.serialization;
+package com.ibm.ws.security.oauth20.util;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+
+import io.openliberty.security.common.serialization.Beta;
 
 public class GsonStrategies {
 

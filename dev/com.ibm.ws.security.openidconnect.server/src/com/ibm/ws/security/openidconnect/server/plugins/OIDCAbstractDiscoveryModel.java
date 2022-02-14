@@ -14,10 +14,10 @@ import java.util.Arrays;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ibm.ws.security.oauth20.util.GsonStrategies;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 
 import io.openliberty.security.common.serialization.Beta;
-import io.openliberty.security.common.serialization.GsonStrategies;
 
 /**
  * OIDC Discovery Service Bean

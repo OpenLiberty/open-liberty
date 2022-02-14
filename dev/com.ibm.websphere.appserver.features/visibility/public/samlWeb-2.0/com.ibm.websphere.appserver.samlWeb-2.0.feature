@@ -14,7 +14,6 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
   io.openliberty.org.apache.commons.logging, \
   com.ibm.json4j, \
   io.openliberty.org.apache.commons.codec, \
-  com.ibm.ws.org.jose4j, \
-  com.ibm.ws.com.google.gson.2.2.4
+  com.ibm.ws.org.jose4j
 kind=ga
 edition=core
