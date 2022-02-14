@@ -79,6 +79,7 @@ public class CxfX509StrTypeTests extends CommonTests {
     }
 
     //issue 18361 - rearranging the method sequence: testCxfClientSignIssuerSerial() on top of testCxfClientSignThumbPrint()
+    //issue 20061 - add new service for negative test instead of using the one from positive test
 
     /**
      * Description:
@@ -182,11 +183,13 @@ public class CxfX509StrTypeTests extends CommonTests {
                     // pw that svc client code should use
                     "security",
                     // wsdl sevice that svc client code should use
-                    "X509XmlStrService2",
+                    //issue 20061
+                    "X509XmlStrService3",
                     // wsdl that the svc client code should use
                     "",
                     // wsdl port that svc client code should use
-                    "UrnX509Str2",
+                    //issue 20061
+                    "UrnX509Str3",
                     // msg to send from svc client to server
                     "",
                     // expected response from server
