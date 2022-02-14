@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,28 +15,20 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.persistence.OptimisticLockException;
+import javax.persistence.Query;
 
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.fvt.entity.entities.IVersionedEntity;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.EntityVersionEntityEnum;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class VersioningTestLogic extends AbstractTestLogic {
-    private final int entity_pkey = 1;
-
-    private final int initial_intVal = 42;
-    private final String initial_strVal = "Latveria";
-
-    private final int user1change_intVal = 84;
-    private final String user1change_strVal = "Elbonia";
-
-    private final int user2change_intVal = 64;
-    private final String user2change_strVal = "Dagobah";
 
     /**
      * Basic Version Field Test
@@ -78,6 +70,17 @@ public class VersioningTestLogic extends AbstractTestLogic {
             // TODO: Hibernate fails with "org.hibernate.exception.LockAcquisitionException: could not execute statement".
             return;
         }
+
+        final int entity_pkey = 1;
+
+        final int initial_intVal = 42;
+        final String initial_strVal = "Latveria";
+
+        final int user1change_intVal = 84;
+        final String user1change_strVal = "Elbonia";
+
+        final int user2change_intVal = 64;
+        final String user2change_strVal = "Dagobah";
 
         // Execute Test Case
         try {
@@ -298,6 +301,484 @@ public class VersioningTestLogic extends AbstractTestLogic {
             throw new RuntimeException(t);
         } finally {
             System.out.println("VersioningTestLogic.testVersioning001(): End");
+        }
+    }
+
+    /**
+     * Update query version test
+     *
+     * 10 POINTS
+     */
+    public void testVersioning002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
+                                  Object managedComponentObject) {
+        // Verify parameters
+        if (testExecCtx == null || testExecResources == null) {
+            Assert.fail("VersioningTestLogic.testVersioning002(): Missing context and/or resources.  Cannot execute the test.");
+            return;
+        }
+
+        // Fetch JPA Resources
+        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
+        if (jpaResource == null) {
+            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
+            return;
+        }
+
+        // Fetch target entity type from test parameters
+        String entityName = (String) testExecCtx.getProperties().get("EntityName");
+        EntityVersionEntityEnum targetEntityType = EntityVersionEntityEnum.resolveEntityByName(entityName);
+        if (targetEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("Invalid Entity-A type specified ('" + entityName + "').  Cannot execute the test.");
+            return;
+        }
+
+        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+            return;
+        }
+
+        final int entity_one_pkey = 2;
+        final int entity_two_pkey = 3;
+
+        final int initial_one_intVal = 32;
+        final String initial_one_strVal = "Europa";
+        final int initial_two_intVal = 33;
+        final String initial_two_strVal = "Ganymede";
+
+        final int changed_one_intVal = 64;
+        final String changed_one_strVal = "Io";
+        final int changed_two_intVal = 65;
+        final String changed_two_strVal = "Callisto";
+
+        // Execute Test Case
+        try {
+            System.out.println("VersioningTestLogic.testVersioning002(): Begin");
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            // Construct a new entity instances
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+            IVersionedEntity new_entity_one = (IVersionedEntity) constructNewEntityObject(targetEntityType);
+            new_entity_one.setId(entity_one_pkey);
+            new_entity_one.setIntVal(initial_one_intVal);
+            new_entity_one.setStringVal(initial_one_strVal);
+
+            System.out.println("Persisting " + new_entity_one);
+            jpaResource.getEm().persist(new_entity_one);
+
+            // Construct a new entity instances
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + entity_two_pkey + ")...");
+            IVersionedEntity new_entity_two = (IVersionedEntity) constructNewEntityObject(targetEntityType);
+            new_entity_two.setId(entity_two_pkey);
+            new_entity_two.setIntVal(initial_two_intVal);
+            new_entity_two.setStringVal(initial_two_strVal);
+
+            System.out.println("Persisting " + new_entity_two);
+            jpaResource.getEm().persist(new_entity_two);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            System.out.println("Post-Commit Entity 1 State: " + new_entity_one);
+            System.out.println("Post-Commit Entity 2 State: " + new_entity_two);
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("**************************************************");
+
+            try {
+                // Update Entity 1
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                String queryStr = "UPDATE " + targetEntityType.getEntityName() + " e SET e.intVal = :intV, e.stringVal = :strV WHERE e.id = :pk";
+                System.out.println("Create query '" + queryStr + "' (id=" + entity_one_pkey + ")...");
+                Query query = jpaResource.getEm().createQuery(queryStr);
+                query.setParameter("intV", changed_one_intVal);
+                query.setParameter("strV", changed_one_strVal);
+                query.setParameter("pk", entity_one_pkey);
+
+                System.out.println("Executing query...");
+                int updated = query.executeUpdate();
+                Assert.assertEquals("No update was performed", 1, updated);
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // wait so that timestamp values are generated in future values
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+
+                // Update Entity 2
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                String queryStr2 = "UPDATE " + targetEntityType.getEntityName() + " e SET e.intVal = :intV, e.stringVal = :strV WHERE e.id = :pk";
+                System.out.println("Create query '" + queryStr2 + "' (id=" + entity_two_pkey + ")...");
+                query = jpaResource.getEm().createQuery(queryStr2);
+                query.setParameter("intV", changed_two_intVal);
+                query.setParameter("strV", changed_two_strVal);
+                query.setParameter("pk", entity_two_pkey);
+
+                System.out.println("Executing query...");
+                updated = query.executeUpdate();
+                Assert.assertEquals("No update was performed", 1, updated);
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+
+                // Update Entity 2
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                // Validate
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+                IVersionedEntity find_entity1 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_one_pkey);
+                System.out.println("Object returned by find: " + find_entity1);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity_one, find_entity1);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity1));
+                Assert.assertEquals("Assert that the entity's id is " + entity_one_pkey, find_entity1.getId(), entity_one_pkey);
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_two_pkey + ")...");
+                IVersionedEntity find_entity2 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_two_pkey);
+                System.out.println("Object returned by find: " + find_entity2);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_entity2);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity_two, find_entity2);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find_entity2));
+                Assert.assertEquals("Assert that the entity's id is " + entity_two_pkey, find_entity2.getId(), entity_two_pkey);
+
+                Assert.assertNotNull(find_entity1.getVersionObj());
+
+                switch (provider) {
+                    case DEFAULT:
+                    case ECLIPSELINK:
+                    case OPENJPA:
+                        // EclipseLink and OpenJPA updates the version value during bulk update queries
+                        Assert.assertFalse("Expected " + find_entity1.getVersionObj() + " would not equal " + find_entity2.getVersionObj(),
+                                           find_entity1.getVersionObj().equals(find_entity2.getVersionObj()));
+                        if (find_entity1.getVersionObj() instanceof java.sql.Timestamp &&
+                            find_entity2.getVersionObj() instanceof java.sql.Timestamp) {
+                            Assert.assertTrue("Expected find_entity2.getVersionObj() [" + find_entity2.getVersionObj() + "] "
+                                              + "to be after find_entity2.getVersionObj() [" + find_entity1.getVersionObj() + "]",
+                                              ((java.sql.Timestamp) find_entity2.getVersionObj()).after((java.sql.Timestamp) find_entity1.getVersionObj()));
+                        }
+                        break;
+                    case HIBERNATE:
+                        // HIBERNATE does not update the version value during bulk update queries
+                        // For Timestamp versions, the original value is not generated the same for each entity
+                        if (!(find_entity1.getVersionObj() instanceof java.sql.Timestamp &&
+                              find_entity2.getVersionObj() instanceof java.sql.Timestamp)) {
+                            Assert.assertTrue("Expected " + find_entity1.getVersionObj() + " would equal " + find_entity2.getVersionObj(),
+                                              find_entity1.getVersionObj().equals(find_entity2.getVersionObj()));
+                        }
+                        break;
+                }
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+            } catch (Throwable t) {
+                if (jpaResource.getTj().isTransactionActive()) {
+                    jpaResource.getTj().rollbackTransaction();
+                }
+
+                t.printStackTrace();
+                throw t;
+            } finally {
+                // Clean up
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+                IVersionedEntity find_remove_entity1 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_one_pkey);
+                System.out.println("Object returned by find: " + find_remove_entity1);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity1);
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_two_pkey + ")...");
+                IVersionedEntity find_remove_entity2 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_two_pkey);
+                System.out.println("Object returned by find: " + find_remove_entity2);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity2);
+
+                System.out.println("Removing entity...");
+                jpaResource.getEm().remove(find_remove_entity1);
+                jpaResource.getEm().remove(find_remove_entity2);
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+            }
+
+            System.out.println("Ending test.");
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            System.out.println("VersioningTestLogic.testVersioning002(): End");
+        }
+    }
+
+    /**
+     * Test that bulk update queries do not update the managed entities version
+     * values as documented in the specification
+     *
+     * JPA Spec section 4.10: Bulk Update and Delete Operations
+     *
+     * Bulk update maps directly to a database update operation, bypassing optimistic locking checks.
+     * Portable applications must manually update the value of the version column, if desired, and/or
+     * manually validate the value of the version column.
+     */
+    public void testVersioning003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
+                                  Object managedComponentObject) {
+        // Verify parameters
+        if (testExecCtx == null || testExecResources == null) {
+            Assert.fail("VersioningTestLogic.testVersioning003(): Missing context and/or resources.  Cannot execute the test.");
+            return;
+        }
+
+        // Fetch JPA Resources
+        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
+        if (jpaResource == null) {
+            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
+            return;
+        }
+
+        // Fetch target entity type from test parameters
+        String entityName = (String) testExecCtx.getProperties().get("EntityName");
+        EntityVersionEntityEnum targetEntityType = EntityVersionEntityEnum.resolveEntityByName(entityName);
+        if (targetEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("Invalid Entity-A type specified ('" + entityName + "').  Cannot execute the test.");
+            return;
+        }
+
+        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+            return;
+        }
+
+        final int entity_one_pkey = 4;
+
+        final int initial_one_intVal = 32;
+        final String initial_one_strVal = "Europa";
+
+        final int changed_one_intVal = 64;
+        final String changed_one_strVal = "Io";
+
+        // Execute Test Case
+        try {
+            System.out.println("VersioningTestLogic.testVersioning003(): Begin");
+
+            System.out.println("Beginning new transaction...");
+            jpaResource.getTj().beginTransaction();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Construct a new entity instances
+            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+            IVersionedEntity new_entity_one = (IVersionedEntity) constructNewEntityObject(targetEntityType);
+            new_entity_one.setId(entity_one_pkey);
+            new_entity_one.setIntVal(initial_one_intVal);
+            new_entity_one.setStringVal(initial_one_strVal);
+
+            System.out.println("Persisting " + new_entity_one);
+            jpaResource.getEm().persist(new_entity_one);
+
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            System.out.println("Post-Commit Entity 1 State: " + new_entity_one);
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            System.out.println("**************************************************");
+
+            try {
+                // Update Entity 1
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+                IVersionedEntity find_entity1 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_one_pkey);
+                System.out.println("Object returned by find: " + find_entity1);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_entity1);
+
+                Object version1 = find_entity1.getVersionObj();
+                Assert.assertNotNull("Assert that the find version object is not null", version1);
+
+                /*
+                 * JPA Spec 3.3.2:
+                 * Note that when a new transaction is begun, the managed objects in an
+                 * extended persistence context are not reloaded from the database.
+                 *
+                 * Test that for extended scoped, committing and starting a new transaction behaves the same
+                 */
+                if (jpaResource.getPcCtxInfo().getPcType() == PersistenceContextType.CONTAINER_MANAGED_ES) {
+                    System.out.println("Committing transaction...");
+                    jpaResource.getTj().commitTransaction();
+
+                    // Update Entity 1
+                    System.out.println("Beginning new transaction...");
+                    jpaResource.getTj().beginTransaction();
+                    if (jpaResource.getTj().isApplicationManaged()) {
+                        System.out.println("Joining entitymanager to JTA transaction...");
+                        jpaResource.getEm().joinTransaction();
+                    }
+                }
+
+                String queryStr = "UPDATE " + targetEntityType.getEntityName() + " e SET e.intVal = :intV, e.stringVal = :strV WHERE e.id = :pk";
+                System.out.println("Create query '" + queryStr + "' (id=" + entity_one_pkey + ")...");
+                Query query = jpaResource.getEm().createQuery(queryStr);
+                query.setParameter("intV", changed_one_intVal);
+                query.setParameter("strV", changed_one_strVal);
+                query.setParameter("pk", entity_one_pkey);
+
+                System.out.println("Executing query...");
+                int updated = query.executeUpdate();
+                Assert.assertEquals("No update was performed", 1, updated);
+
+                /*
+                 * JPA Spec 3.3.2:
+                 * Note that when a new transaction is begun, the managed objects in an
+                 * extended persistence context are not reloaded from the database.
+                 *
+                 * Test that for extended scoped, committing and starting a new transaction behaves the same
+                 */
+                if (jpaResource.getPcCtxInfo().getPcType() == PersistenceContextType.CONTAINER_MANAGED_ES) {
+                    System.out.println("Committing transaction...");
+                    jpaResource.getTj().commitTransaction();
+
+                    // Update Entity 1
+                    System.out.println("Beginning new transaction...");
+                    jpaResource.getTj().beginTransaction();
+                    if (jpaResource.getTj().isApplicationManaged()) {
+                        System.out.println("Joining entitymanager to JTA transaction...");
+                        jpaResource.getEm().joinTransaction();
+                    }
+                }
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+                IVersionedEntity find2_entity1 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_one_pkey);
+                System.out.println("Object returned by find: " + find2_entity1);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find2_entity1);
+                Assert.assertNotSame("Assert find did not return the original object", new_entity_one, find2_entity1);
+                Assert.assertTrue("Assert entity returned by find is managed by the persistence context.", jpaResource.getEm().contains(find2_entity1));
+                Assert.assertEquals("Assert that the entity's id is " + entity_one_pkey, find_entity1.getId(), entity_one_pkey);
+
+                Object version2 = find2_entity1.getVersionObj();
+                Assert.assertNotNull(version2);
+                Assert.assertEquals(version1, version2);
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+            } catch (Throwable t) {
+                if (jpaResource.getTj().isTransactionActive()) {
+                    jpaResource.getTj().rollbackTransaction();
+                }
+
+                t.printStackTrace();
+                throw t;
+            } finally {
+                // Clean up
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Finding " + targetEntityType.getEntityName() + " (id=" + entity_one_pkey + ")...");
+                IVersionedEntity find_remove_entity1 = (IVersionedEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), entity_one_pkey);
+                System.out.println("Object returned by find: " + find_remove_entity1);
+
+                Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity1);
+
+                System.out.println("Removing entity...");
+                jpaResource.getEm().remove(find_remove_entity1);
+
+                System.out.println("Committing transaction...");
+                jpaResource.getTj().commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                jpaResource.getEm().clear();
+            }
+
+            System.out.println("Ending test.");
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            System.out.println("VersioningTestLogic.testVersioning003(): End");
         }
     }
 }
