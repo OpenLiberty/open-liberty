@@ -37,7 +37,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
  * third-party context, and so we should avoid automatically clearing context via the MicroProfile
  * mechanism which might interfere with that.
  */
-@Component(name = "io.openliberty.microprofile.context.cleared.provider",
+@Component(name = "com.ibm.ws.concurrent.mp.cleared.context.provider",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "alwaysCaptureThreadContext:Boolean=true")
 @SuppressWarnings("deprecation")

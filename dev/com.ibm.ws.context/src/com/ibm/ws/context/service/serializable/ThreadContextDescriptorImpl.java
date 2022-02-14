@@ -52,8 +52,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 /**
  * Represents captured thread context
  */
+@SuppressWarnings("deprecation")
 public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, ThreadContextDeserializationInfo {
     private static final TraceComponent tc = Tr.register(ThreadContextDescriptorImpl.class);
+
+    /**
+     * Provider name for clearing MicroProfile context types.
+     */
+    private static final String MP_CLEARED_CONTEXT = "com.ibm.ws.concurrent.mp.cleared.context.provider";
 
     /**
      * Execution properties.
@@ -147,7 +153,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < contextBytes.length; i++) {
                         String providerName = providerNames.get(i);
                         ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
-                        if (contextProvider == null && !"io.openliberty.microprofile.context.cleared.provider".equals(providerName))
+                        if (contextProvider == null && !MP_CLEARED_CONTEXT.equals(providerName))
                             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
                         contextProviders[i] = contextProvider;
                         if (trace && tc.isDebugEnabled())
@@ -386,7 +392,12 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < threadContext.size(); i++) {
                         String providerName = providerNames.get(i);
                         providerNamesForDefaultContext.remove(providerName);
-                        contextNotApplied.put(threadContextMgr.threadContextProviders.getServiceWithException(providerName), threadContext.get(i));
+
+                        ThreadContextProvider provider = MP_CLEARED_CONTEXT.equals(providerName) //
+                                        ? threadContextMgr.threadContextProviders.getService(providerName) // optional
+                                        : threadContextMgr.threadContextProviders.getServiceWithException(providerName);
+                        if (provider != null)
+                            contextNotApplied.put(provider, threadContext.get(i));
                     }
 
                     // First pass through default context
