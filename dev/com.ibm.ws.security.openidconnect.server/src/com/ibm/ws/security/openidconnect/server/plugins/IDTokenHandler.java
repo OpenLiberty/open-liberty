@@ -222,6 +222,12 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         if (idMediators.hasNext()) {
             IDTokenMediator idMediator = idMediators.next();
 
+            // remove third party id token from token map if not running in beta mode
+            // while feature is still being developed (issue 16298)
+            if (tokenMap.containsKey(OAuth20Constants.THIRD_PARTY_ID_TOKEN) && !isRunningBetaMode()) {
+                tokenMap.remove(OAuth20Constants.THIRD_PARTY_ID_TOKEN);
+            }
+
             idStr = idMediator.mediateToken(tokenMap);
         }
         return idStr;
