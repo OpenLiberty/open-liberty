@@ -14,7 +14,7 @@ IBM-API-Package: \
   io.openliberty.xmlws.common-4.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
- com.ibm.ws.jaxws.2.3.common.jakarta;start-phase:=CONTAINER_LATE, \
+ io.openliberty.xmlws.4.0.common;start-phase:=CONTAINER_LATE, \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.2.3.web.jakarta, \
  com.ibm.ws.jaxws.2.3.wsat, \

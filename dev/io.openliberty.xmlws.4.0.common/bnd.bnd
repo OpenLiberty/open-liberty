@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -13,11 +13,21 @@
 bVersion=1.0
 
 exportVer=2.3
-
-Bundle-Name: JAX-WS 2.3 Common
-Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
-Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
+Bundle-Name: XML Web Services 4.0 Common
+Bundle-SymbolicName: io.openliberty.xmlws.4.0.common.javaee
+Bundle-Description: IBM xmlWS 4.0 Common; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
+
+#
+# Produce a JakartaEE compliant bundle that matches project name.
+#
+jakartaeeMe: true
+jakartaFinalJarName: io.openliberty.xmlws.4.0.common.jar
+jakartaFinalBundleId: io.openliberty.xmlws.4.0.common
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.xmlws.4.0.common.jar
+publish.wlp.javadoc.include: io.openliberty.xmlws.4.0.common.zip
 
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
@@ -29,7 +39,6 @@ Export-Package: \
     com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer},\
     com.ibm.ws.jaxws.client.injection;version=${exportVer},\
     com.ibm.ws.jaxws.endpoint;version=${exportVer},\
-    com.ibm.ws.jaxws.globalhandler;version=${exportVer},\
     com.ibm.ws.jaxws.jaxb;version=${exportVer},\
     com.ibm.ws.jaxws.injection;version=${exportVer},\
     com.ibm.ws.jaxws.metadata;version=${exportVer},\
@@ -44,6 +53,9 @@ Export-Package: \
     com.ibm.wsspi.jaxws;version=${exportVer}
 
 Import-Package: \
+   com.ibm.ws.jaxws.*;version="[2.3,3)", \
+   !com.ibm.ws.jaxws.globalhandler, \
+   com.ibm.ws.jaxws23.*;version="[2.3,3)", \
    javax.xml.bind.*;version="[2.3,3)", \
    javax.xml.ws.*;version="[2.3,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
@@ -74,7 +86,6 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
   com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter,\
   com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory,\
-  com.ibm.ws.jaxws.globalhandler.JaxwsGlobalHandlerServiceImpl,\
   com.ibm.ws.jaxws.JaxwsConduitConfigActivator
 
 
@@ -174,6 +185,7 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 
 -buildpath: \
+    com.ibm.ws.jaxws.2.3.common;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
 	javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
@@ -226,3 +238,4 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
+
