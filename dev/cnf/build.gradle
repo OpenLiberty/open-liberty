@@ -35,6 +35,7 @@ dependencies {
     binaries "org.glassfish:javax.json:1.1.2"
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.10.10"
+    binaries "com.jcraft:jsch:0.1.54"
 }
 
 //TODO: move this function somewhere common

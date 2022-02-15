@@ -151,6 +151,7 @@ task autoFVT {
       include 'org.apache.aries.util-*.jar'
       include 'osgi.core*.jar'
       include 'jackson*.jar'
+      include 'jsch-*.jar'
     }
 
     // Copy the com.ibm.ws.junit.extensions jar

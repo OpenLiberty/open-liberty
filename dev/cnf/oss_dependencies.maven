@@ -43,6 +43,7 @@ com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
+com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
