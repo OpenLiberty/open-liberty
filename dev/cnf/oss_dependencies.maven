@@ -37,7 +37,7 @@ com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
 com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
 com.ibm.ws.componenttest:fat.harness:1.0.0
 com.ibm.ws.componenttest:fat.util:1.0.0
-com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6
+com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0
 com.ibm.ws.componenttest:mantis-collections:2.5.0
 com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
