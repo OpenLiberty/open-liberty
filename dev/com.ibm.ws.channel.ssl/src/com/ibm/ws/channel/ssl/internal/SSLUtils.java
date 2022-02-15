@@ -1186,9 +1186,9 @@ public class SSLUtils {
         sslParameters.setCipherSuites(config.getEnabledCipherSuites(engine));
 
         //Set the configured protocol on the SSLEngine
-        String protocol = config.getSSLProtocol();
-        if (protocol != null) {
-            sslParameters.setProtocols(new String[] { protocol });
+        String[] protocols = config.getSSLProtocol();
+        if (protocols != null) {
+            sslParameters.setProtocols(protocols);
         }
 
         if (type == FlowType.INBOUND) {
