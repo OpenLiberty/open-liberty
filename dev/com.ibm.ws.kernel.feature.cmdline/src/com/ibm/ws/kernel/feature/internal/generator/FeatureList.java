@@ -88,6 +88,7 @@ public class FeatureList {
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
+            addJVM(possibleJavaVersions, "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
 
             List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
