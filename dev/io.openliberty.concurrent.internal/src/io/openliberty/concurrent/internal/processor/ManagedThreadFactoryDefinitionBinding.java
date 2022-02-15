@@ -78,7 +78,15 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     }
 
     void mergeXML(ManagedThreadFactory mtfd) throws InjectionConfigurationException {
-        List<Description> descriptionList = mtfd.getDescriptions();
+        Description mtfdDescription = mtfd.getDescription();
+
+        if ( mtfdDescription != null ) {
+            String descriptionValue = mtfdDescription.getValue();
+            if ( (descriptionValue != null) && !descriptionValue.isEmpty() ) {
+                description = mergeXMLValue(description, descriptionValue, "description", KEY_DESCRIPTION, null);
+                XMLDescription = true;
+            }
+        }
 
         String contextServiceRefValue = mtfd.getContextServiceRef();
         if (contextServiceRefValue != null) {
@@ -86,18 +94,15 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
             XMLContextServiceRef = true;
         }
 
-        if (description != null) {
-            description = mergeXMLValue(description, descriptionList.toString(), "description", KEY_DESCRIPTION, null);
-            XMLDescription = true;
-        }
-
         if (mtfd.isSetPriority()) {
-            priority = mergeXMLValue(priority, mtfd.getPriority(), "priority", KEY_PRIORITY, null);
+            priority = mergeXMLValue(priority, Integer.valueOf(mtfd.getPriority()), "priority", KEY_PRIORITY, null);
             XMLPriority = true;
         }
 
-        List<Property> mxdProps = mtfd.getProperties();
-        properties = mergeXMLProperties(properties, XMLProperties, mxdProps);
+        List<Property> mtfdProps = mtfd.getProperties();
+        if ( !mtfdProps.isEmpty() ) {
+            properties = mergeXMLProperties(properties, XMLProperties, mtfdProps);
+        }
     }
 
     @Override

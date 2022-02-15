@@ -1,2 +1,0 @@
-+  <xsd:include schemaLocation="jakartaee_10.xsd"/>
--  <xsd:include schemaLocation="jakartaee_9.xsd"/>
