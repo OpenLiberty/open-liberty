@@ -13,12 +13,14 @@ package concurrent.mp.fat.v20.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,7 @@ import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -59,11 +62,20 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    @Inject
+    MPAppBean appBean;
+
+    @Inject
+    AsyncClassBean acBean;
+
     @Resource(name = "java:module/env/defaultExecutorRef")
     private ManagedExecutor defaultExecutor;
 
     @Resource(lookup = "java:comp/eeExecutor")
     ManagedExecutorService eeExecutor;
+
+    @Inject
+    MPFTBean ftBean;
 
     ManagedExecutor mpExecutor;
 
@@ -88,6 +100,39 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
                         .propagated(ThreadContext.ALL_REMAINING)
                         .maxAsync(3)
                         .build();
+    }
+
+    /**
+     * Verify that Asynchronous is not allowed at the class level.
+     */
+    @Test
+    public void testAsynchronousNotAllowedOnClass() throws Exception {
+        try {
+            CompletableFuture<Object> stage = acBean.asyncLookup("java:comp/eeExecutor");
+            fail("@Asynchronous should not be supported at class level. " + stage);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Invoke an asynchronous method that relies on a Jakarta EE ManagedExecutorService
+     * while MicroProfile Context Propagation is enabled.
+     */
+    @Test
+    public void testAsyncMethodUsesJakartaEEManagedExecutorService() throws Exception {
+        CompletableFuture<Object> result = appBean.eeAsyncLookup("java:comp/eeExecutor");
+        assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Invoke an asynchronous method that uses a resource reference to the
+     * default managed executor as a MicroProfile ManagedExecutor.
+     */
+    @Test
+    public void testAsyncMethodUsesResourceRefToManagedExecutor() throws Exception {
+        CompletableFuture<Object> result = appBean.mpAsyncLookup("java:module/env/defaultExecutorRef");
+        assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -193,6 +238,20 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
         assertTrue(executor.toString(), executor instanceof ManagedExecutor);
         assertTrue(executor.toString(), executor instanceof ManagedExecutorService);
     }
+
+    /**
+     * Jakarta EE Concurrency should not interfere with MicroProfile FaultTolerance Asynchronous
+     * when only the MicroProfile annotation is present.
+     */
+    @Test
+    public void testFaultToleranceAsyncMethod() throws Exception {
+        CompletionStage<Object> result = ftBean.ftAsyncLookup("java:comp/eeExecutor");
+        assertNotNull(result.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    // TODO testFaultToleranceClassLevelAsynchronousCollidesWithMethod
+
+    // TODO testFaultToleranceCollidesOnSameAsyncMethod
 
     /**
      * Use a MicroProfile ManagedExecutor and a Jakarta EE ManagedExecutorService
