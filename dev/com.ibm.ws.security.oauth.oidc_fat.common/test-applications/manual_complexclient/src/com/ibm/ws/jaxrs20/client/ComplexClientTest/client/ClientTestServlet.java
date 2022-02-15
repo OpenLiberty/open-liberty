@@ -256,9 +256,7 @@ public class ClientTestServlet extends HttpServlet {
 	 */
 	private static void setupSSLClient() {
 	    String JKS_LOCATION = "/resources/security/commonSslClientDefault.jks";
-	    String protocols = "SSLv3,TLSv1";
-        if (!System.getProperty("java.specification.version").startsWith("1.7"))
-            protocols += ",TLSv1.1,TLSv1.2";
+	    String protocols = "SSLv3,TLSv1,TLSv1.1,TLSv1.2";
         System.setProperty("com.ibm.jsse2.disableSSLv3", "false");
         System.setProperty("https.protocols", protocols);
         Security.setProperty("jdk.tls.disabledAlgorithms", "");

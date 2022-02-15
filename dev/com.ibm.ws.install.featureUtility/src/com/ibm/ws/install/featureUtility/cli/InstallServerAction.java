@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,11 +213,8 @@ public class InstallServerAction implements ActionHandler {
                 Collection<String> featuresToInstall = new HashSet<String>();
 
                 try {
-                        featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
-                        // get original server features now
-
-                        //TODO
-                        //featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
+					// get original server features now
+					featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
                         logger.fine("all server features: " + featuresToInstall);
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);
@@ -226,12 +223,13 @@ public class InstallServerAction implements ActionHandler {
                         logger.log(Level.SEVERE, e.getMessage(), e);
                         rc = ReturnCode.RUNTIME_EXCEPTION;
                 }
-                if(featuresToInstall.isEmpty()){
-                        logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
-                } else {
-                        logger.log(Level.FINE, "Additional server features required.");
-                        rc = assetInstallInit(featuresToInstall);
-                }
+
+				if (featuresToInstall.isEmpty()) {
+					logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES
+							.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
+				} else {
+					rc = assetInstallInit(featuresToInstall);
+				}
 
                 return rc;
         }

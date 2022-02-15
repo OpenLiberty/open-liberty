@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
 import static org.junit.Assert.fail;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -142,4 +145,31 @@ public class CommonCookieTools extends CookieTools {
         cm.addCookie(cookie);
 
     }
+
+    public com.gargoylesoftware.htmlunit.util.Cookie retrieveFirstCookieStartingWith(WebClient wc, String cookieName) {
+
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> cookies = retrieveCookieStartingWith(wc, cookieName);
+        if (cookies == null || cookies.isEmpty()) {
+            return null;
+        }
+
+        return (com.gargoylesoftware.htmlunit.util.Cookie) cookies.toArray()[0];
+    }
+
+    public Set<com.gargoylesoftware.htmlunit.util.Cookie> retrieveCookieStartingWith(WebClient wc, String cookieName) {
+
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> cookies = wc.getCookieManager().getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> matchingCookies = new HashSet<com.gargoylesoftware.htmlunit.util.Cookie>();
+        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : cookies) {
+            if (cookie.getName() != null && cookie.getName().startsWith(cookieName)) {
+                matchingCookies.add(cookie);
+            }
+        }
+        return matchingCookies;
+
+    }
+
 }

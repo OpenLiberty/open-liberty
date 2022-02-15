@@ -1,0 +1,82 @@
+<!--
+    Copyright (c) 2021, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>servlet-4.0</feature>
+		<feature>timedexit-1.0</feature>
+		<feature>noShip-1.0</feature> <!-- TODO Remove when GA -->
+	</featureManager>
+
+	<httpEndpoint id="defaultHttpEndpoint"
+		httpPort="${bvt.prop.HTTP_secondary}"
+		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
+
+	<!--
+		Include common configuration. 
+	 -->
+	<include
+		location="${shared.resource.dir}/configs/basicRegistry.xml" />
+	<include
+		location="${shared.resource.dir}/configs/customLoginModule.xml" />
+	<include
+		location="${shared.resource.dir}/configs/libraries.xml" />
+	<include location="${shared.resource.dir}/configs/ssl.xml" />
+
+    <!-- 
+        Configure the CachingProvider and CacheManager.
+     -->
+	<cachingProvider id="CachingProvider"
+		libraryRef="HazelcastClientLib,CustomLoginLib" />
+	<cacheManager id="CacheManager"
+		cachingProviderRef="CachingProvider">
+
+		<properties
+			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+
+	</cacheManager>
+
+	<!--
+		Configure the JCache instances.
+	 -->
+	<cache id="AuthCache" name="AuthCache"
+		cacheManagerRef="CacheManager" />
+	<cache id="LoggedOutCookieCache" name="LoggedOutCookieCache"
+		cacheManagerRef="CacheManager" />
+
+	<!--
+		Configure the authentication cache and the logged out cookie cache to use
+		the JCache instances.
+		
+		Set trackLoggedOutSSOCookies to false to demonstrate that it is ignored
+        when the distributed logged out cookie cache is configured.
+	 -->
+	<authCache cacheRef="AuthCache" />
+	<webAppSecurity	loggedOutCookieCacheRef="LoggedOutCookieCache" trackLoggedOutSSOCookies="false" />
+
+	<!-- 
+		Applications.
+	 -->
+	<application type="war" id="formlogin" name="formlogin"
+		location="${server.config.dir}/apps/formlogin.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="user1" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+</server>

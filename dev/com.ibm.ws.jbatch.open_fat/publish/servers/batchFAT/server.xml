@@ -50,5 +50,6 @@
 	
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission className="java.lang.RuntimePermission" name="*" actions="accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	
 </server>

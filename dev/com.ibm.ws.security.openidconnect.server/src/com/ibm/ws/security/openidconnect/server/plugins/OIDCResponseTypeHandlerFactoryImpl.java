@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.config.OAuth20ConfigProvider;
 import com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.responsetype.OAuth20ResponseTypeHandlerFactory;
-import com.ibm.oauth.core.internal.oauth20.responsetype.impl.OAuth20ResponseTypeHandlerCodeImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
@@ -81,7 +80,7 @@ public class OIDCResponseTypeHandlerFactoryImpl implements OAuth20ResponseTypeHa
                             { OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE, allowedGrantTypesAsString });
                             throw new OAuthConfigurationException(OAuthComponentConfigurationConstants.OAUTH20_GRANT_TYPES_ALLOWED, responseType, null);
                         }
-                        result = new OAuth20ResponseTypeHandlerCodeImpl();
+                        result = new OIDCResponseTypeHandlerCodeImpl();
                     }
                 } else if (OAuth20Constants.RESPONSE_TYPE_TOKEN.equals(rType) ||
                            OIDCConstants.RESPONSE_TYPE_ID_TOKEN.equals(rType)) {

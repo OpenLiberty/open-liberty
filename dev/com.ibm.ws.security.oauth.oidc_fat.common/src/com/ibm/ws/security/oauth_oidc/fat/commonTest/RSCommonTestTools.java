@@ -180,16 +180,10 @@ public class RSCommonTestTools {
             if (Constants.OIDC_OP.equals(providerType)) {
                 tokenType = Utils.getEnvVar("tokenType");
                 if (tokenType == null || tokenType.equals("")) {
-                    String jdkVersion = System.getProperty("java.version");
-                    if (jdkVersion.compareTo("1.7") < 0) {
-                        Log.info(thisClass, thisMethod, "Using JDK 1.6 or earlier; JWT requires JDK 1.7 or later, so forcing token type to " + Constants.ACCESS_TOKEN_KEY);
-                        tokenType = Constants.ACCESS_TOKEN_KEY;
+                    if (allow_MP_JWT) {
+                        tokenType = Utils.getRandomSelection(Constants.JWT_TOKEN, Constants.MP_JWT_TOKEN, Constants.ACCESS_TOKEN_KEY);
                     } else {
-                        if (allow_MP_JWT) {
-                            tokenType = Utils.getRandomSelection(Constants.JWT_TOKEN, Constants.MP_JWT_TOKEN, Constants.ACCESS_TOKEN_KEY);
-                        } else {
-                            tokenType = Utils.getRandomSelection(Constants.JWT_TOKEN, Constants.ACCESS_TOKEN_KEY);
-                        }
+                        tokenType = Utils.getRandomSelection(Constants.JWT_TOKEN, Constants.ACCESS_TOKEN_KEY);
                     }
                 } else {
                     Log.info(thisClass, thisMethod, "Using caller override value of: " + tokenType);

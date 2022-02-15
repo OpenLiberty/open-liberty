@@ -37,6 +37,7 @@ import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
 
 import io.openliberty.concurrent.processor.ContextServiceResourceFactoryBuilder;
@@ -48,6 +49,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  */
 @Component(name = "io.openliberty.thirdparty.context.provider",
            configurationPolicy = ConfigurationPolicy.IGNORE)
+@SuppressWarnings("deprecation")
 public class ThirdPartyContextCoordinator implements ApplicationStateListener, //
                 com.ibm.wsspi.threadcontext.ThreadContextProvider {
     private static final TraceComponent tc = Tr.register(ThirdPartyContextCoordinator.class);
@@ -139,8 +141,8 @@ public class ThirdPartyContextCoordinator implements ApplicationStateListener, /
             in.close();
         }
 
-        context.coordinator = this;
-        // TODO recreate cleared context
+        context.initPostDeserialize(this, ((ThreadContextDescriptor) info).getExecutionProperties());
+
         return context;
     }
 

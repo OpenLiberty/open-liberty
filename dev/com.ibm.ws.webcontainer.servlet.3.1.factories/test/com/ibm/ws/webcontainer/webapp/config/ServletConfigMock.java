@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.webapp.config;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +20,6 @@ import java.util.Set;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
@@ -86,14 +86,8 @@ public class ServletConfigMock {
 
         final Set<String> annotatedClasses = new HashSet<String>();
 
-        WebContainer webContainer = new WebContainer();
-        final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
-
         context.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
-                will(returnValue(version));
-
                 // The Fragment merging requires annotations to function. We're
                 // mocking out all use of annotations and making this XML only,
                 // so some stubs are required.
@@ -198,12 +192,14 @@ public class ServletConfigMock {
             }
         });
 
+        WebContainer webContainer = new WebContainer();
+
         Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
 
-        Method versionSetter = clazz.getDeclaredMethod("setVersion", ServiceReference.class);
+        Field versionSetter = clazz.getDeclaredField("loadedContainerSpecLevel");
 
         versionSetter.setAccessible(true);
-        versionSetter.invoke(webContainer, versionRef);
+        versionSetter.set(null, version);
 
         //With the above object structure, we pass in a mock container with a LIVE nonpersistent cache.
         //The cache is a simple in-memory set of hashmaps used for storing data.

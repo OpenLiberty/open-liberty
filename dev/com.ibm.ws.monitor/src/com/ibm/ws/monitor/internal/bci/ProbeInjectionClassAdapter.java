@@ -32,6 +32,8 @@ import com.ibm.ws.monitor.internal.ProbeImpl;
 import com.ibm.ws.monitor.internal.ProbeListener;
 import com.ibm.ws.monitor.internal.ProbeManagerImpl;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Class adapter that is responsible for injecting the provided probes
  * into classes.
@@ -51,7 +53,7 @@ public class ProbeInjectionClassAdapter extends ClassVisitor {
     Set<ProbeListener> interestedListeners;
 
     public ProbeInjectionClassAdapter(ClassVisitor delegate, ProbeManagerImpl probeManager, final Class<?> clazz) {
-        super(Opcodes.ASM8, delegate);
+        super(ASMHelper.getCurrentASM(), delegate);
         this.probeManager = probeManager;
         this.probedClasses = clazz;
         this.interestedListeners = probeManager.getInterestedByClass(clazz);

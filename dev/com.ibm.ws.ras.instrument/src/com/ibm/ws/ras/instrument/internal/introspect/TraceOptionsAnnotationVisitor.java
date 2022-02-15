@@ -27,15 +27,15 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     private TraceOptionsData packageData;
 
     public TraceOptionsAnnotationVisitor() {
-        super(Opcodes.ASM8);
+        super(Opcodes.ASM9);
     }
 
     public TraceOptionsAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM8, av);
+        super(Opcodes.ASM9, av);
     }
 
     public TraceOptionsAnnotationVisitor(AnnotationVisitor av, TraceOptionsData od) {
-    	super(Opcodes.ASM8, av);
+    	super(Opcodes.ASM9, av);
     	packageData = od;
 	}
 
@@ -68,7 +68,7 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     private final class TraceGroupsValueArrayVisitor extends AnnotationVisitor {
 
         private TraceGroupsValueArrayVisitor(AnnotationVisitor av) {
-            super(Opcodes.ASM8, av);
+            super(Opcodes.ASM9, av);
         }
 
         @Override

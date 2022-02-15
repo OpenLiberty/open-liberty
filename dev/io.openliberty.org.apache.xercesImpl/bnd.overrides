@@ -1,4 +1,0 @@
--include= ~../cnf/resources/bnd/rejar.props
-bVersion=2
-
-Bundle-SymbolicName: io.openliberty.org.apache.xercesImpl

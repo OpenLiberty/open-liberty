@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,13 @@
 package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.util.stream.Collectors;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -26,6 +33,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -49,7 +58,6 @@ Caused by: java.lang.NoClassDefFoundError: javax.persistence.spi.PersistenceProv
 */
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class HibernateSearchTest extends FATServletClient {
 
     public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
@@ -63,6 +71,13 @@ public class HibernateSearchTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
+            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernate")).collect(Collectors.toList());
+            for (Path file : files) {
+                JakartaEE9Action.transformApp(file);
+            }
+        }
 
         //Hibernate Search Test
         WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, HIBERNATE_SEARCH_APP_NAME+".war")

@@ -11,28 +11,41 @@
 
 package com.ibm.ws.jbatch.jms.internal.listener.impl;
 
+import static com.ibm.websphere.ras.Tr.debug;
+import static com.ibm.websphere.ras.Tr.warning;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
+import java.util.Optional;
 //import java.security.AccessController;
 import java.util.Properties;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
 import javax.resource.ResourceException;
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
 
+import com.ibm.jbatch.container.ws.WSJobRepository;
+import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ejbcontainer.mdb.MDBMessageEndpointFactory;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.jbatch.jms.internal.BatchOperationGroup;
 import com.ibm.ws.jbatch.jms.internal.listener.BatchJmsEndpointListener;
+import com.ibm.ws.jbatch.jms.internal.listener.impl.BatchJmsExecutor.EndpointActivationServiceInfo;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.jca.service.WSMessageEndpointFactory;
 //import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 
 /**
  * This class implements the JCA MessageEndpointFactory interface and is used by
@@ -44,9 +57,9 @@ import com.ibm.ws.jca.service.WSMessageEndpointFactory;
  * on this interface.
  * TODO remove MDBMessageEndpointFactory when Sib fixes the dependency
  */
-public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory implements WSMessageEndpointFactory, MDBMessageEndpointFactory {
-
+class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory implements WSMessageEndpointFactory, MDBMessageEndpointFactory {
     private static final TraceComponent tc = Tr.register(MessageEndpointFactoryImpl.class);
+    private final String jndiName;
 
     /**
      * Returned by endpoint activation service when this endpoint is activated.
@@ -59,12 +72,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * Flag to represent whether the Resource Adapter using this MEF uses RRS
      * Transactions.
      */
-    protected boolean isRRSTransactional = false;
-
-    /*
-     * Number of max endpoints to be created.
-     */
-    private int maxEndpoints = 10;
+    boolean isRRSTransactional = false;
 
     /**
      * runtime information about the activation service.
@@ -72,32 +80,76 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     BatchJmsExecutor.EndpointActivationServiceInfo endpointActivationServiceInfo;
 
     /**
-     * runtime information about the destination.
-     */
-    BatchJmsExecutor.NamedAdminObjectServiceInfo adminObjectServiceInfo;
-
-    /**
      * True if the runtime has called activateEndpointInternal but has not
      * called deactivateEndpointInternal.
      */
-    boolean runtimeActivated;
-
-    /**
-     * Use to set class loader of the endpoint listener when create the endpoint
+    private boolean runtimeActivated;
+    
+    /** 
+     * This is a (synthetic) enterprise app name needed by JCA.
+     * There is no enterprise app - the listener is in the batch feature. 
      */
-    /*private static final ThreadContextAccessor threadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
-    */
-    public MessageEndpointFactoryImpl(BatchJmsExecutor batchExecutor) throws RemoteException {
-        super(batchExecutor);
-        initProxy();
+    private final J2EEName j2eeName;
+    private final RRSXAResourceFactory xaResourceFactory;
+    private final ConnectionFactory connFactory;
+    private final BatchOperationGroup opGroup;
+    private final WSJobRepository jobRepo;
+
+    
+    public MessageEndpointFactoryImpl(
+            J2EEName j2eeName,
+            RRSXAResourceFactory xaResourceFactory,
+            ConnectionFactory connFactory,
+            BatchOperationGroup opGroup,
+            WSJobRepository jobRepo,
+            String jndiName) throws RemoteException {
+        super(getProxyConstructor());
+        this.j2eeName = j2eeName;
+        this.xaResourceFactory = xaResourceFactory;
+        this.connFactory = connFactory;
+        this.opGroup = opGroup;
+        this.jobRepo = jobRepo;
+        this.jndiName = jndiName;
     }
 
+    @Override
+    public J2EEName getJ2EEName() {
+        return j2eeName;
+    }
+    
+    /**
+     * Method to get the XAResource corresponding to an ActivationSpec from the
+     * RRSXAResourceFactory
+     *
+     * @param xid Transaction branch qualifier
+     * @return the XAResource
+     */
+    @Override
+    XAResource getRRSXAResource(Xid xid) throws XAResourceNotAvailableException {
+        return xaResourceFactory.getTwoPhaseXAResource(xid);
+    }
+
+    ConnectionFactory getConnectionFactory() {
+        if (runtimeActivated) return this.connFactory;
+        throw new IllegalStateException("ManagedEndpointFactoryImpl = " + this + " is not active, but getConnectionFactory() called.");
+    }
+
+    BatchOperationGroup getBatchOperationGroup() {
+        return this.opGroup;
+    }
+
+    WSJobRepository getWSJobRepository() {
+        return this.jobRepo;
+    }
+    
+    
     /**
      * Create the proxy object.  Proxy object will be used to create the MessageEndpoint
      * to return to resource adapter.
+     * @return 
      * @throws RemoteException
      */
-    private void initProxy() throws RemoteException {
+    private static Constructor<?> getProxyConstructor() throws RemoteException {
         // Determine the Class object for the Proxy class.
         // A MessageEndpoint proxy needs to implement both the
         // Message Listener interface and the MessageEndpoint interface per JCA spec.        
@@ -109,13 +161,9 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         // proxy instance is created. The Proxy Constructor takes a single
         // parameter of type InvocationHandler.
         try {
-            ivProxyCTOR = proxyClass.getConstructor(new Class[] { InvocationHandler.class });
+            return proxyClass.getConstructor(InvocationHandler.class);
         } catch (Throwable t) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(MessageEndpointFactoryImpl.this, tc, "MEF initialization for JmsEndpointListener " + " with messaging listener interface of "
-                        + " javax.jmx.MessageListener" + " failed.");
-            }
-
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "MEF initialization failed for JmsEndpointListener.");
             throw new RemoteException("Unable to get Proxy Constructor Method object", t);
         }
     }
@@ -135,35 +183,29 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * deactivateEndpoint. Nor should this method be called while the provided
      * endpoint activation service is being removed.
      * <p>
-     * 
-     * @param eas
-     *            endpoint activation service configured for the message
-     *            endpoint
-     * @param maxEndpoints
-     *            maximum number of concurrently active endpoints
-     * @param destinationJndi
-     *            Jndi name of the activation spec destination
      * @throws ResourceException
      *             if a failure occurs activating the endpoint
      */
-    public void activateEndpointInternal(EndpointActivationService eas, int maxEndpoints, String destinationJndi) throws ResourceException {
+    public void activateEndpointInternal() throws ResourceException {
+        EndpointActivationServiceInfo info = endpointActivationServiceInfo;
+        final EndpointActivationService eas = info.service;
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         boolean activate;
         Object asInstance = null;
         ResourceException rex = null;
-       /* if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(MessageEndpointFactoryImpl.this, tc, "activateEndpointInternal class loader =" + this.getClass().getClassLoader());
+        
+        if (eas == null && (info.id.endsWith(info.id))) {
+            warning(tc, "warning.batch.activation.spec.not.found", j2eeName.getComponent(), info.id);
+            return;
         }
-        Object origCL = threadContextAccessor.pushContextClassLoader(this.getClass().getClassLoader());*/
+        
         try {
             synchronized (ivProxyCTOR) {
                 if (ivState == INACTIVE_STATE) {
                     activate = true;
                     ivState = ACTIVATING_STATE;
-
                 } else if (ivState == ACTIVE_STATE) {
-                    if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "endpoint already active");
+                    if (isTraceOn && tc.isDebugEnabled()) debug(tc, "endpoint already active");
                     activate = false;
                 } else {
                     activate = false;
@@ -175,7 +217,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
                 // can not pass in null for activation prop
                 Properties actProp = new Properties();
                 String authAlias = null;
-                asInstance = eas.activateEndpoint(this, actProp, authAlias, destinationJndi, null, null);
+                asInstance = eas.activateEndpoint(this, actProp, authAlias, jndiName, null, null);
                 synchronized (ivProxyCTOR) {
                     activationSpec = asInstance;
 
@@ -185,7 +227,6 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
                 }
 
                 setRRSTransactional();
-                setMaxEndpoints(maxEndpoints);
             }
         } catch (ResourceException ex) {
             synchronized (ivProxyCTOR) {
@@ -219,6 +260,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         if (rex != null) {
             throw rex;
         }
+        runtimeActivated = true;
     }
 
     /**
@@ -262,20 +304,19 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * @throws ResourceException
      *             if a failure occurs deactivating the endpoint
      */
-    protected void deactivateEndpointInternal(EndpointActivationService eas) throws ResourceException {
-        Object deactivationKey;
+    void deactivateEndpointInternal() throws ResourceException {
+        if (!runtimeActivated) return;
+        runtimeActivated = false;
+        EndpointActivationService eas = endpointActivationServiceInfo.service;
         ResourceException rex = null;
 
         synchronized (ivProxyCTOR) {
             if ((ivState == ACTIVE_STATE) || (ivState == DEACTIVATE_PENDING_STATE)) {
                 ivState = DEACTIVATING_STATE;
-                deactivationKey = activationSpec;
-                if (deactivationKey == null) {
+                if (null == activationSpec) {
                     // This occurs when the endpoint activation service
-                    // forcefully
-                    // deactivates the endpoint. When this occurs all we need to
-                    // do is change state since the endpoint was already
-                    // deactivated.
+                    // forcefully deactivates the endpoint. When this occurs all we need to
+                    // do is change state since the endpoint was already deactivated.
                     ivState = INACTIVE_STATE; // d450478
                 }
 
@@ -296,21 +337,15 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
 
         synchronized (ivProxyCTOR) {
             // Reset even if the EAS is null or there was a failure, the
-            // endpoint is considered
-            // deactivated (i.e. only try one time)
+            // endpoint is considered deactivated (i.e. only try one time)
             activationSpec = null;
             unsetRecoveryID();
             ivState = INACTIVE_STATE;
         }
 
-        // Tr.info(tc, "MDB_ENDPOINT_DEACTIVATED_CNTR4014I",
-        // getJ2EEName().toString());
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "ENDPOINT_DEACTIVATED " + getJ2EEName().toString());
-        }
-        if (rex != null) {
-            throw rex;
-        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "ENDPOINT_DEACTIVATED " + getJ2EEName().toString());
+        if (rex != null) throw rex;
+        
     }
 
     /**
@@ -323,7 +358,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     }
 
     @Override
-    protected boolean isEndpointActive() {
+    boolean isEndpointActive() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "activationSpec : " + activationSpec);
         }
@@ -340,7 +375,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * transactions, depending on the actual endpoint preferences, and to
      * perform other checks.
      */
-    protected Class<?> createMessageEndpointProxy() {
+    private static Class<?> createMessageEndpointProxy() {
      
         // Note, make MessageEndpoint interface first in the array since
         // we want its method to be invoked if the method name happens to
@@ -381,21 +416,14 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * MessageEndpointHandler.
      * <p>
      */
-    protected MessageEndpointHandler createEndpointHandler() {
-        MessageEndpointHandler meh = null;
-        if (getBatchExecutor().isResourceFactorySet()) {
-            meh = new ExtendedMessageEndpointHandler(this, ivRecoveryId, ivRRSTransactional);
-
-        } else {
-            meh = super.createEndpointHandler();
-        }
-
-        return meh;
+    MessageEndpointHandler createEndpointHandler() {
+        return Optional.ofNullable(xaResourceFactory)
+                .map(f -> this.createExtendedEndpointHandler())
+                .orElseGet(super::createEndpointHandler);
     }
-
-    @Override
-    public J2EEName getJ2EEName() {
-        return super.getJ2EEName();
+    
+    private MessageEndpointHandler createExtendedEndpointHandler() {
+        return new ExtendedMessageEndpointHandler(this, ivRecoveryId, ivRRSTransactional);
     }
 
     /**
@@ -423,15 +451,6 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     }
 
     /**
-     * Set maximum limit for number of endpoint listener
-     * 
-     * @param maxEndpoints
-     */
-    private void setMaxEndpoints(int maxEndpoints) {
-        this.maxEndpoints = maxEndpoints;
-    }
-
-    /**
      * Returns the maximum number of message-driven beans that may be active
      * concurrently.
      * 
@@ -445,7 +464,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public int getMaxEndpoints() {
-        return maxEndpoints;
+        return endpointActivationServiceInfo.maxEndpoints;
     }
 
     /**
@@ -460,14 +479,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * Return activation spec id
      */
     public String getActivationSpecId() {
-        return getBatchExecutor().getEndpointActivationSpecId();
-    }
-
-    /**
-     * Return Jndi name of activation spec destination queue
-     */
-    public String getDestinationId() {
-        return getBatchExecutor().getEndpointDestinationQueueJndi();
+        return endpointActivationServiceInfo.id;
     }
 
     /**

@@ -274,9 +274,13 @@ if [ -n "$defaultFileEncoding" ]; then
   fi
 fi
 
-JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
 if [ -z "${JAVA_HOME}" ]; then
-  JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(command -v java)))/lib/modules
+  JAVA_PATH_FROM_PATH=$(command -v java)
+  if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
+    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+  fi
+else
+  JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
 fi
 
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS

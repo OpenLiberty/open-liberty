@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -1677,6 +1678,22 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         threadName = cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // managed executor uses Liberty global thread pool
+    }
+
+    /**
+     * Cast a MicroProfile ThreadContext to ContextService and attempt to invoke
+     * createContextualProxy to create a Serializable contextual proxy.
+     * Expect it to be rejected because MicroProfile thread context is not serializable.
+     */
+    @Test
+    public void testCreateContextalProxy() throws Exception {
+        ContextService contextSvc = (ContextService) stateContextPropagator;
+        try {
+            Serializable proxy = contextSvc.createContextualProxy(new SerializableContextSnapshot(), Serializable.class);
+            fail("Serializable contextual proxies should not be supported in MicroProfile Context Propagation. " + proxy);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
     }
 
     /**

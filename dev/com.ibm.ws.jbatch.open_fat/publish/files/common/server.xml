@@ -26,6 +26,7 @@
         <properties.derby.embedded createDatabase="create" databaseName="memory:BatchDB" user="user" password="pass" />
     </dataSource>
 
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 

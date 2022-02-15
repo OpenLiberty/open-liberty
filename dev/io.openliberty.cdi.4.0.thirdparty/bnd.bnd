@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-Name: WebSphere CDI Weld Third Party API
 Bundle-SymbolicName: io.openliberty.cdi.4.0.thirdparty
 Bundle-Description: WebSphere CDI 4.0 Weld Third Party API

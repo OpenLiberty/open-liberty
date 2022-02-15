@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -237,18 +237,13 @@ public class HungRequestTiming {
     public void testHungDynamicThresholdUpdate() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
         server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
-
         server.waitForStringInLog("CWWKG0017I", 90000);
+        server.setMarkToEndOfLog();
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestWebApp/TestServlet?sleepTime=4000");
-        CommonTasks.writeLogMsg(Level.INFO, "Calling TestWebApp Application with URL=" + url.toString());
-        HttpURLConnection con = getHttpConnection(url);
-        BufferedReader br = getConnectionStream(con);
-        br.readLine();
+        createRequest(4000);
 
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for hung detection warning");
         server.waitForStringInLog("TRAS0114W", 30000);
-
         server.setMarkToEndOfLog();
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
@@ -262,19 +257,28 @@ public class HungRequestTiming {
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 3s");
         server.setServerConfigurationFile("server_hungRequestThreshold3.xml");
         server.waitForStringInLogUsingMark("CWWKG0017I", 90000);
+        server.setMarkToEndOfLog();
 
-        CommonTasks.writeLogMsg(Level.INFO, "Calling TestWebApp Application with URL=" + url.toString());
-        con = getHttpConnection(url);
-        br = getConnectionStream(con);
-        br.readLine();
+        createRequest(4000);
 
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for hung detection warning");
-        CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning 1 : " + line1);
         server.waitForStringInLogUsingMark("TRAS0114W", 30000);
+        server.setMarkToEndOfLog();
 
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int current = lines.size();
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Warnings found : " + current);
+
+        // Retry the request again, since sometimes in the SOE builds, the feature update takes
+        // some time, and the request is created before the feature is properly updated,
+        // and the requestTiming warning does not registered in time.
+        if (current == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry the request because no hung request warning found!");
+            createRequest(4000);
+            server.waitForStringInLogUsingMark("TRAS0114W", 30000);
+            lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
+            current = lines.size();
+        }
         assertTrue("No Hung detection warning found!!!", (current - previous > 0));
 
         String line2 = lines.get(current - 1);

@@ -721,9 +721,13 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
-  JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   if [ -z "${JAVA_HOME}" ]; then
-    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(command -v java)))/lib/modules
+    JAVA_PATH_FROM_PATH=$(command -v java)
+    if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
+      JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+    fi
+  else
+    JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   fi
 
   # If we are running on Java 9, apply Liberty's built-in java 9 options  
@@ -1324,11 +1328,6 @@ criuRestore()
   return $rc
 }         
 
-serverHasCheckpoint()
-{
-  [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]
-}
-
 ## restoreServer: restore a server from a checkpoint image if it exists
 ##
 
@@ -1336,7 +1335,7 @@ restoreServer()
 {
   BACKGROUND_RESTORE=$1
 
-  if [ "${ACTION}" = "checkpoint" ] || ! serverHasCheckpoint ; then
+  if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
     return 1
   fi
 
@@ -1404,7 +1403,7 @@ case "$ACTION" in
       exit $?
     fi
 
-    if serverHasCheckpoint && [ ${ACTION} != "checkpoint" ]; then
+    if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
       # If there is no checkpoint, then maintain legacy behavior of 
       # allowing server launch to check for already running instance.

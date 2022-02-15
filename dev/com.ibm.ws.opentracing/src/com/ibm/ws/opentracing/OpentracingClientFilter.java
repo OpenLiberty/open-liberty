@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
 
     private OpentracingFilterHelper helper;
+
+    private boolean spanErrorLogged = false;
 
     OpentracingClientFilter(OpentracingFilterHelper helper) {
         setFilterHelper(helper);
@@ -114,18 +116,25 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), outgoingURL);
             spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), clientRequestContext.getMethod());
 
-            try (ActiveSpan activeSpan = spanBuilder.startActive()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " activeSpan", activeSpan);
+            try{
+                try (ActiveSpan activeSpan = spanBuilder.startActive()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, methodName + " activeSpan", activeSpan);
+                    }
+
+                    tracer.inject(
+                                  activeSpan.context(),
+                                  Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+
+                    Continuation continuation = activeSpan.capture();
+
+                    clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, continuation);
                 }
-
-                tracer.inject(
-                              activeSpan.context(),
-                              Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
-
-                Continuation continuation = activeSpan.capture();
-
-                clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, continuation);
+            } catch (NoSuchMethodError e){
+                if (!spanErrorLogged) {
+                    Tr.error(tc, "OPENTRACING_COULD_NOT_START_SPAN", e);
+                    spanErrorLogged = true;
+                }
             }
         } else {
             ActiveSpan currentActiveSpan = tracer.activeSpan();

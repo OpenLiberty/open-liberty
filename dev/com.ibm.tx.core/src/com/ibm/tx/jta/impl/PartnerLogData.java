@@ -11,11 +11,11 @@
 package com.ibm.tx.jta.impl;
 
 import java.io.NotSerializableException;
+import java.util.Set;
 
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
@@ -335,7 +335,7 @@ public abstract class PartnerLogData {
     }
 
     // Default implementation for non-XA recovery data items
-    public boolean recover(ClassLoader cl, ConcurrentHashSet<Xid> xids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
+    public boolean recover(ClassLoader cl, Set<Xid> xids, byte[] failedStoken, byte[] cruuid, int restartEpoch) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "recover", new Object[] { this, cl, xids, failedStoken, cruuid, restartEpoch });
 

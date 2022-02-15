@@ -26,6 +26,7 @@
 			createDatabase="create" user="user" password="pass" />
 	</dataSource>
 	
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
 </server>

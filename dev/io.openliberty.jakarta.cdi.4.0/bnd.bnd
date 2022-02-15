@@ -11,55 +11,66 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.cdi.4.0; singleton:=true
 
-Export-Package: jakarta.decorator; version=3.0, \
- jakarta.enterprise.context; version=3.0, \
- jakarta.enterprise.context.control; version=3.0, \
- jakarta.enterprise.context.spi; version=3.0, \
- jakarta.enterprise.event; version=3.0, \
- jakarta.enterprise.inject; version=3.0, \
- jakarta.enterprise.inject.literal; version=3.0, \
- jakarta.enterprise.inject.se; version=3.0, \
- jakarta.enterprise.inject.spi; version=3.0, \
- jakarta.enterprise.inject.spi.configurator; version=3.0, \
- jakarta.enterprise.util; version=3.0, \
- jakarta.inject; version=2.0.1
+#these exports are copied from the manifest files of the original bundles
+Export-Package: \
+ jakarta.decorator;version="3.0";uses:="jakarta.enterprise.inject",\
+ jakarta.enterprise.context;version="3.0";uses:="jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.context.control;version="3.0";uses:="jakarta.enterprise.context,jakarta.interceptor",\
+ jakarta.enterprise.context.spi;version="3.0",\
+ jakarta.enterprise.event;version="3.0";uses:="jakarta.enterprise.util",\
+ jakarta.enterprise.inject;version="3.0";uses:="jakarta.enterprise.context,jakarta.enterprise.inject.spi,jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.inject.build.compatible.spi;version="3.0";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi,jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.declarations,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.inject.literal;version="3.0";uses:="jakarta.enterprise.util,jakarta.inject",\
+ jakarta.enterprise.inject.se;version="3.0";uses:="jakarta.enterprise.inject,jakarta.enterprise.inject.spi",\
+ jakarta.enterprise.inject.spi;version="3.0";uses:="jakarta.el,jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi.configurator,jakarta.interceptor",\
+ jakarta.enterprise.inject.spi.configurator;version="3.0";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi,jakarta.enterprise.util",\
+ jakarta.enterprise.util;version="3.0",\
+ jakarta.inject;version="2.0.1",\
+ jakarta.enterprise.lang.model;version="4.0";uses:="jakarta.enterprise.lang.model.declarations,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.lang.model.declarations;version="4.0";uses:="jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.types",\
+ jakarta.enterprise.lang.model.types;version="4.0";uses:="jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.declarations"
 
-
-Import-Package:  jakarta.el; version="[4.0.0,5.0.0)", \
- jakarta.decorator; version=3.0, \
- jakarta.enterprise.context; version=3.0, \
- jakarta.enterprise.context.control; version=3.0, \
- jakarta.enterprise.context.spi; version=3.0, \
- jakarta.enterprise.event; version=3.0, \
- jakarta.enterprise.inject; version=3.0, \
- jakarta.enterprise.inject.literal; version=3.0, \
- jakarta.enterprise.inject.spi; version=3.0, \
- jakarta.enterprise.inject.spi.configurator; version=3.0, \
- jakarta.enterprise.util; version=3.0, \
- jakarta.inject; version=2.0, \
- jakarta.interceptor;version=2.0, \
+#these imports are copied from the manifest files of the original bundles. The only addition is for org.osgi.framework.
+Import-Package: \
+ jakarta.el;version="4.0",\
+ jakarta.enterprise.context;version="[3.0,4)",\
+ jakarta.enterprise.context.spi;version="[3.0,4)",\
+ jakarta.enterprise.event;version="[3.0,4)",\
+ jakarta.enterprise.inject;version="[3.0,4)",\
+ jakarta.enterprise.inject.spi;version="[3.0,4)",\
+ jakarta.enterprise.inject.spi.configurator;version="[3.0,4)",\
+ jakarta.enterprise.lang.model;version="[4.0,5)",\
+ jakarta.enterprise.lang.model.declarations;version="[4.0,5)",\
+ jakarta.enterprise.lang.model.types;version="[4.0,5)",\
+ jakarta.enterprise.util;version="[3.0,4)",\
+ jakarta.inject;version="[2.0,3)",\
+ jakarta.interceptor;version="[2.1,3)", \
  org.osgi.framework
-
-Include-Resource: \
-  META-INF=resources/META-INF, \
-  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,5)}!/beans_1_0.xsd, \
-  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,5)}!/beans_1_1.xsd, \
-  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,5)}!/beans_2_0.xsd, \
-  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,5)}!/beans_3_0.xsd, \
-  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,5)}!/beans_4_0.xsd
 
 Private-Package: com.ibm.ws.cdi.provider.service
 
+Include-Resource: \
+  META-INF=resources/META-INF, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,4.1)}!/beans_1_0.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,4.1)}!/beans_1_1.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,4.1)}!/beans_2_0.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,4.1)}!/beans_3_0.xsd, \
+  @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0,4.1)}!/beans_4_0.xsd
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.inject:jakarta.inject-api;version=2.0.1,\
-	jakarta.enterprise:jakarta.enterprise.cdi-api;version=4.0.0,\
+	jakarta.inject:jakarta.inject-api;version="[2.0.1,2.1)",\
+	jakarta.enterprise:jakarta.enterprise.cdi-api;version="[4.0,4.1)",\
+	jakarta.enterprise:jakarta.enterprise.lang-model;version="[4.0,4.1)",\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	org.eclipse.osgi

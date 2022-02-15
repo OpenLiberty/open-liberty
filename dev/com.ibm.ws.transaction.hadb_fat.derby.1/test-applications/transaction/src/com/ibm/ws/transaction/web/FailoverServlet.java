@@ -136,6 +136,7 @@ public class FailoverServlet extends FATServlet {
             con.commit();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+            throw ex;
         }
     }
 
@@ -164,9 +165,8 @@ public class FailoverServlet extends FATServlet {
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
-            throw new Exception();
+            throw e;
         }
-
     }
 
     public void driveSixTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -184,7 +184,7 @@ public class FailoverServlet extends FATServlet {
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
-            throw new Exception();
+            throw e;
         }
 
     }
@@ -208,6 +208,7 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: caught SYSTEMEXCEPTION as expected: " + sysex);
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: unexpected EXCEPTION: " + e);
+            throw e;
         }
     }
 
@@ -249,8 +250,8 @@ public class FailoverServlet extends FATServlet {
 
     public void checkForDuplicates(HttpServletRequest request,
                                    HttpServletResponse response) throws Exception {
-        Set<List> resultSet;
-        List row;
+        Set<List<Number>> resultSet;
+        List<Number> row;
         Statement recoveryStmt = null;
         ResultSet recoveryRS = null;
 
@@ -266,7 +267,7 @@ public class FailoverServlet extends FATServlet {
 
             recoveryRS = recoveryStmt.executeQuery(queryString);
 
-            resultSet = new HashSet<List>();
+            resultSet = new HashSet<List<Number>>();
 
             while (recoveryRS.next()) {
                 final long ruId = recoveryRS.getLong(1);
@@ -275,7 +276,7 @@ public class FailoverServlet extends FATServlet {
                 final byte[] data = recoveryRS.getBytes(4);
                 String theBytesString = toHexString(data, 32);
                 System.out.println("SQL TRANLOG: ruId: " + ruId + " sectionId: " + sectId + " item: " + index + " data: " + theBytesString);
-                row = new ArrayList();
+                row = new ArrayList<Number>();
                 row.add(ruId);
                 row.add(sectId);
                 row.add(index);
@@ -293,6 +294,7 @@ public class FailoverServlet extends FATServlet {
             conn.commit();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+            throw ex;
         } finally {
             if (recoveryRS != null && !recoveryRS.isClosed())
                 recoveryRS.close();
@@ -336,7 +338,7 @@ public class FailoverServlet extends FATServlet {
         return (result.toString());
     }
 
-    private Connection getConnection() throws SQLException {
+    private Connection getConnection() throws Exception {
         Connection conn = null;
         try {
             InitialContext context = new InitialContext();
@@ -346,6 +348,7 @@ public class FailoverServlet extends FATServlet {
             conn = ds.getConnection();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
+            throw ex;
         }
 
         System.out.println("FAILOVERSERVLET: getConnection returned connection - " + conn);
