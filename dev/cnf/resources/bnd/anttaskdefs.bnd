@@ -27,7 +27,7 @@ repo.nlsTasks.path: ${path;\
     ${repo;com.ibm.ws.componenttest:mantis-nls-standalone;2.5.0}}
 
 repo.portSelector.path: ${path;\
-    ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;6.0.6}}
+    ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;4.0.0}}
 
 repo.featureTasks.path: ${path;\
     ${repo;wlp-featureTasks},\
@@ -35,7 +35,7 @@ repo.featureTasks.path: ${path;\
     ${repo;com.ibm.ws.logging.core},\
     ${repo;biz.aQute.bnd:biz.aQute.bnd;5.3.0},\
     ${repo;com.ibm.ws.org.apache.ant},\
-    ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;6.0.6},\
+    ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;4.0.0},\
     ${repo;org.jsoup:jsoup;1.7.2},\
     ${repo;org.apache.aries:org.apache.aries.util;1.1.3},\
     ${repo;org.osgi:org.osgi.core;6.0.0}}
