@@ -20,7 +20,7 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.common.*, \
- org.apache.wss4j.common.cache;version=2.3.0
+ org.apache.wss4j.common.cache;version=2.3.3
   
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \
