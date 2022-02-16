@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
@@ -38,6 +39,7 @@ import web.PersistentTimersTestServlet;
  * Tests for persistent scheduled executor via persistent EJB timers
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
