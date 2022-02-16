@@ -212,7 +212,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             return sslContext;
         }
 
-        String direction = null;
+        String direction = Constants.DIRECTION_OUTBOUND;
         if (connectionInfo != null) {
             direction = (String) connectionInfo.get(Constants.CONNECTION_INFO_DIRECTION);
         }
@@ -232,14 +232,18 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             TrustManager[] trustManagers = trustMgrs.toArray(new TrustManager[trustMgrs.size()]);
             // use default SecureRandom
             sslContext.init(keyManagers, trustManagers, null);
+        } else if (keyMgrs.isEmpty() && (direction != null && direction.equals(Constants.DIRECTION_INBOUND))) {
+            String message = TraceNLSHelper.getInstance().getString("ssl.config.error.CWPKI0835E",
+                                                                    "An SSL/TLS configuration cannot be created for inbound connection due to no key manager being created.");
+            throw new SSLException(message);
         } else if (keyMgrs.isEmpty() && !trustMgrs.isEmpty()) {
             TrustManager[] trustManagers = trustMgrs.toArray(new TrustManager[trustMgrs.size()]);
             // use default SecureRandom
             sslContext.init(null, trustManagers, null);
-        } else if (keyMgrs.isEmpty() && (direction != null && direction.equals(Constants.DIRECTION_INBOUND))) {
-            throw new SSLException("Null key manager on inbound connection.");
         } else {
-            throw new SSLException("Null trust and key managers.");
+            String message = TraceNLSHelper.getInstance().getString("ssl.config.error.CWPKI0836E",
+                                                                    "An SSL/TLS configuration cannot created due to no key and trust managers being created.");
+            throw new SSLException(message);
         }
 
         // this may need to be made configurable at some point.
@@ -625,14 +629,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         if (protocolVal == null) {
             throw new IllegalArgumentException("Protocol is not specified.");
         } else {
-<<<<<<< HEAD
-            if (protocolVal.split(",").length > 1)
-                protocolVal = defaultProtocol;
-=======
             String[] protocols = protocolVal.split(",");
             if (protocols.length > 1)
                 protocolVal = protocols[0];
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         }
         final String protocol = protocolVal;
 

@@ -101,11 +101,6 @@ public class SSLConfig {
         Properties props = jsseHelper.getProperties(sslAliasName);
         String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
 
-<<<<<<< HEAD
-        // only set the protocol on the socket if it is set to a specific protocol
-        String[] protocols = Constants.getSSLProtocol(protocol);
-
-=======
         // protocol(s) need to be in an array
         String[] protocols = protocol.split(",");
 
@@ -117,7 +112,6 @@ public class SSLConfig {
             }
         }
 
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         return protocols;
     }
 
