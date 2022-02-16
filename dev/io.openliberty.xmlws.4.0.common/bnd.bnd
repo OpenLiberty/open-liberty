@@ -70,7 +70,6 @@ Import-Package: \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.*,\
    com.ibm.wsspi.jaxws
    
 # Use Dynamic Import Packages for JAXB Context Factory,
