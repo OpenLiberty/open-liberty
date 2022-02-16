@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1216,9 +1216,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         // if the channel stopped while we parsed this Expect request, we want
         // to send an error to close the connection and avoid the body transfer
         // PK12235, check for a full stop only
-        if (this.myLink.getChannel().isStopped()) {
+        // PH41928 check also for stopping. WC will reject this with 503 if the server
+        // is stopping.  cfw should send the 503 at this point so the body of the
+        // request is not lost.
+        if (!this.myLink.getChannel().isRunning()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Channel stopped, sending error instead of 100-continue");
+                Tr.debug(tc, "Channel " + (this.myLink.getChannel().isStopped()? "stopped":"stopping") + ", sending error instead of 100-continue");
             }
             try {
                 sendError(StatusCodes.UNAVAILABLE.getHttpError());
