@@ -135,8 +135,8 @@ fallback.method.not.found.CWMFT5021E.explanation=A fallback method was declared 
 fallback.method.not.found.CWMFT5021E.useraction=Either remove the fallback annotation or add the missing method. If the fallback method exists but is still not being found, check that the parameter types and return type of the two methods match and that the fallback method is visible to the class which declares the annotated method.
 
 # Conflict with Concurrency's @Asynchronous
-anno.conflict.CWMFT5022E=CWMFT5022E: MicroProfile Fault Tolerance annotations cannot be used in combination with {0}.
-anno.conflict.CWMFT5022E.explanation=It is not supported to intermix MicroProfile Fault Tolerance annotations and the specified annotation.
+anno.conflict.CWMFT5022E=CWMFT5022E: MicroProfile Fault Tolerance annotations cannot be used in combination with the {0} annotation.
+anno.conflict.CWMFT5022E.explanation=Intermixing MicroProfile Fault Tolerance annotations with the specified annotation is not supported.
 anno.conflict.CWMFT5022E.useraction=Remove the MicroProfile Fault Tolerance annotations or the conflicting annotation.
 
 #Generic error for internal failures. 
