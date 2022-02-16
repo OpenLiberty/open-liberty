@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -439,6 +439,7 @@ public class Constants {
         return sb.toString();
     }
 
+<<<<<<< HEAD
     public static String[] getSSLProtocol(String protocol) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getSSLProtocol");
@@ -461,6 +462,8 @@ public class Constants {
         return protocols;
     }
 
+=======
+>>>>>>> 236b78379c0124d5654b7c83411351673f433d46
     public static final List<String> MULTI_PROTOCOL_LIST = Arrays.asList(new String[] {
                                                                                         PROTOCOL_TLSV1,
                                                                                         PROTOCOL_TLSV1_1,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2021 IBM Corporation and others.
+ * Copyright (c) 2007, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,8 +88,13 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
+<<<<<<< HEAD
     // collect the good protocols as we run across them
     private final List<String> goodProtocols = new ArrayList<>();
+=======
+    //get the protocolHelper
+    private final ProtocolHelper protocolHelper = new ProtocolHelper();
+>>>>>>> 236b78379c0124d5654b7c83411351673f433d46
 
     /**
      * Private constructor, use getInstance().
@@ -465,7 +470,11 @@ public class SSLConfigManager {
         String sslProtocol = (String) map.get("sslProtocol");
         if (sslProtocol != null && !sslProtocol.isEmpty()) {
             try {
+<<<<<<< HEAD
                 isSSLProtocolValueGood(sslProtocol);
+=======
+                protocolHelper.checkProtocolValueGood(sslProtocol);
+>>>>>>> 236b78379c0124d5654b7c83411351673f433d46
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
             } catch (Exception e) {
                 throw e;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,6 +212,11 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             return sslContext;
         }
 
+        String direction = null;
+        if (connectionInfo != null) {
+            direction = (String) connectionInfo.get(Constants.CONNECTION_INFO_DIRECTION);
+        }
+
         // Create the SSL context needed by the JSSE.
         sslContext = getSSLContextInstance(sslConfig);
 
@@ -231,6 +236,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             TrustManager[] trustManagers = trustMgrs.toArray(new TrustManager[trustMgrs.size()]);
             // use default SecureRandom
             sslContext.init(null, trustManagers, null);
+        } else if (keyMgrs.isEmpty() && (direction != null && direction.equals(Constants.DIRECTION_INBOUND))) {
+            throw new SSLException("Null key manager on inbound connection.");
         } else {
             throw new SSLException("Null trust and key managers.");
         }
@@ -618,8 +625,14 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         if (protocolVal == null) {
             throw new IllegalArgumentException("Protocol is not specified.");
         } else {
+<<<<<<< HEAD
             if (protocolVal.split(",").length > 1)
                 protocolVal = defaultProtocol;
+=======
+            String[] protocols = protocolVal.split(",");
+            if (protocols.length > 1)
+                protocolVal = protocols[0];
+>>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         }
         final String protocol = protocolVal;
 
@@ -667,6 +680,11 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             } else {
                 throw new SSLException(ex);
             }
+        } catch (Throwable t) {
+            Throwable cause = t.getCause();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Throwable occurred getting SSL context.", new Object[] { cause });
+            throw new SSLException(cause.getMessage());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
