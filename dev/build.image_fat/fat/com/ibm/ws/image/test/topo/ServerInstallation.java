@@ -11,14 +11,21 @@
 package com.ibm.ws.image.test.topo;
 
 import static com.ibm.ws.image.test.util.FileUtils.IS_WINDOWS;
+import static com.ibm.ws.image.test.util.FileUtils.load;
+import static com.ibm.ws.image.test.util.FileUtils.selectMissing;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,32 +52,50 @@ public class ServerInstallation {
 
     public ServerInstallation(String homePath) {
         this.homePath = homePath;
+        
+        this.path = this.homePath + "/wlp";
+        this.binPath = this.path + "/bin";
+        this.libPath = this.path + "/lib";
+        
+        this.propPath = this.libPath + "/versions/WebSphereApplicationServer.properties";
+        this.featuresPath = this.libPath + "/features";
     }
 
     private final String homePath;
+    
+    private final String path;
+    private final String binPath;
+    private final String libPath;
+
+    private final String featuresPath;
+    private final String propPath;
 
     public String getHomePath() {
         return homePath;
     }
 
-    public String getLibPath() {
-        return getHomePath() + "/wlp/lib";
+    public String getPath() {
+        return path;
+    }
+    
+    public String getBinPath() {
+        return binPath;
     }
 
+    public String getLibPath() {
+        return libPath;
+    }
+
+    public String getFeaturesPath() {
+        return featuresPath;
+    }
+    
     public String getPropertiesPath() {
-        return getLibPath() + "/versions/WebSphereApplicationServer.properties";
+        return propPath; 
     }
 
     public void updateProperties(Properties newProperties) throws IOException {
         FileUtils.updateProperties( getPropertiesPath(), newProperties);
-    }
-
-    public String getFeaturesPath() {
-        return getLibPath() + "/features";
-    }
-    
-    public String getBinPath() {
-        return getHomePath() + "/wlp/bin";
     }
 
     public String[] getScriptPaths() {
@@ -510,12 +535,180 @@ public class ServerInstallation {
 
     //
 
-    public Map<String, Object> getInstallMap() throws Exception {
-        return ServerImages.getInstallMap( getHomePath() );
+    public void verifyRequiredElements(String[] requiredElements) throws Exception {
+        String wlpPath = getPath();
+        File wlpRoot = new File(wlpPath);
+        if ( !wlpRoot.exists() ) {
+            fail("Installation [ " + wlpPath + " ] does not exist");
+        }
+        log("Installation [ " + wlpPath + " ] exists");
+
+        String defaultTemplatePath = wlpPath + "/templates/servers/defaultServer/server.xml"; 
+        File defaultTemplate = new File(defaultTemplatePath);
+        if ( !defaultTemplate.exists() ) {
+            fail("Default template [ " + defaultTemplatePath + " ] does not exist");
+        }
+        log("Default template [ " + defaultTemplatePath + " ] exists");
+
+        log("Required template elements:");
+        for ( String element : requiredElements ) {
+            log("[ " + element + " ]");
+        }
+
+        List<String> defaultTemplateLines = load(defaultTemplate); // throws IOException
+        List<String> missingElements = selectMissing(defaultTemplateLines, requiredElements);
+
+        if ( (missingElements != null) && !missingElements.isEmpty() ) {
+            log("Missing default template elements:");
+            for ( String missing : missingElements ) {
+                log("[ " + missing + " ]");
+            }
+            fail("Missing default template elements");
+        } else {
+            log("Default template [ " + defaultTemplatePath + " ] has all required elements");
+        }
+    }
+    
+    //
+    
+    public static final String INSTALL_MAP_PREFIX = "com.ibm.ws.install.map";
+    public static final String INSTALL_MAP_SUFFIX = ".jar";
+
+    public static boolean isInstallMap(File parent, String name) {
+        return ( name.startsWith(INSTALL_MAP_PREFIX) && name.endsWith(INSTALL_MAP_SUFFIX) );        
+    }
+    
+    public static String getMapVersion(String name) {
+        String version = FileUtils.removeEnds(name, INSTALL_MAP_PREFIX, INSTALL_MAP_SUFFIX);
+        return ( version.isEmpty() ? null : version );
+    }
+
+    private boolean failedInstallMapPath; 
+    private String installMapPath;
+
+    public String getInstallMapPath() {
+        if ( failedInstallMapPath ) {
+            fail("Previous failure to locate install map");
+            return null;
+        }
+        
+        if ( installMapPath == null ) {
+            try {
+                installMapPath = locateInstallMap();
+                failedInstallMapPath = false;
+            } catch ( Throwable th ) {
+                installMapPath = null;
+                failedInstallMapPath = true;
+                throw th;
+            }
+        }
+
+        return installMapPath;
+    }
+
+    private String locateInstallMap() {
+        String useLibPath = getLibPath();
+        String[] installMapNames = (new File(useLibPath)).list( ServerInstallation::isInstallMap );
+        if ( installMapNames == null ) {
+            fail("Failed to list library folder [ " + useLibPath + " ]");
+            return null;
+        } else if ( installMapNames.length == 0 ) {
+            fail("Library folder has no install map jars [ " + useLibPath + " ]");
+            return null;            
+        }
+
+        String latestMapName = null;
+        String latestVersion = null;
+
+        for ( String nextMap : installMapNames ) {
+            String nextVersion = getMapVersion(nextMap);
+
+            if ( (nextVersion == null) ||
+                 ((latestMapName == null) || nextVersion.compareTo(latestVersion) > 0) ) {
+                latestMapName = nextMap;
+                latestVersion = nextVersion;
+            }
+
+            if ( nextVersion == null ) {
+                break; // The null version is highest.
+            }
+        }
+
+        String latestMapPath = useLibPath + "/" + latestMapName; 
+        log("Install map [ " + latestMapPath + " ] [ " + latestVersion + " ]");
+        return latestMapPath;
+    }
+
+    public static final String INSTALL_MAP_CLASS_NAME = "com.ibm.ws.install.map.InstallMap";
+    
+    private Map<String, Object> loadInstallMap() throws Exception {
+        String installMapPath = getInstallMapPath();
+        File installMapJar = new File(installMapPath);
+        
+        Map<String, Object> installMap = AccessController.doPrivileged(
+            new PrivilegedExceptionAction<Map<String, Object>>() {
+                @SuppressWarnings({ "unchecked", "resource" })
+                @Override
+                public Map<String, Object> run() throws Exception {
+                    URL installMapURL = installMapJar.toURI().toURL();
+                    URL[] installMapURLs = new URL[] { installMapURL };
+                    ClassLoader installMapLoader = new URLClassLoader(installMapURLs, null);
+
+                    Class<Map<String, Object>> installMapClass = (Class<Map<String, Object>>)
+                        installMapLoader.loadClass(INSTALL_MAP_CLASS_NAME);
+
+                    return installMapClass.newInstance();
+                }
+            }
+        );
+
+        log("install.kernel.init.code [ " + installMap.get("install.kernel.init.code") + " ]");
+        log("install.kernel.init.error.message [ " + installMap.get("install.kernel.init.error.message") + " ]");
+
+        return installMap;
     }
 
     public List<String> resolveFeatures(
-        List<File> availableFeatures, List<String> features) throws Exception {
-        return ServerImages.resolveFeatures( getHomePath(), availableFeatures, features );
+            List<File> availableFeatures, List<String> features) throws Exception {
+
+        log("Resolving features");
+        for ( String feature : features ) {
+            log("  [ " + feature + " ]");
+        }
+        log("Available features [ " + availableFeatures.size() + " ]");
+
+        Map<String, Object> installMap = loadInstallMap();
+        
+        installMap.put("install.local.esa", true);
+        installMap.put("single.json.file", availableFeatures);
+        installMap.put("license.accept", true);
+
+        if ( installMap.put("features.to.resolve", features) != null ) {
+            String errorMessage = (String) installMap.get("action.error.message");
+            log("Feature resolution failure [ action.error.message ] [ " + errorMessage + " ]");
+            fail(errorMessage);
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        Collection<String> resolvedFeatures = (Collection<String>)
+            installMap.get("action.result");
+
+        List<String> useResolvedFeatures = new ArrayList<String>();;
+        log("Resolved feature: ");
+        for ( String featureResolvant : resolvedFeatures ) {
+            int firstColon = featureResolvant.indexOf(":");
+            int secondColon = featureResolvant.indexOf(":", firstColon + 1);
+            String feature = featureResolvant.substring(firstColon + 1, secondColon);
+            if ( !feature.startsWith("com.ibm.") ) {
+                feature = "com.ibm.websphere.appserver." + feature;
+            }
+            useResolvedFeatures.add(feature);
+            log("  [ " + feature + " ]");
+        }
+
+        Collections.sort(useResolvedFeatures);
+
+        return useResolvedFeatures;
     }
 }

@@ -106,7 +106,7 @@ public class InstallProfileTest {
     public void setUp() throws Exception {
         Assume.assumeTrue(doRun);
 
-        baseInstallationPath = FileUtils.LOCAL_TMP_PATH_ABS + "/profile_" + getTag();
+        baseInstallationPath = FileUtils.TEST_OUTPUT_PATH_ABS + "/profile_" + getTag();
         rawImages = ServerImages.getRawImages( getPrefix(), getSuffix() );
     }
 

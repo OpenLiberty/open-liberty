@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,9 @@ import java.util.zip.ZipInputStream;
 
 import wlp.lib.extract.platform.PlatformUtils;
 
+/**
+ * File utilities for server installation testing.
+ */
 public class FileUtils {
     public static final String CLASS_NAME = FileUtils.class.getSimpleName();
 
@@ -48,33 +51,35 @@ public class FileUtils {
     public static final String OS_NAME = System.getProperty("os.name");
     public static final boolean IS_WINDOWS = ( (OS_NAME != null) && OS_NAME.toLowerCase().contains("windows") );
 
-    public static final String LOCAL_TMP_PATH = "build/images";
+    //
 
-    public static final String LOCAL_TMP_PATH_ABS = normalize( (new File(LOCAL_TMP_PATH)).getAbsolutePath() );
-    public static final File LOCAL_TMP = new File(LOCAL_TMP_PATH_ABS);
+    public static final String TEST_OUTPUT_PATH = "build/test";
+
+    public static final String TEST_OUTPUT_PATH_ABS = normalize( (new File(TEST_OUTPUT_PATH)).getAbsolutePath() );
+    public static final File TEST_OUTPUT = new File(TEST_OUTPUT_PATH_ABS);
 
     public static long getTempTotalSpace() {
-        return LOCAL_TMP.getTotalSpace();
+        return TEST_OUTPUT.getTotalSpace();
     }
     
     public static long getTempFreeSpace() {
-        return LOCAL_TMP.getFreeSpace();
+        return TEST_OUTPUT.getFreeSpace();
     }
     
     public static long getTempUsableSpace() {
-        return LOCAL_TMP.getUsableSpace();
+        return TEST_OUTPUT.getUsableSpace();
     }
 
     static {
         log("OS name [ os.name ]: [ " + OS_NAME + " ]");
         log("Windows [ " + IS_WINDOWS + " ]");
 
-        log("Local temporary path [ " + LOCAL_TMP_PATH + " ]");
+        log("Test output path [ " + TEST_OUTPUT_PATH + " ]");
         log("  Total  [ " + getTempTotalSpace() + " ]");
         log("  Free   [ " + getTempFreeSpace() + " ]");
         log("  Usable [ " + getTempUsableSpace() + " ]");
     }
-    
+
     public static void verifySpace(long required) {
         long usable = getTempUsableSpace();
 
