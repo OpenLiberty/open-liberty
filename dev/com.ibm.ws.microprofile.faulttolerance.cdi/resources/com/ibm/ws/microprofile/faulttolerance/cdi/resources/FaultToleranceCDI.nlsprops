@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=U
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: The fallback method {0} with parameter and return types matching method {1} was not found in the class hierarchy of {2}.
 fallback.method.not.found.CWMFT5021E.explanation=A fallback method was declared but it does not exist in the declaring class, its superclasses, or the interfaces it implements.
 fallback.method.not.found.CWMFT5021E.useraction=Either remove the fallback annotation or add the missing method. If the fallback method exists but is still not being found, check that the parameter types and return type of the two methods match and that the fallback method is visible to the class which declares the annotated method.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: MicroProfile Fault Tolerance annotations cannot be used in combination with {0}.
+anno.conflict.CWMFT5022E.explanation=It is not supported to intermix MicroProfile Fault Tolerance annotations and the specified annotation.
+anno.conflict.CWMFT5022E.useraction=Remove the MicroProfile Fault Tolerance annotations or the conflicting annotation.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: An internal error occurred. The exception is {0}.

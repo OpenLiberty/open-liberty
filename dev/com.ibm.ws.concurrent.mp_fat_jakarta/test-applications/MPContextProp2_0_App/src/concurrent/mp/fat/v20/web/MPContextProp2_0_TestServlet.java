@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -249,9 +250,39 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
         assertNotNull(result.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
-    // TODO testFaultToleranceClassLevelAsynchronousCollidesWithMethod
+    /**
+     * A method that is annotated with Jakarta EE Concurrency's Asynchronous must fail
+     * if the class is annotated with MicroProfile Fault Tolerance Asynchronous.
+     */
+    @Test
+    public void testFaultToleranceClassLevelAsynchronousCollidesWithMethod() throws Exception {
+        CompletionStage<String> stage = ftBean.doublyAsync();
+        try {
+            String result = stage.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should not be able to mix Jakarta Concurrency Asynchronous on method with " +
+                 "MicroProfile Fault Tolerance Asynchronous on class. Result: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof UnsupportedOperationException))
+                throw x;
+        }
+    }
 
-    // TODO testFaultToleranceCollidesOnSameAsyncMethod
+    /**
+     * A method that is annotated with Jakarta EE Concurrency's Asynchronous must fail
+     * if the method is also annotated with MicroProfile Fault Tolerance Asynchronous.
+     */
+    @Test
+    public void testFaultToleranceCollidesOnSameAsyncMethod() throws Exception {
+        CompletionStage<String> stage = appBean.doublyAsync();
+        try {
+            String result = stage.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should not be able to mix Jakarta Concurrency Asynchronous on method with " +
+                 "MicroProfile Fault Tolerance Asynchronous on same method. Result: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof UnsupportedOperationException))
+                throw x;
+        }
+    }
 
     /**
      * Use a MicroProfile ManagedExecutor and a Jakarta EE ManagedExecutorService
