@@ -929,7 +929,7 @@ javaCmd()
       CHECKPOINT_AT="features"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport"
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -Dosgi.bundlefile.limit=0"
   fi
   
 
