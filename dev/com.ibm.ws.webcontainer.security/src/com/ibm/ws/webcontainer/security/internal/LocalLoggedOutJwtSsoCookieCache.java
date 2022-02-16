@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+
 /**
  * A class to "remember" which jwtsso cookies have been logged out using a local cache.
  * Allows for defense against cookie hijacking attacks,
@@ -21,7 +23,7 @@ import java.util.Set;
  *
  * todo: could also use security/common/structures/cache.java, but that's heavier weight.
  */
-public class LocalLoggedOutJwtSsoCookieCache {
+public class LocalLoggedOutJwtSsoCookieCache implements FFDCSelfIntrospectable {
     private ArrayList<String> clist = null;
     private Set<String> cSet = null;
     private static int maxSize = 10000;
@@ -65,5 +67,18 @@ public class LocalLoggedOutJwtSsoCookieCache {
         synchronized (lock) {
             return tokenString == null ? false : cSet.contains(tokenString);
         }
+    }
+
+    @Override
+    public String[] introspectSelf() {
+        /*
+         * Don't dump out the list or set, as they contain sensitive info.
+         */
+        return new String[] { "clist.size() = " + clist.size(),
+                              "cSet.size() = " + cSet.size(),
+                              "maxSize = " + lastPosition,
+                              "lastPosition = " + lastPosition,
+                              "atCapacity = " + atCapacity,
+                              "lock = " + lock };
     }
 }
