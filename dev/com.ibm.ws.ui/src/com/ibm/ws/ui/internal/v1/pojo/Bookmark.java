@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.ui.internal.v1.pojo;
 
-import java.util.Locale;
-
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Validator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -70,7 +68,7 @@ public class Bookmark extends ToolEntry {
      * Default Bookmark constructor.
      * Zero-argument constructor used by Jackson.
      * Should only be invoked directly in unit test.
-     * 
+     *
      * @param initialzeDefaults
      */
     @Trivial
@@ -80,7 +78,7 @@ public class Bookmark extends ToolEntry {
 
     /**
      * Construct a Bookmark. ID defaults to the name, and type is set to {@value ITool#TYPE_BOOKMARK}.
-     * 
+     *
      * @param name See {@link #name}.
      * @param url See {@link #url}.
      * @param icon See {@link #icon}.
@@ -92,7 +90,7 @@ public class Bookmark extends ToolEntry {
 
     /**
      * Construct a Bookmark. ID defaults to the name, and type is set to {@value ITool#TYPE_BOOKMARK}.
-     * 
+     *
      * @param name See {@link #name}.
      * @param url See {@link #url}.
      * @param icon See {@link #icon}.
@@ -105,7 +103,7 @@ public class Bookmark extends ToolEntry {
 
     /**
      * Construct a Bookmark or an subclass. Should only be invoked directly in unit test.
-     * 
+     *
      * @param id The Tool ID, must be URL encoded. Must be the Tool's name.
      * @param type Set the Tool's type.
      * @param name See {@link #name}.
@@ -184,7 +182,7 @@ public class Bookmark extends ToolEntry {
 
     /**
      * Determines which fields are null and/or blank.
-     * 
+     *
      * @return String comma-separated list of field names that are not valid
      */
     @Trivial
@@ -209,69 +207,74 @@ public class Bookmark extends ToolEntry {
 
     /**
      * Check to see if the String is a valid URL for the tool.
-     * 
+     *
      * @param value The String to check
      * @return {@code true} if the String is a valid URL.
      */
     private boolean isValidURL(final String value) {
         final String lowerURL = value.toLowerCase();
-        final Validator v = ESAPI.validator();
+
         // If the string contains :/ assume that it's an absolute URL.
         if (lowerURL.contains(":/")) {
+            if (value == null)
+                return false;
+            if (value.length() > MAX_LENGTH)
+                return false;
             // Only supporting HTTP and HTTPS protocols.
-            return v.isValidInput("URL",
-                                  lowerURL,
-                                  "UIToolAbsoluteURLRule",
-                                  MAX_LENGTH,
-                                  false);
+            Pattern p = Pattern.compile("^http(s?):\\/\\/[0-9a-zA-Z]([0-9a-zA-Z\\.\\-])*(:[0-9]*){0,1}(\\/[\\w\\p{L}#~$:&,_/'+=%\\-\\.\\?\\\\]*)?$");
+            Matcher m = p.matcher(lowerURL);
+            return m.matches();
         }
-        final String[] relativeURLRules = { "UIToolRelativeURLRule1",
-                                           "UIToolRelativeURLRule2",
-                                           "UIToolRelativeURLRule3",
-                                           "UIToolRelativeURLRule4" };
+
+        if (value == null)
+            return true;
+        if (value.length() > MAX_LENGTH)
+            return false;
+
+        final String[] relativeURLRules = { "^.?|[^\\.].|.[^\\.]|.{3,}$",
+                                            "^(?!\\.\\.\\/).*$",
+                                            "^.*(?<!\\/\\.\\.)$",
+                                            "^((?!(\\/\\.\\.\\/)).)*$" };
         // Must not be equal to "..", start with "../", end with "/.." or contain "/../".
         for (int i = 0; i < relativeURLRules.length; ++i) {
-            if (!v.isValidInput("URL",
-                                lowerURL,
-                                relativeURLRules[i],
-                                MAX_LENGTH,
-                                true)) {
+            Pattern p = Pattern.compile(relativeURLRules[i]);
+            Matcher m = p.matcher(lowerURL);
+            if (!m.matches())
                 return false;
-            }
         }
         return true;
     }
 
     /**
      * Simple check to see if the String contains no XSS.
-     * 
+     *
      * @param value The String to check
      * @return {@code true} if the String contains no XSS characters.
      */
     boolean containsNoXSS(final String value) {
-        if (value != null) {
-            return ESAPI.validator().isValidInput("FIELD",
-                                                  value.toLowerCase(Locale.ENGLISH),
-                                                  "NoXSSContent",
-                                                  MAX_LENGTH,
-                                                  true);
-        } else {
+        if (value == null)
             return true;
-        }
+        if (value.length() > MAX_LENGTH)
+            return false;
+        Pattern p = Pattern.compile("^((?!(<script|<img|<iframe)).)*$");
+        Matcher m = p.matcher(value);
+        return m.matches();
     }
 
     /**
      * Check to see if the String contains valid characters
-     * 
+     *
      * @param value The String to check
      * @return {@code true} if the String contains valid characters.
      */
     boolean containsValidCharacters(final String value) {
-        return ESAPI.validator().isValidInput("FIELD",
-                                              value,
-                                              "UIToolValidCharacters",
-                                              MAX_LENGTH,
-                                              true);
+        if (value == null)
+            return true;
+        if (value.length() > MAX_LENGTH)
+            return false;
+        Pattern p = Pattern.compile("^[^~&:;\\\\\\/?{}<>\\[\\]]*$");
+        Matcher m = p.matcher(value);
+        return m.matches();
     }
 
     /**
@@ -279,7 +282,7 @@ public class Bookmark extends ToolEntry {
      * <p>
      * This does not check version as version is already checked for syntax
      * of x.y.z.
-     * 
+     *
      * @return String comma-separated list of field names that are not valid
      */
     private String listXSSFields() {
