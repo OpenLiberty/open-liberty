@@ -1,4 +1,4 @@
-# This private impl feature corresponds to JjsonbContainer-2.0, which gives you
+# This private impl feature corresponds to jsonbContainer-2.0, which gives you
 # JSON-B 2.0 spec with the ability to choose the default provider via a bell.
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.jsonbImpl-2.0.0
