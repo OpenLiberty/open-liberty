@@ -10,11 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.image.test;
 
-import static com.ibm.ws.image.test.topo.ServerImages.GA_FEATURE_NAMES;
+import static com.ibm.ws.image.test.topo.BuildProperties.GA_FEATURE_NAMES;
 import static com.ibm.ws.image.test.topo.ServerImages.MAVEN_FEATURE_NAMES;
 import static com.ibm.ws.image.test.topo.ServerImages.OL_MAVEN_FEATURES;
 import static com.ibm.ws.image.test.topo.ServerImages.getFeatureRepositoryPath;
-import static com.ibm.ws.image.test.util.FileUtils.LOCAL_TMP_PATH_ABS;
+import static com.ibm.ws.image.test.util.FileUtils.TEST_OUTPUT_PATH_ABS;
 import static com.ibm.ws.image.test.util.FileUtils.ensureNonexistence;
 import static com.ibm.ws.image.test.util.FileUtils.verify;
 import static com.ibm.ws.image.test.util.ProcessRunner.getJavaHomePathAbs;
@@ -103,11 +103,11 @@ public class InstallFeaturesTest {
         log("Base build [ " + baseLocalBuildPath + " ]");
         ensureNonexistence(baseLocalBuildPath);        
 
-        baseLocalTmpPath = LOCAL_TMP_PATH_ABS + "/" + useTestName;
+        baseLocalTmpPath = TEST_OUTPUT_PATH_ABS + "/" + useTestName;
         log("Base local temp [ " + baseLocalTmpPath + " ]");
         ensureNonexistence(baseLocalTmpPath);        
 
-        baseLocalWorkPath = LOCAL_TMP_PATH_ABS + "/" + useTestName + "Work";
+        baseLocalWorkPath = TEST_OUTPUT_PATH_ABS + "/" + useTestName + "Work";
         log("Base local work [ " + baseLocalWorkPath + " ]");
         ensureNonexistence(baseLocalWorkPath);
 

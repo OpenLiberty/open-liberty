@@ -18,7 +18,7 @@ import static com.ibm.ws.image.test.topo.BuildProperties.CREATE_IM_REPO;
 import static com.ibm.ws.image.test.topo.BuildProperties.IFIX_BUILD;
 import static com.ibm.ws.image.test.topo.ServerImages.getFeatureRepositoryPath;
 import static com.ibm.ws.image.test.util.FileUtils.FLATTEN;
-import static com.ibm.ws.image.test.util.FileUtils.LOCAL_TMP_PATH_ABS;
+import static com.ibm.ws.image.test.util.FileUtils.TEST_OUTPUT_PATH_ABS;
 import static com.ibm.ws.image.test.util.FileUtils.ensureNonexistence;
 import static com.ibm.ws.image.test.util.FileUtils.extract;
 import static com.ibm.ws.image.test.util.FileUtils.verifySpace;
@@ -125,11 +125,11 @@ public class InstallBundlesTest {
         log("Base build [ " + baseLocalBuildPath + " ]");
         ensureNonexistence(baseLocalBuildPath);        
 
-        baseLocalTmpPath = LOCAL_TMP_PATH_ABS + "/" + useTestName;
+        baseLocalTmpPath = TEST_OUTPUT_PATH_ABS + "/" + useTestName;
         log("Base local temp [ " + baseLocalTmpPath + " ]");
         ensureNonexistence(baseLocalTmpPath);        
 
-        baseLocalWorkPath = LOCAL_TMP_PATH_ABS + "/" + useTestName + "Work";
+        baseLocalWorkPath = TEST_OUTPUT_PATH_ABS + "/" + useTestName + "Work";
         log("Base local work [ " + baseLocalWorkPath + " ]");
         ensureNonexistence(baseLocalWorkPath);
 
