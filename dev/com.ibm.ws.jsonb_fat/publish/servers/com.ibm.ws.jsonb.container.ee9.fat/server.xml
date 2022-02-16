@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2022 IBM Corporation and others.
+    Copyright (c) 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -10,17 +10,17 @@
  -->
 <server>
     <featureManager>
-      <feature>componenttest-1.0</feature>
-      <feature>jsonbContainer-1.0</feature>
-      <feature>servlet-4.0</feature>
-      <feature>cdi-2.0</feature>
-      <feature>usr:testFeatureUsingJsonb-1.0</feature>
+      <feature>componenttest-2.0</feature>
+      <feature>jsonbContainer-2.0</feature>
+      <feature>servlet-5.0</feature>
+      <feature>cdi-3.0</feature>
+      <feature>usr:testFeatureUsingJsonb-2.0</feature>
     </featureManager>
 
 	<include location="../fatTestPorts.xml"/>
 
     <library id="johnzon">
-      <fileset dir="${shared.resource.dir}/johnzon/1.1.5" includes="johnzon-*.jar"/>
+      <fileset dir="${shared.resource.dir}/johnzon/1.1.5" includes="ee9-*.jar"/>
     </library>
 
     <bell libraryRef="johnzon"/>
