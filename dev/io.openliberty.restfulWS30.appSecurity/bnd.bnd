@@ -43,7 +43,7 @@ Import-Package: \
  org.jboss.resteasy.spi, \
  org.jboss.resteasy.util, \
  *
- 
+
 
 -buildpath: \
 	io.openliberty.jakarta.annotation.2.0,\

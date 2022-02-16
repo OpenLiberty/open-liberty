@@ -29,7 +29,7 @@ Export-Package: \
   com.ibm.ws.jaxrs21.sse
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !com.ibm.ws.jaxrs20.clientconfig, \
@@ -51,12 +51,10 @@ DynamicImport-Package: \
  javax.xml.bind.helpers, \
  javax.xml.bind.util
 
-Private-Package:\
-   com.ibm.ws.jaxrs20.component.*,\
-   com.ibm.ws.jaxrs20.providers.customexceptionmapper,\
-   com.ibm.ws.jaxrs20.providers.json4j.utils,\
-   com.ibm.ws.jaxrs20.providers.security,\
-   com.ibm.ws.jaxrs20.security
+Private-Package: \
+  com.ibm.ws.jaxrs20.component.*,\
+  com.ibm.ws.jaxrs20.providers.customexceptionmapper,\
+  com.ibm.ws.jaxrs20.providers.json4j.utils
 
 
  app-resources= \
@@ -76,12 +74,11 @@ Include-Resource:\
  META-INF/services/javax.ws.rs.client.ClientBuilder=resources/META-INF/services/javax.ws.rs.client.ClientBuilder,\
  META-INF/services/javax.ws.rs.ext.RuntimeDelegate=resources/META-INF/services/javax.ws.rs.ext.RuntimeDelegate,\
  META-INF/services/javax.ws.rs.sse.SseEventSource$Builder=resources/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder
- 
+
 
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
   com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
-  com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
-  com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister
+  com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister
 
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
@@ -117,12 +114,9 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.security.authorization.util;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.threading;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.security,\
-	com.ibm.ws.security.authentication
+	com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
