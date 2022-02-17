@@ -238,7 +238,7 @@ public class BaseTraceService implements TrService {
     protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
     protected volatile Timer earlyMessageTraceKiller_Timer = new Timer();
     
-    private volatile Timer timedLogRollover_Timer = new Timer();
+    private volatile Timer timedLogRollover_Timer = new Timer(true);
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
@@ -1421,7 +1421,7 @@ public class BaseTraceService implements TrService {
             Tr.debug(tc, "Log rollover settings updated - next rollover will be at ... "+sched.getTime());
         }
         //schedule rollover
-        timedLogRollover_Timer = new Timer();
+        timedLogRollover_Timer = new Timer(true);
         TimedLogRoller tlr = new TimedLogRoller(messagesLog, traceLog);
         timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval*60000);
         this.isLogRolloverScheduled = true;

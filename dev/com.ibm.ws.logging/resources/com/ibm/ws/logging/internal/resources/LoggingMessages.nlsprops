@@ -156,13 +156,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: An invalid character was provided in t
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Only letters, numbers, and : are accepted in the JSON logging field name mapping property
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Change your JSON logging field name mapping property value to remove invalid characters
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: The log rollover start time property is incorrectly formatted. The value will be set to a default of '00:00', representing midnight.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: The log rollover start time property is incorrectly formatted. As a result, the value is set to a default of '00:00', which represents midnight.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=The rollover start time property must be formatted HH:MM, with 00:00 representing midnight.
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=The rollover start time property must be formatted HH:MM, with 00:00 representing midnight.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Ensure that the rollover start time property value is properly formatted in HH:MM 24-hour notation, where 00:00 represents midnight.
 
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: The log rollover interval cannot be less than 1 minute long. The value will be set to a default of 1 day.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: The log rollover interval cannot be less than 1 minute long. If a value that is less than 1 minute is specified, the log rollover interval is set to a default of 1 day.
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: The log rollover interval cannot be less than 1 minute long.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Please provide a log rollover interval equal to or greater than 1 minute.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Specify a log rollover interval that is equal to or greater than 1 minute.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Header name is missing for one or more accessLogging logFormat fields: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=JSON logging uses the logFormat attribute from accessLogging to select which http_access.log message fields to include. A header name must be supplied when using the %i or %o fields in the accessLogging logFormat attribute.
