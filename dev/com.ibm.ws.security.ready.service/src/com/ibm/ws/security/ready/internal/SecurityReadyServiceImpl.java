@@ -13,6 +13,7 @@ package com.ibm.ws.security.ready.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -65,7 +66,7 @@ public class SecurityReadyServiceImpl implements SecurityReadyService {
 
     private ServiceRegistration<SecurityReadyService> reg;
 
-    private CountDownLatch securityReadyCDL = new CountDownLatch(1);
+    private volatile CountDownLatch securityReadyCDL = new CountDownLatch(1);
 
     @Reference(name = KEY_TOKEN_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setTokenService(ServiceReference<TokenService> ref) {
@@ -242,14 +243,14 @@ public class SecurityReadyServiceImpl implements SecurityReadyService {
     }
 
     /**
-     * Provides a CountDownLatch that can be used to wait for the
+     * Provides a method that can be used to wait for the
      * security service as a whole to be ready
      *
-     * @return CountDownLatch that countdowns when security service is ready to
-     *         process requests
+     * @return boolean, true if wait was successful, false if time limit was reached
+     * @throws InterruptedException
      */
     @Override
-    public CountDownLatch getSecurityReadyCDL() {
-        return securityReadyCDL;
+    public boolean awaitSecurityReady(long timeout, TimeUnit unit) throws InterruptedException {
+        return securityReadyCDL.await(timeout, unit);
     }
 }

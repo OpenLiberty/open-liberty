@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.ready;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -25,12 +25,12 @@ public interface SecurityReadyService {
     public boolean isSecurityReady();
 
     /**
-     * Provides a CountDownLatch that can be used to wait for the
+     * Provides a method that can be used to wait for the
      * security service as a whole to be ready
      *
-     * @return CountDownLatch that countdowns when security service is ready to
-     *         process requests
+     * @return boolean, true if wait was successful, false if time limit was reached
+     * @throws InterruptedException
      */
-    public CountDownLatch getSecurityReadyCDL();
+    public boolean awaitSecurityReady(long timeout, TimeUnit unit) throws InterruptedException;
 
 }

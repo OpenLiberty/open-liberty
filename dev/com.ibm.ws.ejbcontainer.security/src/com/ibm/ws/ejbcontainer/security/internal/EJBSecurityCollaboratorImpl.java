@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.Subject;
@@ -768,19 +767,16 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             return;
         }
 
-        CountDownLatch securityReadyCDL = securityReadyService.getSecurityReadyCDL();
-        if (securityReadyCDL != null) {
-            try {
-                if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "Waiting " + securityWaitTime + " seconds for Security Service to be ready");
-                if (securityReadyCDL.await(securityWaitTime, TimeUnit.SECONDS) == false) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "Security Service did not come up within " + securityWaitTime + " seconds");
-                }
-            } catch (InterruptedException e) {
-                if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "Waiting for Security Service failed: " + e);
+        try {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Waiting " + securityWaitTime + " seconds for Security Service to be ready");
+            if (securityReadyService.awaitSecurityReady(securityWaitTime, TimeUnit.SECONDS) == false) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Security Service did not come up within " + securityWaitTime + " seconds");
             }
+        } catch (InterruptedException e) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Waiting for Security Service failed: " + e);
         }
 
         waitedForSecurity = true;
