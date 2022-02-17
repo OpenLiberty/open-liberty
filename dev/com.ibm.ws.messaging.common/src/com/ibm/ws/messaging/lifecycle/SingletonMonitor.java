@@ -130,13 +130,21 @@ public class SingletonMonitor implements Introspector {
 
     @Override
     public String getIntrospectorDescription() {
-        return String.format("List the declared and the realized messaging singletons.%n" +
+        return String.format("List the declared (D) and the realized (R) messaging singletons.%n" +
                              "Messaging cannot start until all the declared singletons become available (i.e. are realized).");
     }
 
     @Override
     public void introspect(PrintWriter out) throws Exception {
-        out.printf("Declared singletons: %s%nRealized singletons: %s", declaredSingletons, realizedSingletons);
+        Stream.concat(declaredSingletons.stream(), realizedSingletons.stream())
+            .sorted()
+            .distinct()
+            .sequential()
+            .peek(s -> out.print('['))
+            .peek(s -> out.print(declaredSingletons.contains(s) ? 'D' : ' '))
+            .peek(s -> out.print(realizedSingletons.contains(s) ? 'R' : ' '))
+            .peek(s -> out.print("] "))
+            .forEach(out::println);
     }
 
     private static String getServicePid(Map<String, Object> props) {
