@@ -41,3 +41,13 @@ Import-Package: \
   com.ibm.ws.security.authorization.util;version=latest,\
   com.ibm.ws.security;version=latest,\
   org.osgi.service.component.annotations
+
+-testpath: \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+  com.ibm.websphere.javaee.jsonb.1.0,\
+  com.ibm.websphere.javaee.jsonp.1.1,\
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2;version=latest,\
+  javax.activation:activation;version=1.1,\
+  javax.xml.bind:jaxb-api;version=latest
