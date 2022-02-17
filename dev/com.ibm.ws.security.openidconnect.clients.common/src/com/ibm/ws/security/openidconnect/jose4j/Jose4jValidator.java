@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import org.joda.time.Instant;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
@@ -78,7 +79,6 @@ public class Jose4jValidator {
 
         // for audiences checking
         List<String> audiences = jwtClaims.getAudience();
-        boolean emptyAudienceClaim = audiences.isEmpty();
         String okAudience = clientId; // default audience
         if (oidcClientRequest.getTokenType().equalsIgnoreCase(OidcClientRequest.TYPE_JWT_TOKEN)) {
             // check issuer
@@ -94,7 +94,7 @@ public class Jose4jValidator {
 
             // do JWT specific checking
             List<String> allowedAudiences = oidcClientRequest.getAudiences();
-            if (!emptyAudienceClaim) {
+            if (!audiences.isEmpty()) {
                 String strOkAudience = oidcClientRequest.allowedAllAudiences() ? audiences.get(0) //any audiences is accepted
                         : jwtAudienceElementCheck(allowedAudiences, audiences);
                 if (strOkAudience == null) { // no ok audience was found
@@ -124,20 +124,8 @@ public class Jose4jValidator {
                         new Object[] { clientId });
             }
 
-            if (!JWT.checkIssuer(clientId, issuers, issuer)) {
-                // issuer verification failed
-                // Let's make it behave the same the old IDToken though why it failed
-                // 221386
-                String errMsg = OidcClientRequest.TYPE_ID_TOKEN.equals(oidcClientRequest.getTokenType()) ? "ID token validation Error[issuer]" : "Json Web Token validation Error[issuer]";
-                throw new Exception(errMsg);
-            }
-            // So far, we only have JWT and IDToken in this code path
-            // Do some specific ID Token checking
-            if (!emptyAudienceClaim && !multipleAudienceElementCheck(clientId, audiences)) {
-                String aud = array2String(audiences);
-                throw IDTokenValidationFailedException.format("OIDC_IDTOKEN_VERIFY_AUD_ERR", // 219214
-                        new Object[] { aud, clientId }); // 219214
-            }
+            verifyIssForIdToken(issuer);
+            verifyAudForIdToken(audiences);
 
             // azp is offer in JWT while the audience and the requesting client is not the same
             // And it should not be checked as the client ID of the audience in JWT.
@@ -150,38 +138,7 @@ public class Jose4jValidator {
             }
         }
 
-        // checking
-        NumericDate issueAtClaim = jwtClaims.getIssuedAt();
-        NumericDate expirationClaim = jwtClaims.getExpirationTime();
-
-        Instant issuedAt = null;
-        Instant expiration = null;
-        if (issueAtClaim == null) {
-            if (expirationClaim != null) {
-                issuedAt = new Instant(0);
-                expiration = new Instant(expirationClaim.getValueInMillis());
-            } // no issueAt and no expiration, no checking
-        } else {
-            issuedAt = new Instant(issueAtClaim.getValueInMillis());
-            if (expirationClaim == null) {
-                expiration = new Instant(Long.MAX_VALUE);
-            } else {
-                expiration = new Instant(expirationClaim.getValueInMillis());
-            }
-        }
-
-        if (issuedAt != null) {
-            if (issuedAt.isAfter(expiration) ||
-                    !JsonTokenUtil.isCurrentTimeInInterval(clockSkewInSeconds, issuedAt.getMillis(), expiration.getMillis())) {
-
-                Object[] objects = new Object[] { this.clientId, jwtClaims.getSubject(), new Instant(System.currentTimeMillis()), expiration, issuedAt };
-
-                String failMsg = Tr.formatMessage(tc, "OIDC_JWT_VERIFY_STATE_ERR", objects);
-                oidcClientRequest.setRsFailMsg(OidcCommonClientRequest.EXPIRED_TOKEN, failMsg);
-
-                throw oidcClientRequest.errorCommon(true, tc, "OIDC_JWT_VERIFY_STATE_ERR", objects); // 219214
-            }
-        }
+        verifyIatAndExpClaims(jwtClaims);
 
         // check nbf
         NumericDate nbf = jwtClaims.getNotBefore();
@@ -211,7 +168,7 @@ public class Jose4jValidator {
         if (!oidcClientRequest.getTokenType().equalsIgnoreCase(OidcClientRequest.TYPE_JWT_TOKEN)) {
             builder.setRequireSubject();
         }
-        if (emptyAudienceClaim) { // no audience claim in jwtClaims
+        if (audiences.isEmpty()) { // no audience claim in jwtClaims
             builder.setSkipDefaultAudienceValidation();
         }
         if (!rpSpecifiedSigningAlgorithm) { // allow signatureAlgorithme as none
@@ -263,6 +220,65 @@ public class Jose4jValidator {
         }
 
         return jwtClaims;
+    }
+
+    public void verifyIssForIdToken(String issuer) throws IDTokenValidationFailedException, Exception {
+        if (!JWT.checkIssuer(clientId, issuers, issuer)) {
+            // issuer verification failed
+            // Let's make it behave the same the old IDToken though why it failed
+            // 221386
+            String errMsg = Tr.formatMessage(tc, "JWT_MISSING_ISSUER");
+            throw new Exception(errMsg);
+        }
+    }
+
+    public void verifyAudForIdToken(List<String> audiences) throws IDTokenValidationFailedException {
+        // So far, we only have JWT and IDToken in this code path
+        // Do some specific ID Token checking
+        if (audiences != null && !audiences.isEmpty() && !multipleAudienceElementCheck(clientId, audiences)) {
+            String aud = array2String(audiences);
+            throw IDTokenValidationFailedException.format("OIDC_IDTOKEN_VERIFY_AUD_ERR", // 219214
+                    new Object[] { aud, clientId }); // 219214
+        }
+    }
+
+    public void verifyIatAndExpClaims(JwtClaims jwtClaims) throws MalformedClaimException, JWTTokenValidationFailedException {
+        NumericDate issueAtClaim = jwtClaims.getIssuedAt();
+        NumericDate expirationClaim = jwtClaims.getExpirationTime();
+
+        Instant issuedAt = null;
+        Instant expiration = null;
+        if (issueAtClaim == null) {
+            if (expirationClaim != null) {
+                issuedAt = new Instant(0);
+                expiration = new Instant(expirationClaim.getValueInMillis());
+            } // no issueAt and no expiration, no checking
+        } else {
+            issuedAt = new Instant(issueAtClaim.getValueInMillis());
+            if (expirationClaim == null) {
+                expiration = new Instant(Long.MAX_VALUE);
+            } else {
+                expiration = new Instant(expirationClaim.getValueInMillis());
+            }
+        }
+
+        if (issuedAt != null) {
+            if (issuedAt.isAfter(expiration) ||
+                    !JsonTokenUtil.isCurrentTimeInInterval(clockSkewInSeconds, issuedAt.getMillis(), expiration.getMillis())) {
+
+                Object[] objects = new Object[] { this.clientId, jwtClaims.getSubject(), new Instant(System.currentTimeMillis()), expiration, issuedAt };
+                String msgCode = "OIDC_JWT_VERIFY_STATE_ERR";
+
+                if (oidcClientRequest != null) {
+                    String failMsg = Tr.formatMessage(tc, msgCode, objects);
+                    oidcClientRequest.setRsFailMsg(OidcCommonClientRequest.EXPIRED_TOKEN, failMsg);
+                    throw oidcClientRequest.errorCommon(true, tc, msgCode, objects); // 219214
+                } else {
+                    Tr.error(tc, msgCode, objects);
+                    throw JWTTokenValidationFailedException.format(tc, msgCode, objects);
+                }
+            }
+        }
     }
 
     public JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws JWTTokenValidationFailedException, InvalidJwtException {
