@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Выполняются некоторые приложения",
     SOME_SERVERS_RUNNING : "Работают некоторые серверы",
     SOME_CLUSTERS_RUNNING : "Работают некоторые кластеры",
-    NO_APPS_RUNNING : "Ни одно приложение не выполняется",
     NO_SERVERS_RUNNING : "Ни один сервер не выполняется",
     NO_CLUSTERS_RUNNING : "Ни один кластер не выполняется",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: экземпляр приложения не выполняется", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: не все приложения выполняются", // serverName[]
-    NO_APPS_RUNNING : "{0}: приложения не выполняются", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} серверов, на которых не все приложения выполняются", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} серверов, на которых все приложения не выполняются", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Примечание {0}",  // note value
     SET_ATTRIBUTES: "Теги и метаданные",
     SETATTR_RUNTIME_NAME: "{0} на {1}",  // runtime, host
-    SAVE: "Сохранить",
     TAGINVALIDCHARS: "Символы '/', '<' и '>' недопустимы.",
     ERROR_GET_TAGS_METADATA: "Продукт не может получить текущие теги и метаданные для ресурса.",
     ERROR_SET_TAGS_METADATA: "Продукту не удалось указать теги и метаданные вследствие ошибки.",
