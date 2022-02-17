@@ -403,7 +403,7 @@ public class LoggerOffThread implements LogFile {
      * purge the entire queue to the file.
      *
      */
-    public class WorkerThread extends Thread {
+    protected class WorkerThread extends Thread {
 
         /** State of worker thread */
         private WorkerState workerState = WorkerState.RUNNING;
@@ -582,7 +582,7 @@ public class LoggerOffThread implements LogFile {
          * with a new file.
          *
          */
-        public void rotate() {
+        protected void rotate() {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, getFileName() + ": Rotating output log");
             }

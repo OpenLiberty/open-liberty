@@ -707,6 +707,10 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
         //if both rolloverStartTime and rolloverInterval are empty, return
         if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Neither rolloverStartTime nor rolloverInterval are set. Returning without scheduling time based access log rollover.");
+            }
+
             return;
         }
 
@@ -780,7 +784,7 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
         }
 
         //schedule rollover
-        timedLogRollover_Timer = new Timer();
+        timedLogRollover_Timer = new Timer(true);
         TimedLogRoller tlr = new TimedLogRoller(this.getWorkerThread());
         timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval*60000);
         this.isLogRolloverScheduled = true;
