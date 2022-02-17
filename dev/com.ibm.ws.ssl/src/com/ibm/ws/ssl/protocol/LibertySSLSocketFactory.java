@@ -708,10 +708,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             Tr.entry(tc, "createSSLParameters", new Object[] { sslprops, socket });
 
         SSLParameters p = socket.getSSLParameters();
-<<<<<<< HEAD
-=======
         ProtocolHelper protocolHelper = new ProtocolHelper();
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
 
         //Set ciphers
         String[] ciphers = SSLConfigManager.getInstance().getCipherList(sslprops, socket);
@@ -719,11 +716,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         //Set protocol
         String protocol = sslprops.getProperty(Constants.SSLPROP_PROTOCOL);
-<<<<<<< HEAD
-        String[] protocols = Constants.getSSLProtocol(protocol);
-=======
         String[] protocols = protocolHelper.getSSLProtocol(protocol);
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         if (protocols != null)
             p.setProtocols(protocols);
 
@@ -814,17 +807,6 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             } else {
                 throw (com.ibm.websphere.ssl.SSLException) cause;
             }
-        }
-    }
-
-    private static boolean setProtocolsOnSocket(String[] protocols) {
-        if (protocols.length > 1) {
-            return true;
-        } else {
-            if (Constants.MULTI_PROTOCOL_LIST.contains(protocols[0]))
-                return true;
-            else
-                return false;
         }
     }
 }

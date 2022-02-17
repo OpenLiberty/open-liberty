@@ -85,7 +85,7 @@ public class SSLConfig {
         return getCipherSuites(sslAliasName, candidateCipherSuites, props);
     }
 
-    String[] getCipherSuites(String sslAliasName, String[] candidateCipherSuites, Properties props) throws SSLException {
+    public String[] getCipherSuites(String sslAliasName, String[] candidateCipherSuites, Properties props) throws SSLException {
         String enabledCipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
         if (enabledCipherString != null) {
             String[] requested = enabledCipherString.split("[,\\s]+");
@@ -97,15 +97,9 @@ public class SSLConfig {
         }
     }
 
-    public String[] getSSLProtocol(String sslAliasName) throws SSLException {
-        Properties props = jsseHelper.getProperties(sslAliasName);
+    public String[] getSSLProtocol(Properties props) throws SSLException {
         String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
 
-<<<<<<< HEAD
-        // only set the protocol on the socket if it is set to a specific protocol
-        String[] protocols = Constants.getSSLProtocol(protocol);
-
-=======
         // protocol(s) need to be in an array
         String[] protocols = protocol.split(",");
 
@@ -117,7 +111,6 @@ public class SSLConfig {
             }
         }
 
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         return protocols;
     }
 
@@ -355,5 +348,26 @@ public class SSLConfig {
         }
 
         return Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+    }
+
+    /**
+     * @param sslCfgAlias
+     * @return
+     */
+    public Properties getSSLCfgProperties(String sslCfgAlias) {
+        Properties sslProps = null;
+        final String alias = sslCfgAlias;
+        try {
+            sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return jsseHelper.getProperties(alias);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            // Can't get the properties so return false
+            return null;
+        }
+        return sslProps;
     }
 }

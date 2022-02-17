@@ -625,14 +625,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         if (protocolVal == null) {
             throw new IllegalArgumentException("Protocol is not specified.");
         } else {
-<<<<<<< HEAD
-            if (protocolVal.split(",").length > 1)
-                protocolVal = defaultProtocol;
-=======
             String[] protocols = protocolVal.split(",");
             if (protocols.length > 1)
                 protocolVal = protocols[0];
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
         }
         final String protocol = protocolVal;
 

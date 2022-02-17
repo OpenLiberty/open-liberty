@@ -144,9 +144,6 @@ public class SSLLinkConfig {
 
         // get the configured protocol
         String protocol = (String) this.myConfig.get(Constants.SSLPROP_PROTOCOL);
-<<<<<<< HEAD
-        String[] protocols = Constants.getSSLProtocol(protocol);
-=======
 
         // protocol(s) need to be in an array
         String[] protocols = protocol.split(",");
@@ -158,7 +155,6 @@ public class SSLLinkConfig {
                 protocols = null;
             }
         }
->>>>>>> 236b78379c0124d5654b7c83411351673f433d46
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getSSLProtocol " + protocols);
