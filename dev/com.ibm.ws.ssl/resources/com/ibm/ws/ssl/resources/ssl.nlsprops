@@ -668,7 +668,20 @@ ssl.protocol.error.CWPKI0831E.useraction:Ensure that the configuration uses vali
 ssl.protocol.error.CWPKI0832E=CWPKI0832E: The {0} SSL/TLS protocol value that is provided cannot be used for configuring a list of SSL protocols values.
 ssl.protocol.error.CWPKI0832E.explanation:The protocol value is not valid in a protocol list grouping.
 ssl.protocol.error.CWPKI0832E.useraction:Ensure that the list of SSL/TLS protocols includes only values that are appropriate for a protocol list.
-# -------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------- 
 ssl.protocol.error.CWPKI0833E=CWPKI0833E: The {0} SSL/TLS configuration has an error that prevents creation of the SSL/TLS configuration. 
 ssl.protocol.error.CWPKI0833E.explanation:The SSL configuration attributes has an error that prevents SSLContext creation. 
 ssl.protocol.error.CWPKI0833E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for additional errors associated with SSL configuration attributes.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: The {0} SSL/TLS configuration cannot be set as the process default SSL configuration due to an error.
+ssl.config.error.CWPKI0834E.explanation:The specified SSL/TLS configuration contains an error that prevented it from being set as the process default SSL configuration. 
+ssl.config.error.CWPKI0834E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for errors that are associated with SSL configuration attributes.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E:  An SSL/TLS configuration cannot be created for the inbound connection because a key manager was not created.
+ssl.config.error.CWPKI0835E.explanation:An error in the configuration prevented the key manager from being created.
+ssl.config.error.CWPKI0835E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for errors that are associated with SSL configuration attributes.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: An SSL/TLS configuration cannot created because key and trust managers were not created.
+ssl.config.error.CWPKI0836E.explanation:An error in the configuration prevented the key and trust managers from being created.
+ssl.config.error.CWPKI0836E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for errors that are associated with SSL configuration attributes.
+
