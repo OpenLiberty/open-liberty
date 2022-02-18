@@ -1346,13 +1346,18 @@ public class RecoveryManager implements Runnable {
         if (_failureScopeController.localFailureScope()) {
             TMHelper.asynchRecoveryProcessingComplete(t);
         } else {
-            // Check for null currently required as z/OS creates this object with a null agent reference.
-            if (_agent != null) {
-                try {
-                    RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
-                } catch (Exception exc) {
-                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+            if (!_shutdownInProgress) {
+                // Check for null currently required as z/OS creates this object with a null agent reference.
+                if (_agent != null) {
+                    try {
+                        RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
+                    } catch (Exception exc) {
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                    }
                 }
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Shutdown in progress bypass initialRecoveryFailed processing");
             }
         }
 
