@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SuppressWarnings("restriction")
 public class JCacheAuthenticationCacheTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;

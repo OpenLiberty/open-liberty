@@ -37,12 +37,13 @@ com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
 com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
 com.ibm.ws.componenttest:fat.harness:1.0.0
 com.ibm.ws.componenttest:fat.util:1.0.0
-com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0
+com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6
 com.ibm.ws.componenttest:mantis-collections:2.5.0
 com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
+com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
@@ -475,7 +476,7 @@ org.glassfish.jersey.inject:jersey-hk2:2.26
 org.glassfish.web:jakarta.servlet.jsp.jstl:2.0.0
 org.glassfish:jakarta.faces:3.0.1
 org.glassfish:jakarta.json:2.0.0
-org.glassfish:javax.faces:2.3.3
+org.glassfish:javax.faces:2.3.9
 org.glassfish:javax.json:1.0.4
 org.glassfish:javax.json:1.1.4
 org.hamcrest:hamcrest-all:1.3

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class FATSuite {
                     .with(new EmptyAction().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 
-    public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.3.jar";
+    public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.9.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test

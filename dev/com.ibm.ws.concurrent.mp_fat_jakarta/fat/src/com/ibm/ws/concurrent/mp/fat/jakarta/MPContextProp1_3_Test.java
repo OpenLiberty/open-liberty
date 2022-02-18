@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.test.context.priority.PriorityContextProvider;
+import org.test.mp.context.priority.PriorityContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -41,7 +41,7 @@ public class MPContextProp1_3_Test extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.v13.web");
 
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
-                        .addPackage("org.test.context.priority")
+                        .addPackage("org.test.mp.context.priority")
                         .addAsServiceProvider(ThreadContextProvider.class, PriorityContextProvider.class);
         ShrinkHelper.exportToServer(server, "lib", customContextProviders);
 

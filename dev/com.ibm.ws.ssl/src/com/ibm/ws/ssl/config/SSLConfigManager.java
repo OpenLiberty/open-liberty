@@ -89,6 +89,10 @@ public class SSLConfigManager {
     //get the protocolHelper
     private final ProtocolHelper protocolHelper = new ProtocolHelper();
 
+    // Unsaved cfgs due to error
+    private static final List<String> unSavedCfgs = new ArrayList<>();
+    private static boolean messageIssued = false;
+
     /**
      * Private constructor, use getInstance().
      */
@@ -175,6 +179,8 @@ public class SSLConfigManager {
                 config.decodePasswords();
 
                 addSSLConfigToMap(alias, config);
+                if (unSavedCfgs.contains(alias))
+                    unSavedCfgs.remove(alias);
             }
 
             if (transportSecurityEnabled) {
@@ -182,6 +188,7 @@ public class SSLConfigManager {
                 outboundSSL.loadOutboundConnectionInfo(alias, properties, newConnectionInfo);
             }
         } catch (Exception e) {
+            unSavedCfgs.add(alias);
             Tr.error(tc, "ssl.protocol.error.CWPKI0833E", new Object[] { alias });
             throw e;
         }
@@ -223,6 +230,11 @@ public class SSLConfigManager {
         if (defaultSSLConfig != null)
             JSSEProviderFactory.getInstance(null).setServerDefaultSSLContext(defaultSSLConfig);
         else {
+            String defaultAlias = getGlobalProperty(Constants.SSLPROP_DEFAULT_ALIAS);
+            if (unSavedCfgs.contains(defaultAlias) && !messageIssued) {
+                Tr.error(tc, "ssl.config.error.CWPKI0834E", defaultAlias);
+                messageIssued = true;
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "There is no default SSLConfig.");
         }

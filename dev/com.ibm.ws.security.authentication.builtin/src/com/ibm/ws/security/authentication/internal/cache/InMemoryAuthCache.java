@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
 
 /**
  * Local in-memory key-value cache containing three internal tables in order to implement a least-recently-used removal algorithm.
  */
-public class InMemoryAuthCache implements AuthCache {
+public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
 
     private static final TraceComponent tc = Tr.register(InMemoryAuthCache.class, "Authentication");
 
@@ -284,5 +285,19 @@ public class InMemoryAuthCache implements AuthCache {
         if (timer != null) {
             timer.cancel();
         }
+    }
+
+    @Override
+    public String[] introspectSelf() {
+        /*
+         * Don't dump out the tables, as they contain sensitive info.
+         */
+        return new String[] { "primaryTable.size() = " + primaryTable.size(),
+                              "secondaryTable.size() = " + secondaryTable.size(),
+                              "tertiaryTable.size() = " + tertiaryTable.size(),
+                              "minSize = " + minSize,
+                              "entryLimit = " + entryLimit,
+                              "cacheEvictionListenerSet = " + cacheEvictionListenerSet,
+                              "timer = " + timer };
     }
 }

@@ -29,15 +29,16 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Abstract test class that can extended from concrete test classes to user common testing functionality.
  */
-@SuppressWarnings("restriction")
 public abstract class BaseTestCase {
 
     protected static final String USER1_NAME = "user1";
     protected static final String USER1_PASSWORD = "user1Password";
+    protected static final String USER1_PASSWORD_HASH = "hQM3o73+TAyCGqHR7no3DJLDgBUTLpyH7mWR0e7bHhqIqlfbL1gMLxtRP+nfJ0XZUnriq4NGpAgW4WGdnq92cw==";
+
     protected static final String JCACHE_HIT = "JCache HIT for key ";
     protected static final String JCACHE_MISS = "JCache MISS for key ";
-    protected static final String JCACHE_HIT_USER1_BASICAUTH = JCACHE_HIT + "BasicRealm:user1:BjVc2C4Xh1a2Xc1EJ5Y1F0zyui8=";
-    protected static final String JCACHE_MISS_USER1_BASICAUTH = JCACHE_MISS + "BasicRealm:user1:BjVc2C4Xh1a2Xc1EJ5Y1F0zyui8=";
+    protected static final String JCACHE_HIT_USER1_BASICAUTH = JCACHE_HIT + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
+    protected static final String JCACHE_MISS_USER1_BASICAUTH = JCACHE_MISS + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
     protected static final String JCACHE_CLEAR_ALL_ENTRIES = "CWWKS1125I";
 
     protected static final String AUTH_CACHE_NAME = "AuthCache";
@@ -176,9 +177,11 @@ public abstract class BaseTestCase {
      */
     protected static void assertBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
         if (expectCacheHit) {
-            assertFalse("Request should have resulted in an auth cache hit.", server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT_USER1_BASICAUTH).isEmpty());
+            assertFalse("Request should have resulted in an auth cache hit for: " + JCACHE_HIT_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT_USER1_BASICAUTH).isEmpty());
         } else {
-            assertFalse("Request should have resulted in an auth cache miss.", server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS_USER1_BASICAUTH).isEmpty());
+            assertFalse("Request should have resulted in an auth cache miss for: " + JCACHE_MISS_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS_USER1_BASICAUTH).isEmpty());
         }
     }
 
