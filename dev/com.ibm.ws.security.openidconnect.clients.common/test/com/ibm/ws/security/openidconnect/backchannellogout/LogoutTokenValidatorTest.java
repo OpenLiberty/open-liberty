@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.jmock.Expectations;
 import org.jose4j.base64url.Base64;
+import org.jose4j.jwt.JwtClaims;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -41,6 +43,11 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1537E_OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE = "CWWKS1537E";
     final String CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR = "CWWKS1543E";
     final String CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS = "CWWKS1545E";
+    final String CWWKS1546E_LOGOUT_TOKEN_MISSING_SUB_AND_SID = "CWWKS1546E";
+    final String CWWKS1547E_LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE = "CWWKS1547E";
+    final String CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER = "CWWKS1548E";
+    final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
+
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
     final String CWWKS1778E_OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR = "CWWKS1778E";
@@ -53,6 +60,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String TOKEN_ENDPOINT = ISSUER + "/token";
     final String SUBJECT = "testuser";
     final String JTI_VALID_NO_SID = "valid-noSid";
+    final String SID = "jwtsid";
     final String EVENTS_MEMBER_KEY = "http://schemas.openid.net/event/backchannel-logout";
 
     final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
@@ -246,118 +254,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_validateToken_hs256_missingIss() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String claimToRemove = Claims.ISSUER;
-        claims.remove(claimToRemove);
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_missingAud() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String claimToRemove = Claims.AUDIENCE;
-        claims.remove(claimToRemove);
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_missingIat() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String claimToRemove = Claims.ISSUED_AT;
-        claims.remove(claimToRemove);
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_missingJti() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String claimToRemove = Claims.ID;
-        claims.remove(claimToRemove);
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_missingEvents() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String claimToRemove = "events";
-        claims.remove(claimToRemove);
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_badIss() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        claims.addProperty(Claims.ISSUER, "https://localhost/oidc/provider/NOPE");
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR);
-        }
-    }
-
-    @Test
-    public void test_validateToken_hs256_badAud() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        claims.addProperty(Claims.AUDIENCE, "client02");
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
-        try {
-            setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-
-            validator.validateToken(logoutTokenString);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR);
-        }
-    }
-
-    // TODO
-
-    @Test
     public void test_validateToken_hs256_minimumClaims() throws Exception {
         JsonObject claims = getMinimumClaimsNoSid();
         String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
@@ -366,6 +262,219 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
+            fail("Should not have thrown an exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_emptyClaims() throws Exception {
+        JsonObject jsonClaims = new JsonObject();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, jti, events");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingIss() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = Claims.ISSUER;
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingAud() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = Claims.AUDIENCE;
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingIat() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = Claims.ISSUED_AT;
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingJti() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = Claims.ID;
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingEvents() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = "events";
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_valid() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_verifyIssAudIatExpClaims_badIss() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty(Claims.ISSUER, "https://localhost/oidc/provider/NOPE");
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            setConfigExpectations("HS256", null, 300L, ISSUER);
+
+            validator.verifyIssAudIatExpClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (IDTokenValidationFailedException e) {
+            verifyException(e, CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR);
+        }
+    }
+
+    @Test
+    public void test_verifyIssAudIatExpClaims_badAud() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty(Claims.AUDIENCE, "client02");
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            setConfigExpectations("HS256", null, 300L, ISSUER);
+
+            validator.verifyIssAudIatExpClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (IDTokenValidationFailedException e) {
+            verifyException(e, CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR);
+        }
+    }
+
+    @Test
+    public void test_verifySubAndOrSidPresent_missingSubAndSid() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.remove(Claims.SUBJECT);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifySubAndOrSidPresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1546E_LOGOUT_TOKEN_MISSING_SUB_AND_SID);
+        }
+    }
+
+    @Test
+    public void test_verifySubAndOrSidPresent_hasSidMissingSub() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.remove(Claims.SUBJECT);
+        jsonClaims.addProperty("sid", SID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifySubAndOrSidPresent(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_verifyEventsClaim_wrongType() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("events", "string");
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyEventsClaim(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1547E_LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE);
+        }
+    }
+
+    @Test
+    public void test_verifyEventsClaim_missingRequiredMember() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JsonObject eventsValue = new JsonObject();
+        eventsValue.addProperty("entry1", "value1");
+        eventsValue.addProperty("entry2", true);
+        jsonClaims.add("events", eventsValue);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyEventsClaim(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER);
+        }
+    }
+
+    @Test
+    public void test_verifyEventsClaim_valid() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyEventsClaim(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_verifyNonceClaimNotPresent_noncePresent() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("nonce", "somevalue");
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyNonceClaimNotPresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM);
+        }
+    }
+
+    @Test
+    public void test_verifyNonceClaimNotPresent_valid() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyNonceClaimNotPresent(claims);
+        } catch (Exception e) {
             fail("Should not have thrown an exception but did: " + e);
         }
     }
