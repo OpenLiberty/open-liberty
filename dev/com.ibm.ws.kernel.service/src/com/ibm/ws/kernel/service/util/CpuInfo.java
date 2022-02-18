@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,7 +47,15 @@ public class CpuInfo {
      */
     private final static TraceComponent tc = Tr.register(CpuInfo.class);
 
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setName("Liberty-kernel-CpuInfo");
+            t.setDaemon(true);
+            return t;
+        }
+    });
     private final static CpuInfo INSTANCE = new CpuInfo();
 
     private final AtomicInteger AVAILABLE_PROCESSORS = new AtomicInteger(-1);
@@ -439,4 +448,3 @@ public class CpuInfo {
         INSTANCE.reset();
     }
 }
-
