@@ -50,6 +50,8 @@ import jakarta.enterprise.concurrent.ContextServiceDefinition;
 public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ContextServiceResourceFactoryBuilder.class);
 
+    private static final String CONTEXT_PID_ZOS_WLM = "com.ibm.ws.zos.wlm.context";
+
     /**
      * Context types that are provided by built-in components and their configuration pids.
      */
@@ -59,7 +61,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                                                                                        "com.ibm.ws.classloader.context",
                                                                                        "com.ibm.ws.javaee.metadata.context"
         });
-        BUILT_IN_CONTEXT_PIDS.put("Classification", new String[] { "com.ibm.ws.zos.wlm.context" });
+        BUILT_IN_CONTEXT_PIDS.put("Classification", new String[] { CONTEXT_PID_ZOS_WLM });
         BUILT_IN_CONTEXT_PIDS.put(ContextServiceDefinition.SECURITY, new String[] { "com.ibm.ws.security.context" });
         BUILT_IN_CONTEXT_PIDS.put("SyncToOSThread", new String[] { "com.ibm.ws.security.thread.zos.context" });
         // EmptyHandleList and ContextServiceDefinition.TRANSACTION are not configurable in server.xml
@@ -115,6 +117,40 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
     protected void activate(ComponentContext context) {
         configAdminRef.activate(context);
         variableRegistryRef.activate(context);
+    }
+
+    /**
+     * Add the specified pids as propagated context types
+     * by adding flattened config for them to contextSvcProps.
+     *
+     * @param pids            pids of built-in context types to propagate.
+     * @param propagateCount  index for flattened config.
+     * @param properties      list of vendor properties from the ContextServiceDefinition, each of the form: name=value.
+     * @param contextSvcProps properties for the contextService being configured.
+     * @return next index to use for flattened config
+     */
+    @Trivial
+    private int addPropagated(String[] pids, int propagateCount, String[] properties, Hashtable<String, Object> contextSvcProps) {
+        for (String pid : pids) {
+            String prefix = "threadContextConfigRef." + (propagateCount++);
+            if (CONTEXT_PID_ZOS_WLM.equals(pid)) {
+                String defaultTransactionClass = "ASYNCBN";
+                String daemonTransactionClass = "ASYNCDMN";
+                if (properties != null)
+                    for (String prop : properties)
+                        if (prop.startsWith("defaultTransactionClass="))
+                            defaultTransactionClass = prop.substring(24);
+                        else if (prop.startsWith("daemonTransactionClass="))
+                            daemonTransactionClass = prop.substring(23);
+
+                contextSvcProps.put(prefix + ".wlm", "Propagate");
+                contextSvcProps.put(prefix + ".defaultTransactionClass", defaultTransactionClass);
+                contextSvcProps.put(prefix + ".daemonTransactionClass", daemonTransactionClass);
+            }
+            contextSvcProps.put(prefix + ".config.referenceType", pid);
+        }
+
+        return propagateCount;
     }
 
     /**
@@ -231,12 +267,10 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                     transaction = "propagated";
                 } else {
                     String[] pids = BUILT_IN_CONTEXT_PIDS.get(type);
-                    if (pids == null) {
+                    if (pids == null)
                         propagated3PCtx.add(type);
-                    } else {
-                        for (String pid : pids)
-                            contextSvcProps.put("threadContextConfigRef." + (propagateCount++) + ".config.referenceType", pid);
-                    }
+                    else
+                        propagateCount = addPropagated(pids, propagateCount, properties, contextSvcProps);
                 }
             } // TODO else error for duplicate usage
 
@@ -248,8 +282,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                 if (!used.contains(type)) {
                     used.add(type);
                     String[] pids = entry.getValue();
-                    for (String pid : pids)
-                        contextSvcProps.put("threadContextConfigRef." + (propagateCount++) + ".config.referenceType", pid);
+                    propagateCount = addPropagated(pids, propagateCount, properties, contextSvcProps);
                 }
             }
         else if ("unchanged".equals(remaining))
