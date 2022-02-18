@@ -26,7 +26,7 @@ Import-Package: \
   com.ibm.ws.jaxws.globalhandler.JaxwsGlobalHandlerServiceImpl
   
 -buildpath: \
-    io.openliberty.xmlws.4.0.common;version=latest,\
+    io.openliberty.xmlws.4.0.common, \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.3;version=latest,\

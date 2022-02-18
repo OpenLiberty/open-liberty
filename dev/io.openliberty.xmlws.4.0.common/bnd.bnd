@@ -14,20 +14,10 @@ bVersion=1.0
 
 exportVer=2.3
 Bundle-Name: XML Web Services 4.0 Common
-Bundle-SymbolicName: io.openliberty.xmlws.4.0.common.javaee
+Bundle-SymbolicName: io.openliberty.xmlws.4.0.common
 Bundle-Description: IBM xmlWS 4.0 Common; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
-#
-# Produce a JakartaEE compliant bundle that matches project name.
-#
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.xmlws.4.0.common.jar
-jakartaFinalBundleId: io.openliberty.xmlws.4.0.common
-
-# Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.xmlws.4.0.common.jar
-publish.wlp.javadoc.include: io.openliberty.xmlws.4.0.common.zip
 
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
@@ -70,6 +60,7 @@ Import-Package: \
    *
 
 Private-Package:\
+   com.ibm.ws.jaxws.*, \
    com.ibm.wsspi.jaxws
    
 # Use Dynamic Import Packages for JAXB Context Factory,
@@ -184,7 +175,6 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 
 -buildpath: \
-    com.ibm.ws.jaxws.2.3.common;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
 	javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
@@ -228,7 +218,8 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.jaxws.tools.2.2.10, \
 	javax.activation:activation;version=1.1, \
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest, \
+	../com.ibm.ws.jaxws.2.3.common/build/libs/com.ibm.ws.jaxws.2.3.common.jakarta.jar;version=file
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
