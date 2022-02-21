@@ -47,6 +47,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1547E_LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE = "CWWKS1547E";
     final String CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER = "CWWKS1548E";
     final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
+    final String CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON = "CWWKS1550E";
 
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
@@ -441,6 +442,21 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
             fail("Should have thrown an exception but didn't.");
         } catch (BackchannelLogoutException e) {
             verifyException(e, CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER);
+        }
+    }
+
+    @Test
+    public void test_verifyEventsClaim_memberValueWrongType() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JsonObject eventsValue = new JsonObject();
+        eventsValue.addProperty(EVENTS_MEMBER_KEY, "string");
+        jsonClaims.add("events", eventsValue);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyEventsClaim(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON);
         }
     }
 

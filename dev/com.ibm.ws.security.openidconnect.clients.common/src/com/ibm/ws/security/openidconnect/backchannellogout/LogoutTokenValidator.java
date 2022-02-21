@@ -147,14 +147,21 @@ public class LogoutTokenValidator {
      * Verify that the Logout Token contains an events Claim whose value is JSON object containing the member name
      * http://schemas.openid.net/event/backchannel-logout.
      */
-    @SuppressWarnings("unchecked")
-    @FFDCIgnore(MalformedClaimException.class)
+    @SuppressWarnings({ "unchecked", "unused" })
+    @FFDCIgnore({ MalformedClaimException.class, ClassCastException.class })
     void verifyEventsClaim(JwtClaims claims) throws BackchannelLogoutException {
         try {
             Map<String, Object> events = claims.getClaimValue("events", Map.class);
             if (!events.containsKey(EVENTS_MEMBER_NAME)) {
                 String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER", new Object[] { EVENTS_MEMBER_NAME, events });
                 throw new BackchannelLogoutException(errorMsg);
+            }
+            try {
+                // Verify that the value is a JSON object
+                Map<String, Object> eventsEntry = (Map<String, Object>) events.get(EVENTS_MEMBER_NAME);
+            } catch (ClassCastException e) {
+                String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON", new Object[] { EVENTS_MEMBER_NAME });
+                throw new BackchannelLogoutException(errorMsg, e);
             }
         } catch (MalformedClaimException e) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE", new Object[] { e.getMessage() });
