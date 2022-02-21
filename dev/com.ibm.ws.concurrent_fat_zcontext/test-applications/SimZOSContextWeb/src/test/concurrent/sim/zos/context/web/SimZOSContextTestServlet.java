@@ -10,8 +10,10 @@
  *******************************************************************************/
 package test.concurrent.sim.zos.context.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.ExecutorService;
@@ -35,6 +37,12 @@ import componenttest.app.FATServlet;
 @ContextServiceDefinition(name = "java:app/concurrent/ThreadNameContext",
                           propagated = { "SyncToOSThread", SECURITY, APPLICATION })
 
+//TODO move to web.xml and include properties?
+@ContextServiceDefinition(name = "java:module/concurrent/zosWLMContext",
+                          propagated = { "Classification" }, // TODO not added yet
+                          cleared = { TRANSACTION, "SyncToOSThread", SECURITY },
+                          unchanged = ALL_REMAINING)
+
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class SimZOSContextTestServlet extends FATServlet {
@@ -52,6 +60,30 @@ public class SimZOSContextTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(5);
+    }
+
+    /**
+     * Configure to clear SyncToOSThread context and verify that the fake
+     * context type that we are using to simulate it is cleared from the thread.
+     */
+    @Test
+    public void testClearSimulatedSyncToOSThreadContext() throws Exception {
+        // Instead of testing the real SyncToOSThread context behavior,
+        // the fake context provider propagates the thread name.
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/zosWLMContext");
+
+        String originalName = Thread.currentThread().getName();
+        try {
+            Thread.currentThread().setName("testClearSimulatedSyncToOSThreadContext");
+
+            Supplier<String> threadNameSupplier = contextSvc.contextualSupplier(() -> Thread.currentThread().getName());
+
+            assertEquals("Unnamed Thread", threadNameSupplier.get());
+
+            assertEquals("testClearSimulatedSyncToOSThreadContext", Thread.currentThread().getName());
+        } finally {
+            Thread.currentThread().setName(originalName);
+        }
     }
 
     /**

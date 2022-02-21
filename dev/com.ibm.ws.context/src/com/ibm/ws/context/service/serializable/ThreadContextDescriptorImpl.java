@@ -427,8 +427,25 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     }
                 }
 
-            if (contextNotApplied.size() > 0)
-                throw new IllegalStateException(contextNotApplied.keySet().toString());
+            // Process remaining context that lacks prerequisites but is cleared/defaulted
+            if (!contextNotApplied.isEmpty()) {
+                for (Iterator<Entry<ThreadContextProvider, ThreadContext>> it = contextNotApplied.entrySet().iterator(); it.hasNext();) {
+                    Entry<ThreadContextProvider, ThreadContext> entry = it.next();
+                    ThreadContext context = entry.getValue();
+                    if (context == null) {
+                        ThreadContextProvider provider = entry.getKey();
+                        context = provider.createDefaultThreadContext(execProps);
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "taskStarting " + toString(context));
+                        context.taskStarting();
+                        contextAppliedToThread.put(provider, context);
+                        it.remove();
+                    }
+                }
+
+                if (!contextNotApplied.isEmpty())
+                    throw new IllegalStateException(contextNotApplied.keySet().toString());
+            }
         } catch (Throwable x) {
             // In the event of failure, undo all context propagation up to this point.
             ArrayList<ThreadContext> contextToRemove = new ArrayList<ThreadContext>(contextAppliedToThread.values());
