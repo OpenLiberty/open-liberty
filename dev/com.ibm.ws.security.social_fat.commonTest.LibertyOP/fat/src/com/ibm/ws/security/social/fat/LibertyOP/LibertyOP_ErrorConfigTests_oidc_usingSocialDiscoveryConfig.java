@@ -97,8 +97,8 @@ public class LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig extends 
         genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS6031E_JWT_CONSUMER_CANNOT_PROCESS_STRING);
         genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS5453E_PROBLEM_CREATING_JWT);
         genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKO0801E_CANNOT_INIT_SSL); // 248970
-        genericTestServer.addIgnoredServerException("CWWKS5500E"); // discovery completed
-        genericTestServer.addIgnoredServerException("CWWKS5501E"); // bad authz endpoint with discovery
+        genericTestServer.addIgnoredServerException("CWWKS5390E"); // config parameter missing or has invalid value
+        genericTestServer.addIgnoredServerException("CWWKS5391E"); // bad authz endpoint with discovery
         genericTestServer.addIgnoredServerException("CWWKS6107W"); // discovered override configured
         genericTestServer.addIgnoredServerException("CWWKS6114E"); // no response from endpoint
 

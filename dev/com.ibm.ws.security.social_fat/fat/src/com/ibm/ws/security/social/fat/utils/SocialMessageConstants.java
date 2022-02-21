@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.social.fat.utils;
@@ -84,7 +84,7 @@ public class SocialMessageConstants extends MessageConstants {
     public static final String CWWKS1617E_USERINFO_WITH_BAD_ACCESS_TOKEN = "CWWKS1617E";
     public static final String CWWKS1713E_SCOPE_INVALID = "CWWKS1713E";
     public static final String CWWKO0801E_CANNOT_INIT_SSL = "CWWKO0801E";
-    public static final String CWWKS5500E_BAD_CONFIG_PARAM = "CWWKS5500E";
+    public static final String CWWKS5390E_BAD_CONFIG_PARAM = "CWWKS5390E";
 
     // messages from oidc code that social will now encounter.
     public static final String CWWKS1708E_UNABLE_TO_CONTACT_PROVIDER = "CWWKS1708E";

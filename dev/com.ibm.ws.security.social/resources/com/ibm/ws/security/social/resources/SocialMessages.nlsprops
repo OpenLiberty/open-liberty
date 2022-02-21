@@ -133,6 +133,14 @@ USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: The user API response indicates 
 USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=The access token that is in the user API request might be missing, expired, malformed, or otherwise not valid. The token might not be associated with a user that is known to the user API.
 USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verify that an access token is included in the user API request. Ensure that the token is not expired or malformed. Verify that the user that is associated with the access token is known to the user API.
 
+INVALID_CONFIG_PARAM=CWWKS5390E: A required configuration parameter {0} is missing or has an invalid value {1}
+INVALID_CONFIG_PARAM.explanation=The social login runtime code did not find a required parameter when processing the client request.
+INVALID_CONFIG_PARAM.useraction=Check the missing parameter in the configuration and make sure that it is specified and correct.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: The social login client [{0}] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [{1}]. Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=The oidcLogin configuration is configured to discover the OpenID Connect provider endpoints through the discovery URL, but the discovery process failed. The client is unable to process the authentication requests until the configuration of the discoveryEndpoint is corrected or the discovery is successful.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correct the oidcLogin configuration to ensure that 1) the discovery endpoint URL refers to the correct OpenID Connect provider, 2) the discovery endpoint URL is HTTPS and 3) the SSL feature and keystore elements are configured correctly with trust for OpenID Connect provider 4) ensure that the OpenID Connect provider discovery endpoint is functional.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.
@@ -638,11 +646,3 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verify that the JWT configuration 
 REQUEST_URL_NOT_VALID=CWWKS5499E: The social login feature cannot redirect the request back to the original request URL [{0}] because the URL is not valid. {1}
 REQUEST_URL_NOT_VALID.explanation=The original request URL is not a valid URL. The URL might include characters that are not valid, or the URL might be malformed.
 REQUEST_URL_NOT_VALID.useraction=Verify that the request URL that is specified in the message matches the original protected resource request URL. Verify that the URL is well-formed and contains only valid URI characters.
-
-INVALID_CONFIG_PARAM=CWWKS5500E: A required configuration parameter {0} is missing or has an invalid value {1}
-INVALID_CONFIG_PARAM.explanation=The social login runtime code did not find a required parameter when processing the client request.
-INVALID_CONFIG_PARAM.useraction=Check the missing parameter in the configuration and make sure that it is specified and correct.
-
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: The social login client [{0}] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [{1}]. Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=The oidcLogin configuration is configured to discover the OpenID Connect provider endpoints through the discovery URL, but the discovery process failed. The client is unable to process the authentication requests until the configuration of the discoveryEndpoint is corrected or the discovery is successful.
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correct the oidcLogin configuration to ensure that 1) the discovery endpoint URL refers to the correct OpenID Connect provider, 2) the discovery endpoint URL is HTTPS and 3) the SSL feature and keystore elements are configured correctly with trust for OpenID Connect provider 4) ensure that the OpenID Connect provider discovery endpoint is functional.
