@@ -179,7 +179,7 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
     /**
      * Verify that custom thread context types are propagated if configured on the ContextServiceDefinition.
      */
-    // TODO @Test this should start working once mpContextPropagation-2.0 is added
+    @Test
     public void testCustomEEContextIsPropagatedWhenConfigured() throws Exception {
         CompletableFuture<String> initialStage = eeExecutor.newIncompleteFuture();
         CompletableFuture<String> executorThreadPriorities;

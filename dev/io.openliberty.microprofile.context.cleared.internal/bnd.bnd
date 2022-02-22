@@ -13,16 +13,16 @@ bVersion=1.0
 
 
 Bundle-Name: MicroProfile Context Propagation cleared context
-Bundle-SymbolicName: io.openliberty.microprofile.context.cleared
+Bundle-SymbolicName: io.openliberty.microprofile.context.cleared.internal
 Bundle-Description: Clears context types that are provided via the MicroProfile Context Propagation SPI; version=${bVersion}
 
 WS-TraceGroup: concurrent
 
 Private-Package:\
-  io.openliberty.microprofile.context.cleared.*
+  io.openliberty.microprofile.context.cleared.internal.*
 
 -dsannotations: \
-  io.openliberty.microprofile.context.cleared.MicroProfileClearedContextProvider
+  io.openliberty.microprofile.context.cleared.internal.MicroProfileClearedContextProvider
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
