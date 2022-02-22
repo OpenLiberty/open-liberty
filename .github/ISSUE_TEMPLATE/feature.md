@@ -45,7 +45,7 @@ Unless otherwise indicated, the tasks are the responsibility of the Feature Owne
 **Important: Labels are used to trigger particular steps and must be added as indicated.** 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## **Prioritization**
+## **Prioritization** (Complete Before Development Starts)
 
 Area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
@@ -58,7 +58,7 @@ Area leads are responsible for prioritizing the features and determining which f
   - Attend the Liberty Backlog Prioritization meeting
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## **Design** (Before Development or 8 weeks before Delivery)
+## **Design** (Complete Before Development Starts)
 
 Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trival documentation/ID.
 
@@ -105,11 +105,11 @@ A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) 
 
 These steps are usually concurrent with implementation, and must be completed along with the primary implementation before either Beta delivery or GA delivery may be requested.
 
-### **Legal** (3 weeks before Delivery)
+### **Legal** (Complete 1 week before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
 - [ ] Licenses and Certificates of Originality (COOs) are updated, or N/A
 
-### **Translation** (3 weeks before Delivery)
+### **Translation** (Complete 1 week before Feature Complete Date)
 - [ ] PII updates are merged, or N/A. Note timing with translation shipments.
 
 ## **Feature Complete**
@@ -130,7 +130,7 @@ In order to facilitate early feedback from users, all new features and functiona
 - [ ] Feature delivered into beta
   - Release Management ([Sam Wong](https://github.com/samwatibm)) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
 
-### **Beta Blog** (1 week before beta GA)
+### **Beta Blog** (Complete 1.5 weeks before beta eGA)
 - [ ] Beta blog issue created and populated using the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the beta blog issue in the [Documents](#documents) section.
 
@@ -139,7 +139,7 @@ In order to facilitate early feedback from users, all new features and functiona
 
 GA delivery occurs after obtaining all necessary Focal Point Approvals. The trigger for obtaining focal point approvals is the addition of the `target:ga` label. 
 
-### **Focal Point Approvals** (2 to 1 weeks before delivery)
+### **Focal Point Approvals** (Complete by Feature Complete Date)
 
 These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery may not occur until all approvals are obtained.
 
@@ -168,20 +168,20 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 - [ ] **SVT** SVT is complete or N/A. ([Brian Hanczaryk](https://github.com/hanczaryk))
   - Approver adds label `focalApproved:svt`.
 
-### **Remove Beta Fencing**
+### **Remove Beta Fencing** (Complete by Feature Complete Date)
 - [ ] Beta guards are removed, if necessary.
   - Only after all necessary Focal Point Approvals have been granted.
 
-### **GA Delivery**
+### **GA Delivery** (Complete by Feature Complete Date)
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
   - Inclusion in a release requires the completion of all Focal Point Approvals.
 
-### **GA Blog**
+### **GA Blog** (Complete by Feature Complete Date)
 - [ ] GA Blog issue created and populated using the [Open Liberty GA release blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the GA Blog issue in the [Documents](#documents) section.
 
-### **Ready for GA** (1 week before Delivery)
+### **Ready for GA** (Complete 1.5 weeks before eGA)
 - [ ] All PRs are merged.
 - [ ] All epic and child issues are closed.
 - [ ] All stop ship issues are completed.
