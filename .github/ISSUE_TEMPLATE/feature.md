@@ -98,13 +98,9 @@ Design preliminaries determine whether a formal design, which will be provided b
 
 A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  GA code may not be delivered until this feature has obtained the "Design Approved" or "No Design Approved" label.
 
-### **Feature Complete** (2 weeks before Delivery)
+### **Feature Development Begins**
 - [ ] Add the `In Progress` label
-- [ ] Implementation completed.
-- [ ] Function acceptance tests (FATs) completed.
-- [ ] Backlog issues reviewed for Stop Ship issues.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Legal and Translation**
 
 These steps are usually concurrent with implementation, and must be completed along with the primary implementation before either Beta delivery or GA delivery may be requested.
@@ -115,6 +111,11 @@ These steps are usually concurrent with implementation, and must be completed al
 
 ### **Translation** (3 weeks before Delivery)
 - [ ] PII updates are merged, or N/A. Note timing with translation shipments.
+
+## **Feature Complete**
+- [ ] Implementation completed.
+- [ ] Function acceptance tests (FATs) completed.
+- [ ] Backlog issues reviewed for Stop Ship issues.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
