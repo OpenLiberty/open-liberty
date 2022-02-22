@@ -58,7 +58,7 @@ Area leads are responsible for prioritizing the features and determining which f
   - Attend the Liberty Backlog Prioritization meeting
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-- ## **Design** (Before Development or 8 weeks before Delivery)
+## **Design** (Before Development or 8 weeks before Delivery)
 
 Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trival documentation/ID.
 
@@ -101,7 +101,7 @@ A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) 
 ### **Feature Complete** (2 weeks before Delivery)
 - [ ] Add the `In Progress` label
 - [ ] Implementation completed.
-- [ ] Function acceptance tests completed.
+- [ ] Function acceptance tests (FATs) completed.
 - [ ] Backlog issues reviewed for Stop Ship issues.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,7 +140,7 @@ GA delivery occurs after obtaining all necessary Focal Point Approvals. The trig
 
 ### **Focal Point Approvals** (2 to 1 weeks before delivery)
 
-These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery will not occur until all approvals are obtained.
+These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery may not occur until all approvals are obtained.
 
 ### **All Features**
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. (Approver; see [OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
@@ -150,7 +150,7 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 - [ ] **Globalization** Translation and TVT are complete or N/A. [Sam Wong](https://github.com/samwatibm)
   - Approver adds label `focalApproved:globalization`.
 
-### **Design Approved Features, Only**
+### **Design Approved Features**
 - [ ] **Accessibility** Accessibility testing completed or N/A. ([Steven Zvonek](https://github.com/steven1046))
   - Approver adds label `focalApproved:accessibility`.
 - [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([Chuck Bridgham](https://github.com/cbridgha))
@@ -184,8 +184,7 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 - [ ] All PRs are merged.
 - [ ] All epic and child issues are closed.
 - [ ] All stop ship issues are completed.
-- [ ] All items in this template completed.
-- [ ] Ship Readiness Review completed. (Owner and Release PM)
+- [ ] All items in this template are completed.
 
 ### **Post GA**
 - [ ] Replace `target:YY00X` label with the appropriate `release:YY00X`. ([Sam Wong](https://github.com/samwatibm))
@@ -194,9 +193,9 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 ## **Other Deliverables**
 
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
-- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.
+- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([Michal Broz](https://github.com/mbroz2))
   - This should be strongly considered especially for larger or more promintent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
-- [ ] **WDT** WDT work is complete or N/A. (Leonard Theivendra)
+- [ ] **WDT** Liberty Developer Tools work is complete or N/A. (Leonard Theivendra)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
