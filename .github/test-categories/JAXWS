@@ -5,3 +5,4 @@ com.ibm.ws.jaxws.clientcontainer_fat
 com.ibm.ws.jaxws.ejb_fat
 com.ibm.ws.jaxws.X.wsat_fat
 io.openliberty.ws.jaxws.global.handler.internal_fat
+io.openliberty.ws.jaxws.tools_fat
