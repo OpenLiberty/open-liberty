@@ -146,26 +146,26 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 ### **All Features**
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
-- [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([Tom Evans](https://github.com/tevans78) or [Chuck Bridgham](https://github.com/cbridgha))
+- [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
   - Approver adds label `focalApproved:demo`.
-- [ ] **Globalization** Translation and TVT are complete or N/A. [Sam Wong](https://github.com/samwatibm)
+- [ ] **Globalization** Translation and TVT are complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/globalization-approvers))
   - Approver adds label `focalApproved:globalization`.
 
 ### **Design Approved Features**
-- [ ] **Accessibility** Accessibility testing completed or N/A. ([Steven Zvonek](https://github.com/steven1046))
+- [ ] **Accessibility** Accessibility testing completed or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
   - Approver adds label `focalApproved:accessibility`.
-- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([Chuck Bridgham](https://github.com/cbridgha))
+- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
   - Approver adds label `focalApproved:externals` 
-- [ ] **ID** Documentation is complete or N/A. ([Karen Deen](https://github.com/chirp1))
+- [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] **Performance** Performance testing is complete or N/A. ([Jared Anderson](https://github.com/jhanders34))
+- [ ] **Performance** Performance testing is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
   - Approver adds label `focalApproved:performance`.
-- [ ] **Serviceability** Serviceability has been addressed or N/A. ([Don Bourne](https://github.com/donbourne))
+- [ ] **Serviceability** Serviceability has been addressed or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
   - Approver adds label `focalApproved:sve`.
-- [ ] **STE** STE chart deck is complete or N/A. ([Swati Kasundra](https://github.com/skasund))
+- [ ] **STE** STE chart deck is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
   - Approver adds label `focalApproved:ste`.
-- [ ] **SVT** SVT is complete or N/A. ([Brian Hanczaryk](https://github.com/hanczaryk))
+- [ ] **SVT** SVT is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
   - Approver adds label `focalApproved:svt`.
 
 ### **Remove Beta Fencing** (Complete by Feature Complete Date)
