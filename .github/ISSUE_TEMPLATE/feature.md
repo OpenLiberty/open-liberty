@@ -144,7 +144,7 @@ GA delivery occurs after obtaining all necessary Focal Point Approvals. The trig
 These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery may not occur until all approvals are obtained.
 
 ### **All Features**
-- [ ] **FAT** All Tests complete and running successfully in SOE or N/A. (Approver; see [OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
+- [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
 - [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([Tom Evans](https://github.com/tevans78) or [Chuck Bridgham](https://github.com/cbridgha))
   - Approver adds label `focalApproved:demo`.
@@ -163,7 +163,7 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
   - Approver adds label `focalApproved:performance`.
 - [ ] **Serviceability** Serviceability has been addressed or N/A. ([Don Bourne](https://github.com/donbourne))
   - Approver adds label `focalApproved:sve`.
-- [ ] **STE** STE chart deck is complete or N/A. (Swati Kasundra)
+- [ ] **STE** STE chart deck is complete or N/A. ([Swati Kasundra](https://github.com/skasund))
   - Approver adds label `focalApproved:ste`.
 - [ ] **SVT** SVT is complete or N/A. ([Brian Hanczaryk](https://github.com/hanczaryk))
   - Approver adds label `focalApproved:svt`.
