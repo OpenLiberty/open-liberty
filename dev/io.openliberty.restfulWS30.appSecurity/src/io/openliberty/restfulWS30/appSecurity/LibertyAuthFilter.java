@@ -37,7 +37,7 @@ import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 import com.ibm.ws.security.context.SubjectManager;
 
-// This code is practically an EE9 version of the LibertyAuthFilter in the com.ibm.ws.jaxrs.2.1.common project.
+// This code is practically an EE9 version of the LibertyAuthFilter in the com.ibm.ws.jaxrs.2.1.appSecurity project.
 // Changes here may need to be reflected there also - and vice versa.
 
 // Set the Priority to Priorities.AUTHORIZATION + 1 so that user filters take precedence.
@@ -65,7 +65,7 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
         try {
             handleMessage();
         } catch (UnauthenticatedException ex) {
-            try { 
+            try {
                 if (authenticate()) {
                     // try again with authenticated user
                     handleMessage();

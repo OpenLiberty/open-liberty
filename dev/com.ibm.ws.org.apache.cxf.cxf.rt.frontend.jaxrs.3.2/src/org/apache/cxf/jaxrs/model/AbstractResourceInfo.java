@@ -134,7 +134,7 @@ public abstract class AbstractResourceInfo {
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.sse.SseContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomWebApplicationExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
-        CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.security.LibertyAuthFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.security.LibertyAuthFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory", ProviderContextInfo.NO_PROCESSING_REQUIRED);
     }

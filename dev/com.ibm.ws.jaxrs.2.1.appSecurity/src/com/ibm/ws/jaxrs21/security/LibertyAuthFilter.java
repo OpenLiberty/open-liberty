@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.security;
+package com.ibm.ws.jaxrs21.security;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
