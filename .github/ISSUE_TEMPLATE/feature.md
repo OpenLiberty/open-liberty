@@ -194,8 +194,8 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 ## **Other Deliverables**
 
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
-- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A. ([Grace Jansen](https://github.com/GraceJansen))
-  - This should be strongly especially for larger or more promintent features.
+- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.
+  - This should be strongly considered especially for larger or more promintent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **WDT** WDT work is complete or N/A. (Leonard Theivendra)
 
