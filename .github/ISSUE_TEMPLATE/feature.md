@@ -31,7 +31,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - [Legal and Translation](#legal-and-translation)
 - [Beta Delivery](#beta-delivery)
 - [GA Delivery](#ga-delivery)
-  - [Focal Point Approvals](#focal-point-approvals-2-to-1-weeks-before-delivery)
+  - [Focal Point Approvals](#focal-point-approvals-complete-by-feature-complete-date)
 - [Other Deliverables](#other-deliverables)
 
 ### General Instructions
@@ -146,26 +146,26 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 ### **All Features**
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
-- [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
+- [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
   - Approver adds label `focalApproved:demo`.
-- [ ] **Globalization** Translation and TVT are complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/globalization-approvers))
+- [ ] **Globalization** Translation and TVT are complete or N/A. ([OpenLiberty/globalization-approvers](https://github.com/orgs/OpenLiberty/teams/globalization-approvers))
   - Approver adds label `focalApproved:globalization`.
 
 ### **Design Approved Features**
-- [ ] **Accessibility** Accessibility testing completed or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
+- [ ] **Accessibility** Accessibility testing completed or N/A. ([OpenLiberty/accessibility-approvers](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
   - Approver adds label `focalApproved:accessibility`.
-- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
+- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
   - Approver adds label `focalApproved:externals` 
-- [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
+- [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
-- [ ] **Performance** Performance testing is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
+- [ ] **Performance** Performance testing is complete or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
   - Approver adds label `focalApproved:performance`.
-- [ ] **Serviceability** Serviceability has been addressed or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] **Serviceability** Serviceability has been addressed or N/A. ([OpenLiberty/serviceability-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
   - Approver adds label `focalApproved:sve`.
-- [ ] **STE** STE chart deck is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
+- [ ] **STE** STE chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
   - Approver adds label `focalApproved:ste`.
-- [ ] **SVT** SVT is complete or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] **SVT** SVT is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
   - Approver adds label `focalApproved:svt`.
 
 ### **Remove Beta Fencing** (Complete by Feature Complete Date)
