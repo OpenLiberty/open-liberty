@@ -1,0 +1,57 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+        <authFilter id="SigAlgHS256">
+                <requestUrl
+                        id="myRequestUrl"
+                        urlPattern="/simple/SigAlgHS256"
+                        matchType="contains" />
+        </authFilter>
+
+	<openidConnectClient
+		id="SigAlgHS256"
+		scope="openid profile"
+		signatureAlgorithm="HS256"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcSigAlgHS256ConfigSample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcSigAlgHS256ConfigSample/token"
+		authFilterRef="SigAlgHS256"
+	>
+	</openidConnectClient>
+
+        <authFilter id="SigAlgHS256Mismatch">
+                <requestUrl
+                        id="myRequestUrl"
+                        urlPattern="/simple/MisMatchSigAlgHS256"
+                        matchType="contains" />
+        </authFilter>
+
+	<openidConnectClient
+		id="SigAlgHS256Mismatch"
+		scope="openid profile"
+		signatureAlgorithm="HS256"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcSigAlgNoneWithSecretConfigSample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcSigAlgNoneWithSecretConfigSample/token"
+		authFilterRef="SigAlgHS256Mismatch"
+	>
+	</openidConnectClient>
+
+</server>

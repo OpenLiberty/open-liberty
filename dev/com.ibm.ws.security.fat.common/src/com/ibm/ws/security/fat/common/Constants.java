@@ -110,6 +110,7 @@ public class Constants {
     public static final int NOT_FOUND_STATUS = 404;
     public static final int NOT_ALLOWED_STATUS = 405;
     public static final int INTERNAL_SERVER_ERROR_STATUS = 500;
+    public static final int NOT_IMPLEMENTED_STATUS = 501;
     public static final int BAD_GATEWAY = 502;
 
     /* ***************** Http methods ******************* */

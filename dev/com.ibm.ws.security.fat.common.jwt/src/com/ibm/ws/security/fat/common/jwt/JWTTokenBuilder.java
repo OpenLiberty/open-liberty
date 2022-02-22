@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -319,7 +319,6 @@ public class JWTTokenBuilder {
     // to generate encrypted tokens
     // Use apps such as JwtBuilderSetApisClient and JwtBuilderServlet
     public String build() {
-        String thisMethod = "build";
 
         try {
             if (_claims.getIssuedAt() == null) {
@@ -328,6 +327,13 @@ public class JWTTokenBuilder {
         } catch (MalformedClaimException e1) {
             e1.printStackTrace(System.out);
         }
+        return buildAsIs();
+
+    }
+
+    public String buildAsIs() {
+        String thisMethod = "build";
+
         try {
             _jws.setPayload(_claims.toJson());
             Log.info(thisClass, thisMethod, "after setPayload in build");
@@ -347,6 +353,7 @@ public class JWTTokenBuilder {
             Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
+            Log.info(thisClass, thisMethod, "Error building token: " + e.getMessage());
             e.printStackTrace(System.out);
             return null;
         }
@@ -364,7 +371,7 @@ public class JWTTokenBuilder {
             if (contentType != null) {
                 _jwe.setHeader("cty", contentType);
             }
-            Log.info(thisClass,  thisMethod, "JWE header: " + _jwe.getHeader());
+            Log.info(thisClass, thisMethod, "JWE header: " + _jwe.getHeader());
             _jwe.setPayload(jwsPart);
             Log.info(thisClass, thisMethod, "after setPayload in jwe");
         } catch (Exception e) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,6 +147,11 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1538E_CONTENT_NOT_JSON = "CWWKS1538E";
     public static final String CWWKS1539E_CONTENT_NOT_JWT = "CWWKS1539E";
     public static final String CWWKS1540E_CANNOT_RETRIEVE_DATA_FROM_USERINFO = "CWWKS1540E";
+    public static final String CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR = "CWWKS1541E";
+    public static final String CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR = "CWWKS1543E";
+    public static final String CWWKS1545E_BACK_CHANNEL_LOGOUT_MISSING_REQUIRED_CLAIM = "CWWKS1545E";
+    public static final String CWWKS1546E_BACK_CHANNEL_LOGOUT_MISSING_SUB_AND_SID_CLAIMS = "CWWKS1546E";
+    public static final String CWWKS1549E_BACK_CHANNEL_LOGOUT_NONCE_CLAIM = "CWWKS1549E";
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 
     public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";

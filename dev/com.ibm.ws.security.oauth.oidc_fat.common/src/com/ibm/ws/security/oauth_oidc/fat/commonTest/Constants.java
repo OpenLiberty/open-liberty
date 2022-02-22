@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -138,6 +138,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String INVOKE_ACS = "invokeACS";
     public static final String INVOKE_JWK_ENDPOINT = "invokeJwkEndpoint";
     public static final String BUILD_POST_SP_INITIATED_REQUEST = "buildPostSPInitiatedRequest";
+    public static final String INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT = "invokeBackChannelLogoutEndpoint";
 
     // All OP actions/tasks should be included in this list!
     public static final String[] OP_TEST_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, SUBMIT_TO_AUTH_SERVER_FOR_TOKEN, INVOKE_AUTH_SERVER, PERFORM_LOGIN,
@@ -319,6 +320,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OIDC_CLIENT_DEFAULT_CONTEXT_ROOT = "/oidcclient/";
     public static final String JWT_DEFAULT_CONTEXT_ROOT = "/jwt/";
 
+    public static final String OIDC_BACK_CHANNEL_LOGOUT_ROOT = "/backchannel_logout/";
+
     public static final String AUTHORIZE_ENDPOINT = "authorize";
     public static final String TOKEN_ENDPOINT = "token";
     public static final String INTROSPECTION_ENDPOINT = "introspect";
@@ -450,6 +453,9 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String BASIC_REALM = "BasicRealm";
     public static final String HELLOWORLD_UNAUTHENTICATED = "WSPrincipal:UNAUTHENTICATED";
     public static final String OP_TESTMARKER_APP = "testmarker.war";
+    public static final String METHOD_NOT_ALLOWED = "Method Not Allowed";
+    public static final String METHOD_NOT_IMPLEMENTED = "Not Implemented";
+    public static final String BAD_REQUEST = "Bad Request";
 
     /* Error response codes */
     public static final String ERROR_RESPONSE_PARM = "error";
@@ -604,6 +610,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String EXPIRES_AT_KEY = "expires_at";
     public static final String APP_NAME_KEY = "name";
     public static final String USER_NAME_KEY = "user";
+    public static final String LOGOUT_TOKEN = "logout_token";
 
     public static final String OIDC_PROVIDER = "";
     public static final String OIDC_USERPARM = "j_username";
@@ -668,6 +675,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PAYLOAD_GROUPS = "groups";
     public static final String PAYLOAD_USER_PRINCIPAL_NAME = "upn";
     public static final String PAYLOAD_TOKEN_TYPE = "token_type";
+    public static final String PAYLOAD_EVENTS = "events";
+    public static final String PAYLOAD_SESSION_ID = "sid";
 
     /************************** jwt_bearer request parameters *********************************/
     public static final String JWT_BEARER_TOKEN = "jwt_bearer_token";
