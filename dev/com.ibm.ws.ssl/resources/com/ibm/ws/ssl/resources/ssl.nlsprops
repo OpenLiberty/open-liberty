@@ -684,4 +684,3 @@ ssl.config.error.CWPKI0835E.useraction:Ensure that the SSL configuration attribu
 ssl.config.error.CWPKI0836E=CWPKI0836E: An SSL/TLS configuration cannot created because key and trust managers were not created.
 ssl.config.error.CWPKI0836E.explanation:An error in the configuration prevented the key and trust managers from being created.
 ssl.config.error.CWPKI0836E.useraction:Ensure that the SSL configuration attributes are correct. Review the logs for errors that are associated with SSL configuration attributes.
-
