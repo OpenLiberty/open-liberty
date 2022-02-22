@@ -36,6 +36,7 @@ public class FATSuite {
         // Install user feature
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/simulatedZOSContextProviders-1.0.mf");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.concurrent.sim.zos.syncToOSThread.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.concurrent.sim.zos.wlm.jar");
 
         // Install internal feature that allows access to the thread context provider SPI
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/contextProviderSPI-1.0.mf");

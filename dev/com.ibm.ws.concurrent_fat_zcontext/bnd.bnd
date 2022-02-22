@@ -14,7 +14,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/SimZOSContextWeb/src,\
-	test-bundles/syncToOSThread/src
+	test-bundles/syncToOSThread/src,\
+	test-bundles/zosWLMContext/src
 
 javac.source: 11
 javac.target: 11
@@ -27,6 +28,7 @@ fat.project: true
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.concurrency.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\

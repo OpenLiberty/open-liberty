@@ -22,6 +22,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 /**
  * This a fake thread context that we made up for testing purposes.
  */
+@SuppressWarnings("deprecation")
 public class ThreadNameContext implements ThreadContext {
     private static final long serialVersionUID = 1L;
     static final String CLEARED = "Unnamed Thread";
