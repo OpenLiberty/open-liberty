@@ -13,6 +13,7 @@ package concurrent.mp.fat.v20.web;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,12 +34,11 @@ public class MPAppBean implements Serializable {
         }
     }
 
-    // TODO also test FT async at class level and MP async on method. (requires another bean)
-    //@Asynchronous
-    //@Asynchronous FT
-    //CompletableFuture<String> doublyAsync() {
-    //    return Asynchronous.Result.complete("Should not be able to combine different @Asynchronous annotations on a method");
-    //}
+    @Asynchronous
+    @org.eclipse.microprofile.faulttolerance.Asynchronous
+    CompletionStage<String> doublyAsync() {
+        return Asynchronous.Result.complete("Should not be able to combine different @Asynchronous annotations on a method");
+    }
 
     @Asynchronous(executor = "java:module/env/defaultExecutorRef")
     CompletableFuture<Object> mpAsyncLookup(String name) {
