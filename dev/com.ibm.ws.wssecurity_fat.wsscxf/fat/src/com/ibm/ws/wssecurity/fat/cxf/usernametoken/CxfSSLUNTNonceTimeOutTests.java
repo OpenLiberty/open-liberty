@@ -53,7 +53,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
+        /*if (features.contains("jaxws-2.2")) {
             copyFromFile = System.getProperty("user.dir") +
                            File.separator +
                            server.getPathToAutoFVTNamedServer() +
@@ -63,7 +63,11 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
                            File.separator +
                            server.getPathToAutoFVTNamedServer() +
                            "server_customize_ee8.xml";
-        }
+        }*/
+        copyFromFile = System.getProperty("user.dir") +
+                        File.separator +
+                        server.getPathToAutoFVTNamedServer() +
+                        "server_customize_ee8.xml";
 
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
@@ -99,7 +103,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         genericTest("testCxfUntReplayOneAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
@@ -124,8 +128,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      * exception
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
 
         genericTest("testCxfUntReplayTwoAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,

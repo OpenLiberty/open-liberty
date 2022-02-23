@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws.common-2.2
 Subsystem-Name: Java Web Services Common 2.2
+WLP-DisableAllFeatures-OnConflict: false
 WLP-Activation-Type: parallel
 visibility=private
 singleton=true
