@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.image.test.util;
+package com.ibm.ws.test.image.util;
 
-import static com.ibm.ws.image.test.util.FileUtils.normalize;
+import static com.ibm.ws.test.image.util.FileUtils.normalize;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;

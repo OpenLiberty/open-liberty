@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.image.test;
 
-import static com.ibm.ws.image.test.topo.BuildProperties.GA_FEATURE_NAMES;
-import static com.ibm.ws.image.test.topo.ServerImages.MAVEN_FEATURE_NAMES;
-import static com.ibm.ws.image.test.topo.ServerImages.OL_MAVEN_FEATURES;
-import static com.ibm.ws.image.test.topo.ServerImages.getFeatureRepositoryPath;
-import static com.ibm.ws.image.test.util.FileUtils.TEST_OUTPUT_PATH_ABS;
-import static com.ibm.ws.image.test.util.FileUtils.ensureNonexistence;
-import static com.ibm.ws.image.test.util.FileUtils.verify;
-import static com.ibm.ws.image.test.util.ProcessRunner.getJavaHomePathAbs;
+import static com.ibm.ws.test.image.suite.images.BuildProperties.GA_FEATURE_NAMES;
+import static com.ibm.ws.test.image.suite.images.Images.MAVEN_FEATURE_NAMES;
+import static com.ibm.ws.test.image.suite.images.Images.OL_MAVEN_FEATURES;
+import static com.ibm.ws.test.image.suite.images.Images.getFeatureRepositoryPath;
+import static com.ibm.ws.test.image.util.FileUtils.TEST_OUTPUT_PATH_ABS;
+import static com.ibm.ws.test.image.util.FileUtils.ensureNonexistence;
+import static com.ibm.ws.test.image.util.FileUtils.verify;
+import static com.ibm.ws.test.image.util.ProcessRunner.getJavaHomePathAbs;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.ibm.ws.image.test.topo.ServerImages;
-import com.ibm.ws.image.test.topo.ServerImages.ImageType;
-import com.ibm.ws.image.test.topo.ServerInstallation;
+import com.ibm.ws.test.image.build.BuildImages;
+import com.ibm.ws.test.image.build.BuildImages.ImageType;
+import com.ibm.ws.test.image.installation.ServerInstallation;
 
 @RunWith(Parameterized.class)
 public class InstallFeaturesTest {
@@ -111,9 +111,9 @@ public class InstallFeaturesTest {
         log("Base local work [ " + baseLocalWorkPath + " ]");
         ensureNonexistence(baseLocalWorkPath);
 
-        ServerImages.setMavenFeatures();
-        ServerImages.setOLMavenFeatures();
-        ServerImages.setupFeatureRepo();
+        BuildImages.setMavenFeatures();
+        BuildImages.setOLMavenFeatures();
+        BuildImages.createRepository();
     }
 
     @AfterClass

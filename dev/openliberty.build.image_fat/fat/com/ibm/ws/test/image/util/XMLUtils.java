@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.image.test.util;
+package com.ibm.ws.test.image.util;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -29,7 +29,7 @@ public class XMLUtils {
     public static final String CLASS_NAME = XMLUtils.class.getSimpleName();
 
     public static void log(String message) {
-        System.out.println(message);
+        System.out.println(CLASS_NAME + ": " + message);
     }
 
     //

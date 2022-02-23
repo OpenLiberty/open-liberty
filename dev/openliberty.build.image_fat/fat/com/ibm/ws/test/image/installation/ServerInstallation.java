@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.image.test.topo;
+package com.ibm.ws.test.image.installation;
 
-import static com.ibm.ws.image.test.util.FileUtils.IS_WINDOWS;
-import static com.ibm.ws.image.test.util.FileUtils.load;
-import static com.ibm.ws.image.test.util.FileUtils.selectMissing;
+import static com.ibm.ws.test.image.util.FileUtils.IS_WINDOWS;
+import static com.ibm.ws.test.image.util.FileUtils.load;
+import static com.ibm.ws.test.image.util.FileUtils.selectMissing;
+import static com.ibm.ws.test.image.util.ProcessRunner.StreamCopier;
+
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -30,11 +32,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
-import com.ibm.ws.image.test.util.FileUtils;
-import com.ibm.ws.image.test.util.ProcessRunner;
-import com.ibm.ws.image.test.util.ScriptFilter;
-import com.ibm.ws.image.test.util.XMLUtils;
+import org.junit.Assert;
+
+import com.ibm.ws.test.image.Timeouts;
+import com.ibm.ws.test.image.util.FileUtils;
+import com.ibm.ws.test.image.util.ProcessRunner;
+import com.ibm.ws.test.image.util.ScriptFilter;
+import com.ibm.ws.test.image.util.XMLUtils;
 
 /**
  * Pointer to a server installation.
@@ -45,12 +51,14 @@ public class ServerInstallation {
     public static final String CLASS_NAME = ServerInstallation.class.getSimpleName();
 
     public static void log(String message) {
-        System.out.println(message);
+        System.out.println(CLASS_NAME + ": " + message);
     }
 
     //
 
-    public ServerInstallation(String homePath) {
+    public ServerInstallation(String name, String homePath) {
+        this.name = name;
+
         this.homePath = homePath;
         
         this.path = this.homePath + "/wlp";
@@ -59,6 +67,12 @@ public class ServerInstallation {
         
         this.propPath = this.libPath + "/versions/WebSphereApplicationServer.properties";
         this.featuresPath = this.libPath + "/features";
+    }
+
+    private final String name;
+    
+    public String getName() {
+        return name;
     }
 
     private final String homePath;
@@ -98,16 +112,16 @@ public class ServerInstallation {
         FileUtils.updateProperties( getPropertiesPath(), newProperties);
     }
 
-    public String[] getScriptPaths() {
+    public String[] getScriptNames() {
         return ScriptFilter.list( getBinPath() );
     }
 
     public String getServerScriptPath() {
-        return getBinPath() + (IS_WINDOWS ? "server.bat" : "server");
+        return getBinPath() + '/' + (IS_WINDOWS ? "server.bat" : "server");
     }
     
     public String getSchemaGenScriptPath() {
-        return getBinPath() + (IS_WINDOWS ? "serverSchemaGen.bat" : "serverSchemaGen");
+        return getBinPath() + '/' + (IS_WINDOWS ? "serverSchemaGen.bat" : "serverSchemaGen");
     }
 
     public String getFeatureManagerPath() {
@@ -123,15 +137,19 @@ public class ServerInstallation {
     }
 
     public String getServerPath(String serverName) {
-        return getBinPath() + '/' + serverName;
+        return getPath() + "/usr/servers/" + serverName;
     }
 
-    public String getConsolePath(String serverName) {
-        return getServerPath() + "/logs/console.log";
+    public String getLogsPath(String serverName) {
+        return getServerPath(serverName) + "/logs";
     }
     
+    public String getConsolePath(String serverName) {
+        return getLogsPath(serverName) + "/console.log";
+    }
+
     public String getMessagesPath(String serverName) {
-        return getServerPath() + "/logs/messages.log";
+        return getLogsPath(serverName) + "/messages.log";
     }
     
     public String getSchemaPath(String serverName) {
@@ -168,22 +186,25 @@ public class ServerInstallation {
 
     //
 
-    public static String addLocalConnector(String line) {
-        if ( !line.contains("</server>") ) {
-            return null;
+    private static final String[] LOCAL_CONNECTOR_LINES = new String[] {
+            "<feature>localConnector-1.0</feature>",
+            "</featureManager>"
+    };
+    
+    public static String[] addLocalConnector(String line, String[] singleton) {
+        if ( !line.contains("</featureManager>") ) {
+            singleton[0] = line;
+            return singleton;
+        } else {
+            return LOCAL_CONNECTOR_LINES;
         }
-
-        return "  <featureManager>\n" +
-               "    <feature>localConnector-1.0</feature>\n" +
-               "  </featureManager>\n" +
-               "</server>";
     }
 
     public int addLocalConnectorToConfig(String serverName) throws IOException {
         return FileUtils.update( getConfigPath(serverName), ServerInstallation::addLocalConnector );
     }
 
-    public int addLocalConnectorToConfig() throws IOException {
+    public int addLocalConnectorToDefault() throws IOException {
         return addLocalConnectorToConfig(DEFAULT_SERVER_NAME);
     }    
 
@@ -214,8 +235,14 @@ public class ServerInstallation {
     }
     
     //
+    
+    public static final long SIMPLE_SCRIPT_TIMEOUT = 10 * Timeouts.NS_IN_SEC;
 
-    public ProcessRunner.Result run(String scriptPath, String... args) throws IOException, InterruptedException {
+    public ProcessRunner.Result run(String scriptPath, String... args) throws Exception {
+        return run(SIMPLE_SCRIPT_TIMEOUT, scriptPath, args);
+    }
+    
+    public ProcessRunner.Result run(long timeout, String scriptPath, String... args) throws Exception {
         List<String> command = new ArrayList<String>();
         command.add(scriptPath);
 
@@ -223,35 +250,91 @@ public class ServerInstallation {
             command.add(arg);
         }
 
-        return ProcessRunner.validate( command, ServerInstallation::adjustEnvironment );            
+        return ProcessRunner.validate( command, timeout, ServerInstallation::adjustEnvironment );            
     }
 
-    public List<String> getVersionInfo() throws IOException, InterruptedException {
+    public ProcessRunner.Result run(
+            long timeout,
+            Function<String, Boolean> stdoutSuccess, Function<String, Boolean> stdoutFailure,
+            Function<String, Boolean> stderrSuccess, Function<String, Boolean> stderrFailure,
+            int expectedRc,
+            StreamCopier.TerminationCondition expectedStdoutCondition,
+            StreamCopier.TerminationCondition expectedStderrCondition,
+            String scriptPath, String... args) throws Exception {
+
+        List<String> command = new ArrayList<String>();
+        command.add(scriptPath);
+
+        for ( String arg : args ) {
+            command.add(arg);
+        }
+
+        return ProcessRunner.validate(
+                command,
+                timeout,
+                stdoutSuccess, stdoutFailure,
+                stderrSuccess, stderrFailure,
+                expectedRc, expectedStdoutCondition, expectedStderrCondition,
+                ServerInstallation::adjustEnvironment );            
+    }
+    
+    public List<String> getVersionInfo() throws Exception {
         return run( getProductInfoPath(), "version" ).getStdout();
     }    
 
-    public ProcessRunner.Result create() throws InterruptedException, IOException {
-        return run( getServerScriptPath(), "create" );
+    public static Boolean detectFailure(String line) {
+        return Boolean.valueOf( (line != null) && !line.isEmpty() );
     }
 
-    public ProcessRunner.Result start() throws InterruptedException, IOException {
-        return run( getServerScriptPath(), "start" );
+    public static Boolean detectDefaultServerCreated(String line) {
+        return Boolean.valueOf( line.equals("Server defaultServer created.") );
     }
 
-    public ProcessRunner.Result stop() throws InterruptedException, IOException {
-        return run( getServerScriptPath(), "stop" );
+    public static Boolean detectDefaultServerStarted(String line) {
+        return Boolean.valueOf( line.equals("Server defaultServer started.") );
     }
-    
-    public ProcessRunner.Result schemaGen() throws InterruptedException, IOException {
+
+    public static Boolean detectDefaultServerStopped(String line) {
+        return Boolean.valueOf( line.equals("Server defaultServer stopped.") );
+    }
+
+    public ProcessRunner.Result createDefaultServer() throws Exception {
+        return run( Timeouts.CREATE_SERVER_TIMEOUT_NS, getServerScriptPath(), "create" );
+    }
+
+    public ProcessRunner.Result start() throws Exception {
+        return run(
+                Timeouts.START_SERVER_TIMEOUT_NS,
+                ServerInstallation::detectDefaultServerStarted, null,
+                null, ServerInstallation::detectFailure,
+                0,
+                StreamCopier.TerminationCondition.SUCCEEDED,
+                StreamCopier.TerminationCondition.HALTED,
+                getServerScriptPath(), "start" );
+    }
+
+    public ProcessRunner.Result stop() throws Exception {
+        return run( Timeouts.STOP_SERVER_TIMEOUT_NS, getServerScriptPath(), "stop" );
+    }
+
+    public ProcessRunner.Result schemaGen() throws Exception {
         return schemaGen(DEFAULT_SERVER_NAME);
     }
 
-    public ProcessRunner.Result schemaGen(String serverName) throws InterruptedException, IOException {
-        return run( getSchemaGenScriptPath(), serverName );
+    public ProcessRunner.Result schemaGen(String serverName) throws Exception {
+        // TODO: Temporary:
+        //
+        // SchemaGen requires that the server logs folder
+        // already exist.
+        //
+        // See open liberty issue #20207:
+        // https://github.com/OpenLiberty/open-liberty/issues/20207
+
+        (new File(getLogsPath(serverName))).mkdir();
+        
+        return run( Timeouts.SCHEMAGEN_TIMEOUT_NS, getSchemaGenScriptPath(), serverName );
     }
 
-    // Remove standard directory settings.  That forces
-    // the standard directories to the java temporary directory.
     public static void adjustEnvironment(ProcessBuilder pb) {
         pb.environment().remove("WLP_USER_DIR");
         pb.environment().remove("WLP_INSTALL_DIR");
@@ -263,7 +346,7 @@ public class ServerInstallation {
     public void installBundles(
             List<String> bundles, String repoPath,
             String javaPath, String tmpPath, String workPath)
-        throws IOException, InterruptedException {
+        throws Exception {
 
         List<String> command = new ArrayList<String>();
         command.add( getFeatureManagerPath() );
@@ -275,19 +358,22 @@ public class ServerInstallation {
         command.add("--verbose");
         command.add("--acceptLicense");
 
-        ProcessRunner.validate( command, (ProcessBuilder pb) -> {
-            Map<String, String> env = pb.environment();
-            env.put("JAVA_HOME", javaPath);
-            env.put("JVM_ARGS", "-Djava.io.tmpdir=" + tmpPath);
-            pb.directory( new File(workPath) );
-        } );
+        ProcessRunner.validate(
+                command,
+                Timeouts.INSTALL_BUNDLES_TIMEOUT_NS, 
+                (ProcessBuilder pb) -> {
+                    Map<String, String> env = pb.environment();
+                    env.put("JAVA_HOME", javaPath);
+                    env.put("JVM_ARGS", "-Djava.io.tmpdir=" + tmpPath);
+                    pb.directory( new File(workPath) );
+                } );
     }
 
     public void installFeatures(
             List<String> features,
             String repoPath,
             String javaPath, String tmpPath, String workPath)
-        throws IOException, InterruptedException {
+        throws Exception {
 
         List<String> command = new ArrayList<String>();
         command.add( getInstallUtilityPath() );
@@ -297,14 +383,17 @@ public class ServerInstallation {
         command.add("--verbose");
         command.add("--acceptLicense");
 
-        ProcessRunner.validate( command, (ProcessBuilder pb) -> {
-            Map<String, String> env = pb.environment();
-            env.put("JAVA_HOME", javaPath);
-            env.put("JVM_ARGS", "-Djava.io.tmpdir=" + tmpPath);
-            pb.directory( new File(workPath) );
-        } );
+        ProcessRunner.validate(
+                command,
+                Timeouts.INSTALL_FEATURES_TIMEOUT_NS,
+                (ProcessBuilder pb) -> {
+                    Map<String, String> env = pb.environment();
+                    env.put("JAVA_HOME", javaPath);
+                    env.put("JVM_ARGS", "-Djava.io.tmpdir=" + tmpPath);
+                    pb.directory( new File(workPath) );
+                } );
     }
-    
+
     public List<String> getInstalledFeatures() {
         String featuresPath =  getFeaturesPath();
         if ( featuresPath == null ) {
@@ -336,48 +425,129 @@ public class ServerInstallation {
     
     //
     
-    public void validate(String expectedVersion, boolean doValidateConfig) throws Exception {
-        log("Validating server installation [ " + getHomePath() + " ]");
-
-        validateVersion(expectedVersion);
-        validateScripts();
-
-        create();
-
-        addLocalConnectorToConfig();
-        if ( doValidateConfig ) {
-            validateConfig();
+    public void validateVersion(String[][] expectations) throws Exception {
+        log("Validating product information [ " + getName() + " ]:");
+        for ( String[] expectation : expectations ) {
+            log("Expect [ " + expectation[0] + " : " + expectation[1] + " ]");
         }
 
-        validateServer();
-    }
-
-    //
-
-    public void validateVersion(String version) throws IOException, InterruptedException {
-        log("Validating version [ " + version + " ]");
+        int numMet = 0;
+        boolean[] metExpectation = new boolean[ expectations.length ];
         
         List<String> versionOutput = getVersionInfo();
         for ( String versionLine : versionOutput ) {
-            if ( versionLine.contains(version) ) {
-                return;
+            for ( int expectationNo = 0; expectationNo < expectations.length; expectationNo++ ) {
+                String[] expectation = expectations[expectationNo];
+                if ( versionLine.startsWith( expectation[0] ) &&
+                     versionLine.endsWith( expectation[1] ) ) {
+                    if ( !metExpectation[expectationNo] ) {
+                        numMet++;
+                        metExpectation[expectationNo] = true;
+                    }
+                }
             }
         }
-        fail("Version [ " + version + " ] not present for [ " + getHomePath() + " ]");
+
+        if ( numMet < expectations.length ) {
+            StringBuilder builder = new StringBuilder();
+            for ( int expectationNo = 0; expectationNo < expectations.length; expectationNo++ ) {
+                String[] expectation = expectations[expectationNo];
+                if ( !metExpectation[expectationNo] ) {
+                    builder.append("Unmet expectation [ " + expectation[0] + " : " + expectation[1] + " ]\n");
+                }
+            }
+            fail( builder.toString() );
+        }
     }
 
-    //
+    // Scripts are mostly but not entirely uniform:
+//    
+//    auditUtility
+//    Usage: auditUtility {auditReader|help} [options]
+//
+//    batchManager
+//    Usage: batchManager {help|submit|stop|restart|status|getJobLog|listJobs|purge} [options]
+//
+//    binaryLog
+//    Usage: binaryLog action {serverName | repositoryPath} [options]
+//
+//    client
+//    -- none --
+//    
+//    ddlGen
+//    Usage: ddlGen {generate|help} serverName
+//
+//    featureUtility
+//    Usage: featureUtility {installFeature|installServerFeatures|viewSettings|find|help} [options]
+//
+//    pluginUtility
+//    Usage: pluginUtility action [options]
+//    Actions:
+//        merge [options]
+//        Merges the multiple web server plugin configuration files into a single file.
+//        generate [options]
+//        This command generates a plugin configuration file for an application
+//        server or a cluster of servers. 
+//        help [actionName]
+//        Print help information for the specified action.
+//
+//    productInfo
+//    Usage: productInfo {help|compare|featureInfo|viewLicenseInfo|viewLicenseAgreement|version|validate} [options]
+//
+//    securityUtility
+//    Usage: securityUtility {encode|createSSLCertificate|createLTPAKeys|tlsProfiler|help} [options]
+//
+//    server
+//    -- none --
+//
+//    serverSchemaGen
+//    Usage: serverSchemaGen server
+//
+//    springBootUtility
+//    Usage: springBootUtility {thin|help} [options]
     
     public void validateScripts() throws Exception {
-        log("Validating scripts [ " + getBinPath() + " ]");
+        String useBinPath = getBinPath();
 
-        for ( String scriptPath : getScriptPaths() ) {
-            run(scriptPath);
+        log("Validating scripts [ " + getName() + " ]");
+        log("Scripts path [ " + useBinPath + " ]");
+        for ( String scriptName : getScriptNames() ) {
+            log("Validating script [ " + scriptName + " ]");
+            run(useBinPath + '/' + scriptName);
         }
     }
 
     //
-    
+
+    public void validateDefaultServer(
+        boolean supportsStartup,
+        boolean supportsSchemaGen,
+        String... addedAllowed) throws Exception {
+
+        log("Validating default instance [ " + getName() + " ]");
+        log("Supports startup [ " + supportsStartup + " ]");
+        log("Supports schemaGen [ " + supportsSchemaGen + " ]");
+        if ( addedAllowed.length != 0 ) {
+            log("Added allowed console messages");
+            for ( String added : addedAllowed ) {
+                log("Added [ " + added + " ]");
+            }
+        }
+
+        createDefaultServer();
+
+        if ( supportsStartup ) {
+            if ( supportsSchemaGen ) {
+                int numUpdates = FileUtils.update(
+                    getConfigPath(DEFAULT_SERVER_NAME),
+                    ServerInstallation::addLocalConnector );
+                Assert.assertEquals("Count of connector updates", numUpdates, 2);
+            }
+
+            exerciseDefaultServer(supportsSchemaGen, addedAllowed);
+        }
+    }
+
     public static final String SERVER_STARTED_REGEX = ".*CWWKF0011I.*";
     public static final String SERVER_STOPPED_REGEX = ".*CWWKE0036I.*";
 
@@ -386,15 +556,35 @@ public class ServerInstallation {
     // CWWKE0953W - Beta release warning. Message appears in early release builds.    
     public static final String BETA_MSG = "CWWKE0953W";
 
-    // CWWKF0014W or CWWKF0015I - The server has the following test or ifixes installed    
-    public static final String IBM_ALLOWED_REGEX =
-        ".*(CWWKF0014W|CWWKF0015I|" + BETA_MSG + ").*";
-
     // TRAS4352W - Health Center agent was not found
-    // Health Center feature is only supported with the IBM JDK.
-    public static final String NON_IBM_ALLOWED_REGEX =    
-        ".*(CWWKF0014W|CWWKF0015I|TRAS4352W|" + BETA_MSG + ").*";
+    // Health Center feature is only supported with the IBM JDK.    
+    public static final String NON_IBM_ADDED = "TRAS4352W";
+    
+    // CWWKF0014W or CWWKF0015I - The server has the following test or ifixes installed
+    public static final String ALLOWED_PREFIX = ".*(CWWKF0014W|CWWKF0015I|";
 
+    public static final String ALLOWED_SUFFIX = ").*";
+
+    // public static final String IBM_ALLOWED_REGEX =
+    //     ".*(CWWKF0014W|CWWKF0015I|" + BETA_MSG + ").*";
+
+    // public static final String NON_IBM_ALLOWED_REGEX =    
+    //     ".*(CWWKF0014W|CWWKF0015I|TRAS4352W|" + BETA_MSG + ").*";
+
+    public static final String getAllowed(String...added) {
+        StringBuilder builder = new StringBuilder(ALLOWED_PREFIX);
+        if ( !ProcessRunner.IS_IBM_JVM ) {
+            builder.append('|');
+            builder.append(NON_IBM_ADDED);
+        }
+        for ( String nextAdded : added ) {
+            builder.append('|');
+            builder.append(nextAdded);
+        }
+        builder.append(ALLOWED_SUFFIX);
+        return builder.toString();
+    }
+    
     // Assert that no issues were present in either log after stop.
     // Right now, these are failing because of messages:
     //
@@ -409,7 +599,12 @@ public class ServerInstallation {
     // [WARNING] Managed persistence context support is no longer available
     // for use with the Aries Blueprint container.
 
-    public void validateServer() throws Exception {
+    public static final boolean DO_VALIDATE = true;
+    
+    public void exerciseDefaultServer(boolean doValidate, String... addedAllowed) throws Exception {
+        log("Exercising default instance [ " + getName() + " ]");
+        log("Validate [ " + doValidate + " ]");
+        
         String consolePath = getConsolePath();
         String messagesPath = getMessagesPath();
 
@@ -419,8 +614,20 @@ public class ServerInstallation {
         FileUtils.ensureNonexistence(console);
         FileUtils.ensureNonexistence(messages);
 
-        start();
-        stop();
+        // 'stop' is invoked even if 'start' fails with an exception.
+        // That is an attempt to prevent orphan server processes.
+
+        try {
+            start();
+
+            // "kernel" does not support schema generation.
+            if ( doValidate ) {
+                validateDefaultConfig();
+            }
+
+        } finally {
+            stop();
+        }
 
         if ( !console.exists() ) {
             fail("Console log [ " + consolePath + " ] does not exist");
@@ -432,9 +639,8 @@ public class ServerInstallation {
         List<String> startLines = FileUtils.select(console, SERVER_STARTED_REGEX);
         List<String> stopLines = FileUtils.select(console, SERVER_STOPPED_REGEX);        
 
-        String allowedRegex =
-            ProcessRunner.IS_IBM_JVM ? IBM_ALLOWED_REGEX : NON_IBM_ALLOWED_REGEX;
-        
+        String allowedRegex = getAllowed(addedAllowed);
+
         List<String> consoleDisallowed = FileUtils.selectLines(console, FAILURE_REGEX, allowedRegex);
         List<String> messagesDisallowed = FileUtils.selectLines(messages, FAILURE_REGEX, allowedRegex);
 
@@ -449,7 +655,7 @@ public class ServerInstallation {
         if ( startFailure != null ) {
             log(startFailure);
         }
-        
+
         String stopFailure;
         if ( stopLines.isEmpty() ) {
             stopFailure = "Did not find [ " + SERVER_STARTED_REGEX + " ] in [ " + consolePath + " ]";
@@ -464,7 +670,10 @@ public class ServerInstallation {
 
         String consoleFailure;
         if ( !consoleDisallowed.isEmpty() ) {
-            consoleFailure = "Disallowed console messages [ " + consolePath + " ]: [ " + consoleDisallowed.size() + " ]";
+            consoleFailure =
+                    "Disallowed console messages [ " + consolePath + " ]:" +
+                    " [ " + consoleDisallowed.size() + " ]: " + 
+                    " [ " + consoleDisallowed.get(0) + " ]";
             log(consoleFailure);
             for ( String line : consoleDisallowed ) {
                 log("  [ " + line + " ]");
@@ -475,7 +684,10 @@ public class ServerInstallation {
 
         String messagesFailure;
         if ( !messagesDisallowed.isEmpty() ) {
-            messagesFailure = "Disallowed console messages [ " + messagesPath + " ]: [ " + messagesDisallowed.size() + " ]";
+            messagesFailure =
+                    "Disallowed console messages [ " + messagesPath + " ]:" +
+                    " [ " + messagesDisallowed.size() + " ]: " +
+                    " [ " + messagesDisallowed.get(0) + " ]";
             log(messagesFailure);
             for ( String line : messagesDisallowed ) {
                 log("  [ " + line + " ]");
@@ -500,22 +712,41 @@ public class ServerInstallation {
 
     //
     
-    public void validateConfig() throws Exception {
+    public void validateDefaultConfig() throws Exception {
+        log("Validating default configuration [ " + getName() + " ]");
+
         String configPath = getConfigPath();
         String schemaPath = getSchemaPath();
 
-        log("Validating [ " + configPath + " ] using [ " + schemaPath + " ]");
+        log("Configuration [ " + configPath + " ]");
+        log("Schema [ " + schemaPath + " ]");
 
+        // The default server configuration is created with
+        // an 'ssl' element and with no security features.
+        //
+        // That schema which is generated for the 
+        String compliantConfigPath = getCompliantConfigPath();
         String strictSchemaPath = getStrictSchemaPath();
 
-        XMLUtils.validate(configPath, strictSchemaPath);
+//        try {
+            XMLUtils.validate(compliantConfigPath, strictSchemaPath);
+//        } catch ( Exception e ) {
+//            try {
+//                FileUtils.display(configPath);
+//                FileUtils.display(strictSchemaPath);
+//            } catch ( Exception nestedException ) {
+//                // Ignore
+//            }
+//            throw e;
+//        }
     }
-    
-    public static String makeStrict(String line) {
+
+    public static String[] makeStrict(String line, String[] singleton) {
         if ( line.contains("<xsd:anyAttribute processContents=\"skip\">\\W*<\\/xsd:anyAttribute>") ) {
             return null;
         } else {
-            return line;
+            singleton[0] = line;
+            return singleton;
         }
     }
     
@@ -529,13 +760,38 @@ public class ServerInstallation {
 
         FileUtils.ensureNonexistence(strictSchemaPath);
         FileUtils.update(schemaPath, strictSchemaPath, ServerInstallation::makeStrict);
-        
+
         return strictSchemaPath;
     }
 
+    public static String[] makeCompliant(String line, String[] singleton) {
+        // log("Make compliant [ " + line + " ]");
+        if ( line.contains("<ssl") && line.endsWith("/>") ) {
+            singleton[0] = "<!-- " + line + "-->";
+            // log("Compliant [ " + singleton[0] + " ]");
+        } else {
+            singleton[0] = line;
+        }
+        return singleton;        
+    }
+
+    public String getCompliantConfigPath() throws Exception {
+        String configPath = getConfigPath();
+
+        int extensionLoc = configPath.lastIndexOf('.');
+        String compliantConfigPath = configPath.substring(0, extensionLoc) + "-compliant.xml";
+
+        FileUtils.ensureNonexistence(compliantConfigPath);
+        FileUtils.update(configPath, compliantConfigPath, ServerInstallation::makeCompliant);
+
+        return compliantConfigPath;
+    }
+    
     //
 
-    public void verifyRequiredElements(String[] requiredElements) throws Exception {
+    public void validateDefaultTemplate(String[] requiredElements) throws Exception {
+        log("Validating default template [ " + getName() + " ]");
+        
         String wlpPath = getPath();
         File wlpRoot = new File(wlpPath);
         if ( !wlpRoot.exists() ) {
@@ -555,15 +811,24 @@ public class ServerInstallation {
             log("[ " + element + " ]");
         }
 
-        List<String> defaultTemplateLines = load(defaultTemplate); // throws IOException
-        List<String> missingElements = selectMissing(defaultTemplateLines, requiredElements);
+        List<String> actualElements = load(defaultTemplate); // throws IOException
+        List<String> missingElements = selectMissing(actualElements, requiredElements);
 
         if ( (missingElements != null) && !missingElements.isEmpty() ) {
             log("Missing default template elements:");
             for ( String missing : missingElements ) {
-                log("[ " + missing + " ]");
+                log("  [ " + missing + " ]");
             }
+
+            log("Actual default template elements (features only):");            
+            for ( String actual : actualElements ) {
+                if ( actual.contains("feature") ) {
+                    log("  [ " + actual + " ]");
+                }
+            }
+
             fail("Missing default template elements");
+
         } else {
             log("Default template [ " + defaultTemplatePath + " ] has all required elements");
         }

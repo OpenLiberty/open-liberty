@@ -12,18 +12,18 @@ package com.ibm.ws.image.test;
 
 import static com.ibm.ws.image.test.InstallBundlesData.BUNDLE_NAMES;
 import static com.ibm.ws.image.test.InstallBundlesData.getBundleLocation;
-import static com.ibm.ws.image.test.topo.BuildProperties.BUILD_ALWAYS;
-import static com.ibm.ws.image.test.topo.BuildProperties.BUILD_LICENSE_ZIP;
-import static com.ibm.ws.image.test.topo.BuildProperties.CREATE_IM_REPO;
-import static com.ibm.ws.image.test.topo.BuildProperties.IFIX_BUILD;
-import static com.ibm.ws.image.test.topo.ServerImages.getFeatureRepositoryPath;
-import static com.ibm.ws.image.test.util.FileUtils.FLATTEN;
-import static com.ibm.ws.image.test.util.FileUtils.TEST_OUTPUT_PATH_ABS;
-import static com.ibm.ws.image.test.util.FileUtils.ensureNonexistence;
-import static com.ibm.ws.image.test.util.FileUtils.extract;
-import static com.ibm.ws.image.test.util.FileUtils.verifySpace;
-import static com.ibm.ws.image.test.util.ProcessRunner.getJavaHomePathAbs;
-import static com.ibm.ws.image.test.util.ProcessRunner.runJar;
+import static com.ibm.ws.test.image.build.BuildProperties.IFIX_BUILD;
+import static com.ibm.ws.test.image.suite.images.BuildProperties.BUILD_ALWAYS;
+import static com.ibm.ws.test.image.suite.images.BuildProperties.BUILD_LICENSE_ZIP;
+import static com.ibm.ws.test.image.suite.images.BuildProperties.CREATE_IM_REPO;
+import static com.ibm.ws.test.image.suite.images.Images.getFeatureRepositoryPath;
+import static com.ibm.ws.test.image.util.FileUtils.FLATTEN;
+import static com.ibm.ws.test.image.util.FileUtils.TEST_OUTPUT_PATH_ABS;
+import static com.ibm.ws.test.image.util.FileUtils.ensureNonexistence;
+import static com.ibm.ws.test.image.util.FileUtils.extract;
+import static com.ibm.ws.test.image.util.FileUtils.verifySpace;
+import static com.ibm.ws.test.image.util.ProcessRunner.getJavaHomePathAbs;
+import static com.ibm.ws.test.image.util.ProcessRunner.runJar;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -42,12 +42,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.ibm.ws.image.test.topo.ServerImages;
-import com.ibm.ws.image.test.topo.ServerImages.ImageType;
-import com.ibm.ws.image.test.topo.ServerInstallation;
 import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.InstalledFeature;
 import com.ibm.ws.install.internal.InstallKernelImpl;
+import com.ibm.ws.test.image.build.BuildImages;
+import com.ibm.ws.test.image.build.BuildImages.ImageType;
+import com.ibm.ws.test.image.installation.ServerInstallation;
 
 @RunWith(Parameterized.class)
 public class InstallBundlesTest {
@@ -134,7 +134,7 @@ public class InstallBundlesTest {
         ensureNonexistence(baseLocalWorkPath);
 
         ImageType.ensureImageFiles();
-        ServerImages.setupFeatureRepo();
+        BuildImages.createRepository();
     }
 
     @AfterClass

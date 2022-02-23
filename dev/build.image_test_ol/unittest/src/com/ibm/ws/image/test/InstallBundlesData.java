@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.ws.image.test.topo.ServerImages.ImageType;
+import com.ibm.ws.test.image.build.BuildImages.ImageType;
 
 public class InstallBundlesData {
     public static final List<Object[]> TEST_DATA;
