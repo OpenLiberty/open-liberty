@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Einige Anwendungen aktiv",
     SOME_SERVERS_RUNNING : "Einige Server aktiv",
     SOME_CLUSTERS_RUNNING : "Einige Cluster aktiv",
-    NO_APPS_RUNNING : "Keine Anwendungen aktiv",
     NO_SERVERS_RUNNING : "Keine Server aktiv",
     NO_CLUSTERS_RUNNING : "Keine Cluster aktiv",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: Anwendungsinstanz nicht aktiv", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: nicht alle Anwendungen aktiv", // serverName[]
-    NO_APPS_RUNNING : "{0}: keine Anwendung aktiv", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} Server, auf denen nicht alle Anwendungen aktiv sind", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} Server, auf denen keine Anwendung aktiv ist", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Anmerkung {0}",  // note value
     SET_ATTRIBUTES: "Tags und Metadaten",
     SETATTR_RUNTIME_NAME: "{0} auf {1}",  // runtime, host
-    SAVE: "Speichern",
     TAGINVALIDCHARS: "Die Zeichen '/', '<' und '>' sind nicht gültig.",
     ERROR_GET_TAGS_METADATA: "Das Produkt kann die aktuellen Tags und Metadaten für die Ressource nicht abrufen.",
     ERROR_SET_TAGS_METADATA: "Ein Fehler verhindert die Festlegung der Tags und Metadaten durch das Produkt.",
