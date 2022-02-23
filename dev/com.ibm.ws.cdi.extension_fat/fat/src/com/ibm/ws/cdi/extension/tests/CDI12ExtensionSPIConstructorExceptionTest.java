@@ -10,6 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.tests;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -21,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.cdi.extension.apps.xtorException.ConstructorExceptionServlet;
+import com.ibm.ws.cdi.extension.spi.test.constructor.exception.MyExtension;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -57,16 +66,25 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends FATServletClient 
 
         ShrinkHelper.exportDropinAppToServer(server, extensionConstructorExceptionApp, DeployOptions.SERVER_ONLY);
         server.startServer(true);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application " + APP_NAME + " started");
+
+        // SPI extension exception should not prevent an application starting
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I.*Application " + APP_NAME + " started"));
+
+        // Check we have the right exception messages
+        List<String> errors = server.findStringsInLogsUsingMark("CWOWB1012E", server.getDefaultLogFile());
+
+        // Check that the error message includes:
+        assertThat(errors, hasSize(1));
+        assertThat(errors.get(0), allOf(containsString(CDIExtensionRepeatActions.SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID), // The bundle containing the offending class
+                                        containsString(MyExtension.class.getName()) // The offending class name
+        ));
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
         final String METHOD_NAME = "cleanup";
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Stopping the server.");
-        if (server.isStarted()) {
-            server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails.
-        }
+        server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails.
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.SPI_XTOR_FAIL_EXTENSION_BUNDLE_ID);
     }

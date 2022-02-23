@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
@@ -57,6 +58,7 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
+
     private static final TraceComponent tc = Tr.register(WebSphereCDIDeploymentImpl.class);
 
     private final String id;
@@ -499,34 +501,28 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
             //Now add the extensions from the SPI.
             //Because these are not in a META-INF Service file we have to construct instances
-            //to pass to weld. 
-            Set<String> spiExtensions = new HashSet<String>();
+            //to pass to weld.
 
             for (WebSphereBeanDeploymentArchive deploymentBDA : deploymentDBAs.values()) {
-                Set<String> spiExtensionClassNames = deploymentBDA.getSPIExtensionClassNames();
+                Set<Supplier<Object>> spiExtensionSuppliers = deploymentBDA.getSPIExtensionSuppliers();
 
-                if (spiExtensionClassNames.isEmpty()) {
+                if (spiExtensionSuppliers.isEmpty()) {
                     continue;
                 }
 
                 extensionBDAs.put(deploymentBDA.getId(), deploymentBDA);
 
-                for (String spiExtensionClazzName : spiExtensionClassNames) {
-                    Extension spiExtension = null;
-    
+                for (Supplier<Object> spiExtensionSupplier : spiExtensionSuppliers) {
                     try {
-                        Class spiExtensionClazz = Class.forName(spiExtensionClazzName, true, deploymentBDA.getClassLoader());
-                    
-                        if (!Extension.class.isAssignableFrom(spiExtensionClazz)) {
-                            throw new IllegalArgumentException(spiExtensionClazz.getCanonicalName()
-                                                       + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
+                        Object extension = spiExtensionSupplier.get();
+                        if (!(extension instanceof Extension)) {
+                            throw new IllegalArgumentException(extension.getClass().getCanonicalName()
+                                                               + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
                         }
-                    
-                        spiExtension = (Extension) spiExtensionClazz.getDeclaredConstructor().newInstance();
-                        ExtensionMetaData metaData = new ExtensionMetaData(spiExtension);
+                        ExtensionMetaData metaData = new ExtensionMetaData((Extension) extension);
                         extensionSet.add(metaData);
                     } catch (Exception e) {
-                        Tr.error(tc, "spi.extension.failed.to.construct.CWOWB1010E", spiExtensionClazzName, e.toString());
+                        Tr.error(tc, "exception.creating.extensions.CWOWB1012E", deploymentBDA.toString(), e.toString());
                     }
                 }
             }

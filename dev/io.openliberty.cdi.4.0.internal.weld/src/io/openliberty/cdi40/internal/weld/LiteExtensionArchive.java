@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.impl.weld;
+package io.openliberty.cdi40.internal.weld;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.jboss.weld.probe.ProbeExtension;
+import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.archive.AbstractCDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.Application;
@@ -29,24 +32,25 @@ import com.ibm.ws.cdi.internal.interfaces.Resource;
 import com.ibm.ws.cdi.internal.interfaces.ResourceInjectionBag;
 import com.ibm.ws.runtime.metadata.MetaData;
 
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+
 /**
- * This is the probe extension.
+ * Extension archive which adds the Weld LiteExtensionTranslator
  */
-public class ProbeExtensionArchive extends AbstractCDIArchive implements ExtensionArchive {
+public class LiteExtensionArchive extends AbstractCDIArchive implements ExtensionArchive {
+    private static final TraceComponent tc = Tr.register(LiteExtensionArchive.class);
+    private final ClassLoader bceClassLoader;
+    private final List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions;
 
-    private final Class<?> probeClass;
-    private final Application application;
-
-    public ProbeExtensionArchive(CDIRuntime cdiRuntime, Application application) {
-
-        super(ProbeExtension.class.getName(), cdiRuntime);
-        this.application = application;
-        this.probeClass = ProbeExtension.class;
+    public LiteExtensionArchive(CDIRuntime cdiRuntime, ClassLoader bceClassLoader, List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions) {
+        super(LiteExtensionTranslator.class.getName(), cdiRuntime);
+        this.bceClassLoader = bceClassLoader;
+        this.buildCompatibleExtensions = buildCompatibleExtensions;
     }
 
     /** {@inheritDoc} */
     @Override
-    public J2EEName getJ2EEName() {
+    public J2EEName getJ2EEName() throws CDIException {
         return null;
     }
 
@@ -56,22 +60,38 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
         return ArchiveType.RUNTIME_EXTENSION;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public ClassLoader getClassLoader() {
-        ClassLoader classLoader = this.probeClass.getClassLoader();
-        if (classLoader == null) {
-            classLoader = application.getClassLoader();
-        }
-        return classLoader;
+        return LiteExtensionTranslator.class.getClassLoader();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Set<String> getClassNames() {
-        return Collections.singleton(probeClass.getName());
+    public Set<String> getClassNames() throws CDIException {
+        return Collections.singleton(LiteExtensionTranslator.class.getName());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getExtensionClasses() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Returning extension translator");
+        }
+
+        return Collections.singleton(LiteExtensionTranslator.class.getName());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+        return Collections.singleton(() -> new LiteExtensionTranslator(buildCompatibleExtensions, bceClassLoader));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Resource getResource(String path) {
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -83,7 +103,7 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
     /** {@inheritDoc} */
     @Override
     public Application getApplication() {
-        return application;
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -118,31 +138,13 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
 
     /** {@inheritDoc} */
     @Override
-    public Set<String> getExtensionClasses() {
-        return Collections.singleton(this.probeClass.getName());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPath() {
+    public String getPath() throws CDIException {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Set<CDIArchive> getModuleLibraryArchives() throws CDIException {
-        return Collections.emptySet();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Resource getResource(String path) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> getBeanDefiningAnnotations() throws CDIException {
+    public Collection<CDIArchive> getModuleLibraryArchives() throws CDIException {
         return Collections.emptySet();
     }
 
@@ -174,12 +176,6 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
     @Override
     public boolean isExtClassesOnly() {
         return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
-        return Collections.emptySet();
     }
 
 }
