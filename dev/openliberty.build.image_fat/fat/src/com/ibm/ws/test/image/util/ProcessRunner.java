@@ -38,10 +38,11 @@ public class ProcessRunner {
     //
     
     public static class Result {
-        public Result(int rc,
+        public Result(boolean destroyed, int rc,
                 List<String> stdout, StreamCopier.TerminationCondition stdoutCondition,
                 List<String> stderr, StreamCopier.TerminationCondition stderrCondition) {
 
+            this.destroyed = destroyed;
             this.rc = rc;
             
             this.stdout = stdout;
@@ -51,13 +52,18 @@ public class ProcessRunner {
             this.stderrCondition = stderrCondition;
         }
         
+        private final boolean destroyed;
         private final int rc;
-        
+
         private final List<String> stdout;
         private final StreamCopier.TerminationCondition stdoutCondition;
 
         private final List<String> stderr;
         private final StreamCopier.TerminationCondition stderrCondition;
+
+        public boolean getDestroyed() {
+            return destroyed;
+        }
 
         public int getRC() {
             return rc;
@@ -84,10 +90,12 @@ public class ProcessRunner {
                 StreamCopier.TerminationCondition expectedStdoutCondition,
                 StreamCopier.TerminationCondition expectedStderrCondition) throws Exception {
 
+            boolean useDestroyed = getDestroyed();
             int useRc = getRC();
             StreamCopier.TerminationCondition useStdoutCondition = getStdoutCondition();
             StreamCopier.TerminationCondition useStderrCondition = getStderrCondition();
 
+            log("Destroyed [ " + useDestroyed + " ]");
             log("Return code [ " + useRc + " ]");
             log("Stdout condition [ " + useStdoutCondition + " ]");
             log("Stderr condition [ " + useStderrCondition + " ]");
@@ -100,7 +108,12 @@ public class ProcessRunner {
             }
 
             if ( useRc != expectedRc ) {
-                throw new Exception("Failed; return code [ " + useRc + " ] expecting [ " + expectedRc + " ]");
+                // See issue #20249
+                if ( useDestroyed ) {
+                    log("Ignoring return code [ " + useRc + " ] expecting [ " + expectedRc + " ]");
+                } else {
+                    throw new Exception("Failed; return code [ " + useRc + " ] expecting [ " + expectedRc + " ]");
+                }
             }
 
             if ( (expectedStdoutCondition != null) &&
@@ -381,7 +394,8 @@ public class ProcessRunner {
             Thread.sleep(Timeouts.PROCESS_INTERVAL_MS);
         }
 
-        if ( p.isAlive() ) {
+        boolean destroyed;
+        if ( destroyed = p.isAlive() ) {
             log("Forcibly destroying process");
             p.destroy();
             p.waitFor(Timeouts.PROCESS_INTERVAL_MS, TimeUnit.MILLISECONDS);
@@ -398,7 +412,7 @@ public class ProcessRunner {
         }
 
         return new Result(
-                p.exitValue(),
+                destroyed, p.exitValue(),
                 stdoutCapture, osc.getTerminationCondition(),
                 stderrCapture, esc.getTerminationCondition() );
     }

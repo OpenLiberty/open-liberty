@@ -86,7 +86,7 @@ public class InstallServerData {
 
     public static final boolean[] SUPPORTS_DEFAULT_STARTUP = {
           true, true, true, true,
-          true,
+          false, // Temporarily disabled: See issue #20248
           true, true, true,
           true, true, true
     };
@@ -127,7 +127,7 @@ public class InstallServerData {
           null,
           NO_USERS_MESSAGE, null, null,
           NO_USERS_MESSAGE, null, null
-    };    
+    };
     
     static {
         List<Object[]> testData = new ArrayList<Object[]>(SERVER_IMAGES.length);

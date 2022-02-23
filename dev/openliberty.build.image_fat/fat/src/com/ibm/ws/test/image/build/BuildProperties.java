@@ -68,61 +68,83 @@ public class BuildProperties {
     //     "../build.image/output/upload/externals/installables";
     // String useImagesPath = System.getProperty(IMAGES_PROPERTY_NAME, IMAGES_DEFAULT);
 
-    public static final String IMAGES_DEFAULT =
-        "../build.image/dev/build.image/build/libs/distributions/";
+    // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
+    // ../build.image/build/libs/distributions
 
+    // Running frm the command line:
+    public static final String IMAGES_DEFAULT =
+        "../../../../build.image/build/libs/distributions/";
+
+    // Running from eclipse:
+    public static final String ALT_IMAGES_DEFAULT =
+        "../build.image/build/libs/distributions";
+    
     public static final String IMAGES_PATH;
-    public static final String[] IMAGE_PATHS;
+    public static final String[] IMAGE_NAMES;
 
     static {
-        String useImagesPath = IMAGES_DEFAULT;
-        File useImagesDir = new File(useImagesPath);
-        useImagesPath = normalize( useImagesDir.getAbsolutePath() );
+        String imagesPath = IMAGES_DEFAULT;
+        File imagesDir = new File(imagesPath);
+        imagesPath = normalize( imagesDir.getAbsolutePath() );
 
-        if ( !useImagesDir.exists() ) {
-            useImagesDir = null;
-            log("Image directory [ " + useImagesPath + " ] does not exist");
-        } else if ( !useImagesDir.isDirectory() ) {
-            useImagesDir = null;
-            log("Image directory [ " + useImagesPath + " ] is not a directory");
-        } else {
-            log("Image directory [ " + useImagesPath + " ]");
+        if ( !imagesDir.exists() ) {
+            log("Images directory [ " + imagesPath + " ] does not exist; trying alternate");
+            imagesPath = ALT_IMAGES_DEFAULT;            
+            imagesDir = new File(imagesPath);
+            imagesPath = normalize( imagesDir.getAbsolutePath() );
+            
+            if ( !imagesDir.exists() ) {
+                imagesDir = null;
+                log("Images directory [ " + imagesPath + " ] does not exist");
+            }            
         }
 
-        String[] useImagePaths;
-        
-        if ( useImagesDir != null ) {
-            useImagePaths = useImagesDir.list( BuildProperties::isImage );
-            if ( useImagePaths == null ) {
-                useImagePaths = new String[] {};
-                log("Image directory [ " + useImagesPath + " ] could not be accessed");
-            } else if ( useImagePaths.length == 0 ) {
-                log("Image directory [ " + useImagesPath + " ] is empty");
+        if ( imagesDir != null ) {
+            if ( !imagesDir.isDirectory() ) {
+                imagesDir = null;
+                log("Images directory [ " + imagesPath + " ] is not a directory");
+            } else {
+                log("Images directory [ " + imagesPath + " ]");
+            }
+        }
+
+        String[] imageNames;
+        if ( imagesDir != null ) {
+            imageNames = imagesDir.list( BuildProperties::isImage );
+            if ( imageNames == null ) {
+                imageNames = new String[] {};
+                log("Image directory [ " + imagesPath + " ] could not be accessed");
+            } else if ( imageNames.length == 0 ) {
+                log("Image directory [ " + imagesPath + " ] is empty");
             }
         } else {
-            useImagePaths = new String[] {};
+            imageNames = new String[] {};
         }
 
         if ( File.separatorChar == '\\' ) {
-            normalize(useImagePaths);
+            normalize(imageNames);
         }
 
         log("Images:");
-        for ( String imagePath : useImagePaths ) {
-            log("[ " + imagePath + " ]");
+        for ( String imageName : imageNames ) {
+            log("  [ " + imageName + " ]");
         }
 
-        IMAGES_PATH = useImagesPath;
-        IMAGE_PATHS = useImagePaths;
+        IMAGES_PATH = imagesPath;
+        IMAGE_NAMES = imageNames;
     }
 
     public static boolean isImage(File parent, String name) {
         return ( name.endsWith(".jar") || name.endsWith(".zip") );
     }
 
-    public static List<String> getImages(String[] parts) {
+    public static String getImagesPath() {
+        return IMAGES_PATH;
+    }
+
+    public static List<String> getImageNames(String[] parts) {
         List<String> images = null;
-        for ( String imagePath : IMAGE_PATHS ) {
+        for ( String imagePath : IMAGE_NAMES ) {
             int slashLoc = imagePath.lastIndexOf(File.separatorChar);
             String imageName = ( (slashLoc == -1) ? imagePath : imagePath.substring(slashLoc + 1) );
             if ( !match(parts, imageName) ) {
