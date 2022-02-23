@@ -27,3 +27,5 @@ Import-Package:  \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   *
+
+jakartaeeMe: true

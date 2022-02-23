@@ -22,3 +22,4 @@ Subsystem-Name: Java Web Services 2.3
  com.ibm.ws.webservices.javaee.common
 kind=noship
 edition=full
+
