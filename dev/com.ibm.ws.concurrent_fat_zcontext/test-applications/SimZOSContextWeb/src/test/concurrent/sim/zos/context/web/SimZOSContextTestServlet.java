@@ -16,6 +16,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,13 +35,14 @@ import javax.naming.InitialContext;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.concurrent.sim.context.zos.wlm.Enclave;
 
 @ContextServiceDefinition(name = "java:app/concurrent/ThreadNameContext",
                           propagated = { "SyncToOSThread", SECURITY, APPLICATION })
 
 //TODO move to web.xml and include properties?
 @ContextServiceDefinition(name = "java:module/concurrent/zosWLMContext",
-                          propagated = { "Classification" }, // TODO not added yet
+                          propagated = { "Classification" },
                           cleared = { TRANSACTION, "SyncToOSThread", SECURITY },
                           unchanged = ALL_REMAINING)
 
@@ -69,7 +72,7 @@ public class SimZOSContextTestServlet extends FATServlet {
     @Test
     public void testClearSimulatedSyncToOSThreadContext() throws Exception {
         // Instead of testing the real SyncToOSThread context behavior,
-        // the fake context provider propagates the thread name.
+        // the fake context provider defaults/propagates the thread name.
         ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/zosWLMContext");
 
         String originalName = Thread.currentThread().getName();
@@ -83,6 +86,29 @@ public class SimZOSContextTestServlet extends FATServlet {
             assertEquals("testClearSimulatedSyncToOSThreadContext", Thread.currentThread().getName());
         } finally {
             Thread.currentThread().setName(originalName);
+        }
+    }
+
+    /**
+     * Configure to clear the fake z/OS WLM context and verify that it is cleared from the thread.
+     */
+    @Test
+    public void testClearSimulatedZOSWLMContext() throws Exception {
+        // Instead of testing the real z/OS WLM context behavior,
+        // the fake context provider updates the state of a mock Enclave class.
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/ThreadNameContext");
+
+        String originalName = Thread.currentThread().getName();
+        try {
+            Enclave.setTransactionClass("TX_CLASS_1");
+
+            Supplier<String> txClassSupplier = contextSvc.contextualSupplier(Enclave::getTransactionClass);
+
+            assertEquals("ASYNCBN", txClassSupplier.get());
+
+            assertEquals("TX_CLASS_1", Enclave.getTransactionClass());
+        } finally {
+            Enclave.clear();
         }
     }
 
@@ -112,6 +138,54 @@ public class SimZOSContextTestServlet extends FATServlet {
             assertEquals("testPropagateSimulatedSyncToOSThreadContext-A", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } finally {
             Thread.currentThread().setName(originalName);
+        }
+    }
+
+    /**
+     * Configure to propagate zosWLMContext and verify that the fake
+     * context type that we are using to simulate it propagates to the thread.
+     */
+    @Test
+    public void testPropagateSimulatedZOSWLMContext() throws Exception {
+        // Instead of testing the real z/OS WLM context behavior,
+        // the fake context provider updates the state of a mock Enclave class.
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/zosWLMContext");
+
+        String originalName = Thread.currentThread().getName();
+        try {
+            Enclave.setTransactionClass("TX_CLASS_A");
+
+            Supplier<String> txClassSupplier = contextSvc.contextualSupplier(Enclave::getTransactionClass);
+
+            Enclave.setTransactionClass("TX_CLASS_B");
+
+            assertEquals("TX_CLASS_A", txClassSupplier.get());
+
+            assertEquals("TX_CLASS_B", Enclave.getTransactionClass());
+
+            // Propagate the absence of context:
+
+            Enclave.clear();
+
+            txClassSupplier = contextSvc.contextualSupplier(Enclave::getTransactionClass);
+
+            Enclave.setTransactionClass("TX_CLASS_C");
+
+            assertEquals(null, txClassSupplier.get());
+
+            assertEquals("TX_CLASS_C", Enclave.getTransactionClass());
+
+            // Long running task:
+
+            @SuppressWarnings("unchecked")
+            Supplier<String> longRunningTxSupplier = contextSvc.createContextualProxy(Enclave::getTransactionClass,
+                                                                                      Collections.singletonMap(ManagedTask.LONGRUNNING_HINT, "true"),
+                                                                                      Supplier.class);
+            assertEquals("ASYNCDMN", longRunningTxSupplier.get());
+
+            assertEquals("TX_CLASS_C", Enclave.getTransactionClass());
+        } finally {
+            Enclave.clear();
         }
     }
 }
