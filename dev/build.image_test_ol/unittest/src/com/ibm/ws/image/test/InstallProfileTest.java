@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.image.test;
 
-import static com.ibm.ws.image.test.topo.BuildProperties.GA_VERSION;
+import static com.ibm.ws.test.image.build.BuildProperties.GA_VERSION;
 
 import org.junit.Assume;
 import org.junit.Before;
@@ -20,9 +20,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.ibm.ws.image.test.topo.ServerImages;
-import com.ibm.ws.image.test.topo.ServerInstallation;
-import com.ibm.ws.image.test.util.FileUtils;
+import com.ibm.ws.test.image.build.BuildImages;
+import com.ibm.ws.test.image.installation.ServerInstallation;
+import com.ibm.ws.test.image.util.FileUtils;
 
 @RunWith(Parameterized.class)
 public class InstallProfileTest {
@@ -96,9 +96,9 @@ public class InstallProfileTest {
         return baseInstallationPath;
     }
     
-    public ServerImages.RawImages rawImages;
+    public BuildImages.RawImages rawImages;
     
-    public ServerImages.RawImages getRawImages() {
+    public BuildImages.RawImages getRawImages() {
         return rawImages;
     }
     
@@ -107,7 +107,7 @@ public class InstallProfileTest {
         Assume.assumeTrue(doRun);
 
         baseInstallationPath = FileUtils.TEST_OUTPUT_PATH_ABS + "/profile_" + getTag();
-        rawImages = ServerImages.getRawImages( getPrefix(), getSuffix() );
+        rawImages = BuildImages.getRawImages( getPrefix(), getSuffix() );
     }
 
     //
@@ -135,7 +135,7 @@ public class InstallProfileTest {
     protected void testProfile(int imageNo, String imagePath) throws Exception {
         String installationPath = getBaseInstallationPath() + Integer.toString(imageNo);
 
-        ServerInstallation installation = ServerImages.install(imagePath, installationPath);
+        ServerInstallation installation = BuildImages.install(imagePath, installationPath);
 
         installation.validate( GA_VERSION, getDoSchemaTest() );
     }

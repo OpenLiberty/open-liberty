@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.image.test.util;
+package com.ibm.ws.test.image.util;
 
 import static org.junit.Assert.fail;
 
@@ -58,30 +58,34 @@ public class FileUtils {
     public static final String TEST_OUTPUT_PATH_ABS = normalize( (new File(TEST_OUTPUT_PATH)).getAbsolutePath() );
     public static final File TEST_OUTPUT = new File(TEST_OUTPUT_PATH_ABS);
 
-    public static long getTempTotalSpace() {
+    public static long getOutputTotalSpace() {
         return TEST_OUTPUT.getTotalSpace();
     }
-    
-    public static long getTempFreeSpace() {
+
+    public static long getOutputFreeSpace() {
         return TEST_OUTPUT.getFreeSpace();
     }
     
-    public static long getTempUsableSpace() {
+    public static long getOutputUsableSpace() {
         return TEST_OUTPUT.getUsableSpace();
+    }
+    
+    public static void logOutput() {
+        log("Test output path [ " + TEST_OUTPUT_PATH + " ]");
+        log("  Total  [ " + getOutputTotalSpace() + " ]");
+        log("  Free   [ " + getOutputFreeSpace() + " ]");
+        log("  Usable [ " + getOutputUsableSpace() + " ]");        
     }
 
     static {
         log("OS name [ os.name ]: [ " + OS_NAME + " ]");
         log("Windows [ " + IS_WINDOWS + " ]");
 
-        log("Test output path [ " + TEST_OUTPUT_PATH + " ]");
-        log("  Total  [ " + getTempTotalSpace() + " ]");
-        log("  Free   [ " + getTempFreeSpace() + " ]");
-        log("  Usable [ " + getTempUsableSpace() + " ]");
+        logOutput();
     }
 
     public static void verifySpace(long required) {
-        long usable = getTempUsableSpace();
+        long usable = getOutputUsableSpace();
 
         if ( usable < required ) {
             fail("Usable space [ " + usable + " ] is less than the required space [ " + required + " ]");
@@ -90,6 +94,59 @@ public class FileUtils {
         log("Verified usable space [ " + usable + " ] is less than the required space [ " + required + " ]");        
     }
     
+    //
+    
+    //
+
+    public static String describe(String[] parts) {
+        StringBuilder description = new StringBuilder();
+
+        boolean onFirst = true;
+        for ( String part : parts ) {
+            if ( part == null ) {
+                part = "*";
+            }
+            if ( onFirst ) {
+                onFirst = false;
+            } else {
+                description.append('-');
+            }
+            description.append(part);
+        }
+        return description.toString();
+    }
+    
+    public static boolean match(String[] parts, String name) {
+        int numParts = parts.length;
+        int nameLen = name.length();
+
+        boolean partsMatch = true;
+        int partNo = 0;
+
+        int lastPos = 0;
+
+        while ( partsMatch && (partNo < numParts) && (lastPos < nameLen) ) {
+            int nextPos = name.indexOf(lastPos, '-');
+            if ( nextPos == -1 ) {
+                nextPos = nameLen;
+            }
+
+            String nextPart = parts[partNo];
+            if ( nextPart != null ) {
+                int partLen = nextPart.length();
+                if ( ((nextPos - lastPos) != partLen) ||
+                     !name.regionMatches(lastPos, nextPart, 0, partLen) ) {
+                    partsMatch = false;
+                }
+            }
+
+            lastPos = nextPos + 1;
+            partNo++;
+        }
+        
+        return ( partsMatch && (partNo == numParts) );
+    }
+        
     //
 
     public static String normalize(String path) {

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.image.test.util;
+package com.ibm.ws.test.image.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
