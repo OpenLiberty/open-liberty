@@ -66,7 +66,8 @@ var editorTree = (function() {
             treeRoleAndExpandedState += " aria-expanded=\"false\"";
             treeRoleAndExpandedState += " aria-selected=\"false\"";
         }
-        var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " aria-label=\"" + elementLabel + " " + elementSuffix + "\"></div>");
+        // replace aria-label with alt attribute to fix accessible name not match visible label violation
+        var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " alt=\"" + elementLabel + " " + elementSuffix + "\"></div>");
 
         // Create expansion button control
         var expandButtonControl = $("<div class=\"editorTreeNodeExpandButton\"><span class=\"sr-only\">" + editorMessages.EXPAND_COLLAPSE + "</span></div>");
