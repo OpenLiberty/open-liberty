@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.cdi.internal.core.scopes;
 
+import static io.openliberty.cdi.internal.core.Repeats.WITH_BEANS_XML;
+import static io.openliberty.cdi.internal.core.Repeats.NO_BEANS_XML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,10 +32,15 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.cdi.internal.core.FATSuite;
+import io.openliberty.cdi.internal.core.RepeatRule;
+import io.openliberty.cdi.internal.core.Repeats;
 import io.openliberty.cdi.internal.core.scopes.app.CDIScopeTestServlet;
 
 @RunWith(FATRunner.class)
 public class CDIScopeTest {
+
+    @ClassRule
+    public static RepeatRule<Repeats> r = new RepeatRule<>(NO_BEANS_XML, WITH_BEANS_XML);
 
     public static LibertyServer server;
 
@@ -42,8 +50,11 @@ public class CDIScopeTest {
 
         Package appPackage = CDIScopeTestServlet.class.getPackage();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "cdiScope.war")
-                                   .addPackage(appPackage)
-                                   .addAsWebInfResource(appPackage, "beans.xml", "beans.xml");
+                                   .addPackage(appPackage);
+
+        if (r.getRepeat() == WITH_BEANS_XML) {
+            war.addAsWebInfResource(appPackage, "beans.xml", "beans.xml");
+        }
 
         FATSuite.deployApp(server, war);
     }
