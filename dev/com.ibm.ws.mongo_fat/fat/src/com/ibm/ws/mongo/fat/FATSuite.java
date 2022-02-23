@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -36,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 public class FATSuite {
     public static final String APP_NAME = "mongo";
     public static String HOST_NAME;
+    private static final Class<?> c = FATSuite.class;
 
     @SuppressWarnings("serial")
     public static Map<String, String[]> serverKeystores = new HashMap<String, String[]>() {
@@ -48,6 +51,14 @@ public class FATSuite {
                                                        "validCertAuthTrustStore" });
             put("mongo.fat.server.ssl.default.config", new String[] { "myDefaultKeyStore",
                                                                       "myDefaultTrustStore" });
+        }
+    };
+
+    @SuppressWarnings("serial")
+    public static Map<String, Integer> serverMongoDBServices = new HashMap<String, Integer>() {
+        {
+            put("mongo.fat.server.ssl", 20);
+            put("mongo.fat.server.ssl.default.config", 1);
         }
     };
 
@@ -65,18 +76,41 @@ public class FATSuite {
     }
 
     // Mongo uses min.cardinality with SSL, but SSL can still take a long time to start; wait
-    public static void waitForMongoSSL(LibertyServer server) throws Exception {
+    public static boolean waitForMongoSSL(LibertyServer server) throws Exception {
+        final String m = "waitForMongoSSL";
         String[] keystores = serverKeystores.get(server.getServerName());
 
         // Just because SSL feature is reported as starting doesn't mean it is really ready,
         // nor that Mongo is functional, so wait for SSL to report the keystore has been
         // added, then wait for MongoDBService to activate.
+        Log.info(c, m, "Waiting for SSL trustStore added messages in trace...");
         server.resetLogMarks(); // look from start of logs
         for (String keystore : keystores) {
             assertNotNull("Did not find trace message indicating SSL trustStore had been added",
                           server.waitForStringInTraceUsingMark("Adding keystore: " + keystore));
         }
-        // Note: may need to also convert this to wait for multiple messages; and also account for deactivate calls
-        assertNotNull("Did not find message indicating MongoDBService had activated", server.waitForStringInTraceUsingMark("MongoDBService * < activate"));
+
+        // Wait for multiple MongoDBService activation messages; and also account for deactivate calls
+        int mongoDBServices = serverMongoDBServices.get(server.getServerName());
+
+        Log.info(c, m, "Looking for MongoDBService activate calls in trace...");
+        List<String> activates = server.findStringsInLogsAndTraceUsingMark("MongoDBService * < activate");
+        List<String> deactivates = server.findStringsInLogsAndTraceUsingMark("MongoDBService * > deactivate");
+
+        if (mongoDBServices > (activates.size() - deactivates.size())) {
+            Log.info(c, m, "Not all MongoDBServices are active: expected=" + mongoDBServices + ",  activates=" + activates.size() + ", deactivates=" + deactivates.size());
+            Log.info(c, m, "Waiting for 30 seconds for remaining services to activate...");
+            Thread.sleep(30 * 1000);
+            activates = server.findStringsInLogsAndTraceUsingMark("MongoDBService * < activate");
+            deactivates = server.findStringsInLogsAndTraceUsingMark("MongoDBService * > deactivate");
+        }
+
+        if (mongoDBServices != (activates.size() - deactivates.size())) {
+            Log.info(c, m, "Not all MongoDBServices are active: expected=" + mongoDBServices + ",  activates=" + activates.size() + ", deactivates=" + deactivates.size());
+            return false;
+        }
+
+        Log.info(c, m, "All MongoDBServices are active: expected=" + mongoDBServices + ",  activates=" + activates.size() + ", deactivates=" + deactivates.size());
+        return true;
     }
 }
