@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Nie mo\u017cna przetworzy\u0107 \u017c
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Utworzenie \u0142a\u0144cucha JSON JWK wymaga, aby atrybut signatureAlgorithm dostawcy OpenID Connect by\u0142 ustawiony na warto\u015b\u0107 RS256. Je\u015bli zosta\u0142y podane atrybuty KeyStoreRef i keyAliasName, musz\u0105 one by\u0107 poprawne. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Popraw atrybuty konfiguracji dostawcy OpenID Connect.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Roszczenia z tokenu identyfikatora innej firmy nie mog\u0142y zosta\u0107 rozpropagowane dla dostawcy OpenID Connect {0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Nie mo\u017cna wyodr\u0119bni\u0107 roszcze\u0144 z tokenu identyfikatora innej firmy. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w komunikacie o b\u0142\u0119dzie.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect innej firmy wysy\u0142a poprawny token identyfikatora.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 funkcj\u0119 SPI mediatora znacznika ID. Obs\u0142ugiwane jest \u015brodowisko Java w wersji 1.7 lub nowsze.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Wersja \u015brodowiska Java podana w komunikacie nie mo\u017ce obs\u0142u\u017cy\u0107 funkcji SPI mediatora znacznika ID. 

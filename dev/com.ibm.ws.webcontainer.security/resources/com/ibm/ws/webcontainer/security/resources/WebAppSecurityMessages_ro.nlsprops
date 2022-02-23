@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,16 @@ SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Post parametri sunt nuli sau sunt ma
 SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Dac\u0103 post parametri sunt prea mari, m\u0103ri\u0163i dimensiunea pentru op\u0163iunea postParamCookieSize.
 
 SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Trust Association Init nu poate \u00eenc\u0103rca clasa Trust Association {0}.
-SEC_TAI_VALIDATE_FAILED.explanation=C\u00e2nd interceptorul corespunz\u0103tor este g\u0103sit pentru o cerere dat\u0103, acel interceptor \u00ee\u015fi valideaz\u0103 apoi \u00eencrederea cu serverul proxy invers. \
-Acest mesaj de eroare sugereaz\u0103 c\u0103 validarea a e\u015fuat \u015fi de aceea proxy-ul invers nu poate fi crezut. \
-De exemplu, o parol\u0103 incorect\u0103 sau expirat\u0103 ar fi putut fi furnizat\u0103.
-SEC_TAI_VALIDATE_FAILED.useraction=\u00centr-un mediu de produc\u0163ie, utilizatorul poate fi alertat s\u0103 verifice dac\u0103 exist\u0103 un intrus \u00een sistem. \
-\u00centr-un mediu de produc\u0163ie \u00een care testarea este pe drum, verifica\u0163i c\u0103 intr\u0103rile a\u015fteptate de la serverul proxy invers sunt transmise interceptorului corect.  \
-Natura acestor intr\u0103ri depinde de cum este stabilit\u0103 asocierea \u00eencrederii. \
-De exemplu, cea mai simpl\u0103 metod\u0103 este de a transmite un nume de utilizator \u015fi o parol\u0103 prin antetul Autentificare de baz\u0103.  
+SEC_TAI_VALIDATE_FAILED.explanation=C\u00e2nd interceptorul corespunz\u0103tor este g\u0103sit pentru o cerere dat\u0103, acel interceptor \u00ee\u015fi valideaz\u0103 apoi \u00eencrederea cu serverul proxy invers. Acest mesaj de eroare sugereaz\u0103 c\u0103 validarea a e\u015fuat \u015fi de aceea proxy-ul invers nu poate fi crezut. De exemplu, o parol\u0103 incorect\u0103 sau expirat\u0103 ar fi putut fi furnizat\u0103.
+SEC_TAI_VALIDATE_FAILED.useraction=\u00centr-un mediu de produc\u0163ie, utilizatorul poate fi alertat s\u0103 verifice dac\u0103 exist\u0103 un intrus \u00een sistem. \u00centr-un mediu de produc\u0163ie \u00een care testarea este pe drum, verifica\u0163i c\u0103 intr\u0103rile a\u015fteptate de la serverul proxy invers sunt transmise interceptorului corect.  Natura acestor intr\u0103ri depinde de cum este stabilit\u0103 asocierea \u00eencrederii. De exemplu, cea mai simpl\u0103 metod\u0103 este de a transmite un nume de utilizator \u015fi o parol\u0103 prin antetul Autentificare de baz\u0103.  
 
 SEC_TAI_USER_EXCEPTION=CWWKS9108E: Nu se poate g\u0103si un utilizator valid pentru Asocierea de \u00eencredere.
-SEC_TAI_USER_EXCEPTION.explanation=Un interceptor returneaz\u0103 numele de utilizator autentificat. \
-Nu a fots returnat niciun astfel de nume de utilizator.
+SEC_TAI_USER_EXCEPTION.explanation=Un interceptor returneaz\u0103 numele de utilizator autentificat. Nu a fots returnat niciun astfel de nume de utilizator.
 SEC_TAI_USER_EXCEPTION.useraction=Verifica\u0163i c\u0103 serverul proxy invers insereaz\u0103 numele de utilizator corect \u00een cererea HTTP \u00eenainte s\u0103 trimit\u0103 cererea serverului de aplica\u0163ii.
 
 SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: A avut loc o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul Asocierii de \u00eencredere. Excep\u0163ia este {0}.
 SEC_TAI_GENERAL_EXCEPTION.explanation=Aceast\u0103 excep\u0163ie se refer\u0103 la toate celelalte excep\u0163ii ce pot fi create de un interceptor, la validarea \u00eencrederii cu serverul proxy invers \u015fi la ob\u0163inerea numelui de utilizator, cu excep\u0163ia WebTrustAssociationFailedException \u015fi WebTrustAssociationUserException.
-SEC_TAI_GENERAL_EXCEPTION.useraction=Depana\u0163i problema din urm\u0103rirea de stiv\u0103 ce este printat\u0103 \u00eempreun\u0103 cu acest mesaj de eroare. \
-Pute\u0163i de asemenea porni urm\u0103rirea de depanare pentru a ob\u0163ine informa\u0163ii suplimentare despre natura excep\u0163iei.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Depana\u0163i problema din urm\u0103rirea de stiv\u0103 ce este printat\u0103 \u00eempreun\u0103 cu acest mesaj de eroare. Pute\u0163i de asemenea porni urm\u0103rirea de depanare pentru a ob\u0163ine informa\u0163ii suplimentare despre natura excep\u0163iei.
 
 AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Mai multe aplica\u0163ii au numele {0}. Politicile de autoriza\u0163ie de securitate cer ca numele s\u0103 fie unice.
 AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Numele aplica\u0163iilor trebuie s\u0103 fie unice pentru ca politica de autoriza\u0163ie de securitate s\u0103 fie aplicat\u0103.
@@ -109,23 +102,19 @@ AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: Delogarea utilizatorului {0} nu
 AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Delogarea utilizatorului nu s-a finalizat complet cu succes deoarece a survenit o excep\u0163ie nea\u015fteptat\u0103 la \u00eenl\u0103turarea cookie-urilor utilizatorului din cache-ul de autentificare.
 AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Revede\u0163i jurnalele de server pentru informa\u0163ii suplimentare \u015fi deloga\u0163i utilizatorul din nou dac\u0103 este posibil. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/. 
 
-INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: Configura\u0163iei \
-de logare formulare \u00eei lipse\u015fte defini\u0163ia pentru {0} 
-INVALID_FORM_LOGIN_CONFIGURATION.explanation=Configura\u0163iei de logare formulare \u00eei lipse\u015fte fie pagina de logare fie pagina de \
-erori, fie ambele.
-INVALID_FORM_LOGIN_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 \
-c\u0103 configura\u0163ia de logare formulare include defini\u0163ii at\u00e2t pentru \
-pagina de logare precum \u015fi c\u00e2t \u015fi o pagin\u0103 de erori.
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: Configura\u0163iei de logare formulare \u00eei lipse\u015fte defini\u0163ia pentru {0} 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=Configura\u0163iei de logare formulare \u00eei lipse\u015fte fie pagina de logare fie pagina de erori, fie ambele.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia de logare formulare include defini\u0163ii at\u00e2t pentru pagina de logare precum \u015fi c\u00e2t \u015fi o pagin\u0103 de erori.
 
 OSGI_SERVICE_ERROR=CWWKS9121E: Serviciul OSGi {0} nu este disponibil.
 OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
 OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
 
-UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite \u015fi accesibile: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I: \ Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite \u015fi accesibile: {2}
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=Elementul deny-uncovered-http-methods nu este specificat \u00een fi\u015fierul web.xml pentru servlet, \u015fi exist\u0103 metode HTTP pentru un tipar URL care sunt neprotejate. Aceste metode neprotejate vor fi accesibile.
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Asigura\u0163i-v\u0103 c\u0103 toate metodele HTTP la toate tiparele URL constr\u00e2nse au protec\u0163iile de securitate inten\u0163ionate.
 
-UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite, dar nu accesibile: {2}
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I: \ Pentru URL-ul {0} din aplica\u0163ia {1}, urm\u0103toarele metode HTTP sunt descoperite, dar nu accesibile: {2}
 UNCOVERED_HTTP_METHODS_FOUND.explanation=Elementul deny-uncovered-http-methods nu este specificat \u00een fi\u015fierul web.xml pentru servlet, \u015fi exist\u0103 metode HTTP pentru un tipar URL care sunt neprotejate. Aceste metode neprotejate nu vor fi accesibile.
 UNCOVERED_HTTP_METHODS_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 toate metodele HTTP la toate tiparele URL constr\u00e2nse au protec\u0163iile de securitate inten\u0163ionate.
 
@@ -149,3 +138,11 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Utiliza\u0163i protocolul HTTPS sau seta
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
+
+JCACHE_PUT_FAILURE=CWWKS9130E: Cache-ul logged-out-cookie nu a putut pune \u00een cache-ul JCache cookie-ul logged-out. Eroarea este: {0}
+JCACHE_PUT_FAILURE.explanation=Cache-ul logged-out-cookie a \u00eent\u00e2lnit o eroare atunci c\u00e2nd a \u00eencercat s\u0103 pun\u0103 \u00een cache-ul JCache  cookie-ul logged-out.
+JCACHE_PUT_FAILURE.useraction=Examina\u021bi \u0219i corecta\u021bi cauza erorii.
+
+JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Cache-ul logged-out-cookie nu a putut verifica cache-ul JCache pentru cookie. Eroarea este: {0}
+JCACHE_CONTAINSKEY_FAILURE.explanation=Cache-ul logged-out-cookie a \u00eent\u00e2lnit o eroare atunci c\u00e2nd a \u00eencercat s\u0103 verifice cache-ul JCache pentru cookie. 
+JCACHE_CONTAINSKEY_FAILURE.useraction=Examina\u021bi \u0219i corecta\u021bi cauza erorii.

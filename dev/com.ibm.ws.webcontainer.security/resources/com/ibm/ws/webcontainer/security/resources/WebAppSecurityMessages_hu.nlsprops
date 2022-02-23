@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,16 @@ SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=A POST param\u00e9terek null\u00e9rt
 SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Ha a POST param\u00e9terek t\u00fal nagyok, akkor n\u00f6velje a postParamCookieSize param\u00e9ter m\u00e9ret\u00e9t.
 
 SEC_TAI_VALIDATE_FAILED=CWWKS9107E: A Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s inicializ\u00e1l\u00e1sa nem tudta bet\u00f6lteni a(z) {0} Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1si oszt\u00e1lyt.
-SEC_TAI_VALIDATE_FAILED.explanation=Ha a rendszer tal\u00e1l egy megfelel\u0151 elfog\u00f3t egy adott k\u00e9r\u00e9shez, akkor ez az elfog\u00f3 ellen\u0151rizteti a megb\u00edzhat\u00f3s\u00e1g\u00e1t a ford\u00edtott proxykiszolg\u00e1l\u00f3val. \
-Ez a hiba\u00fczenet azt jelzi, hogy az ellen\u0151rz\u00e9s meghi\u00fasult, emiatt a ford\u00edtott proxy nem megb\u00edzhat\u00f3. \
-P\u00e9ld\u00e1ul lehets\u00e9ges, hogy helytelen vagy lej\u00e1rt jelsz\u00f3 lett megadva.
-SEC_TAI_VALIDATE_FAILED.useraction=\u00c9les k\u00f6rnyezetben a felhaszn\u00e1l\u00f3 riaszthat\u00f3, hogy ellen\u0151rizze, nincs-e behatol\u00f3 a rendszerben. \
-Tesztel\u00e9s alatt \u00e1ll\u00f3 fejleszt\u0151i k\u00f6rnyezetben ellen\u0151rizze, hogy a ford\u00edtott proxy kiszolg\u00e1l\u00f3t\u00f3l v\u00e1rt bemenet helyesen ker\u00fcl-e \u00e1tad\u00e1sra az elfog\u00f3nak.  \
-A bemenetek jellege att\u00f3l f\u00fcgg, hogy a megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s hogyan j\u00f6n l\u00e9tre. \
-P\u00e9ld\u00e1ul a legegyszer\u0171bb m\u00f3dszer egy felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 p\u00e1r \u00e1tad\u00e1sa lenne a Basic Authentication fejl\u00e9cen kereszt\u00fcl.  
+SEC_TAI_VALIDATE_FAILED.explanation=Ha a rendszer tal\u00e1l egy megfelel\u0151 elfog\u00f3t egy adott k\u00e9r\u00e9shez, akkor ez az elfog\u00f3 ellen\u0151rizteti a megb\u00edzhat\u00f3s\u00e1g\u00e1t a ford\u00edtott proxykiszolg\u00e1l\u00f3val. Ez a hiba\u00fczenet azt jelzi, hogy az ellen\u0151rz\u00e9s meghi\u00fasult, emiatt a ford\u00edtott proxy nem megb\u00edzhat\u00f3. P\u00e9ld\u00e1ul lehets\u00e9ges, hogy helytelen vagy lej\u00e1rt jelsz\u00f3 lett megadva.
+SEC_TAI_VALIDATE_FAILED.useraction=\u00c9les k\u00f6rnyezetben a felhaszn\u00e1l\u00f3 riaszthat\u00f3, hogy ellen\u0151rizze, nincs-e behatol\u00f3 a rendszerben. Tesztel\u00e9s alatt \u00e1ll\u00f3 fejleszt\u0151i k\u00f6rnyezetben ellen\u0151rizze, hogy a ford\u00edtott proxy kiszolg\u00e1l\u00f3t\u00f3l v\u00e1rt bemenet helyesen ker\u00fcl-e \u00e1tad\u00e1sra az elfog\u00f3nak.  A bemenetek jellege att\u00f3l f\u00fcgg, hogy a megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s hogyan j\u00f6n l\u00e9tre. P\u00e9ld\u00e1ul a legegyszer\u0171bb m\u00f3dszer egy felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 p\u00e1r \u00e1tad\u00e1sa lenne a Basic Authentication fejl\u00e9cen kereszt\u00fcl.  
 
 SEC_TAI_USER_EXCEPTION=CWWKS9108E: Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3 a Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1shoz.
-SEC_TAI_USER_EXCEPTION.explanation=A hiteles\u00edt\u00e9si felhaszn\u00e1l\u00f3nevet elfog\u00f3 adja vissza. \
-Nem ker\u00fclt sor ilyen felhaszn\u00e1l\u00f3n\u00e9v visszaad\u00e1s\u00e1ra.
+SEC_TAI_USER_EXCEPTION.explanation=A hiteles\u00edt\u00e9si felhaszn\u00e1l\u00f3nevet elfog\u00f3 adja vissza. Nem ker\u00fclt sor ilyen felhaszn\u00e1l\u00f3n\u00e9v visszaad\u00e1s\u00e1ra.
 SEC_TAI_USER_EXCEPTION.useraction=Ellen\u0151rizze, hogy a ford\u00edtott proxy kiszolg\u00e1l\u00f3 a helyes felhaszn\u00e1l\u00f3i nevet sz\u00farja-e be a HTTP k\u00e9r\u00e9sbe a k\u00e9r\u00e9s elk\u00fcld\u00e9se el\u0151tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3nak.
 
 SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a Megb\u00edzhat\u00f3s\u00e1gt\u00e1rs\u00edt\u00e1s sor\u00e1n. A kiv\u00e9tel a(z) {0}.
 SEC_TAI_GENERAL_EXCEPTION.explanation=Ez a kiv\u00e9tel az \u00f6sszes tov\u00e1bbi kiv\u00e9telre hivatkozik, amit egy elfog\u00f3 hozhat l\u00e9tre a megb\u00edzhat\u00f3s\u00e1g ellen\u0151rz\u00e9se sor\u00e1n a ford\u00edtott proxykiszolg\u00e1l\u00f3val, \u00e9s a hiteles\u00edtett felhaszn\u00e1l\u00f3i n\u00e9v lek\u00e9r\u00e9se sor\u00e1n, kiv\u00e9ve a WebTrustAssociationFailedException \u00e9s WebTrustAssociationUserException kiv\u00e9teleket.
-SEC_TAI_GENERAL_EXCEPTION.useraction=Keresse meg a hib\u00e1t az ezen \u00fczenet mellett kinyomtatott veremnyomk\u00f6vet\u00e9sb\u0151l. \
-Ha a kiv\u00e9tel jelleg\u00e9r\u0151l tov\u00e1bbi inform\u00e1ci\u00f3kat szeretne kapni, akkor kapcsolja be a nyomk\u00f6vet\u00e9si hibakeres\u00e9st.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Keresse meg a hib\u00e1t az ezen \u00fczenet mellett kinyomtatott veremnyomk\u00f6vet\u00e9sb\u0151l. Ha a kiv\u00e9tel jelleg\u00e9r\u0151l tov\u00e1bbi inform\u00e1ci\u00f3kat szeretne kapni, akkor kapcsolja be a nyomk\u00f6vet\u00e9si hibakeres\u00e9st.
 
 AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: T\u00f6bb alkalmaz\u00e1s rendelkezik a(z) {0} n\u00e9vvel. A biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek megk\u00f6vetelik, hogy a nevek egyediek legyenek.
 AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Az alkalmaz\u00e1sneveknek egyedieknek kell lenni\u00fck, hogy a biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek betartathat\u00f3ak legyenek.
@@ -117,11 +110,11 @@ OSGI_SERVICE_ERROR=CWWKS9121E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rh
 OSGI_SERVICE_ERROR.explanation=A megadott OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
 
-UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s el\u00e9rhet\u0151k: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I: \ A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s el\u00e9rhet\u0151k: {2}
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=A deny-uncovered-http-methods elem nincs megadva a szervlet web.xml f\u00e1jlj\u00e1ban, \u00e9s egy URL mint\u00e1hoz tartoznak olyan HTTP met\u00f3dusok, amelyek nem v\u00e9dettek. Ezek a nem v\u00e9dett met\u00f3dusok el\u00e9rhet\u0151ek lesznek.
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00f6sszes korl\u00e1tozott URL mint\u00e1ban l\u00e9v\u0151 \u00f6sszes HTTP met\u00f3dus rendelkezik a sz\u00e1nd\u00e9kolt biztons\u00e1gi v\u00e9delemmel.
 
-UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s nem el\u00e9rhet\u0151k: {2}
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I: \ A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} URL eset\u00e9n a k\u00f6vetkez\u0151 HTTP met\u00f3dusok nincsenek lefedve, \u00e9s nem el\u00e9rhet\u0151k: {2}
 UNCOVERED_HTTP_METHODS_FOUND.explanation=A deny-uncovered-http-methods elem meg van adva a szervlet web.xml f\u00e1jlj\u00e1ban, \u00e9s egy URL mint\u00e1hoz tartoznak olyan HTTP met\u00f3dusok, amelyek nem v\u00e9dettek. Ezek a nem v\u00e9dett met\u00f3dusok nem lesznek el\u00e9rhet\u0151ek.
 UNCOVERED_HTTP_METHODS_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00f6sszes korl\u00e1tozott URL mint\u00e1ban l\u00e9v\u0151 \u00f6sszes HTTP met\u00f3dus rendelkezik a sz\u00e1nd\u00e9kolt biztons\u00e1gi v\u00e9delemmel.
 
@@ -145,3 +138,11 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Haszn\u00e1lja a HTTPS protokollt vagy \
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
+
+JCACHE_PUT_FAILURE=CWWKS9130E: A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r nem tudta a kil\u00e9p\u00e9si cookie-t a JCache gyors\u00edt\u00f3t\u00e1rba helyezni. A hiba a k\u00f6vetkez\u0151: {0}
+JCACHE_PUT_FAILURE.explanation=A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r hib\u00e1ba \u00fctk\u00f6z\u00f6tt, amikor megpr\u00f3b\u00e1lta a kil\u00e9p\u00e9si cookie-t a JCache gyors\u00edt\u00f3t\u00e1rba helyezni.
+JCACHE_PUT_FAILURE.useraction=Kezelje a hiba ok\u00e1t.
+
+JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r nem tudta ellen\u0151rizni a JCache gyors\u00edt\u00f3t\u00e1rat a cookie sz\u00e1m\u00e1ra. A hiba a k\u00f6vetkez\u0151: {0}
+JCACHE_CONTAINSKEY_FAILURE.explanation=A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r hib\u00e1t \u00e9szlelt, amikor megpr\u00f3b\u00e1lta ellen\u0151rizni a JCache gyors\u00edt\u00f3t\u00e1rat a cookie sz\u00e1m\u00e1ra. 
+JCACHE_CONTAINSKEY_FAILURE.useraction=Kezelje a hiba ok\u00e1t.

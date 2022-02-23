@@ -27,14 +27,6 @@ ENTITY_NOT_FOUND=CWIML4001E: La operaci\u00f3n del registro de usuarios no ha po
 ENTITY_NOT_FOUND.explanation=No se ha encontrado el nombre de entidad especificado, que puede ser un uniqueName o un uniqueId, en el repositorio subyacente. La operaci\u00f3n de registro de usuarios no puede continuar sin encontrar esta entidad.
 ENTITY_NOT_FOUND.useraction=Aseg\u00farese de que la entidad existe en el repositorio subyacente. Si la entidad existe, verifique si el permiso de lectura se ha establecido para la entidad y vuelva a intentarlo.
 
-INVALID_LEVEL_IN_CONTROL=CWIML4514E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Se ha especificado un valor incorrecto para el nivel de propiedad {0} en {1}. El valor de la propiedad, nivel, debe ser 0 o un entero positivo.
-INVALID_LEVEL_IN_CONTROL.explanation=El valor del nivel de propiedad se ha especificado como n\u00famero negativo.
-INVALID_LEVEL_IN_CONTROL.useraction=El valor de la propiedad, nivel, debe ser 0 o un entero positivo. Cambie el valor del nivel de propiedad y, a continuaci\u00f3n, vuelva a intentarlo.
-
-NAMING_EXCEPTION=CWIML4520E: La operaci\u00f3n de LDAP no se ha podido completar. Se ha producido una excepci\u00f3n de denominaci\u00f3n LDAP {0} durante el proceso.
-NAMING_EXCEPTION.explanation=El mensaje indica que se ha producido una excepci\u00f3n de denominaci\u00f3n general durante una operaci\u00f3n LDAP. Consulte la excepci\u00f3n para obtener detalles adicionales. 
-NAMING_EXCEPTION.useraction=Aseg\u00farese de que el repositorio relacionado (por ejemplo una base de datos o un servidor LDAP) se ha iniciado y configurado correctamente.
-
 SYSTEM_EXCEPTION=CWIML1998E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Se ha producido la siguiente excepci\u00f3n del sistema al procesar la operaci\u00f3n de registro de usuarios: {0} 
 SYSTEM_EXCEPTION.explanation=El programa ha encontrado una excepci\u00f3n del sistema al ejecutar la operaci\u00f3n de registro de usuarios. 
 SYSTEM_EXCEPTION.useraction= Revise los registros para averiguar la causa de este error y realice las acciones correctivas adecuadas. 
@@ -51,10 +43,6 @@ MISSING_MANDATORY_PROPERTY=CWIML1028E: La operaci\u00f3n del registro de usuario
 MISSING_MANDATORY_PROPERTY.explanation=La operaci\u00f3n no puede realizarse porque falta el valor de la propiedad obligatoria. Por ejemplo, no se ha especificado la propiedad RDN (nombre distinguido relativo) durante la creaci\u00f3n de la entidad; o faltan propertyName o entityTypeName en PropertyDefinitionControl o en ExtensionPropertyDefinitionControl; o falta entityName en entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Especifique un valor para la propiedad obligatoria.
 
-ENTITY_IS_NOT_A_GROUP=CWIML4525E: La operaci\u00f3n del registro de usuarios no ha podido completarse. El tipo de entidad {0} proporcionado no es del tipo Grupo. Esta operaci\u00f3n s\u00f3lo est\u00e1 soportada por una entidad de tipo Grupo.
-ENTITY_IS_NOT_A_GROUP.explanation=Las operaciones relacionadas con el grupo, como por ejemplo, asignar miembros a un grupo u obtener los miembros de un grupo, \u00fanicamente pueden aplicarse al tipo de entidad de Grupo. Se lanza una excepci\u00f3n si la entidad especificada no es de tipo Grupo.
-ENTITY_IS_NOT_A_GROUP.useraction=Aseg\u00farese de que el tipo de entidad especificado es de tipo Grupo. Para el adaptador de LDAP, aseg\u00farese de que la clase de objeto que se ha definido para el tipo de entidad Grupo coincida con la clase de objeto real del grupo.
-
 CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ El usuario {2} ha pasado el control de memoria cach\u00e9 especificando la modalidad de borrado de memoria cach\u00e9 {1} para el repositorio {0}. Se borra toda la memoria cach\u00e9 del repositorio LDAP.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=El usuario especificado est\u00e1 intentando borrar toda la memoria cach\u00e9 del repositorio especificado utilizando la modalidad clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Este mensaje se registra a efectos de auditor\u00eda.
@@ -66,10 +54,6 @@ UNKNOWN_CLEAR_CACHE_MODE.useraction=Especifique una modalidad de borrado de memo
 INVALID_PROPERTY_DATA_TYPE=CWIML4522E: La operaci\u00f3n del registro de usuarios no ha podido completarse. El tipo de datos de la propiedad {0} no es v\u00e1lido.  El registro de usuarios configurado y el repositorio de fondo deben tener el mismo tipo de datos para la propiedad. 
 INVALID_PROPERTY_DATA_TYPE.explanation=El tipo de datos especificado no coincide con el tipo de datos que se ha definido para la propiedad. Por ejemplo, el tipo de datos definido en el registro de usuarios configurado es binario, pero el tipo de datos definido en el repositorio de fondo es una serie.
 INVALID_PROPERTY_DATA_TYPE.useraction=Aseg\u00farese de que el tipo de datos de la propiedad sea el mismo en el registro de usuarios configurado y en el repositorio de fondo. 
-
-LDAP_ENTRY_NOT_FOUND=CWIML4527E: La operaci\u00f3n de LDAP no se ha podido completar. No se ha encontrado la entrada LDAP {0}: {1} Especifique el nombre exclusivo correcto de la entidad y defina la correlaci\u00f3n de nodos correcta para el repositorio de LDAP.
-LDAP_ENTRY_NOT_FOUND.explanation=No se ha encontrado la entrada de LDAP para la entidad especificada en el servidor LDAP.
-LDAP_ENTRY_NOT_FOUND.useraction=Aseg\u00farese de que el nombre exclusivo de la entidad se ha especificado correctamente. Aseg\u00farese de que la correlaci\u00f3n de nodos del dep\u00f3sito de LDAP se ha definido correctamente.
 
 PROPERTY_NOT_DEFINED=CWIML0514W: La operaci\u00f3n del registro de usuarios no ha podido completarse. La propiedad {0} no est\u00e1 definida. Defina o utilice el nombre de propiedad correcto.
 PROPERTY_NOT_DEFINED.explanation=La propiedad especificada no est\u00e1 definida.
@@ -86,10 +70,6 @@ NULL_CHECKPOINT_VALUE.useraction=Intente la b\u00fasqueda de nuevo con un punto 
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar porque falta la contrase\u00f1a o est\u00e1 vac\u00eda.
 MISSING_OR_EMPTY_PASSWORD.explanation=Si se especifica el nombre de principal durante el inicio de sesi\u00f3n, la contrase\u00f1a no puede estar vac\u00eda ni ser nula.
 MISSING_OR_EMPTY_PASSWORD.useraction=Especifique la contrase\u00f1a.
-
-PASSWORD_CHECKED_FAILED=CWIML4529E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. La verificaci\u00f3n de contrase\u00f1a para el nombre de principal {0} ha fallado. Causa ra\u00edz: {1}. Especifique el nombre de principal y la contrase\u00f1a correctamente, y compruebe que la cuenta est\u00e9 habilitada y no est\u00e9 bloqueada.
-PASSWORD_CHECKED_FAILED.explanation=El nombre de principal especificado no puede autenticarse debido a que ha fallado la verificaci\u00f3n de contrase\u00f1a.
-PASSWORD_CHECKED_FAILED.useraction=Aseg\u00farese de que tanto el nombre de principal como la contrase\u00f1a se han especificado correctamente. Aseg\u00farese de que la cuenta no est\u00e1 bloqueada y de que se ha habilitado.
 
 UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: La operaci\u00f3n de borrado de memoria cach\u00e9 del repositorio de LDAP no se ha podido completar. La modalidad de borrado de memoria cach\u00e9 {1} pasada en el control de memoria cach\u00e9 no est\u00e1 soportada para esta operaci\u00f3n en el repositorio especificado {0}. Especifique una modalidad de borrado de memoria cach\u00e9 soportada.
 UNSUPPORTED_CLEAR_CACHE_MODE.explanation=La modalidad de borrado de memoria cach\u00e9 especificada no es v\u00e1lida para este repositorio.
@@ -108,11 +88,11 @@ INVALID_CERTIFICATE_FILTER.explanation=La sintaxis o estructura de este filtro e
 INVALID_CERTIFICATE_FILTER.useraction=Aseg\u00farese de que el filtro de certificado siga la sintaxis documentada.
 
 TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. La operaci\u00f3n getTBSCertificate() no est\u00e1 soportada en una expresi\u00f3n de filtro. Especifique el filtro de certificado correcto.
-TBS_CERTIFICATE_UNSUPPORTED.explanation=El atributo de certificado TBSCertificate no se puede utilizar en la especificaci\u00f3n del filtro. Puede utilizar los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n del filtro. Las series son sensibles a las may\u00fasculas y min\u00fasculas: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=El atributo de certificado TBSCertificate no se puede utilizar en la especificaci\u00f3n del filtro. Puede utilizar los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n del filtro. Las series distinguen entre may\u00fasculas y min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Aseg\u00farese de que el filtro de certificado sea correcto.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. Se ha utilizado un atributo de certificado desconocido {0} en la especificaci\u00f3n del filtro. Especifique un filtro de certificado soportado.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Puede utilizar s\u00f3lo los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n de filtro. Las series son sensibles a las may\u00fasculas y min\u00fasculas: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Puede utilizar s\u00f3lo los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n de filtro. Las series distinguen entre may\u00fasculas y min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Aseg\u00farese de que el filtro de certificado sea correcto.
 
 UNKNOWN_DN_FIELD=CWIML0003E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. El campo Nombre distinguido configurado {0} no es v\u00e1lido. Especifique un campo Nombre distinguido v\u00e1lido.
@@ -123,33 +103,13 @@ EXT_ID_VALUE_IS_NULL=CWIML4548E: La operaci\u00f3n de inicio de sesi\u00f3n no s
 EXT_ID_VALUE_IS_NULL.explanation=El atributo LDAP utilizado como identificador externo debe contener un valor para cada entidad.
 EXT_ID_VALUE_IS_NULL.useraction=Aseg\u00farese de que se ha elegido el atributo correcto para el identificador externo. Si no existe ning\u00fan atributo apropiado, el nombre distinguido puede utilizarse como identificador externo.
 
-EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: La operaci\u00f3n de b\u00fasqueda no se ha podido completar. El atributo LDAP utilizado como identificador externo contiene varios valores: {0}. Elija el atributo LDAP correcto como identificador externo.
-EXT_ID_HAS_MULTIPLE_VALUES.explanation=El atributo LDAP utilizado como identificador externo debe ser exclusivo y no puede contener m\u00faltiples valores.
-EXT_ID_HAS_MULTIPLE_VALUES.useraction=Aseg\u00farese de que se ha elegido el atributo correcto para el identificador externo. Si no existe ning\u00fan atributo apropiado, el nombre distinguido puede utilizarse como identificador externo.
-
 INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La definici\u00f3n de entrada base {0} no es v\u00e1lida.  Corrija la definici\u00f3n de entrada base en el archivo server.xml.
 INVALID_BASE_ENTRY_DEFINITION.explanation=La definici\u00f3n de entrada base especificada no es v\u00e1lida.
 INVALID_BASE_ENTRY_DEFINITION.useraction=Especifique una definici\u00f3n de entrada base v\u00e1lida en el archivo server.xml.
 
-INVALID_DN_SYNTAX=CWIML4517E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. El nombre distinguido (DN) de {0} no es v\u00e1lido. Especifique la sintaxis correcta del nombre distinguido.
-INVALID_DN_SYNTAX.explanation=El nombre distinguido (DN) especificado no es v\u00e1lido. La operaci\u00f3n de registro de usuarios no puede continuar sin un DN v\u00e1lido.
-INVALID_DN_SYNTAX.useraction=Aseg\u00farese de que la sintaxis del nombre distinguido sea correcta. Por ejemplo, compruebe si hay caracteres de escape.
-
-INIT_POOL_SIZE_TOO_BIG=CWIML4532E: El tama\u00f1o inicial de la agrupaci\u00f3n de contextos {0} es mayor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos {1}. Por lo tanto, la agrupaci\u00f3n de contextos se ha inhabilitado.
-INIT_POOL_SIZE_TOO_BIG.explanation=El tama\u00f1o inicial de agrupaci\u00f3n de contextos debe ser inferior al tama\u00f1o m\u00e1ximo de agrupaci\u00f3n de contextos.
-INIT_POOL_SIZE_TOO_BIG.useraction=Aseg\u00farese de que el tama\u00f1o inicial de la agrupaci\u00f3n de contextos sea menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos o establezca el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos en 0.
-
-PREF_POOL_SIZE_TOO_BIG=CWIML4533E: El tama\u00f1o preferido de la agrupaci\u00f3n de contextos {0} debe ser menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos {1}. Por lo tanto, la agrupaci\u00f3n de contextos se ha inhabilitado.
-PREF_POOL_SIZE_TOO_BIG.explanation=El tama\u00f1o preferido de agrupaci\u00f3n de contextos debe ser inferior al tama\u00f1o m\u00e1ximo de agrupaci\u00f3n de contextos.
-PREF_POOL_SIZE_TOO_BIG.useraction=Aseg\u00farese de que el tama\u00f1o preferido de la agrupaci\u00f3n de contextos sea menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos o establezca el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos en 0.
-
 MISSING_INI_PROPERTY=CWIML0004E: Se ha producido un error durante la inicializaci\u00f3n del registro de usuarios. Falta la propiedad de inicializaci\u00f3n {0} en el archivo server.xml. Especifique una propiedad de inicializaci\u00f3n en el archivo server.xml.
 MISSING_INI_PROPERTY.explanation=La propiedad de inicializaci\u00f3n especificada es obligatoria. La operaci\u00f3n de registro de usuarios no puede iniciarse sin ella.
 MISSING_INI_PROPERTY.useraction=Aseg\u00farese de que se especifique esta propiedad en el archivo server.xml. Aseg\u00farese de que la propiedad no est\u00e9 vac\u00eda ni sea nula.
-
-DUPLICATE_ENTITY_TYPE=CWIML4531E: Se ha definido un tipo de entidad duplicado {0} en el archivo server.xml.
-DUPLICATE_ENTITY_TYPE.explanation=El tipo de entidad definido en el archivo server.xml debe ser exclusivo.
-DUPLICATE_ENTITY_TYPE.useraction=Edite el archivo server.xml para eliminar el tipo de entidad duplicado.
 
 LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Se ha producido una excepci\u00f3n de configuraci\u00f3n. Debe definirse el atributo {0}.
 LDAP_CONFIG_INCOMPLETE.explanation=Debe definirse el atributo especificado.
@@ -182,10 +142,6 @@ LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: No es posible autenticarse en {
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=Los valores de bindDN y bindPassword son incorrectos o el puerto puede ser incorrecto.
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Compruebe que los valores de bindDN y bindPassword configurados sean correctos para el servidor LDAP configurado.
 
-ENTITY_HAS_DESCENDENTS=CWIML4519E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La entidad {0} tiene descendientes. No puede suprimirse o renombrarse. Suprima todos los descendientes de la entidad antes de intentar suprimir o renombrar la propia entidad.
-ENTITY_HAS_DESCENDENTS.explanation=La funci\u00f3n de suprimir o renombrar s\u00f3lo se puede realizar en una entidad de hoja, es una entidad sin descendientes. La entidad especificada tiene descendientes.
-ENTITY_HAS_DESCENDENTS.useraction=Suprima todos los descendientes de la entidad primero y luego suprima o renombre la propia entidad.
-
 ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: El tipo de entidad especificado {0} no es v\u00e1lido para esta operaci\u00f3n.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Se ha solicitado una operaci\u00f3n en una entidad, pero dicha operaci\u00f3n no soporta el tipo de entidad especificado.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Aseg\u00farese de que las entidades proporcionadas en la entrada son de los tipos de entidad admitidos y elimine cualquier tipo de entidad no admitido de la entrada.
@@ -193,10 +149,6 @@ ENTITY_TYPE_NOT_SUPPORTED.useraction=Aseg\u00farese de que las entidades proporc
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: La operaci\u00f3n del registro de usuarios no ha podido completarse. No se puede crear o actualizar la propiedad {0} en el repositorio {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=En la operaci\u00f3n crear o actualizar, se especifica un valor para una propiedad que no se puede escribir en el repositorio. Por ejemplo, un pricipalName no se puede especificar para una operaci\u00f3n CREATE.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Elimine la propiedad err\u00f3nea de la entrada y vuelva a intentar la operaci\u00f3n especificando propiedades y valores v\u00e1lidos.
-
-PARENT_NOT_FOUND=CWIML4526E: La operaci\u00f3n de registro de usuarios CREATE no se ha podido completar. La entidad no se ha creado porque no se ha encontrado el padre de la entidad. La excepci\u00f3n JDNI subyacente era: {0}
-PARENT_NOT_FOUND.explanation=Durante la creaci\u00f3n, si el padre de la entidad que desea crear no se encuentra, se lanza una excepci\u00f3n.
-PARENT_NOT_FOUND.useraction=Aseg\u00farese de que existe el padre por omisi\u00f3n definido para la entidad. Si no existe, debe crearlo y volver a intentar la operaci\u00f3n.
 
 ENTITY_ALREADY_EXIST=CWIML4501E: La operaci\u00f3n de registro de usuarios CREATE no se ha podido completar. Ya existe una entidad con el mismo nombre exclusivo, {0}, o el mismo valor RDN.
 ENTITY_ALREADY_EXIST.explanation=El nombre exclusivo especificado o una entidad con el mismo valor RDN ya existe en el repositorio. Una entidad duplicada con el mismo nombre exclusivo o el mismo nombre distinguido relativo (RDN) no se puede a\u00f1adir al repositorio.
@@ -242,7 +194,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: El inicio de sesi\u00f3n de Kerberos
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=El principal de Kerberos especificado no es v\u00e1lido o la memoria cach\u00e9 de credenciales (ccache) de Kerberos predeterminada no es v\u00e1lida o ha caducado.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la memoria cach\u00e9 de credenciales de Kerberos (ccache) predeterminada no ha caducado.
 
-# CWIML4510 already used
+# CWIML4510 already used (WimUtilMessages.nlsprops)
 
 KRB5_TICKETCACHE_USED=CWIML4511E: El registro de LDAP {0} est\u00e1 configurado con el nombre de archivo de memoria cach\u00e9 (ccache) de t\u00edquet de Kerberos {1} y el nombre de archivo de tabla de claves {2}. La memoria cach\u00e9 de credenciales (ccache) de Kerberos se utiliza para la autenticaci\u00f3n de enlace de Kerberos con el servidor LDAP.
 KRB5_TICKETCACHE_USED.explanation=Para utilizar el archivo de tabla de claves, se debe especificar el nombre de archivo de tabla de claves y no se debe especificar el nombre de archivo de memoria cach\u00e9 de credenciales (ccache) de Kerberos.
@@ -256,21 +208,31 @@ CANNOT_READ_KRB5_FILE=CWIML4513E: El registro de LDAP {0} no puede leer el archi
 CANNOT_READ_KRB5_FILE.explanation=No se puede abrir el archivo de Kerberos. Los permisos de archivo son incorrectos o el archivo no existe.
 CANNOT_READ_KRB5_FILE.useraction=Verifique que la ubicaci\u00f3n de archivo es correcta y que el servidor tiene permisos para leer archivos.
 
-# CWIML4514 already used
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Se ha especificado un valor incorrecto para el nivel de propiedad {0} en {1}. El valor de la propiedad, nivel, debe ser 0 o un entero positivo.
+INVALID_LEVEL_IN_CONTROL.explanation=El valor del nivel de propiedad se ha especificado como n\u00famero negativo.
+INVALID_LEVEL_IN_CONTROL.useraction=El valor de la propiedad, nivel, debe ser 0 o un entero positivo. Cambie el valor del nivel de propiedad y, a continuaci\u00f3n, vuelva a intentarlo.
 
 KRB5_FILE_NOT_FOUND=CWIML4515E: El atributo {0} del elemento {1} se ha configurado en un archivo que no existe en la siguiente ubicaci\u00f3n: {2}
 KRB5_FILE_NOT_FOUND.explanation=La configuraci\u00f3n hace referencia a un archivo que es ilegible o que no existe.
 KRB5_FILE_NOT_FOUND.useraction=Aseg\u00farese de que la configuraci\u00f3n apunta a un archivo que existe y que es legible para el proceso de aplicaci\u00f3n.
 
-# CWIML4516 already used
-# CWIML4517 already used
+# CWIML4516 already used (WimUtilMessages.nlsprops)
 
-IDMAP_INVALID_FORMAT=CWIML4518W: El valor {0} {1} est\u00e1 mal formado. El valor debe ser una lista separada por signos de punto y coma de pares ''objectclass:attribute'' o ''*:attribute''.
+INVALID_DN_SYNTAX=CWIML4517E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. El nombre distinguido (DN) de {0} no es v\u00e1lido. Especifique la sintaxis correcta del nombre distinguido.
+INVALID_DN_SYNTAX.explanation=El nombre distinguido (DN) especificado no es v\u00e1lido. La operaci\u00f3n de registro de usuarios no puede continuar sin un DN v\u00e1lido.
+INVALID_DN_SYNTAX.useraction=Aseg\u00farese de que la sintaxis del nombre distinguido sea correcta. Por ejemplo, compruebe si hay caracteres de escape.
+
+IDMAP_INVALID_FORMAT=CWIML4518W: El valor {0} {1} est\u00e1 mal formado. El valor debe ser una lista separada por signos de punto y comas de pares "objectclass:attribute" o "*:attribute".
 IDMAP_INVALID_FORMAT.explanation=El valor userIdMap debe tener un formato v\u00e1lido para que se pueda analizar la clase de objeto y el atributo.
 IDMAP_INVALID_FORMAT.useraction=Actualice el valor de userIdMap para que se ajuste al formato especificado.
 
-# CWIML4519 already used
-# CWIML4520 already used
+ENTITY_HAS_DESCENDENTS=CWIML4519E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La entidad {0} tiene descendientes. No puede suprimirse o renombrarse. Suprima todos los descendientes de la entidad antes de intentar suprimir o renombrar la propia entidad.
+ENTITY_HAS_DESCENDENTS.explanation=La funci\u00f3n de suprimir o renombrar s\u00f3lo se puede realizar en una entidad de hoja, es una entidad sin descendientes. La entidad especificada tiene descendientes.
+ENTITY_HAS_DESCENDENTS.useraction=Suprima todos los descendientes de la entidad primero y luego suprima o renombre la propia entidad.
+
+NAMING_EXCEPTION=CWIML4520E: La operaci\u00f3n de LDAP no se ha podido completar. Se ha producido una excepci\u00f3n de denominaci\u00f3n LDAP {0} durante el proceso.
+NAMING_EXCEPTION.explanation=El mensaje indica que se ha producido una excepci\u00f3n de denominaci\u00f3n general durante una operaci\u00f3n LDAP. Consulte la excepci\u00f3n para obtener detalles adicionales. 
+NAMING_EXCEPTION.useraction=Aseg\u00farese de que el repositorio relacionado (por ejemplo una base de datos o un servidor LDAP) se ha iniciado y configurado correctamente.
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: El registro de LDAP {0} ha intentado enlazar con el servidor de LDAP utilizando credenciales de Kerberos para el nombre de principal {1}, pero el servicio Kerberos que proporciona estas credenciales no est\u00e1 disponible. El mecanismo de autenticaci\u00f3n de enlace es {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=El servicio Kerberos no estaba disponible cuando el registro de LDAP ha intentado enlazar con el servidor LDAP. Si el servicio Kerberos no est\u00e1 disponible, no se puede autenticar ning\u00fan usuario.
@@ -284,3 +246,40 @@ KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: El inicio de sesi\u00f3n de Kerbero
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=El principal de Kerberos especificado no es v\u00e1lido o la tabla de claves de Kerberos predeterminada no es v\u00e1lida.
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la tabla de claves de Kerberos predeterminada es v\u00e1lida.
 
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: La operaci\u00f3n del registro de usuarios no ha podido completarse. El tipo de entidad {0} proporcionado no es del tipo Grupo. Esta operaci\u00f3n s\u00f3lo est\u00e1 soportada por una entidad de tipo Grupo.
+ENTITY_IS_NOT_A_GROUP.explanation=Las operaciones relacionadas con el grupo, como por ejemplo, asignar miembros a un grupo u obtener los miembros de un grupo, \u00fanicamente pueden aplicarse al tipo de entidad de Grupo. Se lanza una excepci\u00f3n si la entidad especificada no es de tipo Grupo.
+ENTITY_IS_NOT_A_GROUP.useraction=Aseg\u00farese de que el tipo de entidad especificado es de tipo Grupo. Para el adaptador de LDAP, aseg\u00farese de que la clase de objeto que se ha definido para el tipo de entidad Grupo coincida con la clase de objeto real del grupo.
+
+PARENT_NOT_FOUND=CWIML4526E: La operaci\u00f3n de registro de usuarios CREATE no se ha podido completar. La entidad no se ha creado porque no se ha encontrado el padre de la entidad. La excepci\u00f3n JDNI subyacente era: {0}
+PARENT_NOT_FOUND.explanation=Durante la creaci\u00f3n, si el padre de la entidad que desea crear no se encuentra, se lanza una excepci\u00f3n.
+PARENT_NOT_FOUND.useraction=Aseg\u00farese de que existe el padre por omisi\u00f3n definido para la entidad. Si no existe, debe crearlo y volver a intentar la operaci\u00f3n.
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: La operaci\u00f3n de LDAP no se ha podido completar. No se ha encontrado la entrada LDAP {0}: {1} Especifique el nombre exclusivo correcto de la entidad y defina la correlaci\u00f3n de nodos correcta para el repositorio de LDAP.
+LDAP_ENTRY_NOT_FOUND.explanation=No se ha encontrado la entrada de LDAP para la entidad especificada en el servidor LDAP.
+LDAP_ENTRY_NOT_FOUND.useraction=Aseg\u00farese de que el nombre exclusivo de la entidad se ha especificado correctamente. Aseg\u00farese de que la correlaci\u00f3n de nodos del dep\u00f3sito de LDAP se ha definido correctamente.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: La operaci\u00f3n de b\u00fasqueda no se ha podido completar. El atributo LDAP utilizado como identificador externo contiene varios valores: {0}. Elija el atributo LDAP correcto como identificador externo.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=El atributo LDAP utilizado como identificador externo debe ser exclusivo y no puede contener m\u00faltiples valores.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Aseg\u00farese de que se ha elegido el atributo correcto para el identificador externo. Si no existe ning\u00fan atributo apropiado, el nombre distinguido puede utilizarse como identificador externo.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. La verificaci\u00f3n de contrase\u00f1a para el nombre de principal {0} ha fallado. Causa ra\u00edz: {1}. Especifique el nombre de principal y la contrase\u00f1a correctamente, y compruebe que la cuenta est\u00e9 habilitada y no est\u00e9 bloqueada.
+PASSWORD_CHECKED_FAILED.explanation=El nombre de principal especificado no puede autenticarse debido a que ha fallado la verificaci\u00f3n de contrase\u00f1a.
+PASSWORD_CHECKED_FAILED.useraction=Aseg\u00farese de que tanto el nombre de principal como la contrase\u00f1a se han especificado correctamente. Aseg\u00farese de que la cuenta no est\u00e1 bloqueada y de que se ha habilitado.
+
+# CWIML4530 already used (WimUtilMessages.nlsprops)
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: Se ha definido un tipo de entidad duplicado {0} en el archivo server.xml.
+DUPLICATE_ENTITY_TYPE.explanation=El tipo de entidad definido en el archivo server.xml debe ser exclusivo.
+DUPLICATE_ENTITY_TYPE.useraction=Edite el archivo server.xml para eliminar el tipo de entidad duplicado.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: El tama\u00f1o inicial de la agrupaci\u00f3n de contextos {0} es mayor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos {1}. Por lo tanto, la agrupaci\u00f3n de contextos se ha inhabilitado.
+INIT_POOL_SIZE_TOO_BIG.explanation=El tama\u00f1o inicial de agrupaci\u00f3n de contextos debe ser inferior al tama\u00f1o m\u00e1ximo de agrupaci\u00f3n de contextos.
+INIT_POOL_SIZE_TOO_BIG.useraction=Aseg\u00farese de que el tama\u00f1o inicial de la agrupaci\u00f3n de contextos sea menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos o establezca el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos en 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: El tama\u00f1o preferido de la agrupaci\u00f3n de contextos {0} debe ser menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos {1}. Por lo tanto, la agrupaci\u00f3n de contextos se ha inhabilitado.
+PREF_POOL_SIZE_TOO_BIG.explanation=El tama\u00f1o preferido de agrupaci\u00f3n de contextos debe ser inferior al tama\u00f1o m\u00e1ximo de agrupaci\u00f3n de contextos.
+PREF_POOL_SIZE_TOO_BIG.useraction=Aseg\u00farese de que el tama\u00f1o preferido de la agrupaci\u00f3n de contextos sea menor que el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos o establezca el tama\u00f1o m\u00e1ximo de la agrupaci\u00f3n de contextos en 0.
+
+LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: El repositorio LDAP {0} no ha podido procesar las actualizaciones de configuraci\u00f3n de los repositorios federados. Causa ra\u00edz: {1}.
+LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Los cambios de configuraci\u00f3n en los repositorios federados han desencadenado una actualizaci\u00f3n en el repositorio LDAP, pero se ha producido un error al procesar esos cambios. 
+LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=Revise los registros para averiguar la causa de este error y realice las acciones correctivas adecuadas.

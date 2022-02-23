@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,16 @@ SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=I parametri post sono null oppure so
 SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Se i parametri post sono troppo grandi, incrementare la dimensione dell'opzione postParamCookieSize.
 
 SEC_TAI_VALIDATE_FAILED=CWWKS9107E: TAI (Trust Association Init) non \u00e8 in grado di caricare la classe di associazione trust {0}.
-SEC_TAI_VALIDATE_FAILED.explanation=Quando per una determinata richiesta viene individuato l'intercettatore appropriato, questo convalida il trust con il server proxy inverso. \
-Questo messaggio di errore suggerisce che la convalida non \u00e8 riuscita e che, quindi, il proxy inverso non pu\u00f2 essere considerato affidabile. \
-Ad esempio, \u00e8 possibile che sia stata fornita una password non corretta o scaduta.
-SEC_TAI_VALIDATE_FAILED.useraction=In un ambiente di produzione, l'utente potrebbe essere avvisato per verificare se c'\u00e8 un intruso nel sistema. \
-In un ambiente di sviluppo in cui \u00e8 in corso il test, verificare che gli input previsti dal server proxy inverso vengano passati correttamente all'intercettatore.  \
-La natura di tali input dipende dal modo in cui viene stabilita l'associazione trust. \
-Ad esempio, il metodo pi\u00f9 semplice consiste nel fornire un nome utente e una password mediante l'intestazione Autenticazione di base.  
+SEC_TAI_VALIDATE_FAILED.explanation=Quando per una determinata richiesta viene individuato l'intercettatore appropriato, questo convalida il trust con il server proxy inverso. Questo messaggio di errore suggerisce che la convalida non \u00e8 riuscita e che, quindi, il proxy inverso non pu\u00f2 essere considerato affidabile. Ad esempio, \u00e8 possibile che sia stata fornita una password non corretta o scaduta.
+SEC_TAI_VALIDATE_FAILED.useraction=In un ambiente di produzione, l'utente potrebbe essere avvisato per verificare se c'\u00e8 un intruso nel sistema. In un ambiente di sviluppo in cui \u00e8 in corso il test, verificare che gli input previsti dal server proxy inverso vengano passati correttamente all'intercettatore.  La natura di tali input dipende dal modo in cui viene stabilita l'associazione trust. Ad esempio, il metodo pi\u00f9 semplice consiste nel fornire un nome utente e una password mediante l'intestazione Autenticazione di base.  
 
 SEC_TAI_USER_EXCEPTION=CWWKS9108E: Impossibile trovare un utente valido per l'associazione trust.
-SEC_TAI_USER_EXCEPTION.explanation=Un intercettatore restituisce il nome utente di autenticazione. \
-Tale nome utente non \u00e8 stato restituito.
+SEC_TAI_USER_EXCEPTION.explanation=Un intercettatore restituisce il nome utente di autenticazione. Tale nome utente non \u00e8 stato restituito.
 SEC_TAI_USER_EXCEPTION.useraction=Verificare che il server proxy inverso stia inserendo il nome utente corretto nella richiesta HTTP, prima che invii la richiesta al server delle applicazioni.
 
 SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: Si \u00e8 verificata un''eccezione imprevista durante l''associazione trust. L''eccezione \u00e8 {0}.
 SEC_TAI_GENERAL_EXCEPTION.explanation=Questa eccezione fa riferimento a tutte le altre eccezioni che possono essere create da un intercettatore, durante la convalida del trust con il server proxy inverso e durante l'acquisizione del nome utente autenticato, ad eccezione di WebTrustAssociationFailedException e WebTrustAssociationUserException.
-SEC_TAI_GENERAL_EXCEPTION.useraction=Eseguire il debug del problema dalla traccia di stack che viene stampata insieme a questo messaggio di errore. \
-\u00c8 anche possibile attivare la traccia di debug per ottenere ulteriori informazioni sulla natura dell'eccezione.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Eseguire il debug del problema dalla traccia di stack che viene stampata insieme a questo messaggio di errore. \u00c8 anche possibile attivare la traccia di debug per ottenere ulteriori informazioni sulla natura dell'eccezione.
 
 AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Pi\u00f9 applicazioni hanno il nome {0}. Le politiche di autorizzazione della sicurezza richiedono che i nomi siano univoci.
 AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=I nomi applicazione devono essere univoci affinch\u00e9 la politica di autorizzazione della sicurezza possa essere applicata.
@@ -117,11 +110,11 @@ OSGI_SERVICE_ERROR=CWWKS9121E: Il servizio OSGi {0} non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
 
-UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e sono accessibili: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I: \ Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e sono accessibili: {2}
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=L'elemento deny-uncovered-http-methods non \u00e8 specificato nel file web.xml per il servlet e ci sono dei metodi HTTP per un pattern URL che sono non protetti. Questi metodi non protetti saranno accessibili.
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Assicurarsi che tutti i metodi HTTP a tutti i pattern URL vincolati abbiano le protezioni di sicurezza previste.
 
-UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e non sono accessibili: {2}
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I: \ Per l''URL {0} nell''applicazione {1}, i seguenti metodi HTTP non sono coperti e non sono accessibili: {2}
 UNCOVERED_HTTP_METHODS_FOUND.explanation=L'elemento deny-uncovered-http-methods \u00e8 specificato nel file web.xml per il servlet e ci sono dei metodi HTTP per un pattern URL che sono non protetti. Questi metodi non protetti non saranno accessibili.
 UNCOVERED_HTTP_METHODS_FOUND.useraction=Assicurarsi che tutti i metodi HTTP a tutti i pattern URL vincolati abbiano le protezioni di sicurezza previste.
 
@@ -145,3 +138,11 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Utilizzare il protocollo HTTPS o imposta
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
+
+JCACHE_PUT_FAILURE=CWWKS9130E: La cache del cookie di logout non \u00e8 riuscita a inserire il cookie di logout nella cache JCache. L''errore \u00e8: {0}
+JCACHE_PUT_FAILURE.explanation=La cache del cookie di logout ha rilevato un errore durante il tentativo di inserire il cookie di logout nella cache JCache.
+JCACHE_PUT_FAILURE.useraction=Risolvere la causa dell'errore.
+
+JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: La cache del cookie di logout non \u00e8 riuscita a verificare la cache JCache per il cookie. L''errore \u00e8: {0}
+JCACHE_CONTAINSKEY_FAILURE.explanation=La cache del cookie di logout ha rilevato un errore durante il tentativo di verificare la cache JCache per il cookie. 
+JCACHE_CONTAINSKEY_FAILURE.useraction=Risolvere la causa dell'errore.

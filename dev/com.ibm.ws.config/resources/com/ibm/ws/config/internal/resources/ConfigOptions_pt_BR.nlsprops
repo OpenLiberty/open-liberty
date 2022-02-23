@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Uso: java [op\u00e7\u00f5es da JVM] -jar {0} [op\u00e7\u00f5es] outputFile  
+briefUsageScript=Uso: ./{0} [options] outputFile
+
 
 use.options=Op\u00e7\u00f5es:
 # -------- OPTIONS ----------------------------------------------------#
@@ -29,10 +31,16 @@ option-desc.encoding=A codifica\u00e7\u00e3o de caracteres a ser usada para a sa
 option-key.locale=- --c\u00f3digo de idioma
 option-desc.locale=O c\u00f3digo de idioma a ser usado para a sa\u00edda
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=O esquema de sa\u00edda n\u00e3o conter\u00e1 espa\u00e7os de indenta\u00e7\u00e3o, novos feeds \
-de linha ou coment\u00e1rios XML
+option-desc.compactoutput=O esquema de sa\u00edda n\u00e3o conter\u00e1 espa\u00e7os de indenta\u00e7\u00e3o, novos feeds de linha ou coment\u00e1rios XML
 option-key.productExtension=--productExtension
-option-desc.productExtension=O nome da extens\u00e3o de produto a ser processado.                            \n\
-Se a extens\u00e3o do produto estiver instalada no local do usu\u00e1rio padr\u00e3o,    \n\
-use a palavra-chave: usr.                                                  \n\
-Se essa op\u00e7\u00e3o n\u00e3o estiver especificada, a a\u00e7\u00e3o ser\u00e1 executada no n\u00facleo do Liberty.
+option-desc.productExtension=O nome da extens\u00e3o de produto a ser processado.                            \nSe a extens\u00e3o do produto estiver instalada no local do usu\u00e1rio padr\u00e3o,    \nuse a palavra-chave: usr.                                                  \nSe essa op\u00e7\u00e3o n\u00e3o estiver especificada, a a\u00e7\u00e3o ser\u00e1 executada no n\u00facleo do Liberty.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Se schemaVersion=1.1 for especificado, ent\u00e3o os elementos-filhos nomeados explicitamente e o elemento xsd:any ser\u00e3o gravados no arquivo de sa\u00edda.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Se outputVersion=2.0 for especificado, apenas o elemento xsd:any ser\u00e1 usado no arquivo de sa\u00edda, de modo que elementos desconhecidos transmitem a valida\u00e7\u00e3o XSD em detrimento de perda de valida\u00e7\u00e3o para elementos conhecidos.

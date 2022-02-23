@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,3 +16,58 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Wygenerowano konfiguracj\u0119 Infinispan dla trwa\u0142o\u015bci sesji HTTP: {0}. W celu nadpisania nale\u017cy skonfigurowa\u0107 atrybut identyfikatora URI elementu konfiguracji httpSessionCache lub cacheManager.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Pami\u0119ci podr\u0119czne Infinispan u\u017cywane do zapewnienia trwa\u0142o\u015bci sesji HTTP wymagaj\u0105 dodatkowej konfiguracji, aby sesje by\u0142y zachowywane mi\u0119dzy serwerami. Serwer Liberty generuje t\u0119 konfiguracj\u0119, je\u015bli nie zostanie ona podana przez u\u017cytkownika.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Je\u015bli wygenerowana konfiguracja jest zadowalaj\u0105ca, \u017cadna czynno\u015b\u0107 u\u017cytkownika nie jest konieczna. W przeciwnym razie wygenerowanej konfiguracji mo\u017cna u\u017cy\u0107 jako punktu wyj\u015bcia do utworzenia w\u0142asnej.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: Pami\u0119\u0107 podr\u0119czna {0} JCache zosta\u0142a utworzona w ci\u0105gu {1} ms.
+CWLJC0001_CACHE_CREATED.explanation=Nazwana pami\u0119\u0107 podr\u0119czna JCache zosta\u0142a utworzona, poniewa\u017c nie zosta\u0142a znaleziona.
+CWLJC0001_CACHE_CREATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: Istniej\u0105ca pami\u0119\u0107 podr\u0119czna {0} JCache zosta\u0142a znaleziona w ci\u0105gu {1} ms.
+CWLJC0002_CACHE_FOUND.explanation=Znaleziono nazwan\u0105 pami\u0119\u0107 podr\u0119czn\u0105 JCache, wi\u0119c nie zosta\u0142a ona utworzona.
+CWLJC0002_CACHE_FOUND.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: Pami\u0119\u0107 podr\u0119czna {0} JCache korzysta z dostawcy pami\u0119ci podr\u0119cznej {1}.
+CWLJC0003_USING_PROVIDER.explanation=Nazwana pami\u0119\u0107 podr\u0119czna JCache u\u017cywa okre\u015blonego dostawcy.
+CWLJC0003_USING_PROVIDER.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: \u0141adowanie dostawcy pami\u0119ci podr\u0119cznej {0} si\u0119 nie powiod\u0142o. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=\u0141adowanie konfiguracji dostawcy pami\u0119ci podr\u0119cznej cachingProvider si\u0119 nie powiod\u0142o.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=Usu\u0144 b\u0142\u0105d wskazany w komunikacie i pon\u00f3w pr\u00f3b\u0119.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: Za\u0142adowanie mened\u017cera pami\u0119ci podr\u0119cznej JCache {0} zaj\u0119\u0142o {1} ms. 
+CWLJC0005_MANAGER_LOADED.explanation=Pomy\u015blnie za\u0142adowano mened\u017cera pami\u0119ci podr\u0119cznej JCache.
+CWLJC0005_MANAGER_LOADED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Niepoprawna sk\u0142adnia w identyfikatorze URI mened\u017cera pami\u0119ci podr\u0119cznej (cacheManager).  Przyczyna: {0}.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=Sk\u0142adnia podanego identyfikatora URI konfiguracji pami\u0119ci podr\u0119cznej JCache jest niepoprawna.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=Popraw sk\u0142adni\u0119 podanego identyfikatora URI konfiguracji.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: Podczas przekszta\u0142cania obiektu z postaci szeregowej z pami\u0119ci podr\u0119cznej JCache {0} wyst\u0105pi\u0142 b\u0142\u0105d: {1}.
+CWLJC0008_DESERIALIZE_ERR.explanation=Obiekt pobrany z nazwanej pami\u0119ci podr\u0119cznej JCache nie m\u00f3g\u0142 zosta\u0107 zdeserializowany.
+CWLJC0008_DESERIALIZE_ERR.useraction=Upewnij si\u0119, \u017ce wszystkie klasy s\u0105 dost\u0119pne w bibliotece do\u0142\u0105czonej do konfiguracji pami\u0119ci podr\u0119cznej JCache.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: Podczas przekszta\u0142cania obiektu do postaci szeregowej w pami\u0119ci podr\u0119cznej JCache {0} wyst\u0105pi\u0142 b\u0142\u0105d: {1}.
+CWLJC0009_SERIALIZE_ERR.explanation=Obiekt, kt\u00f3ry ma by\u0107 przechowywany w nazwanej pami\u0119ci podr\u0119cznej JCache, nie m\u00f3g\u0142 zosta\u0107 przekszta\u0142cony do postaci szeregowej.
+CWLJC0009_SERIALIZE_ERR.useraction=Upewnij si\u0119, \u017ce wszystkie klasy wybrane do przekszta\u0142cenia do postaci szeregowej mog\u0105 podlega\u0107 tej operacji.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas konfigurowania mened\u017cera pami\u0119ci podr\u0119cznej JCache: {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=Nie mo\u017cna by\u0142o skonfigurowa\u0107 mened\u017cera pami\u0119ci podr\u0119cznej JCache ze wzgl\u0119du na wyst\u0105pienie podanego b\u0142\u0119du.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=Usu\u0144 b\u0142\u0105d wskazany w komunikacie i pon\u00f3w pr\u00f3b\u0119.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania pami\u0119ci podr\u0119cznej JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR.explanation=Pami\u0119\u0107 podr\u0119czna nie zosta\u0142a wczytana z powodu wyst\u0105pienia podanego b\u0142\u0119du.
+CWLJC0011_GET_CACHE_ERR.useraction=Usu\u0144 b\u0142\u0105d wskazany w komunikacie i pon\u00f3w pr\u00f3b\u0119.

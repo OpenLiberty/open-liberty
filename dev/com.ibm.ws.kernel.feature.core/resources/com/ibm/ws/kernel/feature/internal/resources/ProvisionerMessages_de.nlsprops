@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -176,8 +176,7 @@ CLIENT_STARTED.useraction=Es ist keine Aktion erforderlich.
 #Required feature gather query messages
 SERVER_GATHER_FEATURES=CWWKF0036I: Der Server {0} hat eine Liste mit den erforderlichen Features zusammengestellt.
 SERVER_GATHER_FEATURES.explanation=Der Server hat eine Liste mit den erforderlichen Features zusammengestellt.
-SERVER_GATHER_FEATURES.useraction=Es ist keine Aktion erforderlich. \
-
+SERVER_GATHER_FEATURES.useraction=Es ist keine Aktion erforderlich. 
 #End required feature gather query messages
 
 UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: Das in der Datei client.xml angegebene Feature {0} ist kein \u00f6ffentliches Feature und wird vom Client nicht ausgef\u00fchrt.
@@ -203,9 +202,8 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Entfernen Sie das F
 # CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Es wurde keine Featuredefinition f\u00fcr das Feature {0} gefunden. Versuchen Sie, das Feature mit dem Befehl bin/installUtility install {0} zu installieren. Alternativ k\u00f6nnen Sie den Befehl bin/installUtility install {1} ausf\u00fchren, um alle Features zu installieren, die von dieser Konfiguration referenziert werden.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
-UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde. \
-Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist. \
-Wenn das Feature nicht vorhanden ist, versuchen Sie, das Feature mit dem Befehl bin/installUtility install Featurename zu installieren bzw. alle von dieser Konfiguration referenzierten Features mit dem Befehl bin/installUtility install Servername zu installieren.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde. Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist. Wenn das Feature nicht vorhanden ist, versuchen Sie, das Feature mit dem Befehl bin/installUtility install Featurename zu installieren bzw. alle von dieser Konfiguration referenzierten Features mit dem Befehl bin/installUtility install Servername zu installieren.
+
 # CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Das konfigurierte Feature {2} von {0} ist nicht kompatibel mit dem konfigurierten Feature {3} von {1}. Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von {4}-Features, die nicht unterst\u00fctzt wird. Aktualisieren Sie die Konfiguration so, dass kompatible Versionen der konfigurierten Features verwendet werden, die {0} oder die {1}-Programmiermodelle unterst\u00fctzen.
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Features f\u00fcr die angegebenen Programmiermodelle. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
@@ -230,39 +228,38 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: D
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Features f\u00fcr die angegebenen Programmiermodelle. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Versuchen Sie, eine kompatible Version f\u00fcr die konfigurierten Features anzugeben, die den Konflikt in der Datei server.xml verursacht haben. Wenn keine anderen Versionen verf\u00fcgbar sind, sind die konfigurierten Features nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig konfiguriert werden.
 
+#CWWKF0048E
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: Im Serverbefehl wurde eine Pr\u00fcfpunktaktion angegeben. Der Pr\u00fcfpunkt kann nicht verwendet werden, weil die Funktion checkpoint-1.0 nicht in der Datei 'server.xml' konfiguriert ist.
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=F\u00fcr die Pr\u00fcfpunktaktion des Servers muss die Funktion checkpoint-1.0 konfiguriert sein.  
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=Die Funktion checkpoint-1.0 muss f\u00fcr die Verwendung einer Pr\u00fcfpunktaktion f\u00fcr den Server konfiguriert sein.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Das Feature {0} ist bereits vorhanden. Es wird nicht erneut installiert. Um ein bereits vorhandenes Feature zu \u00e4ndern, m\u00fcssen Sie es zuerst manuell deinstallieren.
 tool.feature.exists.explanation=Das Feature, das installiert wird, ist bereits vorhanden.
-tool.feature.exists.useraction=Es ist keine Aktion erforderlich. \
-
+tool.feature.exists.useraction=Es ist keine Aktion erforderlich. 
 tool.missing.args=CWWKF1001E: {0} erfordert {1} Argumente. Es wurden aber {2} angegeben.
 tool.missing.args.explanation=Beim Aufrufen der Aktion wurde die falsche Anzahl an Argumenten verwendet.
-tool.missing.args.useraction=F\u00fchren Sie den Befehl mit den richtigen Argumenten erneut aus. \
-
+tool.missing.args.useraction=F\u00fchren Sie den Befehl mit den richtigen Argumenten erneut aus. 
 tool.unknown.options=CWWKF1002E: {0} unterst\u00fctzt die folgenden Optionen nicht: {1}
 tool.unknown.options.explanation=Es wurde versucht, einen Befehl mit ung\u00fcltigen Argumenten auszuf\u00fchren.
 tool.unknown.options.useraction=F\u00fchren Sie den Befehl ohne die ung\u00fcltigen Argumente erneut aus.
 
 tool.install.bad.extension=CWWKF1003E: Die Produkterweiterung {0} ist nicht vorhanden.
 tool.install.bad.extension.explanation=Die Produkterweiterung, in der das Feature installiert werden soll, ist nicht registriert.
-tool.install.bad.extension.useraction=Installieren Sie das Feature in einer registrierten Produkterweiterung oder registrieren Sie die fehlende Produkterweiterung. \
-
+tool.install.bad.extension.useraction=Installieren Sie das Feature in einer registrierten Produkterweiterung oder registrieren Sie die fehlende Produkterweiterung. 
 tool.install.invalid.extension=CWWKF1004E: Die Produkterweiterung {0} gibt keine Position an.
 tool.install.invalid.extension.explanation=Die Produkterweiterung wurde nicht gefunden, weil die Registrierungsdatei keine Position enth\u00e4lt.
-tool.install.invalid.extension.useraction=Korrigieren Sie die Registrierung der Produkterweiterung und geben Sie die Position der Erweiterung an. \
-
+tool.install.invalid.extension.useraction=Korrigieren Sie die Registrierung der Produkterweiterung und geben Sie die Position der Erweiterung an. 
 tool.install.ioexception.extension=CWWKF1005E: Beim Lesen der Produkterweiterung {0} ist ein unerwarteter Fehler aufgetreten. Ausnahme: {1}
 tool.install.ioexception.extension.explanation=Beim Lesen der Eigenschaftendatei f\u00fcr die in der Fehlernachricht angegebene Produkterweiterung ist ein unerwarteter Fehler aufgetreten.
 tool.install.ioexception.extension.useraction=Suchen Sie in der Ausnahmenachricht nach einer Erkl\u00e4rung, warum die Datei nicht gelesen werden konnte, und wiederholen Sie dann die Operation.
 tool.install.no.dir=CWWKF1006E: Das Feature kann nicht installiert werden, weil das Verzeichnis {0} nicht vorhanden ist.
 tool.install.no.dir.explanation=Das Produkterweiterungsverzeichnis ist nicht vorhanden. Deshalb kann das Feature nicht installiert werden.
-tool.install.no.dir.useraction=Stellen Sie sicher, dass das Feature vorhanden ist, und installieren Sie das Feature erneut. \
-
+tool.install.no.dir.useraction=Stellen Sie sicher, dass das Feature vorhanden ist, und installieren Sie das Feature erneut. 
 tool.install.download.esa=CWWKF1007E: Beim Herunterladen des Subsystemarchivs in {0} ist ein Fehler aufgetreten. Ausnahme: {1}
 tool.install.download.esa.explanation=Beim Herunterladen des Subsystemarchivs ist ein Fehler aufgetreten. M\u00f6glicherweise ist die URL nicht g\u00fcltig oder es ist ein tempor\u00e4res Netzproblem aufgetreten. Der zweite Satz der Fehlernachricht enth\u00e4lt ggf. weitere Detailinformationen zur Fehlerursache.
-tool.install.download.esa.useraction=Vergewissern Sie sich, dass die URL zum Subsystemarchiv korrekt ist, und wiederholen Sie dann die Operation. \
-
+tool.install.download.esa.useraction=Vergewissern Sie sich, dass die URL zum Subsystemarchiv korrekt ist, und wiederholen Sie dann die Operation. 
 tool.install.download.tmpFile=CWWKF1008E: Es konnte keine tempor\u00e4re Datei zum Herunterladen des Subsystemarchivs erstellt werden. Ausnahme: {0}
 tool.install.download.tmpFile.explanation=Die Featureinstallationsoperation l\u00e4dt das Subsystemarchiv in eine tempor\u00e4re Datei herunter, aber es konnte keine tempor\u00e4re Datei erstellt werden. Die Ursache ist wahrscheinlich eine Einschr\u00e4nkung der Maschine. Der zweite Satz der Fehlernachricht enth\u00e4lt m\u00f6glicherweise weitere Detailinformationen zur Fehlerursache.
 tool.install.download.tmpFile.useraction=M\u00f6glicherweise ist das tempor\u00e4re Dateisystem voll. Wenn ja, kann das Problem durch Bereinigung des Speicherplatzes behoben werden.

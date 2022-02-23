@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2019 IBM Corporation and others.
+# Copyright (c) 2018,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -57,11 +57,17 @@ ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Knihovna mezipam\u011bti relace {0} je pr\
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=Funkce sessionCache nem\u016f\u017ee naj\u00edt poskytovatele JCache, kter\u00fd se m\u00e1 na\u010d\u00edst.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Ov\u011b\u0159te, \u017ee knihovna obsahuje poskytovatele JCache a v\u0161echny cesty jsou spr\u00e1vn\u011b ur\u010deny.
 
+# !!!! MOVED TO IO.OPENLIBERTY.JCACHE.INTERNAL !!!!
 # do not translate: httpSessionCache, uri
-SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Generovan\u00e1 konfigurace Infinispan pro perzistenci relace HTTP: {0}. Chcete-li ji potla\u010dit, nakonfigurujte atribut uri prvku konfigurace httpSessionCache.
-SESN0310_GEN_INFINISPAN_CONFIG.explanation=Mezipam\u011bti Infinistpan, kter\u00e9 se pou\u017e\u00edvaj\u00ed pro perzistenci relace HTTP, vy\u017eaduj\u00ed dal\u0161\u00ed konfiguraci, aby trvaly relace mezi servery. Liberty vygeneruje tuto konfiguraci, pokud ji u\u017eivatel neposkytl.
-SESN0310_GEN_INFINISPAN_CONFIG.useraction=Pokud jste spokojeni s generovanou konfigurac\u00ed, nen\u00ed vy\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Jinak m\u016f\u017ee b\u00fdt generovan\u00e1 konfigurace pou\u017eita jako v\u00fdchoz\u00ed bod.
+#SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Generated Infinispan configuration for HTTP session persistence: {0}. To override, configure the uri attribute of the httpSessionCache configuration element.
+#SESN0310_GEN_INFINISPAN_CONFIG.explanation=The Infinispan caches that are used for HTTP session persistence require additional configuration to persist sessions across servers. Liberty generates this configuration when it is not provided by the user.
+#SESN0310_GEN_INFINISPAN_CONFIG.useraction=No action is required if you are satisfied with the generated configuration. Otherwise, the generated configuration can be used as a starting point.
+
+CONFIG_ATTRIBUTE_IGNORED=SESN0311W: Atribut konfigurace {0} byl zad\u00e1n, ale je ignorov\u00e1n, proto\u017ee byl zad\u00e1n atribut cacheManagerRef.
+CONFIG_ATTRIBUTE_IGNORED.explanation=Uveden\u00e1 konfigurace je ignorov\u00e1na, proto\u017ee je poskytov\u00e1na uveden\u00fdm atributem cacheManagerRef.
+CONFIG_ATTRIBUTE_IGNORED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 INTERNAL_SERVER_ERROR=Intern\u00ed chyba serveru
 
 SESSION_CACHE_CONFIG_MESSAGE=Ov\u011b\u0159te, \u017ee konfigurace serveru obsahuje platnou konfiguraci httpSessionCache. Viz konfigurace uk\u00e1zky. {0}
+

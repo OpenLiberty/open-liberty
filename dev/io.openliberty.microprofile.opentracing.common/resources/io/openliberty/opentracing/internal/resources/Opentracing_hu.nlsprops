@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: Az OpenTracing nem tudja nyom
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=A JAX-RS k\u00e9r\u00e9sek norm\u00e1l m\u00f3don futnak, de nem ker\u00fclnek k\u00f6vet\u00e9sre.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9vel \u00e9s konfigur\u00e1l\u00e1s\u00e1val kapcsolatos dokument\u00e1ci\u00f3t. Ha az OpenTracing nincs haszn\u00e1latban, akkor ez a figyelmeztet\u00e9s biztons\u00e1ggal figyelmen k\u00edv\u00fcl hagyhat\u00f3.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: Az OpenTracing nem tudta elind\u00edtani a feladategys\u00e9get, \u00e9s meghi\u00fasult, mert egy k\u00f6telez\u0151 met\u00f3dus nem tal\u00e1lhat\u00f3. \u00dczenet = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=Ez a hiba val\u00f3sz\u00edn\u0171leg egy inkompatibilis nyomk\u00f6vet\u0151 megval\u00f3s\u00edt\u00e1s megad\u00e1sa miatt t\u00f6rt\u00e9nt.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt valamint a kompatibilis osztott nyomk\u00f6vet\u00e9si rendszerek megjelen\u00edt\u00e9se \u00e9rdek\u00e9ben tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9re vonatkoz\u00f3 dokument\u00e1ci\u00f3t.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

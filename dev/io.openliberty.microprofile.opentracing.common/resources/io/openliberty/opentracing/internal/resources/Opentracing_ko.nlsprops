@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpentracingTracerFactory \ud0
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS \uc694\uccad\uc774 \uc815\uc0c1\uc801\uc73c\ub85c \uc2e4\ud589\ub418\uc9c0\ub9cc \ucd94\uc801\ub418\uc9c0\ub294 \uc54a\uc2b5\ub2c8\ub2e4.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=OpenTracing \ubd84\uc0b0 \ucd94\uc801 \uc0ac\uc6a9 \ubc0f \uad6c\uc131 \ubc29\ubc95\uc5d0 \ub300\ud55c \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc774 \uacbd\uace0\ub294 OpenTracing\uc774 \uc0ac\uc6a9\ub418\uc9c0 \uc54a\ub294 \uacbd\uc6b0\uc5d0\ub294 \ubb34\uc2dc\ud574\ub3c4 \ub429\ub2c8\ub2e4.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: \ud544\uc218 \uba54\uc18c\ub4dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc73c\ubbc0\ub85c OpenTracing\uc5d0\uc11c \ubc94\uc704\ub97c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc5b4 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0 = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=\uc774 \uc2e4\ud328\ub294 \ud638\ud658\ub418\uc9c0 \uc54a\ub294 \ucd94\uc801 \uad6c\ud604\uc774 \uc81c\uacf5\ub418\uc5c8\uae30 \ub54c\ubb38\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 OpenTracing \ubd84\uc0b0 \ucd94\uc801\uc744 \uc0ac\uc6a9\ud558\uace0 \ud638\ud658 \uac00\ub2a5\ud55c \ubd84\uc0b0 \ucd94\uc801 \uc2dc\uc2a4\ud15c\uc744 \ubcf4\ub294 \ubc29\ubc95\uc5d0 \ub300\ud55c \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------
