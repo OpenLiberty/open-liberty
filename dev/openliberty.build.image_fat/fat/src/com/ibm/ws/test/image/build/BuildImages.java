@@ -266,7 +266,7 @@ public class BuildImages {
             if ( useRawImage == null ) {
                 throw new Exception(
                     "Cannot " + opName +
-                    " [ " + getName() + " : " + getDescription() + "]" +
+                    " [ " + getName() + " : " + getDescription() + " ]" +
                     ": Image is not available");
             }
             return useRawImage;
