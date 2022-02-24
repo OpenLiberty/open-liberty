@@ -62,6 +62,8 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String[] code_challenge_methods_supported;
     @Beta
     private boolean backchannel_logout_supported;
+    @Beta
+    private boolean backchannel_logout_session_supported;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -497,6 +499,14 @@ public abstract class OIDCAbstractDiscoveryModel {
 
     public void setBackchannelLogoutSupported(boolean backchannelLogoutSupported) {
         this.backchannel_logout_supported = backchannelLogoutSupported;
+    }
+
+    public boolean isBackchannelLogoutSessionSupported() {
+        return this.backchannel_logout_session_supported;
+    }
+
+    public void setBackchannelLogoutSessionSupported(boolean backchannelLogoutSessionSupported) {
+        this.backchannel_logout_session_supported = backchannelLogoutSessionSupported;
     }
 
     private String[] defensiveCopy(String[] strArr) {
