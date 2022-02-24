@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -28,6 +29,7 @@ import concurrent.mp.fat.v20.web.MPContextProp2_0_TestServlet;
 // TODO This temporarily runs with MP Context Propagation 1.3 because 2.0 isn't available yet.
 //      See the comments in FATSuite.java
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class MPContextProp2_0_Test extends FATServletClient {
 
     private static final String APP_NAME = "MPContextProp2_0_App";
