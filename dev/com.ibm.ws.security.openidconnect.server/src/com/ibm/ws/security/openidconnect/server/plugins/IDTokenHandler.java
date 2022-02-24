@@ -51,6 +51,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.common.claims.UserClaimsRetrieverService;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
+import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.token.propagation.TokenPropagationHelper;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
@@ -367,6 +368,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         if (oidcServerConfig.isJTIClaimEnabled()) {
             payload.put(JTI_CLAIM, OAuthUtil.getRandom(16));
         }
+        payload.put(OIDCConstants.PAYLOAD_SESSION_ID, JwtCreator.generateSidClaimValue());
     }
 
     private void addCustomClaims(Payload payload, @Sensitive Map<String, String[]> tokenMap, String thirdPartyIDToken, OidcServerConfig oidcServerConfig) {
