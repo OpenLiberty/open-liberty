@@ -366,6 +366,7 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String PAYLOAD_AT_HASH = "at_hash";
     public static final String PAYLOAD_CLASS_REFERENCE = "acr";
     public static final String PAYLOAD_METHODS_REFERENCE = "amr";
+    public static final String PAYLOAD_SESSION_ID = "sid";
 
     public static final String CLIENT_REDIRECT_URI = "client_redirect_uri";
     /* session management constants */
@@ -376,5 +377,7 @@ public interface OIDCConstants extends OAuth20Constants {
 
     /* uri prefix for a regexp redirect */
     public static final String REGEXP_PREFIX = "regexp:";
+
+    public static final int SID_CLAIM_LENGTH = 20;
 
 }
