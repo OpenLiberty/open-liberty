@@ -132,13 +132,18 @@ public class LogoutTokenValidator {
     }
 
     /**
-     * Verifies that the Logout Token contains a sub Claim, a sid Claim, or both.
+     * Verifies that the Logout Token contains a sub Claim, a sid Claim, or both. Also verifies that a sid claim is present if
+     * the OIDC client requires that it be there.
      */
     void verifySubAndOrSidPresent(JwtClaims claims) throws MalformedClaimException, BackchannelLogoutException {
         String sub = claims.getSubject();
         String sid = claims.getClaimValue("sid", String.class);
         if (sub == null && sid == null) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_MISSING_SUB_AND_SID");
+            throw new BackchannelLogoutException(errorMsg);
+        }
+        if (sid == null && config.isBackchannelLogoutSessionRequired()) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING", new Object[] { config.getId() });
             throw new BackchannelLogoutException(errorMsg);
         }
     }
