@@ -19,6 +19,9 @@ Web-ContextPath: @privateOpenAPIExplorerURL
 
 IBM-Authorization-Roles: com.ibm.ws.management
 
+Private-Package: \
+  com.ibm.ws.openapi.filter.*
+
 Include-Resource: \
   WEB-INF=../com.ibm.ws.openapi.ui/resources/WEB-INF, \
   WEB-INF=resources/WEB-INF, \
@@ -27,4 +30,5 @@ Include-Resource: \
   index.html=../com.ibm.ws.openapi.ui/swagger-ui/dist/openapi.html
 
 -buildpath: \
-  com.ibm.ws.openapi.ui
+  com.ibm.ws.openapi.ui, \
+  com.ibm.websphere.javaee.servlet.3.1;version=latest
