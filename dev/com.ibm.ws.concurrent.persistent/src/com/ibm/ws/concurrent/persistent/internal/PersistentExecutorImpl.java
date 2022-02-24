@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -47,9 +49,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
@@ -427,6 +431,30 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         return updateCount;
     }
 
+    public <U> CompletableFuture<U> completedFuture(U value) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
+    public <U> CompletionStage<U> completedStage(U value) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> CompletableFuture<T> copy(CompletableFuture<T> stage) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean createProperty(String name, String value) {
@@ -513,6 +541,18 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         taskInfo.initForOneShotTask(0l); // run immediately
 
         newTask(runnable, taskInfo, null, null);
+    }
+
+    public <U> CompletableFuture<U> failedFuture(Throwable ex) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
+    public <U> CompletionStage<U> failedStage(Throwable ex) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -712,6 +752,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Override
     public ApplicationRecycleContext getContext() {
         return null;
+    }
+
+    public ContextService getContextService() {
+        // There are no known scenarios that would require this Concurrency 3.0 method for persistent executor
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -1209,6 +1254,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             Tr.exit(this, tc, "modified");
     }
 
+    public <U> CompletableFuture<U> newIncompleteFuture() {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Create and persist a new task to the persistent store.
      *
@@ -1609,6 +1660,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         return updateCount;
     }
 
+    public CompletableFuture<Void> runAsync(Runnable runnable) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public <V> TaskStatus<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
         int compare = unit.compareTo(TimeUnit.MILLISECONDS);
@@ -1941,6 +1998,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         taskInfo.initForOneShotTask(0l); // run immediately
 
         return newTask(runnable, taskInfo, null, null);
+    }
+
+    public <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier) {
+        // Concurrency 3.0 reactive operations cannot be used on
+        // persistent executor implementation that spans multiple servers
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -2634,6 +2697,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 if (exceptionClass.isInstance(failure))
                     return exceptionClass.cast(failure);
 
+                @SuppressWarnings("deprecation")
                 T result = exceptionClass.newInstance();
                 result.initCause(failure);
                 return result;

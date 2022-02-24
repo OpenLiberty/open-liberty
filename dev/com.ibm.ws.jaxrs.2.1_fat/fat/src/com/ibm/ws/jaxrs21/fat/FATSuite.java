@@ -28,6 +28,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,
                 JAXRS21SecuritySSLTest.class,
+                RolesAllowedTest.class,
                 UriInfoTest.class
 })
 public class FATSuite {

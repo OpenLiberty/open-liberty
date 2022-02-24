@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class RoleMethodAuthUtilTest {
         RoleMethodAuthUtil.parseMethodSecurity(method(ROLESALLOWED_ON_CLASS, "unannotated"),
                                                null,
                                                s -> {
-                                                   return true;
+                                                   return false; // change to false because "unannotated" is protected by "role3" and "role4"
                                                });
     }
 
@@ -72,7 +72,7 @@ public class RoleMethodAuthUtilTest {
         assertFalse(RoleMethodAuthUtil.parseMethodSecurity(method(ROLESALLOWED_ON_CLASS, "unannotated"),
                                                            principal("UNAUTHENTICATED"),
                                                            s -> {
-                                                               return true;
+                                                               return false; // change to false because "unannotated" is protected by "role3" and "role4"
                                                            }));
     }
 

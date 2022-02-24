@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.collective.CollectiveAuthenticationPlugin;
 import com.ibm.ws.security.authentication.internal.SSOTokenHelper;
-import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
+import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
@@ -64,23 +64,23 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
     protected boolean customPropertiesFromSubject = false;
 
     protected CollectiveAuthenticationPlugin getCollectiveAuthenticationPlugin() throws RegistryException {
-        return JAASServiceImpl.getCollectiveAuthenticationPlugin();
+        return LoginModuleHelper.getJAASService().getCollectiveAuthenticationPlugin();
     }
 
     protected UserRegistry getUserRegistry() throws RegistryException {
-        return JAASServiceImpl.getUserRegistry();
+        return LoginModuleHelper.getJAASService().getUserRegistry();
     }
 
     protected TokenManager getTokenManager() {
-        return JAASServiceImpl.getTokenManager();
+        return LoginModuleHelper.getJAASService().getTokenManager();
     }
 
     CredentialsService getCredentialsService() {
-        return JAASServiceImpl.getCredentialsService();
+        return LoginModuleHelper.getJAASService().getCredentialsService();
     }
 
     protected AuthenticationService getAuthenticationService() {
-        return JAASServiceImpl.getAuthenticationService();
+        return LoginModuleHelper.getJAASService().getAuthenticationService();
     }
 
     /**
@@ -98,7 +98,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * CertificateLoginModule, HashtableLoginModule and TokenLoginModule). Determines the securityName to use
      * for the login.
      *
-     * @param loginName The username passed to the login
+     * @param loginName         The username passed to the login
      * @param urAuthenticatedId The id returned by UserRegistry checkPassword or mapCertificate.
      *
      * @return The securityName to use for the WSPrincipal.
@@ -392,5 +392,4 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
 
         return false;
     }
-
 }

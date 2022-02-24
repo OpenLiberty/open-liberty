@@ -162,6 +162,13 @@ public class FATUtils {
                                                      + " Maybe it is on the way down.");
                         server.printProcessHoldingPort(server.getHttpDefaultPort());
                     }
+                } else {
+                	// Start failed in an unusual way. Make sure it's stopped prior to next attempt.
+                	try {
+						server.stopServer(".*");
+					} catch (Exception e) {
+						Log.error(c, method, e);
+					}
                 }
             } while (attempt < maxAttempts);
 

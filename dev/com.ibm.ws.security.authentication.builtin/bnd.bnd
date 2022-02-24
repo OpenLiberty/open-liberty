@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,10 +73,13 @@ Service-Component: \
     modified:='modified'; \
     cacheKeyProvider=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     cacheEvictionListener=com.ibm.ws.security.authentication.cache.CacheEvictionListener; \
+    cacheService=io.openliberty.jcache.CacheService; \
     credentialService=com.ibm.ws.security.credentials.CredentialsService; \
-    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService'; \
+    serverStartedPhase2=com.ibm.ws.kernel.feature.ServerStartedPhase2; \
+    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService,cacheService,serverStartedPhase2'; \
     multiple:='cacheKeyProvider,cacheEvictionListener'; \
-    properties:="service.vendor=IBM", \
+    dynamic:='serverStartedPhase2'; \
+    properties:="service.vendor=IBM,cacheService.target=(id=unbound)", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
@@ -139,10 +142,13 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
 	com.ibm.websphere.security.authentication;version=latest,\
+	io.openliberty.jcache.internal;version=latest,\
+	com.ibm.websphere.javaee.jcache.1.1;version=latest,\
 	org.eclipse.osgi,\
 	osgi.core
 

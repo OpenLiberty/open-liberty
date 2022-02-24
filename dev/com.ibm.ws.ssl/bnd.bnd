@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.4
+bVersion=1.5
 
 Bundle-Name: SSL Configuration
 Bundle-SymbolicName: com.ibm.ws.ssl; singleton:=true
@@ -74,7 +74,8 @@ instrument.disabled: true
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.config;version=latest, \
 	com.ibm.ws.org.apache.felix.scr;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

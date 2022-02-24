@@ -1288,6 +1288,33 @@ public class MvnUtils {
         return returnArray;
     }
 
+    public static Map<String, String> getResultInfo(LibertyServer server){
+        Map<String, String> resultInfo = new HashMap<>();
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        String productVersion = "";
+        resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+        resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+        resultInfo.put("os_name",System.getProperty("os.name"));
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Pattern wasVersionPattern = Pattern.compile("WebSphere Application Server (.*?) \\(", Pattern.DOTALL);
+                Matcher olNameMatcher = olVersionPattern.matcher(matches.get(0));
+                Matcher wasNameMatcher = wasVersionPattern.matcher(matches.get(0));
+                if (olNameMatcher.find()) {
+                    productVersion = olNameMatcher.group(1);
+                }
+                else if(wasNameMatcher.find()){
+                    productVersion = wasNameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            return resultInfo;
+        }
+    }
+
     public static String capitalise(String spec) {
         char[] charArray = spec.toCharArray();
         boolean foundSpace = true;

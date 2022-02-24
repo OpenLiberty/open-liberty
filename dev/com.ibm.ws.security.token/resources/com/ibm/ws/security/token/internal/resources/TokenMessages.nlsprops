@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,3 +43,11 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Make sure to use a Java runtime environme
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: The constrained delegation OSGi service {0} is not available.
 KRB_OSGI_SERVICE_ERROR.explanation=The specified OSGi service is not available.
 KRB_OSGI_SERVICE_ERROR.useraction=Ensure that the constrained delegation feature is enabled and make sure to use a Java runtime environment of IBM JavaSE 1.8. Review the server logs for more information.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: Could not retrieve the BundleContext for the {0} bundle. The bundle may still be loading. Try again later.
+BUNDLE_CONTEXT_MISSING.explanation=The specified OSGi BundleContext is not available.
+BUNDLE_CONTEXT_MISSING.useraction=The bundle may still be loading. Try again later.
+
+OSGI_INVALID_FILTER=CWWKS4005E: There was a syntax error encountered while retrieving the TokenService using the {0} service filter: {1}
+OSGI_INVALID_FILTER.explanation=The service filter provided resulted in an exception while retrieving the TokenService.
+OSGI_INVALID_FILTER.useraction=The service filter is generated from the SSO token type stored in the serialized Token. Ensure the SSO token type configured for all servers does not result in an invalid OSGi service filter. 
