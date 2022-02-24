@@ -57,7 +57,8 @@
               JCache configuration.
         -->
         <AD id="cacheRef" type="String" required="false" cardinality="1" ibm:type="pid"
-            ibm:reference="io.openliberty.jcache.cache" name="internal" description="internal use only" />
+            ibm:reference="io.openliberty.jcache.cache" name="%cacheRef" description="%cacheRef.desc"
+            ibm:beta="true" />
         <AD id="cacheService.target" type="String" default="(service.pid=${cacheRef})"
             ibm:final="true" name="internal" description="internal use only" />
         <AD id="cacheService.cardinality.minimum" type="String"  default="${count(cacheRef)}" 
