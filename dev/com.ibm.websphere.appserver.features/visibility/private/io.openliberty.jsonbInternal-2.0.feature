@@ -3,7 +3,7 @@ symbolicName=io.openliberty.jsonbInternal-2.0
 visibility=private
 singleton=true
 -features=, \
-  io.openliberty.jsonbImpl-2.0.0
+  io.openliberty.jsonbImpl-2.0.1; ibm.tolerates:="2.0.0"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
