@@ -27,5 +27,5 @@
   <artifactId>com.ibm.websphere.appserver.spi.javaeedd</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere Bindings and Extensions SPI</name>
-  <description>WebSphere Bindings and Extensions SPI, version 1.5</description>
+  <description>WebSphere Bindings and Extensions SPI, version 2.0</description>
 </project>
