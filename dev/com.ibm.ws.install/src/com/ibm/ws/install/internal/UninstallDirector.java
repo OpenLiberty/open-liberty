@@ -111,7 +111,7 @@ class UninstallDirector extends AbstractDirector {
                 baseDirs.addAll(getAssetBaseDirectories(uninstallAsset));
             }
 
-            if (!InstallConstants.UNINSTALL_REQUEST_FROM_JVMCALLCIKUPF_OPTION) {
+            if (!InstallConstants.REQUEST_FROM_JVMCALLCIKAF_OPTION) {
                 // filter out /bin directory as this uninstall request may have come from a command line utility in /bin and will be locked.
                 // /bin should be checked if this invocation comes from startSecondJVM_JVMCallCIKuninstallProductFeatures
                 baseDirs = baseDirs.stream().filter(p -> !p.toString().endsWith("bin")).collect(Collectors.toSet());

@@ -31,9 +31,9 @@ public class InstallConstants {
     public static final String IGNORE_FILE_PROPERTY = "com.ibm.websphere.install.utility.ignoreWhenFileExists";
     public static final String IGNORE_FILE_OPTION = System.getProperty(IGNORE_FILE_PROPERTY);
 
-    // Uninstall request sent from startSecondJVM_JVMCallCIKuninstallProductFeatures
-    public static final String UNINSTALL_REQUEST_FROM_JVMCALLCIKUPF_PROPERTY = "com.ibm.websphere.install.utility.jvmCallCikUPF";
-    public static final boolean UNINSTALL_REQUEST_FROM_JVMCALLCIKUPF_OPTION = Boolean.parseBoolean(System.getProperty(UNINSTALL_REQUEST_FROM_JVMCALLCIKUPF_PROPERTY));
+    // Uninstall request sent from startSecondJVM_JVMCallCIKAPIFeature
+    public static final String REQUEST_FROM_JVMCALLCIKAF_PROPERTY = "com.ibm.websphere.install.utility.jvmCallCikAF";
+    public static final boolean REQUEST_FROM_JVMCALLCIKAF_OPTION = Boolean.parseBoolean(System.getProperty(REQUEST_FROM_JVMCALLCIKAF_PROPERTY));
 
     public static final String DEFAULT_REPO_PROPERTIES_LOCATION = File.separator + "etc" + File.separator
                                                                   + "repositories.properties";
