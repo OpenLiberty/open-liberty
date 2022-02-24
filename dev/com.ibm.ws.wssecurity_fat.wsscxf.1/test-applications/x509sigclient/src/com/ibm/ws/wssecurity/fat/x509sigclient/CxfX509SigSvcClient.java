@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,8 @@ import test.wssecfvt.x509sig.X509XmlSigService4;
 import test.wssecfvt.x509sig.X509XmlSigService5;
 import test.wssecfvt.x509sig.X509XmlStrService1;
 import test.wssecfvt.x509sig.X509XmlStrService2;
+//issue 20061
+import test.wssecfvt.x509sig.X509XmlStrService3;
 
 /**
  * Servlet implementation class CxfX509SigSvcClient
@@ -219,6 +221,15 @@ public class CxfX509SigSvcClient extends HttpServlet {
 				dispSOAPMsg = service.createDispatch(servicePort,
 						SOAPMessage.class, Mode.MESSAGE);
 			}
+
+                        //issue 20061
+                        if (rawServiceName.equals("X509XmlStrService3")) {
+                		System.out.println("In X509XmlStrService3 case");
+                		X509XmlStrService3 service = new X509XmlStrService3(wsdlURL, 
+                                                serviceName);
+                		dispSOAPMsg = service.createDispatch(servicePort,
+                                                SOAPMessage.class, Mode.MESSAGE);
+            		}//End issue 20061
 
 			//
 			Map<String, Object> requestContext = dispSOAPMsg
