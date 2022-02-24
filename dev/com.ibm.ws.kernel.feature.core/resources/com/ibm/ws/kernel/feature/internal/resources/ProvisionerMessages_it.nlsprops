@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -69,8 +69,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: \u00c8 presente pi\u00f9 di un bundle corrispon
 BUNDLE_MATCH_WARNING.explanation=Un elemento di definizione della funzione corrisponde a pi\u00f9 bundle. Ci\u00f2 potrebbe verificarsi perch\u00e9 il filtro \u00e8 troppo generico o perch\u00e9 nell'immagine sono presenti bundle obsoleti che corrispondono al filtro.
 BUNDLE_MATCH_WARNING.useraction=Verificare che il filtro sia sufficientemente specifico e che venga utilizzata un'immagine di installazione pulita.
 
-SERVER_STARTED=CWWKF0011I: Il server {0} \u00e8 pronto per "un pianeta pi\u00f9 intelligente". \
-Server {0} avviato in {1} secondi.
+SERVER_STARTED=CWWKF0011I: Il server {0} \u00e8 pronto per "un pianeta pi\u00f9 intelligente". Server {0} avviato in {1} secondi.
 SERVER_STARTED.explanation=Il server \u00e8 stato avviato correttamente.
 SERVER_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
 
@@ -203,9 +202,7 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Rimuovere la funzio
 # CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Impossibile trovare una definizione di funzione per la funzione {0}.  Provare ad eseguire il comando bin/installUtility install {0},  per installare la funzione. In alternativa \u00e8 possibile eseguire il comando bin/installUtility install {1},  per installare tutte le funzioni cui fa riferimento questa configurazione.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Il gestore funzioni non \u00e8 stato in grado di trovare una definizione per la funzione specificata.
-UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verificare che il nome della funzione specificata sia scritto correttamente.  \
-Verificare anche che  la definizione di funzione esista e sia leggibile nella directory lib/features.  \
-Se la funzione non esiste, tentare di eseguire il comando bin/installUtility install nome_funzione,  per installare tutte le funzioni cui fa riferimento questa configurazione.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Verificare che il nome della funzione specificata sia scritto correttamente.  Verificare anche che  la definizione di funzione esista e sia leggibile nella directory lib/features.  Se la funzione non esiste, tentare di eseguire il comando bin/installUtility install nome_funzione,  per installare tutte le funzioni cui fa riferimento questa configurazione.
 
 # CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: La funzione configurata {2} di {0} \u00e8 incompatibile con la funzione configurata {3} di {1}.  La configurazione include una combinazione incompatibile di funzioni {4} non supportata.  Aggiornare la configurazione per utilizzare le versioni compatibili delle funzioni configurate che supportino i modelli di programmazione {0} o {1}.
@@ -230,6 +227,11 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specificare una versione differe
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Le funzioni {2} e {3} non possono essere caricate contemporaneamente. La funzione {2} di {0} non \u00e8 compatibile con la funzione {3} di {1}. La configurazione include una combinazione incompatibile di funzioni {6} non supportata. Le funzioni configurate, {4} e {5}, includono una combinazione incompatibile di funzioni. La configurazione non \u00e8 supportata. Aggiornare la configurazione per utilizzare le versioni compatibili delle funzioni configurate che supportino i modelli di programmazione {0} o {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configurazione del server contiene una combinazione incompatibile di funzioni per i modelli di programmazione indicati. Questo conflitto pu\u00f2 accadere se le due funzioni incompatibili sono configurate direttamente nella configurazione del server o se le funzioni configurate includono versioni differenti di una funzione che sono incompatibili.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tentare specificando una versione compatibile delle funzioni configurate che hanno causato il conflitto nel file server.xml. Se non sono disponibili altre versioni, le funzioni configurate non sono compatibili tra loro e non possono essere configurate contemporaneamente.
+
+#CWWKF0048E
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: Il comando server specificava l'azione del punto di controllo. Non \u00e8 possibile acquisire un punto di controllo, in quanto la funzione checkpoint-1.0 non \u00e8 configurata nel file server.xml.
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=L'azione del punto di controllo del server richiede che la funzione checkpoint-1.0 sia configurata.  
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=La funzione checkpoint-1.0 deve essere configurata per utilizzare un'azione del punto di controllo del server.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

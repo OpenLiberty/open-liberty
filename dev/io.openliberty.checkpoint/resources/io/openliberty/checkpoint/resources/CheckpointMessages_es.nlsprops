@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Se ha solicitado un punto de comprobaci\u00f3n de servidor. Cuando finaliza el punto de comprobaci\u00f3n, el servidor se detiene.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Se ha solicitado un punto de comprobaci\u00f3n. El servidor se detiene y su estado actual se escribe en disco.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consulte la documentaci\u00f3n para obtener detalles de las operaciones de punto de comprobaci\u00f3n y restauraci\u00f3n.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: El servidor Liberty est\u00e1 reanudando la operaci\u00f3n desde un punto de comprobaci\u00f3n.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Se ha ejecutado una operaci\u00f3n de restauraci\u00f3n en una imagen de punto de comprobaci\u00f3n del servidor Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Consulte la documentaci\u00f3n para obtener detalles de las operaciones de punto de comprobaci\u00f3n y restauraci\u00f3n.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado con el siguiente mensaje: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Ha fallado una solicitud de punto de comprobaci\u00f3n para el servidor.  No se ha creado una imagen de proceso de punto de comprobaci\u00f3n v\u00e1lida para el servidor.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Inspeccione el directorio de punto de comprobaci\u00f3n ubicado en el directorio de registros del servidor para obtener archivos de registro adicionales para determinar por qu\u00e9 ha fallado el punto de comprobaci\u00f3n.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: El servidor no se ha podido restaurar desde un punto de comprobaci\u00f3n con el siguiente mensaje: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Ha fallado un intento de restaurar el servidor desde un punto de comprobaci\u00f3n.  El servidor no se est\u00e1 ejecutando.
+RESTORE_FAILED_CWWKC0454E.useraction=Inspeccione el directorio de punto de comprobaci\u00f3n ubicado en el directorio de registros del servidor para ver archivos de registro adicionales para determinar por qu\u00e9 no se ha podido restaurar el servidor.
+

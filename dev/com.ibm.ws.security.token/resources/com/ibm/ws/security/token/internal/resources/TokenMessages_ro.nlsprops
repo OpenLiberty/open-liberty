@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,17 +22,11 @@ TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: A avut loc o excep\u
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Fiecare bundle de implementare TokenService \u00ee\u015fi specific\u0103 tipul furnizat.
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Specifica\u0163i un tip suportat sau instala\u0163i bundle-ul ce furnizeaz\u0103 instan\u0163a TokenService a tipului cerut.
 
-TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n\
-1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n\
-2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n\
-3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
 TOKEN_SERVICE_INVALID_TOKEN.explanation=Jetonul nu poate fi recreat de serviciile de jetoane configurate curent.
 TOKEN_SERVICE_INVALID_TOKEN.useraction=Verifica\u0163i c\u0103 cel pu\u0163in o caracteristic\u0103 include un serviciu de jetoane care este configurat corespunz\u0103tor pentru a recrea jetonul.                                                    a
 
-TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n\
-1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n\
-2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n\
-3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Jetonul de securitate nu poate fi validat. Acest lucru se datoreaz\u0103 motivelor  urm\u0103toare\n1. Jetonul de securitate a fost generat pe alt server utiliz\u00e2nd chei diferite.\n2. Configurarea jetoanelor sau cheile de securitate ale serviciului de jetoane care au creat jetonul s-au modificat.\n3. Serviciul de jetoane care a creat jetonul nu mai este disponibil.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Jetonul nu poate fi recreat de serviciile de jetoane configurate curent.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Verifica\u0163i c\u0103 cel pu\u0163in o caracteristic\u0103 include un serviciu de jetoane care este configurat corespunz\u0103tor pentru a recrea jetonul.                                                    a
 
@@ -43,3 +37,11 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\u0
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Serviciul de delegare constr\u00e2ns\u0103 OSGi {0} nu este disponibil.
 KRB_OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
 KRB_OSGI_SERVICE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 este activat\u0103 caracteristica de delegare constr\u00e2ns\u0103 \u015fi c\u0103 utiliza\u0163i un mediu runtime Java de IBM JavaSE 1.8. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: Nu a putut extrage BundleContext pentru bundle-ul {0}. Este posibil ca bundle-ul s\u0103 fie \u00een curs de \u00eenc\u0103rcare. \u00cencerca\u0163i din nou mai t\u00e2rziu.
+BUNDLE_CONTEXT_MISSING.explanation=OSGi BundleContext specificat nu este disponibil.
+BUNDLE_CONTEXT_MISSING.useraction=Este posibil ca bundle-ul s\u0103 fie \u00een curs de \u00eenc\u0103rcare. \u00cencerca\u0163i din nou mai t\u00e2rziu.
+
+OSGI_INVALID_FILTER=CWWKS4005E: A existat o eroare de sintax\u0103 la extragerea TokenService folosind filtrul de servicii {0}: {1}
+OSGI_INVALID_FILTER.explanation=Filtrul de servicii furnizat a dus la o excep\u021bie la extragerea TokenService.
+OSGI_INVALID_FILTER.useraction=Filtrul de servicii este generat din tipul de jeton SSO stocat \u00een jetonul serializat. Asigura\u021bi-v\u0103 c\u0103 tipul de jeton SSO configurat pentru toate serverele nu are ca rezultat un filtru de servicii OSGi invalid. 

@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing nie mo\u017ce \u0
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=\u017b\u0105dania JAX-RS dzia\u0142aj\u0105 normalnie, ale nie s\u0105 \u015bledzone.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Informacje na temat w\u0142\u0105czania i konfigurowania \u015bledzenia rozproszonego OpenTracing mo\u017cna znale\u017a\u0107 w dokumentacji. To ostrze\u017cenie mo\u017cna bezpiecznie zignorowa\u0107, je\u015bli interfejs OpenTracing nie jest u\u017cywany.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: Interfejs OpenTracing nie m\u00f3g\u0142 uruchomi\u0107 zakresu i nie powi\u00f3d\u0142 si\u0119 z powodu nieznalezienia wymaganej metody. Komunikat = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=To niepowodzenie jest prawdopodobnie spowodowane niekompatybiln\u0105 implementacj\u0105 programu \u015bledz\u0105cego.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Wi\u0119cej informacji na ten temat zawiera dokumentacja dotycz\u0105ca w\u0142\u0105czania funkcji \u015bledzenia rozproszonego interfejsu OpenTracing oraz wy\u015bwietlania kompatybilnych rozproszonych system\u00f3w \u015bledzenia.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

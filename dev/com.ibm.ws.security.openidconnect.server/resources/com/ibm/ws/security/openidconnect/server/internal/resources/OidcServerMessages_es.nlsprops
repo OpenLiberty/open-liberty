@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: No se ha podido procesar una solicitud
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producir una serie JSON JWK exige que el atributo signatureAlgorithm del proveedor OpenID Connect se establezca en RS256. Los atributos KeyStoreRef y keyAliasName deben ser v\u00e1lidos si se especifican. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Corrija los atributos de configuraci\u00f3n del proveedor OpenID Connect.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Las reclamaciones procedentes de la se\u00f1al de ID de terceros no se han podido propagar para el proveedor de OpenID Connect {0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=No se pueden extraer las reclamaciones de la se\u00f1al de ID de terceros. Consulte el mensaje de error para obtener m\u00e1s informaci\u00f3n.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Aseg\u00farese de que el proveedor de OpenID Connect de terceros est\u00e1 enviando una se\u00f1al de ID v\u00e1lida.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La SPI de mediador de se\u00f1al de ID no soporta la versi\u00f3n Java utilizada por este tiempo de ejecuci\u00f3n [{0}]. La versi\u00f3n de Java soportada es 1.7 o posteriores.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=La versi\u00f3n de Java del mensaje no puede soportar la funci\u00f3n de SPI de mediador de se\u00f1al de JWT. 

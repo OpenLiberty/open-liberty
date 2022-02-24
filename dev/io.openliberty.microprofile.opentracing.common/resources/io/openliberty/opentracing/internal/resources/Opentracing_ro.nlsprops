@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing nu poate urm\u010
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Cererile JAX-RS ruleaz\u0103 \u00een mod normal, dar ele nu sunt urm\u0103rite.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Consulta\u021bi documenta\u021bia privind activarea \u0219i configurarea urm\u0103ririi distribuite OpenTracing. Acest avertisment poate fi ignorat \u00een siguran\u021b\u0103 dac\u0103 nu se utilizeaz\u0103 OpenTracing.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: OpenTracing nu a putut \u00eencepe un interval \u0219i nu a e\u0219uat din cauza unei metode necesare care nu a fost g\u0103sit\u0103. Mesaj = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=Probabil acest e\u0219ec este din cauza unei implement\u0103ri incompatibile a programului de urm\u0103rire.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Pentru mai multe informa\u021bii, consulta\u021bi documenta\u021bia despre cum s\u0103 activa\u021bi urm\u0103rirea distribuit\u0103 OpenTracing \u0219i pentru a vizualiza sistemele de urm\u0103rire distribuite compatibile.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

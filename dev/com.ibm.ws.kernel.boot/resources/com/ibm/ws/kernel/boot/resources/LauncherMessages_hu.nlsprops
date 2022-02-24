@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,10 +76,7 @@ error.archiveTarget=CWWKE0011E: A --archive param\u00e9terhez k\u00f6telez\u0151
 error.archiveTarget.explanation=Egy k\u00f6telez\u0151 argumentum nem lett megadva.
 error.archiveTarget.useraction=Adja meg a helyes argumentumot, majd pr\u00f3b\u00e1lkozzon \u00fajra a paranccsal. A megadott param\u00e9ter argumentumainak le\u00edr\u00e1s\u00e1t a --help haszn\u00e1lat\u00e1val n\u00e9zheti meg.
 
-error.serverNameCharacter=CWWKE0012E: A megadott kiszolg\u00e1l\u00f3n\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz (n\u00e9v={0}). \
-Az \u00e9rv\u00e9nyes karakterek: Unicode alfanumerikus karakterek (pl. \
-0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.). \
-A kiszolg\u00e1l\u00f3n\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
+error.serverNameCharacter=CWWKE0012E: A megadott kiszolg\u00e1l\u00f3n\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz (n\u00e9v={0}). Az \u00e9rv\u00e9nyes karakterek: Unicode alfanumerikus karakterek (pl. 0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.). A kiszolg\u00e1l\u00f3n\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
 error.serverNameCharacter.explanation=A kiszolg\u00e1l\u00f3n\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz.
 error.serverNameCharacter.useraction=Nevezze \u00e1t a kiszolg\u00e1l\u00f3t csak \u00e9rv\u00e9nyes karakterek haszn\u00e1lat\u00e1val: Unicode alfanumerikus karakterek (pl. 0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.).
 
@@ -125,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: A megadott kernelmeghat\u00e1roz\u00e1s ({0}) ne
 error.kernelDefFile.explanation=A megadott kernelmeghat\u00e1roz\u00e1s nem tal\u00e1lhat\u00f3.
 error.kernelDefFile.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kernelmeghat\u00e1roz\u00e1s er\u0151forr\u00e1s l\u00e9tezik \u00e9s a jelenlegi felhaszn\u00e1l\u00f3nak van hozz\u00e1 olvas\u00e1si enged\u00e9lye.
 
-error.specifiedLocation=CWWKE0025E: A(z) {0} \u00e9rt\u00e9k\u00e9nek egy k\u00f6nyvt\u00e1rra kell hivatkoznia. \
-A megadott \u00e9rt\u00e9k egy megl\u00e9v\u0151 f\u00e1jl er\u0151forr\u00e1sra hivatkozik. \
-\u00c9rt\u00e9k: {1}
+error.specifiedLocation=CWWKE0025E: A(z) {0} \u00e9rt\u00e9k\u00e9nek egy k\u00f6nyvt\u00e1rra kell hivatkoznia. A megadott \u00e9rt\u00e9k egy megl\u00e9v\u0151 f\u00e1jl er\u0151forr\u00e1sra hivatkozik. \u00c9rt\u00e9k: {1}
 error.specifiedLocation.explanation=A megadott hely egy k\u00f6nyvt\u00e1r helyett egy megl\u00e9v\u0151 f\u00e1jlra hivatkozik.
 error.specifiedLocation.useraction=M\u00f3dos\u00edtsa a megadott helyet egy k\u00f6nyvt\u00e1rra, majd pr\u00f3b\u00e1lja meg \u00fajra v\u00e9grehajtani a m\u0171veletet.
 
@@ -457,8 +452,7 @@ error.zosProcStart.start.length=CWWKE0107E: A(z) {0} z/OS STC elj\u00e1r\u00e1st
 error.zosProcStart.start.length.explanation=Az elj\u00e1r\u00e1sn\u00e9v, kiszolg\u00e1l\u00f3n\u00e9v \u00e9s az ind\u00edt\u00e1si param\u00e9terek, melyeket megadott, hogy a kiszolg\u00e1l\u00f3t egy elind\u00edtott feladatk\u00e9nt ind\u00edtsa el, meghaladt\u00e1k az MVS konzol parancsokra vonatkoz\u00f3 maxim\u00e1lis hosszt.
 error.zosProcStart.start.length.useraction=R\u00f6vid\u00edtse le a kiszolg\u00e1l\u00f3nevet \u00e9s az elj\u00e1r\u00e1snevet, hogy az MVS ind\u00edt\u00e1si parancs 126 karaktern\u00e9l kevesebb legyen.
 
-info.addProductExtension=CWWKE0108I: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny a programk\u00f3d \u00e1ltal enged\u00e9lyezett.  \
-A term\u00e9kb\u0151v\u00edtm\u00e9ny term\u00e9kazonos\u00edt\u00f3ja: {1}. A term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si helye: {2}.
+info.addProductExtension=CWWKE0108I: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny a programk\u00f3d \u00e1ltal enged\u00e9lyezett.  A term\u00e9kb\u0151v\u00edtm\u00e9ny term\u00e9kazonos\u00edt\u00f3ja: {1}. A term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si helye: {2}.
 info.addProductExtension.explanation= Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. A term\u00e9kb\u0151v\u00edtm\u00e9ny a com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension SPI h\u00edv\u00e1sa k\u00f6vetkezt\u00e9ben lett felv\u00e9ve.
 info.addProductExtension.useraction=Semmit sem kell tennie.
 
@@ -470,10 +464,7 @@ info.addProductExtension.useraction=Semmit sem kell tennie.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: A megadott \u00fcgyf\u00e9ln\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz (n\u00e9v={0}). \
-Az \u00e9rv\u00e9nyes karakterek: Unicode alfanumerikus karakterek (pl. \
-0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.). \
-Az \u00fcgyf\u00e9ln\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
+error.clientNameCharacter=CWWKE0900E: A megadott \u00fcgyf\u00e9ln\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz (n\u00e9v={0}). Az \u00e9rv\u00e9nyes karakterek: Unicode alfanumerikus karakterek (pl. 0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.). Az \u00fcgyf\u00e9ln\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
 error.clientNameCharacter.explanation=Az \u00fcgyf\u00e9ln\u00e9v \u00e9rv\u00e9nytelen karaktert tartalmaz.
 error.clientNameCharacter.useraction=Nevezze \u00e1t az \u00fcgyfelet csak \u00e9rv\u00e9nyes karakterek haszn\u00e1lat\u00e1val: Unicode alfanumerikus karakterek (pl. 0-9, a-z, A-Z), al\u00e1h\u00faz\u00e1s (_), k\u00f6t\u0151jel (-), pluszjel (+) \u00e9s pont (.).
 
@@ -524,14 +515,12 @@ info.java2security.started.useraction=Semmit sem kell tennie.
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: A k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem siker\u00fclt be\u00e1ll\u00edtani az alap\u00e9rtelmezett biztons\u00e1gkezel\u0151t: {0}.  Ez akkor fordulhat el\u0151, ha a biztons\u00e1gkezel\u0151 m\u00e1r be\u00e1ll\u00edt\u00e1sra ker\u00fclt, checkPermission met\u00f3dusa pedig nem enged\u00e9lyezi annak cser\u00e9j\u00e9t.
 error.set.securitymanager.explanation=A Java 2 biztons\u00e1g enged\u00e9lyezve van, de hiba t\u00f6rt\u00e9nt az alap\u00e9rtelmezett biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1sa sor\u00e1n.
-error.set.securitymanager.useraction=A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  \
-Ha m\u00e1r megt\u00f6rt\u00e9nt a be\u00e1ll\u00edt\u00e1s, akkor t\u00e1vol\u00edtsa el a -Djava.security.manager param\u00e9tert, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal. 
+error.set.securitymanager.useraction=A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  Ha m\u00e1r megt\u00f6rt\u00e9nt a be\u00e1ll\u00edt\u00e1s, akkor t\u00e1vol\u00edtsa el a -Djava.security.manager param\u00e9tert, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: A k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem siker\u00fclt be\u00e1ll\u00edtani a NoRethrow biztons\u00e1gkezel\u0151t: {0}.  Ez akkor fordulhat el\u0151, ha a biztons\u00e1gkezel\u0151 m\u00e1r be\u00e1ll\u00edt\u00e1sra ker\u00fclt, checkPermission met\u00f3dusa pedig nem enged\u00e9lyezi annak cser\u00e9j\u00e9t.
 error.set.trace.securitymanager.explanation=A Java 2. biztons\u00e1g enged\u00e9lyezett, de hiba t\u00f6rt\u00e9nt a NoRethrow biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1sa k\u00f6zben.
-error.set.trace.securitymanager.useraction=A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  \
-Ha m\u00e1r megt\u00f6rt\u00e9nt a be\u00e1ll\u00edt\u00e1s, akkor t\u00e1vol\u00edtsa el a -Djava.security.manager param\u00e9tert, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal. 
+error.set.trace.securitymanager.useraction=A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  Ha m\u00e1r megt\u00f6rt\u00e9nt a be\u00e1ll\u00edt\u00e1s, akkor t\u00e1vol\u00edtsa el a -Djava.security.manager param\u00e9tert, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal. 
 
 warning.java.security.permdenied=CWWKE0912W: A jelenlegi Java 2 biztons\u00e1gi h\u00e1zirend a Java 2 biztons\u00e1gi enged\u00e9ly lehets\u00e9ges megs\u00e9rt\u00e9s\u00e9t jelentette. {0}Enged\u00e9ly: {1} K\u00f3d: {2}{3}Verem nyomk\u00f6vet\u00e9s: {4} K\u00f3db\u00e1zis helye: {5}
 warning.java.security.permdenied.explanation=A Java biztons\u00e1gkezel\u0151 checkPermission() met\u00f3dusa egy SecurityException-t dobott a t\u00e1rgybeli jogosults\u00e1ggal.
@@ -539,9 +528,7 @@ warning.java.security.permdenied.useraction=Ellen\u0151rizze, hogy a megk\u00eds
 
 error.java.security.exception.codebase=CWWKE0913E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f3db\u00e1zis hely\u00e9nek meghat\u00e1roz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Kiv\u00e9tel: {0}.  
 error.java.security.exception.codebase.explanation=Hiba t\u00f6rt\u00e9nt a k\u00f3dhoz tartoz\u00f3 k\u00f3db\u00e1zishely meg\u00e1llap\u00edt\u00e1sakor, ami a Java 2 biztons\u00e1gi enged\u00e9ly hozz\u00e1f\u00e9r\u00e9s-fel\u00fcgyeleti kiv\u00e9tel\u00e9t id\u00e9zte el\u0151.
-error.java.security.exception.codebase.useraction=A r\u00e9szletek\u00e9rt vizsg\u00e1lja meg a kiv\u00e9telt \u00e9s a kiszolg\u00e1l\u00f3 napl\u00f3it. \
-\  A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val, valamint a -Djava.security.policy param\u00e9ter megad\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  \
-Ha m\u00e1r megt\u00f6rt\u00e9nt legal\u00e1bb az egyik be\u00e1ll\u00edt\u00e1sa, akkor t\u00e1vol\u00edtsa el a be\u00e1ll\u00edt\u00e1sokat, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal.
+error.java.security.exception.codebase.useraction=A r\u00e9szletek\u00e9rt vizsg\u00e1lja meg a kiv\u00e9telt \u00e9s a kiszolg\u00e1l\u00f3 napl\u00f3it.   A kiszolg\u00e1l\u00f3 -Djava.security.manager param\u00e9terrel val\u00f3 elind\u00edt\u00e1s\u00e1val, valamint a -Djava.security.policy param\u00e9ter megad\u00e1s\u00e1val gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e9g nem ker\u00fclt sor a biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra.  Ha m\u00e1r megt\u00f6rt\u00e9nt legal\u00e1bb az egyik be\u00e1ll\u00edt\u00e1sa, akkor t\u00e1vol\u00edtsa el a be\u00e1ll\u00edt\u00e1sokat, majd a websphere.java.security tulajdons\u00e1g bootstrap.properties f\u00e1jlbeli megad\u00e1s\u00e1val ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t enged\u00e9lyezett Java 2 biztons\u00e1gi szolg\u00e1ltat\u00e1ssal.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: A jelenlegi Java 2 biztons\u00e1gi h\u00e1zirend egy Java 2 biztons\u00e1gi enged\u00e9ly lehets\u00e9ges megs\u00e9rt\u00e9s\u00e9t jelentette. Tov\u00e1bbi inform\u00e1ci\u00f3kat a Knowledge Center tartalmaz. {0}Jogosults\u00e1g:{1}K\u00f3d:{2}K\u00f3db\u00e1zis helye:{3}
 warning.zOS.java.security.permdenied1.explanation=A Java biztons\u00e1gkezel\u0151 checkPermission() met\u00f3dusa egy SecurityException-t dobott a t\u00e1rgybeli jogosults\u00e1ggal. A h\u00edv\u00f3 vagy a h\u00edv\u00e1si verem nem rendelkezik a sz\u00fcks\u00e9ges jogosults\u00e1ggal.  Lehet, hogy ez nem probl\u00e9ma, ha a h\u00edv\u00f3 megfelel\u0151en kezeli ezt a kiv\u00e9telt.
@@ -563,7 +550,7 @@ error.client.runner.useraction=Az \u00fcgyf\u00e9lalkalmaz\u00e1s hib\u00e1j\u00
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre. R\u00e9szletek\u00e9rt tekintse meg a(z) {2} helyen l\u00e9v\u0151 {1} hoszton fut\u00f3 {0} Liberty profil kiszolg\u00e1l\u00f3n a(z) {3} k\u00e9r\u00e9shez tartoz\u00f3 napl\u00f3kat.
+error.mbean.operation.failure=CWWKE0918E: \ A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre. R\u00e9szletek\u00e9rt tekintse meg a(z) {2} helyen l\u00e9v\u0151 {1} hoszton fut\u00f3 {0} Liberty profil kiszolg\u00e1l\u00f3n a(z) {3} k\u00e9r\u00e9shez tartoz\u00f3 napl\u00f3kat.
 error.mbean.operation.failure.explanation=Hiba t\u00f6rt\u00e9nt a k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 error.mbean.operation.failure.useraction=A m\u0171veleti hib\u00e1hoz kapcsol\u00f3d\u00f3 r\u00e9szletek\u00e9rt tekintse meg a kiszolg\u00e1l\u00f3napl\u00f3kat.
 
@@ -706,6 +693,10 @@ error.missing.version.files.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, h
 warning.earlyRelease=CWWKE0953W: A(z) {0} v\u00e1ltozata egy nem t\u00e1mogatott korai kiad\u00e1s\u00fa v\u00e1ltozat.
 warning.earlyRelease.explanation=A korai kiad\u00e1sokban a nem teljesk\u00f6r\u0171en tesztelt \u00faj szolg\u00e1ltat\u00e1sok el\u00e9rhet\u0151v\u00e9 lettek t\u00e9ve, hogy visszajelz\u00e9s \u00e9rkezzen, miel\u0151tt egy t\u00e1mogatott kiad\u00e1sban szerepeln\u00e9nek.
 warning.earlyRelease.useraction=\u00c9les rendszerben ne haszn\u00e1ljon korai kiad\u00e1s\u00fa v\u00e1ltozatot, mivel a korai kiad\u00e1sv\u00e1ltozatok nem t\u00e1mogatottak.
+
+error.invalidPhaseName=CWWKE0954E: A megadott "{0}" ellen\u0151rz\u00e9si pont f\u00e1zis \u00fcres vagy ismeretlen.
+error.invalidPhaseName.explanation=Az ellen\u0151rz\u00e9si pont param\u00e9ter \u00e9rt\u00e9kek\u00e9nt ismeretlen f\u00e1zis lett megadva.
+error.invalidPhaseName.useraction=Az \u00e9rv\u00e9nyes f\u00e1zisnevek meghat\u00e1roz\u00e1s\u00e1hoz tekintse \u00e1t a dokument\u00e1ci\u00f3t. Adja ki \u00fajra a parancsot \u00e9rv\u00e9nyes ellen\u0151rz\u00e9si pont f\u00e1zis haszn\u00e1lat\u00e1val.
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

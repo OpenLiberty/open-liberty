@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,3 +16,58 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Configura\u021bia Infinispan generat\u0103 pentru persisten\u021ba sesiunii HTTP: {0}. Pentru a \u00eenlocui, configura\u021bi atributul uri al elementului de configura\u021bie httpSessionCache sau al elementului de configura\u021bie cacheManager.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Cache-urile Infinispan care sunt folosite pentru persisten\u0163a sesiunii HTTP necesit\u0103 configura\u0163ie suplimentar\u0103 pentru a persista sesiunile peste servere. Liberty genereaz\u0103 aceast\u0103 configura\u0163ie c\u00e2nd nu este furnizat\u0103 de utilizator.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 sunte\u0163i satisf\u0103cut cu configura\u0163ia generat\u0103. Altfel, genera\u0163ia configurat\u0103 poate fi folosit\u0103 ca punct de plecare.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: JCache-ul {0} a fost creat \u00een {1} ms.
+CWLJC0001_CACHE_CREATED.explanation=JCache-ul numit a fost creat deoarece nu a fost g\u0103sit.
+CWLJC0001_CACHE_CREATED.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: JCache-ul {0}  existent a fost g\u0103sit \u00een {1} ms.
+CWLJC0002_CACHE_FOUND.explanation=JCache-ul numit a fost g\u0103sit, deci nu a fost creat.
+CWLJC0002_CACHE_FOUND.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: JCache-ul {0} utilizeaz\u0103 furnizorul de memorare \u00een cache {1}.
+CWLJC0003_USING_PROVIDER.explanation=JCache-ul numit folose\u0219te furnizorul specificat.
+CWLJC0003_USING_PROVIDER.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: A e\u0219uat \u00eenc\u0103rcarea furnizorului de memorare \u00een cache {0}. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=Configura\u021bia cachingProvider nu a reu\u0219it s\u0103 se \u00eencarce.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=Examina\u021bi \u0219i corecta\u021bi eroarea inclus\u0103 \u00een mesaj \u0219i apoi re\u00eencerca\u021bi.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: CacheManager JCache {0} s-a \u00eenc\u0103rcat \u00een {1} ms. 
+CWLJC0005_MANAGER_LOADED.explanation=CacheManager JCache a fost \u00eenc\u0103rcat cu succes.
+CWLJC0005_MANAGER_LOADED.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Sintaxa invalid\u0103 \u00een URI cacheManager.  Cauza este {0}.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=Sintaxa URI-ului de configura\u021bie JCache este invalid\u0103.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=Corecta\u021bi sintaxa URI-ului de configura\u021bie specificat.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: Eroare la deserializarea obiectului din JCache {0}: {1}.
+CWLJC0008_DESERIALIZE_ERR.explanation=Obiectul extras din JCache-ul numit nu a putut fi deserializat.
+CWLJC0008_DESERIALIZE_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 toate clasele sunt disponibile \u00eentr-o bibliotec\u0103 inclus\u0103 \u00een configura\u021bia JCache.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: Eroare de serializare obiect la {0} JCache: {1}.
+CWLJC0009_SERIALIZE_ERR.explanation=Obiectul de stocat \u00een JCache-ul numit nu a putut fi serializat.
+CWLJC0009_SERIALIZE_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 toate clasele de serializat sunt serializabile.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Eroare la configurarea CacheManager JCache: {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=CacheManager JCache nu a putut fi configurat din cauza erorii specificate.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=Examina\u021bi \u0219i corecta\u021bi eroarea inclus\u0103 \u00een mesaj \u0219i apoi re\u00eencerca\u021bi.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Eroare \u00eent\u00e2lnit\u0103 \u00een timpul extragerii {0} JCache: {1}.
+CWLJC0011_GET_CACHE_ERR.explanation=Cache-ul nu a fost extras din cauza erorii specificate.
+CWLJC0011_GET_CACHE_ERR.useraction=Examina\u021bi \u0219i corecta\u021bi eroarea inclus\u0103 \u00een mesaj \u0219i apoi re\u00eencerca\u021bi.
