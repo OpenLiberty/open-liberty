@@ -1,0 +1,33 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<!-- 
+		PLEASE NOTE:  the slash in the id is needed with GitHub
+				We can only have 1 callback/redirect defined for the
+				app in GitHub.  But, GitHub will support unique 
+				names off of that "root".  We have registered:
+				https://localhost:8020/ibm/api/social-login/redirect/githubLogin
+				so specify githubLogin/<something unique> and things
+				will work
+	-->
+	<oauth2Login
+		id="githubLogin/1"
+		tokenEndpointAuthMethod="client_secret_post"
+		scope="user"
+		userNameAttribute="login"
+		clientId="06a60c44396bec95df54"
+		clientSecret="262a4bc358637bbeed1c999a1dd1f5590d933232"
+		authorizationEndpoint="https://github.com/login/oauth/authorize"
+		tokenEndpoint="https://github.com/login/oauth/access_token"
+		userApi="https://api.github.com/user"
+	>
+	</oauth2Login>
+</server>

@@ -1,0 +1,29 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+
+
+	<oauth2Login
+		id="linkedinLogin2"
+		scope="r_emailaddress r_basicprofile"
+		clientId="7824anxtut33fz"
+		clientSecret="5A7TKmCr1VW7JuIE"
+		userNameAttribute="emailAddress"
+		authorizationEndpoint="https://www.linkedin.com/oauth/v2/authorization"
+		tokenEndpoint="https://www.linkedin.com/oauth/v2/accessToken"
+		userApi="https://api.linkedin.com/v1/people/~:(firstName,id,lastName,email-address)"
+		userApiNeedsSpecialHeader="true"
+		tokenEndpointAuthMethod="client_secret_post"
+	>
+	</oauth2Login>
+
+</server>
