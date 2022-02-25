@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,16 @@ public class CacheObject implements Serializable {
         this.subject = subject;
     }
 
+    /**
+     * Add a lookup key to the {@link CacheObject}.
+     *
+     * <p/>
+     * Warning! Calling this method will not change the lookup keys in a distributed cache
+     * when this object is retrieved from the distributed cache. In this scenario, the instance
+     * will need to be re-inserted into the distributed cache for the updates to take effect.
+     *
+     * @param key The lookup key to add.
+     */
     public void addLookupKey(Object key) {
         if (key != null) {
             lookupKeys.add(key);
@@ -43,10 +53,10 @@ public class CacheObject implements Serializable {
      * (using the synchronized block) when iterating over it . Failure to follow this
      * advice may result in non-deterministic behavior.
      *
-     * @return the list of lookup keys in the cache object
+     * @return the unmodifiable list of lookup keys in the cache object
      */
     public List<Object> getLookupKeys() {
-        return lookupKeys;
+        return Collections.unmodifiableList(lookupKeys);
     }
 
     public Subject getSubject() {
