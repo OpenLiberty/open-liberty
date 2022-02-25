@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -44,18 +43,20 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
 import com.ibm.ws.product.utility.extension.ifix.xml.Problem;
 
-class UninstallDirector extends AbstractDirector {
+public class UninstallDirector extends AbstractDirector {
 
     private final Engine engine;
 
     private FeatureDependencyChecker dependencyChecker;
     private FixDependencyChecker fixDependencyChecker;
-
+    private static String[] excludePathSuffix = new String[] { "bin", "bin/", "installUtility.bat", "ws-installUtility.jar", "featureUtility.bat", "ws-featureUtility.jar",
+                                                         "featureManager.bat",
+                                                         "ws-featureManager.jar", };
     private List<UninstallAsset> uninstallAssets;
 
     private boolean setScriptsPermission = false;
 
-    UninstallDirector(Product product, Engine engine, EventManager eventManager, Logger logger) {
+    public UninstallDirector(Product product, Engine engine, EventManager eventManager, Logger logger) {
         super(product, eventManager, logger);
         this.engine = engine;
     }
@@ -108,19 +109,14 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
             Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset));
-            }
-
-            if (!InstallConstants.REQUEST_FROM_JVMCALLCIKAF_OPTION) {
-                // filter out /bin directory as this uninstall request may have come from a command line utility in /bin and will be locked.
-                // /bin should be checked if this invocation comes from startSecondJVM_JVMCallCIKuninstallProductFeatures
-                baseDirs = baseDirs.stream().filter(p -> !p.toString().endsWith("bin")).collect(Collectors.toSet());
+                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             }
 
             // For each uninstall asset's base directory, validate no files are locked recursively.
             for (File baseDir : baseDirs) {
                 try {
                     List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
+                    allPathsFromBaseDir = removePathExceptions(allPathsFromBaseDir);
                     for (Path path : allPathsFromBaseDir) {
                         InstallUtils.isFileLocked("ERROR_UNINSTALL_FEATURE_FILE_LOCKED", path.toString(), path.toFile());
                     }
@@ -162,16 +158,30 @@ class UninstallDirector extends AbstractDirector {
     }
 
     /**
+     * @param allPathsFromBaseDir
+     * @return
+     */
+    public List<Path> removePathExceptions(List<Path> allPathsFromBaseDir) {
+        List<Path> exceptionsRemoved = new ArrayList<Path>();
+        List<String> excludes = Arrays.asList(excludePathSuffix);
+        for (Path path : allPathsFromBaseDir) {
+            if (!excludes.stream().anyMatch(p -> path.toString().endsWith(p))) {
+                exceptionsRemoved.add(path);
+            }
+        }
+        return exceptionsRemoved;
+    }
+
+    /**
      *
      * @param uninstallAsset the uninstall asset to derive a base directory from
      * @return the uninstallAsset's base directories derived from uninstallAsset. For example, if the uninstallAsset location is dev/spi/ibm and baseDir is
      *         /opt/IBM/WebSphere/AppServer, this will return 'Set[/opt/IBM/WebSphere/AppServer/dev]' iff the path exists, an empty Set otherwise.
      * @throws InstallException
      */
-    private Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset) throws InstallException {
+    protected Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset, File baseDir) throws InstallException {
 
         Set<File> baseDirs = new HashSet<>();
-        File baseDir = engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition());
         Set<String> assetLocations = getAssetLocations(uninstallAsset);
 
         // For each asset location, construct a list of locations containing the first child directory appended
@@ -193,7 +203,7 @@ class UninstallDirector extends AbstractDirector {
      * @return a set of strings that are the location data derived from uninstallAsset. This set my be empty if the asset is not BUNDLE_TYPE, JAR_TYPE, BOOT_JAR_TYPE or FILE_TYPE.
      *         It could also be empty if the getLocation() call returns null or an empty string.
      */
-    private Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
+    public Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
         // Only process BUNDLE, JAR, BOOT and FILE subsystem types.
         final List<SubsystemContentType> resourceFilter = Arrays.asList(SubsystemContentType.BUNDLE_TYPE, SubsystemContentType.JAR_TYPE, SubsystemContentType.BOOT_JAR_TYPE,
                                                                         SubsystemContentType.FILE_TYPE);
@@ -209,9 +219,9 @@ class UninstallDirector extends AbstractDirector {
      *         if locString contains "bin/tools/tools.zip,etc/files/files.zip" this method would return ["bin","etc"]
      *
      */
-    private List<String> getFirstChildSubdirectoryFromLocations(String locString) {
+    public List<String> getFirstChildSubdirectoryFromLocations(String locString) {
         List<String> subdirectories = new ArrayList<>();
-        if (locString != null) {
+        if (locString != null && !locString.isEmpty()) {
             String[] locs = locString.contains(",") ? locString.split(",") : new String[] { locString };
             for (String loc : locs) {
                 File fle = new File(loc);
