@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.Constants;
@@ -82,6 +83,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
+
+import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestHelper;
 
 @Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class OidcEndpointServices extends OAuth20EndpointServices {
@@ -530,12 +533,23 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             }
             response.sendRedirect(redirectUri);
         }
-        
+
+        if (continueLogoff) {
+            sendBackchannelLogoutRequests(request, oidcServerConfig, idTokenString);
+        }
     }
 
     String updateRedirectUriWithTrackedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String redirectUri) {
         OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
         return clientTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
+    }
+
+    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String idTokenString) {
+        if (!ProductInfo.getBetaEdition()) {
+            return;
+        }
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+        bclRequestCreator.sendBackchannelLogoutRequests(idTokenString);
     }
 
     /**
