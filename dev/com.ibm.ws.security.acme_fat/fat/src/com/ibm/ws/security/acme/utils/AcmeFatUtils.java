@@ -907,7 +907,7 @@ public class AcmeFatUtils {
 				 * more if/else branches to making it easier to follow.
 				 */
 				skipOnWin = true;
-			} else if (javaVendor.contains("eclipse adoptium") && (javaVersion.equals("11.0.13") || javaVersion.equals("17.0.1"))) {
+			} else if (javaVendor.contains("eclipse adoptium") && (javaVersion.equals("11.0.13") || javaVersion.equals("17.0.1") || javaVersion.equals("11.0.14") || javaVersion.equals("17.0.2"))) {
 				/*
 				 * Delete issue popped on new AdoptOpenJDK name, eclipse adoptium, as well. The "if" check was getting complicated to read so breaking these vendor/version checks into
 				 * more if/else branches to making it easier to follow.
