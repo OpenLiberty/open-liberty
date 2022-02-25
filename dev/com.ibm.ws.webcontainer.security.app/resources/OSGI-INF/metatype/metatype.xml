@@ -140,8 +140,7 @@
               JCache configuration.
         -->
         <AD id="loggedOutCookieCacheRef" type="String" required="false" ibm:type="pid"
-            ibm:reference="io.openliberty.jcache.cache" name="%loggedOutCookieCacheCacheRef" 
-            description="%loggedOutCookieCacheCacheRef.desc" ibm:beta="true" />
+            ibm:reference="io.openliberty.jcache.cache" name="internal" description="internal use only" />
         <AD id="loggedOutCookieCacheService.target" type="String" default="(service.pid=${loggedOutCookieCacheRef})"
             ibm:final="true" name="internal" description="internal use only" />
         <AD id="loggedOutCookieCacheService.cardinality.minimum" type="String"  default="${count(loggedOutCookieCacheRef)}" 

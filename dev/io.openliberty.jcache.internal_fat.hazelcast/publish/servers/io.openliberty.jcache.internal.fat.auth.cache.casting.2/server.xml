@@ -14,7 +14,7 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>servlet-4.0</feature>
 		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
+		<feature>noShip-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 
 	<httpEndpoint id="defaultHttpEndpoint"

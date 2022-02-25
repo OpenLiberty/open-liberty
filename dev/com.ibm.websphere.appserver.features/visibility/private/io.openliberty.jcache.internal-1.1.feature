@@ -14,7 +14,7 @@ Subsystem-Name: Java Caching (JCache) 1.1
   io.openliberty.jcache.internal, \
   com.ibm.ws.serialization
 #
-# TODO Before OLGH 9005 feature GAs, the io.openliberty.distributedSecurityCache-1.0 feature should be removed
+# TODO Before OLGH 9005 feature GAs, the io.openliberty.jcache.autoapi-1.1 feature should be removed
 #      and the exposure of the javax.cache APIs should be done in this feature.
 #
 kind=ga

@@ -1,10 +1,10 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.distributedSecurityCache-1.0
-visibility=public
-singleton=true
-IBM-ShortName: distributedSecurityCache-1.0
-Subsystem-Version: 1.0
-Subsystem-Name: Distributed Security Cache Support 1.0
+symbolicName = io.openliberty.jcache.autoapi-1.1
+visibility = private
+IBM-Provision-Capability:\
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jcache.internal-1.1))",\
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.noShip-1.0))"
+IBM-Install-Policy: when-satisfied
 
 #
 # These packages need to be exposed so that the JCache provider library
@@ -27,5 +27,11 @@ IBM-API-Package: \
   javax.cache.spi; type="internal", \
   io.openliberty.jcache; type="internal"
 
-kind=beta
-edition=core
+#
+# TODO Before GA, this feature should be removed and the exposure of the javax.cache 
+#      APIs should be moved to the io.openliberty.jcache.autoapi-1.1 feature. This
+#      feature is just here to stage for noship/beta without exposing these APIs before
+#      GA.
+#
+kind=noship
+edition=full
