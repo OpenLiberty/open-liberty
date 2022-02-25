@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,25 +190,25 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
     },
 
     __getStartedIcon: function () {
-      return imgUtils.getSVG('status-running');
+      return imgUtils.getSVG('status-running', null, i18n.RUNNING, true);
     },
 
     __getStartingIcon: function() {
       var extension = 'gif';
       if (this.size === '14') {
-        return imgUtils.getSVG('status-starting');
+        return imgUtils.getSVG('status-starting', null, i18n.STARTING, true);
       }
       return lang.replace(htmlTemplate, [this.platformIconSeparator, 'starting', this.platformString, this.size, i18n.STARTING, extension]);
     },
 
     __getStoppedIcon: function() {
-        return imgUtils.getSVG('status-stopped');
+        return imgUtils.getSVG('status-stopped', null, i18n.STOPPED, true);
     },
 
     __getStoppingIcon: function() {
       var extension = 'gif';
       if (this.size === '14') {
-        return imgUtils.getSVG('status-stopping');
+        return imgUtils.getSVG('status-stopping', null, i18n.STOPPING, true);
       }
       return lang.replace(htmlTemplate, [this.platformIconSeparator, 'stopping', this.platformString, this.size, i18n.STOPPING, extension]);
     },    
@@ -219,7 +219,7 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
       if (util.getResourceDisplayedState(this.resource) == "STARTED") {
         return this.__getStartedIcon();
       } else {
-        return imgUtils.getSVG('status-some-running');
+        return imgUtils.getSVG('status-some-running', null, i18n.PARTIALLY_RUNNING, true);
       }
     },
 

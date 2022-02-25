@@ -1,6 +1,6 @@
 <div class="${resourcePaneClass}">
 <!--
-    Copyright (c) 2016 IBM Corporation and others.
+    Copyright (c) 2016, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -22,19 +22,19 @@
 
     <div class="subLabelStatePane" id="${resourceStatePaneId}">
       <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="unknownPane" style="margin-bottom: 18px;">
-    	<div data-dojo-attach-point="unknownIcon" class="resourcePaneStateIcon"></div>
-       	<span class="resourcePaneStateLabel">${stateLabels.unknown}</span>
-    	<span id="${resourceStateUnknownNumber}" class="resourcePaneStateNumber unknownNumber" data-dojo-attach-point="unknownNumberNode">0</span>
+        <div data-dojo-attach-point="unknownIcon" class="resourcePaneStateIcon"></div>
+        <span id="${resourceStateUnknownLabel}" class="resourcePaneStateLabel">${stateLabels.unknown}</span>
+        <span id="${resourceStateUnknownNumber}" class="resourcePaneStateNumber unknownNumber" data-dojo-attach-point="unknownNumberNode">0</span>
       </div>
       <div style="margin-bottom: 18px;">
        	<div data-dojo-attach-point="runIcon" class="resourcePaneStateIcon"></div>
-       	<span class="resourcePaneStateLabel">${stateLabels.up}</span>
-    	<span id="${resourceStateRunningNumber}" class="resourcePaneStateNumber runningNumber" data-dojo-attach-point="runningNumberNode">0</span>
+        <span id="${resourceStateRunningLabel}" class="resourcePaneStateLabel">${stateLabels.up}</span>
+        <span id="${resourceStateRunningNumber}" class="resourcePaneStateNumber runningNumber" data-dojo-attach-point="runningNumberNode">0</span>
       </div>
       <div>
        	<div data-dojo-attach-point="stopIcon" class="resourcePaneStateIcon"></div>
-       	<span class="resourcePaneStateLabel">${stateLabels.down}</span>
-    	<span id="${resourceStateStoppedNumber}" class="resourcePaneStateNumber stoppedNumber" data-dojo-attach-point="stoppedNumberNode">0</span>
+        <span id="${resourceStateStoppedLabel}" class="resourcePaneStateLabel">${stateLabels.down}</span>
+        <span id="${resourceStateStoppedNumber}" class="resourcePaneStateNumber stoppedNumber" data-dojo-attach-point="stoppedNumberNode">0</span>
       </div>	 
     </div>
 </div>
