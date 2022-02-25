@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.context.cleared;
+package io.openliberty.microprofile.context.cleared.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;

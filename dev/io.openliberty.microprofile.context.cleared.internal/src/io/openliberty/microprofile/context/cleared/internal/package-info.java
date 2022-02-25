@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "concurrent", messageBundle = "com.ibm.ws.microprofile.context.resources.CWWKCMessages")
-package io.openliberty.microprofile.context.cleared;
+@TraceOptions(traceGroup = "concurrent", messageBundle = "io.openliberty.microprofile.context.cleared.internal.resources.CWWKCMessages")
+package io.openliberty.microprofile.context.cleared.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
