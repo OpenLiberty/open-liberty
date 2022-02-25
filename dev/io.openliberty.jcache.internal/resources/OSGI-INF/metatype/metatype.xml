@@ -25,13 +25,13 @@
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.cachingprovider.metatype"
-		ibm:alias="cachingProvider" name="%cachingProvider"
-		description="%cachingProvider.desc" ibm:beta="true">
+		ibm:alias="cachingProvider" name="internal"
+		description="internal use only">
 
 		<AD id="providerClass" type="String" required="false"
 			name="%providerClass" description="%providerClass.desc" />
 
-		<AD id="libraryRef" type="String" required="true" ibm:type="pid"
+		<AD id="libraryRef" type="String" required="false" ibm:type="pid"
 			ibm:reference="com.ibm.ws.classloading.sharedlibrary"
 			cardinality="2147483647" name="%libraryRef"
 			description="%libraryRef.desc" />
@@ -55,8 +55,8 @@
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.cachemanager.metatype"
-		ibm:alias="cacheManager" name="%cacheManager"
-		description="%cacheManager.desc" ibm:beta="true">
+		ibm:alias="cacheManager" name="internal"
+		description="internal use only">
 
 		<AD id="cachingProviderRef" required="true" type="String"
 			name="%cachingProviderRef" description="%cachingProviderRef.desc"
@@ -80,7 +80,7 @@
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.cache.metatype" ibm:alias="cache"
-		name="%cache" description="%cache.desc" ibm:beta="true">
+		name="internal" description="internal use only">
 
 		<AD id="cacheManagerRef" required="true" type="String"
 			name="%cacheManagerRef" description="%cacheManagerRef.desc"
@@ -100,8 +100,8 @@
 	</Designate>
 
 	<OCD id="io.openliberty.jcache.properties.metatype"
-		name="%properties" description="%properties.desc"
+		name="internal" description="internal use only"
 		ibmui:extraProperties="true"
-		ibmui:localization="OSGI-INF/l10n/metatype" ibm:beta="true"/>
+		ibmui:localization="OSGI-INF/l10n/metatype" />
 
 </metatype:MetaData>

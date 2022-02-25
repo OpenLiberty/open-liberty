@@ -44,8 +44,7 @@
        JCache configuration.
    -->
   <AD id="cacheManagerRef" type="String" required="false" cardinality="1" ibm:type="pid"
-      ibm:reference="io.openliberty.jcache.cachemanager" name="%cacheManagerRef" description="%cacheManagerRef.desc" 
-      ibm:beta="true" />
+      ibm:reference="io.openliberty.jcache.cachemanager" name="internal" description="internal use only" />
   <AD id="cacheManagerService.target" type="String" default="(service.pid=${cacheManagerRef})"
       ibm:final="true" name="internal" description="internal use only" />
   <AD id="cacheManagerService.cardinality.minimum" type="String"  default="${count(cacheManagerRef)}" 
