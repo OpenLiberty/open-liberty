@@ -1177,21 +1177,6 @@
 	>
 	</oauth2Login>
 
-<!-- 
-	<oauth2Login
-		id="openShiftLogin_badScope_limitedOPScope"
-		clientId="${client.id}"
-		clientSecret="${client.secret}"
-		authorizationEndpoint="https://secure-keycloak-keycloak.streaks1.fyre.ibm.com/auth/realms/master/protocol/openid-connect/auth"
-		tokenEndpoint="https://secure-keycloak-keycloak.streaks1.fyre.ibm.com/auth/realms/master/protocol/openid-connect/token"
-		userIdentifier="name"
-		userApi="https://streaks1.fyre.ibm.com:8443/apis/authentication.k8s.io/v1/tokenreviews"
-		scope="my dog has fleas"
-		authFilterRef="authFilter_badScope_limitedOPScope"
-	>
-	</oauth2Login>
--->
-
 	<oauth2Login
 		id="openShiftLogin_codeResponseType"
         scope="user:full"
