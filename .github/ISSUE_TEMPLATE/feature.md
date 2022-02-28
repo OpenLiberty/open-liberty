@@ -103,7 +103,7 @@ A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) 
 
 ## **Legal and Translation**
 
-These steps should be done concurrently with implementation, and must be completed before GA of this feature may be requested.  However, it is strongly recommended for legal approvals to be obtained as early as possible in the design/development process to avoid any last minute blockers.
+These steps should be done concurrently with implementation, and must be completed before GA of this feature may be requested.  However, it is **strongly recommended for legal approvals to be obtained as early as possible** in the design/development process to avoid any last minute blockers.
 
 ### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
@@ -175,7 +175,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - Approver adds label `focalApproved:svt`.
 
 ### **Remove Beta Fencing** (Complete by Feature Complete Date)
-- [ ] Beta guards are removed, if necessary.
+- [ ] Beta guards are removed, or N/A
   - Only after all necessary Focal Point Approvals have been granted.
 
 ### **GA Blog** (Complete by Feature Complete Date)
@@ -190,7 +190,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
 - [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
-  - This should be strongly considered especially for larger or more promintent features.
+  - This should be strongly considered for larger or more promintent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **WDT** Liberty Developer Tools work is complete or N/A. (Leonard Theivendra)
 
