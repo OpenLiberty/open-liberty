@@ -184,7 +184,14 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: The claims from the third-party
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=The claims from the third-party ID token cannot be extracted. View the error message for more information.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ensure that the third-party OpenID Connect provider is sending a valid ID token.
 
-IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: The Java version used by this run time [{0}] is not supported by the ID token Mediator SPI. The supported Java version is 1.7 or higher.
-IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=The Java version in the message can not support the ID token Mediator SPI function. 
-IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Install Java version 1.7 or higher.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: The OpenID Connect provider [{0}] encountered an error while building logout tokens for back-channel logout requests: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=The ID token string in the id_token_hint parameter, if one was provided, might be malformed. The provider might not be able to determine the set of clients to send back-channel logout requests. Or another error occurred while building a logout token.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=See the user action for the error that is included in the message.
 
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: The OpenID Connect provider cannot extract claims to reuse from the ID token. {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=The ID token might be malformed or in an unexpected format.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ensure the ID token is formatted correctly. See the error that is included in the message for more information.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: The OpenID Connect provider cannot determine the set of OpenID Connect clients to log out because of an error: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=The provider failed to retrieve the set of clients that are registered, or the ID token claims might be malformed.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=See the error that is included in the message for more information.
