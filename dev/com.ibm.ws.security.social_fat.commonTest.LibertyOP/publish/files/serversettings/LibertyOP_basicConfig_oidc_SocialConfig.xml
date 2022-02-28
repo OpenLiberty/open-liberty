@@ -974,7 +974,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
-		redirectToRPHostAndPort="https://localhost:${bvt.prop.HTTP_default.secure}"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oidcLogin>
 
@@ -988,7 +988,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
-		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.HTTP_default.secure}"
+		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oidcLogin>
 
