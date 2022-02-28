@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.cdi40.internal.fat.config;
+package com.ibm.ws.cdi.beansxml.fat.tests;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
@@ -21,29 +22,34 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.beansxml.fat.apps.emptybeansxml.AllBeansServlet;
+import com.ibm.ws.cdi.beansxml.fat.apps.emptybeansxml.AnnotatedBeansServlet;
+import com.ibm.ws.cdi.beansxml.fat.apps.emptybeansxml.RequestScopedBean;
+import com.ibm.ws.cdi.beansxml.fat.apps.emptybeansxml.UnannotatedBean;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.cdi40.internal.fat.config.beansxml.AllBeansServlet;
-import io.openliberty.cdi40.internal.fat.config.beansxml.AnnotatedBeansServlet;
-import io.openliberty.cdi40.internal.fat.config.beansxml.RequestScopedBean;
-import io.openliberty.cdi40.internal.fat.config.beansxml.UnannotatedBean;
 
 @RunWith(FATRunner.class)
 public class BeansXMLTest {
-    public static final String SERVER_NAME = "CDI40Server";
+    public static final String SERVER_NAME = "cdi12EmptyBeansServer";
 
     public static final String EMPTY_BEANS_APP_NAME = "EmptyBeans";
     public static final String ANNOTATED_BEANS_APP_NAME = "AnnotatedBeans";
     public static final String ALL_BEANS_APP_NAME = "AllBeans";
 
+    @ClassRule //do not run using CDI-4.0
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
+
     @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = AllBeansServlet.class, contextRoot = ALL_BEANS_APP_NAME),
-                    @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = EMPTY_BEANS_APP_NAME),
+                    @TestServlet(servlet = AllBeansServlet.class, contextRoot = EMPTY_BEANS_APP_NAME),
                     @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = ANNOTATED_BEANS_APP_NAME)
     })
     public static LibertyServer server;
@@ -51,10 +57,10 @@ public class BeansXMLTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //AnnotatedBeansServlet expects not to find a UnannotatedBean bean
-        //an empty beans.xml means that UnannotatedBean should not be found
+        //AllBeansServlet expects to find a UnannotatedBean bean
+        //an empty beans.xml means that all classes are beans
         WebArchive emptyBeansXMLWar = ShrinkWrap.create(WebArchive.class, EMPTY_BEANS_APP_NAME + ".war")
-                                                .addClass(AnnotatedBeansServlet.class)
+                                                .addClass(AllBeansServlet.class)
                                                 .addClass(UnannotatedBean.class)
                                                 .addClass(RequestScopedBean.class);
         CDIArchiveHelper.addEmptyBeansXML(emptyBeansXMLWar);
@@ -65,7 +71,7 @@ public class BeansXMLTest {
                                                     .addClass(AnnotatedBeansServlet.class)
                                                     .addClass(UnannotatedBean.class)
                                                     .addClass(RequestScopedBean.class);
-        CDIArchiveHelper.addBeansXML(annotatedBeansXMLWar, DiscoveryMode.ANNOTATED, CDIVersion.CDI40);
+        CDIArchiveHelper.addBeansXML(annotatedBeansXMLWar, DiscoveryMode.ANNOTATED, CDIVersion.CDI11);
         ShrinkHelper.exportDropinAppToServer(server, annotatedBeansXMLWar, DeployOptions.SERVER_ONLY);
 
         //AllBeansServlet expects to find a UnannotatedBean bean
@@ -73,7 +79,7 @@ public class BeansXMLTest {
                                               .addClass(AllBeansServlet.class)
                                               .addClass(UnannotatedBean.class)
                                               .addClass(RequestScopedBean.class);
-        CDIArchiveHelper.addBeansXML(allBeansXMLWar, DiscoveryMode.ALL, CDIVersion.CDI40);
+        CDIArchiveHelper.addBeansXML(allBeansXMLWar, DiscoveryMode.ALL, CDIVersion.CDI11);
         ShrinkHelper.exportDropinAppToServer(server, allBeansXMLWar, DeployOptions.SERVER_ONLY);
 
         server.startServer();

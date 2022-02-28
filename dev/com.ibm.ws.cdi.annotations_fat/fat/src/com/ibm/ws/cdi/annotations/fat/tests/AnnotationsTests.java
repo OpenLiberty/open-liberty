@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi.annotations.fat.apps.defaultDecorator.DefaultDecoratorServlet;
 import com.ibm.ws.cdi.annotations.fat.apps.dependentScopedProducer.AppScopedMethodServlet;
 import com.ibm.ws.cdi.annotations.fat.apps.dependentScopedProducer.AppScopedSteryotypedServlet;
@@ -89,11 +90,11 @@ public class AnnotationsTests extends FATServletClient {
 
             JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
                                             .addPackage(ChainableListImpl.class.getPackage());
-            CDIArchiveHelper.addEmptyBeansXML(utilLib);
+            CDIArchiveHelper.addBeansXML(utilLib, DiscoveryMode.ALL);
 
             WebArchive globalPriorityWebApp = ShrinkWrap.create(WebArchive.class, GLOBAL_PRIORITY_APP_NAME + ".war")
                                                         .addPackage(GlobalPriorityTestServlet.class.getPackage());
-            CDIArchiveHelper.addEmptyBeansXML(globalPriorityWebApp);
+            CDIArchiveHelper.addBeansXML(globalPriorityWebApp, DiscoveryMode.ALL);
 
             EnterpriseArchive globalPriorityApp = ShrinkWrap.create(EnterpriseArchive.class, "globalPriorityApp.ear")
                                                             .addAsLibrary(globalPriorityLib)
@@ -103,7 +104,7 @@ public class AnnotationsTests extends FATServletClient {
             WebArchive withAnnotationsApp = ShrinkWrap.create(WebArchive.class, WITH_ANNOTATIONS_APP_NAME + ".war")
                                                       .addPackage(WithAnnotationsServlet.class.getPackage())
                                                       .addAsLibrary(utilLib);
-            CDIArchiveHelper.addEmptyBeansXML(withAnnotationsApp);
+            CDIArchiveHelper.addBeansXML(withAnnotationsApp, DiscoveryMode.ALL);
             CDIArchiveHelper.addCDIExtensionService(withAnnotationsApp, WithAnnotationsExtension.class);
 
             ShrinkHelper.exportDropinAppToServer(server, withAnnotationsApp, DeployOptions.SERVER_ONLY);

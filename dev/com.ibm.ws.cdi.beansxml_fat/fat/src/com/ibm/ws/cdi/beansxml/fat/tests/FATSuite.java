@@ -32,7 +32,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 EnablingBeansXmlValidationTestEE7.class,
                 MultipleBeansXmlTest.class,
                 WebBeansBeansXmlInWeldTest.class,
-                CDIConfigTest.class
+                CDIConfigTest.class,
+                BeansXMLTest.class
 })
 public class FATSuite {
 
