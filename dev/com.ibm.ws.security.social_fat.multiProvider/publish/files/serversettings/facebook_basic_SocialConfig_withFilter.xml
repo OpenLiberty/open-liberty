@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+<!-- Update client settings in bootstrap.properties if running tests with facebook -->
+
+	<authFilter id="authFilter_facebook">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_facebook"
+			matchType="contains" />
+	</authFilter>
+
+	<oauth2Login
+		id="facebookLogin_withFilter"
+		scope="email user_friends public_profile"
+		clientId="${facebook_clientId}"
+		clientSecret="${facebook_clientSecret}"
+		authorizationEndpoint="https://www.facebook.com/v2.8/dialog/oauth"
+		tokenEndpoint="https://graph.facebook.com/v2.8/oauth/access_token"
+		validationEndpoint="https://graph.facebook.com/v2.8/me"
+		userIdentifier="name"
+		tokenEndpointAuthMethod="client_secret_post"
+		userApi="https://graph.facebook.com/v2.8/me?fields=id,name,email,friends,friendlists"
+		authFilter="authFilter_facebook"
+	>
+	</oauth2Login>
+
+</server>
