@@ -14,6 +14,7 @@ import static com.ibm.ws.test.image.util.FileUtils.match;
 import static com.ibm.ws.test.image.util.FileUtils.normalize;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,17 @@ public class BuildProperties {
     // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
     // ../build.image/build/libs/distributions
 
+    public static final String IMAGES_PATH;
+    public static final String[] IMAGE_NAMES;
+
+    public static String getImagesPath() {
+        return IMAGES_PATH;
+    }
+
+    public static String[] getImageNames() {
+        return IMAGE_NAMES;
+    }
+
     // Running frm the command line:
     public static final String IMAGES_DEFAULT =
         "../../../../build.image/build/libs/distributions/";
@@ -79,67 +91,16 @@ public class BuildProperties {
     public static final String ALT_IMAGES_DEFAULT =
         "../build.image/build/libs/distributions";
     
-    public static final String IMAGES_PATH;
-    public static final String[] IMAGE_NAMES;
-
-    static {
-        String imagesPath = IMAGES_DEFAULT;
-        File imagesDir = new File(imagesPath);
-        imagesPath = normalize( imagesDir.getAbsolutePath() );
-
-        if ( !imagesDir.exists() ) {
-            log("Images directory [ " + imagesPath + " ] does not exist; trying alternate");
-            imagesPath = ALT_IMAGES_DEFAULT;            
-            imagesDir = new File(imagesPath);
-            imagesPath = normalize( imagesDir.getAbsolutePath() );
-            
-            if ( !imagesDir.exists() ) {
-                imagesDir = null;
-                log("Images directory [ " + imagesPath + " ] does not exist");
-            }            
-        }
-
-        if ( imagesDir != null ) {
-            if ( !imagesDir.isDirectory() ) {
-                imagesDir = null;
-                log("Images directory [ " + imagesPath + " ] is not a directory");
-            } else {
-                log("Images directory [ " + imagesPath + " ]");
-            }
-        }
-
-        String[] imageNames;
-        if ( imagesDir != null ) {
-            imageNames = imagesDir.list( BuildProperties::isImage );
-            if ( imageNames == null ) {
-                imageNames = new String[] {};
-                log("Image directory [ " + imagesPath + " ] could not be accessed");
-            } else if ( imageNames.length == 0 ) {
-                log("Image directory [ " + imagesPath + " ] is empty");
-            }
-        } else {
-            imageNames = new String[] {};
-        }
-
-        if ( File.separatorChar == '\\' ) {
-            normalize(imageNames);
-        }
-
-        log("Images:");
-        for ( String imageName : imageNames ) {
-            log("  [ " + imageName + " ]");
-        }
-
-        IMAGES_PATH = imagesPath;
-        IMAGE_NAMES = imageNames;
-    }
-
     public static boolean isImage(File parent, String name) {
         return ( name.endsWith(".jar") || name.endsWith(".zip") );
     }
 
-    public static String getImagesPath() {
-        return IMAGES_PATH;
+    static {
+        File imagesDir = validateDirectory("Images", IMAGES_DEFAULT, ALT_IMAGES_DEFAULT);
+        String[] imageNames = validateListing("Images", imagesDir, BuildProperties::isImage );
+        
+        IMAGES_PATH = ( (imagesDir == null) ? null : imagesDir.getPath() );
+        IMAGE_NAMES = imageNames;
     }
 
     public static List<String> getImageNames(String[] parts) {
@@ -192,5 +153,94 @@ public class BuildProperties {
 //
 //        GA_FEATURES_PATH_ABS = gaFeaturesAbsPath;
 //        GA_FEATURE_NAMES = gaFeatures;
-//    }    
+//    }
+    
+    // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
+    // ../build.image/build/libs/distributions
+
+    public static final String PROFILES_PATH;
+    public static final String[] PROFILE_NAMES;
+
+    public static String getProfilesPath() {
+        return PROFILES_PATH;
+    }
+
+    public static String[] getProfileNames() {
+        return PROFILE_NAMES;
+    }
+    
+    // Running from the command line:
+    public static final String PROFILES_DEFAULT =
+        "../../../../build.image/profiles";
+
+    // Running from eclipse:
+    public static final String ALT_PROFILES_DEFAULT =
+        "../build.image/profiles";
+    
+    public static boolean isProfile(File parent, String name) {
+        return true;
+    }
+    
+    static {
+        File profilesDir = validateDirectory("Profiles", PROFILES_DEFAULT, ALT_PROFILES_DEFAULT);
+        String[] profileNames = validateListing("Profiles", profilesDir, BuildProperties::isProfile);
+
+        PROFILES_PATH = ( (profilesDir == null) ? null : profilesDir.getPath() );
+        PROFILE_NAMES = profileNames;
+    }
+
+    //
+
+    protected static File validateDirectory(String tag, String path, String altPath) {
+        File dir = new File(path);
+        path = normalize( dir.getAbsolutePath() );
+
+        if ( !dir.exists() ) {
+            log(tag + " directory [ " + path + " ] does not exist; trying alternate");
+            path = ALT_IMAGES_DEFAULT;            
+            dir = new File(path);
+            path = normalize( dir.getAbsolutePath() );
+            
+            if ( !dir.exists() ) {
+                dir = null;
+                log(tag + " directory [ " + path + " ] does not exist");
+            }            
+        }
+
+        if ( dir != null ) {
+            if ( !dir.isDirectory() ) {
+                dir = null;
+                log(tag + " directory [ " + path + " ] is not a directory");
+            } else {
+                log(tag + " directory [ " + path + " ]");
+            }
+        }
+        
+        return dir;
+    }
+    
+    protected static String[] validateListing(String tag, File dir, FilenameFilter filter) {
+        if ( dir == null ) {
+            return new String[] {};
+        }
+
+        String[] names = dir.list(filter);
+        if ( names == null ) {
+            names = new String[] {};
+            log(tag + " directory [ " + dir.getPath() + " ] could not be accessed");
+        } else if ( names.length == 0 ) {
+            log(tag + " directory [ " + dir.getPath() + " ] is empty");
+        }
+
+        if ( File.separatorChar == '\\' ) {
+            normalize(names);
+        }
+
+        log(tag + ':');
+        for ( String name : names ) {
+            log("  [ " + name + " ]");
+        }
+
+        return names;
+    }
 }
