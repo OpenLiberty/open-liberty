@@ -169,9 +169,9 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - Approver adds label `focalApproved:performance`.
 - [ ] **Serviceability** Serviceability has been addressed or N/A. ([OpenLiberty/serviceability-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
   - Approver adds label `focalApproved:sve`.
-- [ ] **STE** STE chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
+- [ ] **STE** Skills Transfer Education chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
   - Approver adds label `focalApproved:ste`.
-- [ ] **SVT** SVT is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] **SVT** System Verification Test is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
   - Approver adds label `focalApproved:svt`.
 
 ### **Remove Beta Fencing** (Complete by Feature Complete Date)
