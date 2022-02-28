@@ -104,6 +104,7 @@ public class OAuthUtil {
      * @param length
      * @return
      */
+    @Sensitive
     public static String getRandom(int length) {
         StringBuffer result = new StringBuffer(length);
         final char[] chars = new char[] {
@@ -123,9 +124,6 @@ public class OAuthUtil {
         }
 
         String retVal = result.toString();
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getRandom("+length+") returns ["+retVal+"]");
-        }
         return retVal;
     }
 

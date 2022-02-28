@@ -41,11 +41,11 @@ public class OidcBaseClientDBModel {
 
     public OidcBaseClientDBModel(String componentId,
             String clientId,
-            String clientSecret,
+            @Sensitive String clientSecret,
             String displayName,
             String redirectUri,
             int enabled,
-            JsonObject clientMetadata) {
+            @Sensitive JsonObject clientMetadata) {
         this.componentId = componentId;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -86,6 +86,7 @@ public class OidcBaseClientDBModel {
     /**
      * @return the clientSecret
      */
+    @Sensitive
     public String getClientSecret() {
         return clientSecret;
     }
@@ -93,7 +94,7 @@ public class OidcBaseClientDBModel {
     /**
      * @param clientSecret the clientSecret to set
      */
-    public void setClientSecret(String clientSecret) {
+    public void setClientSecret(@Sensitive String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
