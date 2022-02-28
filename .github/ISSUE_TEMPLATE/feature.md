@@ -29,8 +29,8 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - [Design](#design)
 - [Implementation](#implementation)
 - [Legal and Translation](#legal-and-translation)
-- [Beta Delivery](#beta-delivery)
-- [GA Delivery](#ga-delivery)
+- [Beta](#beta)
+- [GA](#ga)
   - [Focal Point Approvals](#focal-point-approvals-complete-by-feature-complete-date)
 - [Other Deliverables](#other-deliverables)
 
@@ -47,14 +47,14 @@ Unless otherwise indicated, the tasks are the responsibility of the Feature Owne
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)
 
-Area leads are responsible for prioritizing the features and determining which features are being actively worked on.
+The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
 ### **Prioritization**
 - [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
   - Epics can be added to the board in one of two ways:
     - From this issue, use the "Projects" section to select the appropriate project board.
     - From the appropriate project board click "Add card" and select your Feature Epic issue
-- [ ] Priority assigned by Chief Architect.
+- [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,15 +78,15 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] POC Design / UFO review scheduled. (David Chang)
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
-- [ ] Design / UFO approved. ([Alasdair Nottingham](https://github.com/NottyCode) or N/A
-  - ([Alasdair Nottingham](https://github.com/NottyCode) adds label `Design Approved`
+- [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
+  - ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) adds label `Design Approved`
   - Add the public link to the UFO in Box to the [Documents](#documents) section.
 
 ### **No Design**
 - [ ] No Design requested.
--- Owner adds label `No Design Approval Request`
-- [ ] No Design / No UFO approved. ([Alasdair Nottingham](https://github.com/NottyCode) or N/A
--- Approver adds label `No Design Approved`
+  - Owner adds label `No Design Approval Request`
+- [ ] No Design / No UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
+  - Approver adds label `No Design Approved`
 
 ### **FAT Documentation**
 - [ ] "Feature Test Summary" child task created
@@ -96,52 +96,58 @@ Design preliminaries determine whether a formal design, which will be provided b
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Implementation**
 
-A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  GA code may not be delivered until this feature has obtained the "Design Approved" or "No Design Approved" label.
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlines in [GA](#ga) section.
 
 ### **Feature Development Begins**
 - [ ] Add the `In Progress` label
 
 ## **Legal and Translation**
 
-These steps are usually concurrent with implementation, and must be completed along with the primary implementation before either Beta delivery or GA delivery may be requested.
+These steps should be done concurrently with implementation, and must be completed before GA of this feature may be requested.  However, it is strongly recommended for legal approvals to be obtained as early as possible in the design/development process to avoid any last minute blockers.
 
-### **Legal** (Complete 1 week before Feature Complete Date)
+### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
 - [ ] Licenses and Certificates of Originality (COOs) are updated, or N/A
 
 ### **Translation** (Complete 1 week before Feature Complete Date)
 - [ ] PII updates are merged, or N/A. Note timing with translation shipments.
 
-## **Feature Complete**
-- [ ] Implementation completed.
-- [ ] Function acceptance tests (FATs) completed.
-- [ ] Backlog issues reviewed for Stop Ship issues.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
 
 In order to facilitate early feedback from users, all new features and functionality should first be released as part of a beta release.
 
-### **Beta Delivery**
+### **Beta Code**
 - [ ] Beta fence the functionality
   - `kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`
 - [ ] Beta development complete and feature ready for inclusion in a beta release
   - Add label `target:beta` and the appropriate `target:YY00X-beta` (where YY00X is the targeted beta version).
 - [ ] Feature delivered into beta
-  - Release Management ([Sam Wong](https://github.com/samwatibm)) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
+  - ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager)) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
 
 ### **Beta Blog** (Complete 1.5 weeks before beta eGA)
 - [ ] Beta blog issue created and populated using the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the beta blog issue in the [Documents](#documents) section.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## **GA Delivery**
+## **GA**
 
-GA delivery occurs after obtaining all necessary Focal Point Approvals. The trigger for obtaining focal point approvals is the addition of the `target:ga` label. 
+A feature is ready to GA after it is Feature Complete and has obtained all necessary Focal Point Approvals. 
+
+### **Feature Complete**
+- [ ] Feature implementation and tests completed.
+  - [ ] All PRs are merged.
+  - [ ] All epic and child issues are closed.
+  - [ ] All stop ship issues are completed.
+- [ ] Legal: all necessary aprovals granted.
+- [ ] Translation: All messages translated or sent for translation for upcoming release 
+- [ ] GA development complete and feature ready for inclusion in a GA release
+  - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
+  - Inclusion in a release requires the completion of all Focal Point Approvals.
 
 ### **Focal Point Approvals** (Complete by Feature Complete Date)
 
-These occur only after GA deliver is requested (by adding a `target:ga` label).  GA delivery may not occur until all approvals are obtained.
+These occur only after GA of this feature is requested (by adding a `target:ga` label).  GA of this feature may not occur until all approvals are obtained.
 
 ### **All Features**
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
@@ -172,29 +178,18 @@ These occur only after GA deliver is requested (by adding a `target:ga` label). 
 - [ ] Beta guards are removed, if necessary.
   - Only after all necessary Focal Point Approvals have been granted.
 
-### **GA Delivery** (Complete by Feature Complete Date)
-- [ ] GA development complete and feature ready for inclusion in a GA release
-  - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
-  - Inclusion in a release requires the completion of all Focal Point Approvals.
-
 ### **GA Blog** (Complete by Feature Complete Date)
 - [ ] GA Blog issue created and populated using the [Open Liberty GA release blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the GA Blog issue in the [Documents](#documents) section.
 
-### **Ready for GA** (Complete 1.5 weeks before eGA)
-- [ ] All PRs are merged.
-- [ ] All epic and child issues are closed.
-- [ ] All stop ship issues are completed.
-- [ ] All items in this template are completed.
-
 ### **Post GA**
-- [ ] Replace `target:YY00X` label with the appropriate `release:YY00X`. ([Sam Wong](https://github.com/samwatibm))
+- [ ] Replace `target:YY00X` label with the appropriate `release:YY00X`. ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager))
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Other Deliverables**
 
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
-- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([Michal Broz](https://github.com/mbroz2))
+- [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
   - This should be strongly considered especially for larger or more promintent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **WDT** Liberty Developer Tools work is complete or N/A. (Leonard Theivendra)
