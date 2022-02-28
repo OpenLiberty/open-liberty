@@ -24,7 +24,8 @@ WS-TraceGroup: concurrent
 
 Private-Package: \
   io.openliberty.concurrent.internal.context,\
-  io.openliberty.concurrent.internal.processor
+  io.openliberty.concurrent.internal.processor,\
+  io.openliberty.concurrent.internal.resources
 
 -dsannotations: \
   io.openliberty.concurrent.internal.context.ThirdPartyContextCoordinator,\

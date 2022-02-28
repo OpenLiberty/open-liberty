@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, which is defined by application {1}, did not become available in a timely manner.
+CWWKC1200.resource.unavailable.explanation=There might be too much load on the system to process resource definition annotations and deployment descriptor entries before the application attempts to use them.
+CWWKC1200.resource.unavailable.useraction=View the logs to identify if an error occurred. Otherwise, reduce the load on the system.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, which is defined by application {1}, requires a ContextService {2} but the ContextService is inaccessible or did not become available in a timely manner.
+CWWKC1201.contextsvc.inaccessible.explanation=A resource definition annotation or a resource definition in a deployment descriptor of the application specifies an incorrect JNDI name at which to find a ContextService, or the ContextService is defined in a scope which is not accessible to the resource, or the system is under too much load to register the ContextService in a timely manner.
+CWWKC1201.contextsvc.inaccessible.useraction=Correct the application to refer to the JNDI name of ContextService that is accessible. Reduce the load on the system if the JNDI name is already correct.

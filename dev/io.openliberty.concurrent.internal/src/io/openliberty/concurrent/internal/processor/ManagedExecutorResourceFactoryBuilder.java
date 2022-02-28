@@ -156,7 +156,8 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         execSvcProps.put("ConcurrencyPolicy.target", FilterUtils.createPropertyFilter(ID, concurrencyPolicyId));
         execSvcProps.put("ConcurrencyPolicy.cardinality.minimum", 1);
 
-        execSvcProps.put("ContextService.target", FilterUtils.createPropertyFilter(ID, contextServiceId));
+        String contextSvcFilter = FilterUtils.createPropertyFilter(ID, contextServiceId);
+        execSvcProps.put("ContextService.target", contextSvcFilter);
         execSvcProps.put("ContextService.cardinality.minimum", 1);
 
         // When unspecified, long running task run on the same concurrency policy as other tasks
@@ -169,12 +170,16 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         managedExecutorSvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedExecutorServiceID));
         managedExecutorSvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl)(jndiName=*))");
 
-        // TODO errors for invalid config such as max=0 or -20
         concurrencyPolicyProps.put(ID, concurrencyPolicyId);
         concurrencyPolicyProps.put(CONFIG_DISPLAY_ID, concurrencyPolicyId);
         concurrencyPolicyProps.put("expedite", 0);
-        if (maxAsync != null && maxAsync > 0)
-            concurrencyPolicyProps.put("max", maxAsync);
+
+        if (maxAsync != null)
+            if (maxAsync > 0)
+                concurrencyPolicyProps.put("max", maxAsync);
+            else if (maxAsync != -1) // unbounded
+                throw new IllegalArgumentException(jndiName + " maxAsync=" + maxAsync);
+
         concurrencyPolicyProps.put("maxPolicy", "loose");
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
@@ -182,7 +187,9 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
         BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, managedExecutorServiceID, managedExecutorSvcFilter.toString(), declaringApplication);
+        ResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
+                        managedExecutorServiceID, jndiName, managedExecutorSvcFilter.toString(), //
+                        contextSvcJndiName, contextSvcFilter);
         try {
             String concurrencyBundleLocation = concurrencyBundleCtx.getBundle().getLocation();
             String concurrencyPolicyBundleLocation = concurrencyPolicyBundleCtx.getBundle().getLocation();

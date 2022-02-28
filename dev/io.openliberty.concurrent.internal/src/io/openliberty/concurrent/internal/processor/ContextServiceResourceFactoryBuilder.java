@@ -324,7 +324,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         contextServiceFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, contextServiceID));
         contextServiceFilter.append("(component.name=com.ibm.ws.context.service)(jndiName=*))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, contextServiceID, contextServiceFilter.toString(), declaringApplication);
+        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
+                        contextServiceID, jndiName, contextServiceFilter.toString(), //
+                        null, null);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();

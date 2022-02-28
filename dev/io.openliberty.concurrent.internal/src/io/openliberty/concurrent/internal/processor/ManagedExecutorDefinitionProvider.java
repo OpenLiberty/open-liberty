@@ -20,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedExecutor;
-import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionProcessor;
@@ -33,8 +32,6 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
  */
 @Component(service = InjectionProcessorProvider.class)
 public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvider<ManagedExecutorDefinition, ManagedExecutorDefinition.List> {
-
-    static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedExecutor.class);
