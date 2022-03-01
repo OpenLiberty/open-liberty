@@ -32,12 +32,15 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.cdi40.internal.fat.config.beansxml.AllBeansServlet;
 import io.openliberty.cdi40.internal.fat.config.beansxml.RequestScopedBean;
 import io.openliberty.cdi40.internal.fat.config.beansxml.UnannotatedBean;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class LegacyConfigTest {
     public static final String SERVER_NAME = "CDI40Server";
 

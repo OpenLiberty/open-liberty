@@ -8,5 +8,4 @@
     </featureManager>
     <include location="../fatTestPorts.xml"/>
 
-    <logging traceSpecification="com.ibm.ws.cdi.config.*=ALL:com.ibm.ws.cdi.internal.config.*=ALL"></logging>
 </server>

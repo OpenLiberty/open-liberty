@@ -9,6 +9,4 @@
     <feature>servlet-3.1</feature>
 	</featureManager>
 
-<logging traceSpecification="com.ibm.ws.cdi.config.*=ALL:com.ibm.ws.cdi.internal.config.*=ALL"></logging>
-
 </server>

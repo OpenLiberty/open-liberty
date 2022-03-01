@@ -28,11 +28,14 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class CDIConfigTest {
     public static final String SERVER_NAME = "cdi12ConfigServer";
 
@@ -95,7 +98,7 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The attribute cdiEmptyBeansXMLExplicitArchive of element type cdi is only supported on CDI 4.0 and newer. The attribute will be ignored.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The attribute emptyBeansXMLExplicitArchive of the element type cdi is only supported on CDI 4.0 or newer. This attribute will be ignored.");
             assertTrue("Message CWOWB1016W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1016W was found more than once", 1, warningMessages.size());
         } finally {
@@ -121,12 +124,37 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. Using the value from the cdi element. Removing the cdi12 element is recommended.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. The value from the cdi element will be used and the value in the cdi12 element will be ignored.");
             assertTrue("Message CWOWB1017W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1017W was found more than once", 1, warningMessages.size());
         } finally {
             if (server.isStarted()) {
                 server.stopServer("CWOWB1009W", "CWOWB1015W", "CWOWB1017W");
+            }
+        }
+    }
+
+    @Test
+    public void testEnableImplicitBeanArchivesNoWarning() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        ConfigElementList<Cdi12> cdi12s = config.getCdi12();
+        Cdi12 cdi12 = new Cdi12();
+        cdi12.setEnableImplicitBeanArchives(true);
+        cdi12s.add(cdi12);
+
+        ConfigElementList<Cdi> cdis = config.getCdi();
+        Cdi cdi = new Cdi();
+        cdi.setEnableImplicitBeanArchives(true); // both versions of the attribute are set the same so should be no warning
+        cdis.add(cdi);
+
+        server.updateServerConfiguration(config);
+        try {
+            server.startServer();
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. The value from the cdi element will be used and the value in the cdi12 element will be ignored.");
+            assertTrue("Message CWOWB1017W was found when it should not have been", warningMessages.size() == 0);
+        } finally {
+            if (server.isStarted()) {
+                server.stopServer("CWOWB1009W", "CWOWB1015W");
             }
         }
     }

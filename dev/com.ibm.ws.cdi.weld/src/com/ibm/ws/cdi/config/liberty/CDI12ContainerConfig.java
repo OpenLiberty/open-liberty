@@ -28,48 +28,6 @@ import com.ibm.ws.cdi.internal.config.AggregatedConfiguration;
 @Component(name = "com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig", service = CDI12ContainerConfig.class, configurationPid = "com.ibm.ws.cdi12.cdiContainer", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
 public class CDI12ContainerConfig {
 
-    /*-
-     * This example demonstrates how to add a new property.
-     *
-     * Steps:
-     *   1) Create a public getter method that returns a primitive type:
-     *
-     *      public boolean getBeAwesome() {
-     *          return (Boolean) this.properties.get("beAwesome");
-     *      }
-     *
-     *   2) Add an attribute definition to metatype.xml with a default value:
-     *
-     *      <AD id="beAwesome"
-     *          name="%beAwesome"
-     *          description="%beAwesome.desc"
-     *          required="false" type="Boolean" default="true" />
-     *
-     *   3) Add documentation to metatype.properties for the new property.
-     *      These properties are used by the InfoCenter and Eclipse tooling.
-     *      See the wiki on "Metatype Authoring Guidelines" for rules:
-     *
-     *      beAwesome=Be awesome
-     *      beAwesome.desc=Disable this property if you want the CDI Container to be average.
-     *
-     *   4) Add a FAT that verifies the behavior of the new property with
-     *      various values. Here's an example of setting the property in server.xml:
-     *
-     *      <cdiContainer beAwesome="true"/>
-     *
-     *
-     * How this process simplifies property maintenance:
-     *   1) this.properties is never null, so you never need to check for null
-     *   2) if we provide getter methods for each property we support,
-     *      then the property names only need to be defined in two places:
-     *      this class and metatype.xml.
-     *   3) if metatype.xml defines default values for each property we support,
-     *      then DS will always give us non-null values with appropriate type.
-     *      As a result, we can always safely cast without additional checks.
-     *   4) if our getter methods return primitive types, then the caller
-     *      won't need to check for null either.
-     */
-
     private static final TraceComponent tc = Tr.register(CDI12ContainerConfig.class);
 
     private Boolean enableImplicitBeanArchives = null;
@@ -88,7 +46,7 @@ public class CDI12ContainerConfig {
             Tr.debug(tc, "Activating " + this);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-            //CWOWB1012W: The configuration element type cdi12 has been superceded by the element type cdi.
+            //CWOWB1015W: The configuration element type cdi12 has been superceded by the element type cdi.
             Tr.warning(tc, "cdi12.element.type.superceded.CWOWB1015W");
         }
         this.updateConfiguration(properties);

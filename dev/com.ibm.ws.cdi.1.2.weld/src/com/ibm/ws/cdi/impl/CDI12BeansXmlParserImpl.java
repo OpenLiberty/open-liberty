@@ -21,7 +21,9 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 /**
  *
  */
-@Component(name = "com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl", service = { BeansXmlParser.class }, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl",
+                service = { BeansXmlParser.class },
+                property = { "service.vendor=IBM" })
 public class CDI12BeansXmlParserImpl implements BeansXmlParser {
 
     /** {@inheritDoc} */

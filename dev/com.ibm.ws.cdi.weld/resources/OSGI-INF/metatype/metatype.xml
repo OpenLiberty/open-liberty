@@ -51,7 +51,8 @@
             required="false" type="Boolean" />
                               
         <!--  emptyBeansXMLExplicitArchive will cause an archive with an empty beans.xml to be considered an explicit bean archive. -->
-        <!--  defaults to false but this is now done in code rather than configuration -->
+        <!--  defaults to false but this is done in code rather than configuration -->
+        <!--  only applies to cdi-4.0 and newer -->
         <!--  <AD name="%cdi.emptyBeansXMLExplicitArchive.name"
             description="%cdi.emptyBeansXMLExplicitArchive.desc" -->
         <AD name="internal"

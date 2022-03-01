@@ -64,9 +64,10 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
             //if enableImplicitBeanArchives was set on the cdi element, use that value
             this.enableImplicitBeanArchives = this.cdiEnableImplicitBeanArchives;
 
-            //if it was also set on the cdi12 element, output a warning
-            if (this.cdi12EnableImplicitBeanArchives != null) {
-                if (tc.isWarningEnabled() && !this.enableImplicitBeanArchives) {
+            //if it was also set to a different value on the cdi12 element, output a warning
+            if (this.cdi12EnableImplicitBeanArchives != null &&
+                this.cdiEnableImplicitBeanArchives != this.cdi12EnableImplicitBeanArchives) {
+                if (tc.isWarningEnabled()) {
                     Tr.warning(tc, "enableImplicitBeanArchives.conflict.CWOWB1017W");
                 }
             }
@@ -82,7 +83,7 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
             Tr.warning(tc, "implicit.bean.scanning.disabled.CWOWB1009W");
         }
 
-        //if emptyBeansXMLExplicitArchive was explicitly set to true in server.xml then use that value, otherwise use the default (false)
+        //if emptyBeansXMLExplicitArchive was explicitly set in server.xml then use that value, otherwise use the default (false)
         if (this.cdiEmptyBeansXMLExplicitArchive != null) {
             this.emptyBeansXMLExplicitArchive = this.cdiEmptyBeansXMLExplicitArchive;
         } else {

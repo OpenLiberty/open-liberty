@@ -112,10 +112,10 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     private final AtomicServiceReference<DeferredMetaDataFactory> deferredMetaDataFactoryRef = new AtomicServiceReference<DeferredMetaDataFactory>("cdiDeferredMetaDataFactoryImpl");
 
-    @Reference(name = "beansXmlParser", service = BeansXmlParser.class)
+    @Reference
     private BeansXmlParser beansXmlParser;
 
-    @Reference(name = "cdiContainerConfig", service = CDIConfiguration.class)
+    @Reference
     private CDIConfiguration cdiContainerConfig;
 
     @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -548,7 +548,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     /** {@inheritDoc} */
     @Override
     public boolean isImplicitBeanArchivesScanningDisabled(CDIArchive archive) {
-        //TODO check this per archive rather than for the whole server
         return this.cdiContainerConfig.isImplicitBeanArchivesScanningDisabled();
     }
 

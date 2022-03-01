@@ -20,7 +20,9 @@ import com.ibm.ws.cdi.internal.config.CDIConfiguration;
 /**
  * DS for custom CDI 1.2 properties.
  */
-@Component(name = "com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl", service = { CDIConfiguration.class,
-                                                                                      AggregatedConfiguration.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
-public class CDI12AggregatedConfigurationImpl extends CDI12AggregatedConfiguration {
-}
+@Component(name = "com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl",
+                service = { CDIConfiguration.class, AggregatedConfiguration.class },
+                configurationPolicy = ConfigurationPolicy.IGNORE,
+                immediate = true,
+                property = { "service.vendor=IBM" })
+public class CDI12AggregatedConfigurationImpl extends CDI12AggregatedConfiguration {}
