@@ -15,6 +15,7 @@ import static com.ibm.ws.test.image.util.FileUtils.normalize;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,43 +65,69 @@ public class BuildProperties {
     
     //
     
-    // public static final String IMAGES_PROPERTY_NAME = "image.output.upload.dir";
-    // public static final String IMAGES_DEFAULT =
-    //     "../build.image/output/upload/externals/installables";
-    // String useImagesPath = System.getProperty(IMAGES_PROPERTY_NAME, IMAGES_DEFAULT);
+    //
+    
+    // basedir C:\dev\repos-pub\o-l\dev\openliberty.build.image_fat\build\libs\autoFVT
+    // dir.build   C:\dev\repos-pub\o-l\dev\openliberty.build.image_fat\build\libs\autoFVT\build
+    // liberty.location    ../../../../build.image/wlp
 
-    // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
-    // ../build.image/build/libs/distributions
+    public static final String BASE_PROPERTY_NAME = "basedir";
+    public static final String BASE_DEFAULT = ".";
+    public static final String BASE_PATH;
+    public static final File BASE_DIR;
+
+    public static final String BUILD_PROPERTY_NAME = "dir.build";
+    public static final String BUILD_DEFAULT = "./build";
+    public static final String BUILD_PATH;
+    public static final File BUILD_DIR;
+
+    public static final String LIBERTY_PROPERTY_NAME = "liberty.location";
+    public static final String LIBERTY_DEFAULT = "../../../../build.image/wlp";
+    public static final String LIBERTY_PATH;
+    public static final File LIBERTY_DIR;
+
+    // Relative to 'LIBERTY_PATH'    
+    public static final String IMAGES_RELATIVE_PATH = "../build/libs/distributions/";
 
     public static final String IMAGES_PATH;
+    public static final File IMAGES_DIR;
+
     public static final String[] IMAGE_NAMES;
 
-    public static String getImagesPath() {
-        return IMAGES_PATH;
+    protected static String getNormalPath(String tag, String path) {
+        File file = new File(path);
+        try {
+            path = file.getCanonicalPath();
+        } catch ( IOException e ) {
+            log("Failed to obtain [ " + tag + " ] canonical path [ " + path + " ]");
+        }
+        path = normalize(path);
+        log("[ " + tag + " ] directory [ " + path + " ]");
+        return path;
     }
-
-    public static String[] getImageNames() {
-        return IMAGE_NAMES;
-    }
-
-    // Running frm the command line:
-    public static final String IMAGES_DEFAULT =
-        "../../../../build.image/build/libs/distributions/";
-
-    // Running from eclipse:
-    public static final String ALT_IMAGES_DEFAULT =
-        "../build.image/build/libs/distributions";
     
+    static {
+        String basePath = System.getProperty(BASE_PROPERTY_NAME, BASE_DEFAULT);
+        BASE_PATH = getNormalPath("Base", basePath);
+        BASE_DIR = new File(BASE_PATH);
+
+        String buildPath = System.getProperty(BUILD_PROPERTY_NAME, BUILD_DEFAULT);
+        BUILD_PATH = getNormalPath("Build", buildPath);
+        BUILD_DIR = new File(BUILD_PATH);
+
+        String libertyPath = System.getProperty(LIBERTY_PROPERTY_NAME, LIBERTY_DEFAULT);
+        LIBERTY_PATH = getNormalPath("Liberty", libertyPath);
+        LIBERTY_DIR = new File(LIBERTY_PATH);
+
+        String imagesPath = LIBERTY_PATH + '/' + IMAGES_RELATIVE_PATH;
+        IMAGES_PATH = getNormalPath("Images", imagesPath);
+        IMAGES_DIR = new File(IMAGES_PATH);
+
+        IMAGE_NAMES = validateListing("Images", IMAGES_DIR, BuildProperties::isImage);
+    }
+
     public static boolean isImage(File parent, String name) {
         return ( name.endsWith(".jar") || name.endsWith(".zip") );
-    }
-
-    static {
-        File imagesDir = validateDirectory("Images", IMAGES_DEFAULT, ALT_IMAGES_DEFAULT);
-        String[] imageNames = validateListing("Images", imagesDir, BuildProperties::isImage );
-        
-        IMAGES_PATH = ( (imagesDir == null) ? null : imagesDir.getPath() );
-        IMAGE_NAMES = imageNames;
     }
 
     public static List<String> getImageNames(String[] parts) {
@@ -158,7 +185,12 @@ public class BuildProperties {
     // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
     // ../build.image/build/libs/distributions
 
+    // Relative to 'LIBERTY_PATH'    
+    public static final String PROFILES_RELATIVE_PATH = "../build/libs/distributions/";
+
     public static final String PROFILES_PATH;
+    public static final File PROFILES_DIR;
+
     public static final String[] PROFILE_NAMES;
 
     public static String getProfilesPath() {
@@ -169,24 +201,16 @@ public class BuildProperties {
         return PROFILE_NAMES;
     }
     
-    // Running from the command line:
-    public static final String PROFILES_DEFAULT =
-        "../../../../build.image/profiles";
-
-    // Running from eclipse:
-    public static final String ALT_PROFILES_DEFAULT =
-        "../build.image/profiles";
-    
     public static boolean isProfile(File parent, String name) {
         return true;
     }
     
     static {
-        File profilesDir = validateDirectory("Profiles", PROFILES_DEFAULT, ALT_PROFILES_DEFAULT);
-        String[] profileNames = validateListing("Profiles", profilesDir, BuildProperties::isProfile);
-
-        PROFILES_PATH = ( (profilesDir == null) ? null : profilesDir.getPath() );
-        PROFILE_NAMES = profileNames;
+        String profilesPath = LIBERTY_PATH + '/' + PROFILES_RELATIVE_PATH;
+        PROFILES_PATH = getNormalPath("Profiles", profilesPath);
+        PROFILES_DIR = new File(PROFILES_PATH);
+        
+        PROFILE_NAMES = validateListing("Profiles", PROFILES_DIR, BuildProperties::isProfile);
     }
 
     //
@@ -197,7 +221,7 @@ public class BuildProperties {
 
         if ( !dir.exists() ) {
             log(tag + " directory [ " + path + " ] does not exist; trying alternate");
-            path = ALT_IMAGES_DEFAULT;            
+            path = altPath;
             dir = new File(path);
             path = normalize( dir.getAbsolutePath() );
             
@@ -218,29 +242,47 @@ public class BuildProperties {
         
         return dir;
     }
-    
+
     protected static String[] validateListing(String tag, File dir, FilenameFilter filter) {
-        if ( dir == null ) {
-            return new String[] {};
+        String path = dir.getPath();
+
+        String[] names;
+        String message;
+
+        if ( !dir.exists() ) {
+            names = null;
+            message = "does not exist";
+        } else if ( !dir.isDirectory() ) {
+            names = null;
+            message = "is not a directory";
+
+        } else {
+            names = dir.list(filter);
+
+            if ( names == null ) {
+                message = "could not be accessed";
+            } else if ( names.length == 0 ) {
+                message = "is empty";
+
+            } else {
+                message = null;
+
+                if ( File.separatorChar == '\\' ) {
+                    normalize(names);
+                }
+
+                log("[ " + tag + " ]:");
+                for ( String name : names ) {
+                    log("  [ " + name + " ]");
+                }
+            }
         }
 
-        String[] names = dir.list(filter);
+        log("[ " + tag + " ] directory [ " + path + " ] " + message);
+
         if ( names == null ) {
             names = new String[] {};
-            log(tag + " directory [ " + dir.getPath() + " ] could not be accessed");
-        } else if ( names.length == 0 ) {
-            log(tag + " directory [ " + dir.getPath() + " ] is empty");
         }
-
-        if ( File.separatorChar == '\\' ) {
-            normalize(names);
-        }
-
-        log(tag + ':');
-        for ( String name : names ) {
-            log("  [ " + name + " ]");
-        }
-
         return names;
     }
 }
