@@ -34,7 +34,7 @@ public class FailoverTest extends TxFATServletClient {
         if (!sb.toString().contains(SUCCESS)) {
             server.resetLogMarks();
             List<String> probableFailure = server.findStringsInLogs("WTRN0107W: Caught SQLException when opening SQL RecoveryLog");
-            if (probableFailure != null) {
+            if (probableFailure != null && !probableFailure.isEmpty()) {
                 fail(probableFailure.get(0));
             } else {
                 fail(method + " did not return " + SUCCESS + ". Returned: " + sb.toString());
