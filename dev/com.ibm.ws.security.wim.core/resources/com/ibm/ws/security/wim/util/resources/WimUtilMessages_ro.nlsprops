@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Opera\u0163ia de \u00eenreg
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Tipul de entitate trebuie deifnit cu un nume de tip de entitate \u015fi cel pu\u0163in o proprietate RDN (Nume distinctiv relativ) corespunz\u0103toare.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modifica\u0163i \u015fi corecta\u0163i defini\u0163ia tipului de entitate din fi\u015fierul server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Defini\u0163ia intr\u0103rii de baz\u0103 {0} nu este valid\u0103.  Corecta\u0163i defini\u0163ia intr\u0103rii de baz\u0103 din fi\u015fierul server.xml. De exemplu, sintaxa este <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= Defini\u0163ia specificat\u0103 a intr\u0103rii de baz\u0103 este incorect\u0103. Sintaxa pentru definirea unei intr\u0103ri de baz\u0103 este <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Modifica\u0163i \u015fi corecta\u0163i defini\u0163ia intr\u0103rii de baz\u0103 din fi\u015fierul server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Opera\u021bia de \u00eenregistrare a utilizatorului nu a putut fi finalizat\u0103. Defini\u021bia de intrare de baz\u0103 {0} nu este valid\u0103.  Corecta\u021bi defini\u021bia de intrare de baz\u0103 \u00een fi\u0219ierul server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Defini\u021bia de intrare de baz\u0103 specificat\u0103 nu este valid\u0103.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Specifica\u021bi o defini\u021bie de intrare de baz\u0103 valid\u0103 \u00een fi\u0219ierul server.xml.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: Opera\u0163ia de \u00eenregistrare utilizator nu poate fi finalizat\u0103. Defini\u0163ia regiunii {0} nu este valid\u0103. Corecta\u0163i defini\u0163ia regiunii din fi\u015fierul server.xml.
 INVALID_REALM_DEFINITION.explanation= Tagul regiunii lipse\u015fte sau este invalid din cauza unui atribut necesar lips\u0103.
@@ -220,9 +220,9 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Configura\u0163ie repo
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Nu exist\u0103 nicio configura\u0163ie de grup de magazii \u00eencruci\u015fate definit\u0103 pentru magazie.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Consulta\u0163i fi\u015fierul jurnal pentru motivul e\u015fu\u0103rii. Verifica\u0163i configura\u0163ia magaziei dumneavoastr\u0103.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Tipul de entitate {0} specificat nu este un tip de entitate valid pentru aceast\u0103 opera\u0163ie.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Tipul de entitate specificat, {0}, nu este valid pentru aceast\u0103 opera\u021bie.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=A fost cerut\u0103 o opera\u0163ie pe o entitate, dar opera\u0163ia nu suport\u0103 tipul de entitate specificat.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 entit\u0103\u0163ile furnizate \u00een intrare sunt de tipuri de entitate suportate, \u015fi \u00eenl\u0103tura\u0163i orice tipuri de entitate nesuportate din intrare.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Asigura\u021bi-v\u0103 c\u0103 entit\u0103\u021bile furnizate \u00een intrare au tipuri de entitate acceptate \u0219i \u00eenl\u0103tura\u021bi din intrare orice tip de entitate nesuportat.
 
 CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: Proprietate {0} RDN pentru tipul de entitate {1} a fost furnizat\u0103 \u00een intrare. Numele unic nu poate fi creat \u00een magazia subiacent\u0103 deoarece informa\u0163iile RDN specificate \u00een intrare sunt ambigue.
 CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=C\u00e2nd crea\u0163i o entitate, RDN-ul (relative distinguished name) trebuie s\u0103 fie bine format \u015fi s\u0103 con\u0163in\u0103 propriet\u0103\u0163i care nu sunt ambigue. De exemplu, tipul de entitate OrgContainer poate reprezenta fie o organiza\u0163ie (care utilizeaz\u0103 proprietatea RDN 'o'), fie o unitate organiza\u0163ional\u0103 (care utilizeaz\u0103 proprietatea RDN 'ou') dintr-o magazie subiacent\u0103. Dac\u0103 sunt specificate ambele 'o' \u015fi 'ou' \u00een RDN pentru obiectul de date de intrare pentru noua entitate, nu poate fi creat un nume unic pentru noua entitate.
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: Opera\u0163ia de registru de utilizatori nu a p
 ENTITY_SEARCH_FAILED.explanation=Entitatea nu poate fi c\u0103utat\u0103 din cauza motivului specificat de registrul subiacent.
 ENTITY_SEARCH_FAILED.useraction=Examina\u0163i mesajul de motiv \u015fi fi\u015fierul de urm\u0103rire pentru a determina cauza defectului. Corecta\u0163i eroarea \u015fi \u00eencerca\u0163i din nou.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Opera\u0163ia de logare nu a putut fi finalizat\u0103 pentru c\u0103 parola fie lipse\u015fte fie este goal\u0103.
-MISSING_OR_EMPTY_PASSWORD.explanation=Dac\u0103 numele principal este specificat \u00een timpul procesului de logare, atunci parola nu poate fi nul\u0103 sau goal\u0103.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Opera\u021bia de logare nu a putut fi finalizat\u0103, deoarece parola fie lipse\u0219te, fie este goal\u0103.
+MISSING_OR_EMPTY_PASSWORD.explanation=Dac\u0103 este specificat numele de principal \u00een timpul log\u0103rii, parola nu poate fi nul\u0103 sau goal\u0103.
 MISSING_OR_EMPTY_PASSWORD.useraction=Specifica\u0163i parola.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: Opera\u0163ia de logare nu a putut fi finalizat\u0103 pentru c\u0103 a e\u015fuat generarea certificatului.

@@ -50,6 +50,7 @@
               <properties.derby.embedded createDatabase="create" databaseName="memory:BATCHDB2" password="pass" user="user"/>
         </dataSource> 
         
+        <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
         <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
         
 </server>

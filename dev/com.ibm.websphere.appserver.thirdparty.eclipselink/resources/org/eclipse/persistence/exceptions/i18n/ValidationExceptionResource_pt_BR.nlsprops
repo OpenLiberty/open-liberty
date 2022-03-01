@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -152,13 +153,13 @@
 
 7093=Na consulta denominada [{0}], a classe [{2}] para o argumento de consulta denominado [{1}] n\u00e3o pode ser localizada. Inclua a classe ausente em seu caminho de classe.
 
-7095=O recurso sessions.xml [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o SessionManager.getSession est\u00e3o corretos.  O sessions.xml deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o sessions.xml for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+7095=O recurso sessions.xml [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o SessionManager.getSession est\u00e3o corretos.  O sessions.xml deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o sessions.xml for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\\" seja usado.
 
 7096=N\u00e3o \u00e9 poss\u00edvel usar o m\u00e9todo commit() para confirmar UnitOfWork novamente.
 
 7097=Opera\u00e7\u00e3o n\u00e3o suportada: [{0}].
 
-7099=O recurso XML do projeto de implementa\u00e7\u00e3o [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o XMLProjectReader est\u00e3o corretos.  O XML do projeto deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o XML do projeto for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+7099=O recurso XML do projeto de implementa\u00e7\u00e3o [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o XMLProjectReader est\u00e3o corretos.  O XML do projeto deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o XML do projeto for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\\" seja usado.
 
 7100=N\u00e3o foi poss\u00edvel localizar a sess\u00e3o com o nome [{0}] no arquivo session.xml [{1}]
 
@@ -606,7 +607,7 @@
 
 7342=O valor booleano especificado [{0}] para a configura\u00e7\u00e3o permitir consultas SQL nativo \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
 
-7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. A entidade [{1}] usa [{0}] e a entity [{3]} usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
+7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados.Entidade [{1}] usa [{0}] e Entidade [{3}] usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
 
 7344=VPD (conex\u00f5es e gera\u00e7\u00e3o de DDL) n\u00e3o \u00e9 suportado para a plataforma: [{0}].
 

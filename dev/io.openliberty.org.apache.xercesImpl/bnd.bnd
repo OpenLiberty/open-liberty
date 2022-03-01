@@ -8,9 +8,27 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;xerces:xercesImpl;2.12.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=2
+
+Bundle-SymbolicName: io.openliberty.org.apache.xercesImpl
+
+Implementation-Version: 2.12.2
+
+Export-Package: \
+  org.apache.html.dom;version=${Implementation-Version}, \
+  org.apache.wml;version=${Implementation-Version}, \
+  org.apache.wml.dom;version=${Implementation-Version}, \
+  org.apache.xerces.*;version=${Implementation-Version}, \
+  org.apache.xml.serialize;version=${Implementation-Version}
+
+Private-Package: \
+  org.w3c.dom.html
 
 -includeresource: \
-   @${repo;xerces:xercesImpl;2.12.1;EXACT}!/!META-INF/maven/*
+   @${repo;xerces:xercesImpl;${Implementation-Version};EXACT}!/!META-INF/maven/*
 
--buildpath: xerces:xercesImpl;version=2.12.1
+-buildpath: xerces:xercesImpl;version=${Implementation-Version}
+
+test.project: true

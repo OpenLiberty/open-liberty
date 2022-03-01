@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,10 +76,7 @@ error.archiveTarget=CWWKE0011E: El par\u00e1metro --archive necesita un argument
 error.archiveTarget.explanation=No se ha proporcionado un argumento necesario.
 error.archiveTarget.useraction=Proporcione el argumento correcto y vuelva a intentar el mandato. Intente utilizar --help para obtener una descripci\u00f3n de los argumentos para la opci\u00f3n proporcionada.
 
-error.serverNameCharacter=CWWKE0012E: El nombre de servidor especificado contiene un car\u00e1cter que no es v\u00e1lido (nombre={0}). \
-Los caracteres v\u00e1lidos son: alfanum\u00e9ricos Unicode (por ejemplo, \
-0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.). \
-Un nombre de servidor no puede empezar por un gui\u00f3n (-) o un punto (.).
+error.serverNameCharacter=CWWKE0012E: El nombre de servidor especificado contiene un car\u00e1cter que no es v\u00e1lido (nombre={0}). Los caracteres v\u00e1lidos son: alfanum\u00e9ricos Unicode (por ejemplo, 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.). Un nombre de servidor no puede empezar por un gui\u00f3n (-) o un punto (.).
 error.serverNameCharacter.explanation=Un car\u00e1cter que no es v\u00e1lido se ha utilizado en el nombre de servidor.
 error.serverNameCharacter.useraction=Cambie el nombre del servidor utilizando s\u00f3lo caracteres v\u00e1lidos: alfanum\u00e9ricos Unicode (por ejemplo, 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.).
 
@@ -125,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: La definici\u00f3n de kernel especificada ({0}) 
 error.kernelDefFile.explanation=No se ha podido encontrar la definici\u00f3n de kernel especificada.
 error.kernelDefFile.useraction=Aseg\u00farese de que el recurso de definici\u00f3n de kernel existe y de que el usuario actual puede leerlo.
 
-error.specifiedLocation=CWWKE0025E: El valor de {0} debe hacer referencia a un directorio. \
-El valor especificado hace referencia a un recurso de archivo existente. \
-Valor: {1}
+error.specifiedLocation=CWWKE0025E: El valor de {0} debe hacer referencia a un directorio. El valor especificado hace referencia a un recurso de archivo existente. Valor: {1}
 error.specifiedLocation.explanation=La ubicaci\u00f3n proporcionada hace referencia a un archivo existente en vez de a un directorio.
 error.specifiedLocation.useraction=Cambie la ubicaci\u00f3n especificada a un directorio y vuelva a intentar la acci\u00f3n.
 
@@ -469,10 +464,7 @@ info.addProductExtension.useraction=No se requiere ninguna acci\u00f3n.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: El nombre de cliente especificado contiene un car\u00e1cter que no es v\u00e1lido (nombre={0}). \
-Los caracteres v\u00e1lidos son: alfanum\u00e9ricos Unicode (por ejemplo, \
-0-9, a-z, A-Z), subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.). \
-Un nombre de cliente no puede empezar por un gui\u00f3n (-) o un punto (.).
+error.clientNameCharacter=CWWKE0900E: El nombre de cliente especificado contiene un car\u00e1cter que no es v\u00e1lido (nombre={0}). Los caracteres v\u00e1lidos son: alfanum\u00e9ricos Unicode (por ejemplo, 0-9, a-z, A-Z), subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.). Un nombre de cliente no puede empezar por un gui\u00f3n (-) o un punto (.).
 error.clientNameCharacter.explanation=Se ha utilizado un car\u00e1cter que no es v\u00e1lido en el nombre de cliente.
 error.clientNameCharacter.useraction=Renombre el cliente utilizando s\u00f3lo caracteres v\u00e1lidos: alfanum\u00e9ricos Unicode (por ejemplo, 0-9, a-z, A-Z), signo de subrayado (_), gui\u00f3n (-), signo m\u00e1s (+) y punto (.).
 
@@ -523,14 +515,12 @@ info.java2security.started.useraction=No se requiere ninguna acci\u00f3n.
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Error al establecer el gestor de seguridad predeterminado debido a la excepci\u00f3n: {0}.  Esto sucede si el gestor de seguridad ya se ha establecido y su m\u00e9todo checkPermission no permite que sea sustituido.
 error.set.securitymanager.explanation=La seguridad de Java 2 est\u00e1 habilitada, pero se ha producido una anomal\u00eda al establecer el gestor de seguridad predeterminado.
-error.set.securitymanager.useraction=Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager.  \
-Si ya se ha establecido, elimine la opci\u00f3n -Djava.security.manager y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties. 
+error.set.securitymanager.useraction=Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager.  Si ya se ha establecido, elimine la opci\u00f3n -Djava.security.manager y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: Error al establecer el gestor de seguridad NoRethrow debido a la excepci\u00f3n: {0}.  Esto sucede si el gestor de seguridad ya se ha establecido y su m\u00e9todo checkPermission no permite que sea sustituido.
 error.set.trace.securitymanager.explanation=La seguridad de Java 2 est\u00e1 habilitada, pero se ha producido una anomal\u00eda al establecer el gestor de seguridad NoRethrow.
-error.set.trace.securitymanager.useraction=Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager.  \
-Si ya se ha establecido, elimine la opci\u00f3n -Djava.security.manager y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties. 
+error.set.trace.securitymanager.useraction=Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager.  Si ya se ha establecido, elimine la opci\u00f3n -Djava.security.manager y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: La pol\u00edtica de seguridad actual de Java 2 ha informado de una violaci\u00f3n potencial del permiso de seguridad de Java 2. {0}Permiso:{1}C\u00f3digo:{2}{3}Rastreo de pila:{4}Ubicaci\u00f3n de base de c\u00f3digo:{5}
 warning.java.security.permdenied.explanation=checkPermission() del gestor de seguridad de Java ha generado una excepci\u00f3n SecurityException en el sujeto Permission.
@@ -538,9 +528,7 @@ warning.java.security.permdenied.useraction=Compruebe que la operaci\u00f3n que 
 
 error.java.security.exception.codebase=CWWKE0913E: Se ha captado una excepci\u00f3n inesperada al intentar determinar la ubicaci\u00f3n de la base de c\u00f3digo.  Excepci\u00f3n: {0}.  
 error.java.security.exception.codebase.explanation=Se ha producido un error al determinar la ubicaci\u00f3n de base de c\u00f3digo del c\u00f3digo que ha generado una excepci\u00f3n de control de acceso de permisos de seguridad Java 2.
-error.java.security.exception.codebase.useraction=Consulte los registros de excepciones y del servidor para obtener m\u00e1s detalles. \
-\  Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager y especificando una opci\u00f3n -Djava.security.policy.  \
-Si ya se ha establecido una o ambas, elimine los valores y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties.
+error.java.security.exception.codebase.useraction=Consulte los registros de excepciones y del servidor para obtener m\u00e1s detalles.   Aseg\u00farese de que el gestor de seguridad no se haya establecido iniciando el servidor con la opci\u00f3n -Djava.security.manager y especificando una opci\u00f3n -Djava.security.policy.  Si ya se ha establecido una o ambas, elimine los valores y reinicie el servidor con la seguridad de Java 2 habilitada, especificando la propiedad websphere.java.security en el archivo bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: La pol\u00edtica de seguridad actual de Java 2 ha informado de una violaci\u00f3n potencial de un permiso de seguridad de Java 2. Consulte el Knowledge Center si desea informaci\u00f3n adicional. {0}Permiso:{1}C\u00f3digo:{2}Ubicaci\u00f3n de base de c\u00f3digo:{3}
 warning.zOS.java.security.permdenied1.explanation=checkPermission() del gestor de seguridad de Java ha generado una excepci\u00f3n SecurityException en el sujeto Permission. Un emisor de la pila de llamadas no tiene el permiso necesario.  Puede que esto no sea ning\u00fan problema si el emisor maneja correctamente la excepci\u00f3n.
@@ -562,7 +550,7 @@ error.client.runner.useraction=Consulte los mensajes de error para obtener detal
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  No se ha podido realizar la operaci\u00f3n solicitada. Consulte los registros del servidor de perfil Liberty {0} en el host {1} en la ubicaci\u00f3n {2} para la solicitud {3} para obtener m\u00e1s detalles.
+error.mbean.operation.failure=CWWKE0918E: \ No se ha podido realizar la operaci\u00f3n solicitada. Consulte los registros del servidor de perfil Liberty {0} en el host {1} en la ubicaci\u00f3n {2} para la solicitud {3} para obtener m\u00e1s detalles.
 error.mbean.operation.failure.explanation=Se ha producido un error al intentar realizar la operaci\u00f3n solicitada.
 error.mbean.operation.failure.useraction=Compruebe los registros del servidor para obtener m\u00e1s detalles sobre el error de la operaci\u00f3n.
 
@@ -579,10 +567,8 @@ warning.java.security.permdenied.quickmsg.explanation=checkPermission() del gest
 warning.java.security.permdenied.quickmsg.useraction=Compruebe que la operaci\u00f3n que se ha intentado y actualice el archivo de pol\u00edtica de permisos para el paquete o aplicaci\u00f3n seg\u00fan sea necesario.
 
 error.package.missingLibExtractDir=CWWKE0922E: El mandato de paquete no se puede completar porque falta el directorio lib/extract en la instalaci\u00f3n.
-error.package.missingLibExtractDir.explanation=El directorio lib/extract contiene metadatos y clases de autoextracci\u00f3n necesarias para que se \
-complete el mandato de paquete.  Si falta este directorio, podr\u00eda indicar que la instalaci\u00f3n de WebSphere Liberty Profile era incompleta o que se suprimi\u00f3 el directorio.
-error.package.missingLibExtractDir.useraction=Vuelva a instalar WebSphere Liberty Profile y aseg\u00farese de que el directorio lib/extract exista en el \
-directorio WLP_HOME.
+error.package.missingLibExtractDir.explanation=El directorio lib/extract contiene metadatos y clases de autoextracci\u00f3n necesarias para que se complete el mandato de paquete.  Si falta este directorio, podr\u00eda indicar que la instalaci\u00f3n de WebSphere Liberty Profile era incompleta o que se suprimi\u00f3 el directorio.
+error.package.missingLibExtractDir.useraction=Vuelva a instalar WebSphere Liberty Profile y aseg\u00farese de que el directorio lib/extract exista en el directorio WLP_HOME.
 
 
 
@@ -707,6 +693,10 @@ error.missing.version.files.useraction=Aseg\u00farese de que el directorio exist
 warning.earlyRelease=CWWKE0953W: Esta versi\u00f3n de {0} es una primera versi\u00f3n de release no soportada.
 warning.earlyRelease.explanation=En este primer release se incluyen caracter\u00edsticas que no est\u00e1n totalmente probadas para extraer conclusiones antes de incluirlas en un release soportado.
 warning.earlyRelease.useraction=No utilice una primera versi\u00f3n de release en un sistema de producci\u00f3n, ya que estas versiones no est\u00e1n soportadas.
+
+error.invalidPhaseName=CWWKE0954E: La fase de punto de comprobaci\u00f3n "{0}" especificada est\u00e1 vac\u00eda o es desconocida.
+error.invalidPhaseName.explanation=Se ha especificado una fase desconocida como valor de la opci\u00f3n checkpoint.
+error.invalidPhaseName.useraction=Revise la documentaci\u00f3n para determinar los nombres de fase v\u00e1lidos. Vuelva a emitir el mandato utilizando una fase de punto de comprobaci\u00f3n v\u00e1lida.
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

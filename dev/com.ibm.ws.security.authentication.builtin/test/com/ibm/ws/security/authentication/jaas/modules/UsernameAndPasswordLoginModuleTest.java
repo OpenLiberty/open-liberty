@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,8 @@ public class UsernameAndPasswordLoginModuleTest extends LoginModuleTester {
 
     @Before
     public void setUp() throws Exception {
+        LoginModuleHelper.setTestJaasService(jaasServiceCollab); // No OSGi component to lookup in the runtime, so override
+
         mock.checking(new Expectations() {
             {
                 // This expectation is to allow the JAAS stuff to activate

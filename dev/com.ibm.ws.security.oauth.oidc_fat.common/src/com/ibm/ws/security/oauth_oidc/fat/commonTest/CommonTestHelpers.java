@@ -126,6 +126,7 @@ public class CommonTestHelpers extends TestHelpers {
             Log.info(thisClass, thisMethod, "firstClientUrl: " + settings.getFirstClientURL());
             URL url = AutomationTools.getNewUrl(settings.getFirstClientURL());
             com.gargoylesoftware.htmlunit.WebRequest requestSettings = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.GET);
+            msgUtils.printRequestParts(webClient, requestSettings, thisMethod, "Request for " + thisMethod);
 
             // Invoke the client
             thePage = webClient.getPage(requestSettings);
@@ -572,6 +573,8 @@ public class CommonTestHelpers extends TestHelpers {
             tokenValue = validationTools.getTokenFromResponse(startPage, Constants.ACCESS_TOKEN_KEY);
             Log.info(thisClass, thisMethod, "Token Value: " + tokenValue);
 
+        } else {
+            Log.info(thisClass, thisMethod, "No response/previous page to get an access_token from");
         }
 
         return invokeProtectedResource(testcase, webClient, tokenValue, settings, expectations);
@@ -863,12 +866,12 @@ public class CommonTestHelpers extends TestHelpers {
             // Invoke
             WebRequest request = null;
             if (invokeType.equals(Constants.GETMETHOD)) {
-                Log.info(thisClass, thisMethod, "GET request");
+                Log.info(thisClass, thisMethod, "GET request: " + settings.getTestURL());
                 request = new GetMethodWebRequest(settings.getTestURL());
                 thisStep = Constants.GET_LOGIN_PAGE;
 
             } else {
-                Log.info(thisClass, thisMethod, "POST request");
+                Log.info(thisClass, thisMethod, "POST request: " + settings.getTestURL());
                 request = new PostMethodWebRequest(settings.getTestURL(), true);
                 // File binaryFile = new
                 // File("c:/chrisc/screen_savers/party_photo.bmp") ;
@@ -970,11 +973,13 @@ public class CommonTestHelpers extends TestHelpers {
 
             // Check the response
             Log.info(thisClass, thisMethod, "Outgoing request url: " + requestSettings.getUrl().toString());
+            msgUtils.printRequestParts(webClient, requestSettings, thisMethod, "Request for " + thisMethod);
             thePage = webClient.getPage(requestSettings);
 
             // make sure the page is processed before continuing
             waitBeforeContinuing(webClient);
 
+            msgUtils.printAllCookies(webClient);
             msgUtils.printResponseParts(thePage, thisMethod, "Response from " + thisStep + ": ");
 
         } catch (Exception e) {
@@ -1564,7 +1569,7 @@ public class CommonTestHelpers extends TestHelpers {
 
             // Invoke protected resource
             URL url = AutomationTools.getNewUrl(settings.getEndSession());
-            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.POST);
+            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, settings.getLogoutHttpMethod());
             request.setRequestParameters(new ArrayList());
 
             if (id_token != null) {
@@ -1614,20 +1619,20 @@ public class CommonTestHelpers extends TestHelpers {
         }
     }
 
-//    public void updateServerXml(String serverXml, String attribute, String attributeValue) throws Exception {
-//
-//        String thisMethod = "updateServerXml";
-//        msgUtils.printMethodName(thisMethod);
-//
-//        SAXBuilder builder = new SAXBuilder();
-//        File xmlFile = new File(serverXml);
-//        Document doc = builder.build(xmlFile);
-//        Element rootNode = doc.getRootElement();
-//        Element parent = rootNode.getChild("httpEndpoint");
-//        Log.info(thisClass, thisMethod, "current endpoint httpPort is: " + parent.getAttributeValue("httpPort"));
-//        Log.info(thisClass, thisMethod, "current endpoint httpsPort is: " + parent.getAttributeValue("httpsPort"));
-//
-//    }
+    //    public void updateServerXml(String serverXml, String attribute, String attributeValue) throws Exception {
+    //
+    //        String thisMethod = "updateServerXml";
+    //        msgUtils.printMethodName(thisMethod);
+    //
+    //        SAXBuilder builder = new SAXBuilder();
+    //        File xmlFile = new File(serverXml);
+    //        Document doc = builder.build(xmlFile);
+    //        Element rootNode = doc.getRootElement();
+    //        Element parent = rootNode.getChild("httpEndpoint");
+    //        Log.info(thisClass, thisMethod, "current endpoint httpPort is: " + parent.getAttributeValue("httpPort"));
+    //        Log.info(thisClass, thisMethod, "current endpoint httpsPort is: " + parent.getAttributeValue("httpsPort"));
+    //
+    //    }
 
     public TestSettings fixProviderInUrls(TestSettings settings, String oldProvider, String newProvider) throws Exception {
 

@@ -29,6 +29,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Metadata obtained by scanning the bytecode of an EJB implementation class.
  */
@@ -119,11 +121,11 @@ public class ByteCodeMetaData extends ClassVisitor {
     private Map<String, BridgeMethodMetaData> ivBridgeMethodMetaData;
 
     /**
-     * @param implClass the implementation class
+     * @param implClass     the implementation class
      * @param publicMethods all public methods on the implementation class
      */
     ByteCodeMetaData(Class<?> implClass, Method[] publicMethods) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
         ivClass = implClass;
         ivPublicMethods = publicMethods;
     }
@@ -237,7 +239,7 @@ public class ByteCodeMetaData extends ClassVisitor {
 
     /**
      * @param methodName the method name
-     * @param desc the method descriptor in JVM format; e.g.: (La/b/c;)V
+     * @param desc       the method descriptor in JVM format; e.g.: (La/b/c;)V
      * @return the key for {@link #ivNonPrivateMethodMetaData}
      */
     private String getNonPrivateMethodKey(String methodName, String desc) {
@@ -328,7 +330,7 @@ public class ByteCodeMetaData extends ClassVisitor {
 
     private abstract class AbstractMethodVisitor extends MethodVisitor {
         public AbstractMethodVisitor() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
         }
 
         @Override

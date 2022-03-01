@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,10 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,6 +34,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -105,7 +110,11 @@ public class ConfigGitTckLauncher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config_fat_tck", this
                         .getClass() + ":launchConfigTCK", MvnUtils.DEFAULT_SUITE_FILENAME, addedProps, versionedLibraries);
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Config");
+        resultInfo.put("feature_version", "1.4");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
     @Mode(TestMode.LITE)

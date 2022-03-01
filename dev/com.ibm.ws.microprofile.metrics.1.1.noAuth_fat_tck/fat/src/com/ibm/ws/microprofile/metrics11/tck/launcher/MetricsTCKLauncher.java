@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package com.ibm.ws.microprofile.metrics11.tck.launcher;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,6 +25,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -58,7 +62,11 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.metrics.1.1.noAuth_fat_tck", "launchTck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Metrics");
+        resultInfo.put("feature_version", "1.1");
+        MvnUtils.preparePublicationFile(resultInfo);;
     }
 
 }

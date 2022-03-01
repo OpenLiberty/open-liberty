@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -152,13 +153,13 @@
 
 7093=Dans la requ\u00eate nomm\u00e9e [{0}], la classe [{2}] pour l''argument de requ\u00eate nomm\u00e9 [{1}] est introuvable. Incluez la classe manquante dans votre chemin d''acc\u00e8s aux classes.
 
-7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+7095=La ressource sessions.xml [{0}] est introuvable sur le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de la ressource et le chargeur de classe transmis \u00e0 SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus dans la racine du fichier jar d\u00e9ploy\u00e9 de l''application. Si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire dans le fichier jar de l''application, assurez-vous que le chemin d''acc\u00e8s \u00e0 la ressource est correct et qu''il utilise "/", et non "\\".
 
 7096=Impossible d''utiliser la m\u00e9thode commit() pour valider de nouveau UnitOfWork.
 
 7097=Op\u00e9ration non prise en charge : [{0}].
 
-7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML de projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable sur le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de la ressource et le chargeur de classe transmis \u00e0 XMLProjectReader sont corrects.  Le fichier XML du projet doit \u00eatre inclus dans la racine du fichier jar d\u00e9ploy\u00e9 de l''application. Si le fichier XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire dans le fichier jar de l''application, assurez-vous que le chemin d''acc\u00e8s \u00e0 la ressource est correct et qu''il utilise "/", et non "\\".
 
 7100=Impossible de trouver la session nomm\u00e9e {0}] dans le fichier session.xml [{1}]
 
@@ -606,7 +607,7 @@
 
 7342=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la d\u00e9finition de SQL natif autoris\u00e9 n''est pas valide, elle doit \u00eatre "true" ou "false".
 
-7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 de contexte de discriminateur de titulaire) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9es. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3]} utilise [{2}]. Lors de l''utilisation d''une strat\u00e9gie VPD \u00e0 plusieurs titulaires, il ne peut y avoir qu''une seule colonne de discriminateur de titulaire par entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD \u00e0 plusieurs titulaires.
+7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 du contexte de discrimination des locataires) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3}] utilise [{2}]. Lorsqu''on utilise une strat\u00e9gie VPD multilocataire, il ne peut y avoir qu''une seule colonne de discrimination des locataires par entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD multilocataires.
 
 7344=VPD (connexions et g\u00e9n\u00e9ration DDL) n''est pas pris en charge pour la plateforme : [{0}].
 

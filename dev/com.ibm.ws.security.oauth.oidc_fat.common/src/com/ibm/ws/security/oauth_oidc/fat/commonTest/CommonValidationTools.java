@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.joda.time.Instant;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONArray;
@@ -631,9 +632,9 @@ public class CommonValidationTools {
 
             // should only get this far if we're needing to validate the contents of the id token
             if (!id_token.equals(Constants.NOT_FOUND)) {
-                
+
                 String decryptKey = settings.getDecryptKey();
-                
+
                 JwtTokenForTest jwtToken;
                 if (JweHelper.isJwe(id_token) && decryptKey != null) {
                     jwtToken = new JwtTokenForTest(id_token, decryptKey);
@@ -995,18 +996,34 @@ public class CommonValidationTools {
 
             String tokenLine = getTokenLineFromResponse(response);
             if (tokenLine != null) {
+                String[] responseLines = tokenLine.split(System.getProperty("line.separator"));
+                if (responseLines.length == 1) {
 
-                String[] entries = tokenLine.split(",");
-                for (String e : entries) {
-                    String part1 = e.split(":")[0];
-                    String part2 = e.split(":")[1];
-                    String part1Strip = removeQuote(part1);
-                    String part2Strip = removeQuote(part2);
-                    if (part1Strip.equals(searchKey)) {
-                        Log.info(thisClass, thisMethod, searchKey + " value: " + part2Strip);
-                        printJWTToken(part2Strip);
-                        return part2Strip;
+                    String[] entries = tokenLine.split(",");
+                    for (String e : entries) {
+                        String part1 = e.split(":")[0];
+                        String part2 = e.split(":")[1];
+                        String part1Strip = removeQuote(part1);
+                        String part2Strip = removeQuote(part2);
+                        if (part1Strip.equals(searchKey)) {
+                            Log.info(thisClass, thisMethod, searchKey + " value: " + part2Strip);
+                            printJWTToken(part2Strip);
+                            return part2Strip;
+                        }
                     }
+                } else {
+                    for (String line : responseLines) {
+                        if (line != null && line.contains(searchKey)) {
+                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length() - 1);
+                            String[] splitLine = part1.split(",");
+                            if (splitLine != null) {
+                                Log.info(thisClass, thisMethod, "token: " + splitLine[0]);
+                                printJWTToken(splitLine[0]);
+                                return splitLine[0];
+                            }
+                        }
+                    }
+
                 }
             } else {
                 String respReceived = AutomationTools.getResponseText(response);
@@ -1431,8 +1448,8 @@ public class CommonValidationTools {
 
         // validate specific key's value
         String expectKeysValue = expected.getValidationValue();
-        Log.info(thisClass, thisMethod, "expectKeysValue: " + expectKeysValue);
         Log.info(thisClass, thisMethod, "expectKey: " + expected.getValidationKey());
+        Log.info(thisClass, thisMethod, "expectKeysValue: " + expectKeysValue);
 
         Log.info(thisClass, thisMethod, "passed tokenInfo: " + tokenInfo);
         String actualKeysValue = null;
@@ -1453,7 +1470,7 @@ public class CommonValidationTools {
                     msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(!actualKeysValue.contains(expectKeysValue)));
                 } else {
                     if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.matches(expectKeysValue)));
+                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.matches(".*" + expectKeysValue + ".*")));
                     } else {
                         // we don't care what the value is (it may be a random number generated on the server) - we just need to make sure it has a value
                         msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue != null));
@@ -2411,4 +2428,62 @@ public class CommonValidationTools {
         }
         return false;
     }
+
+    /**
+     * Verifies that no cookies with names in the provided list show up in the WebClient. The list of cookie names to match
+     * against may also be regular expressions.
+     *
+     * @param webClient
+     * @param cookiesThatShouldNotExist
+     *            List of cookie name prefixes or regular expressions to match against existing cookie names.
+     */
+    public void verifyNoUnexpectedCookiesStillPresent(WebClient webClient, List<String> cookiesThatShouldNotExist) {
+        List<String> unexpectedCookiesFound = new ArrayList<>();
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
+        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
+            String cookieName = cookie.getName();
+            Log.info(thisClass, "verifyNoUnexpectedCookiesStillPresent", "Checking remaining cookie: " + cookieName);
+            for (String cookieThatShouldNotExist : cookiesThatShouldNotExist) {
+                if (cookieName.startsWith(cookieThatShouldNotExist) || cookieName.matches(cookieThatShouldNotExist)) {
+                    unexpectedCookiesFound.add(cookieName);
+                }
+            }
+        }
+        if (!unexpectedCookiesFound.isEmpty()) {
+            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+        }
+    }
+
+    /**
+     * Verifies that only cookies with names in the provided list show up in the WebClient. The list of cookie names to match
+     * against may also be regular expressions.
+     *
+     * @param webClient
+     * @param onlyAllowedCookies
+     *            List of cookie name prefixes or regular expressions to match against existing cookie names.
+     */
+    public void verifyOnlyAllowedCookiesStillPresent(WebClient webClient, List<String> onlyAllowedCookies) {
+        Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Verifying that the web client contains only a subset of the following allowed cookies: " + onlyAllowedCookies);
+        List<String> unexpectedCookiesFound = new ArrayList<>();
+        Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
+        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
+            String cookieName = cookie.getName();
+            Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Checking remaining cookie: " + cookieName);
+            boolean isCookieAllowed = false;
+            for (String allowedCookie : onlyAllowedCookies) {
+                if (cookieName.startsWith(allowedCookie) || cookieName.matches(allowedCookie)) {
+                    isCookieAllowed = true;
+                    break;
+                }
+            }
+            if (!isCookieAllowed) {
+                Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Found unexpected cookie: " + cookieName);
+                unexpectedCookiesFound.add(cookieName);
+            }
+        }
+        if (!unexpectedCookiesFound.isEmpty()) {
+            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+        }
+    }
+
 }

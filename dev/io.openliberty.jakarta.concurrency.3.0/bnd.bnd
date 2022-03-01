@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
 Export-Package: \
@@ -21,7 +26,7 @@ DynamicImport-Package: \
   jakarta.enterprise.util,\
   jakarta.interceptor
 
-Import-Package:
+Import-Package: \
   !jakarta.enterprise.util,\
   !jakarta.interceptor,\
   *

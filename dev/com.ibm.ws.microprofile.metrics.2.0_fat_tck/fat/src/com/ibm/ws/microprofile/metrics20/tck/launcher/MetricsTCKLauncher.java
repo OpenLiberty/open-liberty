@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,11 @@
 package com.ibm.ws.microprofile.metrics20.tck.launcher;
 
 import static org.junit.Assume.assumeTrue;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -65,7 +67,11 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.pwd", "thePassword");
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.metrics.2.0_fat_tck", "launchTck", additionalProps);
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Metrics");
+        resultInfo.put("feature_version", "2.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
 }

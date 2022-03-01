@@ -63,29 +63,6 @@ public class CommonTest {
                             return System.getProperty("java.version");
                         }
                     });
-    protected static final boolean JAVA_VERSION_6 = JAVA_VERSION
-                    .startsWith("1.6.");
-    protected static final boolean HOTSPOT_JVM_RUN = AccessController
-                    .doPrivileged(new PrivilegedAction<Boolean>() {
-                        @Override
-                        public Boolean run() {
-                            String hotspotString = System.getProperty("fat.on.hotspot");
-                            boolean hotspot;
-                            if (hotspotString != null) {
-                                Log.info(c, "<clinit>", "fat.on.hotspot="
-                                                        + hotspotString);
-                                hotspot = Boolean.parseBoolean(hotspotString);
-                            } else {
-                                String vm = System.getProperty("java.vm.name");
-                                Log.info(c, "<clinit>", "java.vm.name=" + vm);
-                                hotspot = vm.contains("HotSpot");
-                            }
-
-                            Log.info(c, "<clinit>", "HOTSPOT_JVM_RUN=" + hotspot);
-                            return hotspot;
-                        }
-                    });
-
     protected static final String MAC_RUN = AccessController
                     .doPrivileged(new PrivilegedAction<String>() {
                         @Override
@@ -520,13 +497,6 @@ public class CommonTest {
 
         // Always set tmp dir.
         JVM_ARGS += " -Djava.io.tmpdir=" + TMP_DIR;
-
-        // Avoid ClassLoader deadlocks on HotSpot Java 6.
-        if (HOTSPOT_JVM_RUN && JAVA_VERSION_6) {
-            JVM_ARGS += " -XX:+UnlockDiagnosticVMOptions"
-                        + " -XX:+UnsyncloadClass"
-                        + " -Dosgi.classloader.lock=classname";
-        }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
         if (DO_COVERAGE) {

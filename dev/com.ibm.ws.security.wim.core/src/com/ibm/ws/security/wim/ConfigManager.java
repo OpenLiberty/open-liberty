@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,17 +82,17 @@ public class ConfigManager implements RuntimeUpdateListener {
     public static final String DEFAULT_VALUE = "defaultValue";
     public static final String DEFAULT_ATTRIBUTE = "defaultAttribute";
 
-    public static final Integer DEFAULT_MAX_SEARCH_RESULTS = new Integer(4500);
+    public static final Integer DEFAULT_MAX_SEARCH_RESULTS = Integer.valueOf(4500);
 
-    public static final Integer DEFAULT_SEARCH_TIMEOUT = new Integer(600000);
+    public static final Integer DEFAULT_SEARCH_TIMEOUT = Integer.valueOf(600000);
 
     private static final Object PAGE_CACHE_SIZE = "pageCacheSize";
 
-    private static final Integer DEFAULT_PAGE_CACHE_SIZE = new Integer(1000);
+    private static final Integer DEFAULT_PAGE_CACHE_SIZE = Integer.valueOf(1000);
 
     private static final Object PAGE_CACHE_TIMEOUT = "pageCacheTimeout";
 
-    private static final Long DEFAULT_PAGE_CACHE_TIMEOUT = new Long(30000);
+    private static final Long DEFAULT_PAGE_CACHE_TIMEOUT = Long.valueOf(30000);
 
     public final static int DEFAULT_MAX_DELAY = 5000;
     private int failResponseDelayMin = 0;
@@ -686,5 +686,4 @@ public class ConfigManager implements RuntimeUpdateListener {
 
         }
     }
-
 }

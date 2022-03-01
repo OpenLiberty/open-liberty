@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Algunas aplicaciones en ejecución",
     SOME_SERVERS_RUNNING : "Algunos servidores en ejecución",
     SOME_CLUSTERS_RUNNING : "Algunos clústeres en ejecución",
-    NO_APPS_RUNNING : "Sin aplicaciones en ejecución",
     NO_SERVERS_RUNNING : "Sin servidores en ejecución",
     NO_CLUSTERS_RUNNING : "Sin clústeres en ejecución",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0} instancia de aplicación no está en ejecución", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: no todas las aplicaciones están en ejecución", // serverName[]
-    NO_APPS_RUNNING : "{0}: no hay aplicaciones en ejecución", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} servidores con no todas las aplicaciones en ejecución", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} servidores sin aplicaciones en ejecución", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Nota {0}",  // note value
     SET_ATTRIBUTES: "Etiquetas y metadatos",
     SETATTR_RUNTIME_NAME: "{0} en {1}",  // runtime, host
-    SAVE: "Guardar",
     TAGINVALIDCHARS: "Los caracteres '/', '<' y '>' no son válidos.",
     ERROR_GET_TAGS_METADATA: "El producto no puede obtener las etiquetas y metadatos actuales para el recurso.",
     ERROR_SET_TAGS_METADATA: "Se ha producido un error que ha impedido que el producto establezca las etiquetas y los metadatos.",

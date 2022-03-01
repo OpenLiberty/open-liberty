@@ -792,8 +792,9 @@ public class JSPTests {
         WebRequest request1 = new GetMethodWebRequest(url);
         wc1.getResponse(request1);
 
+        Thread.sleep(5000L); // sleeps necessary to insure sufficient time delta for epoch timestamp comparisons
         server.setMarkToEndOfLog(); // mark after 1st call to index.jsp since it might have compiled and caused a SRVE0253I
-        Thread.sleep(5000L); // sleep necessary to insure sufficient time delta for epoch timestamp comparisons
+        Thread.sleep(5000L); 
         WebConversation wc2 = new WebConversation();
         WebRequest request2 = new GetMethodWebRequest(url);
         wc2.getResponse(request2);

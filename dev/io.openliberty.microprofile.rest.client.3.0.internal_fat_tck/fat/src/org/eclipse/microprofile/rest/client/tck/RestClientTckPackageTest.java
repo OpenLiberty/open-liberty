@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +34,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -73,7 +80,11 @@ public class RestClientTckPackageTest {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClientTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.rest.client.3.0.internal_fat_tck", this.getClass() + ":testRestClientTck");
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Rest Client");
+        resultInfo.put("feature_version", "3.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,22 @@ required.attribute.missing=CWWKC2251E: Prvku {2} chyb\u00ed po\u017eadovan\u00fd
 required.attribute.missing.explanation=V ur\u010den\u00e9m prvku chyb\u00ed povinn\u00fd atribut.
 required.attribute.missing.useraction=Opravte deskriptor implementace p\u0159id\u00e1n\u00edm chyb\u011bj\u00edc\u00edho atributu.
 
-invalid.root.element=CWWKC2252E: Neplatn\u00fd lok\u00e1ln\u00ed n\u00e1zev ko\u0159ene {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
-invalid.root.element.explanation=Ko\u0159enov\u00fd prvek je chybn\u00fd.
-invalid.root.element.useraction=Ov\u011b\u0159te platnost souboru XML a zajist\u011bte spr\u00e1vnost ko\u0159enov\u00e9ho prvku.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: Deskriptor implementace {0} na \u0159\u00e1dku {1} m\u00e1 ko\u0159enov\u00fd prvek {2}, ale vy\u017eaduje ko\u0159enov\u00fd prvek {3}. 
+unexpected.root.element.explanation=Ko\u0159enov\u00fd prvek deskriptoru implementace je nespr\u00e1vn\u00fd.
+unexpected.root.element.useraction=Opravte ko\u0159enov\u00fd prvek deskriptoru implementace.
 
 root.element.not.found=CWWKC2253E: Nelze naj\u00edt ko\u0159enov\u00fd prvek deskriptoru implementace {0} na \u0159\u00e1dku {1}.
 root.element.not.found.explanation=V deskriptoru implementace chyb\u00ed ko\u0159enov\u00fd prvek.
@@ -51,7 +64,7 @@ incorrect.id.attr.namespace.explanation=Obor n\u00e1zv\u016f prvk\u016f a atribu
 incorrect.id.attr.namespace.useraction=Opravte deskriptor implementace.
 
 unexpected.attribute=CWWKC2256E: P\u0159i anal\u00fdze prvku {2} v deskriptoru implementace {0} byl na \u0159\u00e1dku {1} zji\u0161t\u011bn neo\u010dek\u00e1van\u00fd atribut {3}.
-unexpected.attribute.explanation=Vyskytl se atribut, kter\u00fd nebyl definov\u00e1nAn k v\u00fdskytu v deskriptoru implementace.
+unexpected.attribute.explanation=Vyskytl se atribut, kter\u00fd nebyl definov\u00e1n k v\u00fdskytu v deskriptoru implementace.
 unexpected.attribute.useraction=Opravte deskriptor implementace.
 
 unexpected.content=CWWKC2257E: V prvku {2} deskriptoru implementace {0} byl na \u0159\u00e1dku {1} zji\u0161t\u011bn neo\u010dek\u00e1van\u00fd obsah.
@@ -66,25 +79,157 @@ unexpected.child.element=CWWKC2259E: V deskriptoru implementace {0} byl na \u015
 unexpected.child.element.explanation=Vyskytl se pod\u0159\u00edzen\u00fd prvek, kter\u00fd nebyl definov\u00e1n k v\u00fdskytu v deskriptoru implementace.
 unexpected.child.element.useraction=Opravte deskriptor implementace.
 
-invalid.href.prefix=CWWKC2260E: Hodnota atributu href prvku {2} neza\u010d\u00edn\u00e1 v deskriptoru implementace {0} na \u0159\u00e1dku {1} hodnotou {3}.
-invalid.href.prefix.explanation=Atribut href mus\u00ed za\u010d\u00ednat spr\u00e1vnou cestou k odkazovan\u00e9mu deskriptoru.
-invalid.href.prefix.useraction=Opravte deskriptor implementace.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: Do\u0161lo k chyb\u011b p\u0159i pokusu o ur\u010den\u00ed verze deskriptoru implementace {0}.
-unknown.deployment.descriptor.version.explanation=Verze nebo obor n\u00e1zv\u016f nebyly platn\u00e9 nebo nebyly ur\u010deny v ko\u0159enov\u00e9m prvku deskriptoru implementace.
-unknown.deployment.descriptor.version.useraction=Ov\u011b\u0159te a opravte verzi a obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E: Server nem\u016f\u017ee zpracovat verzi {3} a obor n\u00e1zv\u016f {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
-invalid.deployment.descriptor.namespace.explanation=Bu\u010f uveden\u00e1 verze a obor n\u00e1zv\u016f nejsou platn\u00e9, nebo konfigurace serveru neobsahuje funkci, kter\u00e1 by tuto verzi a obor n\u00e1zv\u016f zpracovala.
-invalid.deployment.descriptor.namespace.useraction=Ov\u011b\u0159te a opravte verzi a obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace nebo ov\u011b\u0159te a opravte funkce v konfiguraci serveru.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: P\u0159edpona HREF {4} neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9 p\u0159edpon\u011b {5} v hodnot\u011b HREF {3} prvku {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+invalid.href.prefix.explanation=P\u0159edpona hodnoty HREF ur\u010duje cestu k odkazovan\u00e9mu deskriptoru implementace. P\u0159edpona neodpov\u00edd\u00e1 cest\u011b k odkazovan\u00e9mu deskriptoru implementace.
+invalid.href.prefix.useraction=Opravte hodnotu HREF.
 
-invalid.deployment.descriptor.version=CWWKC2263E: Verze {2} atributu uveden\u00e1 v deskriptoru implementace {0} na \u0159\u00e1dku {1} nen\u00ed platn\u00e1.
-invalid.deployment.descriptor.version.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace byla zad\u00e1na neplatn\u00e1 verze.
-invalid.deployment.descriptor.version.useraction=Ov\u011b\u0159te a opravte \u010d\u00edslo verze v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Neplatn\u00e1 hodnota HREF {3} prvku {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+invalid.href.explanation=Hodnota prvku nen\u00ed platn\u00e1 hodnota HREF: Hodnota mus\u00ed m\u00edt znak '#' a znak '#' nesm\u00ed b\u00fdt prvn\u00edm ani posledn\u00edm znakem hodnoty.
+invalid.href.useraction=Opravte hodnotu HREF.
 
-missing.deployment.descriptor.namespace=CWWKC2264E: P\u0159i pokusu ur\u010dit obor n\u00e1zv\u016f deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b.
-missing.deployment.descriptor.namespace.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace byl zad\u00e1n neplatn\u00fd obor n\u00e1zv\u016f.
-missing.deployment.descriptor.namespace.useraction=Ov\u011b\u0159te a opravte obor n\u00e1zv\u016f v ko\u0159enov\u00e9m prvku deskriptoru implementace.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: HREF odkazuje na objekt typu {5}, ale vy\u017eaduje objekt typu {4}. K chyb\u011b doch\u00e1z\u00ed v hodnot\u011b HREF {3} prvku {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+incorrect.href.type.explanation=Typ objektu, na kter\u00fd odkazuje hodnota HREF, je nespr\u00e1vn\u00fd.
+incorrect.href.type.useraction=Opravte hodnotu HREF.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: Nezda\u0159ilo se interpretovat ID HREF {4} v r\u00e1mci odkazovan\u00e9ho deskriptoru implementace {5}, hodnota HREF {3} prvku {2} v odkazuj\u00edc\u00edm deskriptoru implementace {0} na \u0159\u00e1dku {1}.
+unresolved.href.explanation=ID HREF se nevyhodnot\u00ed na \u017e\u00e1dn\u00fd prvek, kter\u00fd je k dispozici z odkazovan\u00e9ho deskriptoru implementace. ID HREF mus\u00ed odpov\u00eddat ID prvku odkazovan\u00e9ho deskriptoru implementace.
+unresolved.href.useraction=Opravte bu\u010f ID HREF v odkazuj\u00edc\u00edm deskriptoru implementace, nebo hodnotu ID v odkazovan\u00e9m deskriptoru implementace.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: V prvku {2} v deskriptoru implementace {0} na \u0159\u00e1dku {1} nen\u00ed p\u0159\u00edtomen \u017e\u00e1dn\u00fd atribut HREF.
+missing.href.explanation=Tento prvek je nezbytn\u00fd k poskytnut\u00ed atributu HREF. Atribut HREF m\u00e1 n\u00e1zev 'href'.
+missing.href.useraction=P\u0159idejte atribut HREF k prvku.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje nepodporovanou verzi {2}.
+unsupported.descriptor.version.explanation=Verze, kter\u00e1 byla ur\u010dena v deskriptoru implementace, nen\u00ed platn\u00e1 pro tento typ deskriptoru implementace.
+unsupported.descriptor.version.useraction=Opravte verzi ur\u010denou v deskriptoru implementace.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje nepodporovan\u00fd obor n\u00e1zv\u016f {2}.
+unsupported.descriptor.namespace.explanation=Obor n\u00e1zv\u016f ur\u010den\u00fd v deskriptoru implementace nen\u00ed platn\u00fd pro tento typ deskriptoru implementace.
+unsupported.descriptor.namespace.useraction=Opravte obor n\u00e1zv\u016f ur\u010den\u00fd v deskriptoru implementace.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje verzi {2} a obor n\u00e1zv\u016f {3}, ale m\u011bl by m\u00edt obor n\u00e1zv\u016f {4}.
+unsupported.descriptor.namespace.for.version.explanation=Deskriptor implementace obsahuje nespr\u00e1vn\u00fd obor n\u00e1zv\u016f ur\u010den\u00fd pro ur\u010denou verzi. Obor n\u00e1zv\u016f byl ignorov\u00e1n.
+unsupported.descriptor.namespace.for.version.useraction=Opravte obor n\u00e1zv\u016f na hodnotu, kter\u00e1 je platn\u00e1 pro ur\u010denou verzi.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje verzi {2}, kter\u00e1 je vy\u0161\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed zaji\u0161\u0165ovan\u00e1 verze {3}.
+unprovisioned.descriptor.version.explanation=Verze, kter\u00e1 byla ur\u010dena pro deskriptor implementace, nen\u00ed podporov\u00e1na funkcemi zaji\u0161\u0165ovan\u00fdmi konfigurac\u00ed serveru.
+unprovisioned.descriptor.version.useraction=Aktualizujte konfiguraci serveru tak, aby bylo mo\u017en\u00e9 poskytovat funkce, kter\u00e9 tuto verzi podporuj\u00ed.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: Deskriptor implementace {0} na \u0159\u00e1dku {1} nem\u00e1 po\u017eadovan\u00fd obor n\u00e1zv\u016f {2}.
+missing.descriptor.namespace.explanation=Deskriptor implementace mus\u00ed m\u00edt zadan\u00fd obor n\u00e1zv\u016f.
+missing.descriptor.namespace.useraction=P\u0159idejte vy\u017eadovan\u00fd obor n\u00e1zv\u016f do deskriptoru implementace.
 
 missing.deployment.descriptor.version=CWWKC2265E: P\u0159i pokusu ur\u010dit verzi deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b.
 missing.deployment.descriptor.version.explanation=V ko\u0159enov\u00e9m prvku deskriptoru implementace nebyla zad\u00e1na verze.
@@ -104,19 +249,29 @@ runasmode.missing.specifiedID.element.useraction=Opravte deskriptor implementace
 
 found.duplicate.ejbname=CWWKC2269E: Atribut name pro v\u0161echny prvky bean <session> a <message-driven> mus\u00ed b\u00fdt jedine\u010dn\u00fd. V deskriptoru implementace {0} byl nalezen duplicitn\u00ed n\u00e1zev {1}.
 found.duplicate.ejbname.explanation=V\u0161echny n\u00e1zvy relac\u00ed a objekt\u016f typu message-driven bean musej\u00ed b\u00fdt jedine\u010dn\u00e9. Zadan\u00fd n\u00e1zev objektu typu bean je pou\u017eit v\u00edce ne\u017e jednou.
-found.duplicate.ejbname.useraction=Opravte deskriptor implementace p\u0159ejmenov\u00e1n\u00edm n\u011bkter\u00e9ho z duplicitn\u00edch n\u00e1zv\u016f objektu enterprise bean. 
+found.duplicate.ejbname.useraction=Opravte deskriptor implementace p\u0159ejmenov\u00e1n\u00edm n\u011bkter\u00e9ho z duplicitn\u00edch n\u00e1zv\u016f objektu enterprise bean.
 
 found.duplicate.attribute.value=CWWKC2270E: Atribut {2} pro v\u0161echny prvky {1} mus\u00ed b\u00fdt jedine\u010dn\u00fd. V deskriptoru implementace {0} byl nalezen duplicitn\u00ed n\u00e1zev {3}.
 found.duplicate.attribute.value.explanation=Hodnota zadan\u00e9ho atributu mus\u00ed b\u00fdt jedine\u010dn\u00e1 nap\u0159\u00ed\u010d v\u0161emi prvky stejn\u00e9ho typu. 
 found.duplicate.attribute.value.useraction=Opravte deskriptor implementace p\u0159ejmenov\u00e1n\u00edm n\u011bkter\u00e9 z duplicitn\u00edch hodnot atributu.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Byl nalezen soubor validation.xml pro modul {0}. Nicm\u00e9n\u011b tento soubor validation.xml nen\u00ed zkonfigurov\u00e1n pro ov\u011b\u0159en\u00ed, tak\u017ee se tento soubor XML ignoruje.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Slu\u017eba BeanValidationService nem\u016f\u017ee vytvo\u0159it tov\u00e1rnu ValidatorFactory kv\u016fli chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze souboru validation.xml se souborem sch\u00e9matu validation-configuration-1.0.xsd. Tato chyba m\u016f\u017ee nazna\u010dovat, \u017ee soubor validation.xml nen\u00ed ur\u010den pro pou\u017eit\u00ed v b\u011bhov\u00e9m prost\u0159ed\u00ed Bean Validation, a proto se tento soubor XML ignoruje.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Pokud soubor validation.xml nen\u00ed ur\u010den pro vytvo\u0159en\u00ed instance tov\u00e1rny ValidatorFactory, pak tuto zpr\u00e1vu ignorujte. Pokud je v\u0161ak soubor validation.xml zam\u00fd\u0161len pro vytvo\u0159en\u00ed instance tov\u00e1rny ValidatorFactory, pak se vyskytl probl\u00e9m. V aplika\u010dn\u00edm serveru povolte trasov\u00e1n\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed Bean Validation, zastavte aplikaci, znovu aplikaci spus\u0165te a prov\u011b\u0159te v\u00fdstupn\u00ed soubor trasov\u00e1n\u00ed, zda se v n\u011bm vyskytuje ud\u00e1lost trasov\u00e1n\u00ed, jako nap\u0159.: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka p\u0159i pokusu o vy\u0159azen\u00ed souboru validation.xml. Pomoc p\u0159i lad\u011bn\u00ed v\u00e1m poskytne trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek.
+unexpected.root.element.bval=CWWKC2271W: Ignoruje se konfigura\u010dn\u00ed soubor ov\u011b\u0159en\u00ed objekt\u016f typu bean {0} modulu {1}. Na \u0159\u00e1dku \u010d\u00edslo {2} nahra\u010fte ko\u0159enov\u00fd prvek {3} \u0159et\u011bzcem {4}.
+unexpected.root.element.bval.explanation=Konfigura\u010dn\u00ed soubor ov\u011b\u0159en\u00ed neodpov\u00edd\u00e1 sch\u00e9mat\u016fm konfigurace ov\u011b\u0159en\u00ed (validation-configuration-1.0.xsd a validation-configuration-1.1.xsd). Konfigura\u010dn\u00ed soubor bu\u010f nebyl ur\u010den k pou\u017eit\u00ed pro ov\u011b\u0159en\u00ed objekt\u016f typu bean, nebo je tento konfigura\u010dn\u00ed soubor chybn\u00fd. Konfigura\u010dn\u00ed soubor se ignoruje. Slu\u017eba BeanValidationService nevytvo\u0159\u00ed tov\u00e1rnu ValidatorFactory.
+unexpected.root.element.bval.useraction=Nen\u00ed-li konfigura\u010dn\u00ed soubor ov\u011b\u0159en\u00ed ur\u010den pro ov\u011b\u0159en\u00ed objektu typu bean, m\u016f\u017ee b\u00fdt varovn\u00e1 zpr\u00e1va ignorov\u00e1na. Je-li konfigura\u010dn\u00ed soubor ov\u011b\u0159en\u00ed ur\u010den pro ov\u011b\u0159en\u00ed objekt\u016f typu bean, neignorujte varovnou zpr\u00e1vu. Slu\u017eba ov\u011b\u0159en\u00ed objektu typu bean nen\u00ed spu\u0161t\u011bna zam\u00fd\u0161len\u00fdm zp\u016fsobem. Chcete-li diagnostikovat probl\u00e9m, povolte trasov\u00e1n\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed ov\u011b\u0159ov\u00e1n\u00ed objekt\u016f typu bean, zastavte a znovu spus\u0165te server a zkontrolujte v\u00fdstup trasov\u00e1n\u00ed pro neo\u010dek\u00e1van\u00e9 v\u00fdjimky souvisej\u00edc\u00ed s ov\u011b\u0159en\u00edm objektu typu bean. Nap\u0159\u00edklad "Neo\u010dek\u00e1van\u00e1 v\u00fdjimka p\u0159i pokusu o vy\u0159azen\u00ed souboru validation.xml." Informace o trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek naleznete v trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek.
 
 xml.error=CWWKC2272E: P\u0159i anal\u00fdze deskriptoru implementace {0} na \u0159\u00e1dku {1} do\u0161lo k chyb\u011b. Chybov\u00e1 zpr\u00e1va byla: {2}
 xml.error.explanation=P\u0159i anal\u00fdze deskriptoru implementace XML do\u0161lo k chyb\u011b. Podrobn\u011bj\u0161\u00ed vysv\u011btlen\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
@@ -134,10 +289,95 @@ invalid.long.value=CWWKC2275E: Hodnota {2} v deskriptoru implementace {0} nen\u0
 invalid.long.value.explanation=Deskriptor implementace uv\u00e1d\u00ed hodnotu, kter\u00e1 nen\u00ed \u010d\u00edslem z rozsahu -9223372036854775808 a\u017e 9223372036854775807.
 invalid.long.value.useraction=Opravte deskriptor implementace tak, aby pou\u017e\u00edval platn\u00e9 dlouh\u00e9 \u010d\u00edslo.
 
-module.name.not.specified=CWWKC2276E: Prvek {0} mus\u00ed ur\u010dovat atribut n\u00e1zvu modulu.
-module.name.not.specified.explanation=Konfigurace vazby a roz\u0161\u00ed\u0159en\u00ed modul\u016f EJB a webov\u00fdch modul\u016f mus\u00ed obsahovat atribut moduleName, kter\u00fd ur\u010duje modul, pro n\u011bj\u017e dan\u00e1 konfigurace plat\u00ed. 
-module.name.not.specified.useraction=P\u0159idejte atribut moduleName do prvku web-bnd, web-ext, ejb-bnd nebo ejb-ext. 
+# ---
 
-module.name.invalid=CWWKC2277E: Minim\u00e1ln\u011b jeden z n\u00e1zv\u016f modul\u016f v prvku {1} je neplatn\u00fd. Neplatn\u00e9 n\u00e1zvy modul\u016f jsou {0}.
-module.name.invalid.explanation=Konfigurace vazeb a roz\u0161\u00ed\u0159en\u00ed webov\u00fdch modul\u016f mus\u00ed obsahovat platn\u00fd atribut moduleName. Minim\u00e1ln\u011b jedna konfigurace uv\u00e1d\u00ed neplatn\u00fd n\u00e1zev modulu. N\u00e1zev modulu mus\u00ed b\u00fdt n\u00e1zvem archivn\u00edho souboru, kter\u00fd obsahuje webovou aplikaci nebo aplikaci EJB.
-module.name.invalid.useraction=Opravte atribut moduleName v konfiguraci vazby nebo roz\u0161\u00ed\u0159en\u00ed. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: Atribut ''moduleName'' chyb\u00ed v jedn\u00e9 nebo v\u00edce vazb\u00e1ch ''{1}'' a v prvc\u00edch konfigurace roz\u0161\u00ed\u0159en\u00ed aplikace {0}.
+module.name.not.specified.explanation=Vazby a prvky konfigurace roz\u0161\u00ed\u0159en\u00ed mus\u00ed m\u00edt atribut 'moduleName'.
+module.name.not.specified.useraction=Ujist\u011bte se, \u017ee je atribut 'moduleName' p\u0159\u00edtomen ve v\u0161ech vazb\u00e1ch a prvc\u00edch konfigurace roz\u0161\u00ed\u0159en\u00ed.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: Nebyly nalezeny atributy moduleName ''{2}'' ur\u010den\u00e9 ve vazb\u00e1ch a v prvc\u00edch konfigurace roz\u0161\u00ed\u0159en\u00ed ''{1}'' aplikace {0}. N\u00e1zvy modul\u016f aplikace jsou {3}.
+module.name.not.found.explanation=Atributy 'moduleName' vazeb a prvk\u016f konfigurace roz\u0161\u00ed\u0159en\u00ed se mus\u00ed shodovat s n\u00e1zvy modul\u016f aplikace.
+module.name.not.found.useraction=Ujist\u011bte se, \u017ee se v\u0161echny atributy 'moduleName' vazeb a prvk\u016f konfigurace roz\u0161\u00ed\u0159en\u00ed shoduj\u00ed s n\u00e1zvy modul\u016f aplikace. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: Duplicitn\u00ed atributy {2} ''moduleName'' jsou ur\u010deny ve vazb\u00e1ch a v prvc\u00edch konfigurace roz\u0161\u00ed\u0159en\u00ed  ''{1}'' aplikace {0}.
+module.name.duplicated.explanation=Atributy 'moduleName' vazeb a prvk\u016f konfigurace roz\u0161\u00ed\u0159en\u00ed nemus\u00ed b\u00fdt duplicitn\u00ed.
+module.name.duplicated.useraction=Ujist\u011bte se, \u017ee v\u0161echny atributy 'moduleName' vazeb a prvk\u016f konfigurace roz\u0161\u00ed\u0159en\u00ed jsou jedine\u010dn\u00e9. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: Deskriptor implementace {0} {0} na \u0159\u00e1dku {1} ur\u010duje nepodporovan\u00fd ve\u0159ejn\u00fd ID {2}.
+unsupported.descriptor.public.id.explanation=Hodnota ve\u0159ejn\u00e9ho ID nen\u00ed platn\u00e1 pro deskriptor implementace.
+unsupported.descriptor.public.id.useraction=Opravte hodnotu ve\u0159ejn\u00e9ho ID deskriptoru implementace.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: Deskriptor implementace {0} nem\u00e1 verzi, ve\u0159ejn\u00fd ID nebo obor n\u00e1zv\u016f.
+missing.descriptor.version.explanation=Deskriptor implementace mus\u00ed m\u00edt verzi, ve\u0159ejn\u00fd ID nebo obor n\u00e1zv\u016f.
+missing.descriptor.version.useraction=P\u0159idejte verzi, ve\u0159ejn\u00fd ID nebo obor n\u00e1zv\u016f do deskriptoru implementace. P\u0159idan\u00e1 verze, ve\u0159ejn\u00fd ID nebo obor n\u00e1zv\u016f se mus\u00ed shodovat s obsahem deskriptoru implementace.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje obor n\u00e1zv\u016f {2}, ale m\u011bl by m\u00edt obor n\u00e1zv\u016f {3}.
+incorrect.descriptor.namespace.explanation=V deskriptoru implementace se o\u010dek\u00e1v\u00e1 specifick\u00fd obor n\u00e1zv\u016f. Nespr\u00e1vn\u00fd obor n\u00e1zv\u016f byl ignorov\u00e1n.
+incorrect.descriptor.namespace.useraction=Zm\u011b\u0148te obor n\u00e1zv\u016f v deskriptoru implementace na o\u010dek\u00e1vanou hodnotu.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: Deskriptor implementace {0} na \u0159\u00e1dku {1} ur\u010duje verzi {2} a obor n\u00e1zv\u016f {3}, ale pro tuto verzi by m\u011bl m\u00edt obor n\u00e1zv\u016f {4}.
+incorrect.descriptor.namespace.for.version.explanation=V deskriptoru implementace pro ur\u010denou verzi se o\u010dek\u00e1v\u00e1 specifick\u00fd obor n\u00e1zv\u016f. Nespr\u00e1vn\u00fd obor n\u00e1zv\u016f byl ignorov\u00e1n.
+incorrect.descriptor.namespace.for.version.useraction=Zm\u011b\u0148te obor n\u00e1zv\u016f v deskriptoru implementace na o\u010dek\u00e1vanou hodnotu.
+

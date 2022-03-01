@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "部分應用程式執行中",
     SOME_SERVERS_RUNNING : "部分伺服器執行中",
     SOME_CLUSTERS_RUNNING : "部分叢集執行中",
-    NO_APPS_RUNNING : "無應用程式執行中",
     NO_SERVERS_RUNNING : "無伺服器執行中",
     NO_CLUSTERS_RUNNING : "無叢集執行中",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}：應用程式實例不在執行中", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}：並非所有應用程式都在執行中", // serverName[]
-    NO_APPS_RUNNING : "{0}：無應用程式執行中", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "並非所有應用程式都在執行中的伺服器有 {0} 部", // quantity
     NO_APPS_RUNNING_SERVERS : "沒有應用程式正在執行的伺服器有 {0} 部", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "附註 {0}",  // note value
     SET_ATTRIBUTES: "標籤和中繼資料",
     SETATTR_RUNTIME_NAME: "{0} 位於 {1}",  // runtime, host
-    SAVE: "儲存",
     TAGINVALIDCHARS: "下列字元無效：'/'、'<' 和 '>'。",
     ERROR_GET_TAGS_METADATA: "產品無法取得資源的現行標籤和中繼資料。",
     ERROR_SET_TAGS_METADATA: "發生錯誤，使產品無法設定標籤和中繼資料。",

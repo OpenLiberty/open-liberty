@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,6 +111,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private static final AccessTokenAuthenticatorTest authenticatorTest = new AccessTokenAuthenticatorTest();
     private static final JSSEHelper jssHelper = authenticatorTest.new FakeJSSEHelper();
     private static final String Authorization_Header = "Authorization";
+    private static final String JWT_SEGMENTS = "-segments";
+    private static final String JWT_SEGMENT_INDEX = "-";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String HTTPS_URL = "https://localhost:8020/root";
     private static final String BEARER = "Bearer " + ACCESS_TOKEN;
@@ -119,6 +121,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private static final String BAD_ISSUER = "bad_issuer";
     private static final String SUPPORTED = "supported";
     private static final String REQUIRED = "required";
+    private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_JWT = "application/jwt";
+    private static final String TEXT_PLAIN = "text/plain";
 
     private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator();
     private final AccessTokenAuthenticator sslTokenAuth = new FakeAccessTokenAuthenticator(sslSupport);
@@ -149,8 +154,6 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 allowing(clientConfig).getClientId();
                 will(returnValue(null));
                 allowing(clientConfig).getSSLConfigurationName();
-                will(returnValue(null));
-                allowing(clientConfig).getHeaderName();
                 will(returnValue(null));
                 allowing(clientConfig).getValidationEndpointUrl();
                 will(returnValue(HTTPS_URL));
@@ -257,48 +260,18 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testAuthenticate_UserinfoValidation_GoodOidcResult() throws javax.net.ssl.SSLException {
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_USERINFO));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-                one(clientConfig).getUserIdentifier();
-                will(returnValue(GOOD_USER));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withUserInfoExpectations(true, false);
+        withOkAndEntity(createJsonBasicHttpEntity(true));
+        withUserIdentifier(GOOD_USER);
+        withPropagationTokenAuthenticatedAttribute();
 
         ((FakeAccessTokenAuthenticator) sslTokenAuth).fixSubjectCalled = false;
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
-        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SUCCESS, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+
+        assertSuccessWithOK(oidcResult);
 
         // verify that subject fixup was called
         assertTrue("fixSubject was not called as expected ", ((FakeAccessTokenAuthenticator) sslTokenAuth).fixSubjectCalled);
@@ -307,241 +280,77 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void testAuthenticate_UserinfoValidation_BadUserIdentifier() {
         final String BAD_USER = "bad_user";
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_USERINFO));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-                exactly(2).of(clientConfig).getUserIdentifier();
-                will(returnValue(BAD_USER));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(true));
-
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withUserInfoExpectations(true, true);
+        withOkAndEntity(createJsonBasicHttpEntity(true));
+        withUserIdentifier(BAD_USER);
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.SEND_401 + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SEND_401, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assert401WithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_UserinfoValidation_BadJSONObject() {
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_USERINFO));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(false));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(clientConfig).getInboundPropagation();
-                will(returnValue("supported"));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withUserInfoExpectations(false, false);
+        withInboundPropagationSupported();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assertFailureWithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_disableIssChecking() {
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue("required"));
-                one(clientConfig).getClientSecret();
-                will(returnValue("client_secret"));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(true));
-
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withIntrospectionExpectations(true, false, "client_secret");
+        withOkAndEntity(createJsonBasicHttpEntity(true, GOOD_ISSUER));
+        withoutIssuerChecking();
+        withInboundPropagationRequired();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
-        assertTrue("Expected message was not logged",
-                outputMgr.checkForMessages("CWWKS1735E:"));
-
+        assertFailureWithUnauthorized(oidcResult);
+        assertTrue("Expected message was not logged", outputMgr.checkForMessages("CWWKS1735E:"));
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_disableIssChecking_no_issclaim() {
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-                one(clientConfig).getClientSecret();
-                will(returnValue("client_secret"));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(true));
-                one(clientConfig).getUserIdentifier();
-                will(returnValue(GOOD_USER));
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withIntrospectionExpectations(true, false, "client_secret");
+        withOkAndEntity(createJsonBasicHttpEntity(true));
+        withUserIdentifier(GOOD_USER);
+        withoutIssuerChecking();
+        withPropagationTokenAuthenticatedAttribute();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SUCCESS, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+        assertSuccessWithOK(oidcResult);
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_GoodOidcResult() {
-        SingleTableCache cache = getCache();
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-                one(clientConfig).getClientSecret();
-                will(returnValue("client_secret"));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-                one(clientConfig).getUserIdentifier();
-                will(returnValue(GOOD_USER));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
-
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-                exactly(2).of(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        SingleTableCache cache = withAccessTokenCacheExpectations(false, true);
+        withIntrospectionExpectations(true, false, "client_secret");
+        withOkAndEntity(createJsonBasicHttpEntity(true, GOOD_ISSUER));
+        withUserIdentifier(GOOD_USER);
+        withIssuerChecking(GOOD_ISSUER);
+        withPropagationTokenAuthenticatedAttribute();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SUCCESS, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+        assertSuccessWithOK(oidcResult);
 
         // Verify that the result was cached
         AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
@@ -551,216 +360,109 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_TokenNotActive() {
-        final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
-        final InputStream input = new ByteArrayInputStream(getJSONObjectString(false, currentDate, currentDate, GOOD_ISSUER).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                allowing(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-                one(clientConfig).getClientSecret();
-                will(returnValue(null));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(true));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(true));
-
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_OK));
-
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withIntrospectionExpectations(true, true, null);
+        withOkAndEntity(createJsonBasicHttpEntity(false, GOOD_ISSUER));
+        withInboundPropagationSupported();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assertFailureWithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_BadJSONObject() {
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(true));
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-                one(clientConfig).getClientSecret();
-                will(returnValue(null));
-                one(clientConfig).isHostNameVerificationEnabled();
-                will(returnValue(false));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(true, false);
+        withIntrospectionExpectations(false, false, null);
+        withInboundPropagationRequired();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assertFailureWithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_InvalidValidationMethod() throws javax.net.ssl.SSLException {
-        final String INVALID_VALIDATION = "invalid_validation";
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        withAccessTokenCacheExpectations(false, false);
+        withValidationMethod("invalid_validation");
+        withHttpsRequired(false);
+
         mockery.checking(new Expectations() {
             {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                allowing(clientConfig).getValidationMethod();
-                will(returnValue(INVALID_VALIDATION));
                 one(clientConfig).getTokenEndpointUrl();
                 will(returnValue(HTTPS_URL));
-                one(clientConfig).isHttpsRequired();
-                will(returnValue(false));
-
             }
         });
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assertFailureWithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_NullAccessToken() {
-        final HashMap map = new HashMap();
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(null));
-                one(req).getMethod(); //
-                will(returnValue(ClientConstants.REQ_METHOD_POST));
-                one(req).getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
-                will(returnValue(ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED));
-                one(req).getParameter(ACCESS_TOKEN);
-                will(returnValue(null));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-                //one(clientConfig).getIssuerIdentifier();
-                //will(returnValue(null));
-
-                //one(res).setHeader(with(any(String.class)), with(any(String.class)));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withHeaderName(null);
+        withAuthorizationHeader(null);
+        withAccessTokenInRequestParameter(null);
+        withInboundPropagationSupported();
 
         ProviderAuthenticationResult oidcResult = tokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.FAILURE + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.FAILURE, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assertFailureWithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_ThrowsSSLException() {
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(null));
-                one(req).getMethod();//
-                will(returnValue(ClientConstants.REQ_METHOD_POST));
-                one(req).getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
-                will(returnValue(ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED));
-                one(req).getParameter(ACCESS_TOKEN);
-                will(returnValue(ACCESS_TOKEN));
-
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(false));
-                one(clientConfig).getValidationMethod();
-                will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
-
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-            }
-        });
+        withoutAccessTokenInLtpaCookie();
+        withHeaderName(null);
+        withAuthorizationHeader(null);
+        withAccessTokenCacheExpectations(false, false);
+        withIntrospection();
+        withAccessTokenInRequestParameter(ACCESS_TOKEN);
+        withInboundPropagationRequired();
 
         ProviderAuthenticationResult oidcResult = tokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.SEND_401 + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SEND_401, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+        assert401WithUnauthorized(oidcResult);
     }
 
     @Test
     public void testAuthenticate_resultAlreadyCached() {
-        SingleTableCache cache = getCache();
+        withoutAccessTokenInLtpaCookie();
+        withDefaultBearerAuthorizationHeaderExpectations();
+        SingleTableCache cache = withAccessTokenCacheExpectations(true, true);
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
         AccessTokenCacheEntry cacheEntry = new AccessTokenCacheEntry("unique id", cachedResult);
         cache.put(ACCESS_TOKEN, cacheEntry);
-
-        mockery.checking(new Expectations() {
-            {
-                one(req).getHeader(Authorization_Header);
-                will(returnValue(BEARER));
-                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
-                one(clientConfig).getAccessTokenInLtpaCookie();
-                will(returnValue(false));
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(true));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+        withPropagationTokenAuthenticatedAttribute();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
-        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
-                AuthResult.SUCCESS, oidcResult.getStatus());
-        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+        assertSuccessWithOK(oidcResult);
+    }
+
+    @Test
+    public void testGetBearerAccessTokenToken_JwtSegments() throws Exception {
+        final String expectedAccessToken = "header.payload.signature";
+        final String accessTokenSegment1 = "Bearer " + "header.pay";
+        final String accessTokenSegment2 = "load.signature";
+
+        withHeaderName(Authorization_Header);
+        withAuthorizationHeader(null);
+        withHeader(Authorization_Header + JWT_SEGMENTS, "2");
+        withHeader(Authorization_Header + JWT_SEGMENT_INDEX + "1", accessTokenSegment1);
+        withHeader(Authorization_Header + JWT_SEGMENT_INDEX + "2", accessTokenSegment2);
+
+        String accessTokenFromHeader = AccessTokenAuthenticator.getBearerAccessTokenToken(req, clientConfig);
+
+        assertEquals("The Bearer access token must be built from all the JWT segments.", expectedAccessToken, accessTokenFromHeader);
     }
 
     @Test
@@ -772,12 +474,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = getJSONObjectString(true, minusDate);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-            }
-        });
+        withInboundPropagationSupported();
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
@@ -788,14 +485,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = "{\"user\":\"user1\" , \"active\":true}";
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).requireExpClaimForIntrospection();
-                will(returnValue(true));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-            }
-        });
+        withExpClaimRequired(true);
+        withInboundPropagationRequired();
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
@@ -805,21 +496,11 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void testValidateJsonResponse_noExpirationTime_doNotRequireExpClaim() throws IOException {
         final String JSONSTRING = "{\"user\":\"user1\" , \"active\":true}";
         JSONObject jobj = JSONObject.parse(JSONSTRING);
-        Calendar cal = Calendar.getInstance();
-        Long currentDate = cal.getTimeInMillis() / 1000;
+        Long currentDate = getCurrentDate();
         jobj.put("iat", currentDate);
         jobj.put("iss", GOOD_ISSUER);
-
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).requireExpClaimForIntrospection();
-                will(returnValue(false));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-            }
-        });
+        withIssuerChecking(GOOD_ISSUER);
+        withExpClaimRequired(false);
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertTrue("Response should have been considered valid, but was not.", isValid);
@@ -836,12 +517,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = getJSONObjectString(true, expTime, issueatTime);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-            }
-        });
+        withInboundPropagationSupported();
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
@@ -849,20 +525,13 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testValidateJsonResponse_noIssueAtTime() throws IOException {
-        Calendar cal = Calendar.getInstance();
-        Long expTime = cal.getTimeInMillis() / 1000;
+        Long expTime = getCurrentDate();
 
         final String JSONSTRING = getJSONObjectString(true, expTime);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).requireIatClaimForIntrospection();
-                will(returnValue(true));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-            }
-        });
+        withIatClaimRequired(true);
+        withInboundPropagationRequired();
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
@@ -870,23 +539,13 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testValidateJsonResponse_noIssueAtTime_doNotRequireIatClaim() throws IOException {
-        Calendar cal = Calendar.getInstance();
-        Long expTime = cal.getTimeInMillis() / 1000;
+        Long expTime = getCurrentDate();
 
         final String JSONSTRING = getJSONObjectString(true, expTime);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
         jobj.put("iss", GOOD_ISSUER);
-
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).requireIatClaimForIntrospection();
-                will(returnValue(false));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-            }
-        });
+        withIssuerChecking(GOOD_ISSUER);
+        withIatClaimRequired(false);
 
         Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
         assertTrue("Response should have been considered valid, but was not.", isValid);
@@ -894,19 +553,10 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testValidateJsonResponse_IncompatibleIssuer() throws IOException {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-            }
-        });
+        withIssuerChecking(GOOD_ISSUER);
+        withInboundPropagationSupported();
 
-        Calendar cal = Calendar.getInstance();
-        Long currentDate = cal.getTimeInMillis() / 1000;
+        Long currentDate = getCurrentDate();
 
         final String JSONSTRING = getJSONObjectString(true, currentDate, currentDate, BAD_ISSUER);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
@@ -917,18 +567,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testValidateJsonResponse_NotBeforeTime_Good() throws IOException {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
+        withIssuerChecking(GOOD_ISSUER);
 
-            }
-        });
-
-        Calendar cal = Calendar.getInstance();
-        Long currentDate = cal.getTimeInMillis() / 1000;
+        Long currentDate = getCurrentDate();
 
         final String JSONSTRING = getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER, currentDate);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
@@ -939,16 +580,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testValidateJsonResponse_NotBeforeTime_Bad() throws IOException {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getIssuerIdentifier();
-                will(returnValue(GOOD_ISSUER));
-                one(clientConfig).disableIssChecking();
-                will(returnValue(false));
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-            }
-        });
+        withIssuerChecking(GOOD_ISSUER);
+        withInboundPropagationRequired();
 
         Calendar cal = Calendar.getInstance();
         Long currentDate = cal.getTimeInMillis() / 1000;
@@ -965,7 +598,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testGetLong() {
-        Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
+        Long currentDate = getCurrentDate();
         Integer intCurrentDate = Integer.valueOf(currentDate.toString());
 
         Long result1 = tokenAuth.getLong(intCurrentDate);
@@ -978,41 +611,15 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testHandleResponseMap() throws Exception {
-        final InputStream input = new ByteArrayInputStream(new String("").getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-
         final String failMsg = "CWWKS1720E: The resource server failed the authentication request because the access token which is in the request is not active. The validation method is [null], and the validation endpoint url is ["
                 + HTTPS_URL + "].";
 
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(httpResponse).getFirstHeader("WWW-Authenticate");
-                will(returnValue(header));
-
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_FORBIDDEN));
-
-                one(header).getValue();
-                will(returnValue("error.error_description=invalid_token"));
-
-                one(clientConfig).getValidationMethod();
-                will(returnValue(null));
-
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(SUPPORTED));
-
-                one(clientRequest).getRsFailMsg();
-                will(returnValue(null));
-                one(clientRequest).setRsFailMsg(null, failMsg);
-                one(clientRequest).getRsFailMsg();
-                will(returnValue(failMsg));
-            }
-        });
+        withValidationMethod(null);
+        withForbiddenAndEntity(createBasicHttpEntity(new String("")));
+        withWWWAuthenticateHeader("error.error_description=invalid_token");
+        withInboundPropagationSupported();
+        withNewRsFailMsg(failMsg);
+        withRsFailMsg(failMsg);
 
         respMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
         JSONObject jsonObject = tokenAuth.handleResponseMap(respMap, clientConfig, clientRequest);
@@ -1021,35 +628,13 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void testHandleResponseMap_NullHeader() throws Exception {
-        final InputStream input = new ByteArrayInputStream(new String("").getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-
         final String failMsg = "CWWKS1721E: The resource server received an error [] while it was attempting to validate the access token. It is either expired or cannot be recognized by the validation end point ["
                 + HTTPS_URL + "].";
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(httpResponse).getFirstHeader("WWW-Authenticate");
-                will(returnValue(header));
 
-                one(statusLine).getStatusCode();
-                will(returnValue(HttpServletResponse.SC_FORBIDDEN));
-
-                one(header).getValue();
-                will(returnValue(null));
-
-                allowing(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-
-                one(clientRequest).getRsFailMsg();
-                will(returnValue(null));
-                one(clientRequest).setRsFailMsg(null, failMsg);
-            }
-        });
+        withForbiddenAndEntity(createBasicHttpEntity(new String("")));
+        withWWWAuthenticateHeader(null);
+        withInboundPropagationRequired();
+        withNewRsFailMsg(failMsg);
 
         respMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
         JSONObject jsonObject = tokenAuth.handleResponseMap(respMap, clientConfig, clientRequest);
@@ -1058,32 +643,17 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void test_extractSuccessfulResponse_responseMissingEntity() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(null));
-            }
-        });
+        withEntity(null);
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
     @Test
     public void test_extractSuccessfulResponse_emptyString() throws Exception {
-        final InputStream input = new ByteArrayInputStream(("").getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-                one(clientRequest).getRsFailMsg();
-                will(returnValue("doesn't matter"));
-            }
-        });
+        withEntity(createBasicHttpEntity(new String(""), APPLICATION_JSON));
+        withInboundPropagationRequired();
+        withRsFailMsg("doesn't matter");
+
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
@@ -1092,20 +662,17 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void test_extractSuccessfulResponse_missingContentType() throws Exception {
         String inputString = "This is not JSON";
         final InputStream input = new ByteArrayInputStream(inputString.getBytes());
+        withEntity(httpEntity);
+        withInboundPropagationRequired();
+        withRsFailMsg("doesn't matter");
         mockery.checking(new Expectations() {
             {
-                one(httpResponse).getEntity();
-                will(returnValue(httpEntity));
                 one(httpEntity).getContent();
                 will(returnValue(input));
                 allowing(httpEntity).getContentLength();
                 will(returnValue((long) inputString.length()));
                 allowing(httpEntity).getContentType();
                 will(returnValue(null));
-                one(clientConfig).getInboundPropagation();
-                will(returnValue(REQUIRED));
-                one(clientRequest).getRsFailMsg();
-                will(returnValue("doesn't matter"));
             }
         });
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
@@ -1114,16 +681,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     @Test
     public void test_extractSuccessfulResponse_notJson() throws Exception {
-        final InputStream input = new ByteArrayInputStream(("This is not JSON").getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("text/plain");
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-            }
-        });
+        withEntity(createBasicHttpEntity(new String("This is not JSON"), TEXT_PLAIN));
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
@@ -1131,16 +689,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void test_extractSuccessfulResponse_emptyJson() throws Exception {
         JSONObject responseJson = new JSONObject();
-        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-            }
-        });
+        withEntity(createBasicHttpEntity(new String(responseJson.toString()), APPLICATION_JSON));
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNotNull("Result should not have been null but was.", result);
         assertTrue("Result should have been empty, but was " + result + ".", result.isEmpty());
@@ -1151,16 +700,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         JSONObject responseJson = new JSONObject();
         responseJson.put("key1", "value1");
         responseJson.put("key2", "value2");
-        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/json");
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-            }
-        });
+        withEntity(createBasicHttpEntity(new String(responseJson.toString()), APPLICATION_JSON));
         JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNotNull("Result should not have been null but was.", result);
         assertEquals("Result did not match the expected value.", responseJson, result);
@@ -1171,18 +711,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         JSONObject responseJson = new JSONObject();
         responseJson.put("key1", "value1");
         responseJson.put("key2", "value2");
-        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/jwt");
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(clientConfig).getId();
-                will(returnValue("configId"));
-            }
-        });
+        withEntity(createBasicHttpEntity(new String(responseJson.toString()), APPLICATION_JWT));
+        withConfigId();
+
         try {
             JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
             fail("Should have thrown an exception, but got [" + result + "].");
@@ -1202,12 +733,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_notJwt() throws Exception {
         String rawResponse = "This is not in JWT format";
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getId();
-                will(returnValue("configId"));
-            }
-        });
+        withConfigId();
+
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got [" + result + "].");
@@ -1219,12 +746,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
         String rawResponse = "aaa.bbb.ccc";
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getId();
-                will(returnValue("configId"));
-            }
-        });
+        withConfigId();
+
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got [" + result + "].");
@@ -1241,12 +764,11 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         }
         rawResponse += Base64Coder.base64Encode("part" + 5);
 
+        withConfigId();
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getJweDecryptionKey();
                 will(returnValue(decryptionKey));
-                allowing(clientConfig).getId();
-                will(returnValue("configId"));
             }
         });
         try {
@@ -1295,6 +817,33 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 + "}";
     }
 
+    private Long getCurrentDate() {
+        return Calendar.getInstance().getTimeInMillis() / 1000;
+    }
+
+    private BasicHttpEntity createJsonBasicHttpEntity(Boolean active, String issuer) {
+        Long currentDate = getCurrentDate();
+        return createBasicHttpEntity(getJSONObjectString(active, currentDate, currentDate, issuer), APPLICATION_JSON);
+    }
+
+    private BasicHttpEntity createJsonBasicHttpEntity(Boolean active) {
+        Long currentDate = getCurrentDate();
+        return createBasicHttpEntity(getJSONObjectString(active, currentDate, currentDate), APPLICATION_JSON);
+    }
+
+    private BasicHttpEntity createBasicHttpEntity(String string, String contentType) {
+        BasicHttpEntity entity = createBasicHttpEntity(string);
+        entity.setContentType(contentType);
+        return entity;
+    }
+
+    private BasicHttpEntity createBasicHttpEntity(String string) {
+        InputStream input = new ByteArrayInputStream(string.getBytes());
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        return entity;
+    }
+
     private SingleTableCache getCache() {
         return new SingleTableCache(1000 * 60);
     }
@@ -1304,8 +853,300 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         Map<String, Object> accessTokenInfo = new HashMap<String, Object>();
         accessTokenInfo.put("exp", expTime);
         customProperties.put(Constants.ACCESS_TOKEN_INFO, accessTokenInfo);
-        ProviderAuthenticationResult result = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, GOOD_USER, new Subject(), customProperties, HTTPS_URL);
-        return result;
+        return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, GOOD_USER, new Subject(), customProperties, HTTPS_URL);
+    }
+
+    private void withoutAccessTokenInLtpaCookie() {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+            }
+        });
+    }
+
+    private void withDefaultBearerAuthorizationHeaderExpectations() {
+        withHeaderName(null);
+        withAuthorizationHeader(BEARER);
+    }
+
+    private void withHeaderName(final String headerName) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getHeaderName();
+                will(returnValue(headerName));
+            }
+        });
+    }
+
+    private void withAuthorizationHeader(final String value) {
+        withHeader(Authorization_Header, value);
+    }
+
+    private void withAccessTokenInRequestParameter(final String accessToken) {
+        withHeader(ClientConstants.REQ_CONTENT_TYPE_NAME, ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED);
+        mockery.checking(new Expectations() {
+            {
+                one(req).getMethod();
+                will(returnValue(ClientConstants.REQ_METHOD_POST));
+                one(req).getParameter(ACCESS_TOKEN);
+                will(returnValue(accessToken));
+            }
+        });
+    }
+
+    private void withHeader(final String header, final String value) {
+        mockery.checking(new Expectations() {
+            {
+                one(req).getHeader(header);
+                will(returnValue(value));
+            }
+        });
+    }
+
+    private SingleTableCache withAccessTokenCacheExpectations(final boolean tokenReuse, final boolean accessTokenCacheEnabled) {
+        final SingleTableCache cache;
+
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTokenReuse();
+                will(returnValue(tokenReuse));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(accessTokenCacheEnabled));
+            }
+        });
+
+        if (accessTokenCacheEnabled) {
+            cache = getCache();
+            mockery.checking(new Expectations() {
+                {
+                    allowing(clientConfig).getCache();
+                    will(returnValue(cache));
+                }
+            });
+        } else {
+            cache = null;
+        }
+        return cache;
+    }
+
+    private void withUserInfoExpectations(final boolean hostNameVerificationEnabled, final boolean httpsRequired) {
+        withValidationMethod(ClientConstants.VALIDATION_USERINFO);
+        commonValidationExpectations(hostNameVerificationEnabled, httpsRequired);
+    }
+
+    private void withIntrospection() {
+        withValidationMethod(ClientConstants.VALIDATION_INTROSPECT);
+    }
+
+    private void withIntrospectionExpectations(final boolean hostNameVerificationEnabled, final boolean httpsRequired, final String clientSecret) {
+        withValidationMethod(ClientConstants.VALIDATION_INTROSPECT);
+        commonValidationExpectations(hostNameVerificationEnabled, httpsRequired);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+            }
+        });
+    }
+
+    private void withValidationMethod(final String validationMethod) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getValidationMethod();
+                will(returnValue(validationMethod));
+            }
+        });
+    }
+
+    private void commonValidationExpectations(final boolean hostNameVerificationEnabled, final boolean httpsRequired) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).isHostNameVerificationEnabled();
+                will(returnValue(hostNameVerificationEnabled));
+            }
+        });
+        withHttpsRequired(httpsRequired);
+    }
+
+    private void withHttpsRequired(final boolean httpsRequired) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).isHttpsRequired();
+                will(returnValue(httpsRequired));
+            }
+        });
+    }
+
+    private void withWWWAuthenticateHeader(final String value) {
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getFirstHeader("WWW-Authenticate");
+                will(returnValue(header));
+
+                one(header).getValue();
+                will(returnValue(value));
+            }
+        });
+    }
+
+    private void withInboundPropagationSupported() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getInboundPropagation();
+                will(returnValue(SUPPORTED));
+            }
+        });
+    }
+
+    private void withInboundPropagationRequired() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getInboundPropagation();
+                will(returnValue(REQUIRED));
+            }
+        });
+    }
+
+    private void withNewRsFailMsg(final String msg) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientRequest).getRsFailMsg();
+                will(returnValue(null));
+                one(clientRequest).setRsFailMsg(null, msg);
+            }
+        });
+    }
+
+    private void withRsFailMsg(final String msg) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientRequest).getRsFailMsg();
+                will(returnValue(msg));
+            }
+        });
+    }
+
+    private void withOkAndEntity(final BasicHttpEntity entity) {
+        withEntityAndStatusCode(entity, HttpServletResponse.SC_OK);
+    }
+
+    private void withForbiddenAndEntity(final BasicHttpEntity entity) {
+        withEntityAndStatusCode(entity, HttpServletResponse.SC_FORBIDDEN);
+    }
+
+    private void withEntityAndStatusCode(final BasicHttpEntity entity, int statusCode) {
+        withEntity(entity);
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getStatusLine();
+                will(returnValue(statusLine));
+                one(statusLine).getStatusCode();
+                will(returnValue(statusCode));
+            }
+        });
+    }
+
+    private void withEntity(final HttpEntity httpEntity) {
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(httpEntity));
+            }
+        });
+    }
+
+    private void withUserIdentifier(final String userIdentifier) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getUserIdentifier();
+                will(returnValue(userIdentifier));
+            }
+        });
+    }
+
+    private void withoutIssuerChecking() {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).disableIssChecking();
+                will(returnValue(true));
+            }
+        });
+    }
+
+    private void withIssuerChecking(final String issuerIdentifier) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+                one(clientConfig).disableIssChecking();
+                will(returnValue(false));
+            }
+        });
+    }
+
+    private void withExpClaimRequired(final boolean required) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).requireExpClaimForIntrospection();
+                will(returnValue(required));
+            }
+        });
+    }
+
+    private void withIatClaimRequired(final boolean required) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).requireIatClaimForIntrospection();
+                will(returnValue(required));
+            }
+        });
+    }
+
+    private void withPropagationTokenAuthenticatedAttribute() {
+        mockery.checking(new Expectations() {
+            {
+                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+            }
+        });
+    }
+
+    private void withConfigId() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+    }
+
+    private void assertSuccessWithOK(ProviderAuthenticationResult oidcResult) {
+        assertStatus(AuthResult.SUCCESS, oidcResult);
+        assertStatusCode(HttpServletResponse.SC_OK, oidcResult);
+    }
+
+    private void assertFailureWithUnauthorized(ProviderAuthenticationResult oidcResult) {
+        assertStatus(AuthResult.FAILURE, oidcResult);
+        assertUnauthorized(oidcResult);
+    }
+
+    private void assert401WithUnauthorized(ProviderAuthenticationResult oidcResult) {
+        assertStatus(AuthResult.SEND_401, oidcResult);
+        assertUnauthorized(oidcResult);
+    }
+
+    private void assertStatus(AuthResult expectedStatus, ProviderAuthenticationResult oidcResult) {
+        assertEquals("Unexpected status, expected:" + expectedStatus + " but received:" + oidcResult.getStatus() + ".",
+                expectedStatus, oidcResult.getStatus());
+    }
+
+    private void assertUnauthorized(ProviderAuthenticationResult oidcResult) {
+        assertStatusCode(HttpServletResponse.SC_UNAUTHORIZED, oidcResult);
+    }
+
+    private void assertStatusCode(int expectedStatusCode, ProviderAuthenticationResult oidcResult) {
+        assertEquals("Unexpected status code, expected:" + expectedStatusCode + " but received:" + oidcResult.getHttpStatusCode() + ".",
+                expectedStatusCode, oidcResult.getHttpStatusCode());
     }
 
     final class FakeAccessTokenAuthenticator extends AccessTokenAuthenticator {

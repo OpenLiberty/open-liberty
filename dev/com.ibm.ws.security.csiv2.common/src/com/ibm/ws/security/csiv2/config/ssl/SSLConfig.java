@@ -85,7 +85,7 @@ public class SSLConfig {
         return getCipherSuites(sslAliasName, candidateCipherSuites, props);
     }
 
-    String[] getCipherSuites(String sslAliasName, String[] candidateCipherSuites, Properties props) throws SSLException {
+    public String[] getCipherSuites(String sslAliasName, String[] candidateCipherSuites, Properties props) throws SSLException {
         String enabledCipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
         if (enabledCipherString != null) {
             String[] requested = enabledCipherString.split("[,\\s]+");
@@ -97,15 +97,21 @@ public class SSLConfig {
         }
     }
 
-    public String getSSLProtocol(String sslAliasName) throws SSLException {
-        Properties props = jsseHelper.getProperties(sslAliasName);
+    public String[] getSSLProtocol(Properties props) throws SSLException {
         String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
 
-        // only set the protocol on the socket if it is set to a specific protocol
-        if (protocol.equals(Constants.PROTOCOL_SSL) || protocol.equals(Constants.PROTOCOL_TLS))
-            protocol = null;
+        // protocol(s) need to be in an array
+        String[] protocols = protocol.split(",");
 
-        return protocol;
+        // we only want to set the protocol on the socket if it a specific protocol name
+        // don't set to TLS or SSL
+        if (protocols.length == 1) {
+            if (protocols[0].equals(Constants.PROTOCOL_TLS) || protocols[0].equals(Constants.PROTOCOL_SSL)) {
+                protocols = null;
+            }
+        }
+
+        return protocols;
     }
 
     public boolean getEnforceCipherOrder(String sslAliasName) throws SSLException {
@@ -342,5 +348,26 @@ public class SSLConfig {
         }
 
         return Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+    }
+
+    /**
+     * @param sslCfgAlias
+     * @return
+     */
+    public Properties getSSLCfgProperties(String sslCfgAlias) {
+        Properties sslProps = null;
+        final String alias = sslCfgAlias;
+        try {
+            sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return jsseHelper.getProperties(alias);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            // Can't get the properties so return false
+            return null;
+        }
+        return sslProps;
     }
 }

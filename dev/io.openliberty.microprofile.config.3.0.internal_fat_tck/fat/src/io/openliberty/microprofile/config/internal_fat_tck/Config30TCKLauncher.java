@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -52,6 +59,10 @@ public class Config30TCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig30Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.config.3.0.internal_fat_tck", this.getClass() + ":launchConfig30Tck");
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Config");
+        resultInfo.put("feature_version", "3.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 }

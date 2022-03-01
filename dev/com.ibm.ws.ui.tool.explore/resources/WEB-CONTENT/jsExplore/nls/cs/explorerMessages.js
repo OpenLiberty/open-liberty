@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Některé aplikace jsou spuštěné",
     SOME_SERVERS_RUNNING : "Některé servery jsou spuštěné",
     SOME_CLUSTERS_RUNNING : "Některé klastry jsou spuštěné",
-    NO_APPS_RUNNING : "Žádné aplikace nejsou spuštěné",
     NO_SERVERS_RUNNING : "Žádné servery nejsou spuštěné",
     NO_CLUSTERS_RUNNING : "Žádné klastry nejsou spuštěné",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: není spuštěna instance aplikace", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: nejsou spuštěny všechny aplikace", // serverName[]
-    NO_APPS_RUNNING : "{0}: nejsou spuštěny žádné aplikace", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} serverů, kde nejsou spuštěny všechny aplikace", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} serverů, kde nejsou spuštěny žádné aplikace", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Poznámka {0}",  // note value
     SET_ATTRIBUTES: "Značky a metadata",
     SETATTR_RUNTIME_NAME: "{0} pro {1}",  // runtime, host
-    SAVE: "Uložit",
     TAGINVALIDCHARS: "Znaky '/', '<' a '>' nejsou platné.",
     ERROR_GET_TAGS_METADATA: "Produkt nemůže získat aktuální značky a metadata pro prostředek.",
     ERROR_SET_TAGS_METADATA: "Chyba zabránila produktu v nastavení značek a metadat.",

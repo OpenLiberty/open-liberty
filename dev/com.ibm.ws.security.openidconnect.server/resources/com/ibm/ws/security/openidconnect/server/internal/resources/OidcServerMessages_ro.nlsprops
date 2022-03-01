@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Nu a putut fi procesat\u0103 o cerere 
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Producerea unui \u015fir JWK JSON necesit\u0103 ca atributul signatureAlgorithm al furnizorului de OpenID Connect s\u0103 fie setat la RS256. Atributele KeyStoreRef \u015fi keyAliasName trebuie s\u0103 fie valide dac\u0103 sunt specificate. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Corecta\u0163i atributele de configurare ale furnizorului de OpenID Connect.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Claim-urile suplimentare de la un jeton ID ter\u021b\u0103 parte nu au putut fi propagate pentru furnizorul OpenID Connect{0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Nu au putut fi extrase claim-urile de la jetonul ID ter\u021b\u0103 parte. Vizualiza\u021bi mesajul de eroare pentru mai multe informa\u021bii.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul ter\u021b OpenID Connect trimite un jeton ID valid.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Versiunea Java folosit\u0103 de acest runtime [{0}] nu este suportat\u0103 de ID token Mediator SPI. Versiunea suportat\u0103 de Java este 1.7 sau mai \u00eenalt\u0103.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Versiunea Java din mesaj nu poate suporta func\u0163ia ID token Mediator SPI. 

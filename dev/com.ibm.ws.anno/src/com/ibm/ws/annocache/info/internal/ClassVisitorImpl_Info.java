@@ -24,6 +24,8 @@ import org.objectweb.asm.Type;
 
 import com.ibm.ws.annocache.info.internal.AnnotationVisitorImpl_Info.AnnotationInfoVisitor;
 
+import io.openliberty.asm.ASMHelper;
+
 // Visit rules:
 //
 // Class Visitor:
@@ -144,7 +146,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * annotations.
          */
         public MethodVisitorImpl_Info() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
 
             this.methodInfo = null;
             this.methodAnnotations = null;
@@ -284,7 +286,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * to a field, and has a null method and null annotations.
          */
         public FieldVisitorImpl_Info() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
 
             fieldInfo = null;
             annotations = null;
@@ -356,7 +358,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
     //
 
     public ClassVisitorImpl_Info(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         String methodName = "<init>";
 

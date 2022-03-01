@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,16 +111,15 @@ public class FATUtils {
                     }
                 }
 
+                // This next test appears to be a bit dodgy on z/OS. Since the test clearly thinks the server is
+                // stopped, we'll retry hoping it's gone on the next attempt.
                 if (server.resetStarted() == 0) {
                     String pid = server.getPid();
                     Log.info(c, method,
                              "Server " + server.getServerName() + " is already running. (pid: " + ((pid != null ? pid : "unknown")) + ")");
                     server.printProcesses();
-                    
-                    if (attempt == 1) {
-                    	throw new Exception(server.getServerName() + " was already started.");
-                    }
-                    break;
+
+                    continue;
                 }
 
                 ProgramOutput po = null;
@@ -163,6 +162,13 @@ public class FATUtils {
                                                      + " Maybe it is on the way down.");
                         server.printProcessHoldingPort(server.getHttpDefaultPort());
                     }
+                } else {
+                	// Start failed in an unusual way. Make sure it's stopped prior to next attempt.
+                	try {
+						server.stopServer(".*");
+					} catch (Exception e) {
+						Log.error(c, method, e);
+					}
                 }
             } while (attempt < maxAttempts);
 

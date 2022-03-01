@@ -39,7 +39,7 @@ public class ExtendedMessageEndpointHandler extends MessageEndpointHandler {
     @Override
     protected XAResource getNativeRRSXAR(UOWCoordinator coord) throws XAResourceNotAvailableException {
         try {
-            return getBaseMessageEndpointFactory().getBatchExecutor().getRRSXAResource(null, coord.getXid());
+            return getBaseMessageEndpointFactory().getRRSXAResource(coord.getXid());
         } catch (XAResourceNotAvailableException xnex) {
             throw xnex;
         } catch (Exception ex) {

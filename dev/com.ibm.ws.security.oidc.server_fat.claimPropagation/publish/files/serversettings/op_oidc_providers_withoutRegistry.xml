@@ -1,0 +1,100 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+<!-- OP Providers -->
+
+<!-- For use with thrid party OP that does not propagate test claims -->
+    <openidConnectProvider 
+        id="OP_noExtraClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_noExtraClaims_3rdPartyDoesNotPropagate">
+    </openidConnectProvider>
+
+
+    <openidConnectProvider 
+        id="OP_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_propagateGroupIdsIdTokenClaims_3rdPartyDoesNotPropagate"
+        thirdPartyIDTokenClaims="groupIds">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_propagate1TestClaimIdTokenClaims_3rdPartyDoesNotPropagate"
+        thirdPartyIDTokenClaims="testProp1">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_propagate2TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        thirdPartyIDTokenClaims="testProp1,testProp2">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        oauthProviderRef="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyDoesNotPropagate"
+        thirdPartyIDTokenClaims="testProp1,testProp2,testProp5">
+    </openidConnectProvider>
+
+<!-- For use with thrid party OP that does propagate test claims -->
+    <openidConnectProvider 
+        id="OP_noExtraClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_noExtraClaims_3rdPartyPropagates">
+    </openidConnectProvider>
+
+
+    <openidConnectProvider 
+        id="OP_propagateGroupIdsIdTokenClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_propagateGroupIdsIdTokenClaims_3rdPartyPropagates"
+        thirdPartyIDTokenClaims="groupIds">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate1TestClaimIdTokenClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_propagate1TestClaimIdTokenClaims_3rdPartyPropagates"
+        thirdPartyIDTokenClaims="testProp1">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_propagate2TestClaimsIdTokenClaims_3rdPartyPropagates"
+        thirdPartyIDTokenClaims="testProp1,testProp2">
+    </openidConnectProvider>
+
+    <openidConnectProvider 
+        id="OP_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        oauthProviderRef="oauth_propagate3TestClaimsIdTokenClaims_3rdPartyPropagates"
+        thirdPartyIDTokenClaims="testProp1,testProp2,testProp5">
+    </openidConnectProvider>
+
+<!-- override claims OPs -->
+<!-- iss -->
+    <openidConnectProvider 
+        id="OP_issClaimInIdToken"
+        oauthProviderRef="oauth_issClaimInIdToken"
+        thirdPartyIdTokenClaims="iss">
+    </openidConnectProvider>
+
+<!-- sub -->    
+    <openidConnectProvider 
+        id="OP_subClaimInIdToken"
+        oauthProviderRef="oauth_subClaimInIdToken"
+        thirdPartyIdTokenClaims="sub">
+    </openidConnectProvider>
+
+<!-- aud -->    
+    <openidConnectProvider 
+        id="OP_audClaimInIdToken"
+        oauthProviderRef="oauth_audClaimInIdToken"
+        thirdPartyIdTokenClaims="aud">
+    </openidConnectProvider>
+ 
+</server>

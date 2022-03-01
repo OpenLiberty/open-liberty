@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.cdi.internal.interfaces;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -287,15 +288,15 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
     String getEEModuleDescriptorId();
 
     /**
-     * Get hold of the class names for extensions registered via the SPI
+     * Get hold of suppliers for extensions registered via the SPI
      *
-     * @return a set of extension class names. 
+     * @return a set of extension class names.
      */
-    Set<String> getSPIExtensionClassNames();
+    Set<Supplier<Object>> getSPIExtensionSuppliers();
 
     /**
      * Register the extensions in this BDA that were aquired via the SPI.
      */
-    void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames);
+    void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers);
 
 }

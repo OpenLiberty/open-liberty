@@ -201,7 +201,7 @@ error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=\u5982\u
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=\u8bf7\u66f4\u65b0\u7ed1\u5b9a\u7c7b\u578b\u7684\u503c\u4ee5\u4e0e WSDL \u6587\u6863\u4e2d\u7684\u7ed1\u5b9a\u7c7b\u578b\u76f8\u5339\u914d\u3002
 
 #{0}=name of JMX operation
-err.unsupported.jmx.operation=CWWKW0059E: \u4e0d\u652f\u6301\u6267\u884c\u64cd\u4f5c {0}\u3002
+err.unsupported.jmx.operation=CWWKW0059E: \u4e0d\u652f\u6301\u64cd\u4f5c {0}\u3002
 err.unsupported.jmx.operation.explanation=\u4e0d\u5141\u8bb8\u6267\u884c\u6240\u9700\u7684\u64cd\u4f5c\u3002
 err.unsupported.jmx.operation.useraction=\u4e0d\u8981\u8fd0\u884c\u4e0d\u53d7\u652f\u6301\u7684\u64cd\u4f5c\u3002
 

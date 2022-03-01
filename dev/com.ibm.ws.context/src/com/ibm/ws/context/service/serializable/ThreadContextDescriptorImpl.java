@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 /**
  * Represents captured thread context
  */
+@SuppressWarnings("deprecation")
 public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, ThreadContextDeserializationInfo {
     private static final TraceComponent tc = Tr.register(ThreadContextDescriptorImpl.class);
+
+    /**
+     * Provider name for clearing MicroProfile context types.
+     */
+    private static final String MP_CLEARED_CONTEXT = "com.ibm.ws.concurrent.mp.cleared.context.provider";
 
     /**
      * Execution properties.
@@ -147,7 +153,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < contextBytes.length; i++) {
                         String providerName = providerNames.get(i);
                         ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
-                        if (contextProvider == null && !"com.ibm.ws.concurrent.mp.cleared.context.provider".equals(providerName))
+                        if (contextProvider == null && !MP_CLEARED_CONTEXT.equals(providerName))
                             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
                         contextProviders[i] = contextProvider;
                         if (trace && tc.isDebugEnabled())
@@ -240,6 +246,14 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
     @Trivial
     public final Map<String, String> getExecutionProperties() {
         return execProps;
+    }
+
+    @Override
+    @Trivial
+    public final boolean isSerializable() {
+        // All other thread context providers should always return true
+        int i = providerNames.indexOf("io.openliberty.thirdparty.context.provider");
+        return i < 0 || threadContext.get(i).isSerializable();
     }
 
     /**
@@ -378,7 +392,12 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < threadContext.size(); i++) {
                         String providerName = providerNames.get(i);
                         providerNamesForDefaultContext.remove(providerName);
-                        contextNotApplied.put(threadContextMgr.threadContextProviders.getServiceWithException(providerName), threadContext.get(i));
+
+                        ThreadContextProvider provider = MP_CLEARED_CONTEXT.equals(providerName) //
+                                        ? threadContextMgr.threadContextProviders.getService(providerName) // optional
+                                        : threadContextMgr.threadContextProviders.getServiceWithException(providerName);
+                        if (provider != null)
+                            contextNotApplied.put(provider, threadContext.get(i));
                     }
 
                     // First pass through default context
@@ -408,8 +427,25 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     }
                 }
 
-            if (contextNotApplied.size() > 0)
-                throw new IllegalStateException(contextNotApplied.keySet().toString());
+            // Process remaining context that lacks prerequisites but is cleared/defaulted
+            if (!contextNotApplied.isEmpty()) {
+                for (Iterator<Entry<ThreadContextProvider, ThreadContext>> it = contextNotApplied.entrySet().iterator(); it.hasNext();) {
+                    Entry<ThreadContextProvider, ThreadContext> entry = it.next();
+                    ThreadContext context = entry.getValue();
+                    if (context == null) {
+                        ThreadContextProvider provider = entry.getKey();
+                        context = provider.createDefaultThreadContext(execProps);
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "taskStarting " + toString(context));
+                        context.taskStarting();
+                        contextAppliedToThread.put(provider, context);
+                        it.remove();
+                    }
+                }
+
+                if (!contextNotApplied.isEmpty())
+                    throw new IllegalStateException(contextNotApplied.keySet().toString());
+            }
         } catch (Throwable x) {
             // In the event of failure, undo all context propagation up to this point.
             ArrayList<ThreadContext> contextToRemove = new ArrayList<ThreadContext>(contextAppliedToThread.values());

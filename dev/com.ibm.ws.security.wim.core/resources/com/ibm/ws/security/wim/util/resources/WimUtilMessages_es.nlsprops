@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: La operaci\u00f3n del regis
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= El tipo de entidad debe definirse con un nombre de tipo de entidad y al menos una propiedad RDN (nombre distinguido relativo) correspondiente.
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modifique y corrija la definici\u00f3n de tipo de entidad en el archivo server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La definici\u00f3n de entrada base {0} no es v\u00e1lida.  Corrija la definici\u00f3n de entrada base en el archivo server.xml. Por ejemplo, la sintaxis es <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= La definici\u00f3n especificada de la entrada base es incorrecta. La sintaxis para definir una entrada base es <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Modifique y corrija la definici\u00f3n de entrada base en el archivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La definici\u00f3n de entrada base {0} no es v\u00e1lida.  Corrija la definici\u00f3n de entrada base en el archivo server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=La definici\u00f3n de entrada base especificada no es v\u00e1lida.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Especifique una definici\u00f3n de entrada base v\u00e1lida en el archivo server.xml.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: La operaci\u00f3n del registro de usuarios no ha podido completarse. La definici\u00f3n de reino {0} no es v\u00e1lida. Corrija la definici\u00f3n de reino en el archivo server.xml.
 INVALID_REALM_DEFINITION.explanation= Falta el c\u00f3digo de reino o no es v\u00e1lido debido a que falta un atributo necesario.
@@ -220,9 +220,9 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Falta la configuraci\u
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=No hay ninguna configuraci\u00f3n de grupo entre repositorios definida para el repositorio.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Consulte el archivo de registro para ver el motivo del error. Compruebe la configuraci\u00f3n del repositorio.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: El tipo de entidad {0} especificado no es un tipo de entidad v\u00e1lido para esta operaci\u00f3n.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: El tipo de entidad especificado {0} no es v\u00e1lido para esta operaci\u00f3n.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Se ha solicitado una operaci\u00f3n en una entidad, pero dicha operaci\u00f3n no soporta el tipo de entidad especificado.
-ENTITY_TYPE_NOT_SUPPORTED.useraction=Aseg\u00farese de que las entidades proporcionadas en la entrada son de los tipos de entidad soportados y elimine cualquier tipo de entidad no soportado de la entrada.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Aseg\u00farese de que las entidades proporcionadas en la entrada son de los tipos de entidad admitidos y elimine cualquier tipo de entidad no admitido de la entrada.
 
 CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: La propiedad RDN {0} para el tipo de entidad {1} se ha proporcionado en la entrada. El nombre exclusivo no se puede crear en el repositorio subyacente porque la informaci\u00f3n de RDN especificada en la entrada es ambigua.
 CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Al crear una entidad, el nombre distinguido relativo (RDN) debe estar bien formato y contener propiedades que no sean ambiguas. Por ejemplo, el tipo de entidad OrgContainer puede representar una organizaci\u00f3n (que utiliza la propiedad de RDN 'o') o una unidad organizativa (que utiliza la propiedad de RDN 'ou') en un repositorio subyacente. Si se han especificado ambas, 'o' y 'ou', en el RDN para el objeto de datos de entrada para la nueva entidad, no se puede crear un nombre exclusivo para la nueva entidad.
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: La operaci\u00f3n de registro de usuarios no se
 ENTITY_SEARCH_FAILED.explanation=La entidad no puede buscarse debido a la raz\u00f3n especificada por el registro subyacente.
 ENTITY_SEARCH_FAILED.useraction=Revise el mensaje de la raz\u00f3n y el archivo de rastreo para determinar la causa de la anomal\u00eda. Arregle el error y vuelva a intentarlo.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar porque faltaba la contrase\u00f1a o estaba vac\u00eda.
-MISSING_OR_EMPTY_PASSWORD.explanation=Si se especifica el nombre de principal durante el proceso de inicio de sesi\u00f3n, la contrase\u00f1a no puede estar vac\u00eda ni ser nula.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar porque falta la contrase\u00f1a o est\u00e1 vac\u00eda.
+MISSING_OR_EMPTY_PASSWORD.explanation=Si se especifica el nombre de principal durante el inicio de sesi\u00f3n, la contrase\u00f1a no puede estar vac\u00eda ni ser nula.
 MISSING_OR_EMPTY_PASSWORD.useraction=Especifique la contrase\u00f1a.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar ya que la generaci\u00f3n del certificado ha fallado.

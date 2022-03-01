@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,15 +43,17 @@ Import-Package: \
  org.jboss.resteasy.spi, \
  org.jboss.resteasy.util, \
  *
- 
+
 
 -buildpath: \
-  io.openliberty.jakarta.annotation.2.0, \
-  io.openliberty.jakarta.restfulWS.3.0, \
-  io.openliberty.jakarta.servlet.5.0, \
-  com.ibm.websphere.org.osgi.core;version=latest, \
-  com.ibm.websphere.org.osgi.service.component;version=latest, \
-  com.ibm.ws.logging.core, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.security.authorization.util;version=latest, \
-  io.openliberty.org.jboss.resteasy.common;version=latest
+	io.openliberty.jakarta.annotation.2.0,\
+	io.openliberty.jakarta.restfulWS.3.0,\
+	io.openliberty.jakarta.servlet.5.0,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.authorization.util;version=latest,\
+	io.openliberty.org.jboss.resteasy.common;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest

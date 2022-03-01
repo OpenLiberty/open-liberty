@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainer;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
@@ -614,6 +615,11 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             }
         }
 
+        for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
+            //add any custom archives from ExtensionArchiveProvider service providers
+            extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
+        }
+
         if (CDIUtils.isDevelopementMode()) {
             //add the probeExcension
             extensionSet.add(getProbeExtensionArchive());
@@ -650,6 +656,18 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         if (webSphereCDIExtensionMetaData instanceof CDIExtensionMetadataInternal) {
             CDIExtensionMetadataInternal internalExtension = (CDIExtensionMetadataInternal) webSphereCDIExtensionMetaData;
             applicationBDAsVisible = internalExtension.applicationBeansVisible();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "newSPIExtensionArchive", "***We are creating a new CDI Extension Archive***");
+            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as beans: " + String.join(", ", extra_classes));
+            Tr.debug(tc, "newSPIExtensionArchive", "The following classes will be registered as extensions: " + String.join(", ", extensionClassNames));
+            Tr.debug(tc, "newSPIExtensionArchive", "The following annotations will be registered as bean defining annotations: " + String.join(", ", extraAnnotations));
+            if (applicationBDAsVisible) {
+                Tr.debug(tc, "newSPIExtensionArchive", "The extension will be able to see and inject beans provided by the application and other extensions");
+            } else {
+                Tr.debug(tc, "newSPIExtensionArchive", "The extension will **NOT** be able to see and inject beans provided by the application and other extensions");
+            }
         }
 
         ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,

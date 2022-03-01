@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -974,4 +974,115 @@ public class LdapHelper {
 
         return Integer.toHexString(value);
     }
+
+    /**
+     * Encode some special characters. Then escape additional special characters.
+     * This happens during login and search. When logging in, we will have a
+     * literal name so we will encode asterisks. For search, the asterisk is
+     * a wildcard and we will ignore it.
+     *
+     * @param id             The principal name
+     * @param encodeAsterisk True if asterisks should be encoded
+     * @return The encoded principal name
+     */
+    @FFDCIgnore(InvalidNameException.class)
+    public static String encode(String id, boolean encodeAsterisk) {
+        try {
+            new LdapName(id);
+        } catch (InvalidNameException e) {
+            if (id != null) {
+                id = encodeForLDAP(id, encodeAsterisk);
+                id = encodeForDN(id);
+            }
+        }
+        return id;
+    }
+
+    /**
+     * Encode \ * ( ) for LDAP queries.
+     *
+     * @param input          The principalName to encode
+     * @param encodeAsterisk True if asterisks should also be encoded
+     * @return The encoded principalName
+     */
+    private static String encodeForLDAP(String input, boolean encodeAsterisk) {
+        if (input == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+
+            switch (c) {
+                case '\\':
+                    sb.append("\\5c");
+                    break;
+                case '*':
+                    if (encodeAsterisk)
+                        sb.append("\\2a");
+                    else
+                        sb.append(c);
+                    break;
+                case '(':
+                    sb.append("\\28");
+                    break;
+                case ')':
+                    sb.append("\\29");
+                    break;
+                case '\0':
+                    sb.append("\\00");
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Escape , + " < > ; in principalNames before searching.
+     *
+     * @param input The principalName to escape
+     * @return The escaped principalName
+     */
+    private static String encodeForDN(String input) {
+        if (input == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        if ((input.length() > 0) && ((input.charAt(0) == ' ') || (input.charAt(0) == '#'))) {
+            sb.append('\\'); // add the leading backslash if needed
+        }
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            switch (c) {
+                case ',':
+                    sb.append("\\,");
+                    break;
+                case '+':
+                    sb.append("\\+");
+                    break;
+                case '"':
+                    sb.append("\\\"");
+                    break;
+                case '<':
+                    sb.append("\\<");
+                    break;
+                case '>':
+                    sb.append("\\>");
+                    break;
+                case ';':
+                    sb.append("\\;");
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
+        // add the trailing backslash if needed
+        if ((input.length() > 1) && (input.charAt(input.length() - 1) == ' ')) {
+            sb.insert(sb.length() - 1, '\\');
+        }
+        return sb.toString();
+    }
+
 }

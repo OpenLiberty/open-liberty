@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,11 @@
 package com.ibm.ws.microprofile.mpjwt20.tck;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,6 +25,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -51,7 +57,11 @@ public class Mpjwt20TCKLauncher_noaud_noenv {
     public void launchMpjwt20TCKLauncher_noaud_noenv() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_noaud_noenv.xml", Collections.emptyMap(), Collections.emptySet());
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "JWT Auth");
+        resultInfo.put("feature_version", "2.0");
+        MvnUtils.preparePublicationFile(resultInfo);
 
     }
 }

@@ -55,6 +55,7 @@
         </security-role>
     </authorization-roles>
 	
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
 	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
     <javaPermission className="java.util.logging.LoggingPermission" name="control" actions=""/>

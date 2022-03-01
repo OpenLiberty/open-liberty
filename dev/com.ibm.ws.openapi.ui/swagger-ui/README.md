@@ -25,7 +25,14 @@ There are slight differences between the UI presented for the `openapi-3.x` and 
 
 The code is not built as part of the liberty build. Instead, it's built locally and the built output is checked in (in the dist folder). During the liberty build, the built files are included into the bundles where they're needed by bnd.
 
-To build
+To build, first make sure you have npm 8.x installed and available on your path.
+
+```
+$ npm --version
+8.1.2
+```
+
+Then run
 
 ```
 npm run build -- --mode=production
@@ -44,47 +51,53 @@ When started like this, it expects to be able to load an openapi document from `
 
 ### Updating dependencies
 
-1. Check for outdated packages
+1. make sure you have npm 8.x installed and available on your path.
+
    ```
-   npm outdated
+   $ npm --version
+   8.1.2
    ```
 
-   This will list all of our dependencies which have updates, along with the current version, the "wanted" version (the latest version it should be safe to update to) and the absolute latest version.
+1. Check for outdated packages (note this command uses **`npx`** not `npm`. It may ask to install `npm-check-updates`)
+   ```
+   npx npm-check-updates
+   ```
 
-   * Take note of whether there's an updated version of `swagger-ui`. If so, there will be an extra step later.
+   This will list all of our dependencies which have updates, with the current version and the version they can be updated to.
+
+   Take note of whether there's an updated version of `swagger-ui`. If so, there will be an extra step later.
 
 1. Update all our dependencies to the latest compatible version
    ```
+   npx npm-check-updates -u
    npm update
-   npm install
    ```
    
-   This will update `package.json` and `package-lock.json`.
+   `git status` should now show that `package.json` and `package-lock.json` have been updated.
 
-1. If there was an updated version of `swagger-ui`, update the files under `src/style/original` with the versions from the Swagger UI source code.
+1. If there was an updated version of `swagger-ui`, you must update the files under `src/style/original` using **one** of the following two options:
 
-   Check `package.json` to find the version of swagger-ui we're now using and grab the files from their source repository.
+   1. Go to the [Swagger UI releases page][swagger-ui-releases] and download the source code zip for the release which matches the version of swagger-ui listed in `package.json`.
+      Extract the files from `src/style` in the release zip to `src/style/original` under this directory.
 
-   You can do this manually by going to the [Swagger UI repository][swagger-ui-repo], finding the tag for the version, downloading the files from `src/style` and copying them under `src/style/original` under this directory.
+   1. Run the following commands from this directory, replacing `X.Y.Z` with the version of swagger-ui listed in `package.json` (`git` newer than 1.6.5 is required):
 
-   Alternatively, you can run the following git magic from this directory which will do that for you (replace `X.Y.Z` with the version of swagger-ui listed in `package.json`):
+      ```
+      git clone --depth 1 -b vX.Y.Z git@github.com:swagger-api/swagger-ui.git swagger-ui-src
+      rm src/style/original/*
+      cp swagger-ui-src/src/style/* src/style/original
+      rm -rf swagger-ui-src
+      ```
 
-   ```
-   git clone --filter=blob:none --depth 1 --no-checkout -b vX.Y.Z git@github.com:swagger-api/swagger-ui.git
-   git -C swagger-ui sparse-checkout set src/style
-   git -C swagger-ui checkout
-   rm src/style/original/*
-   cp swagger-ui/src/style/* src/style/original
-   rm -rf swagger-ui
-   ```
-
-1. After updating you must rebuild our Swagger UI:
+1. Rebuild our extended Swagger UI using the new dependencies:
 
    ```
    npm run build -- --mode=production
    ```
 
-   Then rebuild the liberty bundles which include the Swagger UI files. From the open-liberty `dev` directory:
+   This will update the files under `/dist`.
+
+1. Rebuild the liberty bundles which include the built Swagger UI files. From the open-liberty `dev` directory:
    ```
    ./gradlew :com.ibm.ws.openapi.ui:assemble :com.ibm.ws.openapi.ui.private:assemble :com.ibm.ws.microprofile.openapi.ui:assemble
    ```
@@ -102,3 +115,4 @@ This was originally based on the [`webpack-getting-started`][webpack-sample] sam
 [swagger-ui]: https://github.com/swagger-api/swagger-ui
 [webpack-sample]: https://github.com/swagger-api/swagger-ui/tree/df7749b2fe88c3235a2a7a2c965e8edaaa646356/docs/samples/webpack-getting-started
 [swagger-ui-repo]: https://github.com/swagger-api/swagger-ui
+[swagger-ui-releases]: https://github.com/swagger-api/swagger-ui/releases

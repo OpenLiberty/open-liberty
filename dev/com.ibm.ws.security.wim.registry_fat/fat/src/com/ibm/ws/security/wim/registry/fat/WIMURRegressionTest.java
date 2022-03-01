@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package com.ibm.ws.security.wim.registry.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.BasicRegistry;
+import com.ibm.websphere.simplicity.config.BasicRegistry.Group;
+import com.ibm.websphere.simplicity.config.BasicRegistry.Group.Member;
+import com.ibm.websphere.simplicity.config.BasicRegistry.User;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.BaseEntry;
 import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
@@ -74,6 +79,10 @@ public class WIMURRegressionTest {
     private static final String LDAP2_BASE_DN = "ou=org,o=ibm.com";
     private static final String GROUP_CN = "group";
     private static final String GROUP_DN = "cn=" + GROUP_CN + "," + LDAP2_BASE_DN;
+
+    private static final String BASIC_USER = "basicuser";
+    private static final String BASIC_USER_PASSWORD = "basicuserpassword";
+    private static final String BASIC_GROUP = "basicgroup";
 
     /**
      * Setup the test case.
@@ -358,5 +367,46 @@ public class WIMURRegressionTest {
         SearchResult sr = servlet.getUsersForGroup(GROUP_DN, 0);
         assertEquals("Expected 1 user as a member of the group.", 1, sr.getList().size());
         assertTrue("Expected user (" + USER_DN + ") was not found: " + sr.getList(), sr.getList().contains(USER_DN));
+    }
+
+    /**
+     * This test will ensure that the WIMUserRegistry.isValidGroup and isValidUser only return false when
+     * the entity that matches the input name is of the correct type.
+     *
+     * @throws Exception If the test fails for some unforeseen reason.
+     */
+    @Test
+    public void test_IsValidGroup_IsValidUser() throws Exception {
+        ServerConfiguration clone = startConfiguration.clone();
+
+        /*
+         * Create a basic registry.
+         */
+        BasicRegistry registry = new BasicRegistry();
+        User user = new User();
+        user.setName(BASIC_USER);
+        user.setPassword(BASIC_USER_PASSWORD);
+        registry.getUsers().add(user);
+        Group group = new Group();
+        group.setName(BASIC_GROUP);
+        Member member = new Member();
+        member.setName(BASIC_USER);
+        group.getMembers().add(member);
+        registry.getGroups().add(group);
+        clone.getBasicRegistries().add(registry);
+
+        LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
+
+        /*
+         * Test isValidGroup with valid group and valid user.
+         */
+        assertTrue("Calling isValidGroup() with valid group should return true.", servlet.isValidGroup(BASIC_GROUP));
+        assertFalse("Calling isValidGroup() with valid user should return false.", servlet.isValidGroup(BASIC_USER));
+
+        /*
+         * Test isValidUser with valid group and valid user.
+         */
+        assertFalse("Calling isValidUser() with valid group should return false.", servlet.isValidUser(BASIC_GROUP));
+        assertTrue("Calling isValidUser() with valid user should return true.", servlet.isValidUser(BASIC_USER));
     }
 }

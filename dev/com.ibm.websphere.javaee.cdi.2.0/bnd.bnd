@@ -54,5 +54,5 @@ publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
 	javax.inject:javax.inject;version=1,\
-	javax.enterprise:cdi-api;version=2.0
+	javax.enterprise:cdi-api;version=2.0.0.SP1
 	

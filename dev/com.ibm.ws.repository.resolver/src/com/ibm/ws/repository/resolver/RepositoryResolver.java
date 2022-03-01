@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,8 @@ import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
-import com.ibm.ws.repository.resolver.RepositoryResolver.ResolvedFeatureSearchResult.ResultCategory;
 import com.ibm.ws.repository.resolver.internal.ResolutionMode;
+import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 import com.ibm.ws.repository.resources.ApplicableToProduct;
@@ -82,6 +82,8 @@ public class RepositoryResolver {
 
     /**
      * Map from symbolic name to feature for all features returned as resolved by the kernel resolver
+     * <p>
+     * Keyset is mutually exclusive with {@link #featuresMissing} and {@link #requirementsFoundForOtherProducts}
      */
     Map<String, ProvisioningFeatureDefinition> resolvedFeatures;
 
@@ -89,6 +91,8 @@ public class RepositoryResolver {
      * List of requested features that were reported missing by the kernel resolver and weren't found in the repository applicable to another product.
      * <p>
      * May include sample names if they were missing
+     * <p>
+     * Mutually exclusive with {@link #resolvedFeatures} and {@link #requirementsFoundForOtherProducts}
      */
     List<String> featuresMissing;
 
@@ -101,6 +105,8 @@ public class RepositoryResolver {
      * List of requirements which couldn't be resolved but for which we found a solution that applied to the wrong product
      * <p>
      * Each requirement will be a symbolic name, feature name or sample name
+     * <p>
+     * Mutually exclusive with {@link #resolvedFeatures} and {@link #featuresMissing}
      */
     Set<String> requirementsFoundForOtherProducts;
 
@@ -116,8 +122,8 @@ public class RepositoryResolver {
 
     /**
      * <p>
-     * Construct a new instance of a resolver for a current install. Note that calls to this method will load all of the resources from Massive so this is a relatively expensive
-     * operation and may block the thread for a few seconds so care should be taken when called from a UI.</p>
+     * Construct a new instance of a resolver for a current install. Note that calls to this method will load all of the resources from the repository so this can be a relatively
+     * expensive operation and may block the thread for a few seconds so care should be taken when called from a UI.</p>
      * <p>In order to process what is already installed several details about the liberty installation must be passed in as parameters. These can all be obtained from utility
      * methods within the Liberty installation so suggested usage is as follows:</p>
      * <code>
@@ -138,16 +144,14 @@ public class RepositoryResolver {
      * Collection<IFixInfo> installedIFixes = IFixUtils.getInstalledIFixes(Utils.getInstallDir(), commandConsole);</br>
      * </br>
      * // Create the resolver</br>
-     * MassiveResolver resolver = MassiveResolver.resolve(installedProductDefinitions,</br>
+     * RepositoryResolver resolver = RepositoryResolver.resolve(installedProductDefinitions,</br>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;installedFeatures, installedFixes, loginInfo);</br>
      * </code>
      *
      * @param installDefinition Information about the product(s) installed such as ID and edition. Must not be <code>null</code>.
      * @param installedFeatures The features that are installed. Must not be <code>null</code>.
-     * @param installedIFixes   No longer used, parameter retained for backwards compatibility
-     * @param massiveUserId     The user ID to use when logging into Massive. Must not be <code>null</code>.
-     * @param massivePassword   The password to use when logging into Massive. Must not be <code>null</code>.
-     * @param massiveApiKey     The API key to use when logging into Massive. Must not be <code>null</code>.
+     * @param installedIFixes No longer used, parameter retained for backwards compatibility
+     * @param repoConnections The connection to the repository
      * @throws RepositoryException If there is a connection error with the Massive repository
      * @see ProductInfo#getAllProductInfo()
      * @see IFixUtils#getInstalledIFixes(java.io.File, com.ibm.ws.product.utility.CommandConsole)
@@ -169,6 +173,10 @@ public class RepositoryResolver {
      * Package constructor for unit tests
      * <p>
      * Allows resolution to be tested without connecting to a repository
+     *
+     * @param installedFeatures the features which are installed
+     * @param repoFeatures the features available in the repository
+     * @param repoSamples the samples available in the repository
      */
     RepositoryResolver(Collection<ProvisioningFeatureDefinition> installedFeatures,
                        Collection<? extends EsaResource> repoFeatures,
@@ -184,6 +192,8 @@ public class RepositoryResolver {
 
     /**
      * Populates {@link #repoFeatures} and {@link #repoSamples} with resources from the repository which apply to the install definition.
+     *
+     * @param installDefinition information about the product(s) installed such as ID and edition. Must not be {@code null}.
      *
      * @throws RepositoryException if there's a problem connecting to the repository
      */
@@ -254,10 +264,10 @@ public class RepositoryResolver {
      * want that, you may want to use {@link #resolveAsSet(Collection)} instead.</p>
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The
-     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -285,6 +295,12 @@ public class RepositoryResolver {
      * Resolve a single name
      * <p>
      * Identical to {@code resolve(Collections.singleton(toResolve))}.
+     *
+     * @see #resolve(Collection)
+     *
+     * @param toResolve the identifier of the resource to resolve
+     * @return A collection of ordered lists of resources to install
+     * @throws RepositoryResolutionException
      */
     public Collection<List<RepositoryResource>> resolve(String toResolve) throws RepositoryResolutionException {
         return resolve(Collections.singleton(toResolve));
@@ -306,10 +322,10 @@ public class RepositoryResolver {
      * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The
-     *                      collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
      *         at
      *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
@@ -370,6 +386,8 @@ public class RepositoryResolver {
 
     /**
      * Populates {@link #samplesToInstall} and {@link #featureNamesToResolve} by processing the list of names to resolve and identifying which are samples.
+     *
+     * @param namesToResolve the list of names to resolve
      */
     void processNames(Collection<String> namesToResolve) {
         for (String name : namesToResolve) {
@@ -426,8 +444,8 @@ public class RepositoryResolver {
         ArrayList<String> autofeatureDependencies = new ArrayList<>();
         for (String featureName : featureNamesToResolve) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
-            if (feature != null && feature.isAutoFeature() && feature instanceof KernelResolverEsa) {
-                Collection<ProvisioningFeatureDefinition> dependencies = ((KernelResolverEsa) feature).findFeaturesSatisfyingCapability(resolverRepository.getAllFeatures());
+            if (feature != null && feature.isAutoFeature()) {
+                Collection<ProvisioningFeatureDefinition> dependencies = CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolverRepository.getAllFeatures());
                 for (ProvisioningFeatureDefinition dependency : dependencies) {
                     autofeatureDependencies.add(dependency.getSymbolicName());
                 }
@@ -439,6 +457,8 @@ public class RepositoryResolver {
 
     /**
      * Uses the kernel resolver to resolve {@link #featureNamesToResolve} and populates {@link #resolvedFeatures} with the result.
+     *
+     * @param mode the resolution mode
      */
     void resolveFeatures(ResolutionMode mode) {
         boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
@@ -504,7 +524,7 @@ public class RepositoryResolver {
 
         // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
+            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName())) {
                 installLists.add(createInstallList(feature.getSymbolicName()));
             }
         }
@@ -533,13 +553,14 @@ public class RepositoryResolver {
                 if (feature == null) {
                     allDependenciesResolved = false;
                     // Unless we know it exists but applies to another product, note the missing requirement as well
-                    if (!requirementsFoundForOtherProducts.contains(featureName)) {
+                    if (featuresMissing.contains(featureName)) {
                         missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
+                } else {
+                    // Build distance map and check dependencies
+                    allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
                 }
 
-                // Build distance map and check dependencies
-                allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
             }
         }
 
@@ -567,27 +588,26 @@ public class RepositoryResolver {
      * @return the ordered list of resources to install, will be empty if the feature cannot be found or is already installed
      */
     List<RepositoryResource> createInstallList(String featureName) {
+        // Find the feature by name (featureName may be the short or the symbolic name, so we need to use resolverRepository)
         ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+
+        // Check that the requested feature was actually resolved
+        if (feature != null) {
+            feature = resolvedFeatures.get(feature.getSymbolicName());
+        }
+
         if (feature == null) {
             // Feature missing
             missingTopLevelRequirements.add(featureName);
-            // If we didn't find this feature in another product, we need to record it as missing
-            if (!requirementsFoundForOtherProducts.contains(featureName)) {
+            if (featuresMissing.contains(featureName)) {
                 missingRequirements.add(new MissingRequirement(featureName, null));
             }
             return Collections.emptyList();
         }
 
-        if (!(feature instanceof KernelResolverEsa)) {
-            // Feature already installed
-            return Collections.emptyList();
-        }
-
-        EsaResource esa = ((KernelResolverEsa) feature).getResource();
-
         Map<String, Integer> maxDistanceMap = new HashMap<>();
         List<MissingRequirement> missingRequirements = new ArrayList<>();
-        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, esa.getProvideFeature(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
+        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, feature.getSymbolicName(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
 
         if (!foundAllDependencies) {
             missingTopLevelRequirements.add(featureName);
@@ -634,7 +654,9 @@ public class RepositoryResolver {
      * Build a map which maps feature symbolic names to the length of the longest dependency chain from the starting point to that feature
      * <p>
      * This method adds {@code featureName} to the map with {@code currentDistance} and then recurses through its dependencies, repeating this operation. It will stop if it
-     * encounters a feature which is already installed or if it encounters a dependency loop.
+     * encounters a dependency loop.
+     * <p>
+     * This method also adds any dependencies which can't be satisfied to {@code missingRequirements}.
      * <p>
      * The result of this operation is useful for building install lists as the features to be installed can be sorted by the longest dependency chain in descending order to ensure
      * that the dependencies of a feature are installed before the feature itself.
@@ -653,19 +675,16 @@ public class RepositoryResolver {
      * Having done this, {@code distanceMap.keySet()} gives the set of all the dependencies of com.example.featureA. {@code distanceMap.get("com.example.featureB")} gives
      * the length of the longest dependency chain from featureA to featureB.
      *
-     * @param maxDistanceMap  the map to be populated
-     * @param featureName     the current feature
+     * @param maxDistanceMap the map to be populated
+     * @param featureName the current feature
      * @param currentDistance the distance to use for the current feature
-     * @param currentStack    the set of feature names already in the current dependency chain (used to detect loops)
+     * @param currentStack the set of feature names already in the current dependency chain (used to detect loops)
+     * @param missingRequirements the list which missing requirements are to be added
      * @return true if all requirements were found, false otherwise
      */
     boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
                                    List<MissingRequirement> missingRequirements) {
         ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureName);
-        if (!(feature instanceof KernelResolverEsa)) {
-            // Feature is already installed
-            return true;
-        }
 
         if (currentStack.contains(feature)) {
             // We've hit a dependency loop
@@ -676,31 +695,28 @@ public class RepositoryResolver {
 
         currentStack.add(feature);
 
-        KernelResolverEsa featureEsa = (KernelResolverEsa) feature;
-
         Integer oldDistance = maxDistanceMap.get(feature.getSymbolicName());
         if (oldDistance == null || oldDistance < currentDistance) {
             maxDistanceMap.put(feature.getSymbolicName(), currentDistance);
         }
 
         for (FeatureResource dependency : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
-            ResolvedFeatureSearchResult searchResult = findResolvedDependency(dependency);
+            String resolvedFeatureName = findResolvedDependency(dependency);
 
-            if (searchResult.category == ResultCategory.FOUND) {
+            if (resolvedFeatureName != null) {
                 // We found the dependency, continue populating the distance map
-                result &= populateMaxDistanceMap(maxDistanceMap, searchResult.symbolicName, currentDistance + 1, currentStack, missingRequirements);
-            } else if (searchResult.category == ResultCategory.MISSING) {
-                // The dependency was totally missing, add it to the list of missing requirements
-                missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), featureEsa.getResource()));
-                result = false;
+                result &= populateMaxDistanceMap(maxDistanceMap, resolvedFeatureName, currentDistance + 1, currentStack, missingRequirements);
             } else {
-                // The dependency was found for another product. That missing requirement is already recorded elsewhere.
+                if (featuresMissing.contains(dependency.getSymbolicName())) {
+                    // The dependency was totally missing, add it to the list of missing requirements
+                    missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
+                }
                 result = false;
             }
         }
 
         // Find autofeature dependencies
-        for (ProvisioningFeatureDefinition dependency : featureEsa.findFeaturesSatisfyingCapability(resolvedFeatures.values())) {
+        for (ProvisioningFeatureDefinition dependency : CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolvedFeatures.values())) {
             result &= populateMaxDistanceMap(maxDistanceMap, dependency.getSymbolicName(), currentDistance + 1, currentStack, missingRequirements);
         }
 
@@ -713,42 +729,30 @@ public class RepositoryResolver {
      * Find the actual resolved feature from a dependency with tolerates
      * <p>
      * Tries each of the tolerated versions in order until it finds one that exists in the set of resolved features.
-     * <p>
-     * Three types of results are possible:
-     * <ul>
-     * <li><b>FOUND</b>: We found the required feature</li>
-     * <li><b>FOUND_WRONG_PRODUCT</b>: We found the required feature, but it was for the wrong product</li>
-     * <li><b>MISSING</b>: We did not find the required feature. The {@code symbolicName} field of the result will be {@code null}</li>
-     * </ul>
      *
      * @param featureResource the dependency definition to resolve
-     * @return the result of the search
+     * @return the symbolic name of the resolved dependency, or {@code null} if it was not found
      */
-    ResolvedFeatureSearchResult findResolvedDependency(FeatureResource featureResource) {
+    String findResolvedDependency(FeatureResource featureResource) {
         ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureResource.getSymbolicName());
         if (feature != null) {
-            return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
-        }
-
-        if (requirementsFoundForOtherProducts.contains(featureResource.getSymbolicName())) {
-            return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureResource.getSymbolicName());
+            return feature.getSymbolicName();
         }
 
         String baseName = getFeatureBaseName(featureResource.getSymbolicName());
-        for (String toleratedVersion : featureResource.getTolerates()) {
-            String featureName = baseName + toleratedVersion;
+        List<String> tolerates = featureResource.getTolerates();
+        if (tolerates != null) {
+            for (String toleratedVersion : tolerates) {
+                String featureName = baseName + toleratedVersion;
 
-            feature = resolvedFeatures.get(featureName);
-            if (feature != null) {
-                return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
-            }
-
-            if (requirementsFoundForOtherProducts.contains(featureName)) {
-                return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureName);
+                feature = resolvedFeatures.get(featureName);
+                if (feature != null) {
+                    return feature.getSymbolicName();
+                }
             }
         }
 
-        return new ResolvedFeatureSearchResult(ResultCategory.MISSING, null);
+        return null;
     }
 
     /**
@@ -793,7 +797,23 @@ public class RepositoryResolver {
     }
 
     /**
+     * Get the EsaResource for a feature from the repository
+     *
+     * @param feature the feature
+     * @return the EsaResource, or {@code null} if the feature is not from the repository
+     */
+    private EsaResource getResource(ProvisioningFeatureDefinition feature) {
+        if (!(feature instanceof KernelResolverEsa)) {
+            return null;
+        }
+        KernelResolverEsa esaFeature = (KernelResolverEsa) feature;
+        return esaFeature.getResource();
+    }
+
+    /**
      * If any errors occurred during resolution, throw a {@link RepositoryResolutionException}
+     *
+     * @throws RepositoryResolutionException if any errors occurred during resolution
      */
     private void reportErrors() throws RepositoryResolutionException {
         if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
@@ -814,23 +834,6 @@ public class RepositoryResolver {
         }
 
         throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
-    }
-
-    static class ResolvedFeatureSearchResult {
-
-        public ResolvedFeatureSearchResult(ResultCategory category, String symbolicName) {
-            this.category = category;
-            this.symbolicName = symbolicName;
-        }
-
-        enum ResultCategory {
-            FOUND,
-            FOUND_WRONG_PRODUCT,
-            MISSING
-        }
-
-        ResultCategory category;
-        String symbolicName;
     }
 
     static class NameAndVersion {

@@ -619,9 +619,43 @@ public class LibertyClient {
             if (clientNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
                 Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
+
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                if (javaInfo.majorVersion() >= 18) {
+                    Log.info(c, "startClientWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
+                    JVM_ARGS += " -Djava.security.manager=allow";
+                }
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
+            }
+        } else if (javaInfo.majorVersion() >= 18) {
+            // Check if "websphere.java.security" has been added to bootstrapping.properties
+            // as some tests will add it for their own security enable tests
+            boolean bootstrapHasJava2SecProps = false;
+            RemoteFile f = getClientBootstrapPropertiesFile();
+            java.io.BufferedReader reader = null;
+            try {
+                reader = new java.io.BufferedReader(new java.io.InputStreamReader(f.openForReading()));
+                String line = reader.readLine();
+                while (line != null) {
+                    if (line != null && line.trim().equals("websphere.java.security")) {
+                        bootstrapHasJava2SecProps = true;
+                        break;
+                    }
+                    line = reader.readLine();
+                }
+            } catch (Exception e) {
+                Log.info(c, "startClientWithArgs", "caught exception checking bootstap.properties file for Java 2 Security properties, e: ", e.getMessage());
+            } finally {
+                if (reader != null)
+                    reader.close();
+            }
+
+            if (bootstrapHasJava2SecProps) {
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                Log.info(c, "startClientWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                JVM_ARGS += " -Djava.security.manager=allow";
             }
         }
 
@@ -749,6 +783,7 @@ public class LibertyClient {
             w.write("\n".getBytes());
             w.write("websphere.java.security.norethrow=false".getBytes());
             w.write("\n".getBytes());
+
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
@@ -2203,6 +2238,7 @@ public class LibertyClient {
                 optionList.add(option.toString());
             }
         }
+
         this.setJvmOptions(optionList);
     }
 

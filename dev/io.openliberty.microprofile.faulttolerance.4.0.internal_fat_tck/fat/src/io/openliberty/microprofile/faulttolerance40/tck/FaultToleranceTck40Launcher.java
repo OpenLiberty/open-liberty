@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -123,7 +126,11 @@ public class FaultToleranceTck40Launcher {
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.4.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
                               additionalProps, Collections.emptySet());
-        MvnUtils.preparePublicationFile();
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Fault Tolerance");
+        resultInfo.put("feature_version", "4.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
 }

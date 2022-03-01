@@ -22,8 +22,6 @@ src: \
   test-applications/userBundle3/src, \
   test-applications/userBundle2/src, \
   test-applications/addNumbersProvider/src, \
-  test-applications/handlerRuleBundle/src, \
-  test-applications/handlerRuleBundle2/src, \
   test-applications/rsUserBundle1/src, \
   test-applications/rsUserBundle2/src, \
   test-applications/rsUserBundle3/src, \

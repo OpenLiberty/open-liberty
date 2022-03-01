@@ -25,6 +25,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 import test.context.list.ListContext;
 import test.context.location.ZipCode;
+import test.context.timing.Timestamp;
 
 @ManagedExecutorDefinition(name = "java:comp/concurrent/executor8",
                            context = "java:app/concurrent/appContextSvc",
@@ -37,20 +38,21 @@ import test.context.location.ZipCode;
 @ManagedThreadFactoryDefinition(name = "java:module/concurrent/tf",
                                 context = "java:app/concurrent/appContextSvc",
                                 priority = 6)
-// TODO delete the following and enable the equivalent in ejb-jar.xml
-@ContextServiceDefinition(name = "java:global/concurrent/dd/ejb/LPContextService",
+
+@ContextServiceDefinition(name = "java:global/concurrent/anno/ejb/LPContextService",
                           cleared = APPLICATION,
                           propagated = { ListContext.CONTEXT_NAME, "Priority" },
                           unchanged = { ZipCode.CONTEXT_NAME, ALL_REMAINING })
-@ManagedExecutorDefinition(name = "java:comp/concurrent/dd/ejb/Executor",
+@ManagedExecutorDefinition(name = "java:comp/concurrent/anno/ejb/Executor",
                            hungTaskThreshold = 620000,
                            maxAsync = 2)
-@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/dd/ejb/LPScheduledExecutor",
-                                    context = "java:global/concurrent/dd/ejb/LPContextService",
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/anno/ejb/LPScheduledExecutor",
+                                    context = "java:global/concurrent/anno/ejb/LPContextService",
                                     maxAsync = 3)
-@ManagedThreadFactoryDefinition(name = "java:module/concurrent/dd/ejb/ZLThreadFactory",
+@ManagedThreadFactoryDefinition(name = "java:module/concurrent/anno/ejb/ZLThreadFactory",
                                 context = "java:module/concurrent/ZLContextSvc",
                                 priority = 7)
+
 @Stateless
 public class ExecutorBean implements Executor {
     @Resource(lookup = "java:comp/concurrent/executor8", name = "java:app/env/concurrent/executor8ref")

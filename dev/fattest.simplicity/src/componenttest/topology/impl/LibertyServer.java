@@ -855,14 +855,26 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
-     *
-     * @param  newFeatures
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
         RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + SERVER_CONFIG_FILE_NAME);
 
+        publishServerXML.copyToDest(serverXML, false, true);
+    }
+
+    /**
+     * Swaps in a different server.xml file from the server directory.
+     *
+     * @param  fileName
+     * @throws Exception
+     */
+    public void swapInServerXMLFromPublish(String fileName) throws Exception {
+        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + fileName);
+
+        Log.info(c, "swapInServerXMLFromPublish", "Reconfiguring server to use config file: " + publishServerXML.toString());
         publishServerXML.copyToDest(serverXML, false, true);
     }
 
@@ -1421,6 +1433,40 @@ public class LibertyServer implements LogMonitorClient {
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
+
+            // If we are running on Java 18+, then we need to explicitly enable the security manager
+            if (info.majorVersion() >= 18) {
+                Log.info(c, "startServerWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
+                JVM_ARGS += " -Djava.security.manager=allow";
+            }
+        } else if (info.majorVersion() >= 18) {
+            boolean bootstrapHasJava2SecProps = false;
+            // Check if "websphere.java.security" has been added to bootstrapping.properties
+            // as some tests will add it for their own security enable tests
+            RemoteFile f = getServerBootstrapPropertiesFile();
+            java.io.BufferedReader reader = null;
+            try {
+                reader = new java.io.BufferedReader(new java.io.InputStreamReader(f.openForReading()));
+                String line = reader.readLine();
+                while (line != null) {
+                    if (line != null && line.trim().equals("websphere.java.security")) {
+                        bootstrapHasJava2SecProps = true;
+                        break;
+                    }
+                    line = reader.readLine();
+                }
+            } catch (Exception e) {
+                Log.info(c, "startServerWithArgs", "caught exception checking bootstap.properties file for Java 2 Security properties, e: ", e.getMessage());
+            } finally {
+                if (reader != null)
+                    reader.close();
+            }
+
+            if (bootstrapHasJava2SecProps) {
+                // If we are running on Java 18+, then we need to explicitly enable the security manager
+                Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                JVM_ARGS += " -Djava.security.manager=allow";
+            }
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -1880,6 +1926,7 @@ public class LibertyServer implements LogMonitorClient {
                 w.write("websphere.java.security.unique=true".getBytes());
                 w.write("\n".getBytes());
             }
+
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
@@ -1945,6 +1992,10 @@ public class LibertyServer implements LogMonitorClient {
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
+    }
+
+    public void validateAppsLoaded() throws Exception {
+        validateAppsLoaded(getDefaultLogFile());
     }
 
     protected void validateAppsLoaded(RemoteFile outputFile) throws Exception {
@@ -4315,6 +4366,7 @@ public class LibertyServer implements LogMonitorClient {
                 optionList.add(option.toString());
             }
         }
+
         this.setJvmOptions(optionList);
     }
 

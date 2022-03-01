@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,9 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.cache.CacheContext;
@@ -37,6 +39,8 @@ import com.ibm.ws.security.registry.UserRegistryChangeListener;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import io.openliberty.jcache.CacheService;
+
 /**
  * Implements the authentication cache.
  */
@@ -46,7 +50,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
 
     private static final TraceComponent tc = Tr.register(AuthCacheServiceImpl.class);
 
-    private Cache cache;
+    private AuthCache cache;
     private final Set<CacheKeyProvider> cacheKeyProviders = new HashSet<CacheKeyProvider>();
     private boolean allowBasicAuthLookup = true;
     private int initialSize = 50;
@@ -56,6 +60,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     private AuthCacheConfig authCacheConfig;
     private final Set<CacheEvictionListener> cacheEvictionListenerSet = new HashSet<CacheEvictionListener>();
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
+    private CacheService cacheService = null;
+    private static boolean isServerStarted = false;
 
     /** {@inheritDoc} */
     @FFDCIgnore(Exception.class)
@@ -196,7 +202,17 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         }
         authCacheConfig = new AuthCacheConfigImpl(initialSize, maxSize, timeoutInMilliSeconds, allowBasicAuthLookup);
         stopCacheEvictionTask();
-        cache = new Cache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
+
+        /*
+         * Instantiate the IAuthCache. We use a in-memory cache when we are not using JCache. When using JCache,
+         * we also use the in-memory cache in certain select scenarios (serialization errors, etc).
+         */
+        AuthCache inMemoryCache = new InMemoryAuthCache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
+        if (cacheService != null) {
+            cache = new JCacheAuthCache(cacheService, inMemoryCache);
+        } else {
+            cache = inMemoryCache;
+        }
     }
 
     protected void deactivate(ComponentContext componentContext) {
@@ -234,6 +250,24 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         credServiceRef.unsetReference(reference);
     }
 
+    /**
+     * Set the {@link CacheService}.
+     *
+     * @param cacheService the {@link CacheService}
+     */
+    protected void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
+    /**
+     * Unset the {@link CacheService}.
+     *
+     * @param cacheService the {@link CacheService}
+     */
+    protected void unsetCacheService(CacheService cacheService) {
+        this.cacheService = null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void notifyOfUserRegistryChange() {
@@ -249,4 +283,34 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         removeAllEntries();
     }
 
+    /**
+     * Set the {@link ServerStartedPhase2} to indicate that the server has started.
+     *
+     * @param serverStartedPhase2 the {@link ServerStartedPhase2}
+     */
+    protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, ": Server is started.");
+        }
+        isServerStarted = true;
+    }
+
+    /**
+     * Unset the {@link ServerStartedPhase2} to indicate that the server has not started.
+     *
+     * @param serverStartedPhase2 the {@link ServerStartedPhase2}
+     */
+    @Trivial
+    protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
+        isServerStarted = false;
+    }
+
+    /**
+     * Return whether the server is started.
+     *
+     * @return True if the server is started.
+     */
+    public static boolean isServerStarted() {
+        return isServerStarted;
+    }
 }

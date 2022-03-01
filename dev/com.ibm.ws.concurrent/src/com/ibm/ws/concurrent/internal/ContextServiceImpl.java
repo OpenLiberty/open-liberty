@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -372,6 +373,25 @@ public class ContextServiceImpl implements ContextService, //
         }
     }
 
+    /**
+     * Verify that if any of the requested interfaces are serializable that the
+     * propagated context is also serializable.
+     *
+     * @param descriptor thread context descriptor.
+     * @param interfaces interfaces to check.
+     * @throws UnsupportedOperationException if any of the interfaces is serializable
+     *                                           and at least one propagated context is not.
+     */
+    @Trivial
+    private void checkIfSerializable(ThreadContextDescriptor descriptor, Class<?>... interfaces) throws UnsupportedOperationException {
+        for (Class<?> intf : interfaces)
+            if (intf instanceof Serializable)
+                if (descriptor.isSerializable())
+                    return;
+                else
+                    throw new UnsupportedOperationException(); // unreachable - isSerializable fails first with a better message
+    }
+
     @Override
     public <R> Callable<R> contextualCallable(Callable<R> callable) {
         if (callable instanceof ContextualCallable)
@@ -487,6 +507,8 @@ public class ContextServiceImpl implements ContextService, //
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContextDescriptor = captureThreadContext(executionProperties, instance, internalPropNames);
 
+        checkIfSerializable(threadContextDescriptor, interfaces);
+
         Object proxy = null;
         // optimization for Callable/Runnable
         if (interfaces.length == 1)
@@ -519,6 +541,7 @@ public class ContextServiceImpl implements ContextService, //
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContextDescriptor = captureThreadContext(null, instance, null);
+        checkIfSerializable(threadContextDescriptor, intf);
         return threadContextMgr.createContextualProxy(threadContextDescriptor, instance, intf);
     }
 
@@ -545,6 +568,8 @@ public class ContextServiceImpl implements ContextService, //
         } else if (Runnable.class.equals(intf)) {
             proxy = intf.cast(new com.ibm.ws.context.service.serializable.ContextualRunnable(threadContextDescriptor, (Runnable) instance, internalPropNames));
         } else {
+            checkIfSerializable(threadContextDescriptor, intf);
+
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<T>() {
                 @Override

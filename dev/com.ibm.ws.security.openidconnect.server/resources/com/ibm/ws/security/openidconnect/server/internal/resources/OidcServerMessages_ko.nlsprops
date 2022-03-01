@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: JWK JSON \ubb38\uc790\uc5f4\uc5d0 \ub3
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=JWK JSON \ubb38\uc790\uc5f4\uc744 \uc0dd\uc131\ud558\ub824\uba74 OpenID Connect \uc81c\uacf5\uc790 signatureAlgorithm \uc18d\uc131\uc744 RS256\uc73c\ub85c \uc124\uc815\ud574\uc57c \ud569\ub2c8\ub2e4. \uc9c0\uc815\ud558\ub294 \uacbd\uc6b0, \uc18d\uc131 KeyStoreRef \ubc0f keyAliasName\uc774 \uc720\ud6a8\ud574\uc57c \ud569\ub2c8\ub2e4. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=OpenID Connect \uc81c\uacf5\uc790 \uad6c\uc131 \uc18d\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: \uc368\ub4dc\ud30c\ud2f0 ID \ud1a0\ud070\uc758 \uccad\uad6c\uac00 OpenID Connect \uc81c\uacf5\uc790 {0}\uc5d0 \ub300\ud574 \uc804\ud30c\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=\uc368\ub4dc\ud30c\ud2f0 ID \ud1a0\ud070\uc758 \uccad\uad6c\ub97c \ucd94\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=\uc368\ub4dc\ud30c\ud2f0 OpenID Connect \uc81c\uacf5\uc790\uac00 \uc720\ud6a8\ud55c ID \ud1a0\ud070\uc744 \uc804\uc1a1\ud558\uace0 \uc788\ub294\uc9c0 \ud655\uc778\ud569\ub2c8\ub2e4.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: \uc774 \ub7f0\ud0c0\uc784 [{0}]\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub294 Java \ubc84\uc804\uc744 ID \ud1a0\ud070 Mediator SPI\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc9c0\uc6d0\ub418\ub294 Java \ubc84\uc804\uc740 1.7 \uc774\uc0c1\uc785\ub2c8\ub2e4.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=\uba54\uc2dc\uc9c0\uc758 Java \ubc84\uc804\uc774 ID \ud1a0\ud070 Mediator SPI \uae30\ub2a5\uc744 \uc9c0\uc6d0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 

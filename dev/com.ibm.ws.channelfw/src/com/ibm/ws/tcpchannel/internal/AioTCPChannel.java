@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,8 @@ public class AioTCPChannel extends TCPChannel implements ChannelTermination {
             }
             super.connectionManager = new ConnectionManager(this, wqm);
             if (startSelectors) {
-                wqm.startSelectors(false);
+                boolean startImmediately = true;
+                wqm.startSelectors(false, startImmediately);
             }
         }
 
@@ -224,7 +225,7 @@ public class AioTCPChannel extends TCPChannel implements ChannelTermination {
     /**
      * Check whether the native AIO library reported that it supports the
      * use of JIT buffers.
-     * 
+     *
      * @return boolean
      */
     public static boolean getJitSupportedByNative() {
@@ -253,7 +254,7 @@ public class AioTCPChannel extends TCPChannel implements ChannelTermination {
 
     /**
      * Access the AIO group that this channel belongs to.
-     * 
+     *
      * @return AsyncChannelGroup
      */
     protected AsyncChannelGroup getAsyncChannelGroup() {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,6 +155,7 @@ OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=Rufen Sie den userinfo-End
 OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: Der Anforderungsendpunkt {0} enth\u00e4lt nicht das Attribut {1}.
 OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=Das Attribut fehlt in der Anforderung.
 OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=\u00dcberpr\u00fcfen Sie den Anforderungsendpunkt in der Datei server.xml, um sicherzustellen, dass Sie den richtigen Provider haben. 
+
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: Das Attribut issuerIdentifier={0} des OpenID Connect-Providers muss das HTTPS-Schema verwenden, wenn httpsRequired auf true gesetzt ist. Das Attribut wird auf den Standardwert zur\u00fcckgesetzt.
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=Das Attribut issuerIdentifier wurde falsch definiert.
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=\u00c4ndern Sie das Attribut issuerIdentifier des OpenID Connect-Providers so, dass das HTTPS-Schema verwendet wird.
@@ -179,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Eine Anforderung f\u00fcr eine JWK-JSO
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Die Generierung einer JWK-JSON-Zeichenfolge setzt voraus, dass das OpenID Connect-Providerattribut signatureAlgorithm auf RS256 gesetzt ist. Die Attribute KeyStoreRef und keyAliasName m\u00fcssen g\u00fcltig sein, wenn sie angegeben sind. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Korrigieren Sie die Konfigurationsattribute f\u00fcr den OpenID Connect-Provider.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Die Anforderungen aus dem ID-Token des Drittanbieters konnten f\u00fcr den OpenID Connect-Provider {0} nicht weitergegeben werden. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Die Anforderungen aus dem ID-Token des Drittanbieters k\u00f6nnen nicht extrahiert werden. Weitere Informationen finden Sie in der Fehlernachricht.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Stellen Sie sicher, dass der OpenID Connect-Drittanbieter ein g\u00fcltiges ID-Token sendet.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Die von dieser Laufzeitumgebung [{0}] verwendete Java-Version wird von der Mediator-SPI des ID-Tokens nicht unterst\u00fctzt. Die unterst\u00fctzte Java-Version ist 1.7 oder h\u00f6her.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Die in der Nachricht angegebene Java-Version unterst\u00fctzt die Mediator-SPI-Funktion des ID-Tokens nicht.

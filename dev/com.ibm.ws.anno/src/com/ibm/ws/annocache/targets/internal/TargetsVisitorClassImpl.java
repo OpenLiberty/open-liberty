@@ -29,6 +29,8 @@ import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
 import com.ibm.ws.annocache.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
+import io.openliberty.asm.ASMHelper;
+
 // Visit rules:
 //
 // Class Visitor:
@@ -146,7 +148,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         Set<String> i_selectAnnotationClassNames,
         boolean recordDetail) {
 
-        super(Opcodes.ASM8);
+        super(ASMHelper.getCurrentASM());
 
         String methodName = "<init>";
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
@@ -910,7 +912,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected class AnnoFieldVisitor extends FieldVisitor {
         public AnnoFieldVisitor() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
         }
 
         // A field annotation.  Needs to be recorded.
@@ -971,7 +973,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected class AnnoMethodVisitor extends MethodVisitor {
         public AnnoMethodVisitor() {
-            super(Opcodes.ASM8);
+            super(ASMHelper.getCurrentASM());
         }
 
         // A method annotation.  Needs to be recorded.

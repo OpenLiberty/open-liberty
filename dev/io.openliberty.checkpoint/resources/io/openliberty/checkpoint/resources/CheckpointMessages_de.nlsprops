@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Ein Serverpr\u00fcfpunkt wurde angefordert. Nach der Ausf\u00fchrung des Pr\u00fcfpunkts wird der Server gestoppt.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Es wurde ein Pr\u00fcfpunkt angefordert. Der Server wird angehalten und sein aktueller Status wird auf Platte geschrieben.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Der Liberty-Server nimmt die Operation an einem Pr\u00fcfpunkt wieder auf.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Eine Wiederherstellungsoperation wurde f\u00fcr ein Pr\u00fcfpunktimage des Liberty-Servers ausgef\u00fchrt.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: Die Anforderung an den Pr\u00fcfpunkt des Servers ist mit der folgenden Nachricht fehlgeschlagen: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Eine Anforderung an den Pr\u00fcfpunkt ist f\u00fcr den Server fehlgeschlagen.  Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\u00fcr den Server erstellt.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=\u00dcberpr\u00fcfen Sie das Pr\u00fcfpunktverzeichnis im Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Die Wiederherstellung des Servers von einem Pr\u00fcfpunkt ist mit der folgenden Nachricht fehlgeschlagen: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Der Versuch, den Server von einem Pr\u00fcfpunkt wiederherzustellen, ist fehlgeschlagen.  Der Server ist nicht aktiv.
+RESTORE_FAILED_CWWKC0454E.useraction=\u00dcberpr\u00fcfen Sie das Pr\u00fcfpunktverzeichnis im Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Server nicht wiederhergestellt werden konnte.
+

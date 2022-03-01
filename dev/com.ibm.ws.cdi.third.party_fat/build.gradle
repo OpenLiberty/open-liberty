@@ -27,9 +27,9 @@ dependencies {
     'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0',
     'org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0',
     'org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0',
-    'org.quartz-scheduler:quartz:2.2.1',
-    'org.slf4j:slf4j-jdk14:1.7.7',
-    'org.slf4j:slf4j-api:1.7.7', 
+    'org.quartz-scheduler:quartz:2.3.2',
+    'org.slf4j:slf4j-jdk14:1.7.36',
+    'org.slf4j:slf4j-api:1.7.36', 
     'net.sf.jtidy:jtidy:r938'
   hibernateSearchLibs 'org.antlr:antlr:3.5.2',
     'com.google.code.gson:gson:2.8.5',
@@ -59,7 +59,7 @@ dependencies {
 
 task downloadHibernateSearchLibs(type: Copy) {
   from configurations.hibernateSearchLibs
-  into new File(autoFvtDir, 'publish/shared/resources/hibernate')
+  into new File(autoFvtDir, 'publish/shared/resources/hibernatejavax')
   rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
   rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
 }

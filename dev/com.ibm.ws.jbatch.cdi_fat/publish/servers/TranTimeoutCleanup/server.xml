@@ -18,4 +18,6 @@
 	<!--  Using in-memory persistence, though a bad choice for transactional persistence, let's us move
 	through the tests more quickly, allowing us to sleep for less time, getting through the bucket more quickly. -->
 
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
 </server>

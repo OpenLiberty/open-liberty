@@ -24,17 +24,26 @@
 	</condition>
 	<property name="illegal.access.permit.jmx.fat" value=""/>
 	
-	<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
-		     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
-			 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
-			 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
-	<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
+	<!-- boolean for Java15+.  The assumption is that at this point forward (Java 15), we will only be building using LTS 
+	     or interium versions of Java -->
+	<condition property="is.java15.orHigher" value="true">
 		<not>
 			<or>
 				<equals arg1="11" arg2="${java.specification.version}"/>
 				<equals arg1="1.8" arg2="${java.specification.version}"/>
 			</or>
-		</not>
+	    </not>
+	</condition>
+	
+	<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
+		     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
+			 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
+			 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
+	<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
+			<and>
+				<istrue value="${is.java15.orHigher}"/>
+				<not><istrue value="${supports.framework.java}"/></not>
+			</and>
 	</condition>
 	<property name="use.java.security.manager" value=""/>
 	
@@ -44,6 +53,7 @@
 		<path id="test-buildtasks-autowas">
 			<fileset dir="./build/lib/" includes="infra.buildtasks*.jar" />
 			<fileset dir="./build/lib/" includes="asm*.jar" />
+			<fileset dir="./build/lib/" includes="jsch*.jar" />
 		</path>
 		<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 		<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />

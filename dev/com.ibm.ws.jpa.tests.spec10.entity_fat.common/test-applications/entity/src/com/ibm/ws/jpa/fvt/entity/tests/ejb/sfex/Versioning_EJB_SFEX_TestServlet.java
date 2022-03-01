@@ -38,6 +38,8 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/EntityJPAResource2"));
     }
 
+    // testVersioning001
+
     @Test
     public void jpa10_Entity_Versioning_Int_Ano_CMEX_EJB_SFEX() throws Exception {
         final String testName = "jpa10_Entity_Versioning_Int_Ano_CMEX_EJB_SFEX";
@@ -241,6 +243,234 @@ public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
         final Map<String, String> testResourcesList = new HashMap<String, String>();
         testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
         testResourcesList.put("test-jpa-resource2", "test-jpa-resource-2");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    // testVersioning002 - Only Timestamp testing is necessary
+
+    @Test
+    public void jpa10_Entity_Versioning2_SqlTimestamp_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning2_SqlTimestamp_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning002";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedSqlTimestampEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning2_SqlTimestamp_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning2_SqlTimestamp_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning002";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedSqlTimestampEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    // testVersioning003
+
+    @Test
+    public void jpa10_Entity_Versioning3_Int_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Int_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedIntEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_Int_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Int_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedIntEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_IntWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_IntWrapper_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedIntWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_IntWrapper_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_IntWrapper_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedIntWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_Long_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Long_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedLongEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_Long_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Long_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedLongEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_LongWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_LongWrapper_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedLongWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_LongWrapper_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_LongWrapper_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedLongWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_Short_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Short_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedShortEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_Short_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_Short_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedShortEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_ShortWrapper_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_ShortWrapper_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedShortWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_ShortWrapper_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_ShortWrapper_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "XMLVersionedShortWrapperEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_SqlTimestamp_Ano_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_SqlTimestamp_Ano_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", "VersionedSqlTimestampEntity");
+
+        executeTest(testName, testMethod, testResourcesList, properties);
+    }
+
+    @Test
+    public void jpa10_Entity_Versioning3_SqlTimestamp_XML_CMEX_EJB_SFEX() throws Exception {
+        final String testName = "jpa10_Entity_Versioning3_SqlTimestamp_XML_CMEX_EJB_SFEX";
+        final String testMethod = "testVersioning003";
+
+        final Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", "test-jpa-resource-cmex");
 
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", "XMLVersionedSqlTimestampEntity");

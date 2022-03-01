@@ -41,6 +41,12 @@ public class ProductRequirementInformation {
 
     /**
      * Construct an instance of this class supplying the relevant information.
+     *
+     * @param versionRange the version range for this product requirement using the versioning rules of Liberty product versions
+     * @param productId the ID of the product
+     * @param installType the install type of the product, or {@code null}
+     * @param licenseType the license type of the product, or {@code null}
+     * @param editions the editions for the product (may be empty but not {@code null})
      */
     public ProductRequirementInformation(String versionRange, String productId, String installType, String licenseType, List<String> editions) {
         super();

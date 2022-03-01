@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -177,9 +177,9 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
             }
 
             if (jsonFromSpi == null) {
-                Map<String, Object> userClaims = getCustomClaims(tokenMap, thirdPartyIDToken, oidcServerConfig);
+                Map<String, Object> customClaims = getCustomClaims(tokenMap, thirdPartyIDToken, oidcServerConfig);
                 if (accessTokenHash != null) {
-                    userClaims.put(AT_HASH, accessTokenHash);
+                    customClaims.put(AT_HASH, accessTokenHash);
                 }
                 OAuth20Provider oauth20Provider = ProvidersService.getOAuth20Provider(componentId);
                 boolean useMicroProfileTokenFormat = false;//oauth20Provider == null? false: oauth20Provider.isMpJwt(); //Aruna TODO:
@@ -190,7 +190,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                                                              scopes,
                                                              lifetime,
                                                              tokenMap,
-                                                             userClaims,
+                                                             customClaims,
                                                              jwtData,
                                                              useMicroProfileTokenFormat);
             }
@@ -221,6 +221,12 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         Iterator<IDTokenMediator> idMediators = ConfigUtils.getIdTokenMediatorService().getServices();
         if (idMediators.hasNext()) {
             IDTokenMediator idMediator = idMediators.next();
+
+            // remove third party id token from token map if not running in beta mode
+            // while feature is still being developed (issue 16298)
+            if (tokenMap.containsKey(OAuth20Constants.THIRD_PARTY_ID_TOKEN) && !isRunningBetaMode()) {
+                tokenMap.remove(OAuth20Constants.THIRD_PARTY_ID_TOKEN);
+            }
 
             idStr = idMediator.mediateToken(tokenMap);
         }
@@ -375,12 +381,10 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         if (oidcServerConfig.isCustomClaimsEnabled()) {
             Map<String, Object> userClaims = getUserClaims(tokenMap, oidcServerConfig);
             customClaims.putAll(userClaims);
+
+            Map<String, Object> thirdPartyClaims = getThirdPartyIDTokenClaims(thirdPartyIDToken, oidcServerConfig);
+            customClaims.putAll(thirdPartyClaims);
         }
-
-        // TODO: see if we need some condition to get third party claims
-        Map<String, Object> thirdPartyClaims = getThirdPartyIDTokenClaims(thirdPartyIDToken, oidcServerConfig);
-        customClaims.putAll(thirdPartyClaims);
-
         return customClaims;
     }
 
@@ -422,7 +426,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
                 }
             }
         } catch (Exception e) {
-            // ignore for now
+            Tr.error(tc, "OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR", new Object[] { oidcServerConfig.getProviderId(), e.getLocalizedMessage() });
         }
         return thirdPartyIDTokenClaims;
     }

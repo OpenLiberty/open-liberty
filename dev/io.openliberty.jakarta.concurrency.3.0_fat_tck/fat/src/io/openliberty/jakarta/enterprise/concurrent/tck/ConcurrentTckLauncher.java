@@ -15,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,7 +34,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
+
 
 /**
  * This is a test class that runs the whole Jakarta Concurrency TCK. The TCK results
@@ -93,6 +98,7 @@ public class ConcurrentTckLauncher {
             Log.info(getClass(), "launchConcurrentTCK", "Running lite tests");
             suiteXmlFile = "tck-suite-lite.xml";
         }
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
 
         /**
          * The runTCKMvnCmd will set the following properties for use by arquillian
@@ -106,8 +112,12 @@ public class ConcurrentTckLauncher {
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
-        );
-
+        );  
+        
+        resultInfo.put("results_type", "Jakarta");
+        resultInfo.put("feature_name", "Concurrency");
+        resultInfo.put("feature_version", "3.0");
+        MvnUtils.preparePublicationFile(resultInfo);
         assertEquals(0, result);
     }
 }

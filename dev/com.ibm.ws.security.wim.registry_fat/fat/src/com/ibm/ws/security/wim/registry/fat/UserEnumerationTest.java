@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,12 +35,11 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPFatUtils;
-import componenttest.topology.utils.LDAPUtils;
 
 /**
  * Regression tests for fixes made to the WIM UserRegistry component for user enumeration.
  *
- * This test requires a remote LDAP server to successfully differentiate on call times.
+ * This test uses a custom repository with sleeps and login to successfully differentiate on call times.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -65,18 +63,13 @@ public class UserEnumerationTest {
      */
     @BeforeClass
     public static void setupClass() throws Exception {
-        if (LDAPUtils.USE_LOCAL_LDAP_SERVER) {
-            Log.info(c, "setupClass", "The UserEnumerationTest will not run -- using local Ldaps and this test requires a remote LDAP.");
-        }
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
 
-        /*
-         * Add LDAP variables to bootstrap properties file
-         */
-        LDAPUtils.addLDAPVariables(libertyServer);
         Log.info(c, "setupClass", "Starting the server... (will wait for userRegistry servlet to start)");
         libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         libertyServer.addInstalledAppForValidation("userRegistry");
+
+        libertyServer.installUserBundle("com.ibm.ws.security.wim.repository_test.custom.delay_1.0");
+        libertyServer.installUserFeature("customRepositorySampleDelay-1.0");
         libertyServer.startServer(c.getName() + ".log");
 
         /*
@@ -117,11 +110,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
-    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationDefaultSettings() throws Exception {
-        // The timing for this test only works if we're making a remote call, local LDAP calls have too small of a window
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-
         ServerConfiguration clone = startConfiguration.clone();
 
         FederatedRepository federatedRepository = clone.getFederatedRepository();
@@ -144,11 +133,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
-    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationDisabled() throws Exception {
-        // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-
         libertyServer.setTraceMarkToEndOfDefaultTrace();
 
         ServerConfiguration clone = startConfiguration.clone();
@@ -175,11 +160,7 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
-    @AllowedFFDC(value = { "javax.naming.CommunicationException" })
     public void testUserEnumerationCustomConfig() throws Exception {
-        // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-
         libertyServer.setTraceMarkToEndOfDefaultTrace();
 
         ServerConfiguration clone = startConfiguration.clone();
@@ -191,7 +172,7 @@ public class UserEnumerationTest {
         LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
 
         /*
-         * This message appears in trace only and depends on what you provider in the setFailedLoginDelayMax/Min above.
+         * This message appears in trace only and depends on what you provide in the setFailedLoginDelayMax/Min above.
          */
         assertFalse("Should have logged custom config",
                     libertyServer.findStringsInLogsAndTrace("2000 and 7000").isEmpty());
@@ -205,10 +186,8 @@ public class UserEnumerationTest {
      * @throws Exception If the test failed for some reason.
      */
     @Test
-    @AllowedFFDC(value = { "javax.naming.CommunicationException", "java.lang.IllegalArgumentException" })
+    @AllowedFFDC(value = { "java.lang.IllegalArgumentException" })
     public void testUserEnumerationInvalidValues() throws Exception {
-        // The timing for this test only works if we're making a remote call, local LDAP calls are too small of a window
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
 
         ServerConfiguration clone = startConfiguration.clone();
         /*
@@ -267,16 +246,16 @@ public class UserEnumerationTest {
 
         int numTimesValid = 0;
         int numTimesInvalid = 0;
-        int allowedRatioMin = 70;
-        int allowedRatioMax = 130;
+        final int allowedRatioMin = 70;
+        final int allowedRatioMax = 130;
 
-        int validityCheckRounds = 15;
+        final int validityCheckRounds = 10;
+        final int loopTries = 3;
 
         for (int j = 0; j < validityCheckRounds; j++) {
             /*
-             * Record the average timing for an unknown user (1 call to Ldap)
+             * Record the average timing for an unknown user (1 call to Custom Repo)
              */
-            int loopTries = 3;
             long timePerUnknownUsers = 0;
             for (int i = 0; i < loopTries; i++) {
                 long timeStart = System.currentTimeMillis();
@@ -290,21 +269,25 @@ public class UserEnumerationTest {
             Log.info(c, methodName, "average timePerUnknownUsers: " + timePerUnknownUsers);
 
             /*
-             * Record the timing for a known user with a bad password (2 calls to Ldap). This user is
+             * Record the average timing for a known user with a bad password (2 calls to Custom Repo). This user is
              * valid, but we should not be able to consistently detect than when comparing it to
              * unknown users.
              */
-            long userToTestForValidity = 0;
-            long timeStart = System.currentTimeMillis();
-            servlet.checkPassword("vmmtestuser", "notapassword");
-            long timeEnd = System.currentTimeMillis();
-            Log.info(c, methodName, "Time for known user with a bad password: " + (timeEnd - timeStart));
-            userToTestForValidity = timeEnd - timeStart;
+            long timePerKnownUser = 0;
+            for (int i = 0; i < loopTries; i++) {
+                long timeStart = System.currentTimeMillis();
+                servlet.checkPassword("adminUser", "notapassword");
+                long timeEnd = System.currentTimeMillis();
+                Log.info(c, methodName, "Time for known user with a bad password: " + (timeEnd - timeStart));
+                timePerKnownUser = timePerKnownUser + (timeEnd - timeStart);
+            }
+            timePerKnownUser = timePerKnownUser / loopTries;
+            Log.info(c, methodName, "average timePerKnownUser: " + timePerKnownUser);
 
             /*
              * Calculate if the percentage of the known user versus unknown user
              */
-            long ratioOfUsers = 100 * timePerUnknownUsers / userToTestForValidity;
+            long ratioOfUsers = 100 * timePerUnknownUsers / timePerKnownUser;
 
             /*
              * Mark whether we estimate the user is valid or invalid

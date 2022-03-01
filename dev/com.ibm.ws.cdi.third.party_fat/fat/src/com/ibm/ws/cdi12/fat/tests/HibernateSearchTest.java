@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,13 @@
 package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.util.stream.Collectors;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -26,6 +33,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -49,7 +58,6 @@ Caused by: java.lang.NoClassDefFoundError: javax.persistence.spi.PersistenceProv
 */
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class HibernateSearchTest extends FATServletClient {
 
     public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
@@ -64,6 +72,19 @@ public class HibernateSearchTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //To prevent errors on Windows because of file locks, we create a seperate set of transformed jakarta jars rather than transform the existing ones.
+        //This must happen before LibertyServerFactory.getLibertyServer as that method is what copies the publish directory into the server.
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
+            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernatejavax")).collect(Collectors.toList());
+            for (Path file : files) {
+                File dir = new File("publish/shared/resources/hibernatejakarta/");
+                dir.mkdir();
+                String newPathString = "publish/shared/resources/hibernatejakarta/" + file.getFileName();
+                Path newPath = Paths.get(newPathString);
+                JakartaEE9Action.transformApp(file, newPath);
+            }
+        }
+
         //Hibernate Search Test
         WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, HIBERNATE_SEARCH_APP_NAME+".war")
                         .addPackages(true, cdi.hibernate.test.model.BasicFieldBridge.class.getPackage())
@@ -73,6 +94,11 @@ public class HibernateSearchTest extends FATServletClient {
 
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest);
+
+        //Update the server.xml file to point to the new jakarta jars. This must be done after LibertyServerFactory.getLibertyServer() as the xml files in publish are unchanged.
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
+            server.swapInServerXMLFromPublish("jakarta.xml");
+        }
 
         server.startServer();
     }

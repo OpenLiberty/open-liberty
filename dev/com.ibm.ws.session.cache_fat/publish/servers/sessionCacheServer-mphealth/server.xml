@@ -1,10 +1,19 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
 
     <featureManager>
         <feature>cdi-2.0</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
-        <feature>sessionCache-1.0</feature>
         <feature>timedexit-1.0</feature>
         <!-- MP Health is enabled to verify that sessionCache works with a feature that provides a web endpoint via WAB -->
         <feature>mpHealth-1.0</feature>
@@ -17,9 +26,10 @@
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
     
-	<httpSessionCache libraryRef="HazelcastLib">
-	  <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-client-localhost-only.xml"/>
-	</httpSessionCache>
+    <!-- 
+         Include the session cache configuration file for this specific run.
+     -->
+    <include location="${server.config.dir}/configs/${session.cache.config.file}" />
 	
 	<library id="HazelcastLib">
 	  <fileset dir="${shared.resource.dir}/hazelcast" includes="*.jar"/>

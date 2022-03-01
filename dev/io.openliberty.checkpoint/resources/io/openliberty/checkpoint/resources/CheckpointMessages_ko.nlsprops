@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: \uc11c\ubc84 \uccb4\ud06c\ud3ec\uc778\ud2b8\uac00 \uc694\uccad\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uccb4\ud06c\ud3ec\uc778\ud2b8\uac00 \uc644\ub8cc\ub418\uba74 \uc11c\ubc84\uac00 \uc911\uc9c0\ub429\ub2c8\ub2e4.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=\uccb4\ud06c\ud3ec\uc778\ud2b8\uac00 \uc694\uccad\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc11c\ubc84\uac00 \uc815\uc9c0\ub418\uace0 \ud604\uc7ac \uc0c1\ud0dc\uac00 \ub514\uc2a4\ud06c\uc5d0 \uae30\ub85d\ub429\ub2c8\ub2e4.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=\uccb4\ud06c\ud3ec\uc778\ud2b8 \ubc0f \ubcf5\uc6d0 \uc870\uc791\uc5d0 \ub300\ud55c \uc138\ubd80\uc0ac\ud56d\uc740 \ubb38\uc11c\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Liberty \uc11c\ubc84\uac00 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc870\uc791\uc744 \uc7ac\uac1c\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Liberty \uc11c\ubc84 \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc774\ubbf8\uc9c0\uc5d0\uc11c \ubcf5\uc6d0 \uc870\uc791\uc774 \uc2e4\ud589\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=\uccb4\ud06c\ud3ec\uc778\ud2b8 \ubc0f \ubcf5\uc6d0 \uc870\uc791\uc5d0 \ub300\ud55c \uc138\ubd80\uc0ac\ud56d\uc740 \ubb38\uc11c\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: \ub2e4\uc74c \uba54\uc2dc\uc9c0\uc640 \ud568\uaed8 \uc11c\ubc84 \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=\uc11c\ubc84\uc5d0 \ub300\ud55c \uccb4\ud06c\ud3ec\uc778\ud2b8 \uc694\uccad\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.  \uc11c\ubc84\uc5d0 \ub300\ud55c \uc720\ud6a8\ud55c \uccb4\ud06c\ud3ec\uc778\ud2b8 \ud504\ub85c\uc138\uc2a4 \uc774\ubbf8\uc9c0\uac00 \uc791\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=\ucd94\uac00 \ub85c\uadf8 \ud30c\uc77c\uc744 \ubcf4\ub824\uba74 \uc11c\ubc84 \ub85c\uadf8 \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\ub294 \uccb4\ud06c\ud3ec\uc778\ud2b8 \ub514\ub809\ud1a0\ub9ac\ub97c \uac80\uc0ac\ud558\uc5ec \uccb4\ud06c\ud3ec\uc778\ud2b8\uac00 \uc2e4\ud328\ud55c \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: \ub2e4\uc74c \uba54\uc2dc\uc9c0\uac00 \uc788\ub294 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc11c\ubc84\ub97c \ubcf5\uc6d0\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0}
+RESTORE_FAILED_CWWKC0454E.explanation=\uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c \uc11c\ubc84\ub97c \ubcf5\uc6d0\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.  \uc11c\ubc84\uac00 \uc2e4\ud589 \uc911\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+RESTORE_FAILED_CWWKC0454E.useraction=\uc11c\ubc84 \ub85c\uadf8 \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\ub294 \uccb4\ud06c\ud3ec\uc778\ud2b8 \ub514\ub809\ud1a0\ub9ac\ub97c \uac80\uc0ac\ud558\uc5ec \ucd94\uac00 \ub85c\uadf8 \ud30c\uc77c\uc744 \ud655\uc778\ud558\uace0 \uc11c\ubc84\ub97c \ubcf5\uc6d0\ud560 \uc218 \uc5c6\ub294 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+

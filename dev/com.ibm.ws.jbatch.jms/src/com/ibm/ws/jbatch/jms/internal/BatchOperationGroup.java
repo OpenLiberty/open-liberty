@@ -11,24 +11,25 @@
 
 package com.ibm.ws.jbatch.jms.internal;
 
-import java.util.HashSet;
-import java.util.List;
+import static java.util.Collections.unmodifiableSet;
+
+import java.util.Arrays;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class BatchOperationGroup {
-
-    HashSet<String> groupNames = new HashSet<String>();
+    final Set<String> groupNames;
     
-    public void addGroup(String anotherGroup){
-    	groupNames.add(anotherGroup);
-    }
-
-    public void removeGroup(String anotherGroup){
-    	groupNames.remove(anotherGroup);
+    public BatchOperationGroup(String...groups) {
+        this.groupNames = unmodifiableSet(new TreeSet<>(Arrays.asList(groups)));
     }
     
     public Set<String> getGroupNames(){
-        return groupNames;
+        return unmodifiableSet(groupNames);
     }
     
+    @Override
+    public String toString() {
+        return super.toString() + groupNames;
+    }
 }

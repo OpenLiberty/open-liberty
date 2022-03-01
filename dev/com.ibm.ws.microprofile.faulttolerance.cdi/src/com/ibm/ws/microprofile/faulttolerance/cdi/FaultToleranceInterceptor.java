@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
@@ -47,6 +49,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
+import com.ibm.ws.microprofile.faulttolerance.spi.FTAnnotationInspector;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
@@ -55,6 +58,14 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE) //run this interceptor after platform interceptors but before application interceptors
 public class FaultToleranceInterceptor {
+
+    private static final TraceComponent tc = Tr.register(FaultToleranceInterceptor.class);
+
+    /**
+     * Class name of Jakarta EE Concurrency annotation that must not be intermixed with
+     * MicroProfile Fault Tolerance.
+     */
+    private static final String CONCURRENCY_ASYNC_ANNO = "jakarta.enterprise.concurrent.Asynchronous";
 
     @Inject
     private BeanManager beanManager;
@@ -106,7 +117,12 @@ public class FaultToleranceInterceptor {
 
         //first check the annotations on the target class
         Class<?> targetClass = context.getTarget().getClass();
-        Annotation[] annotations = targetClass.getAnnotations();
+        Annotation[] annotations = getAnnotations(targetClass);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Processing annotations on class", targetClass, annotations);
+        }
+
         for (Annotation annotation : annotations) {
 
             //Check that the annotation has not been disabled for this specific class.
@@ -135,6 +151,11 @@ public class FaultToleranceInterceptor {
         //method level annotations override class level ones
         Method method = context.getMethod();
         annotations = method.getAnnotations();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Processing annotations on method", method, annotations);
+        }
+
         for (Annotation annotation : annotations) {
 
             //Check that the annotation has not been disabled for this specific method.
@@ -203,6 +224,22 @@ public class FaultToleranceInterceptor {
         return aggregatedFTPolicy;
     }
 
+    /**
+     * Get the annotations on the target class, using {@link FTAnnotationInspector} services if available
+     *
+     * @param targetClass the target class
+     * @return the annotations for that class
+     */
+    private Annotation[] getAnnotations(Class<?> targetClass) {
+        for (FTAnnotationInspector annotationInspector : FaultToleranceCDIComponent.getAnnotationInspectors()) {
+            Annotation[] result = annotationInspector.getAnnotations(targetClass);
+            if (result != null) {
+                return result;
+            }
+        }
+        return targetClass.getAnnotations();
+    }
+
     @FFDCIgnore({ ExecutionException.class })
     private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Exception {
         Object result = null;
@@ -213,6 +250,10 @@ public class FaultToleranceInterceptor {
             Executor<Object> executor = aggregatedFTPolicy.getExecutor();
 
             Method method = invocationContext.getMethod();
+            for (Annotation anno : method.getAnnotations())
+                if (CONCURRENCY_ASYNC_ANNO.equals(anno.annotationType().getName()))
+                    throw new UnsupportedOperationException(Tr.formatMessage(tc, "anno.conflict.CWMFT5022E", CONCURRENCY_ASYNC_ANNO));
+
             Object[] params = invocationContext.getParameters();
             ExecutionContext executionContext = executor.newExecutionContext(generateId(method), method, params);
 

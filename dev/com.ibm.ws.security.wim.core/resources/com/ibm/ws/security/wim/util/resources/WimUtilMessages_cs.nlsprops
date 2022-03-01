@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2021 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Operaci registru u\u017eiva
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Typ entity mus\u00ed b\u00fdt definov\u00e1n s n\u00e1zvem typu entity a s nejm\u00e9n\u011b jednou odpov\u00eddaj\u00edc\u00ed vlastnost\u00ed RDN (Relative Distinguished Name).
 INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Upravte a opravte definici typu entity v souboru server.xml.
 
-INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Definice z\u00e1kladn\u00ed polo\u017eky {0} je neplatn\u00e1. Opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml. Syntaxe m\u016f\u017ee b\u00fdt nap\u0159\u00edklad <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.explanation= Uveden\u00e1 definice z\u00e1kladn\u00ed polo\u017eky je nespr\u00e1vn\u00e1. Syntaxe pro definov\u00e1n\u00ed z\u00e1kladn\u00ed polo\u017eky je <baseEntry name="..." baseDN="...."/>.
-INVALID_BASE_ENTRY_DEFINITION.useraction= Upravte a opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Definice z\u00e1kladn\u00ed polo\u017eky {0} je neplatn\u00e1.  Opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Zadan\u00e1 definice z\u00e1kladn\u00ed polo\u017eky je neplatn\u00e1.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Nakonfigurujte platnou definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
 
 INVALID_REALM_DEFINITION=CWIMK0003E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Definice sf\u00e9ry {0} je neplatn\u00e1. Opravte definici sf\u00e9ry v souboru server.xml.
 INVALID_REALM_DEFINITION.explanation= Chyb\u00ed zna\u010dka sf\u00e9ry nebo je neplatn\u00e1 kv\u016fli chyb\u011bj\u00edc\u00edmu povinn\u00e9mu atributu.
@@ -196,7 +196,7 @@ MISSING_MANDATORY_PROPERTY=CWIML1028E: Operaci registru u\u017eivatel\u016f nelz
 MISSING_MANDATORY_PROPERTY.explanation=Operace nem\u016f\u017ee b\u00fdt provedena, proto\u017ee chyb\u00ed hodnota povinn\u00e9 vlastnosti. Nap\u0159\u00edklad nemus\u00ed b\u00fdt ur\u010dena vlastnost RDN (Relative Distinguished Name) p\u0159i vytv\u00e1\u0159en\u00ed entity nebo chyb\u00ed vlastnost propertyName \u010di entityTypeName v prvku PropertyDefinitionControl nebo ExtensionPropertyDefinitionControl. Nebo chyb\u00ed vlastnost entityName v prvku entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Zadejte hodnotu povinn\u00e9 vlastnosti.
 
-CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. U\u017eivatele s uniqueName {0} 			nelze odstranit, proto\u017ee je p\u0159ihl\u00e1\u0161en\u00fd. P\u0159ihlaste se jako jin\u00fd u\u017eivatel, abyste mohli odstranit tohoto u\u017eivatele.
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. U\u017eivatele s uniqueName {0} \t\t\tnelze odstranit, proto\u017ee je p\u0159ihl\u00e1\u0161en\u00fd. P\u0159ihlaste se jako jin\u00fd u\u017eivatel, abyste mohli odstranit tohoto u\u017eivatele.
 CANNOT_DELETE_LOGGED_IN_USER.explanation=U\u017eivatel se pokusil odstranit s\u00e1m sebe ze spr\u00e1vce VMM. Tato akce nen\u00ed povolena.
 CANNOT_DELETE_LOGGED_IN_USER.useraction=P\u0159ihlaste se jako jin\u00fd u\u017eivatel, abyste mohli odstranit aktu\u00e1ln\u00edho.
 
@@ -220,7 +220,7 @@ MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Chyb\u00ed konfigurace
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Pro \u00falo\u017ei\u0161t\u011b nen\u00ed definov\u00e1na \u017e\u00e1dn\u00e1 konfigurace skupiny cel\u00e9ho \u00falo\u017ei\u0161t\u011b.
 MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=P\u0159\u00ed\u010dinu selh\u00e1n\u00ed najdete v souboru protokolu. Zkontrolujte konfiguraci sv\u00e9ho \u00falo\u017ei\u0161t\u011b.
 
-ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Uveden\u00fd typ entity {0} nen\u00ed platn\u00fdm typem entity pro tuto operaci.
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Uveden\u00fd typ entity {0} nen\u00ed pro tuto operaci platn\u00fd.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Byla po\u017eadov\u00e1na operace s entitou, ale tato operace nepodporuje uveden\u00fd typ entity.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Zkontrolujte, zda entity uveden\u00e9 ve vstupu jsou podporovan\u00fdmi typy entit, a odeberte ze vstupu nepodporovan\u00e9 typy entit.
 
@@ -252,8 +252,8 @@ ENTITY_SEARCH_FAILED=CWIML4506E: Operaci s registrem u\u017eivatel\u016f nelze p
 ENTITY_SEARCH_FAILED.explanation=Entitu nelze prohledat kv\u016fli p\u0159\u00ed\u010din\u011b uveden\u00e9 v z\u00e1kladn\u00edm registru.
 ENTITY_SEARCH_FAILED.useraction=Prostudujte chybovou zpr\u00e1vu a trasovac\u00ed soubor, abyste zjistili p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. Opravte chybu a zkuste akci zopakovat.
 
-MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze prov\u00e9st, proto\u017ee heslo chyb\u00ed nebo je pr\u00e1zdn\u00e9.
-MISSING_OR_EMPTY_PASSWORD.explanation=Pokud je p\u0159i p\u0159ihla\u0161ov\u00e1n\u00ed uvedeno hlavn\u00ed jm\u00e9no, nem\u016f\u017ee b\u00fdt heslo pr\u00e1zdn\u00e9 ani Null.
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze prov\u00e9st, proto\u017ee chyb\u00ed heslo nebo je pr\u00e1zdn\u00e9.
+MISSING_OR_EMPTY_PASSWORD.explanation=Pokud je b\u011bhem p\u0159ihla\u0161ov\u00e1n\u00ed uveden n\u00e1zev \u010dinitele, nem\u016f\u017ee b\u00fdt heslo pr\u00e1zdn\u00e9 nebo null.
 MISSING_OR_EMPTY_PASSWORD.useraction=Zadejte heslo.
 
 CERTIFICATE_GENERATE_FAILED=CWIML3012E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze prov\u00e9st, proto\u017ee se nezda\u0159ilo vygenerov\u00e1n\u00ed certifik\u00e1tu.

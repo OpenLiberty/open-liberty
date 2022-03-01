@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
@@ -46,6 +48,7 @@ import com.ibm.ws.ejbcontainer.EJBRequestData;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.EJBJaccAuthorizationHelper;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.JaccUtil;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
@@ -59,6 +62,7 @@ import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.credentials.CredentialsService;
+import com.ibm.ws.security.ready.SecurityReadyService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
@@ -72,6 +76,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected static final String KEY_CREDENTIAL_SERVICE = "credentialsService";
     protected static final String KEY_UNAUTHENTICATED_SUBJECT_SERVICE = "unauthenticatedSubjectService";
     protected static final String KEY_JACC_SERVICE = "jaccService";
+    protected static final String KEY_SECURITY_READY_SERVICE = "securityReadyService";
+    private SecurityReadyService securityReadyService;
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
     private final AtomicServiceReference<UnauthenticatedSubjectService> unauthenticatedSubjectServiceRef = new AtomicServiceReference<UnauthenticatedSubjectService>(KEY_UNAUTHENTICATED_SUBJECT_SERVICE);
@@ -84,6 +90,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     protected volatile EJBSecurityConfig ejbSecConfig = null;
     private EJBAuthorizationHelper eah = this;
+
+    private boolean waitedForSecurity = false;
+    // wait time in seconds
+    private final int securityWaitTime = 30;
 
     /**
      * Zero length constructor required by DS.
@@ -113,6 +123,13 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected void unsetSecurityService(ServiceReference<SecurityService> ref) {
         securityServiceRef.unsetReference(ref);
     }
+
+    @Reference
+    protected void setSecurityReadyService(SecurityReadyService ref) {
+        this.securityReadyService = ref;
+    }
+
+    protected void unsetSecurityReadyService(SecurityReadyService ref) {}
 
     protected void setUnauthenticatedSubjectService(ServiceReference<UnauthenticatedSubjectService> ref) {
         unauthenticatedSubjectServiceRef.setReference(ref);
@@ -292,6 +309,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     public boolean isCallerInRole(EJBComponentMetaData cmd, EJBRequestData request, String roleName, String roleLink, Subject subject) {
         String role = roleLink == null ? roleName : roleLink;
         String appName = getApplicationName(request.getEJBMethodMetaData());
+        waitForSecurity();
         SecurityService securityService = securityServiceRef.getService();
         AuthorizationService authzService = securityService.getAuthorizationService();
         if (authzService == null) {
@@ -470,6 +488,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
             return;
         }
+        waitForSecurity();
         SecurityService securityService = securityServiceRef.getService();
         AuthorizationService authzService = securityService.getAuthorizationService();
 
@@ -606,6 +625,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             extraAuditData.put("RUN_AS_ROLE", roleName);
             if (roleName != null) {
                 try {
+                    waitForSecurity();
                     SecurityService securityService = securityServiceRef.getService();
                     AuthenticationService authService = securityService.getAuthenticationService();
                     delegationSubject = authService.delegate(roleName, getApplicationName(methodMetaData));
@@ -736,5 +756,29 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
 
+    }
+
+    @FFDCIgnore(InterruptedException.class)
+    private void waitForSecurity() {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (waitedForSecurity || securityReadyService.isSecurityReady()) {
+            waitedForSecurity = true;
+            return;
+        }
+
+        try {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Waiting " + securityWaitTime + " seconds for Security Service to be ready");
+            if (securityReadyService.awaitSecurityReady(securityWaitTime, TimeUnit.SECONDS) == false) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Security Service did not come up within " + securityWaitTime + " seconds");
+            }
+        } catch (InterruptedException e) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Waiting for Security Service failed: " + e);
+        }
+
+        waitedForSecurity = true;
     }
 }

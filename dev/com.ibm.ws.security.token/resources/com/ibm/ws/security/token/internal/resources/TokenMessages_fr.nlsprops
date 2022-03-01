@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,25 +19,15 @@
 # Message prefix block: CWWKS4000 - CWWKS4099
 
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Une exception de configuration est survenue. L''instance de TokenService demand\u00e9e (type {0}) n''a pas \u00e9t\u00e9 trouv\u00e9e.
-TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Chaque bundle d'impl\u00e9mentation de \
-TokenService sp\u00e9cifie son type fourni.
-TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Sp\u00e9cifiez un type pris en charge \
-ou installez le bundle qui fournit l'instance de TokenService du type demand\u00e9.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Chaque bundle d'impl\u00e9mentation de TokenService sp\u00e9cifie son type fourni.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Sp\u00e9cifiez un type pris en charge ou installez le bundle qui fournit l'instance de TokenService du type demand\u00e9.
 
-TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Le jeton de s\u00e9curit\u00e9 ne peut pas \u00eatre valid\u00e9. Les raisons possibles sont les suivantes\n\
-1. Le jeton de s\u00e9curit\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 sur un autre serveur \u00e0 l'aide de cl\u00e9s diff\u00e9rentes.\n\
-2. La configuration de jeton ou les cl\u00e9s de s\u00e9curit\u00e9 di service de jeton ont \u00e9t\u00e9 modifi\u00e9es.\n\
-3. Le service de jeton qui a cr\u00e9\u00e9 le jeton n'est plus disponible.
-TOKEN_SERVICE_INVALID_TOKEN.explanation=Le jeton ne peut pas \u00eatre recr\u00e9\u00e9 par les services de jeton \
-actuellement configur\u00e9s.
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Le jeton de s\u00e9curit\u00e9 ne peut pas \u00eatre valid\u00e9. Les raisons possibles sont les suivantes\n1. Le jeton de s\u00e9curit\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 sur un autre serveur \u00e0 l'aide de cl\u00e9s diff\u00e9rentes.\n2. La configuration de jeton ou les cl\u00e9s de s\u00e9curit\u00e9 di service de jeton ont \u00e9t\u00e9 modifi\u00e9es.\n3. Le service de jeton qui a cr\u00e9\u00e9 le jeton n'est plus disponible.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Le jeton ne peut pas \u00eatre recr\u00e9\u00e9 par les services de jeton actuellement configur\u00e9s.
 TOKEN_SERVICE_INVALID_TOKEN.useraction=V\u00e9rifiez qu'au moins une fonction inclue un service de jeton correctement configur\u00e9 pour recr\u00e9er le jeton.
 
-TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Le jeton de s\u00e9curit\u00e9 ne peut pas \u00eatre valid\u00e9. Les raisons possibles sont les suivantes\n\
-1. Le jeton de s\u00e9curit\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 sur un autre serveur \u00e0 l'aide de cl\u00e9s diff\u00e9rentes.\n\
-2. La configuration de jeton ou les cl\u00e9s de s\u00e9curit\u00e9 du service de jeton ont \u00e9t\u00e9 modifi\u00e9es.\n\
-3. Le service de jeton qui a cr\u00e9\u00e9 le jeton n'est plus disponible.
-TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Le jeton ne peut pas \u00eatre recr\u00e9\u00e9 par les services de jeton \
-actuellement configur\u00e9s.
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Le jeton de s\u00e9curit\u00e9 ne peut pas \u00eatre valid\u00e9. Les raisons possibles sont les suivantes\n1. Le jeton de s\u00e9curit\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 sur un autre serveur \u00e0 l'aide de cl\u00e9s diff\u00e9rentes.\n2. La configuration de jeton ou les cl\u00e9s de s\u00e9curit\u00e9 du service de jeton ont \u00e9t\u00e9 modifi\u00e9es.\n3. Le service de jeton qui a cr\u00e9\u00e9 le jeton n'est plus disponible.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Le jeton ne peut pas \u00eatre recr\u00e9\u00e9 par les services de jeton actuellement configur\u00e9s.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=V\u00e9rifiez qu'au moins une fonction inclue un service de jeton correctement configur\u00e9 pour recr\u00e9er le jeton.
 
 KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: L'interface de programmation de la d\u00e9l\u00e9gation contrainte (S4U2self et S4U2proxy) requiert au minimum l'environnement d'ex\u00e9cution Java de JavaSE 1.8.
@@ -47,3 +37,11 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Assurez-vous d'utiliser un environnement 
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Le service OSGi {0} de la d\u00e9l\u00e9gation contrainte n''est pas disponible.
 KRB_OSGI_SERVICE_ERROR.explanation=Le service OSGi indiqu\u00e9 n'est pas disponible.
 KRB_OSGI_SERVICE_ERROR.useraction=Assurez-vous que la fonction de d\u00e9l\u00e9gation contrainte est activ\u00e9e que vous utilisez un environnement d'ex\u00e9cution d'IBM JavaSE 1.8. Passez en revue les journaux du serveur pour plus d'informations.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: Impossible d''extraire l''\u00e9l\u00e9ment BundleContext pour le regroupement {0}. Le regroupement est peut-\u00eatre encore en cours de chargement. R\u00e9essayez ult\u00e9rieurement.
+BUNDLE_CONTEXT_MISSING.explanation=L'\u00e9l\u00e9ment BundleContext OSGi sp\u00e9cifi\u00e9 n'est pas disponible.
+BUNDLE_CONTEXT_MISSING.useraction=Le regroupement est peut-\u00eatre encore en cours de chargement. R\u00e9essayez ult\u00e9rieurement.
+
+OSGI_INVALID_FILTER=CWWKS4005E: Une erreur de syntaxe s''est produite lors de l''extraction de l''\u00e9l\u00e9ment TokenService \u00e0 l''aide du filtre de service {0} : {1}
+OSGI_INVALID_FILTER.explanation=Le filtre de service fourni a g\u00e9n\u00e9r\u00e9 une exception lors de l'extraction de l'\u00e9l\u00e9ment TokenService.
+OSGI_INVALID_FILTER.useraction=Le filtre de service est g\u00e9n\u00e9r\u00e9 \u00e0 partir du type de jeton SSO stock\u00e9 dans le jeton s\u00e9rialis\u00e9. Assurez-vous que le type de jeton SSO configur\u00e9 pour tous les serveurs n'entra\u00eene pas de filtre de service OSGi non valide. 

@@ -94,7 +94,8 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {}
+    public static void setupClass() throws Exception {
+    }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
@@ -404,8 +405,13 @@ public class PackageRunnableTest {
                     retry++;
                 }
 
-                if (proc.isAlive())
+                retry = 0;
+                while (proc.isAlive() && retry < 10) {
+                    Log.info(c, method, "Server is stopping via the proc.destroy() method.  Retry = " + retry);
                     proc.destroy();
+                    Thread.sleep(1000);
+                    retry++;
+                }
             }
 
             if (os != null) {

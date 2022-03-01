@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,17 +28,18 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 TicketCacheBindExpireTests.class,
                 RealmNameJVMProp.class,
                 TicketCacheBadPrincipalJava8.class,
-                TicketCacheBindLongRunTest.class,
                 /*
-                 * If you add more tests and the Windows Full FAT runs start timing out, add another krb5 project
+                 * Do not add more tests to this suite or the FULL fat tends to time out on Window runs.
                  */
-
                 /*
                  * vvv Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
                  */
                 Krb5ConfigJVMProp.class
                 /*
                  * ^^^ Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
+                 */
+                /*
+                 * Do not add more tests to this suite or the FULL fat tends to time out on Window runs.
                  */
 
 })

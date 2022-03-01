@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,7 @@ public class OIDCGrantTypeHandlerCodeImpl extends OAuth20GrantTypeHandlerCodeImp
                                     BuildResponseTypeUtil.putIssuerIdentifierInMap(idTokenMap, attributeList);
 
                                     OAuth20TokenCache tokenCache = tokenFactory.getOAuth20ComponentInternal().getTokenCache();
-                                    String thirdPartyIDTokenCacheKey = code.getTokenString() + OAuth20Constants.THIRD_PARTY_ID_TOKEN_SUFFIX;
+                                    String thirdPartyIDTokenCacheKey = OAuth20Constants.THIRD_PARTY_ID_TOKEN_PREFIX + code.getTokenString();
                                     OAuth20Token thirdPartyIDToken = tokenCache.get(thirdPartyIDTokenCacheKey);
                                     if (thirdPartyIDToken != null) {
                                         idTokenMap.put(OAuth20Constants.THIRD_PARTY_ID_TOKEN, new String[] { thirdPartyIDToken.getTokenString() });

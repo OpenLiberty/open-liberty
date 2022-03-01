@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Byl po\u017eadov\u00e1n kontroln\u00ed bod serveru. Kdy\u017e je kontroln\u00ed bod dokon\u010den, server se zastav\u00ed.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Byl po\u017eadov\u00e1n kontroln\u00ed bod. Server je zastaven a jeho aktu\u00e1ln\u00ed stav je zaps\u00e1n na disk.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Podrobnosti o operac\u00edch kontroln\u00edho bodu a obnovy naleznete v dokumentaci.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Server Liberty obnovuje operaci z kontroln\u00edho bodu.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Byla spu\u0161t\u011bna operace obnovy na obrazu kontroln\u00edho bodu serveru Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Podrobnosti o operac\u00edch kontroln\u00edho bodu a obnovy naleznete v dokumentaci.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: Po\u017eadavek kontroln\u00edho bodu serveru selhal s touto zpr\u00e1vou: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Po\u017eadavek kontroln\u00edho bodu pro server se nezda\u0159il.  Nebyl vytvo\u0159en platn\u00fd obraz procesu kontroln\u00edho bodu pro server.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Zkontrolujte adres\u00e1\u0159 kontroln\u00edch bod\u016f um\u00edst\u011bn\u00fd v adres\u00e1\u0159i protokol\u016f serveru, zda neobsahuje dal\u0161\u00ed soubory protokolu a ur\u010dete, pro\u010d kontroln\u00ed bod selhal.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Do\u0161lo k selh\u00e1n\u00ed serveru p\u0159i obnov\u011b z kontroln\u00edho bodu s touto zpr\u00e1vou: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Pokus o obnovu serveru z kontroln\u00edho bodu selhal.  Server nen\u00ed spu\u0161t\u011bn.
+RESTORE_FAILED_CWWKC0454E.useraction=Zkontrolujte adres\u00e1\u0159 kontroln\u00edho bodu um\u00edst\u011bn\u00fd v adres\u00e1\u0159i protokol\u016f serveru, zda neobsahuje dal\u0161\u00ed soubory protokolu a ur\u010dete, pro\u010d nebyl server obnoven.
+

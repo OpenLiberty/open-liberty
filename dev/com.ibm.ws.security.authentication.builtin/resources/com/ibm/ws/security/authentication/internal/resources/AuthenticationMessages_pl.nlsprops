@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: Uwierzytelnianie CLIENT-CERT ni
 JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=Nie mo\u017cna odwzorowa\u0107 okre\u015blonego certyfikatu klienta na u\u017cytkownika w rejestrze.
 JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Upewnij si\u0119, \u017ce klient udost\u0119pnia certyfikat, kt\u00f3ry mo\u017cna odwzorowa\u0107 na u\u017cytkownika w rejestrze.
 
-JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: Uwierzytelnianie CLIENT-CERT nie powiod\u0142o si\u0119 dla certyfikatu klienta z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 {0}.  Wyst\u0105pi\u0142 wyj\u0105tek wewn\u0119trzny: {1}.
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: Uwierzytelnianie CLIENT-CERT nie powiod\u0142o si\u0119 dla certyfikatu klienta z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 {0}. Wyst\u0105pi\u0142 wyj\u0105tek wewn\u0119trzny: {1}.
 JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001
 JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002
 
@@ -46,7 +46,7 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Upewnij si\u0119, \u
 
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Nie mo\u017cna za\u0142adowa\u0107 modu\u0142u logowania JAAS z biblioteki wsp\u00f3\u0142u\u017cytkowanej.  Wyst\u0105pi\u0142 wyj\u0105tek wewn\u0119trzny.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: Uwierzytelnienie ID u\u017cytkownika {0} nie powiod\u0142o si\u0119. Okre\u015blono niepoprawny ID u\u017cytkownika.
 JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=Uwierzytelnianie nie powiod\u0142o si\u0119, poniewa\u017c podany ID u\u017cytkownika nie jest poprawny.
@@ -56,21 +56,17 @@ JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Opcje elementu WSLoginModuleP
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Uwierzytelnianie nie powiod\u0142o si\u0119, poniewa\u017c element options modu\u0142u WSLoginModuleProxy ma warto\u015b\u0107 Null lub jest pusty.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Sprawd\u017a, czy konfiguracja modu\u0142u WSLoginModuleProxy zawiera element options.
 
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Nie ustawiono opcji delegowania elementu WSLoginModuleProxy.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Uwierzytelnianie nie powiod\u0142o si\u0119, poniewa\u017c modu\u0142 jaasLoginModule z identyfikatorem WSLoginModuleProxy nie ma atrybutu delegowania w elemencie options.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Sprawd\u017a, czy modu\u0142 jaasLoginModule o identyfikatorze WSLoginModuleProxy zawiera atrybut delegowania dla elementu options. 
-
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: Modu\u0142 WSLoginModuleProxy nie jest obs\u0142ugiwany we w\u0142a\u015bciwo\u015bci jaasLoginContextEntry klasy system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=Modu\u0142 WSLoginModuleProxy nie jest obs\u0142ugiwany we w\u0142a\u015bciwo\u015bci jaasLoginContextEntry klasy system.DEFAULT.
-JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Usu\u0144 wpis modu\u0142u proxy z atrybutu loginModuleRef w\u0142a\u015bciwo\u015bci jaasLoginContextEntry klasy system.DEFAULT.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Usu\u0144 wpis proxy z atrybutu loginModuleRef w\u0142a\u015bciwo\u015bci jaasLoginContextEntry klasy system.DEFAULT.
 
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1120E: We w\u0142a\u015bciwo\u015bci jaasLoginContextEntry {0} nie ma okre\u015blonych modu\u0142\u00f3w logowania w elemencie loginModuleRef.
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=We w\u0142a\u015bciwo\u015bci jassLoginContextEntry nie ma okre\u015blonych modu\u0142\u00f3w logowania w atrybucie loginModuleRef.
-JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Upewnij si\u0119, \u017ce okre\u015blono co najmniej jeden modu\u0142 logowania w atrybucie loginModuleRef. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Upewnij si\u0119, \u017ce okre\u015blono co najmniej jeden modu\u0142 logowania w atrybucie loginModuleRef.  
 
 JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME=CWWKS1121W: Uwierzytelnianie powiod\u0142o si\u0119 dla u\u017cytkownika {0}. Nazwa wy\u015bwietlana nie mo\u017ce zosta\u0107 okre\u015blona dla u\u017cytkownika {0} z rejestru LDAP za pomoc\u0105 filtru userIdMap. Nazwa zabezpiecze\u0144, kt\u00f3ra jest zwykle pe\u0142n\u0105 nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105, zostanie zwr\u00f3cona dla programistycznych wywo\u0142a\u0144 interfejsu API pobieraj\u0105cych nazw\u0119 u\u017cytkownika.
 JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.explanation=Filtr LDAP userIDMap nie mo\u017ce okre\u015bli\u0107 nazwy wy\u015bwietlanej u\u017cytkownika. Nazwa zabezpiecze\u0144 zostanie zwr\u00f3cona jako nazwa u\u017cytkownika dla programistycznych wywo\u0142a\u0144 interfejsu API, takich jak getUserPrincipal.
-JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.useraction=Je\u015bli dla u\u017cytkownika powinna by\u0107 okre\u015blona nazwa wy\u015bwietlana, upewnij si\u0119, \u017ce u\u017cytkownik jest utworzony w katalogu LDAP w spos\u00f3b zgodny ze skonfigurowanym filtrem userIdMap. 
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.useraction=Je\u015bli dla u\u017cytkownika powinna by\u0107 okre\u015blona nazwa wy\u015bwietlana, upewnij si\u0119, \u017ce u\u017cytkownik jest utworzony w katalogu LDAP w spos\u00f3b zgodny ze skonfigurowanym filtrem userIdMap.
 
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1122W: Z powodu zduplikowanej nazwy nazwa w\u0142a\u015bciwo\u015bci jaasLoginContextEntry {0}, kt\u00f3ra zosta\u0142a zdefiniowana przez identyfikator {1}, jest zast\u0119powana przez warto\u015b\u0107 identyfikatora {2}. 
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Taka sama nazwa zosta\u0142a zdefiniowana przez wi\u0119cej ni\u017c jeden element jassLoginContextEntry. W rezultacie oryginalna warto\u015b\u0107 zostanie nadpisana przez inn\u0105 warto\u015b\u0107.
@@ -83,3 +79,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nie jest wymagana \u017cadna c
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Wtyczka kolektywnego uwierzytelniania o nazwie klasy {0} zosta\u0142a dezaktywowana. 
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Wtyczka kolektywnego uwierzytelniania zosta\u0142a dezaktywowana i nie jest ju\u017c dost\u0119pna do uwierzytelniania kolektywnych \u017c\u0105da\u0144.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Pami\u0119\u0107 podr\u0119czna uwierzytelniania wyczy\u015bci\u0142a wszystkie pozycje w pami\u0119ci podr\u0119cznej JCache {0}. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Pami\u0119\u0107 podr\u0119czna uwierzytelniania usuwa wszystkie wpisy w pami\u0119ci podr\u0119cznej JCache, gdy konfiguracja zabezpiecze\u0144 lub rejestru u\u017cytkownik\u00f3w jest modyfikowana lub gdy wywo\u0142ywany jest komponent MBean DeleteAuthCache. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

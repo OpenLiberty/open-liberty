@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,12 @@ package com.ibm.tx.jta.impl;
  *******************************************************************************/
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
@@ -65,7 +64,8 @@ public class FailureScopeController {
 
     protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors().get() > SMP_THRESH;
 
-    protected FailureScopeController() {}
+    protected FailureScopeController() {
+    }
 
     @SuppressWarnings("unused")
     public FailureScopeController(FailureScope fs) throws SystemException {
@@ -79,7 +79,7 @@ public class FailureScopeController {
         // If small SMP system, use synchronized hashset. If a large system,
         // use a concurrent data structure
         if (isConcurrent) {
-            _transactions = Collections.newSetFromMap(new ConcurrentHashMap<TransactionImpl, Boolean>(256, 0.75f, LocalTIDTable.getNumCHBuckets()));
+            _transactions = Utils.createConcurrentSet();
         } else {
             _transactions = new java.util.HashSet<TransactionImpl>();
         }

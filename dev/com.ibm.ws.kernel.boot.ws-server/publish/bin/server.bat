@@ -808,7 +808,7 @@ goto:eof
     if !serverRunningCounter! GEQ !serverRunningTimeOut! goto:eof
 
     @REM Delay 1 second and repeat loop
-    timeout /t 1 > nul
+    ping -n 1 127.0.0.1 > nul
     set /A serverRunningCounter = !serverRunningCounter! + 1
     goto :repeatServerRunning
 

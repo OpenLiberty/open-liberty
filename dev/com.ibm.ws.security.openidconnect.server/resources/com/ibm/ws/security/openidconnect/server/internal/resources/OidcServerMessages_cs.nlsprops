@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Po\u017eadavek na \u0159et\u011bzec JW
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Vytvo\u0159en\u00ed \u0159et\u011bzce JWK JSON vy\u017eaduje, aby byl atribut signatureAlgorithm poskytovatele OpenID Connect nastaven na hodnotu RS256. Atributy KeyStoreRef a keyAliasName mus\u00ed b\u00fdt platn\u00e9, pokud jsou ur\u010deny. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Opravte atributy konfigurace poskytovatele OpenID Connect.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: N\u00e1roky z tokenu ID t\u0159et\u00ed strany nebylo mo\u017en\u00e9 \u0161\u00ed\u0159it pro poskytovatele protokolu OpenID Connect {0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=N\u00e1roky z tokenu ID t\u0159et\u00ed strany nelze extrahovat. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ujist\u011bte se, \u017ee poskytovatel protokolu OpenID Connect t\u0159et\u00ed strany odes\u00edl\u00e1 platn\u00fd token ID.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Verze jazyka Java pou\u017eit\u00e1 t\u00edmto b\u011bhov\u00fdm prost\u0159ed\u00edm [{0}] nen\u00ed podporov\u00e1na rozhran\u00edm poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. Podporovan\u00e1 verze Java je 1.7 nebo vy\u0161\u0161\u00ed.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Verze Java ve zpr\u00e1v\u011b nepodporuje funkci rozhran\u00ed poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. 

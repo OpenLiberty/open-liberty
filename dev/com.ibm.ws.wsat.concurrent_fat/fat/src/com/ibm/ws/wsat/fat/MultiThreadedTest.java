@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -66,19 +67,21 @@ public class MultiThreadedTest extends WSATTest {
 	public static void tearDown() throws Exception {
 		server.stopServer("WTRN0046E", "WTRN0048W", "WTRN0049W");
 		server2.stopServer();
-		
+
 		ShrinkHelper.cleanAllExportedArchives();
-  }
+	}
 	
 	@Test
 	@AllowedFFDC(value = {"javax.transaction.InvalidTransactionException", "javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
 	public void testWSATMT001FVT() {
-		int count = 100;
 		String result;
 		String urlStr;
 		HttpURLConnection con;
 		BufferedReader br;
-		try {
+		try {OperatingSystem os = server.getMachine().getOperatingSystem();
+			int count = os == OperatingSystem.ZOS ? 50 : 100;
+			Log.info(this.getClass(), "testWSATMT001FVT", "Thread count set to " + count + " because operating system is " + os);
+
 			final int originalCount = count;
 			do {
 				if (count != originalCount) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,8 @@ var editorTree = (function() {
             treeRoleAndExpandedState += " aria-expanded=\"false\"";
             treeRoleAndExpandedState += " aria-selected=\"false\"";
         }
-        var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " aria-label=\"" + elementLabel + " " + elementSuffix + "\"></div>");
+        // replace aria-label with alt attribute to fix accessible name not match visible label violation
+        var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " alt=\"" + elementLabel + " " + elementSuffix + "\"></div>");
 
         // Create expansion button control
         var expandButtonControl = $("<div class=\"editorTreeNodeExpandButton\"><span class=\"sr-only\">" + editorMessages.EXPAND_COLLAPSE + "</span></div>");

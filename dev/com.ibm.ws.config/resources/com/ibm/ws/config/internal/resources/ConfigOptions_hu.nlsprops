@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Haszn\u00e1lat: java [JVM param\u00e9terek] -jar {0} [param\u00e9terek] kimenetiF\u00e1jl  
+briefUsageScript=Haszn\u00e1lat: ./{0} [be\u00e1ll\u00edt\u00e1sok] outputFile
+
 
 use.options=Param\u00e9terek:
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,7 +33,14 @@ option-desc.locale=A kimenethez haszn\u00e1land\u00f3 ter\u00fcleti be\u00e1ll\u
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=A kimeneti s\u00e9ma nem fog beh\u00faz\u00f3 sz\u00f3k\u00f6z\u00f6ket, \u00faj soremel\u00e9seket \u00e9s XML megjegyz\u00e9seket tartalmazni
 option-key.productExtension=--productExtension
-option-desc.productExtension=A feldolgozand\u00f3 term\u00e9kb\u0151v\u00edtm\u00e9ny neve.                                  \n\
-Ha a term\u00e9kb\u0151v\u00edtm\u00e9ny az alap\u00e9rtelmezett felhaszn\u00e1l\u00f3i helyen van        \n\
-telep\u00edtve, akkor haszn\u00e1lja a k\u00f6vetkez\u0151 kulcssz\u00f3t: usr.                 \n\
-Ha ez a param\u00e9ter nincs megadva, akkor a m\u0171velet a Liberty k\u00f6zponti r\u00e9sz\u00e9n ker\u00fcl v\u00e9grehajt\u00e1sra.
+option-desc.productExtension=A feldolgozand\u00f3 term\u00e9kb\u0151v\u00edtm\u00e9ny neve.                                  \nHa a term\u00e9kb\u0151v\u00edtm\u00e9ny az alap\u00e9rtelmezett felhaszn\u00e1l\u00f3i helyen van        \ntelep\u00edtve, akkor haszn\u00e1lja a k\u00f6vetkez\u0151 kulcssz\u00f3t: usr.                 \nHa ez a param\u00e9ter nincs megadva, akkor a m\u0171velet a Liberty k\u00f6zponti r\u00e9sz\u00e9n ker\u00fcl v\u00e9grehajt\u00e1sra.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Ha a schemaVersion=1.1 van megadva, akkor a rendszer mind a konkr\u00e9tan megnevezett ut\u00f3delemeket, mind az xsd:any elemet kimeneti f\u00e1jlba \u00edrja.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Ha az outputVersion=2.0 van megadva, akkor csak az xsd:any elem ker\u00fcl alkalmaz\u00e1sra a kimeneti f\u00e1jlban, hogy az ismeretlen elemek XSD \u00e9rv\u00e9nyes\u00edt\u00e9se az ismert elemek \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9nek mell\u0151z\u00e9se \u00e1r\u00e1n megt\u00f6rt\u00e9nhessen.
