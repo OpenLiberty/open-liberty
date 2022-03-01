@@ -31,3 +31,15 @@ CWWKC1200.resource.unavailable.useraction=View the logs to identify if an error 
 CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, which is defined by application {1}, requires a ContextService {2} but the ContextService is inaccessible or did not become available in a timely manner.
 CWWKC1201.contextsvc.inaccessible.explanation=A resource definition annotation or a resource definition in a deployment descriptor of the application specifies an incorrect JNDI name at which to find a ContextService, or the ContextService is defined in a scope which is not accessible to the resource, or the system is under too much load to register the ContextService in a timely manner.
 CWWKC1201.contextsvc.inaccessible.useraction=Correct the application to refer to the JNDI name of ContextService that is accessible. Reduce the load on the system if the JNDI name is already correct.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: Conflicting configuration of thread context {0} is found on ContextServiceDefinition {1}. Cleared context is {2}. Propagated context is {3}. Unchanged context is {4}.
+CWWKC1202.context.lists.overlap.explanation=A thread context type can be configured to any one of: cleared, propagated, or left unchanged. The context type cannot be configured to be multiple of these.
+CWWKC1202.context.lists.overlap.useraction=Correct the configuration to specify the thread context type in at most one category.
+
+CWWKC1203.duplicate.context=CWWKC1203E: The same thread context type, {0}, is provided by multiple thread context providers which are available to the application. Thread context providers are: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=There can only be one ThreadContextProvider for each context type.
+CWWKC1203.duplicate.context.useraction=Update the available application, libraries, or both so that no more than one ThreadContextProvider of the specified type is accessible to the application.
+
+CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual proxy that propagates thread context {0} which is not serializable.
+CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
+CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.

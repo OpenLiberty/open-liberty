@@ -27,6 +27,8 @@ Private-Package: \
   io.openliberty.concurrent.internal.processor,\
   io.openliberty.concurrent.internal.resources
 
+instrument.classesExcludes: io/openliberty/concurrent/internal/resources/*.class
+
 -dsannotations: \
   io.openliberty.concurrent.internal.context.ThirdPartyContextCoordinator,\
   io.openliberty.concurrent.internal.processor.ContextServiceDefinitionProvider,\

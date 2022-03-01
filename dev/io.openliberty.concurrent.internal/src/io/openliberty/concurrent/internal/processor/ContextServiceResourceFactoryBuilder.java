@@ -217,6 +217,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String remaining = null;
 
         // detect duplicate configuration of context types across all 3 lists
+        Set<String> dups = new TreeSet<String>();
         Set<String> used = new HashSet<String>();
 
         // cleared
@@ -232,7 +233,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                     if (pids == null)
                         cleared3PCtx.add(type);
                 }
-            } // TODO else error for duplicate usage
+            } else {
+                dups.add(type);
+            }
 
         // unchanged
         TreeSet<String> unchanged3PCtx = new TreeSet<String>();
@@ -253,7 +256,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                             skip.append(skip.length() == 0 ? "" : ",").append(pid).append(".provider");
                     }
                 }
-            } // TODO else error for duplicate usage
+            } else {
+                dups.add(type);
+            }
 
         // propagated
         TreeSet<String> propagated3PCtx = new TreeSet<String>();
@@ -272,7 +277,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                     else
                         propagateCount = addPropagated(pids, propagateCount, properties, contextSvcProps);
                 }
-            } // TODO else error for duplicate usage
+            } else {
+                dups.add(type);
+            }
 
         if (remaining == null)
             remaining = "cleared";
@@ -298,6 +305,14 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
         if (skip.length() > 0)
             contextSvcProps.put("context.unchanged", skip.toString());
+
+        if (!dups.isEmpty())
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1202.context.lists.overlap",
+                                                                dups,
+                                                                jndiName,
+                                                                Arrays.asList(cleared),
+                                                                Arrays.asList(propagated),
+                                                                Arrays.asList(unchanged)));
 
         // Add Transaction context provider
         if (transaction == null)

@@ -12,6 +12,8 @@ package io.openliberty.concurrent.internal.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -24,7 +26,10 @@ import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -37,13 +42,17 @@ import jakarta.enterprise.concurrent.Asynchronous;
 public class AsyncInterceptor implements Serializable {
     private static final long serialVersionUID = 7447792334053278336L;
 
+    private static final TraceComponent tc = Tr.register(AsyncInterceptor.class);
+
     @AroundInvoke
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
     public Object intercept(InvocationContext invocation) throws Exception {
         Method method = invocation.getMethod();
         validateTransactional(method);
         if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
-            throw new UnsupportedOperationException("@Asynchronous " + method.getDeclaringClass()); // TODO NLS?
+            throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1401.class.anno.disallowed",
+                                                                     "@Asynchronous",
+                                                                     method.getDeclaringClass().getName()));
 
         Asynchronous anno = method.getAnnotation(Asynchronous.class);
 
@@ -52,18 +61,39 @@ public class AsyncInterceptor implements Serializable {
         if (!returnType.equals(CompletableFuture.class)
             && !returnType.equals(CompletionStage.class)
             && !returnType.equals(Void.TYPE)) // void
-            throw new UnsupportedOperationException("@Asynchronous " + returnType.getName() + " " + method.getName()); // TODO NLS?
+            throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1400.unsupported.return.type",
+                                                                     returnType,
+                                                                     method.getName(),
+                                                                     method.getClass().getName(),
+                                                                     "@Asynchronous",
+                                                                     "[CompletableFuture, CompletionStage, void]"));
 
-        WSManagedExecutorService executor;
+        Object executor;
         try {
             executor = InitialContext.doLookup(anno.executor());
-        } catch (ClassCastException x) {
-            throw new RejectedExecutionException("executor: " + anno.executor(), x); // TODO NLS?
         } catch (NamingException x) {
             throw new RejectedExecutionException(x);
         }
 
-        return executor.newAsyncMethod(this::invoke, invocation);
+        WSManagedExecutorService managedExecutor;
+        try {
+            managedExecutor = (WSManagedExecutorService) executor;
+        } catch (ClassCastException x) {
+            TreeSet<String> interfaces = new TreeSet<String>();
+            for (Class<?> c = executor.getClass(); c != null; c = c.getSuperclass())
+                for (Class<?> i : executor.getClass().getInterfaces())
+                    interfaces.add(i.getName());
+
+            throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1402.not.managed.executor",
+                                                                  "@Asynchronous",
+                                                                  method.getName(),
+                                                                  method.getClass().getName(),
+                                                                  anno.executor(),
+                                                                  executor.getClass().getName(),
+                                                                  interfaces), x);
+        }
+
+        return managedExecutor.newAsyncMethod(this::invoke, invocation);
     }
 
     /**
@@ -107,7 +137,13 @@ public class AsyncInterceptor implements Serializable {
                 case REQUIRES_NEW:
                     break;
                 default:
-                    throw new UnsupportedOperationException("@Asynchronous @Transactional(" + tx.value().name() + ")");
+                    throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1403.unsupported.tx.type",
+                                                                             "@Transactional",
+                                                                             tx.value(),
+                                                                             "@Asynchronous",
+                                                                             method.getName(),
+                                                                             method.getDeclaringClass().getName(),
+                                                                             Arrays.asList(TxType.REQUIRES_NEW, TxType.NOT_SUPPORTED)));
             }
     }
 }
