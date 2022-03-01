@@ -164,6 +164,11 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
+        if (this.isLogRolloverScheduled) {
+            timedLogRollover_Timer.cancel();
+            timedLogRollover_Timer.purge();
+            this.isLogRolloverScheduled = false;
+        }
         stop();
     }
 
