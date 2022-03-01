@@ -34,7 +34,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache authentication cache tests for the DeleteAuthCache Mbean.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheDeleteAuthCacheTest extends BaseTestCase {
