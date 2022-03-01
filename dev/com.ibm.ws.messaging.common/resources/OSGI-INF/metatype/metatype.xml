@@ -10,8 +10,7 @@
         IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
-                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
-                   localization="OSGI-INF/l10n/metatype">
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
     <!-- Let config processing have a say in the properties provided to the start barrier service -->
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonsReady" description="internal use only" name="internal">
         <!-- Config processing populates this attribute with a list of PIDs
@@ -45,7 +44,7 @@
             default="${servicePidOrFilter(singletonDeclarations)}" />
     </OCD>
     <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonMonitor"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonMonitor"/></Designate>
-    
+
     <!-- ======================= Singleton declarations ======================= -->
     <!-- ============ (used by SingletonsReady and Singleton Monitor) ============ -->
     <!-- === N.B. ensure defaultInstance.xml contains matching declarations === -->
