@@ -11,6 +11,7 @@
 package com.ibm.ws.security.oauth20.plugins;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,12 +37,14 @@ public class OidcBaseClientValidatorTest {
     private final String redirectUri2 = "https://localhost:8999/resource/redirect2";
     private final JsonArray redirectUris = new JsonArray();
     private OidcBaseClient client;
+    private OidcBaseClient publicClient;
 
     @Before
     public void setUp() {
         redirectUris.add(new JsonPrimitive(redirectUri1));
         redirectUris.add(new JsonPrimitive(redirectUri2));
         client = new OidcBaseClient(clientId, clientSecret, redirectUris, clientName, componentId, true);
+        publicClient = new OidcBaseClient(clientId, null, redirectUris, clientName, componentId, true);
     }
 
     @Test
@@ -320,4 +323,166 @@ public class OidcBaseClientValidatorTest {
             assertEquals(expectedErrorMessage, e.getErrorDescription());
         }
     }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_nullUri() {
+        client.setBackchannelLogoutUri(null);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+        } catch (OidcServerException e) {
+            fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_nonUri() {
+        String uri = "This is not a valid URI";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS1445E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_uriNotAbsolute() {
+        String uri = "/some/path";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS1446E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_uriContainsEmptyFragment() {
+        String uri = "https://localhost/some/path#";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS1498E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_uriContainsNonEmptyFragment() {
+        String uri = "https://localhost/some/path#with-fragment";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS1498E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_uriDoesNotUseValidScheme() {
+        String uri = "file://localhost/some/path";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS1499E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_httpUriClientNotConfidential() {
+        String uri = "http://localhost/some/path";
+        publicClient.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(publicClient);
+        try {
+            validator.validateBackchannelLogoutUri();
+            fail("Did not throw OidcServerException as expected.");
+        } catch (OidcServerException e) {
+            assertEquals(HttpServletResponse.SC_BAD_REQUEST, e.getHttpStatus());
+            assertEquals(OIDCConstants.ERROR_INVALID_CLIENT_METADATA, e.getErrorCode());
+            String expectedRegex = "CWWKS2300E" + ".*" + uri + ".*";
+            String errorDescription = e.getErrorDescription();
+            assertTrue("Did not find error message \"" + expectedRegex + "\" in error description \"" + errorDescription + "\".", errorDescription.matches(expectedRegex));
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_simpleValidHttpUri() {
+        String uri = "http://localhost/some/path";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+        } catch (OidcServerException e) {
+            fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_simpleValidHttpUri_uppercase() {
+        String uri = "HTTP://LOCALHOST/SOME/PATH";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+        } catch (OidcServerException e) {
+            fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_simpleValidHttpsUri() {
+        String uri = "https://localhost:9080/some/path";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+        } catch (OidcServerException e) {
+            fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
+    @Test
+    public void testValidateBackchannelLogoutUri_complexUri() {
+        String uri = "https://localhost:9080/some/path?with=params&other=things";
+        client.setBackchannelLogoutUri(uri);
+        OidcBaseClientValidator validator = OidcBaseClientValidator.getInstance(client);
+        try {
+            validator.validateBackchannelLogoutUri();
+        } catch (OidcServerException e) {
+            fail("Threw OidcServerException but didn't expect to: " + e.getErrorDescription());
+        }
+    }
+
 }
