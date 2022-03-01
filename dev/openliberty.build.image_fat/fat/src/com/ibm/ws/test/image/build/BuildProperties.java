@@ -14,6 +14,7 @@ import static com.ibm.ws.test.image.util.FileUtils.match;
 import static com.ibm.ws.test.image.util.FileUtils.normalize;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,75 +64,93 @@ public class BuildProperties {
     
     //
     
-    // public static final String IMAGES_PROPERTY_NAME = "image.output.upload.dir";
-    // public static final String IMAGES_DEFAULT =
-    //     "../build.image/output/upload/externals/installables";
-    // String useImagesPath = System.getProperty(IMAGES_PROPERTY_NAME, IMAGES_DEFAULT);
-
-    // C:/dev/repos-pub/o-l/dev/openliberty.build.image_fat/build/libs/autoFVT/
-    // ../build.image/build/libs/distributions
-
-    // Running frm the command line:
-    public static final String IMAGES_DEFAULT =
-        "../../../../build.image/build/libs/distributions/";
-
-    // Running from eclipse:
-    public static final String ALT_IMAGES_DEFAULT =
-        "../build.image/build/libs/distributions";
+    //
     
+    // basedir C:\dev\repos-pub\o-l\dev\openliberty.build.image_fat\build\libs\autoFVT
+    // dir.build   C:\dev\repos-pub\o-l\dev\openliberty.build.image_fat\build\libs\autoFVT\build
+    // liberty.location    ../../../../build.image/wlp
+
+    public static final String BASE_PROPERTY_NAME = "basedir";
+    public static final String BASE_DEFAULT = ".";
+    public static final String BASE_PATH;
+    public static final File BASE_DIR;
+
+    public static final String BUILD_PROPERTY_NAME = "dir.build";
+    public static final String BUILD_DEFAULT = "./build";
+    public static final String BUILD_PATH;
+    public static final File BUILD_DIR;
+
+    public static final String LIBERTY_PROPERTY_NAME = "liberty.location";
+    public static final String LIBERTY_DEFAULT = "../../../../build.image/wlp";
+    public static final String LIBERTY_PATH;
+    public static final File LIBERTY_DIR;
+
+    // Relative to 'LIBERTY_PATH'    
+    public static final String IMAGES_RELATIVE_PATH = "../build/libs/distributions/";
+
     public static final String IMAGES_PATH;
+    public static final File IMAGES_DIR;
+
     public static final String[] IMAGE_NAMES;
 
+    protected static String getNormalPath(String tag, String path) {
+        File file = new File(path);
+        try {
+            path = file.getCanonicalPath();
+        } catch ( IOException e ) {
+            log("Failed to obtain [ " + tag + " ] canonical path [ " + path + " ]");
+        }
+        path = normalize(path);
+        log("[ " + tag + " ] directory [ " + path + " ]");
+        return path;
+    }
+    
     static {
-        String imagesPath = IMAGES_DEFAULT;
-        File imagesDir = new File(imagesPath);
-        imagesPath = normalize( imagesDir.getAbsolutePath() );
+        String basePath = System.getProperty(BASE_PROPERTY_NAME, BASE_DEFAULT);
+        BASE_PATH = getNormalPath("Base", basePath);
+        BASE_DIR = new File(BASE_PATH);
 
-        if ( !imagesDir.exists() ) {
-            log("Images directory [ " + imagesPath + " ] does not exist; trying alternate");
-            imagesPath = ALT_IMAGES_DEFAULT;            
-            imagesDir = new File(imagesPath);
-            imagesPath = normalize( imagesDir.getAbsolutePath() );
-            
-            if ( !imagesDir.exists() ) {
-                imagesDir = null;
-                log("Images directory [ " + imagesPath + " ] does not exist");
-            }            
-        }
+        String buildPath = System.getProperty(BUILD_PROPERTY_NAME, BUILD_DEFAULT);
+        BUILD_PATH = getNormalPath("Build", buildPath);
+        BUILD_DIR = new File(BUILD_PATH);
 
-        if ( imagesDir != null ) {
-            if ( !imagesDir.isDirectory() ) {
-                imagesDir = null;
-                log("Images directory [ " + imagesPath + " ] is not a directory");
-            } else {
-                log("Images directory [ " + imagesPath + " ]");
-            }
-        }
+        String libertyPath = System.getProperty(LIBERTY_PROPERTY_NAME, LIBERTY_DEFAULT);
+        LIBERTY_PATH = getNormalPath("Liberty", libertyPath);
+        LIBERTY_DIR = new File(LIBERTY_PATH);
+
+        String imagesPath = LIBERTY_PATH + '/' + IMAGES_RELATIVE_PATH;
+        IMAGES_PATH = getNormalPath("Images", imagesPath);
+        IMAGES_DIR = new File(IMAGES_PATH);
 
         String[] imageNames;
-        if ( imagesDir != null ) {
-            imageNames = imagesDir.list( BuildProperties::isImage );
-            if ( imageNames == null ) {
-                imageNames = new String[] {};
-                log("Image directory [ " + imagesPath + " ] could not be accessed");
-            } else if ( imageNames.length == 0 ) {
-                log("Image directory [ " + imagesPath + " ] is empty");
-            }
+
+        if ( !IMAGES_DIR.exists() ) {
+            log("Images directory [ " + IMAGES_PATH + " ] does not exist");
+            imageNames = null;
+        } else if ( !IMAGES_DIR.isDirectory() ) {
+            log("Images directory [ " + IMAGES_PATH + " ] is not a directory");
+            imageNames = null;
+
         } else {
-            imageNames = new String[] {};
+            log("Images directory [ " + IMAGES_PATH + " ]");
+
+            imageNames = IMAGES_DIR.list( BuildProperties::isImage );
+            if ( imageNames == null ) {
+                log("Image directory [ " + IMAGES_PATH + " ] could not be accessed");
+            } else if ( imageNames.length == 0 ) {
+                log("Image directory [ " + IMAGES_PATH + " ] is empty");
+
+            } else {
+                normalize(imageNames);
+
+                log("Images:");
+                for ( String imageName : imageNames ) {
+                    log("  [ " + imageName + " ]");
+                }
+            }
         }
 
-        if ( File.separatorChar == '\\' ) {
-            normalize(imageNames);
-        }
-
-        log("Images:");
-        for ( String imageName : imageNames ) {
-            log("  [ " + imageName + " ]");
-        }
-
-        IMAGES_PATH = imagesPath;
-        IMAGE_NAMES = imageNames;
+        IMAGE_NAMES = ( (imageNames == null) ? new String[] {} : imageNames );
     }
 
     public static boolean isImage(File parent, String name) {
