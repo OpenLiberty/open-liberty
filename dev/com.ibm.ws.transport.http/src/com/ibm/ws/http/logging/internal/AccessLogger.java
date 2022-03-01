@@ -134,6 +134,8 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
     /** The rollover start time for time based accesslog rollover. */
     private volatile long rolloverInterval = -1;
 
+    private boolean isFilePathChanged = false;
+
     private boolean isLogRolloverScheduled = false;
 
     private volatile Timer timedLogRollover_Timer = new Timer();
@@ -182,7 +184,10 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
             if (!!!filename.equals(getFilePathName())) {
                 // new file name
                 setFilename(filename);
+                isFilePathChanged = true;
             }
+            else
+                isFilePathChanged = false;
 
             String logFormat = config.get(PROP_LOGFORMAT).toString();
             if (!!!logFormat.equals(getFormatString())) {
@@ -695,7 +700,8 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
             if (rolloverStartTime == null)
                 rolloverStartTime = "";
             //if neither of the rollover attributes change, return without rescheduling
-            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval) {
+            //if filePath is changed, need to reschedule with correct WorkerThread
+            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval && !isFilePathChanged) {
                 return;
             }
             else {
