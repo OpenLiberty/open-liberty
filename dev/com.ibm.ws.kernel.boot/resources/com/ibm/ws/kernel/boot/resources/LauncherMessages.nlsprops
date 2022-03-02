@@ -716,6 +716,10 @@ error.set.securitymanager.jdk18=CWWKE0955E: The property "websphere.java.securit
 error.set.securitymanager.jdk18.explanation= As part of the deprecation of the Java Security Manager, as specified by JEP 411, Liberty no longer supports enabling the Java Security Manager when using Java 18 or later.
 error.set.securitymanager.jdk18.useraction=Remove the property "websphere.java.security" from bootstrap.properties or use a Java version earlier than Java 18.
 
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Failed to set the Java Security Manager due to exception: {0}.  This occurs if the server is using Java 18 or later, and the Java system property "java.security.manager" was not set to "allow".
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager could not be enabled because the system is using Java 18, which by default disallows use of a Java Security Manager.
+error.cannotset.securitymanager.jdk18.useraction=Start the server with the JVM argument -Djava.security.manager=allow.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
