@@ -8,8 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-test.dependsOn assemble
+package io.openliberty.jakarta.jsonb.tck;
 
-copyPiiFiles {
-  include '**/*.properties'
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+                AlwaysPassesTest.class, //Need to have a passing test while normal tests are disabled
+                JsonbTckLauncher.class
+})
+public class FATSuite {
 }

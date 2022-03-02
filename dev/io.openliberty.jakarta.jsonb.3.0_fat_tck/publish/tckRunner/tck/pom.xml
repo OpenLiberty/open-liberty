@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2022 IBM Corporation and others. All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+	IBM Corporation - initial API and implementation -->
+<!-- NOTE: This pom is used for Dev Testing -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.openliberty.jakarta.jsonb</groupId>
+	<artifactId>tck.runner.tck</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Jakarta JSON Binding TCK Runner TCK Module</name>
+
+	<repositories> <!-- For artifacts not yet in Maven Central -->
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<!-- Global Maven settings -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
+
+		<!-- Jakarta EE API -->
+		<jakarta.json.version>2.1.0</jakarta.json.version>
+		<jakarta.jsonb.version>3.0.0</jakarta.jsonb.version>
+		<jakarta.jsonb.tck.version>3.0.0</jakarta.jsonb.tck.version>
+
+		<!-- Test versions -->
+		<targetDirectory>${project.basedir}/target</targetDirectory>
+	</properties>
+
+
+	<dependencies>
+		<!-- tck - jsonb - external artifact -->
+		<dependency>
+			<groupId>jakarta.json.bind</groupId>
+			<artifactId>jakarta.json.bind-tck</artifactId>
+			<version>${jakarta.jsonb.tck.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- api - jsonb - internal bundle -->
+		<!-- TODO revert to jakarta.json.bind when GA version is in GHE -->
+		<dependency>
+			<groupId>io.openliberty.jakarta.json.bind</groupId>
+			<artifactId>jakarta.json.bind-api</artifactId>
+			<version>${jakarta.jsonb.version}</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.jsonb.3.0}</systemPath>
+		</dependency>
+		<!-- api - jsonp - external artifact -->
+		<!-- TODO change to use internal bundle for jsonp -->
+		<dependency>
+			<groupId>jakarta.json</groupId>
+			<artifactId>jakarta.json-api</artifactId>
+			<version>${jakarta.json.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- impl - jsonb - yasson - internal bundle -->
+		<!-- TODO revert to org.eclipse when GA version is in GHE -->
+		<dependency>
+			<groupId>io.openliberty.org.eclipse</groupId>
+			<artifactId>yasson</artifactId>
+			<version>3.0.0.RC1</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.org.eclipse.yasson.3.0}</systemPath>
+		</dependency>
+		<!-- impl - jsonp - passon - external artifact -->
+		<!-- TODO change to use internal bundle for parsson -->
+		<dependency>
+			<groupId>org.eclipse.parsson</groupId>
+			<artifactId>parsson</artifactId>
+			<version>1.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- impl - cdi - weld - external artifact -->
+		<!-- TODO change to use internal bundle for weld -->
+		<dependency>
+		    <groupId>org.jboss.weld.se</groupId>
+		    <artifactId>weld-se-core</artifactId>
+		    <version>4.0.2.Final</version>
+		    <scope>test</scope>
+		</dependency>
+		<!-- test - arquillian - used for cdi test deployment -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container</artifactId>
+			<version>1.7.0.Alpha10</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>${targetDirectory}</directory>
+		<plugins>
+			<!-- Plugin used to copy external artifacts to signaturedirectory for signature tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<!-- This artifact is being copied from the system instead								
+								<artifactItem>
+									<groupId>jakarta.json.bind</groupId>
+									<artifactId>jakarta.json.bind-api</artifactId>
+									<version>${jakarta.json.bind.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/signaturedirectory</outputDirectory>
+									<destFileName>jakarta.json.bind-api.jar</destFileName>
+								</artifactItem> 
+								-->
+								<artifactItem>
+									<groupId>jakarta.json</groupId>
+									<artifactId>jakarta.json-api</artifactId>
+									<version>${jakarta.json.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/signaturedirectory</outputDirectory>
+									<destFileName>jakarta.json-api.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Plugin used to internal bundles to signaturedirectory for signature tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <version>3.0.0</version>
+			    <executions>
+			        <execution>
+			            <id>copy-jsonb</id>
+			            <phase>generate-test-sources</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			              <target>
+			                <copy file="${io.openliberty.jakarta.jsonb.3.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.json.bind-api.jar"/>
+			                <!-- copy file="${io.openliberty.jakarta.jsonp.2.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.json-api.jar"/ -->
+			              </target>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<failIfNoTests>true</failIfNoTests>
+					<dependenciesToScan>jakarta.json.bind:jakarta.json.bind-tck</dependenciesToScan>
+					<systemPropertyVariables>
+						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
+						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json.bind-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
