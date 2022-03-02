@@ -202,9 +202,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
         Collections.reverse(singleThreadRestoreHooks);
 
-        if (tc.isInfoEnabled()) {
-            Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
-        }
+        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
 
         prepare(multiThreadPrepareHooks);
         try {
@@ -232,9 +230,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         restore(multiThreadRestoreHooks);
 
-        if (tc.isInfoEnabled()) {
-            Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
-        }
+        Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
+
         createRestoreMarker();
     }
 
