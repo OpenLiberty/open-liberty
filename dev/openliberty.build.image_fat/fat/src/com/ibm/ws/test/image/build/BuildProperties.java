@@ -72,7 +72,7 @@ public class BuildProperties {
     // liberty.location    ../../../../build.image/wlp
 
     public static final String BASE_PROPERTY_NAME = "basedir";
-    public static final String BASE_DEFAULT = ".";
+    public static final String BASE_DEFAULT = "./build/libs/autoFVT";
     public static final String BASE_PATH;
     public static final File BASE_DIR;
 
@@ -82,7 +82,8 @@ public class BuildProperties {
     public static final File BUILD_DIR;
 
     public static final String LIBERTY_PROPERTY_NAME = "liberty.location";
-    public static final String LIBERTY_DEFAULT = "../../../../build.image/wlp";
+    // Relative to 'BASE_PATH'
+    public static final String LIBERTY_RELATIVE_PATH = "../../../../build.image/wlp";
     public static final String LIBERTY_PATH;
     public static final File LIBERTY_DIR;
 
@@ -115,7 +116,10 @@ public class BuildProperties {
         BUILD_PATH = getNormalPath("Build", buildPath);
         BUILD_DIR = new File(BUILD_PATH);
 
-        String libertyPath = System.getProperty(LIBERTY_PROPERTY_NAME, LIBERTY_DEFAULT);
+        String libertyPath = System.getProperty(LIBERTY_PROPERTY_NAME);
+        if ( libertyPath == null ) {
+            libertyPath = BASE_PATH + '/' + LIBERTY_RELATIVE_PATH;
+        }
         LIBERTY_PATH = getNormalPath("Liberty", libertyPath);
         LIBERTY_DIR = new File(LIBERTY_PATH);
 
@@ -186,7 +190,7 @@ public class BuildProperties {
     // ../build.image/build/libs/distributions
 
     // Relative to 'LIBERTY_PATH'    
-    public static final String PROFILES_RELATIVE_PATH = "../build/libs/distributions/";
+    public static final String PROFILES_RELATIVE_PATH = "../profiles";
 
     public static final String PROFILES_PATH;
     public static final File PROFILES_DIR;

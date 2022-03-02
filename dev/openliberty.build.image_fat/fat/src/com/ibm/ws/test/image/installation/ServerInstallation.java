@@ -29,9 +29,11 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.junit.Assert;
@@ -67,6 +69,8 @@ public class ServerInstallation {
         
         this.propPath = this.libPath + "/versions/WebSphereApplicationServer.properties";
         this.featuresPath = this.libPath + "/features";
+        
+        this.features = null; 
     }
 
     private final String name;
@@ -184,6 +188,77 @@ public class ServerInstallation {
         return getSchemaPath(DEFAULT_SERVER_NAME);
     }
 
+    //
+
+    private Map<String, ServerFeature> features;
+    
+    public Set<String> getFeatureNames() {
+        return getFeatures().keySet();
+    }
+
+    public List<String> getSortedFeatureNames() {
+        List<String> featureNames = new ArrayList<>( getFeatureNames() );
+        Collections.sort( featureNames, (name1, name2) -> name1.compareTo(name2));
+        return featureNames;
+    }
+
+    public Map<String, ServerFeature> getFeatures() {
+        if ( features == null ) {
+            throw new RuntimeException("Features have not been loaded");
+        }
+        return features;
+    }
+    
+    public ServerFeature getFeature(String featureName) {
+        return getFeatures().get(featureName);
+    }
+
+    public void loadFeatures() throws Exception {
+        if ( features != null ) {
+            return;
+        }
+        
+        String useFeaturesPath = getFeaturesPath();
+
+        File featuresDir = new File(useFeaturesPath);
+        String[] featureNames = featuresDir.list( ServerInstallation::isFeature);
+        if ( featureNames == null ) {
+            features = Collections.emptyMap();
+            throw new Exception("Failed to list features [ " + useFeaturesPath + " ]");
+        } else if ( featureNames.length == 0 ) {
+            features = Collections.emptyMap();
+            throw new Exception("Empty features [ " + useFeaturesPath + " ]");                
+        }
+
+        Map<String, ServerFeature> useFeatures = new HashMap<>( featureNames.length );
+        Exception firstException = null;
+        for ( String featureName : featureNames ) {
+            ServerFeature serverFeature;
+            try {
+                serverFeature = new ServerFeature(useFeaturesPath, featureName);
+            } catch ( Exception e ) {
+                serverFeature = null;
+                if ( firstException == null ) {
+                    firstException = e;
+                }
+                log( "Failed to load feature [ " + useFeaturesPath + '/' + featureName + " ]: " + e.getMessage() );
+            }
+            if ( serverFeature != null ) {
+                useFeatures.put( serverFeature.getFullName(), serverFeature );
+            }
+        }
+
+        features = useFeatures;
+
+        if ( firstException != null ) {
+            throw firstException;
+        }
+    }
+
+    public static boolean isFeature(File parent, String name) {
+        return name.endsWith(".mf");
+    }
+    
     //
 
     private static final String[] LOCAL_CONNECTOR_LINES = new String[] {
@@ -517,6 +592,39 @@ public class ServerInstallation {
         }
     }
 
+    //
+    
+    public void validateFeatures() throws Exception {
+        log("Validating features [ " + getName() + " ]");
+
+        loadFeatures();
+        List<String> useFeatureNames = getSortedFeatureNames();
+        log("Features path [ " + getFeaturesPath() + " ]");
+        log("Installed features [ " + useFeatureNames.size() + " ]:");
+
+        Exception firstException = null;
+
+        for ( String featureName : useFeatureNames ) {
+            ServerFeature feature = getFeature(featureName);
+            try {
+                feature.loadManifest();
+            } catch ( Exception e ) {
+                if ( firstException == null ) {
+                    firstException = e;
+                } else {
+                    log( e.getMessage() );
+                }
+                log("Skipping feature [ " + featureName + " ]");
+                continue;
+            }
+
+            log("[ " + feature.getFullPath() + " ]");
+            log("  [ " + feature.getName() + '-' + feature.getVersion() + " ]");
+            log("  [ " + feature.getSymbolicName() + " : " + feature.getSubsystemVersion() + " ]"); 
+            log("  [ " + feature.getSubsystemName() + " ]");
+        }
+    }
+    
     //
 
     public void validateDefaultServer(

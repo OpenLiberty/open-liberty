@@ -198,7 +198,7 @@ public class BuildImages {
         //
         
         public String getImagesPath() {
-            return BuildProperties.getImagesPath();
+            return BuildProperties.IMAGES_PATH;
         }
 
         private List<String> imageNames;

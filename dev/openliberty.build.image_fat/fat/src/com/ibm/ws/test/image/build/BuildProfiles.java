@@ -10,15 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.test.image.build;
 
-import static com.ibm.ws.test.image.build.BuildProperties.*;
-import static com.ibm.ws.test.image.util.FileUtils.*;
-import static com.ibm.ws.test.image.util.ProcessRunner.runJar;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.File;
-import java.util.List;
-
-import com.ibm.ws.test.image.Timeouts;
-import com.ibm.ws.test.image.util.FileUtils;
+import com.ibm.ws.test.image.installation.ServerProfile;
 
 public class BuildProfiles {
     public static final String CLASS_NAME = BuildProfiles.class.getSimpleName();
@@ -27,13 +22,27 @@ public class BuildProfiles {
         System.out.println(CLASS_NAME + ": " + message);
     }
 
-    // open-liberty/dev/build.image/profiles/
-    //
-    // javaee8
-    // webProfile8
-    // microProfile4
-    //
-    // jakartaee9
-    // webProfile9
-    // microProfile5
+    public static final Map<String, ServerProfile> PROFILES;
+    static {
+        Map<String, ServerProfile> profiles = new HashMap<>(BuildProperties.PROFILE_NAMES.length);
+        for ( String profileName : BuildProperties.PROFILE_NAMES ) {
+            String profilePath = BuildProperties.PROFILES_PATH + '/' + profileName;
+            ServerProfile profile;
+            try {
+                profile = new ServerProfile(profilePath, profileName);
+            } catch ( Exception e ) {
+                profile = null;
+                log("Failed to load server profile [ " + profilePath+ " ]: " + e.getMessage());
+            }
+            if ( profile != null ) {
+                profiles.put(profileName, profile);
+            }
+        }
+        
+        PROFILES = profiles;
+    }
+    
+    public static ServerProfile getProfile(String profileName) {
+        return PROFILES.get(profileName);
+    }
 }

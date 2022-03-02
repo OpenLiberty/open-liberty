@@ -244,9 +244,16 @@ public class InstallServerTest {
     public void validateScripts() throws Exception {
         logBeginning("Validating scripts ...");
         getInstallation().validateScripts();
-        logEnding("Test: Validated scripts");
+        logEnding("Validated scripts");
     }
     
+    @Test
+    public void validateFeatures() throws Exception {
+        logBeginning("Validating features ...");
+        getInstallation().validateFeatures();
+        logEnding("Validated features");
+    }
+
     @Test
     public void validateDefaultServer() throws Exception {
         logBeginning("Validating default server ...");

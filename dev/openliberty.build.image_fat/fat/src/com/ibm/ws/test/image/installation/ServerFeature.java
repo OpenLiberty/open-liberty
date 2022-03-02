@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.test.image.installation;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,30 +27,44 @@ public class ServerFeature {
 
     //
 
-    public ServerFeature(String path) {
+    public ServerFeature(String path, String mfName) throws Exception {
         this.path = path;
-      
-        int lastSlash = path.lastIndexOf( File.separatorChar );
-        String mfName = ( (lastSlash == -1) ? path : path.substring(lastSlash + 1) ); 
 
+        String useFullName = mfName.substring(0, mfName.length() - ".mf".length());
+
+        int dashOffset = useFullName.indexOf('-');
+        
         String useName;
-        if ( !mfName.endsWith(".mf") ) {
-            useName = mfName;
+        String useVersion;
+        if ( dashOffset == -1 ) {
+            useName = useFullName;
+            useVersion = null;
         } else {
-            useName = mfName.substring(0, mfName.length() - ".mf".length());
+            useName = useFullName.substring(0, dashOffset);
+            useVersion = useFullName.substring(dashOffset + 1);
         }
+
+        // Almost all of the features have a "-", except for one:
+        //     "io.openliberty.adminCenter1.0.javaee.mf"
+        //
+        // if ( dashOffset == -1 ) {
+        //     throw new Exception("Server feature is not valid [ " + path + " ] [ " + mfName + " ]");
+        // }
+        
+        this.fullName = useFullName;
         this.name = useName;
+        this.version = useVersion;
 
         this.manifest = null;
-        this.isSetManifest = false;
-        
+
         this.rawSymbolicName = null;
         this.symbolicName = null;
-        this.isSetSymbolicName = false;
+
+        this.rawSubsystemName = null;
+        this.subsystemName = null;
         
-        this.rawVersion = null;
-        this.version = null;
-        this.isSetVersion = false;
+        this.rawSubsystemVersion = null;
+        this.subsystemVersion = null;
     }
 
     private final String path;
@@ -60,94 +73,131 @@ public class ServerFeature {
         return path;
     }
 
+    public String getFullPath() {
+        return getPath() + '/' + getFullName() + ".mf";
+    }
+    
+    private final String fullName;
+    
+    public String getFullName() {
+        return fullName;
+    }
+    
     private final String name;
     
     public String getName() {
         return name;
     }
 
-    private Manifest manifest;
-    private boolean isSetManifest;
+    private final String version;
     
-    public Manifest getManifest() throws Exception {
-        if ( !isSetManifest) {
-            Exception captured;
-            try {
-                manifest = readManifest();
-                captured = null;
-            } catch ( Exception e ) {
-                manifest = null;
-                captured = e;
-            }
-            
-            isSetManifest = true;
-            if ( captured != null ) {
-                throw captured;
-            }
-        }
-        
+    public String getVersion() {
+        return version;
+    }
+
+    //
+
+    private Manifest manifest;
+
+    public Manifest getManifest() {
         if ( manifest == null ) {
-            throw new Exception("Prior failure to read manifest [ " + getPath() + " ]");
+            throw new RuntimeException("Feature manifest has not been loaded [ " + getFullPath() + " ]");
         }
         return manifest;
     }
 
-    public String getMainAttribute(String attributeName) throws Exception {
+    public String getMainAttribute(String attributeName) {
         return getManifest().getMainAttributes().getValue(attributeName);
     }
 
     private String rawSymbolicName;
     private String symbolicName;
-    private boolean isSetSymbolicName;
 
-    public String getRawSymbolicName() throws Exception {
-        setSymbolicName();
+    private String rawSubsystemName;
+    private String subsystemName;
+
+    private String rawSubsystemVersion;
+    private String subsystemVersion;
+
+    public String getRawSymbolicName() {
         return rawSymbolicName;
     }
-    
-    public String getSymbolicName() throws Exception {
-        setSymbolicName();
+
+    public String getSymbolicName() {
         return symbolicName;
     }
+
+    public String getRawSubsystemName() {
+        return rawSubsystemName;
+    }
     
-    protected void setSymbolicName() throws Exception {
-        if ( isSetSymbolicName ) {
-            return;
+    public String getSubsystemName() {
+        return subsystemName;
+    }
+    
+    public String getRawSubsystemVersion() {
+        return rawSubsystemVersion;
+    }
+    
+    public String getSubsystemVersion() {
+        return subsystemVersion;
+    }
+    
+    public void loadManifest() throws Exception {
+        Manifest useManifest;
+        Exception captured;
+        try {
+            useManifest = readManifest();
+            captured = null;
+        } catch ( Exception e ) {
+            useManifest = new Manifest();
+            captured = e;
         }
-        
+        manifest = useManifest;
+
+        if ( captured != null ) {
+            throw captured;
+        }
+
+        setSymbolicName();
+        setSubsystemName();
+        setSubsystemVersion();
+    }
+
+    protected void setSymbolicName() {
         String useRaw = getMainAttribute("Subsystem-SymbolicName");
-        String useCore = getCore(useRaw);
-        
-        rawSymbolicName = useRaw;
-        symbolicName = useCore;
-        isSetSymbolicName = true;
-    }
-
-    private String rawVersion;
-    private String version;
-    private boolean isSetVersion;
-
-    public String getRawVersion() throws Exception {
-        setVersion();
-        return rawVersion;
-    }
-    
-    public String getVersion() throws Exception {
-        setVersion();
-        return version;
-    }
-    
-    protected void setVersion() throws Exception {
-        if ( isSetVersion ) {
-            return;
+        if ( useRaw == null ) {
+            rawSymbolicName = null;
+            symbolicName = null;
+        } else {
+            String useCore = getCore(useRaw);
+            rawSymbolicName = useRaw;
+            symbolicName = useCore;
         }
-        
-        String useRaw = getMainAttribute("IBM-Feature-Version");
-        String useCore = getCore(useRaw);
+    }
 
-        rawVersion = useRaw;
-        version = useCore;
-        isSetVersion = true;
+    protected void setSubsystemName() {
+        String useRaw = getMainAttribute("Subsystem-Name");
+        if ( useRaw == null ) {
+            rawSubsystemName = null;
+            subsystemName = null;
+        } else {
+            String useCore = getCore(useRaw);
+            rawSubsystemName = useRaw;
+            subsystemName = useCore;       
+        }
+    }
+    
+    protected void setSubsystemVersion() throws Exception {
+        String useRaw = getMainAttribute("Subsystem-Version");
+        if ( useRaw == null ) {
+            rawSubsystemVersion = null;
+            subsystemVersion = null;
+        } else {
+            String useCore = getCore(useRaw);
+            rawSubsystemVersion = useRaw;
+            subsystemVersion = useCore;       
+        }
     }
     
     protected static String getCore(String attributeValue) {
@@ -173,11 +223,11 @@ public class ServerFeature {
     }
     
     protected Manifest readManifest() throws IOException {
-        String manifestPath = getPath();
+        String manifestPath = getFullPath();
         log("Reading manifest [ " + getName() + " ]: [ " + manifestPath + " ]");
 
         Manifest useManifest;
-        try ( InputStream manifestStream = new FileInputStream( getPath() ) ) {
+        try ( InputStream manifestStream = new FileInputStream(manifestPath) ) {
             useManifest = new Manifest(manifestStream);
         }
         
