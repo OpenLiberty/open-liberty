@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Internal use only.
 ADD_ID.useraction=No action is required.
@@ -646,3 +646,9 @@ INVALID_CONFIG_PARAM.useraction=Check the missing parameter in the configuration
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: The social login client [{0}] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [{1}]. Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=The oidcLogin configuration is configured to discover the OpenID Connect provider endpoints through the discovery URL, but the discovery process failed. The client is unable to process the authentication requests until the configuration of the discoveryEndpoint is corrected or the discovery is successful.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correct the oidcLogin configuration to ensure that 1) the discovery endpoint URL refers to the correct OpenID Connect provider, 2) the discovery endpoint URL is HTTPS and 3) the SSL feature and keystore elements are configured correctly with trust for OpenID Connect provider 4) ensure that the OpenID Connect provider discovery endpoint is functional.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: The back-channel logout request sent to [{0}] is not supported by the social media login configuration [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=The social media login configuration is not an OpenID Connect client, so it does not support back-channel logout.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Use the logout endpoint that is appropriate for the social media login configuration.

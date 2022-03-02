@@ -191,6 +191,7 @@ public class OidcOAuth20Util extends OAuth20Util {
 
     public static final Gson GSON_RAW = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
+            .addSerializationExclusionStrategy(GsonStrategies.BETA_STRATEGY)
             .create();
 
     public static final Gson GSON_RAWEST = new GsonBuilder().create();

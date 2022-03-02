@@ -35,6 +35,7 @@ WS-TraceGroup: \
 # for the exported API.
 
 Export-Package: \
+    com.ibm.ws.security.openidconnect.backchannellogout, \
     com.ibm.ws.security.openidconnect.clients.common, \
     com.ibm.ws.security.openidconnect.client.jose4j.util.*, \
     com.ibm.ws.security.openidconnect.jose4j.*, \
