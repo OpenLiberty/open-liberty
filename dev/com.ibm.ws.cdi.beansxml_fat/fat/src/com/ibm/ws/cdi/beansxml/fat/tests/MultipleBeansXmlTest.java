@@ -11,7 +11,6 @@
 package com.ibm.ws.cdi.beansxml.fat.tests;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -22,6 +21,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi.beansxml.fat.apps.multipleBeansXml.MultipleBeansXmlServlet;
 
 import componenttest.annotation.Server;
@@ -56,8 +57,8 @@ public class MultipleBeansXmlTest extends FATServletClient {
         WebArchive multipleBeansXml = ShrinkWrap.create(WebArchive.class, "multipleBeansXml.war");
         multipleBeansXml.addClass(com.ibm.ws.cdi.beansxml.fat.apps.multipleBeansXml.MultipleBeansXmlServlet.class);
         multipleBeansXml.addClass(com.ibm.ws.cdi.beansxml.fat.apps.multipleBeansXml.MyBean.class);
-        multipleBeansXml.add(EmptyAsset.INSTANCE, "/WEB-INF/classes/META-INF/beans.xml");
-        multipleBeansXml.add(EmptyAsset.INSTANCE, "/WEB-INF/beans.xml");
+        multipleBeansXml.add(BeansAsset.getBeansAsset(DiscoveryMode.ALL), "/WEB-INF/classes/META-INF/beans.xml");
+        multipleBeansXml.add(BeansAsset.getBeansAsset(DiscoveryMode.ALL), "/WEB-INF/beans.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, multipleBeansXml, DeployOptions.SERVER_ONLY);
 
