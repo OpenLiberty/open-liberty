@@ -581,7 +581,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
 
   function disableServerApiButton(element, apiDefIcon, containerId) {
     // Set image
-    apiDefIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy('apiDefDisabled', 'snall', containerId + "UrlDisabled");
+    apiDefIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy('apiDefDisabled', 'small', containerId + "UrlDisabled");
 
     // Disable link
     var link = element.getElementsByTagName("a")[0];
