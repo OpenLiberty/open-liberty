@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Assert;
 
 /**
  * Build control properties.
@@ -82,17 +84,14 @@ public class BuildProperties {
     public static final File BUILD_DIR;
 
     public static final String LIBERTY_PROPERTY_NAME = "liberty.location";
-    // Relative to 'BASE_PATH'
-    public static final String LIBERTY_RELATIVE_PATH = "../../../../build.image/wlp";
     public static final String LIBERTY_PATH;
     public static final File LIBERTY_DIR;
 
-    // Relative to 'LIBERTY_PATH'    
+    // Relative to 'LIBERTY_PATH'
     public static final String IMAGES_RELATIVE_PATH = "../build/libs/distributions/";
 
     public static final String IMAGES_PATH;
     public static final File IMAGES_DIR;
-
     public static final String[] IMAGE_NAMES;
 
     protected static String getNormalPath(String tag, String path) {
@@ -118,7 +117,8 @@ public class BuildProperties {
 
         String libertyPath = System.getProperty(LIBERTY_PROPERTY_NAME);
         if ( libertyPath == null ) {
-            libertyPath = BASE_PATH + '/' + LIBERTY_RELATIVE_PATH;
+            File imageDir = findBuildImage(BASE_DIR);
+            libertyPath = imageDir.getPath() + "/wlp";
         }
         LIBERTY_PATH = getNormalPath("Liberty", libertyPath);
         LIBERTY_DIR = new File(LIBERTY_PATH);
@@ -130,6 +130,25 @@ public class BuildProperties {
         IMAGE_NAMES = validateListing("Images", IMAGES_DIR, BuildProperties::isImage);
     }
 
+    protected static File findBuildImage(File baseDir) {
+        String basePath = baseDir.getPath();
+
+        boolean found = false;
+        
+        while ( !found && ((baseDir = baseDir.getParentFile()) != null) ) {
+            File buildImageDir = new File(baseDir, "build.image");
+            if ( buildImageDir.exists() ) {
+                found = true;
+                baseDir = buildImageDir;
+            }
+        }
+        
+        if ( !found ) {
+            Assert.fail("Failed to locate 'build.image' relative to [ " + basePath + " ]"); 
+        }
+        return baseDir;
+    }
+    
     public static boolean isImage(File parent, String name) {
         return ( name.endsWith(".jar") || name.endsWith(".zip") );
     }

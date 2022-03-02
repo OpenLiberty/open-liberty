@@ -47,6 +47,9 @@ public class ServerFeature {
         // Almost all of the features have a "-", except for one:
         //     "io.openliberty.adminCenter1.0.javaee.mf"
         //
+        // Per private chats, there are multiple ".javaee.mf" features.
+        // These are auto features for public features with tolerates.
+        //
         // if ( dashOffset == -1 ) {
         //     throw new Exception("Server feature is not valid [ " + path + " ] [ " + mfName + " ]");
         // }
