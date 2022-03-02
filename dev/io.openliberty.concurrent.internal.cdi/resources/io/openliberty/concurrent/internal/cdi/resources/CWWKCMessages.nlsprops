@@ -37,5 +37,5 @@ CWWKC1402.not.managed.executor.explanation=The JNDI name must resolve to a resou
 CWWKC1402.not.managed.executor.useraction=Correct the JNDI name to specify a resource that is accessible to the application component and implements the ManagedExecutorService interface or ManagedScheduledExecutorService interface.
 
 CWWKC1403.unsupported.tx.type=CWWKC1403E: The {0} annotation specifies the {1} value, which is not permitted in combination with the {2} annotation that is on the {3} method of the {4} class. Permitted values are: {5}.
-CWWKC1403.unsupported.tx.type.explanation=The use of annotations in combination depends on the value that is specified.
+CWWKC1403.unsupported.tx.type.explanation=The use of two annotations together depends on whether the value of the first annotation that is specified is permitted with the second annotation.
 CWWKC1403.unsupported.tx.type.useraction=Update the application to switch to one of the supported values or remove one of the annotations.
