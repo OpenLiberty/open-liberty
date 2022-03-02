@@ -712,6 +712,10 @@ error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
+error.set.securitymanager.jdk18=CWWKE0955E: The property "websphere.java.security" was set in the bootstrap.properties file while using Java "{0}". This property enables the Java Security Manager and is no longer valid when using Java 18 or later.
+error.set.securitymanager.jdk18.explanation= As part of the deprecation of the Java Security Manager, as specified by JEP 411, Liberty no longer supports enabling the Java Security Manager when using Java 18 or later.
+error.set.securitymanager.jdk18.useraction=Remove the property "websphere.java.security" from bootstrap.properties or use a Java version earlier than Java 18.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
