@@ -15,9 +15,12 @@ import javax.cache.Cache;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.jcache.CacheService;
+import io.openliberty.jcache.DeserializationException;
+import io.openliberty.jcache.SerializationException;
 
 /**
  * JCache-backed key-value authentication cache that can be used to provide distributed caching.
@@ -31,12 +34,12 @@ public class JCacheAuthCache implements AuthCache {
      */
     private CacheService cacheService = null;
 
-    private AuthCache inMemoryCache = null; // TODO Need to use this for at minimum serialization failures.
+    private AuthCache inMemoryCache = null;
 
     /**
      * Instantiate a new {@link JCacheAuthCache} instance.
      *
-     * @param cacheService The {@link CacheService} to use to connect to the backing JCache implementation.
+     * @param cacheService  The {@link CacheService} to use to connect to the backing JCache implementation.
      * @param inMemoryCache An in-memory cache to store objects that cannot be stored in the JCache.
      */
     public JCacheAuthCache(CacheService cacheService, AuthCache inMemoryCache) {
@@ -49,6 +52,9 @@ public class JCacheAuthCache implements AuthCache {
 
     @Override
     public void clearAllEntries() {
+        /*
+         * Clear the in-memory cache.
+         */
         inMemoryCache.clearAllEntries();
 
         /*
@@ -66,36 +72,82 @@ public class JCacheAuthCache implements AuthCache {
 
     @Override
     public Object get(Object key) {
+        Object value = null;
+
+        /*
+         * First check the JCache.
+         */
         Cache<Object, Object> jCache = getJCache();
         if (jCache != null) {
 
             /*
              * Search the JCache for the entry.
              */
-            Object value = jCache.get(key);
+            try {
+                value = jCache.get(key);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    if (value == null) {
+                        Tr.debug(tc, "JCache MISS for key " + key);
+                    } else {
+                        Tr.debug(tc, "JCache HIT for key " + key);
+                    }
+                }
+            } catch (DeserializationException e) {
+                /*
+                 * This should really never happen unless there are multiple server - one
+                 * with a Serializable version of a class and another with a non-Serializable
+                 * version.
+                 */
+                Tr.error(tc, e.getMessage());
+            }
+        }
+
+        /*
+         * If we didn't find it in the JCache, check the in-memory cache.
+         */
+        if (value == null) {
+            value = inMemoryCache.get(key);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (value == null) {
-                    Tr.debug(tc, "JCache MISS for key " + key);
+                    Tr.debug(tc, "In-memory cache MISS for key " + key);
                 } else {
-                    Tr.debug(tc, "JCache HIT for key " + key);
+                    Tr.debug(tc, "In-memory cache HIT for key " + key);
                 }
             }
-
-            return value;
         }
-        return null;
+
+        return value;
     }
 
     @Override
+    @FFDCIgnore({ SerializationException.class })
     public void insert(Object key, Object value) {
-        Cache<Object, Object> jCache = getJCache();
-        if (jCache != null) {
-            jCache.put(key, value);
+        try {
+            Cache<Object, Object> jCache = getJCache();
+            if (jCache != null) {
+                jCache.put(key, value);
+            }
+        } catch (SerializationException e) {
+            /*
+             * If we could not serialize the object, we should store it in the local cache.
+             */
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to insert value for key " + key + " into JCache due to SerializationException.", e);
+            }
+            inMemoryCache.insert(key, value);
         }
     }
 
     @Override
     public void remove(Object key) {
+        /*
+         * Remove from the in-memory cache.
+         */
+        inMemoryCache.remove(key);
+
+        /*
+         * Remove from the JCache.
+         */
         Cache<Object, Object> jCache = getJCache();
         if (jCache != null) {
             jCache.remove(key);

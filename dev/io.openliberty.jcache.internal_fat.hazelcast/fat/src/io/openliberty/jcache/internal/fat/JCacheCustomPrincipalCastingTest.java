@@ -158,7 +158,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(URL_PATTERN, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
         assertResponseContainsClassCastException(response, false);
 
         /*
@@ -248,7 +248,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(URL_PATTERN, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
         assertResponseContainsClassCastException(response, true);
 
         /*

@@ -33,7 +33,7 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 
     <!-- 
-        Configure the JCache instances.
+		Configure the JCache caching provider and cache manager instances.
      -->
 	<cache id="AuthCache" name="AuthCache">
 		<cacheManager>
