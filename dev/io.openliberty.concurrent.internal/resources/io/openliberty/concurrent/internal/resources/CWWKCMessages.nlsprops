@@ -26,7 +26,7 @@
 
 CWWKC1200.resource.unavailable=CWWKC1200E: {0}, which is defined by application {1}, was not available in a timely manner.
 CWWKC1200.resource.unavailable.explanation=Too much load on the system to process resource definition annotations and deployment descriptor entries before the application attempts to use them.
-CWWKC1200.resource.unavailable.useraction=View the logs to identify the occurrence of an error. Otherwise, reduce the load on the system.
+CWWKC1200.resource.unavailable.useraction=View the messages.log file to identify the occurrence of an error. Otherwise, reduce the load on the system.
 
 CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, which is defined by application {1}, requires a ContextService {2} but the ContextService was inaccessible or not available in a timely manner.
 CWWKC1201.contextsvc.inaccessible.explanation=The specified resource that implements the ContextService interface was inaccessible or not available because of any of the following reasons. 1.) A resource definition annotation or a resource definition in a deployment descriptor of the application specifies an incorrect JNDI name at which to find the resource that implements the ContextService interface. 2.) The resource that implements the ContextService interface is defined in a scope that is not accessible to the resource that requires the resource that implements the ContextService interface. 3.) The system is under too much load to register a resource that implements the ContextService interface in a timely manner.
