@@ -82,7 +82,8 @@ instrument.disabled: true
     com.ibm.ws.transport.http;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
     
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
