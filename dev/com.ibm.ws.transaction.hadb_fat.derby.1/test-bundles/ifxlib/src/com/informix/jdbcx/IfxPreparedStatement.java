@@ -675,6 +675,7 @@ public class IfxPreparedStatement implements PreparedStatement {
         wrappedPS.setTimestamp(parameterIndex, theTimestamp, cal);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setUnicodeStream(int parameterIndex, InputStream theInputStream, int length) throws SQLException {
         wrappedPS.setUnicodeStream(parameterIndex, theInputStream, length);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 
 /**
  *
@@ -49,6 +51,8 @@ public class ConnectionManager {
         String url = "jdbc:derby:" + databaseName + ";create=true"; //user=" + userName + ";password=" + password;
         System.out.println("SIMHADB: getDriverConnection URL - " + url);
         System.out.println("SIMHADB: getDriverConnection user - " + userName + ", password - " + password + ", selectMethod - " + selectMethod);
+
+        TxTestUtils.scupperConnection();
 
         // For Derby call the getConnection method of the DriverManager class. The DriverManager is "registered" in the IfxConnectionPoolDataSource constructor.
         //
