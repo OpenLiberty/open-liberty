@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore;
 
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,13 @@ package com.ibm.ws.sib.msgstore;
 
 import java.io.IOException;
 
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.sib.admin.JsRecoveryMessagingEngine;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 import com.ibm.ws.sib.transactions.TransactionFactory;
 import com.ibm.ws.sib.utils.ras.FormattedWriter;
 
-public interface MessageStoreInterface
+public interface MessageStoreInterface extends Singleton
 {
     /**
      * @param itemStream
@@ -39,11 +40,11 @@ public interface MessageStoreInterface
     /**
      * Reply the itemStream in the message store with a matching ID. The item returned
      * stream is neither removed from the message store nor locked for exclusive use of the caller.
-     * 
+     *
      * @param itemStreamID
      * @return itemStream found or null if none.
      * @throws MessageStoreException
-     * 
+     *
      * @deprecated This method implies too much of a performance bottle-neck and
      *             has the disadvantage that items in non-initialized streams will not be found.
      *             Use instead:
@@ -62,7 +63,7 @@ public interface MessageStoreInterface
      * the caller.
      * This method only looks in the root of the message store - ie only directly contained
      * itemStreams will be located.
-     * 
+     *
      * @param itemStreamID
      * @return itemStream found or null if none.
      * @throws MessageStoreException
@@ -71,7 +72,7 @@ public interface MessageStoreInterface
 
     /**
      * Return, but do not remove, first match for filter.
-     * 
+     *
      * @param filter
      * @return {@link ItemStream}
      * @throws MessageStoreException
@@ -100,7 +101,7 @@ public interface MessageStoreInterface
 
     /**
      * Returns the current size of the expiry index - for debug only.
-     * 
+     *
      * @return the size of the expiry index.
      */
     public abstract int getExpiryIndexSize();
@@ -125,7 +126,7 @@ public interface MessageStoreInterface
     /**
      * Initialize method, useful as an intermediate form until JsEngineComponent
      * initialization is linked in.
-     * 
+     *
      * @param config
      */
     public abstract void initialize(final Configuration config);
@@ -139,7 +140,7 @@ public interface MessageStoreInterface
 
     /**
      * Remove and return first match for filter.
-     * 
+     *
      * @param filter
      * @param transaction
      * @return {@link ItemStream}
@@ -151,7 +152,7 @@ public interface MessageStoreInterface
     /**
      * Request that the receiver prints its xml representation
      * (recursively) onto standard out.
-     * 
+     *
      * @throws IOException
      */
     public abstract void xmlRequestWriteOnSystemOut() throws IOException;
@@ -159,7 +160,7 @@ public interface MessageStoreInterface
     /**
      * Request that the receiver prints its xml representation
      * (recursively) onto writer
-     * 
+     *
      * @param fw the FormattedWriter
      * @throws IOException
      */
@@ -168,7 +169,7 @@ public interface MessageStoreInterface
     /**
      * Request that the receiver prints its xml representation
      * (recursively) onto writer.
-     * 
+     *
      * @param writer
      * @throws IOException
      */
@@ -182,7 +183,7 @@ public interface MessageStoreInterface
     /**
      * Allow the expirer to begin its work. No expiry will take place until
      * this method has been called.
-     * 
+     *
      * Note: for logistical reasons this method will not be implemented
      * until after the message processor has implemented the calls to it.
      */
@@ -191,14 +192,14 @@ public interface MessageStoreInterface
     /**
      * Allow the expirer to stop its work. No expiry will take place after
      * this method has been called.
-     * 
+     *
      */
     public abstract void expirerStop();
 
     /**
      * Allow the deliveryDelayManager to begin its work. No Unloking will take place until
      * this method has been called.
-     * 
+     *
      * Note: for logistical reasons this method will not be implemented
      * until after the message processor has implemented the calls to it.
      */
@@ -207,13 +208,13 @@ public interface MessageStoreInterface
     /**
      * Allow the deliveryDelayManager to stop its work. No Unlocking will take place after
      * this method has been called.
-     * 
+     *
      */
     public abstract void deliveryDelayManagerStop();
 
     /**
      * Request the receiver to dump its xml representation.
-     * 
+     *
      * @param fw the FormattedWriter passed in by the ME.
      * @param arg an optional string to specifiy the information to be dumped
      *            null to invoke the internal diagnostics dump
@@ -225,9 +226,9 @@ public interface MessageStoreInterface
     /**
      * Obtain a list of XIDs which are in-doubt.
      * Part of MBean interface for resolving in-doubt transactions in Message Store.
-     * 
+     *
      * @return the array of XIDs as strings
-     * 
+     *
      * @return The list of known prepared transactions
      */
     public String[] listPreparedTransactions();
@@ -235,7 +236,7 @@ public interface MessageStoreInterface
     /**
      * Commit the given transaction.
      * Part of MBean interface for resolving in-doubt transactions in Message Store.
-     * 
+     *
      * @param xid a string representing the xid of the transaction to be committed.
      */
     public void commitPreparedTransaction(String xid) throws TransactionException, PersistenceException;
@@ -243,7 +244,7 @@ public interface MessageStoreInterface
     /**
      * Rollback the given transaction.
      * Part of MBean interface for resolving in-doubt transactions in Message Store.
-     * 
+     *
      * @param xid a string representing the xid of the transaction to be rolled back.
      */
     public void rollbackPreparedTransaction(String xid) throws TransactionException, PersistenceException;
@@ -255,7 +256,7 @@ public interface MessageStoreInterface
      * manner the ME will continue to function as normal and will
      * not stop work from being carried out unlike in the case
      * where the lock is lost due to unknown reasons.
-     * 
+     *
      * @param period The length of time in milliseconds that the
      *            datastore lock will be disabled.
      */
@@ -264,7 +265,7 @@ public interface MessageStoreInterface
     /**
      * Initialize method, used when starting the messagestore in recovery mode.
      * It initializes the message store with instance of JsRecoveryMessagingEngine
-     * 
+     *
      * @param me The JsRecoveryMessagingEngine instance used for intializing the message store.
      * @param mode The start mode of the message store.
      */

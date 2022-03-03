@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
-package com.ibm.ws.sib.processor;
+@org.osgi.annotation.versioning.Version("1.0.16")
+@TraceOptions(traceGroup = TRGRP_COMPONENTIZATION)
+package com.ibm.ws.messaging.lifecycle;
 
-import com.ibm.ws.messaging.lifecycle.Singleton;
-import com.ibm.ws.sib.msgstore.AbstractItem;
+import static com.ibm.ws.sib.utils.TraceGroups.TRGRP_COMPONENTIZATION;
 
-public interface ItemInterface extends Singleton {
-    AbstractItem getItemStreamInstance(String itemStreamName);
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.sib.common.service;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -26,7 +27,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.messaging.security.MessagingSecurityService;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
@@ -38,8 +39,8 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
-public class CommonServiceFacade {
+@Component(configurationPolicy = REQUIRE, property = "service.vendor=IBM")
+public class CommonServiceFacade implements Singleton {
 
     /** RAS trace variable */
     private static final TraceComponent tc = SibTr.register(
@@ -60,7 +61,7 @@ public class CommonServiceFacade {
     //TODO Should this be an AtomicServiceReference? and should runtimeSecurityService be activated??????????????????
     //TODO Should really be assigned as final in a constructor.
     private static RuntimeSecurityService runtimeSecurityService;
-    
+
     @Activate
     protected void activate(ComponentContext context,
                             Map<String, Object> properties) {
@@ -189,13 +190,13 @@ public class CommonServiceFacade {
         final String methodName = "setRuntimeSecurityService";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
           SibTr.entry(tc, methodName, new Object[] {this, runtimeSecurityService});
-        
-        this.runtimeSecurityService = runtimeSecurityService; 
-        
+
+        this.runtimeSecurityService = runtimeSecurityService;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
           SibTr.exit(tc, methodName);
     }
-    
+
     // obtain ClientConnectionFactory through CommsClientServiceFacade
     public static ClientConnectionFactory getClientConnectionFactory() {
         return _commsClientServiceFacaderef.getService().getClientConnectionFactory();
@@ -203,7 +204,7 @@ public class CommonServiceFacade {
 
     /**
      * static method for getting the JsAdminService instance
-     * 
+     *
      * @return JsAdminService
      */
     public static JsAdminService getJsAdminService() {
@@ -213,11 +214,11 @@ public class CommonServiceFacade {
     public static RuntimeSecurityService getRuntimeSecurityService() {
         return runtimeSecurityService;
     }
-    
+
     //Provide implemenations thru factory interfaces, so that other OSGI bundles
     // can consume them.
 
-    // passing TrmMessageFactory implementation thru MFP 
+    // passing TrmMessageFactory implementation thru MFP
     public static TrmMessageFactory getTrmMessageFactory() {
         // This should have been returning from some MFP Facade.
         // For now returning directly as MFP is part of common now.
@@ -227,14 +228,14 @@ public class CommonServiceFacade {
     // passing JsDestinationAddressFactory implementation thru MFP
     public static JsDestinationAddressFactory getJsDestinationAddressFactory() {
         // This should have been returning from some MFP Facade.
-        // For now returning directly as MFP is part of common now.		
+        // For now returning directly as MFP is part of common now.
         return (JsDestinationAddressFactory) SIDestinationAddressFactory.getInstance();
     }
 
     // passing SelectionCriteriaFactory implementation thru core
     public static SelectionCriteriaFactory getSelectionCriteriaFactory() {
         // This should have been returning from some core Facade.
-        // For now returning directly as core is part of common now.		
+        // For now returning directly as core is part of common now.
         return SelectionCriteriaFactory.getInstance();
     }
 
