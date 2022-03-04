@@ -18,6 +18,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
   - Link the RFE with this issue
 - UFO: Link to Upcoming Feature Overview
+  - Set the Box link to be publicly accessible, with a long expiration (10 years)
 - FTS: Link to Feature Test Summary GH Issue
 - Beta Blog: Link to Beta Blog Post GH Issue
 - GA Blog: Link to GA Blog Post GH Issue
