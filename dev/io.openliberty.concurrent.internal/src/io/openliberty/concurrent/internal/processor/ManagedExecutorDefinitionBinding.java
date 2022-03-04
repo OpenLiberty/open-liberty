@@ -84,15 +84,7 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
     }
 
     void mergeXML(ManagedExecutor mxd) throws InjectionConfigurationException {
-        Description mxdDescription = mxd.getDescription();
-
-        if ( mxdDescription != null ) {
-            String descriptionValue = mxdDescription.getValue();
-            if ( (descriptionValue != null) && !descriptionValue.isEmpty() ) {
-                description = mergeXMLValue(description, descriptionValue, "description", KEY_DESCRIPTION, null);
-                XMLDescription = true;
-            }
-        }
+        List<Description> descriptionList = mxd.getDescriptions();
 
         String contextServiceRefValue = mxd.getContextServiceRef();
         if (contextServiceRefValue != null) {
@@ -100,20 +92,23 @@ public class ManagedExecutorDefinitionBinding extends InjectionBinding<ManagedEx
             XMLContextServiceRef = true;
         }
 
+        if (description != null) {
+            description = mergeXMLValue(description, descriptionList.toString(), "description", KEY_DESCRIPTION, null);
+            XMLDescription = true;
+        }
+
         if (mxd.isSetHungTaskThreshold()) {
-            hungTaskThreshold = mergeXMLValue(hungTaskThreshold, Long.valueOf(mxd.getHungTaskThreshold()), "hung-task-threshold", KEY_HUNG_TASK_THRESHOLD, null);
+            hungTaskThreshold = mergeXMLValue(hungTaskThreshold, mxd.getHungTaskThreshold(), "hung-task-threshold", KEY_HUNG_TASK_THRESHOLD, null);
             XMLHungTaskThreshold = true;
         }
 
         if (mxd.isSetMaxAsync()) {
-            maxAsync = mergeXMLValue(maxAsync, Integer.valueOf(mxd.getMaxAsync()), "max-async", KEY_MAX_ASYNC, null);
+            maxAsync = mergeXMLValue(maxAsync, mxd.getMaxAsync(), "max-async", KEY_MAX_ASYNC, null);
             XMLMaxAsync = true;
         }
 
         List<Property> mxdProps = mxd.getProperties();
-        if ( !mxdProps.isEmpty() ) {
-            properties = mergeXMLProperties(properties, XMLProperties, mxdProps);
-        }
+        properties = mergeXMLProperties(properties, XMLProperties, mxdProps);
     }
 
     @Override

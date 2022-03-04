@@ -10,10 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.dd.common;
 
+import java.util.List;
+
 /**
  * Represents &lt;managed-thread-factory&gt;.
  */
-public interface ManagedThreadFactory extends JNDIContextServiceRef {
+public interface ManagedThreadFactory extends JNDIEnvironmentRef, Describable {
+    /**
+     * @return &lt;context-service-ref&gt;, or null if unspecified
+     */
+    String getContextServiceRef();
+
     /**
      * @return &lt;priority&gt; if specified
      * @see #isSetPriority
@@ -25,4 +32,9 @@ public interface ManagedThreadFactory extends JNDIContextServiceRef {
      * @see #getPriority
      */
     boolean isSetPriority();
+    
+    /**
+     * @return &lt;property&gt; elements as a read-only list
+     */
+    List<Property> getProperties();
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 /**
- * @version 2.0.0
+ * @version 1.3.0
  */
-@org.osgi.annotation.versioning.Version("2.0.0")
+@org.osgi.annotation.versioning.Version("1.3.0")
 package com.ibm.ws.javaee.dd.common;

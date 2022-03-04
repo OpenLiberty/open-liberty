@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 2.0
+bVersion: 1.5
 
 Bundle-Name: WebSphere Bindings and Extensions SPI
 Bundle-Description: WebSphere Bindings and Extensions SPI, version ${bVersion}

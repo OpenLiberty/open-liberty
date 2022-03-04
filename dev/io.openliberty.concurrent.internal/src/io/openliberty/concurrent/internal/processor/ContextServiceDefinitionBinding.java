@@ -82,42 +82,33 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, new String[0]);
     }
 
-    private String[] toArray(List<String> values) {
-        return values.toArray( new String[values.size()] );
-    }
-
     void mergeXML(ContextService csd) throws InjectionConfigurationException {
-        Description csdDescription = csd.getDescription();
+        List<Description> descriptionList = csd.getDescriptions();
 
-        if ( csdDescription != null ) {
-            String descriptionValue = csdDescription.getValue();
-            if ( (descriptionValue != null) && !descriptionValue.isEmpty() ) {
-                description = mergeXMLValue(description, descriptionValue, "description", KEY_DESCRIPTION, null);
-                XMLDescription = true;
-            }
-        }
-
-        List<String> csdCleared = csd.getCleared();
-        if ( !csdCleared.isEmpty() ) {
-            cleared = mergeXMLValue(cleared, toArray(csdCleared), "cleared", KEY_CLEARED, null);
+        String[] clearedValues = csd.getCleared();
+        if (clearedValues != null) {
+            cleared = mergeXMLValue(cleared, clearedValues, "cleared", KEY_CLEARED, null);
             XMLcleared = true;
         }
 
-        List<String> csdPropagated = csd.getPropagated();
-        if ( !csdPropagated.isEmpty() ) {
-            propagated = mergeXMLValue(propagated, toArray(csdPropagated), "propagated", KEY_PROPAGATED, null);
+        if (description != null) {
+            description = mergeXMLValue(description, descriptionList.toString(), "description", KEY_DESCRIPTION, null);
+            XMLDescription = true;
+        }
+
+        String[] propagatedValues = csd.getPropagated();
+        if (propagatedValues != null) {
+            propagated = mergeXMLValue(propagated, propagatedValues, "propagated", KEY_PROPAGATED, null);
             XMLpropagated = true;
         }
 
-        List<String> csdUnchanged = csd.getUnchanged();
-        if ( !csdUnchanged.isEmpty() ) {
-            unchanged = mergeXMLValue(unchanged, toArray(csdUnchanged), "unchanged", KEY_UNCHANGED, null);
-            XMLunchanged = true;
-        }
-
         List<Property> csdProps = csd.getProperties();
-        if ( !csdProps.isEmpty() ) {
-            properties = mergeXMLProperties(properties, XMLProperties, csdProps);
+        properties = mergeXMLProperties(properties, XMLProperties, csdProps);
+
+        String[] unchangedValues = csd.getUnchanged();
+        if (unchangedValues != null) {
+            unchanged = mergeXMLValue(unchanged, unchangedValues, "unchanged", KEY_UNCHANGED, null);
+            XMLunchanged = true;
         }
     }
 

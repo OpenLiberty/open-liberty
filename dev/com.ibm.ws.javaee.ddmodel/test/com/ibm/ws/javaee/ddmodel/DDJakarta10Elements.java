@@ -184,8 +184,15 @@ public class DDJakarta10Elements {
     public static void verify(
             List<String> names,
             String expectedLang, String expectedValue,
-            Description actualDescription) {
+            List<Description> actualDescriptions) {
         
+        if ( actualDescriptions.size() != 1 ) {
+            Assert.assertEquals(
+                "Descriptions should be a singleton [ " + actualDescriptions + " ] ",
+                1, actualDescriptions.size());
+        }
+
+        Description actualDescription = actualDescriptions.get(0);
         withName(names, "lang",
                 (useNames) -> verify(useNames, expectedLang, actualDescription.getLang()));
         withName(names, "value",
@@ -208,6 +215,11 @@ public class DDJakarta10Elements {
                 (useNames) -> verify(useNames, expectedSize, actualList.size()));
     }
 
+    public static void verifySize(List<String> names, int expectedSize, String[] actualList) {
+        withName(names, "size",
+                (useNames) -> verify(useNames, expectedSize, actualList.length));
+    }
+    
     public static void verifyDoubleton(
             List<String> names,
             String expectedName0, String expectedValue0,
@@ -231,6 +243,16 @@ public class DDJakarta10Elements {
         }
     }
 
+    public static final void verify(List<String> names, String[] actual, String...expected) {
+        verifySize(names, expected.length, actual);
+
+        for ( int elementNo = 0; elementNo < expected.length; elementNo++ ) {
+            final int finalElementNo = elementNo; // Needed by the compiler.
+            withName(names, "[" + elementNo + "]",
+                    (useNames) -> verify(useNames, expected[finalElementNo], actual[finalElementNo]));
+        }
+    }
+    
     public static final String CONTEXT_SERVICE_XML =
             "<context-service id=\"CS01\">\n" +
             "  <description>CS01-desc</description>\n" +
@@ -263,7 +285,7 @@ public class DDJakarta10Elements {
         // withName(names, "id",
         //        (useNames) -> verify("CS01", contextService.getID())); // Can't be accessed here.
         withName(names, "description",
-                (useNames) -> verify(useNames, null, "CS01-desc", contextService.getDescription()));
+                (useNames) -> verify(useNames, null, "CS01-desc", contextService.getDescriptions()));
 
         withName(names, "name",
                 (useNames) -> verify(useNames, "CS01:name", contextService.getName()));
@@ -306,7 +328,7 @@ public class DDJakarta10Elements {
         // withName(names, "id",
         //        (useNames) -> verify("ME01", executor.getID())); // Can't be accessed here.
         withName(names, "description",
-                (useNames) -> verify(useNames, null, "ME01-desc", executor.getDescription()));
+                (useNames) -> verify(useNames, null, "ME01-desc", executor.getDescriptions()));
         withName(names, "name",
                 (useNames) -> verify(useNames, "ME01:name", executor.getName()));        
         withName(names, "contextServiceRef",
@@ -314,7 +336,7 @@ public class DDJakarta10Elements {
         withName(names, "maxAsync",
                 (useNames) -> verify(useNames, 10, executor.getMaxAsync()));
         withName(names, "hungTaskThreshold",
-                (useNames) -> verify(useNames, 1000, executor.getHungTaskThreshold()));        
+                (useNames) -> verify(useNames, 1000, (int) executor.getHungTaskThreshold()));        
         withName(names, "properties",
                 (useNames) -> verifyDoubleton(useNames,
                         "ME01", "ME01-value", "ME02", "ME02-value",
@@ -342,7 +364,7 @@ public class DDJakarta10Elements {
         // withName(names, "id",
         //        (useNames) -> verify("MSE01", executor.getID())); // Can't be accessed here.
         withName(names, "description",
-                (useNames) -> verify(useNames, null, "MSE01-desc", executor.getDescription()));
+                (useNames) -> verify(useNames, null, "MSE01-desc", executor.getDescriptions()));
         withName(names, "name",
                 (useNames) -> verify(useNames, "MSE01:name", executor.getName()));        
         withName(names, "contextServiceRef",
@@ -350,7 +372,7 @@ public class DDJakarta10Elements {
         withName(names, "maxAsync",
                 (useNames) -> verify(useNames, 11, executor.getMaxAsync()));
         withName(names, "hungTaskThreshold",
-                (useNames) -> verify(useNames, 1100, executor.getHungTaskThreshold()));        
+                (useNames) -> verify(useNames, 1100, (int) executor.getHungTaskThreshold()));        
         withName(names, "properties",
                 (useNames) -> verifyDoubleton(useNames,
                         "MSE01", "MSE01-value", "MSE02", "MSE02-value",
@@ -377,7 +399,7 @@ public class DDJakarta10Elements {
         // withName(names, "id",
         //        (useNames) -> verify("MTF01", factory.getID())); // Can't be accessed here.
         withName(names, "description",
-                (useNames) -> verify(useNames, null, "MTF01-desc", factory.getDescription()));
+                (useNames) -> verify(useNames, null, "MTF01-desc", factory.getDescriptions()));
         withName(names, "name",
                 (useNames) -> verify(useNames, "MTF01:name", factory.getName()));        
         withName(names, "contextServiceRef",

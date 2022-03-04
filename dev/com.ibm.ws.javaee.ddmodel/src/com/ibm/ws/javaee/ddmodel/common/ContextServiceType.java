@@ -48,35 +48,40 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Description getDescription() {
-        return description;
+    public List<Description> getDescriptions() {
+        if ( descriptions != null ) {
+            return (List<Description>) descriptions;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<String> getCleared() {
+    public String[] getCleared() {
         if ( cleared != null ) {
-            return cleared.getList();
+            return cleared.getArray();
         } else {
-            return Collections.emptyList();
+            return StringType.ListType.getEmptyArray();
         }
     }
 
     @Override
-    public List<String> getPropagated() {
+    public String[] getPropagated() {
         if ( propagated != null ) {
-            return propagated.getList();
+            return propagated.getArray();
         } else {
-            return Collections.emptyList();
+            return StringType.ListType.getEmptyArray();
         }
     }
 
     @Override
-    public List<String> getUnchanged() {
+    public String[] getUnchanged() {
         if ( unchanged != null ) {
-            return unchanged.getList();
+            return unchanged.getArray();
         } else {
-            return Collections.emptyList();
+            return StringType.ListType.getEmptyArray();
         }
     }
     
@@ -91,7 +96,7 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
 
     //
 
-    private DescriptionType description;
+    private List<? extends Description> descriptions;
     private StringType.ListType cleared;
     private StringType.ListType propagated;
     private StringType.ListType unchanged;
@@ -108,8 +113,9 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
         }
 
         if ("description".equals(localName)) {
-            description = new DescriptionType();
+            DescriptionType description = new DescriptionType();
             parser.parse(description);
+            descriptions = Collections.singletonList(description);
             return true;
         }
 
@@ -160,7 +166,9 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
 
     @Override
     public void describeHead(DDParser.Diagnostics diag) {
-        diag.describeIfSet("description", description);
+        if ( descriptions != null ) {
+            diag.describe( "description", (DescriptionType) (descriptions.get(0)) );
+        }
         super.describeHead(diag);
     }
     

@@ -15,26 +15,21 @@ import java.util.List;
 /**
  * Represents &lt;context-service&gt;.
  */
-public interface ContextService extends JNDIEnvironmentRef {
-    /**
-     * @return &lt;description&gt; or null if not set.
-     */
-    Description getDescription();
-
+public interface ContextService extends JNDIEnvironmentRef, Describable {
     /**
      * @return &lt;cleared&gt; elements as a read-only list
      */
-    List<String> getCleared();
+    String[] getCleared();
 
     /**
      * @return &lt;propagated&gt; elements as a read-only list
      */
-    List<String> getPropagated();
+    String[] getPropagated();
 
     /**
      * @return &lt;unchanged&gt; elements as a read-only list
      */
-    List<String> getUnchanged();
+    String[] getUnchanged();
 
     /**
      * @return &lt;property&gt; elements as a read-only list

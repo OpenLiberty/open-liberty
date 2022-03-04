@@ -10,15 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.dd.common;
 
+import java.util.List;
+
 /**
  * Represents &lt;managed-scheduled-executor&gt;.
  */
-public interface ManagedScheduledExecutor extends JNDIContextServiceRef {
+public interface ManagedScheduledExecutor extends JNDIEnvironmentRef, Describable {
+    /**
+     * @return &lt;context-service-ref&gt;, or null if unspecified
+     */
+    String getContextServiceRef();
+
     /**
      * @return &lt;hung-task-threshold&gt; if specified
      * @see #isSetHungTaskThreshold
      */
-    int getHungTaskThreshold();
+    long getHungTaskThreshold();
 
     /**
      * @return true if &lt;hung-task-threshold&gt; is specified
@@ -37,4 +44,9 @@ public interface ManagedScheduledExecutor extends JNDIContextServiceRef {
      * @see #getMaxAsync
      */
     boolean isSetMaxAsync();
+    
+    /**
+     * @return &lt;property&gt; elements as a read-only list
+     */
+    List<Property> getProperties();
 }

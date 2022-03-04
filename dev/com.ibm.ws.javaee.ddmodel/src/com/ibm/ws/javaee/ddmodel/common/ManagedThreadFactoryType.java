@@ -13,7 +13,7 @@ package com.ibm.ws.javaee.ddmodel.common;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.ws.javaee.dd.common.ConnectionFactory;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
 import com.ibm.ws.javaee.dd.common.Property;
@@ -33,12 +33,27 @@ import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 // <xsd:attribute name="id" type="xsd:ID"/>
 // </xsd:complexType>
 
-public class ManagedThreadFactoryType extends JNDIContextServiceRefType implements ManagedThreadFactory {
+public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements ManagedThreadFactory {
     public static class ListType extends ParsableListImplements<ManagedThreadFactoryType, ManagedThreadFactory> {
         @Override
         public ManagedThreadFactoryType newInstance(DDParser parser) {
             return new ManagedThreadFactoryType();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Description> getDescriptions() {
+        if ( descriptions != null ) {
+            return (List<Description>) descriptions;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    @Override
+    public String getContextServiceRef() {
+        return contextServiceRef.getValue();
     }
 
     @Override
@@ -51,14 +66,27 @@ public class ManagedThreadFactoryType extends JNDIContextServiceRefType implemen
         return AnySimpleType.isSet(priority);
     }
 
+    @Override
+    public List<Property> getProperties() {
+        if (properties != null) {
+            return properties.getList();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
     //
 
+    private List<? extends Description> descriptions;
+    private JNDINameType contextServiceRef;    
     private XSDIntegerType priority;
-
+    private PropertyType.ListType properties;
+    
     public ManagedThreadFactoryType() {
         super("name");
     }
 
+    @Trivial
     @Override
     public boolean isIdAllowed() {
         return true;
@@ -70,6 +98,22 @@ public class ManagedThreadFactoryType extends JNDIContextServiceRefType implemen
             return true;
         }
 
+        if ("description".equals(localName)) {
+            DescriptionType description = new DescriptionType();
+            parser.parse(description);
+            descriptions = Collections.singletonList(description);
+            return true;
+        }
+        
+
+        if ("context-service-ref".equals(localName)) {
+            if (contextServiceRef == null) {
+                contextServiceRef = new JNDINameType();
+            }
+            parser.parse(contextServiceRef);
+            return true;
+        }
+
         if ("priority".equals(localName)) {
             XSDIntegerType priority = new XSDIntegerType();
             parser.parse(priority);
@@ -77,12 +121,39 @@ public class ManagedThreadFactoryType extends JNDIContextServiceRefType implemen
             return true;
         }
 
+        if ("property".equals(localName)) {
+            PropertyType property = new PropertyType();
+            parser.parse(property);
+            if (properties == null) {
+                properties = new PropertyType.ListType();
+            }
+            properties.add(property);
+            return true;
+        }        
+
         return false;
+    }
+
+    //
+
+    @Override
+    public void describeHead(DDParser.Diagnostics diag) {
+        if ( descriptions != null ) {
+            diag.describe( "description", (DescriptionType) (descriptions.get(0)) );
+        }
+        super.describeHead(diag);
     }
 
     @Override
     public void describeBody(DDParser.Diagnostics diag) {
         super.describeBody(diag);
+        diag.describe("context-service-ref", contextServiceRef);        
         diag.describeIfSet("priority", priority);
+    }
+    
+    @Override
+    public void describeTail(DDParser.Diagnostics diag) {
+        super.describeTail(diag);
+        diag.describeIfSet("property", properties);
     }
 }
