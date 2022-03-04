@@ -65,7 +65,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 ### **Design Preliminaries**
 - [ ] UI requirements identified. (Owner and UI focal point)
 - [ ] ID requirements identified. (Owner and ID focal point) ([Karen Deen](https://github.com/chirp1))
-   - Rerfer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
+   - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature Owner adds label `ID Required`, if non-trival documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
 - [ ] Servicability Requirements Identified. (Owner and Servicability focal point) ([Don Bourne](https://github.com/donbourne))
