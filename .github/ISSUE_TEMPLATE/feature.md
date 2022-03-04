@@ -18,6 +18,9 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
   - Link the RFE with this issue
 - UFO: Link to Upcoming Feature Overview
+  - Set the Box link to be publicly accessible, with a long expiration (10 years)
+    - click "Share" > select "People with link" > click "Link Settings" > under "Link Experation" select "Disable Shared Link on" > set an experation date ~10 years into the future
+    - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue
 - Beta Blog: Link to Beta Blog Post GH Issue
 - GA Blog: Link to GA Blog Post GH Issue
@@ -42,6 +45,8 @@ Each process step has a number of tasks which must be completed or must be marke
 
 Unless otherwise indicated, the tasks are the responsibility of the Feature Owner or a Delegate of the Feature Owner.
 
+If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect) or [OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager).
+
 **Important: Labels are used to trigger particular steps and must be added as indicated.** 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,17 +65,17 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
 
-Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trival documentation/ID.
+Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.
 
 ### **Design Preliminaries**
-- [ ] UI requirements identified. (Owner and UI focal point)
-- [ ] ID requirements identified. (Owner and ID focal point) ([Karen Deen](https://github.com/chirp1))
+- [ ] UI requirements identified. (Owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
+- [ ] ID requirements identified. (Owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
-   - Feature Owner adds label `ID Required`, if non-trival documentation needs to be created by the ID team.
+   - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
-- [ ] Servicability Requirements Identified. (Owner and Servicability focal point) ([Don Bourne](https://github.com/donbourne))
-- [ ] SVT Requirements Identified. (Owner and SVT focal point) ([Brian Hanczaryk](https://github.com/hanczaryk))
-- [ ] Performance testing requirements identified. (Owner and Performance focal point) ([Jared Anderson](https://github.com/jhanders34))
+- [ ] Serviceability Requirements Identified. (Owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] SVT Requirements Identified. (Owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] Performance testing requirements identified. (Owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
 
 ### **Design**
 - [ ] POC Design / UFO review requested.
@@ -103,7 +108,7 @@ A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) 
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrenlty with development.  Both **MUST** be completed before GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  Both **MUST** be completed before GA is requested.
 
 ### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
@@ -139,7 +144,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All PRs are merged.
   - [ ] All epic and child issues are closed.
   - [ ] All stop ship issues are completed.
-- [ ] Legal: all necessary aprovals granted.
+- [ ] Legal: all necessary approvals granted.
 - [ ] Translation: All messages translated or sent for translation for upcoming release 
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
@@ -190,7 +195,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
 - [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
-  - This should be strongly considered for larger or more promintent features.
+  - This should be strongly considered for larger or more prominent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **WDT** Liberty Developer Tools work is complete or N/A. (Leonard Theivendra)
 
