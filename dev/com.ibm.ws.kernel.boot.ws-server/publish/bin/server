@@ -981,7 +981,7 @@ javaCmd()
       #Reset rc. If backupWorkarea returns 0 then overall checkpoint action is successful.
       rc=$?
       if [ $rc -ne 0 ]; then
-         issueMessage --message:error.checkpoint.workarea.backup
+         issueMessage --message:error.checkpoint.workarea.backup "${SERVER_OUTPUT_DIR}/workarea"
       fi
       rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
     fi
@@ -1287,7 +1287,7 @@ criuRestore()
   restoreWorkarea
   rc=$?
   if [ $rc -ne 0 ]; then
-    issueMessage --message:error.checkpoint.workarea.restore
+    issueMessage --message:error.checkpoint.workarea.restore "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea"
     return $rc
   fi 
 
@@ -1387,7 +1387,7 @@ restoreServer()
   criuRestore $BACKGROUND_RESTORE
   rc=$?
   if [ $rc -ne 0 ]; then
-    issueMessage --message:info.checkpoint.restore.failed
+    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
   fi
   return $rc
 }
