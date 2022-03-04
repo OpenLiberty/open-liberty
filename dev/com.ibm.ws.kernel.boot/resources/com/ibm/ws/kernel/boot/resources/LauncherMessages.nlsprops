@@ -732,8 +732,8 @@ error.checkpoint.workarea.restore=CWWKE0957E: The checkpoint server workarea dir
 error.checkpoint.workarea.restore.explanation=An error occurred restoring the checkpoint workarea directory.
 error.checkpoint.workarea.restore.useraction=Ensure the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
 
-info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server process failed. The server launches normally without using the checkpoint image to restore. Check the {0} log to determine why the checkpoint process was not restored.
-info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server will launch normally without using the checkpoint image.
+info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
+info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
 
 info.serverStarting=Starting server {0}.
