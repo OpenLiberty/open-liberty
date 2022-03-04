@@ -146,6 +146,29 @@ public class ThirdPartyContextCoordinator implements ApplicationStateListener, /
         return context;
     }
 
+    /**
+     * Finds and returns the first thread context provider that provides the same
+     * thread context type as the specified provider.
+     *
+     * @param provider    provider that is found to provide a conflicting thread context type with another provider.
+     * @param classloader class loader from which to load thread context providers.
+     * @return thread context provider with which the specified provider conflicts.
+     */
+    private Object findConflictingProvider(ThreadContextProvider provider, ClassLoader classloader) {
+        String conflictingType = provider.getThreadContextType();
+
+        if (BUILT_IN_CONTEXT.contains(conflictingType))
+            return "built-in";
+
+        for (ThreadContextProvider p : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
+            if (conflictingType.equals(p.getThreadContextType()) && !provider.equals(p))
+                return p;
+        }
+
+        // should be unreachable
+        throw new IllegalStateException(conflictingType);
+    }
+
     @Override
     public List<com.ibm.wsspi.threadcontext.ThreadContextProvider> getPrerequisites() {
         return null;
@@ -177,7 +200,10 @@ public class ThirdPartyContextCoordinator implements ApplicationStateListener, /
                 if (available.add(type))
                     providersNew.add(provider);
                 else
-                    throw new IllegalStateException("duplicate provider: " + type); // TODO Tr.formatMessage(tc, "CWWKC1150.duplicate.context", type, provider, findConflictingProvider(provider, classloader)));
+                    throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1203.duplicate.context",
+                                                                     type,
+                                                                     provider,
+                                                                     findConflictingProvider(provider, classLoader)));
             }
 
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();

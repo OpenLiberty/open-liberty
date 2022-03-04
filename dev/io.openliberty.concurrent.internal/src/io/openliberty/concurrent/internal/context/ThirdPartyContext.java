@@ -187,7 +187,7 @@ public class ThirdPartyContext implements ThreadContext {
             if ("propagated".equals(remaining))
                 unser.add(ContextServiceDefinition.ALL_REMAINING);
 
-            x = new UnsupportedOperationException("Thread context configured for propagation is not serializable: " + unser); // TODO NLS
+            x = new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1204.not.serializable", unser));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

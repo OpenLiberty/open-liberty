@@ -20,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
-import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionProcessor;
@@ -33,8 +32,6 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
  */
 @Component(service = InjectionProcessorProvider.class)
 public class ManagedThreadFactoryDefinitionProvider extends InjectionProcessorProvider<ManagedThreadFactoryDefinition, ManagedThreadFactoryDefinition.List> {
-
-    static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedThreadFactory.class);

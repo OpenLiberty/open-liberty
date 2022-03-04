@@ -112,7 +112,10 @@ public class MPContextProp2_0_TestServlet extends FATServlet {
             CompletableFuture<Object> stage = acBean.asyncLookup("java:comp/eeExecutor");
             fail("@Asynchronous should not be supported at class level. " + stage);
         } catch (UnsupportedOperationException x) {
-            // expected
+            // check for the expected error message
+            String message = x.getMessage();
+            if (message == null || !message.startsWith("CWWKC1401E") || !message.contains(AsyncClassBean.class.getName()))
+                throw x;
         }
     }
 

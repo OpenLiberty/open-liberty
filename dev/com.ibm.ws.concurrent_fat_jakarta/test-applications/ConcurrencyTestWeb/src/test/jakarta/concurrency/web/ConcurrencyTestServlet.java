@@ -2552,7 +2552,10 @@ public class ConcurrencyTestServlet extends FATServlet {
             proxy = contextSvcZL.createContextualProxy(new SameThreadExecutor(), Serializable.class);
             fail("Must not be able to create Serializable proxy when propagated third-party context types are present. " + proxy);
         } catch (UnsupportedOperationException x) {
-            // expected TODO check NLS message key once added
+            // expected, but check the message for names of context that we cannot propagate
+            String message = x.getMessage();
+            if (message == null || !message.contains("CWWKC1204E") || !message.contains("ZipCode") || !message.contains("List"))
+                throw x;
         }
 
         ContextService contextSvcLT = InitialContext.doLookup("java:app/concurrent/merged/web/LTContextService");
@@ -2562,7 +2565,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             // expected, but check the message for names of context that we cannot propagate
             String message = x.getMessage();
-            if (message == null || !message.contains("List") || !message.contains("Timestamp"))
+            if (message == null || !message.contains("CWWKC1204E") || !message.contains("List") || !message.contains("Timestamp"))
                 throw x;
         }
 
@@ -2573,7 +2576,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             // expected, but check the message for names of context that we cannot propagate
             String message = x.getMessage();
-            if (message == null || !message.contains(ALL_REMAINING))
+            if (message == null || !message.contains("CWWKC1204E") || !message.contains(ALL_REMAINING))
                 throw x;
         }
 
@@ -2584,7 +2587,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             // expected, but check the message for names of context that we cannot propagate
             String message = x.getMessage();
-            if (message == null || !message.contains("Timestamp") || !message.contains("ZipCode"))
+            if (message == null || !message.contains("CWWKC1204E") || !message.contains("Timestamp") || !message.contains("ZipCode"))
                 throw x;
         }
     }

@@ -147,7 +147,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         // Use the unique identifier because jndiName is not always unique for app-defined data sources
         threadFactoryProps.put(UNIQUE_JNDI_NAME, managedThreadFactoryID);
 
-        threadFactoryProps.put("contextService.target", FilterUtils.createPropertyFilter("id", contextServiceId));
+        String contextSvcFilter = FilterUtils.createPropertyFilter(ID, contextServiceId);
+        threadFactoryProps.put("contextService.target", contextSvcFilter);
         threadFactoryProps.put("contextService.cardinality.minimum", 1);
 
         threadFactoryProps.put("createDaemonThreads", false);
@@ -164,7 +165,9 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         managedThreadFactorySvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedThreadFactoryID));
         managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.managedThreadFactory)(jndiName=*))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, managedThreadFactoryID, managedThreadFactorySvcFilter.toString(), declaringApplication);
+        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
+                        managedThreadFactoryID, jndiName, managedThreadFactorySvcFilter.toString(), //
+                        contextSvcJndiName, contextSvcFilter);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();

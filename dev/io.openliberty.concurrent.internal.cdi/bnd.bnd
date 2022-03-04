@@ -25,7 +25,8 @@ WS-TraceGroup: concurrent
 Import-Package: !jakarta.interceptor,*
 
 Private-Package: \
-  io.openliberty.concurrent.internal.cdi.*
+  io.openliberty.concurrent.internal.cdi.*,\
+  io.openliberty.concurrent.internal.cdi.resources.*
 
 -cdiannotations:
 
