@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,6 @@ import java.io.ObjectInputStream.GetField;
 import java.io.ObjectOutputStream;
 import java.io.ObjectOutputStream.PutField;
 import java.io.ObjectStreamField;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -55,18 +53,6 @@ public abstract class ContextualObject<T> {
                                              new ObjectStreamField(INTERNAL_PROP_NAMES, Set.class),
                                              new ObjectStreamField(OBJECT, byte[].class)
                     };
-
-    /**
-     * Privileged action that gets the thread context class loader.
-     */
-    private static final GetThreadContextClassLoader getThreadContextClassLoader = new GetThreadContextClassLoader();
-
-    private static final class GetThreadContextClassLoader implements PrivilegedAction<ClassLoader> {
-        @Override
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
-    }
 
     /**
      * Instance to wrap with context.
@@ -144,7 +130,7 @@ public abstract class ContextualObject<T> {
 
         DeserializationObjectInputStream doin = new DeserializationObjectInputStream(
                         new ByteArrayInputStream(bytes),
-                        AccessController.doPrivileged(getThreadContextClassLoader));
+                        ThreadContextManager.priv.getContextClassLoader());
         object = (T) doin.readObject();
         doin.close();
 

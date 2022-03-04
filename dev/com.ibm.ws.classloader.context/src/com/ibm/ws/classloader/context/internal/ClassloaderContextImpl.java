@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,6 +109,7 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public ThreadContext clone() {
         try {
             ClassloaderContextImpl copy = (ClassloaderContextImpl) super.clone();
@@ -121,6 +122,7 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // this method name is misleading in trace
     public void taskStarting() throws RejectedExecutionException {
 
         if (classLoaderIdentifier != null && classLoaderToPropagate == null) {
@@ -131,15 +133,25 @@ public class ClassloaderContextImpl implements ThreadContext {
 
         // Save the current thread's classLoader and set the propagated classloader on the current thread.
         previousClassLoader = priv.getContextClassLoader();
-        setCL(classLoaderToPropagate);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (classLoaderToPropagate == ClassloaderContextImpl.SYSTEM_CLASS_LOADER)
+                Tr.debug(this, tc, "clear     " + classLoaderToPropagate + " (system class loader)");
+            else
+                Tr.debug(this, tc, "propagate " + classLoaderToPropagate);
+
+        AccessController.doPrivileged(new SetClassLoader(classLoaderToPropagate));
     }
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // this method name is misleading in trace
     public void taskStopping() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "restore   " + previousClassLoader);
 
         // Retrieve the current thread's original classloader and set it back.
-        setCL(previousClassLoader);
+        AccessController.doPrivileged(new SetClassLoader(previousClassLoader));
         previousClassLoader = null;
     }
 
@@ -148,27 +160,31 @@ public class ClassloaderContextImpl implements ThreadContext {
      *
      * @param cl The clasloader to be set.
      */
-    private void setCL(final ClassLoader cl) {
-        PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
-            @Override
-            @FFDCIgnore(SecurityException.class)
-            public Object run() {
-                final Thread t = Thread.currentThread();
-                try {
-                    t.setContextClassLoader(cl);
-                } catch (SecurityException e) {
-                    // If this work happens to run on an java.util.concurrent.ForkJoinWorkerThread$InnocuousForkJoinWorkerThread,
-                    // setting the ClassLoader may be rejected. If this happens, give a decent error message.
-                    if (t instanceof ForkJoinWorkerThread && "InnocuousForkJoinWorkerThreadGroup".equals(t.getThreadGroup().getName())) {
-                        throw new SecurityException(Tr.formatMessage(tc, "cannot.apply.classloader.context", t.getName()), e);
-                    } else {
-                        throw e;
-                    }
+    @Trivial
+    private class SetClassLoader implements PrivilegedAction<Void> {
+        private final ClassLoader cl;
+        private SetClassLoader(ClassLoader cl) {
+            this.cl = cl;
+        }
+
+        @Override
+        @FFDCIgnore(SecurityException.class)
+        public Void run() {
+            final Thread t = Thread.currentThread();
+            try {
+                t.setContextClassLoader(cl);
+            } catch (SecurityException e) {
+                // If this work happens to run on an java.util.concurrent.ForkJoinWorkerThread$InnocuousForkJoinWorkerThread,
+                // setting the ClassLoader may be rejected. If this happens, give a decent error message.
+                if (t instanceof ForkJoinWorkerThread && "InnocuousForkJoinWorkerThreadGroup".equals(t.getThreadGroup().getName())) {
+                    throw new SecurityException(Tr.formatMessage(tc, "cannot.apply.classloader.context", t.getName()), e);
+                } else {
+                    throw e;
                 }
-                return null;
             }
-        };
-        AccessController.doPrivileged(action);
+            return null;
+        }
+
     }
 
     /**

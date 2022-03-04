@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
 import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -39,6 +41,8 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 public class SerialTransactionContextImpl implements ThreadContext {
     private static final long serialVersionUID = 1;
 
+    private static final TraceComponent tc = Tr.register(SerialTransactionContextImpl.class);
+
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
      */
@@ -55,6 +59,7 @@ public class SerialTransactionContextImpl implements ThreadContext {
     }
 
     @Override
+    @Trivial
     public ThreadContext clone() {
         try {
             SerialTransactionContextImpl copy = (SerialTransactionContextImpl) super.clone();
@@ -65,6 +70,7 @@ public class SerialTransactionContextImpl implements ThreadContext {
     }
 
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStarting() throws RejectedExecutionException {
         // Suspend whatever is currently on the thread.
         UOWManager uowManager = UOWManagerFactory.getUOWManager();
@@ -73,6 +79,9 @@ public class SerialTransactionContextImpl implements ThreadContext {
         } catch (com.ibm.ws.uow.embeddable.SystemException e) {
             suspendedUOW = null;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "propagate " + tx);
 
         boolean resumed = false;
         try {
@@ -102,6 +111,7 @@ public class SerialTransactionContextImpl implements ThreadContext {
     }
 
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStopping() {
         EmbeddableWebSphereTransactionManager tm = EmbeddableTransactionManagerFactory.getTransactionManager();
         Throwable exception = null;
@@ -147,6 +157,9 @@ public class SerialTransactionContextImpl implements ThreadContext {
                     exception = new Exception("Invalid transaction type: " + uowCurrent.getUOWType());
                 break;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "restore   " + suspendedUOW);
 
         // Resume the original transaction if it hasn't already committed or rolled back.
         try {

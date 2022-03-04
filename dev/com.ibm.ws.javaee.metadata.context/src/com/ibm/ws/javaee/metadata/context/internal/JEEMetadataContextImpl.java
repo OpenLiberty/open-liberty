@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.io.ObjectStreamField;
 import java.util.Iterator;
 import java.util.concurrent.RejectedExecutionException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.metadata.context.ComponentMetaDataDecorator;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -28,6 +30,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  * Java EE application component context implementation.
  */
 public class JEEMetadataContextImpl implements ThreadContext {
+    static final TraceComponent tc = Tr.register(JEEMetadataContextImpl.class);
 
     /**
      * Serial version UID.
@@ -99,6 +102,7 @@ public class JEEMetadataContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public ThreadContext clone() {
         try {
             return (JEEMetadataContextImpl) super.clone();
@@ -109,14 +113,19 @@ public class JEEMetadataContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // this method name is misleading in trace
     public void taskStarting() throws RejectedExecutionException {
         // Deserialization path. By the time we are here the metadata should already be present.
         if (metaDataIdentifier != null && metadataToPropagate == null)
             metadataToPropagate = (ComponentMetaData) jeeMetadataContextProvider.metadataIdentifierService.getMetaData(metaDataIdentifier);
 
-        if (metadataToPropagate == null)
+        if (metadataToPropagate == null) {
+            Tr.debug(this, tc, "clear");
+
             compMetadataAccessor.beginDefaultContext();
-        else {
+        } else {
+            Tr.debug(this, tc, "propagate " + metadataToPropagate);
+
             for (Iterator<ComponentMetaDataDecorator> it = jeeMetadataContextProvider.componentMetadataDecoratorRefs.getServices(); it.hasNext();) {
                 ComponentMetaDataDecorator decorator = it.next();
                 ComponentMetaData metadata = decorator.decorate(metadataToPropagate);
@@ -131,7 +140,11 @@ public class JEEMetadataContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // this method name is misleading in trace
     public void taskStopping() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "restore");
+
         compMetadataAccessor.endContext();
     }
 

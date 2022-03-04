@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2021 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.javaee.version.JavaEEVersion;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -47,11 +49,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 /**
  * Manages all of the thread context providers.
  */
+@SuppressWarnings("deprecation")
 @Component(name = "com.ibm.ws.context.manager",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { WSContextService.class },
            property = { "service.pid=com.ibm.ws.context.manager", "default.for=contextService", "service.ranking:Integer=100" })
 public class ThreadContextManager implements WSContextService {
+    static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
     /**
      * The component.name service property.
      */
@@ -84,6 +89,25 @@ public class ThreadContextManager implements WSContextService {
     final ConcurrentServiceReferenceMap<String, ThreadContextProvider> threadContextProviders = new ConcurrentServiceReferenceMap<String, ThreadContextProvider>(THREAD_CONTEXT_PROVIDER);
 
     /**
+     * Privileged action to create a proxy instance.
+     */
+    @Trivial
+    private static final class ProxyInstance<T> implements PrivilegedAction<T> {
+        private final InvocationHandler handler;
+        private final Class<T> intf;
+
+        private ProxyInstance(Class<T> intf, InvocationHandler handler) {
+            this.intf = intf;
+            this.handler = handler;
+        }
+
+        @Override
+        public T run() {
+            return intf.cast(Proxy.newProxyInstance(intf.getClassLoader(), new Class<?>[] { intf }, handler));
+        }
+    }
+
+    /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
      *
@@ -98,7 +122,8 @@ public class ThreadContextManager implements WSContextService {
      * @see com.ibm.wsspi.threadcontext.WSContextService#captureThreadContext(java.util.Map, java.util.Map[])
      */
     @Override
-    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties, Map<String, ?>... additionalThreadContextConfig) {
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
+                                                        @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
         executionProperties = executionProperties == null ? new TreeMap<String, String>() : new TreeMap<String, String>(executionProperties);
 
         Map<String, Map<String, ?>> threadContextConfigurations;
@@ -134,34 +159,26 @@ public class ThreadContextManager implements WSContextService {
             final List<ThreadContextProvider> alwaysEnabledProviders = new ArrayList<ThreadContextProvider>(alwaysEnabled.size());
             final List<String> alwaysEnabledProviderNames = new ArrayList<String>(alwaysEnabled.size());
 
-            // Lazily obtaining services is a privileged operation
-            AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                @Override
-                public Void run() {
-                    // Identify thread context that is configurable per contextService
-                    if (threadContextConfigurations != null)
-                        for (Map.Entry<String, Map<String, ?>> threadContextConfig : threadContextConfigurations.entrySet()) {
-                            String threadContextProviderName = threadContextConfig.getKey();
-                            if (!capturedThreadContext.providerNamesToSkip.contains(threadContextProviderName)) {
-                                ThreadContextProvider provider = threadContextProviders.getService(threadContextProviderName);
-                                if (provider != null) {
-                                    configuredProviders.add(provider);
-                                    configuredProviderProps.add(threadContextConfig);
-                                }
-                            }
+            // Identify thread context that is configurable per contextService
+            if (threadContextConfigurations != null)
+                for (Map.Entry<String, Map<String, ?>> threadContextConfig : threadContextConfigurations.entrySet()) {
+                    String threadContextProviderName = threadContextConfig.getKey();
+                    if (!capturedThreadContext.providerNamesToSkip.contains(threadContextProviderName)) {
+                        ThreadContextProvider provider = threadContextProviders.getService(threadContextProviderName);
+                        if (provider != null) {
+                            configuredProviders.add(provider);
+                            configuredProviderProps.add(threadContextConfig);
                         }
-
-                    // Identify context that is always captured per the alwaysCaptureThreadContext service property
-                    for (String threadContextProviderName : alwaysEnabled)
-                        if (!capturedThreadContext.providerNamesToSkip.contains(threadContextProviderName)) {
-                            ThreadContextProvider provider = threadContextProviders.getServiceWithException(threadContextProviderName);
-                            alwaysEnabledProviders.add(provider);
-                            alwaysEnabledProviderNames.add(threadContextProviderName);
-                        }
-
-                    return null;
+                    }
                 }
-            });
+
+            // Identify context that is always captured per the alwaysCaptureThreadContext service property
+            for (String threadContextProviderName : alwaysEnabled)
+                if (!capturedThreadContext.providerNamesToSkip.contains(threadContextProviderName)) {
+                    ThreadContextProvider provider = threadContextProviders.getServiceWithException(threadContextProviderName);
+                    alwaysEnabledProviders.add(provider);
+                    alwaysEnabledProviderNames.add(threadContextProviderName);
+                }
 
             // capture thread context that is configurable per contextService
             for (int i = 0; i < configuredProviders.size(); i++) {
@@ -199,13 +216,8 @@ public class ThreadContextManager implements WSContextService {
         } else if (Runnable.class.equals(intf)) {
             instance = intf.cast(new ContextualRunnable(threadContextDescriptor, (Runnable) instance, null));
         } else {
-            final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, null);
-            instance = AccessController.doPrivileged(new PrivilegedAction<T>() {
-                @Override
-                public T run() {
-                    return intf.cast(Proxy.newProxyInstance(intf.getClassLoader(), new Class<?>[] { intf }, handler));
-                }
-            });
+            InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, null);
+            instance = AccessController.doPrivileged(new ProxyInstance<T>(intf, handler));
         }
         return instance;
     }
