@@ -44,6 +44,7 @@ import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
@@ -230,7 +231,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         restore(multiThreadRestoreHooks);
 
-        Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
+        Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
     }
