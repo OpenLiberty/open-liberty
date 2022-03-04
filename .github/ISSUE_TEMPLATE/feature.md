@@ -108,7 +108,7 @@ A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) 
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  Both **MUST** be completed before GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  Both **MUST** be completed before Beta or GA is requested.
 
 ### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
