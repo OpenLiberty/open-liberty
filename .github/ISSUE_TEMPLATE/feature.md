@@ -66,14 +66,14 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trival documentation/ID.
 
 ### **Design Preliminaries**
-- [ ] UI requirements identified. (Owner and UI focal point)
-- [ ] ID requirements identified. (Owner and ID focal point) ([Karen Deen](https://github.com/chirp1))
+- [ ] UI requirements identified. (Owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
+- [ ] ID requirements identified. (Owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature Owner adds label `ID Required`, if non-trival documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
-- [ ] Servicability Requirements Identified. (Owner and Servicability focal point) ([Don Bourne](https://github.com/donbourne))
-- [ ] SVT Requirements Identified. (Owner and SVT focal point) ([Brian Hanczaryk](https://github.com/hanczaryk))
-- [ ] Performance testing requirements identified. (Owner and Performance focal point) ([Jared Anderson](https://github.com/jhanders34))
+- [ ] Servicability Requirements Identified. (Owner and [Servicability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] SVT Requirements Identified. (Owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] Performance testing requirements identified. (Owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
 
 ### **Design**
 - [ ] POC Design / UFO review requested.
