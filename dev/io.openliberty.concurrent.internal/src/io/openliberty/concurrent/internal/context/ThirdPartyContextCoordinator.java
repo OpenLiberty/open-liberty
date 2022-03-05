@@ -170,6 +170,7 @@ public class ThirdPartyContextCoordinator implements ApplicationStateListener, /
     }
 
     @Override
+    @Trivial
     public List<com.ibm.wsspi.threadcontext.ThreadContextProvider> getPrerequisites() {
         return null;
     }

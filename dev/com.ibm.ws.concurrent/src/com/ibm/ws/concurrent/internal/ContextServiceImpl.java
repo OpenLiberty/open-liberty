@@ -113,11 +113,14 @@ public class ContextServiceImpl implements ContextService, //
     /**
      * List of supported properties
      */
-    private static final List<String> SUPPORTED_PROPERTIES = Arrays.asList(BASE_CONTEXT_REF,
+    private static final List<String> SUPPORTED_PROPERTIES = Arrays.asList("application", // for app-defined resources
+                                                                           BASE_CONTEXT_REF,
+                                                                           "component", // for app-defined resources
                                                                            ResourceFactory.CREATES_OBJECT_CLASS,
                                                                            ID,
                                                                            "javaCompDefaultName", // for java:comp/DefaultContextService
                                                                            JNDI_NAME,
+                                                                           "module", // for app-defined resources
                                                                            Constants.OBJECTCLASS,
                                                                            OnErrorUtil.CFG_KEY_ON_ERROR);
 
@@ -491,6 +494,7 @@ public class ContextServiceImpl implements ContextService, //
     /**
      * @see javax.enterprise.concurrent.ContextService#createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class<?>[])
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Object createContextualProxy(final Object instance, Map<String, String> executionProperties, final Class<?>... interfaces) {
         if (instance instanceof ContextualAction)
@@ -504,7 +508,6 @@ public class ContextServiceImpl implements ContextService, //
                 throw new IllegalArgumentException(instance + ", " + (intf == null ? null : intf.getName()));
 
         Set<String> internalPropNames = executionProperties == null ? null : new HashSet<String>();
-        @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContextDescriptor = captureThreadContext(executionProperties, instance, internalPropNames);
 
         checkIfSerializable(threadContextDescriptor, interfaces);
@@ -701,6 +704,7 @@ public class ContextServiceImpl implements ContextService, //
     }
 
     @Override
+    @Trivial
     public ApplicationRecycleContext getContext() {
         return null;
     }

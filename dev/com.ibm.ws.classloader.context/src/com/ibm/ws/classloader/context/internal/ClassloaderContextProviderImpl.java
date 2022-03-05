@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloader.context.ClassLoaderThreadContextFactory;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -34,6 +35,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
  * Classloader thread context provider.
  */
 @Component(name = "com.ibm.ws.classloader.context.provider", configurationPolicy = ConfigurationPolicy.IGNORE)
+@SuppressWarnings("deprecation")
 public class ClassloaderContextProviderImpl implements ThreadContextProvider, ClassLoaderThreadContextFactory {
 
     /**
@@ -113,6 +115,7 @@ public class ClassloaderContextProviderImpl implements ThreadContextProvider, Cl
      * @see com.ibm.wsspi.threadcontext.ThreadContextProvider#getPrerequisites()
      */
     @Override
+    @Trivial
     public List<ThreadContextProvider> getPrerequisites() {
         return null;
     }

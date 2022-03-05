@@ -62,15 +62,17 @@ public class ThirdPartyContext implements ThreadContext {
                                                                                                 new ObjectStreamField(REMAINING, String.class)
     };
 
-    transient List<String> cleared, propagated, unchanged;
-    transient boolean isAnyPropagated;
-    transient String remaining;
-    transient ArrayList<ThreadContextRestorer> restorers;
-    transient ArrayList<ThreadContextSnapshot> snapshots;
+    private transient List<String> cleared, propagated, unchanged;
+    private transient boolean isAnyPropagated;
+    private transient String remaining;
+    private transient ArrayList<ThreadContextRestorer> restorers;
+    private transient ArrayList<ThreadContextSnapshot> snapshots;
+    private transient ArrayList<Boolean> snapshots_propagate; // true if snapshots[i] gets propagated, false if cleared
 
     /**
      * Constructor with empty configuration for cloning.
      */
+    @Trivial
     private ThirdPartyContext() {
     }
 
@@ -87,9 +89,11 @@ public class ThirdPartyContext implements ThreadContext {
         remaining = "cleared";
 
         snapshots = new ArrayList<ThreadContextSnapshot>();
+        snapshots_propagate = new ArrayList<Boolean>();
         for (ThreadContextProvider provider : coordinator.getProviders()) {
             ThreadContextSnapshot snapshot = provider.clearedContext(execProps);
             snapshots.add(snapshot);
+            snapshots_propagate.add(false);
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "will clear " + provider.getThreadContextType() + " context " + snapshot);
         }
@@ -112,6 +116,7 @@ public class ThirdPartyContext implements ThreadContext {
         remaining = (String) threadContextConfig.get("remaining");
 
         snapshots = new ArrayList<ThreadContextSnapshot>();
+        snapshots_propagate = new ArrayList<Boolean>();
         for (ThreadContextProvider provider : coordinator.getProviders()) {
             String type = provider.getThreadContextType();
             String action = Collections.binarySearch(cleared, type) >= 0 ? "cleared" : //
@@ -122,11 +127,13 @@ public class ThirdPartyContext implements ThreadContext {
             if ("cleared".equals(action)) {
                 ThreadContextSnapshot snapshot = provider.clearedContext(execProps);
                 snapshots.add(snapshot);
+                snapshots_propagate.add(false);
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "will clear " + type + " context " + snapshot);
             } else if ("propagated".equals(action)) {
                 ThreadContextSnapshot snapshot = provider.currentContext(execProps);
                 snapshots.add(snapshot);
+                snapshots_propagate.add(true);
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "will propagate " + type + " context " + snapshot);
                 isAnyPropagated = true;
@@ -138,6 +145,7 @@ public class ThirdPartyContext implements ThreadContext {
     }
 
     @Override
+    @Trivial
     public ThirdPartyContext clone() {
         ThirdPartyContext clone = new ThirdPartyContext();
         clone.cleared = cleared;
@@ -145,6 +153,7 @@ public class ThirdPartyContext implements ThreadContext {
         clone.unchanged = unchanged;
         clone.remaining = remaining;
         clone.snapshots = snapshots;
+        clone.snapshots_propagate = snapshots_propagate;
         // clone.restorers is left null because the clone will track its own application/removal of the context
         return clone;
     }
@@ -159,6 +168,7 @@ public class ThirdPartyContext implements ThreadContext {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         snapshots = new ArrayList<ThreadContextSnapshot>();
+        snapshots_propagate = new ArrayList<Boolean>();
         for (ThreadContextProvider provider : coordinator.getProviders()) {
             // Context types that were previously unavailable to be captured for propagation must be cleared if available now.
             String type = provider.getThreadContextType();
@@ -169,6 +179,7 @@ public class ThirdPartyContext implements ThreadContext {
             if (clear) {
                 ThreadContextSnapshot snapshot = provider.clearedContext(execProps);
                 snapshots.add(snapshot);
+                snapshots_propagate.add(false);
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "will clear " + type + " context " + snapshot);
             } else {
@@ -199,12 +210,23 @@ public class ThirdPartyContext implements ThreadContext {
     }
 
     @Override
+    @Trivial // this method name is misleading in trace
     public void taskStarting() throws RejectedExecutionException {
-        // TODO will Transaction context be handled here or elsewhere? Currently it will be in the third-party context list even though it isn't third-party
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         restorers = new ArrayList<ThreadContextRestorer>();
         try {
-            for (ThreadContextSnapshot snapshot : snapshots)
+            for (int i = 0; i < snapshots.size(); i++) {
+                ThreadContextSnapshot snapshot = snapshots.get(i);
+
+                if (trace && tc.isDebugEnabled())
+                    if (snapshots_propagate.get(i))
+                        Tr.debug(this, tc, "propagate " + snapshot);
+                    else
+                        Tr.debug(this, tc, "clear     " + snapshot);
+
                 restorers.add(snapshot.begin());
+            }
         } catch (Throwable x) {
             taskStopping();
             throw new RejectedExecutionException(x);
@@ -212,10 +234,16 @@ public class ThirdPartyContext implements ThreadContext {
     }
 
     @Override
+    @Trivial
     public void taskStopping() {
         for (int i = restorers.size(); --i >= 0;)
             try {
-                restorers.remove(i).endContext();
+                ThreadContextRestorer restorer = restorers.remove(i);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "restore   " + restorer);
+
+                restorer.endContext();
             } catch (Throwable x) {
             }
     }
@@ -228,7 +256,7 @@ public class ThirdPartyContext implements ThreadContext {
                         .append(" propagated=").append(propagated) //
                         .append(" unchanged=").append(unchanged) //
                         .append(" with remaining ").append(remaining) //
-                        .append(" ").append(snapshots);
+                        .append("; context: ").append(snapshots);
         return sb.toString();
     }
 

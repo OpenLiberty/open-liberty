@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -180,8 +180,6 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
      */
     @Trivial
     private static class CreateThreadGroupIfAbsentAction implements PrivilegedAction<ThreadGroup> {
-        private static final TraceComponent tc = Tr.register(CreateThreadGroupIfAbsentAction.class);
-
         private final String identifier;
         private final ThreadGroup parentGroup;
         private final String threadFactoryName;
@@ -209,10 +207,6 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
          */
         @Override
         public ThreadGroup run() {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "run", threadFactoryName, identifier, parentGroup);
-
             ThreadGroup newGroup = new ThreadGroup(parentGroup, threadFactoryName + ' ' + identifier + " Thread Group");
             newGroup.setDaemon(parentGroup.isDaemon());
             newGroup.setMaxPriority(parentGroup.getMaxPriority());
@@ -224,8 +218,6 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
             else
                 newGroup.destroy();
 
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run", group);
             return group;
         }
     }
@@ -269,10 +261,6 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
         @FFDCIgnore(IllegalThreadStateException.class)
         @Override
         public Void run() {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "run", groups);
-
             for (Iterator<ThreadGroup> it = groups.iterator(); it.hasNext();) {
                 ThreadGroup group = it.next();
                 boolean remove = true;
@@ -288,11 +276,12 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
             }
 
             // Reschedule if we couldn't destroy all of the thread groups
-            if (!groups.isEmpty())
-                scheduledExecutor.schedule(Executors.callable(this), DESTROY_RETRY_INTERVAL_MS, TimeUnit.MILLISECONDS);
+            if (!groups.isEmpty()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "remaining thread groups: " + groups);
 
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run", "remaining: " + groups);
+                scheduledExecutor.schedule(Executors.callable(this), DESTROY_RETRY_INTERVAL_MS, TimeUnit.MILLISECONDS);
+            }
             return null;
         }
     }
