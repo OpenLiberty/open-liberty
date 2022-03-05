@@ -86,6 +86,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) adds label `Design Approved`
   - Add the public link to the UFO in Box to the [Documents](#documents) section.
+  - The UFO must always accurately reflect the final implementation of the feature. Any changes must be first approved. Afterwards, update the UFO by creating a copy of the original approved slide(s) at the end of the deck and prepend "OLD" to the title(s). A single updated copy of the slide(s) should take the original's place, and have its title(s) prepended with "UPDATED".
 
 ### **No Design**
 - [ ] No Design requested.
@@ -101,7 +102,8 @@ Design preliminaries determine whether a formal design, which will be provided b
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Implementation**
 
-A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlines in [GA](#ga) section.
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
+Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlines in [GA](#ga) section.
 
 ### **Feature Development Begins**
 - [ ] Add the `In Progress` label
