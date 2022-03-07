@@ -35,7 +35,7 @@ import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 public class TCPUtils {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, TCPMessageConstants.NETTY_TRACE_NAME,
+    private static final TraceComponent tc = Tr.register(TCPUtils.class, TCPMessageConstants.NETTY_TRACE_NAME,
             TCPMessageConstants.TCP_BUNDLE);
     private static final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
