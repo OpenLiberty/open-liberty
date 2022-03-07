@@ -76,7 +76,7 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1015W: The configuration element type cdi12 has been superceded by the element type cdi.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.");
             assertTrue("Message CWOWB1015W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1015W was found more than once", 1, warningMessages.size());
         } finally {
@@ -124,7 +124,7 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. The value from the cdi element will be used and the value in the cdi12 element will be ignored.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The enableImplicitBeanArchives attribute was set on both cdi12 and cdi configuration elements. The value from the cdi element is used and the value in the cdi12 element is ignored.");
             assertTrue("Message CWOWB1017W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1017W was found more than once", 1, warningMessages.size());
         } finally {
@@ -150,7 +150,7 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The attribute enableImplicitBeanArchives was set on both cdi12 and cdi configuration elements. The value from the cdi element will be used and the value in the cdi12 element will be ignored.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1017W: The enableImplicitBeanArchives attribute was set on both cdi12 and cdi configuration elements. The value from the cdi element is used and the value in the cdi12 element is ignored.");
             assertTrue("Message CWOWB1017W was found when it should not have been", warningMessages.size() == 0);
         } finally {
             if (server.isStarted()) {

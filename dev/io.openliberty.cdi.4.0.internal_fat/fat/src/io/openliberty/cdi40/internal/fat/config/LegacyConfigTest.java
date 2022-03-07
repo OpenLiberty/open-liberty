@@ -88,7 +88,7 @@ public class LegacyConfigTest {
      */
     @Test
     public void testCdiEmptyBeansXMLExplicitArchiveWarning() throws Exception {
-        List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The attribute cdiEmptyBeansXMLExplicitArchive of element type cdi is only supported on CDI 4.0 and newer. The attribute will be ignored.");
+        List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
         assertEquals("Message CWOWB1016W was found when it should not have been", 0, warningMessages.size());
     }
 }

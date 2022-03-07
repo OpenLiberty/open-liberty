@@ -100,7 +100,7 @@ public class ImplicitBeanArchivesDisabledTest extends FATServletClient {
         /*
          * Ignore following warnings as they are expected:
          * CWOWB1009W: Implicit bean archives are disabled.
-         * CWOWB1015W: The configuration element type cdi12 has been superceded by the element type cdi.
+         * CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.
          */
         server.stopServer("CWOWB1009W", "CWOWB1015W");
     }

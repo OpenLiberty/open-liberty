@@ -24,7 +24,7 @@ public abstract class CDI12AggregatedConfiguration extends AggregatedConfigurati
     @Override
     public void setCdiConfig(Boolean enableImplicitBeanArchives, Boolean emptyBeansXMLExplicitArchive) {
         if (tc.isWarningEnabled() && emptyBeansXMLExplicitArchive != null) {
-            //CWOWB1013W: The attribute cdiEmptyBeansXMLExplicitArchive of element type cdi is only supported on CDI 4.0 and newer. The attribute will be ignored.
+            //CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.
             Tr.warning(tc, "cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W");
         }
         super.setCdiConfig(enableImplicitBeanArchives, null);

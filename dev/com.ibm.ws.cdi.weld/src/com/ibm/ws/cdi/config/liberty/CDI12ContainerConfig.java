@@ -21,6 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.config.AggregatedConfiguration;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * DS for custom CDI properties. The active instance can either be retrieved through DS or through a static getter method.
@@ -45,8 +46,9 @@ public class CDI12ContainerConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Activating " + this);
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-            //CWOWB1015W: The configuration element type cdi12 has been superceded by the element type cdi.
+        //TOOD the ProductInfo.getBetaEdition() check should be removed before GA
+        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled() && ProductInfo.getBetaEdition()) {
+            //CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.
             Tr.warning(tc, "cdi12.element.type.superceded.CWOWB1015W");
         }
         this.updateConfiguration(properties);
