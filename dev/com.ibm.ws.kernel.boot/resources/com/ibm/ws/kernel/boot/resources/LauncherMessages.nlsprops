@@ -712,9 +712,9 @@ error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
-error.set.securitymanager.jdk18=CWWKE0955E: The property "websphere.java.security" was set in the bootstrap.properties file while using Java "{0}". This property enables the Java Security Manager and is no longer valid when using Java 18 or later.
-error.set.securitymanager.jdk18.explanation= As part of the deprecation of the Java Security Manager, as specified by JEP 411, Liberty no longer supports enabling the Java Security Manager when using Java 18 or later.
-error.set.securitymanager.jdk18.useraction=Remove the property "websphere.java.security" from bootstrap.properties or use a Java version earlier than Java 18.
+error.set.securitymanager.jdk18=CWWKE0955E: The websphere.java.security property was set in the bootstrap.properties file but the Java version is {0}.  This property enables the Java Security Manager and is not valid with Java 18 or later.
+error.set.securitymanager.jdk18.explanation= As part of the deprecation of the Java Security Manager, as specified by JEP 411, Liberty does not support the Java Security Manager with Java 18 or later.
+error.set.securitymanager.jdk18.useraction=Remove the websphere.java.security property from the bootstrap.properties file or use a Java version that is earlier than Java 18.
 
 error.cannotset.securitymanager.jdk18=CWWKE0956E: Failed to set the Java Security Manager due to exception: {0}.  This occurs if the server is using Java 18 or later, and the Java system property "java.security.manager" was not set to "allow".
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager could not be enabled because the system is using Java 18, which by default disallows use of a Java Security Manager.
