@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javax.management.NotificationFilter;
 import javax.management.ObjectName;
@@ -374,13 +373,12 @@ public class AuditPE implements ProbeExtension {
 
 	private void auditEventAuthnDelegation01(Object[] methodParams) {
 		Object[] varargs = (Object[]) methodParams[1];
+		HashMap<String, Object> extraAuditData = (HashMap) varargs[0];
 		String auditOutcome = (String) varargs[1];
+		Integer statusCode = (Integer) varargs[2];
 		if (auditServiceRef.getService() != null && auditServiceRef.getService()
 				.isAuditRequired(AuditConstants.SECURITY_AUTHN_DELEGATION, auditOutcome)) {
-			Supplier<HashMap<String, Object>> extraAuditSupplier = (Supplier<HashMap<String, Object>>) varargs[0];
-			HashMap<String, Object> extraAuditData = extraAuditSupplier.get();
 			if (extraAuditData.get("HTTP_SERVLET_REQUEST") != null) {
-				Integer statusCode = (Integer) varargs[2];
 				AuthenticationDelegationEvent av = new AuthenticationDelegationEvent(extraAuditData, statusCode);
 				auditServiceRef.getService().sendEvent(av);
 			}

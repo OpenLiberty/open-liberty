@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
@@ -565,68 +564,62 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private void performDelegationAudit(Subject initialSubject, String roleName, Subject delegationSubject, boolean success, AuthenticationService authService) {
         final Object httpRequest = auditManager == null ? null : auditManager.getHttpServletRequest();
 
-        // audit will do nothing if there is no HttpRequest associated with this operation.
-        if (httpRequest == null) {
+        String outcome = success ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
+
+        // if HttpRequest is null, the audit does nothing, so don't call it if null
+        if (httpRequest == null || !Audit.isAuditRequired(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, outcome)) {
             return;
         }
 
-        String outcome = success ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
+        HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+        extraAuditData.put("HTTP_SERVLET_REQUEST", httpRequest);
+        extraAuditData.put("REASON_TYPE", "EJB");
 
-        Supplier<HashMap<String, Object>> extraAuditSupplier = new Supplier<HashMap<String, Object>>() {
-
-            @Override
-            public HashMap<String, Object> get() {
-                HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
-                extraAuditData.put("HTTP_SERVLET_REQUEST", httpRequest);
-                extraAuditData.put("REASON_TYPE", "EJB");
-
-                ArrayList<String> delUsers = new ArrayList<String>();
-                Set<WSCredential> publicCredentials = (initialSubject == null ? null : initialSubject.getPublicCredentials(WSCredential.class));
-                Iterator<WSCredential> it = null;
-                if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
-                    WSCredential credential = it.next();
-                    try {
-                        extraAuditData.put("REALM", credential.getRealmName());
-                    } catch (CredentialExpiredException e) {
-                    } catch (CredentialDestroyedException e) {
-                    }
-                    try {
-                        delUsers.add("user:" + credential.getRealmSecurityName());
-                    } catch (CredentialExpiredException e1) {
-                        // TODO Auto-generated catch block
-                    } catch (CredentialDestroyedException e1) {
-                        // TODO Auto-generated catch block
-                    }
-                }
-
-                if (roleName == null) {
-                    delUsers.add("EJB_RUNAS_SYSTEM");
-                } else {
-                    extraAuditData.put("RUN_AS_ROLE", roleName);
-                    if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
-                            }
-                        }
-                    } else {
-                        String invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                    }
-                }
-
-                extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-                return extraAuditData;
+        ArrayList<String> delUsers = new ArrayList<String>();
+        Set<WSCredential> publicCredentials = (initialSubject == null ? null : initialSubject.getPublicCredentials(WSCredential.class));
+        Iterator<WSCredential> it = null;
+        if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
+            WSCredential credential = it.next();
+            try {
+                extraAuditData.put("REALM", credential.getRealmName());
+            } catch (CredentialExpiredException e) {
+            } catch (CredentialDestroyedException e) {
             }
-        };
-        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditSupplier, outcome, success ? Integer.valueOf(200) : Integer.valueOf(401));
+            try {
+                delUsers.add("user:" + credential.getRealmSecurityName());
+            } catch (CredentialExpiredException e1) {
+                // TODO Auto-generated catch block
+            } catch (CredentialDestroyedException e1) {
+                // TODO Auto-generated catch block
+            }
+        }
+
+        if (roleName == null) {
+            delUsers.add("EJB_RUNAS_SYSTEM");
+        } else {
+            extraAuditData.put("RUN_AS_ROLE", roleName);
+            if (delegationSubject != null) {
+                String buff = delegationSubject.toString();
+                if (buff != null) {
+                    int a = buff.indexOf("accessId");
+                    if (a != -1) {
+                        buff = buff.substring(a + 9);
+                        a = buff.indexOf(",");
+                        if (a != -1) {
+                            buff = buff.substring(0, a);
+                            delUsers.add(buff);
+                        }
+                    }
+                }
+            } else {
+                String invalidUser = authService.getInvalidDelegationUser();
+                delUsers.add(invalidUser);
+            }
+        }
+
+        extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
+
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, outcome, success ? Integer.valueOf(200) : Integer.valueOf(401));
     }
 
     /**
