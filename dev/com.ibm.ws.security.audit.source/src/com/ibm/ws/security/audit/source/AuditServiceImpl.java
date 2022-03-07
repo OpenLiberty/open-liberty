@@ -380,26 +380,11 @@ public class AuditServiceImpl implements AuditService, Source {
                     }
                     return true;
                 } else {
-                    boolean foundMatchingEvent = false;
-                    boolean foundAnOutcome = false;
-                    boolean foundMatchingEventAndOutcome = false;
-                    for (Entry<String, Object> entry : handlerEvents.entrySet()) {
-                        if (entry.getKey().equals(AuditConstants.EVENT_NAME) && entry.getValue().equals(eventType)) {
-                            foundMatchingEvent = true;
-                        } else {
-                            if (entry.getKey().equals(AuditConstants.OUTCOME)) {
-                                foundAnOutcome = true;
-                                if (entry.getValue().toString().equalsIgnoreCase(outcome)) {
-                                    if (foundMatchingEvent) {
-                                        foundMatchingEventAndOutcome = true;
-                                    }
-                                }
-                            }
+                    if (eventType.equals(handlerEvents.get(AuditConstants.EVENT_NAME))) {
+                        Object eventOutcome = handlerEvents.get(AuditConstants.OUTCOME);
+                        if (eventOutcome == null || eventOutcome.toString().equalsIgnoreCase(outcome)) {
+                            return true;
                         }
-
-                    }
-                    if (foundMatchingEventAndOutcome || (foundMatchingEvent && !foundAnOutcome)) {
-                        return true;
                     }
                 }
             }
