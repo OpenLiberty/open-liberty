@@ -81,7 +81,6 @@ public class ImplicitBeanArchiveTest extends FATServletClient {
 
         WebArchive implicitBeanArchive = ShrinkWrap.create(WebArchive.class, IMPLICIT_BEAN_ARCHIVE_APP_NAME + ".war");
         implicitBeanArchive.addClass(ImplicitBeanArchiveServlet.class);
-        //CDIArchiveHelper.addBeansXML(implicitBeanArchive, ImplicitBeanArchiveServlet.class.getPackage(), "all-beans.xml");
         implicitBeanArchive.addAsLibrary(archiveWithBeansXML);
         implicitBeanArchive.addAsLibrary(archiveWithImplicitBeans);
         implicitBeanArchive.addAsLibrary(archiveWithNoImplicitBeans);

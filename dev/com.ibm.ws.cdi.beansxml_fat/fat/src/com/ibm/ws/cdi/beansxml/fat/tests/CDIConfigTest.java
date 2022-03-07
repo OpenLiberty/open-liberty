@@ -98,7 +98,7 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The attribute emptyBeansXMLExplicitArchive of the element type cdi is only supported on CDI 4.0 or newer. This attribute will be ignored.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
             assertTrue("Message CWOWB1016W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1016W was found more than once", 1, warningMessages.size());
         } finally {
