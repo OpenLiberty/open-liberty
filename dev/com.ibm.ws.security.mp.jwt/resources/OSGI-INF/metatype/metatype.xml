@@ -63,7 +63,19 @@
             <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
             <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
         </AD>
+
+        <!-- Ensures all MpConfigProxyServices are available before finishing loading the config -->
+        <AD id="mpConfigProxy" name="internal" description="internal use only" ibm:type="pid" ibm:reference="com.ibm.ws.security.mp.jwt.internal.MpConfigProxy"
+            required="true" type="String" cardinality="100" default="*" ibm:final="true"/>
+        <AD id="MpConfigProxy.cardinality.minimum" name="internal" description="internal use only" type="String" required="true" default="${count(mpConfigProxy)}"/>
     </OCD>
 
-               
+    <OCD description="internal use only" name="internal" id="com.ibm.ws.security.mp.jwt.internal.MpConfigProxy">
+         <AD id="type" description="internal use only" name="internal" type="String" required="true"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.mp.jwt.internal.MpConfigProxy">
+        <Object ocdref="com.ibm.ws.security.mp.jwt.internal.MpConfigProxy"/>
+    </Designate>
+
 </metatype:MetaData>
