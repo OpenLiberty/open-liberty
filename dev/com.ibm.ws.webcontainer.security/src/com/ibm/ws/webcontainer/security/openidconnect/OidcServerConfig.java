@@ -136,6 +136,4 @@ public interface OidcServerConfig {
 
     String getKeyAliasName();
 
-    boolean isBackchannelLogoutSupported();
-
 }
