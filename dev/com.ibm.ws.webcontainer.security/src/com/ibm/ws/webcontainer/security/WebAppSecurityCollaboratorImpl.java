@@ -16,9 +16,11 @@ import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
@@ -156,7 +158,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected HTTPSRedirectHandler httpsRedirectHandler;
 
     protected AuditManager auditManager;
-    public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
     protected WebAuthenticatorProxy authenticatorProxy;
     protected WebProviderAuthenticatorProxy providerAuthenticatorProxy;
@@ -617,12 +618,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            if (req != null) {
-                extraAuditData.put("HTTP_SERVLET_REQUEST", req);
-            }
             //auditManager.setHttpServletRequest(req);
 
-            performDelegation(servletName);
+            performDelegation(req, servletName);
 
             syncToOSThread(webSecurityContext);
         }
@@ -881,105 +879,100 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         return authResult;
     }
 
-    private void performDelegation(String servletName) {
+    private void performDelegationAudit(HttpServletRequest req, Subject callerSubject, String roleName, Subject delegationSubject, boolean success,
+                                        AuthenticationService authService) {
+        String outcome = success ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
 
-        Subject delegationSubject = subjectManager.getCallerSubject();
-        if (delegationSubject != null && delegationSubject.getPublicCredentials(WSCredential.class) != null
-            && delegationSubject.getPublicCredentials(WSCredential.class).iterator() != null &&
-            delegationSubject.getPublicCredentials(WSCredential.class).iterator().hasNext()) {
-            WSCredential credential = delegationSubject.getPublicCredentials(WSCredential.class).iterator().next();
-            try {
-                extraAuditData.put("REALM", credential.getRealmName());
-            } catch (CredentialExpiredException e) {
-            } catch (CredentialDestroyedException e) {
-            }
-        }
-        ArrayList<String> delUsers = new ArrayList<String>();
-        if (delegationSubject != null) {
-            String buff = getSubjectToString(delegationSubject);
-            if (buff != null) {
-                int a = buff.indexOf("accessId");
-                if (a != -1) {
-                    buff = buff.substring(a + 9);
-                    a = buff.indexOf(",");
-                    if (a != -1) {
-                        buff = buff.substring(0, a);
-                        delUsers.add(buff);
+        Supplier<HashMap<String, Object>> extraAuditSupplier = new Supplier<HashMap<String, Object>>() {
+
+            @Override
+            public HashMap<String, Object> get() {
+                HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+
+                if (req != null) {
+                    extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+                }
+
+                Set<WSCredential> publicCredentials = (callerSubject == null ? null : callerSubject.getPublicCredentials(WSCredential.class));
+                Iterator<WSCredential> it = null;
+                if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
+                    WSCredential credential = it.next();
+                    try {
+                        extraAuditData.put("REALM", credential.getRealmName());
+                    } catch (CredentialExpiredException e) {
+                    } catch (CredentialDestroyedException e) {
                     }
                 }
 
-            }
-        }
-        SecurityMetadata secMetadata = getSecurityMetadata();
-        if (secMetadata != null) {
-            String roleName = secMetadata.getRunAsRoleForServlet(servletName);
-            String invalidUser = "";
-            if (roleName != null) {
+                ArrayList<String> delUsers = new ArrayList<String>();
+                if (callerSubject != null) {
+                    String buff = getSubjectToString(callerSubject);
+                    if (buff != null) {
+                        int a = buff.indexOf("accessId");
+                        if (a != -1) {
+                            buff = buff.substring(a + 9);
+                            a = buff.indexOf(",");
+                            if (a != -1) {
+                                buff = buff.substring(0, a);
+                                delUsers.add(buff);
+                            }
+                        }
+
+                    }
+                }
+
                 extraAuditData.put("RUN_AS_ROLE", roleName);
-
-                try {
-                    SecurityService securityService = securityServiceRef.getService();
-                    AuthenticationService authService = securityService.getAuthenticationService();
-                    delegationSubject = authService.delegate(roleName, getApplicationName());
-                    if (delegationSubject != null) {
-                        String buff = getSubjectToString(delegationSubject);
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
+                if (delegationSubject == null) {
+                    String invalidUser = authService.getInvalidDelegationUser();
+                    delUsers.add(invalidUser);
+                } else if (delegationSubject != callerSubject) {
+                    String buff = getSubjectToString(delegationSubject);
+                    if (buff != null) {
+                        int a = buff.indexOf("accessId");
+                        if (a != -1) {
+                            buff = buff.substring(a + 9);
+                            a = buff.indexOf(",");
                             if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
+                                buff = buff.substring(0, a);
+                                delUsers.add(buff);
                             }
-
                         }
-                    } else {
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                    }
 
-                    extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-                    //auditManager.setDelegatedUsers(delUsers);
-                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.SUCCESS, Integer.valueOf(200));
-                    if (delegationSubject != null) {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.SUCCESS, Integer.valueOf(200));
-                    } else {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
-
-                    }
-
-                } catch (IllegalArgumentException e) {
-                    if (delegationSubject != null) {
-                        String buff = getSubjectToString(delegationSubject);
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
-                            }
-
-                        }
-                    } else {
-                        SecurityService securityService = securityServiceRef.getService();
-                        AuthenticationService authService = securityService.getAuthenticationService();
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                        extraAuditData.put(DELEGATION_USERS_LIST, delUsers);
-                    }
-
-                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.FAILURE, Integer.valueOf(401));
-                    Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception performing delegation.", e);
                     }
                 }
+
+                extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
+                return extraAuditData;
+            }
+
+        };
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditSupplier, outcome, success ? Integer.valueOf(200) : Integer.valueOf(401));
+    }
+
+    private void performDelegation(HttpServletRequest req, String servletName) {
+
+        Subject callerSubject = subjectManager.getCallerSubject();
+
+        SecurityMetadata secMetadata = getSecurityMetadata();
+        String roleName = secMetadata == null ? null : secMetadata.getRunAsRoleForServlet(servletName);
+
+        Subject delegationSubject = callerSubject;
+        if (roleName != null) {
+            SecurityService securityService = securityServiceRef.getService();
+            AuthenticationService authService = securityService.getAuthenticationService();
+            boolean success;
+            try {
+                delegationSubject = authService.delegate(roleName, getApplicationName());
+                success = delegationSubject != null;
+            } catch (IllegalArgumentException e) {
+                success = false;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception performing delegation.", e);
+                }
+            }
+            // if HttpRequest is null, the audit does nothing, so don't call it if null
+            if (req != null) {
+                performDelegationAudit(req, callerSubject, roleName, delegationSubject, success, authService);
             }
         }
         if (delegationSubject != null) {
