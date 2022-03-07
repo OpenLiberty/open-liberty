@@ -267,8 +267,6 @@ public class DiscoveryTest {
                 will(returnValue(BACKING_IDP_PREFIX_URI));
                 one(provider).getAuthProxyEndpointUrl();
                 will(returnValue(PROXY_URI));
-                allowing(provider).isBackchannelLogoutSupported();
-                will(returnValue(false));
             }
         });
 
