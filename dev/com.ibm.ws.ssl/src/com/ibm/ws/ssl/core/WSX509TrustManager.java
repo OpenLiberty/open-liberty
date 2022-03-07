@@ -840,7 +840,8 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
 
         Exception excpt = configTrustEx;
         if (excpt.getClass().toString().startsWith("class com.ibm.jsse2")) {
-            excpt = (Exception) excpt.getCause();
+            if (excpt.getCause() != null)
+                excpt = (Exception) excpt.getCause();
         }
 
         FFDCFilter.processException(excpt, getClass().getName(), "checkClientTrusted", this, new Object[] { chain, authType });
@@ -899,7 +900,8 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         // IBM JDK will throw the exception in obfuscated code, get the cause
         Exception e = excpt;
         if (e.getClass().toString().startsWith("class com.ibm.jsse2")) {
-            e = (Exception) excpt.getCause();
+            if (excpt.getCause() != null)
+                e = (Exception) excpt.getCause();
         }
 
         // This the server print a message and rethrow the exception
