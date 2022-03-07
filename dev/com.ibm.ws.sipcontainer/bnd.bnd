@@ -102,6 +102,7 @@ instrument.disabled: true
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

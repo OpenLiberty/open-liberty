@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.sip.container.SipContainer;
 import com.ibm.ws.sip.container.appqueue.MessageDispatchingHandler;
 import com.ibm.ws.sip.container.pmi.PerformanceMgr;
@@ -102,7 +103,7 @@ public class SipContainerComponent {
 
 	private static final String USE_NETTY = "useNettyTransport";
 
-	private static boolean useNetty = true;
+	private static boolean useNetty = false;
 
 	/**SIP Container OSGi bundle context*/
 	public static ComponentContext getContext() {
@@ -128,9 +129,11 @@ public class SipContainerComponent {
 			if (c_logger.isErrorEnabled())
 				c_logger.error("error.initialize.sip.container");
 		}
-        useNetty = MetatypeUtils.parseBoolean(
-                "sipContainer", USE_NETTY,
-                properties.get(USE_NETTY), true);
+		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
+		if (c_logger.isTraceDebugEnabled() && useNetty) {
+			c_logger.traceDebug("SipContainerComponent activate: useNetty=true");
+		}
 
 		genericEndpointRef.activate(context);
 		sipMessageFactoryRef.activate(context);
@@ -174,9 +177,11 @@ public class SipContainerComponent {
 		if (c_logger.isTraceDebugEnabled())
 			c_logger.traceDebug("SipContainerComponent modified", properties);
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
-        useNetty = MetatypeUtils.parseBoolean(
-                "sipContainer", USE_NETTY,
-                properties.get(USE_NETTY), true);
+		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
+		if (c_logger.isTraceDebugEnabled() && useNetty) {
+			c_logger.traceDebug("SipContainerComponent modified: useNetty=true");
+		}
 	}
 	
 	/**
