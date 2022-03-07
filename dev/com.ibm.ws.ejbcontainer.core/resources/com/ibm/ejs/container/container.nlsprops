@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1560,6 +1560,11 @@ NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Correct the ibm-ejb-jar-bnd.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: The {2} Java Naming and Directory Interface (JNDI) binding name for the {0} bean or local home interface in the {1} module contains a namespace that is not valid.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=The local binding name can only contain one namespace and it must start with ejblocal:. Namespaces are denoted by the colon (:) character. The entire string before and including the colon (:) character is considered a namespace.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace that is not valid.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Could not create the remote enterprise bean binding because the ORB service is unavailable
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Check the log file for exceptions related to the ORB service initializing.
 
 #-------------------------------------------------------------------------------
 #
