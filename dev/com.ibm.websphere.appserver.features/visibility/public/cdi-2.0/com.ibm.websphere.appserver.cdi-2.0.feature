@@ -50,7 +50,7 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
   com.ibm.websphere.appserver.appmanager-1.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3, \
   com.ibm.websphere.appserver.injection-1.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.javax.persistence-2.2, \
   com.ibm.websphere.appserver.javaeePlatform-7.0
 -bundles=com.ibm.ws.org.jboss.weld3, \

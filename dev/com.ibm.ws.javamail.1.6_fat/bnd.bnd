@@ -35,5 +35,5 @@ tested.features: javaMail-1.5, \
   io.openliberty.org.apache.commons.logging;version=latest, \
   com.ibm.websphere.javaee.ejb.3.2;version=latest, \
   com.icegreen:greenmail;version=1.5.10, \
-  org.slf4j:slf4j-api;version=1.7.7, \
-  org.slf4j:slf4j-jdk14;version=1.7.7
+  com.ibm.ws.org.slf4j.api;version=latest, \
+  com.ibm.ws.org.slf4j.jdk14;version=latest

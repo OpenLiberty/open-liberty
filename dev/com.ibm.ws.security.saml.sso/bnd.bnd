@@ -129,7 +129,7 @@ Service-Component: \
 	com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest,\
 	com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest,\
 	com.ibm.ws.org.opensaml.openws.1.5.6;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
 	com.ibm.websphere.appserver.spi.saml20;version=latest, \
@@ -159,8 +159,8 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.org.apache.commons.io;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
-    org.slf4j:slf4j-api;version=1.7.7, \
-    org.slf4j:slf4j-jdk14;version=1.7.7, \
+    com.ibm.ws.org.slf4j.api;version=latest, \
+    com.ibm.ws.org.slf4j.jdk14;version=latest, \
     com.ibm.ws.org.apache.commons.fileupload;version=latest, \
     io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.security.common;version=latest, \

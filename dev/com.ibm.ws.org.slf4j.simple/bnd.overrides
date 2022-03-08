@@ -1,0 +1,6 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.slf4j.simple
+
+Fragment-Host: com.ibm.ws.org.slf4j.api

@@ -35,7 +35,7 @@ dependencies {
       project(':io.openliberty.org.apache.commons.codec'),
       'xml-apis:xml-apis:1.4.01',
       project(':io.openliberty.org.apache.xercesImpl'),
-      'org.slf4j:slf4j-api:1.7.7'
+      project(':com.ibm.ws.org.slf4j.api')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

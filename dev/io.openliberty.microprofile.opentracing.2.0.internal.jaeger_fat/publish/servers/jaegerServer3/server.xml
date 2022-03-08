@@ -11,7 +11,7 @@
     </application>
 
     <javaPermission
-        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar"
+        codebase="${server.config.dir}/jaegerLib/com.ibm.ws.org.slf4j.api.jar"
         className="java.security.AllPermission" />
 
     <javaPermission

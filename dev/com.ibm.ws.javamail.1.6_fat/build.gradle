@@ -12,8 +12,8 @@
 /* Define greenmail dependencies */
 dependencies {
   requiredLibs 'com.icegreen:greenmail:1.5.10',
-               'org.slf4j:slf4j-api:1.7.7',
-               'org.slf4j:slf4j-jdk14:1.7.7',
+               project(':com.ibm.ws.org.slf4j.api'),
+               project(':com.ibm.ws.org.slf4j.jdk14'),
                'com.sun.mail:javax.mail:1.6.2',
                // Deps needed for when running on Java 9 (EE-type APIs were removed from JDK)
                'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+',
