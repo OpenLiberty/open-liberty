@@ -14,9 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
@@ -61,6 +65,29 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     public static TestServer testExternalOPServer = null;
     protected static Map<String, String> externalProps = new HashMap<String, String>();
     protected static Map<String, String> intermedProps = new HashMap<String, String>();
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
+
+    public static class skipIfExternalLDAP extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+
+            try {
+                String ldapName = testExternalOPServer.getBootstrapProperty("ldap.server.4.name");
+                Log.info(thisClass, "skipIfExternalLDAP", ldapName);
+                if (!ldapName.equals("localhost")) {
+                    testSkipped();
+                    return true;
+                }
+                return false;
+            } catch (Exception e) {
+                testSkipped();
+                return true;
+            }
+        }
+
+    }
 
     private void setParmValues(String user) {
         // Intermediate OP server properties
@@ -631,6 +658,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalLDAP.class)
     @Test
     public void ThirdPartyIDTokenClaims_1TestClaim_3rdPartyPropagates() throws Exception {
 
@@ -661,6 +689,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalLDAP.class)
     @Test
     public void ThirdPartyIDTokenClaims_2TestClaims_3rdPartyPropagates() throws Exception {
 
@@ -692,6 +721,7 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalLDAP.class)
     @Test
     public void ThirdPartyIDTokenClaims_ConflictingTestClaims_3rdPartyPropagates() throws Exception {
 
