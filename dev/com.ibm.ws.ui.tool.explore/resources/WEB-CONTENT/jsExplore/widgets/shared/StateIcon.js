@@ -31,7 +31,7 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
    * These images should probably be moved to css.
    */
   var htmlTemplate = '<img src="images/status{0}{1}{2}.{5}" height="{3}" width="{3}" style="vertical-align:middle;" alt="{4}" title="{4}">';
-  var labelHtmlTemplate = '<span class="{0}">{1}</span>';
+  var labelHtmlTemplate = '<span class="{0}" id="{2}">{1}</span>';
   var actionHtmlTemplate = '<img src="imagesShared/card-action{0}.png" height="{2}" width="{2}" style="vertical-align:top;" alt="{3}" title="{1}">';
   var labelCardHtmlTemplate = '<span title="{0}">{0}</span>';
 
@@ -190,25 +190,41 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
     },
 
     __getStartedIcon: function () {
-      return imgUtils.getSVG('status-running', null, i18n.RUNNING, true);
+      if (this.showLabel) {
+        return imgUtils.getSVGWithAriaLabelledBy('status-running', '', this.id + "-label");
+      } else {
+        return imgUtils.getSVG('status-running', null, i18n.RUNNING, true);
+      }
     },
 
     __getStartingIcon: function() {
       var extension = 'gif';
       if (this.size === '14') {
-        return imgUtils.getSVG('status-starting', null, i18n.STARTING, true);
+        if (this.showLabel) {
+          return imgUtils.getSVGWithAriaLabelledBy('status-starting', '', this.id + "-label");
+        } else {
+          return imgUtils.getSVG('status-starting', null, i18n.STARTING, true);
+        }
       }
       return lang.replace(htmlTemplate, [this.platformIconSeparator, 'starting', this.platformString, this.size, i18n.STARTING, extension]);
     },
 
     __getStoppedIcon: function() {
+      if (this.showLabel) {
+        return imgUtils.getSVGWithAriaLabelledBy('status-stopped', '', this.id + "-label");
+      } else {
         return imgUtils.getSVG('status-stopped', null, i18n.STOPPED, true);
+      }
     },
 
     __getStoppingIcon: function() {
       var extension = 'gif';
       if (this.size === '14') {
-        return imgUtils.getSVG('status-stopping', null, i18n.STOPPING, true);
+        if (this.showLabel) {
+          return imgUtils.getSVGWithAriaLabelledBy('status-stopping', '', this.id + "-label");
+        } else {
+          return imgUtils.getSVG('status-stopping', null, i18n.STOPPING, true);
+        }
       }
       return lang.replace(htmlTemplate, [this.platformIconSeparator, 'stopping', this.platformString, this.size, i18n.STOPPING, extension]);
     },    
@@ -219,13 +235,21 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
       if (util.getResourceDisplayedState(this.resource) == "STARTED") {
         return this.__getStartedIcon();
       } else {
-        return imgUtils.getSVG('status-some-running', null, i18n.PARTIALLY_RUNNING, true);
+        if (this.showLabel) {
+          return imgUtils.getSVGWithAriaLabelledBy('status-some-running', '', this.id + "-label");
+        } else {
+          return imgUtils.getSVG('status-some-running', null, i18n.PARTIALLY_RUNNING, true);
+        }
       }
     },
 
     __getUnknownIcon: function() {
 //      return lang.replace(htmlTemplate, [this.platformIconSeparator, 'unknown', this.platformString, this.size, i18n.UNKNOWN, 'png']);
-      return imgUtils.getSVGSmall('unknown');
+      if (this.showLabel) {
+        return imgUtils.getSVGWithAriaLabelledBy('unknown', 'small', this.id + "-label");
+      } else {
+        return imgUtils.getSVGSmall('unknown', null, i18n.UNKNOWN, true);
+      }
     },
 
     __getActionIcon: function() {
@@ -237,7 +261,7 @@ define([ 'dojo/_base/declare', 'dojo/dom', 'dojo/dom-construct', 'dojo/on', 'doj
     },
 
     __getLabel: function() {
-      return lang.replace(labelHtmlTemplate, [this.labelClass, this.label]);
+      return lang.replace(labelHtmlTemplate, [this.labelClass, this.label, this.id + "-label"]);
     },
 
     __getCardLabel: function() {
