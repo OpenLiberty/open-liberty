@@ -1309,8 +1309,18 @@ public class RecoveryManager implements Runnable {
             _recoveryInProgress.post();
         }
 
+        // If the home server is shutting down and we are recovering a peer, then don't drive initialRecoveryComplete()
+        boolean bypass = false;
+        if (!_failureScopeController.localFailureScope()) {
+            if (_shutdownInProgress) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Shutdown in progress bypass initialRecoveryComplete processing");
+                bypass = true;
+            }
+        }
+
         // Check for null currently required as z/OS creates this object with a null agent reference.
-        if (_agent != null) {
+        if (!bypass && _agent != null) {
             try {
                 RecoveryDirectorFactory.recoveryDirector().initialRecoveryComplete(_agent, _failureScopeController.failureScope());
             } catch (Exception exc) {
