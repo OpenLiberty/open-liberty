@@ -45,7 +45,7 @@ Each process step has a number of tasks which must be completed or must be marke
 
 Unless otherwise indicated, the tasks are the responsibility of the Feature Owner or a Delegate of the Feature Owner.
 
-If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect) or [OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager).
+If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
 **Important: Labels are used to trigger particular steps and must be added as indicated.** 
 
