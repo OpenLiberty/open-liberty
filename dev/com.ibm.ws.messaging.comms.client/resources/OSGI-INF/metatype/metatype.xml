@@ -41,5 +41,12 @@
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">
       <Object ocdref="com.ibm.ws.messaging.comms.wasJmsOutbound" /> 
    </Designate>
+   
+   <!-- ======================= Singleton declarations ======================= -->
+   <!-- ============ (used by SingletonsReady and Singleton Monitor) ============ -->
+   <!-- === N.B. ensure defaultInstances.xml contains matching declarations === -->
 
+   <OCD id="com.ibm.ws.messaging.comms.client" description="internal use only" name="internal" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton"/>
+   <Designate pid="com.ibm.ws.messaging.comms.client"><Object ocdref="com.ibm.ws.messaging.comms.client" /></Designate>
+   
 </metatype:MetaData>

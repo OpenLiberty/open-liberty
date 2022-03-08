@@ -44,19 +44,7 @@ com.ibm.ws.sib.jfapchannel,\
 com.ibm.ws.sib.jfapchannel.buffer,\
 com.ibm.ws.sib.jfapchannel.richclient.buffer.impl
 
-
 Service-Component: \
-   com.ibm.ws.messaging.comms.client;\
-     implementation:=com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;\
-     provide:=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface; \
-     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle;\
-     executorService=java.util.concurrent.ExecutorService;\
-     alarmManager=com.ibm.ejs.util.am.AlarmManager; \
-     commonServiceFacade=com.ibm.ws.sib.common.service.CommonServiceFacade;\
-     optional:='commonServiceFacade';\
-     dynamic:='commonServiceFacade';\
-     configuration-policy:=ignore;\
-     immediate:=true,\
    com.ibm.ws.messaging.comms.wasJmsOutbound;\
      implementation:=com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;\
      commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
@@ -66,6 +54,8 @@ Service-Component: \
      optional:='sslOptions';\
      greedy:='tcpOptions,sslOptions';\
      properties:='service.vendor=IBM'
+     
+-dsannotations: com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade
 
 instrument.disabled: true
 

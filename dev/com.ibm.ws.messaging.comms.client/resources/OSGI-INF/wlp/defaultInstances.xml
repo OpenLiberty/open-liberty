@@ -13,4 +13,5 @@
 
      <wasJmsOutbound id="BootstrapSecureMessaging"
      useSSL="true" />
+     <com.ibm.ws.messaging.comms.client />
 </server>
