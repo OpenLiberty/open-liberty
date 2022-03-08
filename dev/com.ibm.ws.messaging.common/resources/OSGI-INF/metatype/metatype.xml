@@ -47,7 +47,7 @@
 
     <!-- ======================= Singleton declarations ======================= -->
     <!-- ============ (used by SingletonsReady and Singleton Monitor) ============ -->
-    <!-- === N.B. ensure defaultInstance.xml contains matching declarations === -->
+    <!-- === N.B. ensure defaultInstances.xml contains matching declarations === -->
 
     <OCD id="com.ibm.ws.sib.common.service.CommonServiceFacade"  description="internal use only" name="internal" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton"/>
     <Designate pid="com.ibm.ws.sib.common.service.CommonServiceFacade"><Object ocdref="com.ibm.ws.sib.common.service.CommonServiceFacade" /></Designate>
