@@ -96,5 +96,6 @@ jakartaeeMe: true
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.webcontainer.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.ws.resource;version=latest
+    com.ibm.ws.resource;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
 

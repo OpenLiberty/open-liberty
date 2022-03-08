@@ -57,6 +57,8 @@ import com.ibm.ws.webcontainer31.upgrade.H2UpgradeHandlerWrapper;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 
 /**
  */
@@ -86,8 +88,9 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
                   ReferenceContext referenceContext,
                   MetaDataService metaDataService,
                   J2EENameFactory j2eeNameFactory,
-                  ManagedObjectService managedObjectService) {
-        super(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
+                  ManagedObjectService managedObjectService,
+                  CheckpointPhase checkpointPhase) {
+        super(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService, checkpointPhase);
     }
 
     public <T extends HttpUpgradeHandler> T createHttpUpgradeHandler(Class<T> classToCreate) throws ServletException {

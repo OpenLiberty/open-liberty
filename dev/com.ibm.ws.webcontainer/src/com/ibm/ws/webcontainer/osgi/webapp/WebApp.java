@@ -67,7 +67,6 @@ import com.ibm.ws.webcontainer.osgi.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.osgi.extension.InvokerExtensionProcessor;
 import com.ibm.ws.webcontainer.osgi.filter.WebAppFilterManagerImpl;
 import com.ibm.ws.webcontainer.osgi.managed.WCManagedObjectImpl;
-import com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean;
 import com.ibm.ws.webcontainer.osgi.metadata.WebComponentMetaDataImpl;
 import com.ibm.ws.webcontainer.servlet.DirectoryBrowsingServlet;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
@@ -99,6 +98,8 @@ import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
  
 /**
  */
@@ -133,9 +134,10 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                 ReferenceContext referenceContext,
                 MetaDataService metaDataService,
                 J2EENameFactory j2eeNameFactory,
-                ManagedObjectService managedObjectService)
+                ManagedObjectService managedObjectService,
+                CheckpointPhase checkpointPhase)
   {
-    super(webAppConfig, null);
+    super(webAppConfig, null, checkpointPhase);
     this.webAppConfig = webAppConfig;
     this.moduleLoader = moduleLoader;
     this.referenceContext = referenceContext;
