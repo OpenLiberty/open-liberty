@@ -320,9 +320,9 @@ public class EJBRemoteRuntimeImpl implements EJBRemoteRuntime, RemoteObjectRepla
     }
 
     /**
-     * Checks if we are able to successfully get the ORB service or not
+     * Checks if we are able to successfully obtain the ORB and CORBA name server.
      *
-     * @return true if the orb service is available
+     * @return true if the ORB and CORBA name server are available
      */
     @Override
     @FFDCIgnore(IllegalStateException.class)

@@ -1562,9 +1562,9 @@ NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=The local binding nam
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Correct the ibm-ejb-jar-bnd.xml bindings file to give this bean a valid JNDI binding name by removing the namespace that is not valid.
 
 #-------------------------------------------------------------------------------
-UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
-UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Could not create the remote enterprise bean binding because the ORB service is unavailable
-UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Check the log file for exceptions related to the ORB service initializing.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The CORBA name server is not available.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=The remote enterprise bean binding cannot be created because the CORBA name server is not available.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Check the log file for exceptions that are related to the ORB or CORBA name server initialization.
 
 #-------------------------------------------------------------------------------
 #

@@ -92,9 +92,9 @@ public interface EJBRemoteRuntime {
     void deactivateAsyncResult(byte[] oid);
 
     /**
-     * Checks if we are able to successfully get the ORB service or not
+     * Checks if we are able to successfully obtain the ORB and CORBA name server.
      *
-     * @return true if the orb service is available
+     * @return true if the ORB and CORBA name server are available
      */
     public boolean isRemoteEjbAdapterAvailable();
 }
