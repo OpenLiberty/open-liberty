@@ -1,0 +1,380 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectClient
+		id="clientBackChannelLogoutNotSupported"
+		scope="openid profile"
+		clientId="clientBackChannelLogoutNotSupported"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="false"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientBackChannelLogoutNotSupportedRequiresSid"
+		scope="openid profile"
+		clientId="clientBackChannelLogoutNotSupportedRequiresSid"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="false"
+		backchannelLogoutSessionRequired="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientRequiresSid"
+		scope="openid profile"
+		clientId="clientRequiresSid"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		backchannelLogoutSessionRequired="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignHS256"
+		scope="openid profile"
+		clientId="clientSignHS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignHS384"
+		scope="openid profile"
+		clientId="clientSignHS384"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS384"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignHS512"
+		scope="openid profile"
+		clientId="clientSignHS512"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="HS512"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignRS256"
+		scope="openid profile"
+		clientId="clientSignRS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignRS384"
+		scope="openid profile"
+		clientId="clientSignRS384"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS384"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignRS512"
+		scope="openid profile"
+		clientId="clientSignRS512"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS512"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignES256"
+		scope="openid profile"
+		clientId="clientSignES256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES256"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignES384"
+		scope="openid profile"
+		clientId="clientSignES384"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES384"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignES512"
+		scope="openid profile"
+		clientId="clientSignES512"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES512"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptRS256"
+		scope="openid profile"
+		clientId="clientSignEncryptRS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptRS384"
+		scope="openid profile"
+		clientId="clientSignEncryptRS384"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS384"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="rs384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptRS512"
+		scope="openid profile"
+		clientId="clientSignEncryptRS512"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS512"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="rs512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptES256"
+		scope="openid profile"
+		clientId="clientSignEncryptES256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES256"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="ES256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptES384"
+		scope="openid profile"
+		clientId="clientSignEncryptES384"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES384"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="ES384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="clientSignEncryptES512"
+		scope="openid profile"
+		clientId="clientSignEncryptES512"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="ES512"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
+		userInfoEndpointEnabled="true"
+		issuerIdentifier="testIssuer"
+		backchannelLogoutSupported="true"
+		keyManagementKeyAlias="ES512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+</server>
