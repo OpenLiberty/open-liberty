@@ -46,7 +46,7 @@
 		id="myTrustStore"
 		password="Liberty"
 		type="jks"
-		location="${server.config.dir}/commonTrustStore.jks.jks" />
+		location="${server.config.dir}/commonTrustStore.jks" />
 
 	<authorization-roles id="com.ibm.ws.security.oidc10">
 		<security-role name="authenticated">
