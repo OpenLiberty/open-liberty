@@ -15,14 +15,16 @@ import java.net.URL;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.cdi.internal.interfaces.BeanParser;
+import com.ibm.ws.cdi.internal.interfaces.BeansXmlParser;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 
 /**
  *
  */
-@Component(name = "com.ibm.ws.cdi.impl.CDI20BeanParserImpl", service = { BeanParser.class }, property = { "service.vendor=IBM" })
-public class CDI20BeanParserImpl implements BeanParser {
+@Component(name = "com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl",
+                service = { BeansXmlParser.class },
+                property = { "service.vendor=IBM" })
+public class CDI12BeansXmlParserImpl implements BeansXmlParser {
 
     /** {@inheritDoc} */
     @Override

@@ -55,7 +55,7 @@ public class BeansAsset extends ClassLoaderAsset {
      * All the supported CDI versions
      */
     public static enum CDIVersion {
-        CDI10, CDI11, CDI20, CDI30
+        CDI10, CDI11, CDI20, CDI30, CDI40
     };
 
     //A static array containing cached BeansAsset instances for all combinations of DiscoveryMode and CDIVersion
@@ -117,6 +117,8 @@ public class BeansAsset extends ClassLoaderAsset {
             beans = "beans20_";
         } else if (version == CDIVersion.CDI30) {
             beans = "beans30_";
+        } else if (version == CDIVersion.CDI40) {
+            beans = "beans40_";
         } else {
             throw new IllegalArgumentException("Unknown CDI Version: " + version);
         }

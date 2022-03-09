@@ -8,24 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.internal.interfaces;
-
-import java.net.URL;
-
-import org.jboss.weld.bootstrap.spi.BeansXml;
+package com.ibm.ws.cdi.beansxml.fat.apps.emptybeansxml;
 
 /**
  *
  */
-public interface BeanParser {
+public class UnannotatedBean {
 
-    /**
-     * Parse a BeansXml from the given URL resource
-     *
-     * @param cdiDeployment The CDI Deployment that the beans.xml is part of
-     * @param beansXmlUrl   A URL where the beans.xml file can be found
-     * @return A BeansXml instance
-     */
-    BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl);
+    public String test() {
+        return "UnannotatedBean";
+    }
 
 }

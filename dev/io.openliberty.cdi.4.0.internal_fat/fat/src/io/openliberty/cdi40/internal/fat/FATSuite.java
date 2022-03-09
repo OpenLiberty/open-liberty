@@ -17,11 +17,15 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsErrorTest;
 import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsTest;
+import io.openliberty.cdi40.internal.fat.config.BeansXMLTest;
+import io.openliberty.cdi40.internal.fat.config.LegacyConfigTest;
 
 @MinimumJavaLevel(javaLevel = 11)
 @RunWith(Suite.class)
 @SuiteClasses({
                 BuildCompatibleExtensionsTest.class,
-                BuildCompatibleExtensionsErrorTest.class
+                BuildCompatibleExtensionsErrorTest.class,
+                LegacyConfigTest.class,
+                BeansXMLTest.class
 })
 public class FATSuite {}

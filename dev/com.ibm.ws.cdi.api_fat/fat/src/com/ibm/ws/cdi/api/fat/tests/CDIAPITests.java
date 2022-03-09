@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.AlterableContextTestServlet;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.AlterableContextExtension;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.DirtySingleton;
@@ -125,7 +126,7 @@ public class CDIAPITests extends FATServletClient {
 
             WebArchive injectInjectionPointAsParamWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_AS_PARAM_APP_NAME + ".war")
                                                                   .addPackage(InjectInjectionPointAsParamServlet.class.getPackage());
-            CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointAsParamWar);
+            CDIArchiveHelper.addBeansXML(injectInjectionPointAsParamWar, DiscoveryMode.ALL);
 
             ShrinkHelper.exportDropinAppToServer(server, injectInjectionPointAsParamWar, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, appConversationFilter, DeployOptions.SERVER_ONLY);
@@ -179,7 +180,7 @@ public class CDIAPITests extends FATServletClient {
 
         WebArchive injectInjectionPointBeansXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_BEANS_XML_APP_NAME + ".war")
                                                                .addClass(InjectInjectionPointBeansXMLServlet.class);
-        CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointBeansXMLWar);
+        CDIArchiveHelper.addBeansXML(injectInjectionPointBeansXMLWar, DiscoveryMode.ALL);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointBeansXMLWar, DeployOptions.SERVER_ONLY);
 
@@ -215,7 +216,7 @@ public class CDIAPITests extends FATServletClient {
         WebArchive injectInjectionPointXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_XML_APP_NAME + ".war")
                                                           .addClass(InjectInjectionPointXMLServlet.class)
                                                           .addAsWebInfResource(InjectInjectionPointXMLServlet.class.getPackage(), "web.xml", "web.xml");
-        CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointXMLWar);
+        CDIArchiveHelper.addBeansXML(injectInjectionPointXMLWar, DiscoveryMode.ALL);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointXMLWar, DeployOptions.SERVER_ONLY);
 
