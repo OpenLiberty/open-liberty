@@ -9,20 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.test.image;
+package com.ibm.ws.test.image.util;
 
-public interface Timeouts {
+public interface TimeConstants {
     long MS_IN_SEC = 1000;
+    long NS_IN_MS  = 1000000;
     long NS_IN_SEC = 1000000000;
-
-    long PROCESS_INTERVAL_MS = 1 * MS_IN_SEC;
-    
-    long INSTALL_FROM_JAR_TIMEOUT_NS = 10 * NS_IN_SEC;
-    long INSTALL_BUNDLES_TIMEOUT_NS = 30 * Timeouts.NS_IN_SEC;    
-    long INSTALL_FEATURES_TIMEOUT_NS = 30 * Timeouts.NS_IN_SEC;    
-
-    long CREATE_SERVER_TIMEOUT_NS = 30 * Timeouts.NS_IN_SEC;    
-    long START_SERVER_TIMEOUT_NS = 30 * Timeouts.NS_IN_SEC;
-    long STOP_SERVER_TIMEOUT_NS = 10 * Timeouts.NS_IN_SEC;    
-    long SCHEMAGEN_TIMEOUT_NS = 30 * Timeouts.NS_IN_SEC;    
 }

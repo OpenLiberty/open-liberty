@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -813,4 +814,88 @@ public class FileUtils {
 
         return numChanged;
     }
+    
+    //
+
+    /**
+     * Ensure that a location or its alternate exists and is a directory.
+     *
+     * @param tag A descriptive tag.  Used for logging.
+     * @param path A path which is to be tested.
+     * @param altPath An alternate path which is to be tested.
+     *
+     * @return If valid, the location or its alternate, as a file.  Null
+     *     if neither location exists and is a directory.
+     */
+    public static File validateDirectory(String tag, String path, String altPath) {
+        File dir = validateDirectory(tag, path);
+        if ( dir == null ) {
+            log("Trying alternate [ " + altPath + " ]");
+            dir = validateDirectory(tag, altPath);
+        }
+        return dir;
+    }
+
+    public static File validateDirectory(String tag, String path) {
+        File dir = new File(path);
+        path = normalize( dir.getAbsolutePath() );
+        dir = new File(path);
+
+        if ( !dir.exists() ) {
+            log(tag + " directory [ " + path + " ] does not exist");
+            dir = null;
+        } else {
+            if ( !dir.isDirectory() ) {
+                log(tag + " directory [ " + path + " ] is not a directory");
+                dir = null;
+            } else {
+                log(tag + " directory [ " + path + " ]");
+            }
+        }
+
+        return dir;
+    }    
+    
+    public static String[] validateListing(String tag, File dir, FilenameFilter filter) {
+        String path = dir.getPath();
+
+        String[] names;
+        String message;
+
+        if ( !dir.exists() ) {
+            names = null;
+            message = "does not exist";
+        } else if ( !dir.isDirectory() ) {
+            names = null;
+            message = "is not a directory";
+
+        } else {
+            names = dir.list(filter);
+
+            if ( names == null ) {
+                message = "could not be accessed";
+            } else if ( names.length == 0 ) {
+                message = "is empty";
+
+            } else {
+                message = null;
+
+                if ( File.separatorChar == '\\' ) {
+                    normalize(names);
+                }
+
+                log("[ " + tag + " ]:");
+                for ( String name : names ) {
+                    log("  [ " + name + " ]");
+                }
+            }
+        }
+
+        log("[ " + tag + " ] directory [ " + path + " ] " + message);
+
+        if ( names == null ) {
+            names = new String[] {};
+        }
+        return names;
+    }    
 }

@@ -14,12 +14,13 @@ import static com.ibm.ws.test.image.util.FileUtils.match;
 import static com.ibm.ws.test.image.util.FileUtils.normalize;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+
+import com.ibm.ws.test.image.util.FileUtils;
 
 /**
  * Build control properties.
@@ -127,7 +128,7 @@ public class BuildProperties {
         IMAGES_PATH = getNormalPath("Images", imagesPath);
         IMAGES_DIR = new File(IMAGES_PATH);
 
-        IMAGE_NAMES = validateListing("Images", IMAGES_DIR, BuildProperties::isImage);
+        IMAGE_NAMES = FileUtils.validateListing("Images", IMAGES_DIR, BuildProperties::isImage);
     }
 
     protected static File findBuildImage(File baseDir) {
@@ -233,79 +234,6 @@ public class BuildProperties {
         PROFILES_PATH = getNormalPath("Profiles", profilesPath);
         PROFILES_DIR = new File(PROFILES_PATH);
         
-        PROFILE_NAMES = validateListing("Profiles", PROFILES_DIR, BuildProperties::isProfile);
-    }
-
-    //
-
-    protected static File validateDirectory(String tag, String path, String altPath) {
-        File dir = new File(path);
-        path = normalize( dir.getAbsolutePath() );
-
-        if ( !dir.exists() ) {
-            log(tag + " directory [ " + path + " ] does not exist; trying alternate");
-            path = altPath;
-            dir = new File(path);
-            path = normalize( dir.getAbsolutePath() );
-            
-            if ( !dir.exists() ) {
-                dir = null;
-                log(tag + " directory [ " + path + " ] does not exist");
-            }            
-        }
-
-        if ( dir != null ) {
-            if ( !dir.isDirectory() ) {
-                dir = null;
-                log(tag + " directory [ " + path + " ] is not a directory");
-            } else {
-                log(tag + " directory [ " + path + " ]");
-            }
-        }
-        
-        return dir;
-    }
-
-    protected static String[] validateListing(String tag, File dir, FilenameFilter filter) {
-        String path = dir.getPath();
-
-        String[] names;
-        String message;
-
-        if ( !dir.exists() ) {
-            names = null;
-            message = "does not exist";
-        } else if ( !dir.isDirectory() ) {
-            names = null;
-            message = "is not a directory";
-
-        } else {
-            names = dir.list(filter);
-
-            if ( names == null ) {
-                message = "could not be accessed";
-            } else if ( names.length == 0 ) {
-                message = "is empty";
-
-            } else {
-                message = null;
-
-                if ( File.separatorChar == '\\' ) {
-                    normalize(names);
-                }
-
-                log("[ " + tag + " ]:");
-                for ( String name : names ) {
-                    log("  [ " + name + " ]");
-                }
-            }
-        }
-
-        log("[ " + tag + " ] directory [ " + path + " ] " + message);
-
-        if ( names == null ) {
-            names = new String[] {};
-        }
-        return names;
+        PROFILE_NAMES = FileUtils.validateListing("Profiles", PROFILES_DIR, BuildProperties::isProfile);
     }
 }

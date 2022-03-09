@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.ibm.ws.test.image.Timeouts;
-
 public class ProcessRunner {
     public static final String CLASS_NAME = ProcessRunner.class.getSimpleName();
 
@@ -35,6 +33,10 @@ public class ProcessRunner {
         System.out.println(CLASS_NAME + ": " + message);
     }
     
+    //
+    
+    public static final long PROCESS_INTERVAL_MS = 1 * TimeConstants.MS_IN_SEC;
+
     //
     
     public static class Result {
@@ -391,14 +393,14 @@ public class ProcessRunner {
         stderrCopier.start();
 
         while ( p.isAlive() && stdoutCopier.isAlive() && stderrCopier.isAlive() ) { 
-            Thread.sleep(Timeouts.PROCESS_INTERVAL_MS);
+            Thread.sleep(PROCESS_INTERVAL_MS);
         }
 
         boolean destroyed;
         if ( destroyed = p.isAlive() ) {
             log("Forcibly destroying process");
             p.destroy();
-            p.waitFor(Timeouts.PROCESS_INTERVAL_MS, TimeUnit.MILLISECONDS);
+            p.waitFor(PROCESS_INTERVAL_MS, TimeUnit.MILLISECONDS);
         }
         if ( stdoutCopier.isAlive() ) {
             log("Interrupting capture of stdout");

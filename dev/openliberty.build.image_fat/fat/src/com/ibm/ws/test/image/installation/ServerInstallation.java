@@ -38,10 +38,10 @@ import java.util.function.Function;
 
 import org.junit.Assert;
 
-import com.ibm.ws.test.image.Timeouts;
 import com.ibm.ws.test.image.util.FileUtils;
 import com.ibm.ws.test.image.util.ProcessRunner;
 import com.ibm.ws.test.image.util.ScriptFilter;
+import com.ibm.ws.test.image.util.TimeConstants;
 import com.ibm.ws.test.image.util.XMLUtils;
 
 /**
@@ -57,7 +57,7 @@ public class ServerInstallation {
     }
 
     //
-
+    
     public ServerInstallation(String name, String homePath) {
         this.name = name;
 
@@ -311,7 +311,7 @@ public class ServerInstallation {
     
     //
     
-    public static final long SIMPLE_SCRIPT_TIMEOUT = 10 * Timeouts.NS_IN_SEC;
+    public static final long SIMPLE_SCRIPT_TIMEOUT = 10 * TimeConstants.NS_IN_SEC;
 
     public ProcessRunner.Result run(String scriptPath, String... args) throws Exception {
         return run(SIMPLE_SCRIPT_TIMEOUT, scriptPath, args);
@@ -373,13 +373,17 @@ public class ServerInstallation {
         return Boolean.valueOf( line.equals("Server defaultServer stopped.") );
     }
 
+    public static final long CREATE_SERVER_TIMEOUT_NS = 30 * TimeConstants.NS_IN_SEC;    
+    
     public ProcessRunner.Result createDefaultServer() throws Exception {
-        return run( Timeouts.CREATE_SERVER_TIMEOUT_NS, getServerScriptPath(), "create" );
+        return run( CREATE_SERVER_TIMEOUT_NS, getServerScriptPath(), "create" );
     }
 
+    public static final long START_SERVER_TIMEOUT_NS = 30 * TimeConstants.NS_IN_SEC;
+    
     public ProcessRunner.Result start() throws Exception {
         return run(
-                Timeouts.START_SERVER_TIMEOUT_NS,
+                START_SERVER_TIMEOUT_NS,
                 ServerInstallation::detectDefaultServerStarted, null,
                 null, ServerInstallation::detectFailure,
                 0,
@@ -388,14 +392,18 @@ public class ServerInstallation {
                 getServerScriptPath(), "start" );
     }
 
+    public static final long STOP_SERVER_TIMEOUT_NS = 10 * TimeConstants.NS_IN_SEC;    
+    
     public ProcessRunner.Result stop() throws Exception {
-        return run( Timeouts.STOP_SERVER_TIMEOUT_NS, getServerScriptPath(), "stop" );
+        return run( STOP_SERVER_TIMEOUT_NS, getServerScriptPath(), "stop" );
     }
 
     public ProcessRunner.Result schemaGen() throws Exception {
         return schemaGen(DEFAULT_SERVER_NAME);
     }
 
+    public static final long SCHEMAGEN_TIMEOUT_NS = 30 * TimeConstants.NS_IN_SEC;    
+    
     public ProcessRunner.Result schemaGen(String serverName) throws Exception {
         // TODO: Temporary:
         //
@@ -407,7 +415,7 @@ public class ServerInstallation {
 
         (new File(getLogsPath(serverName))).mkdir();
         
-        return run( Timeouts.SCHEMAGEN_TIMEOUT_NS, getSchemaGenScriptPath(), serverName );
+        return run( SCHEMAGEN_TIMEOUT_NS, getSchemaGenScriptPath(), serverName );
     }
 
     public static void adjustEnvironment(ProcessBuilder pb) {
@@ -417,6 +425,8 @@ public class ServerInstallation {
     }
 
     //
+    
+    public static final long INSTALL_BUNDLES_TIMEOUT_NS = 30 * TimeConstants.NS_IN_SEC;    
     
     public void installBundles(
             List<String> bundles, String repoPath,
@@ -435,7 +445,7 @@ public class ServerInstallation {
 
         ProcessRunner.validate(
                 command,
-                Timeouts.INSTALL_BUNDLES_TIMEOUT_NS, 
+                INSTALL_BUNDLES_TIMEOUT_NS,
                 (ProcessBuilder pb) -> {
                     Map<String, String> env = pb.environment();
                     env.put("JAVA_HOME", javaPath);
@@ -444,6 +454,8 @@ public class ServerInstallation {
                 } );
     }
 
+    public static final long INSTALL_FEATURES_TIMEOUT_NS = 30 * TimeConstants.NS_IN_SEC;  
+    
     public void installFeatures(
             List<String> features,
             String repoPath,
@@ -460,7 +472,7 @@ public class ServerInstallation {
 
         ProcessRunner.validate(
                 command,
-                Timeouts.INSTALL_FEATURES_TIMEOUT_NS,
+                INSTALL_FEATURES_TIMEOUT_NS,
                 (ProcessBuilder pb) -> {
                     Map<String, String> env = pb.environment();
                     env.put("JAVA_HOME", javaPath);
