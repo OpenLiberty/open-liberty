@@ -397,9 +397,9 @@ public class UsernameTokenValidator implements Validator {
         int futureTimeToLive = 300;
         if (wssConfig != null) {
             //timeStampTTL = wssConfig.getTimeStampTTL(); //@2020
-            timeStampTTL = data.getUtTTL(); //v3 TODO
+            timeStampTTL = data.getTimeStampTTL();//data.getUtTTL(); //v3 TODO
             //futureTimeToLive = wssConfig.getTimeStampFutureTTL(); //@2020
-            futureTimeToLive = data.getUtFutureTTL(); //v3 TODO
+            futureTimeToLive = data.getTimeStampFutureTTL();//data.getUtFutureTTL(); //v3 TODO
         }
 
         boolean isValid = verifyCreated(created, timeStampTTL, futureTimeToLive);

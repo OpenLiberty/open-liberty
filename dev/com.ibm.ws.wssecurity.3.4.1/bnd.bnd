@@ -125,7 +125,10 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.ehcache.ehcache.107.3.8.1,\
+	org.apache.wss4j.wss4j-ws-security-common,\
+	com.ibm.ws.net.sf.ehcache.core.2.5.2
 
 
 jakartaeeMe: true
