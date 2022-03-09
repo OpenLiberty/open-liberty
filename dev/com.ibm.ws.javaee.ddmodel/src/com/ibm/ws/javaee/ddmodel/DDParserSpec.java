@@ -142,8 +142,25 @@ public abstract class DDParserSpec extends DDParser {
         // Note that parsing will reassign the version upon parsing
         // the 'version' attribute of the header.
         version = versionData.version;
-        eePlatformVersion = versionData.platformVersion;
+        eePlatformVersion = selectPlatform(maxVersion, versionData.platformVersion);
 
         return createRootElement();
-    }  
+    }
+    
+    /**
+     * Optional step to adjust the EE platform version.  This is needed
+     * for handling new reference types (see JNDIENvironmentRefs, where
+     * the EE 10 references are handled).
+     * 
+     * This default implementation makes no adjustment to the platform
+     * version.
+     *
+     * @param maxVersion The specified maximum schema version.
+     * @param platformVersion The selected platform version.
+     *
+     * @return The adjusted EE platform version.
+     */
+    public int selectPlatform(int maxVersion, int platformVersion) {
+        return platformVersion;
+    }
 }

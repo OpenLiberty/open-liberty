@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0">
+
+    <display-name>Simple Web Application</display-name>
+
+    <servlet>
+        <description>Simple Servlet</description>
+        <servlet-name>Simple Servlet</servlet-name>      
+        <servlet-class>servlettest.web.SimpleServlet</servlet-class>
+        <load-on-startup></load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Simple Servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

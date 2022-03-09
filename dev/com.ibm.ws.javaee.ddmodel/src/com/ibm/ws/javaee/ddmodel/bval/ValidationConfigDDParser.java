@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,19 @@ public class ValidationConfigDDParser extends DDParser {
     public static final String NAMESPACE_JBOSS_VALIDATION_CONFIG =
         "http://jboss.org/xml/ns/javax/validation/configuration";
 
+    public static final VersionData[] VERSION_DATA = {
+            new VersionData("1", null, NAMESPACE_JBOSS_VALIDATION_CONFIG, ValidationConfig.VERSION_1_0, VERSION_7_0_INT),                            
+            new VersionData("1.1", null, NAMESPACE_JBOSS_VALIDATION_CONFIG, ValidationConfig.VERSION_1_1, VERSION_7_0_INT),
+    };
+    
+    public static int getMaxTolerated() {
+        return ValidationConfig.VERSION_1_1;
+    }
+
+    public static int getMaxImplemented() {
+        return ValidationConfig.VERSION_1_1;
+    }
+    
     public ValidationConfigDDParser(Container ddRootContainer, Entry ddEntry)
         throws ParseException {
         super(ddRootContainer, ddEntry, "validation-config");

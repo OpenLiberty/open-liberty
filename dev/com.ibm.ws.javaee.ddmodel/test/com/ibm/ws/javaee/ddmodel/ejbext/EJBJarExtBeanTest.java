@@ -72,7 +72,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanEmpty() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -143,7 +143,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIIgnored() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
             ejbJar21(
                 "<enterprise-beans>" +
                     "<session id=\"s0\">" +
@@ -181,7 +181,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanSessionTimeout() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -250,7 +250,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanBeanCache() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                             "<session id=\"s0\">" +
@@ -369,7 +369,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanLocalTransaction() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0id\">" +
@@ -442,7 +442,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanLocalTran() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                                 "<message-driven id=\"md0id\">" +
@@ -542,7 +542,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanShareableLocalTransaction() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                                 "<message-driven id=\"md0id\">" +
@@ -602,7 +602,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanGlobalTransaction() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                             "<message-driven id=\"md0id\">" +
@@ -657,7 +657,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanResourceRef() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                             "<message-driven id=\"md0id\">" +
@@ -776,7 +776,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanRunAsMode() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                             "<session id=\"s0\">" +
@@ -880,7 +880,7 @@ public class EJBJarExtBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseStartAtAppStart() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                         "<enterprise-beans>" +
                             "<session id=\"s0\">" +

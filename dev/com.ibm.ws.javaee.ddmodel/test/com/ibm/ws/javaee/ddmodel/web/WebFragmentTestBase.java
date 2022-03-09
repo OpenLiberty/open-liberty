@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class WebFragmentTestBase extends DDTestBase {
 
         mockery.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(maxVersion));
             }
         });
@@ -136,6 +136,16 @@ public class WebFragmentTestBase extends DDTestBase {
                webFragmentTail();
     }    
     
+    protected static String webFragment60(String body) {
+        return "<web-fragment xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-fragment_6_0.xsd\"" +
+                   " version=\"6.0\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    }    
+
     protected static String webFragment(int schemaVersion) {
         return webFragment(schemaVersion, WebAppTestBase.webAppBody());
     }
@@ -149,10 +159,10 @@ public class WebFragmentTestBase extends DDTestBase {
             return webFragment40(body);
         } else if ( version == WebApp.VERSION_5_0 ) {
             return webFragment50(body);
+        } else if ( version == WebApp.VERSION_6_0 ) {
+            return webFragment60(body);
         } else {
             throw new IllegalArgumentException("Unexpected WebFragment version [ " + version + " ]");
         }
     }
-    
-    
 }
