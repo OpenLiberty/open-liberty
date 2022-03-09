@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     },
 
     postCreate: function() {
-      this.iconNode.innerHTML = imgUtils.getSVG(getResourceIcon(this.resource));
+      this.iconNode.innerHTML = imgUtils.getSVGWithAriaLabelledBy(getResourceIcon(this.resource), '', this.resourceId + "-ResourceName");
 
       /* Set the StateIcon if needed */
       if ((this.resource.type !== 'host') && (this.resource.type !== 'standaloneServer') && (this.resource.type !== 'runtime')) {
@@ -568,10 +568,10 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
         // If server running and apiDiscovery enabled, enable button
         // If a standAlone server, the feature is enabled since we don't track the state of
         // a standAlone server.  It is assumed to be up.
-        enableServerApiButton(serverApiButton, apiDefIcon, explorerURL);
+        enableServerApiButton(serverApiButton, apiDefIcon, explorerURL, id);
       } else {
         // If server not started and apiDiscovery enabled, grey out button
-        disableServerApiButton(serverApiButton, apiDefIcon);
+        disableServerApiButton(serverApiButton, apiDefIcon, id);
       }
     } else {
       // If no apiDiscovery, don't display.
@@ -579,9 +579,9 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     }
   }
 
-  function disableServerApiButton(element, apiDefIcon) {
+  function disableServerApiButton(element, apiDefIcon, containerId) {
     // Set image
-    apiDefIcon.innerHTML = imgUtils.getSVGSmall('apiDefDisabled');
+    apiDefIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy('apiDefDisabled', 'small', containerId + "UrlDisabled");
 
     // Disable link
     var link = element.getElementsByTagName("a")[0];
@@ -594,9 +594,9 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     element.style.display = "inline-block";
   }
 
-  function enableServerApiButton(element, apiDefIcon, explorerURL) {
+  function enableServerApiButton(element, apiDefIcon, explorerURL, containerId) {
     // Set image
-    apiDefIcon.innerHTML = imgUtils.getSVGSmall('apiDefEnabled');
+    apiDefIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy('apiDefEnabled', 'small', containerId + "UrlEnabled");
 
     // Disable span
     var span = element.getElementsByTagName("span")[0];
@@ -628,12 +628,13 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
       if (server.cluster) {
         server.getCluster().then(function(cluster) {
           var clusterButton;
+          var clusterButtonLabel = ResourceButton.getResourceButtonLabelId([ 'AppInst', appOnServer.id, cluster.name, 'Cluster']);
           if (cluster.scalingPolicy) {
             // Set icon to scalingPolicy cluster one.
-            iconPane.innerHTML = imgUtils.getSVGSmall("cluster-autoscaled-OVHP");
+            iconPane.innerHTML = imgUtils.getSVGWithAriaLabelledBy("cluster-autoscaled-OVHP", "small", clusterButtonLabel);
           } else {
             // Set icon to normal cluster one.
-            iconPane.innerHTML = imgUtils.getSVG("cluster-dashboard");
+            iconPane.innerHTML = imgUtils.getSVGWithAriaLabelledBy("cluster-dashboard", "", clusterButtonLabel);
           }
           clusterButton = ResourceButton.createResourceButton([ 'AppInst', appOnServer.id, cluster.name, 'Cluster']);
 
@@ -654,12 +655,13 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     if (server.cluster) {
       var clusterName = server.cluster;
       var clusterButton;
+      var clusterButtonLabel = ResourceButton.getResourceButtonLabelId([ 'Server', server.id, clusterName, 'Cluster']);
       if (server.scalingPolicy) {
         // Set icon to scalingPolicy cluster one.
-        iconPane.innerHTML = imgUtils.getSVGSmall("cluster-autoscaled-OVHP");
+        iconPane.innerHTML = imgUtils.getSVGWithAriaLabelledBy("cluster-autoscaled-OVHP", "small", clusterButtonLabel);
       } else {
         // Set icon to normal cluster one.
-        iconPane.innerHTML = imgUtils.getSVG("cluster-dashboard");
+        iconPane.innerHTML = imgUtils.getSVGWithAriaLabelledBy("cluster-dashboard", "", clusterButtonLabel);
       }
       clusterButton = ResourceButton.createResourceButton([ 'Server', server.id, clusterName, 'Cluster']);
 
