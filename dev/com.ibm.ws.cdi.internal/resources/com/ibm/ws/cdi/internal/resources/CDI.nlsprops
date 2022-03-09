@@ -98,6 +98,6 @@ cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=The emptyBeansXML
 cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Update your server.xml configuration to either remove the attribute or use CDI version 4.0 or newer.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: The enableImplicitBeanArchives attribute was set on both cdi12 and cdi configuration elements. The value from the cdi element is used and the value in the cdi12 element is ignored.
-enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Although you can set the enableImplicitBeanArchives attribute on both of the cdi12 and cdi configuration element configuration elements, you must not set this attribute with more than one value in the same server configuration.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Although you can set the enableImplicitBeanArchives attribute on both of the cdi12 and cdi configuration element configuration elements, you should not set this attribute with different values in the same server configuration.
 enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Update your server.xml to fix the conflict. The recommended action is to remove the cdi12 configuration element because it is superseded by the cdi configuration element.
 
