@@ -34,8 +34,10 @@ import jakarta.json.bind.adapter.JsonbAdapter;
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbSubtype;
 import jakarta.json.bind.annotation.JsonbTypeAdapter;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeInfo;
 import jakarta.json.bind.serializer.DeserializationContext;
 import jakarta.json.bind.serializer.JsonbDeserializer;
 import jakarta.json.stream.JsonParser;
@@ -294,5 +296,100 @@ public class JsonBTestServlet extends FATServlet {
 
     public static class TestNullJsonValue {
         public JsonValue jsonval;
+    }
+
+    /**
+     * Tests polymorphic types in JSON-B.
+     *
+     * https://github.com/eclipse-ee4j/jsonb-api/issues/147
+     */
+    @Test
+    public void testPolymorphism() throws Exception {
+        TestPolymorphism[] list = new TestPolymorphism[5];
+
+        TestPolymorphism.State mn = new TestPolymorphism.State();
+        mn.name = "Minnesota";
+        mn.population = 5707390;
+        mn.capital = "St. Paul";
+        list[0] = mn;
+
+        TestPolymorphism.City rochester = new TestPolymorphism.City();
+        rochester.name = "Rochester";
+        rochester.population = 121395;
+        rochester.state = "Minnesota";
+        list[1] = rochester;
+
+        TestPolymorphism.Employee employee = new TestPolymorphism.Employee();
+        employee.firstName = "I";
+        employee.lastName = "Myself";
+        employee.location = rochester;
+        list[2] = employee;
+
+        TestPolymorphism.Location northAmerica = new TestPolymorphism.Location();
+        northAmerica.name = "North America";
+        northAmerica.population = 601074700;
+        list[3] = northAmerica;
+
+        String json = jsonb.toJson(list);
+
+        System.out.println("testPolymorphism JSON:");
+        System.out.println(json);
+
+        TestPolymorphism[] copy = jsonb.fromJson(json, TestPolymorphism[].class);
+
+        TestPolymorphism.State state = (TestPolymorphism.State) copy[0];
+        assertEquals(mn.name, state.name);
+        assertEquals(mn.population, state.population);
+        assertEquals(mn.capital, state.capital);
+
+        TestPolymorphism.City city = (TestPolymorphism.City) copy[1];
+        assertEquals(rochester.name, city.name);
+        assertEquals(rochester.population, city.population);
+        assertEquals(rochester.state, city.state);
+
+        TestPolymorphism.Employee emp = (TestPolymorphism.Employee) copy[2];
+        assertEquals(employee.firstName, emp.firstName);
+        assertEquals(employee.lastName, emp.lastName);
+        city = (TestPolymorphism.City) emp.location;
+        assertEquals(rochester.name, city.name);
+        assertEquals(rochester.population, city.population);
+        assertEquals(rochester.state, city.state);
+
+        TestPolymorphism.Location location = (TestPolymorphism.Location) copy[3];
+        assertEquals(location.name, northAmerica.name);
+        assertEquals(location.population, northAmerica.population);
+    }
+
+    @JsonbTypeInfo({
+                     @JsonbSubtype(alias = "employee", type = TestPolymorphism.Employee.class),
+                     @JsonbSubtype(alias = "location", type = TestPolymorphism.Location.class)
+    })
+    public static interface TestPolymorphism {
+        public static class Employee implements TestPolymorphism {
+            public String firstName, lastName;
+            public Location location;
+        }
+
+        @JsonbTypeInfo(key = "@loctype", value = {
+                                                   @JsonbSubtype(alias = "city", type = TestPolymorphism.City.class),
+                                                   @JsonbSubtype(alias = "state", type = TestPolymorphism.State.class),
+                                                   // TODO It seems awkward that Location must include itself as a
+                                                   // subtype of itself, but if we don't do it, Yasson omits
+                                                   // "@type": "location" from the JSON, and then it won't
+                                                   // deserialize as a TestPolymorphism.class.
+                                                   @JsonbSubtype(alias = "general", type = TestPolymorphism.Location.class)
+        })
+        public static class Location implements TestPolymorphism {
+            public String name;
+            public long population;
+        }
+
+        public static class City extends Location {
+            public String state;
+        }
+
+        public static class State extends Location {
+            public String capital;
+        }
     }
 }
