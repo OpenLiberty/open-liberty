@@ -37,7 +37,7 @@ public enum DatabaseContainerType {
         DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
     Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
-    Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
+    Oracle("ojdbc11_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
            DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe")),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
              DockerImageName.parse("postgres:14.1-alpine")),
@@ -68,7 +68,7 @@ public enum DatabaseContainerType {
 
     /**
      * Returns the common JDBC Driver name for this testcontainer type.
-     * Example: 'ojdbc8_g.jar'
+     * Example: 'ojdbc11_g.jar'
      *
      * @return String - JDBC Driver Name
      */

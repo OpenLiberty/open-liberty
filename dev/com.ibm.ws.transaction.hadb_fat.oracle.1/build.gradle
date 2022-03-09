@@ -60,7 +60,7 @@ task copyTxJdbcDrivers(type: Copy) {
   mustRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/ifx')
-  rename 'ojdbc8_g.*.jar', 'anomyous.jar'
+  rename 'ojdbc11_g.*.jar', 'anomyous.jar'
 }
 
 jar.dependsOn copyCommonFiles

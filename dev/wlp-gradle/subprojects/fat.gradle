@@ -54,7 +54,7 @@ dependencies {
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
+		'com.oracle.database.jdbc.debug:ojdbc11_g:21.5.0.0'
 
   jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
        'commons-cli:commons-cli:1.4',
@@ -107,7 +107,7 @@ task copyJdbcDrivers(type: Copy) {
   rename 'jcc.*.jar', 'jcc.jar'
   rename 'derby-.*.jar', 'derby.jar'
   rename 'derbyclient-.*.jar', 'derbyclient.jar'
-  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'ojdbc11_g.*.jar', 'ojdbc11_g.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }

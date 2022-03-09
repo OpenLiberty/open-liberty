@@ -10,7 +10,7 @@
  *******************************************************************************/
 apply from: "../wlp-gradle/subprojects/maven-central-mirror.gradle"
 
-ext.oracleVersion = '21.1.0.0'
+ext.oracleVersion = '21.5.0.0'
 
 configurations {
   oracle	{transitive = false}
@@ -19,8 +19,8 @@ configurations {
 }
 
 dependencies {
-  oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
-  oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
+  oracle        "com.oracle.database.jdbc.debug:ojdbc11_g:${oracleVersion}"
+  oraclessl     "com.oracle.database.jdbc.debug:ojdbc11_g:${oracleVersion}",
                	"com.oracle.database.security:oraclepki:${oracleVersion}",
                	"com.oracle.database.security:osdt_core:${oracleVersion}",
                	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
@@ -31,14 +31,14 @@ task copyAnonymousOracle(type: Copy) {
   shouldRunAfter jar
   from configurations.oracle
   into new File(autoFvtDir, "publish/shared/resources/oracle/")
-  rename "ojdbc8_g-.*.", "oracleunknown.jar"
+  rename "ojdbc11_g-.*.", "oracleunknown.jar"
 }
 
 task copySharedOracle(type: Copy) {
   shouldRunAfter jar
   from configurations.oracle
   into new File(autoFvtDir, "publish/shared/resources/ucp/")
-  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+  rename "ojdbc11_g-.*.", "ojdbc11_g.jar"
 }
 
 task copySharedUCP(type: Copy) {
@@ -52,7 +52,7 @@ task copySharedOracleSSL(type: Copy) {
   shouldRunAfter jar
   from configurations.oraclessl
   into new File(autoFvtDir, "publish/shared/resources/ssl/")
-  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+  rename "ojdbc11_g-.*.", "ojdbc11_g.jar"
   rename "oraclepki.*.", "oraclepki.jar"
   rename "osdt_core.*.", "osdt_core.jar"
   rename "osdt_cert.*.", "osdt_cert.jar"

@@ -45,11 +45,11 @@ com.icegreen:greenmail:1.5.10
 com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
-com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
-com.oracle.database.jdbc:ucp:21.1.0.0
-com.oracle.database.security:oraclepki:21.1.0.0
-com.oracle.database.security:osdt_cert:21.1.0.0
-com.oracle.database.security:osdt_core:21.1.0.0
+com.oracle.database.jdbc.debug:ojdbc11_g:21.5.0.0
+com.oracle.database.jdbc:ucp:21.5.0.0
+com.oracle.database.security:oraclepki:21.5.0.0
+com.oracle.database.security:osdt_cert:21.5.0.0
+com.oracle.database.security:osdt_core:21.5.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.sun.activation:jakarta.activation:2.0.0
 com.sun.faces:jsf-api:2.2.14

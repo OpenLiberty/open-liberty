@@ -29,5 +29,5 @@ fat.project: true
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    com.oracle.database.jdbc.debug:ojdbc8_g;version=21.1.0.0,\
-    com.oracle.database.jdbc:ucp;version=21.1.0.0
+    com.oracle.database.jdbc.debug:ojdbc11_g;version=21.5.0.0,\
+    com.oracle.database.jdbc:ucp;version=21.5.0.0

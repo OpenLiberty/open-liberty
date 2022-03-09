@@ -26,7 +26,7 @@ task copyAnonymousDrivers(type: Copy) {
   rename 'jcc.*.jar', 'driver0.jar'
   rename 'derby-.*.jar', 'driver1.jar'
   rename 'derbyclient-.*.jar', 'driver2.jar'
-  rename 'ojdbc8_g.*.jar', 'driver3.jar'
+  rename 'ojdbc11_g.*.jar', 'driver3.jar'
   rename 'postgresql.*.jar', 'driver4.jar'
   rename 'mssql-jdbc.*.jar', 'driver5.jar'
 }

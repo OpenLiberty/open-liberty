@@ -78,7 +78,7 @@
     	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
     </dataSource>
     
-    <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc8_g.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc11_g.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}/ucp/ucp.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/oracleucpfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission codebase="${server.config.dir}/apps/oracleucpfat.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>    
