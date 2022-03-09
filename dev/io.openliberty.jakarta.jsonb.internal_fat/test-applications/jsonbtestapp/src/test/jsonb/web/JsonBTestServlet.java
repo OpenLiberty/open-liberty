@@ -14,7 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.lang.reflect.Type;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
@@ -26,13 +28,17 @@ import componenttest.app.FATServlet;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
+import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.adapter.JsonbAdapter;
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTypeAdapter;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.serializer.DeserializationContext;
 import jakarta.json.bind.serializer.JsonbDeserializer;
+import jakarta.json.stream.JsonParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -55,6 +61,179 @@ public class JsonBTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         jsonb = JsonbBuilder.create();
+    }
+
+    public static class TestCreatorParameters {
+        private final String name;
+
+        @JsonbCreator
+        public TestCreatorParameters(@JsonbProperty("firstName") String first, //
+                                     @JsonbProperty("middleName") String middle, //
+                                     @JsonbProperty("lastName") String last) {
+            name = first + (middle == null ? ' ' : ' ' + middle + ' ') + last;
+        }
+
+        public String getFirstName() {
+            return name.substring(0, name.indexOf(' '));
+        }
+
+        public String getLastName() {
+            return name.substring(name.lastIndexOf(' ') + 1);
+        }
+
+        public String getMiddleName() {
+            int start = name.indexOf(' ') + 1;
+            int end = name.lastIndexOf(' ');
+            return end > start ? name.substring(start, end) : null;
+        }
+    }
+
+    /**
+     * JsonbCreator parameters are optional by default.
+     *
+     * https://github.com/eclipse-ee4j/jsonb-api/issues/121
+     */
+    @Test
+    public void testCreatorParametersOptional() throws Exception {
+        TestCreatorParameters instance = new TestCreatorParameters("First", null, "Last");
+
+        String json = jsonb.toJson(instance);
+        assertFalse(json, json.contains("middleName"));
+
+        TestCreatorParameters copy = jsonb.fromJson(json, TestCreatorParameters.class);
+        assertEquals(instance.name, copy.name);
+    }
+
+    /**
+     * JsonbCreator parameters are required when withCreatorParametersRequired is specified.
+     *
+     * https://github.com/eclipse-ee4j/jsonb-api/issues/121
+     */
+    @Test
+    public void testCreatorParametersRequired() throws Exception {
+        try (Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withCreatorParametersRequired(true))) {
+            TestCreatorParameters instance = new TestCreatorParameters("First", null, "Last");
+
+            String json = jsonb.toJson(instance);
+            assertFalse(json, json.contains("middleName"));
+
+            TestCreatorParameters copy = jsonb.fromJson(json, TestCreatorParameters.class);
+            fail("JsonbCreator parameter was not required. " + copy.name);
+        } catch (JsonbException x) {
+            // expect: JsonbCreator parameter middleName is missing in json document.
+            if (x.getMessage() == null || !x.getMessage().contains("middleName"))
+                throw x;
+        }
+    }
+
+    /**
+     * JsonbTypeAdapter can be used on JsonbCreator parameters.
+     *
+     * https://github.com/eclipse-ee4j/jsonb-api/issues/71
+     */
+    @Test
+    public void testCreatorWithTypeAdapter() throws Exception {
+        ZonedDateTime time = ZonedDateTime.of(2021, 1, 31, 10, 30, 0, 0, ZoneId.of("America/Chicago"));
+
+        TestCreatorWithTypeAdapter instance = new TestCreatorWithTypeAdapter(time);
+
+        String json = jsonb.toJson(instance);
+
+        TestCreatorWithTypeAdapter copy = jsonb.fromJson(json, TestCreatorWithTypeAdapter.class);
+        assertEquals(time, copy.zdt);
+    }
+
+    public static class TestCreatorWithTypeAdapter {
+        private final ZonedDateTime zdt;
+
+        @JsonbCreator
+        public TestCreatorWithTypeAdapter(//
+                                          @JsonbProperty("timestamp") //
+                                          @JsonbTypeAdapter(Adapter.class) //
+                                          ZonedDateTime zdt) {
+            this.zdt = zdt;
+        }
+
+        // Ensure that @JsonbTypeAdapter from @JsonbCreator parameter will be required to deserialize
+        public Map<String, ?> getTimestamp() {
+            return new Adapter().adaptToJson(zdt);
+        }
+
+        public static class Adapter implements JsonbAdapter<ZonedDateTime, Map<String, ?>> {
+            @Override
+            public ZonedDateTime adaptFromJson(Map<String, ?> map) {
+                return ZonedDateTime.of(((Number) map.get("year")).intValue(),
+                                        ((Number) map.get("month")).intValue(),
+                                        ((Number) map.get("day")).intValue(),
+                                        ((Number) map.get("hour")).intValue(),
+                                        ((Number) map.get("minute")).intValue(),
+                                        ((Number) map.get("second")).intValue(),
+                                        0,
+                                        ZoneId.of((String) map.get("zone")));
+            }
+
+            @Override
+            public Map<String, ?> adaptToJson(ZonedDateTime d) {
+                LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+                map.put("year", d.getYear());
+                map.put("month", d.getMonth().getValue());
+                map.put("day", d.getDayOfMonth());
+                map.put("hour", d.getHour());
+                map.put("minute", d.getMinute());
+                map.put("second", d.getSecond());
+                map.put("zone", d.getZone().getId());
+                return map;
+            }
+        }
+    }
+
+    /**
+     * JsonbTypeDeserializer can be used on JsonbCreator parameters.
+     *
+     * https://github.com/eclipse-ee4j/jsonb-api/issues/71
+     */
+    @Test
+    public void testCreatorWithTypeDeserializer() throws Exception {
+        ZonedDateTime time = ZonedDateTime.of(2022, 2, 22, 14, 22, 0, 0, ZoneId.of("America/Chicago"));
+
+        TestCreatorWithTypeDeserializer instance = new TestCreatorWithTypeDeserializer(time);
+
+        String json = jsonb.toJson(instance);
+
+        TestCreatorWithTypeDeserializer copy = jsonb.fromJson(json, TestCreatorWithTypeDeserializer.class);
+        assertEquals(time, copy.zdt);
+    }
+
+    public static class TestCreatorWithTypeDeserializer {
+        private final ZonedDateTime zdt;
+
+        @JsonbCreator
+        public TestCreatorWithTypeDeserializer(//
+                                               @JsonbProperty("time") //
+                                               @JsonbTypeDeserializer(Deserializer.class) //
+                                               ZonedDateTime zdt) {
+            this.zdt = zdt;
+        }
+
+        // Ensure that @JsonbTypeAdapter from @JsonbTypeDeserializer parameter will be required to deserialize
+        public Map<String, ?> getTime() {
+            return new TestCreatorWithTypeAdapter.Adapter().adaptToJson(zdt);
+        }
+
+        public static class Deserializer implements JsonbDeserializer<ZonedDateTime> {
+            @Override
+            public ZonedDateTime deserialize(JsonParser parser, DeserializationContext dctx, Type type) {
+                Map<?, ?> map = dctx.deserialize(Map.class, parser);
+                return ZonedDateTime.of(((Number) map.get("year")).intValue(),
+                                        ((Number) map.get("month")).intValue(),
+                                        ((Number) map.get("day")).intValue(),
+                                        ((Number) map.get("hour")).intValue(),
+                                        ((Number) map.get("minute")).intValue(),
+                                        ((Number) map.get("second")).intValue(),
+                                        0,
+                                        ZoneId.of((String) map.get("zone")));
+            }
+        }
     }
 
     /**
