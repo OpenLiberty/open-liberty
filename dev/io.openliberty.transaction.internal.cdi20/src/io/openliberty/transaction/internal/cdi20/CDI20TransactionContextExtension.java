@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.tx.jta.cdi;
+package io.openliberty.transaction.internal.cdi20;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -24,12 +24,12 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class,
            property = { "bean.defining.annotations=javax.transaction.TransactionScoped" })
-public class TransactionContextExtension implements Extension, WebSphereCDIExtension {
+public class CDI20TransactionContextExtension implements Extension, WebSphereCDIExtension {
 
-    private static final TraceComponent tc = Tr.register(TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+    private static final TraceComponent tc = Tr.register(CDI20TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-        TransactionContext tc = new TransactionContext(manager);
+        CDI20TransactionContext tc = new CDI20TransactionContext(manager);
         event.addContext(tc);
     }
 }

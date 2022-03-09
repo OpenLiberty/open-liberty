@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import com.ibm.ws.Transaction.TransactionScopeDestroyer;
 /**
  * Implementation for the TransactionScoped annotation.
  */
-public class TransactionContext implements AlterableContext, TransactionScopeDestroyer {
+public abstract class AbstractTransactionContext implements AlterableContext, TransactionScopeDestroyer {
 
     private final UserTransaction ut = UserTransactionImpl.instance();
 
@@ -46,7 +46,7 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
     private final String TXC_STORAGE_ID = "cdi_TXC";
 
-    private static final TraceComponent tc = Tr.register(TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+    private static final TraceComponent tc = Tr.register(AbstractTransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     private static InitializedQualifier initializedQualifier = initializedQualifier = new InitializedQualifier() {
         @Override
@@ -64,7 +64,7 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
     private final BeanManager beanManager;
 
-    public TransactionContext(BeanManager beanManager) {
+    public AbstractTransactionContext(BeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
@@ -96,7 +96,7 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
         storage.put(contextId, data);
 
         //A new transaction has called get() for the first time. This is what we consider to be the start of a transaction scope.
-        beanManager.fireEvent("Initializing transaction context", initializedQualifier);
+        fireEvent(beanManager, "Initializing transaction context", initializedQualifier);
 
         //Put this into the registry so it can be found when it's time to call destroy.
         tsr.putResource("transactionScopeDestroyer", this);
@@ -106,6 +106,8 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
         return t;
     }
+
+    public abstract void fireEvent(BeanManager beanManager, Object obj, Annotation... annotations);
 
     /*
      * (non-Javadoc)

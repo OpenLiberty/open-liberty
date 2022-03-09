@@ -30,6 +30,7 @@ Subsystem-Name: Jakarta Transactions 2.0
  com.ibm.ws.transaction.jakarta; start-phase:=CONTAINER_LATE, \
  com.ibm.tx.jta.jakarta, \
  com.ibm.ws.transaction.cdi.jakarta, \
+ io.openliberty.transaction.internal.cdi20.jakarta, \
  com.ibm.tx.util.jakarta, \
  com.ibm.tx.ltc.jakarta, \
  com.ibm.rls.jdbc.jakarta, \
