@@ -129,7 +129,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         this.securityReadyService = ref;
     }
 
-    protected void unsetSecurityReadyService(SecurityReadyService ref) {}
+    protected void unsetSecurityReadyService(SecurityReadyService ref) {
+    }
 
     protected void setUnauthenticatedSubjectService(ServiceReference<UnauthenticatedSubjectService> ref) {
         unauthenticatedSubjectServiceRef.setReference(ref);
@@ -179,7 +180,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * delegate to the run-as user, if specified. {@inheritDoc}
      *
      * @throws EJBAccessDeniedException when the caller is not authorized to invoke
-     *             the given request
+     *                                      the given request
      */
     /** {@inheritDoc} */
     @Override
@@ -432,7 +433,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * <li>is the subject authorized to any of the required roles</li>
      *
      * @param EJBRequestData the info on the EJB method to call
-     * @param subject the subject authorize
+     * @param subject        the subject authorize
      * @throws EJBAccessDeniedException when the subject is not authorized to the EJB
      */
     @Override
@@ -560,20 +561,23 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         return methodMetaData.getEJBComponentMetaData().getJ2EEName().getComponent();
     }
 
-    /**
-     * Gets the run-as subject for the given EJB method, and sets it as the invocation subject.
-     * If the run-as subject is null or the deployment descriptor specifies to run as the caller,
-     * then the passed-in subject is set as the invocation subject instead.
-     *
-     * @param methodMetaData the EJB method info
-     * @param delegationSubject subject to set as the invocation when running as caller
-     */
-    private void performDelegation(EJBMethodMetaData methodMetaData, Subject delegationSubject) {
-        ArrayList<String> delUsers = new ArrayList<String>();
-        String invalidUser = "";
-        Set<WSCredential> publicCredentials = (delegationSubject == null ? null : delegationSubject.getPublicCredentials(WSCredential.class));
-        Iterator<WSCredential> it = null;
+    private void performDelegationAudit(Subject initialSubject, String roleName, Subject delegationSubject, boolean success, AuthenticationService authService) {
+        final Object httpRequest = auditManager == null ? null : auditManager.getHttpServletRequest();
+
+        String outcome = success ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
+
+        // if HttpRequest is null, the audit does nothing, so don't call it if null
+        if (httpRequest == null || !Audit.isAuditRequired(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, outcome)) {
+            return;
+        }
+
         HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+        extraAuditData.put("HTTP_SERVLET_REQUEST", httpRequest);
+        extraAuditData.put("REASON_TYPE", "EJB");
+
+        ArrayList<String> delUsers = new ArrayList<String>();
+        Set<WSCredential> publicCredentials = (initialSubject == null ? null : initialSubject.getPublicCredentials(WSCredential.class));
+        Iterator<WSCredential> it = null;
         if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
             WSCredential credential = it.next();
             try {
@@ -590,21 +594,52 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             }
         }
 
-        String applicationName = getApplicationName(methodMetaData);
-        String methodName = methodMetaData.getMethodName();//TODO: which API to call? methodInfo.getMethodSignature()+":"+methodInfo.getInterfaceType().getValue();
-
-        if (auditManager != null && auditManager.getHttpServletRequest() != null) {
-            extraAuditData.put("HTTP_SERVLET_REQUEST", auditManager.getHttpServletRequest());
+        if (roleName == null) {
+            delUsers.add("EJB_RUNAS_SYSTEM");
+        } else {
+            extraAuditData.put("RUN_AS_ROLE", roleName);
+            if (delegationSubject != null) {
+                String buff = delegationSubject.toString();
+                if (buff != null) {
+                    int a = buff.indexOf("accessId");
+                    if (a != -1) {
+                        buff = buff.substring(a + 9);
+                        a = buff.indexOf(",");
+                        if (a != -1) {
+                            buff = buff.substring(0, a);
+                            delUsers.add(buff);
+                        }
+                    }
+                }
+            } else {
+                String invalidUser = authService.getInvalidDelegationUser();
+                delUsers.add(invalidUser);
+            }
         }
 
-        extraAuditData.put("REASON_TYPE", "EJB");
+        extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
+
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, outcome, success ? Integer.valueOf(200) : Integer.valueOf(401));
+    }
+
+    /**
+     * Gets the run-as subject for the given EJB method, and sets it as the invocation subject.
+     * If the run-as subject is null or the deployment descriptor specifies to run as the caller,
+     * then the passed-in subject is set as the invocation subject instead.
+     *
+     * @param methodMetaData    the EJB method info
+     * @param delegationSubject subject to set as the invocation when running as caller
+     */
+    private void performDelegation(EJBMethodMetaData methodMetaData, Subject delegationSubject) {
+
+        final Subject initialSubject = delegationSubject;
+        String applicationName = getApplicationName(methodMetaData);
+        String methodName = methodMetaData.getMethodName();//TODO: which API to call? methodInfo.getMethodSignature()+":"+methodInfo.getInterfaceType().getValue();
 
         if (methodMetaData.isUseSystemPrincipal()) {
             // fail request because run-as-mode SYSTEM_IDENTITY is not supported on Liberty
             Tr.error(tc, "EJB_RUNAS_SYSTEM_NOT_SUPPORTED", methodName, applicationName);
-            delUsers.add("EJB_RUNAS_SYSTEM");
-            extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-            Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
+            performDelegationAudit(initialSubject, null, null, false, null);
             throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
                                                                             TraceConstants.MESSAGE_BUNDLE,
                                                                             "EJB_RUNAS_SYSTEM_NOT_SUPPORTED",
@@ -622,69 +657,22 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             return;
         } else {
             String roleName = getRunAsRole(methodMetaData);
-            extraAuditData.put("RUN_AS_ROLE", roleName);
             if (roleName != null) {
+                waitForSecurity();
+                SecurityService securityService = securityServiceRef.getService();
+                AuthenticationService authService = securityService.getAuthenticationService();
+                boolean success;
                 try {
-                    waitForSecurity();
-                    SecurityService securityService = securityServiceRef.getService();
-                    AuthenticationService authService = securityService.getAuthenticationService();
                     delegationSubject = authService.delegate(roleName, getApplicationName(methodMetaData));
-
-                    if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
-                            }
-
-                        }
-                    } else {
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                    }
-                    extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-                    if (delegationSubject != null) {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.SUCCESS, Integer.valueOf(200));
-                    } else {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
-
-                    }
-
+                    success = (delegationSubject != null);
                 } catch (IllegalArgumentException e) {
-                    if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
-                            }
-
-                        }
-                    } else {
-                        SecurityService securityService = securityServiceRef.getService();
-                        AuthenticationService authService = securityService.getAuthenticationService();
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                        extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-                    }
-
-                    Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
-
+                    success = false;
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Exception performing delegation.", e);
                     }
                 }
+
+                performDelegationAudit(initialSubject, roleName, delegationSubject, success, authService);
             }
         }
 
