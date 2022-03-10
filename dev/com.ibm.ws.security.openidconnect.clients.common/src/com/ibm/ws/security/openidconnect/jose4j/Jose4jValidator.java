@@ -285,11 +285,15 @@ public class Jose4jValidator {
             return validatedJwtContext.getJwtClaims();
         } catch (InvalidJwtSignatureException e) {
             Object[] objs = new Object[] { this.clientId, e.getLocalizedMessage(), this.signingAlgorithm };
-            oidcClientRequest.errorCommon(new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR",
-                    "OIDC_JWT_SIGNATURE_VERIFY_ERR" }, objs); // 219214
+            if (oidcClientRequest != null) {
+                oidcClientRequest.errorCommon(new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR",
+                        "OIDC_JWT_SIGNATURE_VERIFY_ERR" }, objs); // 219214
 
-            if (OidcCommonClientRequest.TYPE_ID_TOKEN.equals(oidcClientRequest.getTokenType())) {
-                throw new IDTokenValidationFailedException(e.getMessage(), e);
+                if (OidcCommonClientRequest.TYPE_ID_TOKEN.equals(oidcClientRequest.getTokenType())) {
+                    throw new IDTokenValidationFailedException(e.getMessage(), e);
+                } else {
+                    throw new JWTTokenValidationFailedException(e.getMessage(), e);
+                }
             } else {
                 throw new JWTTokenValidationFailedException(e.getMessage(), e);
             }
@@ -354,16 +358,28 @@ public class Jose4jValidator {
         if (rpSpecifiedSigningAlgorithm) {
             // if algorithm is not NONE, then check the signature of jwt first
             if (signature.getEncodedSignature().isEmpty()) {
-                throw oidcClientRequest.errorCommon(true, tc, new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR",
-                        "OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR" },
-                        new Object[] { this.clientId, this.signingAlgorithm }); // 219214
+                Object[] objects = new Object[] { this.clientId, this.signingAlgorithm };
+                if (oidcClientRequest != null) {
+                    throw oidcClientRequest.errorCommon(true, tc, new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR",
+                            "OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR" }, objects);
+                } else {
+                    String errorMsg = Tr.formatMessage(tc, "OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR", objects);
+                    Tr.error(tc, errorMsg);
+                    throw new JWTTokenValidationFailedException(errorMsg);
+                }
             }
 
             // Doing the same thing as old jwt
             if (!(this.signingAlgorithm.equals(algHeader))) {
-                throw oidcClientRequest.errorCommon(true, tc, new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH",
-                        "OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH" }, // 219214
-                        new Object[] { this.clientId, this.signingAlgorithm, algHeader });
+                Object[] objects = new Object[] { this.clientId, this.signingAlgorithm, algHeader };
+                if (oidcClientRequest != null) {
+                    throw oidcClientRequest.errorCommon(true, tc, new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH",
+                            "OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH" }, objects);
+                } else {
+                    String errorMsg = Tr.formatMessage(tc, "OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH", objects);
+                    Tr.error(tc, errorMsg);
+                    throw new JWTTokenValidationFailedException(errorMsg);
+                }
             }
         }
     }

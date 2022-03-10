@@ -78,7 +78,7 @@ public class BackchannelLogoutHelper {
     }
 
     JwtToken validateLogoutToken(String logoutTokenString) throws BackchannelLogoutException {
-        LogoutTokenValidator validator = new LogoutTokenValidator();
+        LogoutTokenValidator validator = new LogoutTokenValidator(clientConfig);
         return validator.validateToken(logoutTokenString);
     }
 

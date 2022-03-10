@@ -55,6 +55,8 @@ Private-Package: \
     com.ibm.ws.common.internal.encoder.*, \
     com.ibm.ws.config.xml.internal.nester
 
+-dsannotations=com.ibm.ws.security.openidconnect.backchannellogout.LogoutTokenValidator
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.api.json;version=latest,\
@@ -105,4 +107,5 @@ Private-Package: \
 	com.ibm.json4j;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.container.service.compat;version=latest
+	com.ibm.ws.container.service.compat;version=latest,\
+	org.slf4j:slf4j-api;strategy=exact;version=1.7.30
