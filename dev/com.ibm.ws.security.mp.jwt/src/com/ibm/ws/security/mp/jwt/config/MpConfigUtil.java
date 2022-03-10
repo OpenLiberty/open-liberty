@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,30 +15,41 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
+@Component(property = { "service.vendor=IBM" })
 public class MpConfigUtil {
     private static TraceComponent tc = Tr.register(MpConfigUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    private final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef;
 
-    public MpConfigUtil(AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef) {
-        this.mpConfigProxyServiceRef = mpConfigProxyServiceRef;
+    private static MpConfigProxyService mpConfigProxyService = null;
+
+    @Reference(cardinality = ReferenceCardinality.AT_LEAST_ONE, policy = ReferencePolicy.DYNAMIC)
+    protected void setMpConfigProxyService(MpConfigProxyService proxyService) {
+        if (mpConfigProxyService == null) {
+            mpConfigProxyService = proxyService;
+        } else if (proxyService != null && (mpConfigProxyService.getVersion().compareTo(proxyService.getVersion()) < 0)) {
+            mpConfigProxyService = proxyService;
+        }
+    }
+
+    protected void unsetMpConfigProxyService(MpConfigProxyService proxyService) {
+        mpConfigProxyService = null;
     }
 
     public MpConfigProperties getMpConfig(HttpServletRequest req) {
         MpConfigProperties map = new MpConfigProperties();
-        MpConfigProxyService service = mpConfigProxyServiceRef.getService();
-        if (service != null) {
-            return getMpConfigMap(service, getApplicationClassloader(req), map);
+        if (mpConfigProxyService != null) {
+            return getMpConfigMap(mpConfigProxyService, getApplicationClassloader(req), map);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "MP JWT feature is not enabled.");

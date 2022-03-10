@@ -22,6 +22,8 @@ import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 
+import io.openliberty.security.common.serialization.Beta;
+
 public class OidcBaseClient extends BaseClient implements Serializable, OidcOAuth20Client {
 
     public static final String SN_CLIENT_ID_ISSUED_AT = OIDCConstants.OIDC_CLIENTREG_ISSUED_AT;
@@ -111,10 +113,10 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
 
     @Expose
     private boolean proofKeyForCodeExchange = false;
-    
+
     @Expose
     private boolean publicClient = false;
-    
+
     @Expose
     private boolean appPasswordAllowed = false;
 
@@ -137,9 +139,13 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     @SerializedName(OAuth20Constants.HASH_LENGTH)
     private int length = HashSecretUtils.DEFAULT_KEYSIZE;
 
+    @Expose
+    @Beta
     @SerializedName(SN_BACKCHANNEL_LOGOUT_URI)
     private String backchannelLogoutUri = null;
 
+    @Expose
+    @Beta
     @SerializedName(SN_BACKCHANNEL_LOGOUT_SESSION_REQUIRED)
     private boolean backchannelLogoutSessionRequired = false;
 

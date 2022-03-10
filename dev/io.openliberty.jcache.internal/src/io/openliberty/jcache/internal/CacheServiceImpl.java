@@ -15,11 +15,14 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.cache.Cache;
@@ -41,6 +44,8 @@ import com.ibm.ws.serialization.SerializationService;
 
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.CacheService;
+import io.openliberty.jcache.DeserializationException;
+import io.openliberty.jcache.SerializationException;
 
 /**
  * Service that configures an individual {@link Cache} instance for JCache
@@ -65,6 +70,9 @@ public class CacheServiceImpl implements CacheService {
 
     /** Flag tells us if the message for a call to a beta method has been issued */
     private static boolean issuedBetaMessage = false;
+
+    /** Collection of classes that have had error messages emitted for NotSerializableExceptions. */
+    private static final Set<String> NOTSERIALIZABLE_CLASSES_LOGGED = new HashSet<String>();
 
     @Activate
     public void activate(Map<String, Object> configProps) {
@@ -97,6 +105,7 @@ public class CacheServiceImpl implements CacheService {
             cache.close();
         }
         cache = null;
+        NOTSERIALIZABLE_CLASSES_LOGGED.clear();
     }
 
     /**
@@ -134,12 +143,9 @@ public class CacheServiceImpl implements CacheService {
             ObjectInputStream ois = serializationService.createObjectInputStream(bais,
                                                                                  cacheManagerService.getCachingProviderService().getUnifiedClassLoader());
             return ois.readObject();
-        } catch (ClassNotFoundException e) {
-            Tr.error(tc, "CWLJC0008_DESERIALIZE_ERR", cacheName, e);
-            return null;
-        } catch (IOException e) {
-            Tr.error(tc, "CWLJC0008_DESERIALIZE_ERR", cacheName, e);
-            return null;
+        } catch (ClassNotFoundException | IOException e) {
+            String msg = Tr.formatMessage(tc, "CWLJC0008_DESERIALIZE_ERR", cacheName, e);
+            throw new DeserializationException(msg, e);
         }
     }
 
@@ -155,8 +161,8 @@ public class CacheServiceImpl implements CacheService {
             oos.writeObject(o);
             return baos.toByteArray();
         } catch (IOException e) {
-            Tr.error(tc, "CWLJC0009_SERIALIZE_ERR", cacheName, e);
-            return null;
+            throwSerializationException(e);
+            return null; // Not reachable.
         }
     }
 
@@ -271,5 +277,31 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public String toString() {
         return super.toString() + "{id=" + id + ", cacheName=" + cacheName + "}";
+    }
+
+    /**
+     * This method throws a {@link SerializationException} always. It will print out trace when applicable.
+     *
+     * @param cause The cause of the Exception.
+     */
+    private void throwSerializationException(Exception cause) {
+        String msg = Tr.formatMessage(tc, "CWLJC0009_SERIALIZE_ERR", cacheName, cause);
+
+        /*
+         * If there is a java.io.NotSerializableException, let's only print out a message once for each class.
+         *
+         * As we add more functionality, we probably should also suppress internal Liberty classes that we
+         * know are not Serializable.
+         */
+        if (cause instanceof NotSerializableException) {
+            String className = cause.getMessage(); // The message is the class name.
+            if (!NOTSERIALIZABLE_CLASSES_LOGGED.contains(className)) {
+                NOTSERIALIZABLE_CLASSES_LOGGED.add(className);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                    Tr.error(tc, msg);
+                }
+            }
+        }
+        throw new SerializationException(msg, cause);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,11 @@ package com.ibm.ws.jca.utils.metagen;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.List;
 
-import javax.resource.spi.Activation;
-import javax.resource.spi.ConnectionDefinition;
 import javax.resource.spi.InvalidPropertyException;
 import javax.resource.spi.UnavailableException;
 import javax.xml.bind.JAXBContext;
@@ -41,398 +39,368 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.jca.utils.xml.ra.RaActivationSpec;
-import com.ibm.ws.jca.utils.xml.ra.RaAdminObject;
-import com.ibm.ws.jca.utils.xml.ra.RaConfigProperty;
-import com.ibm.ws.jca.utils.xml.ra.RaConnectionDefinition;
 import com.ibm.ws.jca.utils.xml.ra.RaConnector;
-import com.ibm.ws.jca.utils.xml.ra.RaInboundResourceAdapter;
-import com.ibm.ws.jca.utils.xml.ra.RaMessageAdapter;
-import com.ibm.ws.jca.utils.xml.ra.RaMessageListener;
-import com.ibm.ws.jca.utils.xml.ra.RaOutboundResourceAdapter;
-import com.ibm.ws.jca.utils.xml.ra.RaResourceAdapter;
 import com.ibm.ws.jca.utils.xml.ra.v10.Ra10Connector;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaActivationSpec;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaAdminObject;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaConfigProperty;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaConnectionDefinition;
 import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaConnector;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaInboundResourceAdapter;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaMessageAdapter;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaMessageListener;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaOutboundResourceAdapter;
-import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaResourceAdapter;
+import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
-/**
- *
- */
 public class DeploymentDescriptorParser {
+    @SuppressWarnings("unused")
     private static final TraceComponent tc = Tr.register(DeploymentDescriptorParser.class);
 
-    private static JAXBContext raContext, wlpRaContext, ra10Context = null;
+    public static final String jca15NamespaceURI = "http://java.sun.com/xml/ns/j2ee";
+    public static final String jca16NamespaceURI = "http://java.sun.com/xml/ns/javaee";
+    public static final String jca17NamespaceURI = "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String connectors20NamespaceURI = "https://jakarta.ee/xml/ns/jakartaee";     
+    
+    // JCA 1.0 - J2EE Version 1.3
+    // JCA 1.5 - J2EE Version 1.4
+    // JCA 1.6 - Java EE Version 6
+    // JCA 1.7 - Java EE Version 7?
+    // JCA 2.0 - Jakarta 9
+    // JCA 2.1 - Jakarta 10
 
-    private static EntityResolver resolver = new org.xml.sax.EntityResolver() {
+    /**
+     * Custom stub entity resolver: Resolve all DTD and XSD entity references
+     * as empty streams. Answer null (fail) all other entity references.
+     */
+    private static EntityResolver stubResolver = new org.xml.sax.EntityResolver() {
+        @SuppressWarnings("unused")
         @Override
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            // do not resolve the external url for the dtd.
-            if (systemId != null)
-                if (systemId.toLowerCase().endsWith(".dtd") || systemId.toLowerCase().endsWith(".xsd")) {
-                    return new org.xml.sax.InputSource(new java.io.StringReader(""));
+        public InputSource resolveEntity(String publicId, String systemId)
+            throws SAXException, IOException {
+
+            if ( systemId != null ) {
+                systemId = systemId.toLowerCase();
+                if ( systemId.endsWith(".dtd") || systemId.endsWith(".xsd") ) {
+                    return new InputSource( new StringReader("") );
                 }
+            }
             return null;
         }
     };
 
+    // The RA 10 context is not created unless and until
+    // a version 1.0 descriptor is parsed.
+
+    private static JAXBContext raContext;
+    private static JAXBContext wlpRaContext;
+    
+    private static Object ra10ContextLock = new Object();
+    private static JAXBContext ra10Context;
+
+    private static JAXBContext getRA10Context() throws JAXBException {
+        synchronized ( ra10ContextLock ) {
+            if ( ra10Context == null ) {
+                ra10Context = JAXBContext.newInstance(Ra10Connector.class);                
+            }
+            return ra10Context;
+        }
+    }
+    
     public synchronized static void init() {
-        if (raContext != null)
+        if ( raContext != null ) {
             return;
-        // TODOCJN need to sort this out where it should be, I think it is here to get rid of the linkage errors I was seeing
+        }
+
+        // TODO: CJN:
+        //
+        // Need to sort this out where this should be.
+        // I think it needs to be here to avoid linkage errors.
+
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
                 @Override
                 public Void run() throws ExceptionInInitializerError {
+                    JAXBContext useRaContext;
+                    JAXBContext useWlpRaContext;
+
                     try {
-                        raContext = JAXBContext.newInstance(RaConnector.class);
-                        wlpRaContext = JAXBContext.newInstance(WlpRaConnector.class);
-                        return null;
-                    } catch (JAXBException e) {
+                        useRaContext = JAXBContext.newInstance(RaConnector.class);
+                        useWlpRaContext = JAXBContext.newInstance(WlpRaConnector.class);
+                    } catch ( JAXBException e ) {
                         throw new ExceptionInInitializerError(e);
                     }
+
+                    raContext = useRaContext;
+                    wlpRaContext = useWlpRaContext;
+
+                    return null;
                 }
             });
-        } catch (PrivilegedActionException e1) {
-            if (e1.getCause() instanceof ExceptionInInitializerError)
+
+        } catch ( PrivilegedActionException e1 ) {
+            if ( e1.getCause() instanceof ExceptionInInitializerError ) {
                 throw (ExceptionInInitializerError) e1.getCause();
-            else
+            } else {
                 throw new RuntimeException(e1);
+            }
         }
     }
 
     /**
-     * This method is used to inspect the ra.xml and check if its a 1.0 RA. This is called only
-     * if we fail parsing the ra.xml using JAXB for 1.5/1.6
+     * Tell if the specification version of a resource adapter descriptor
+     * (ra.xml) is 1.0.
      *
-     * @param xmlStream The ra.xml file
-     * @return whether the resource adapter is a 1.0 resource adapter
+     * This is expensive, and is only done if a parse using a later version fails.
+     *
+     * @param xmlStream A stream opened on a resource adapter descriptor.
+     * @return True or false telling if the descroptor version is 1.0.
      */
+    @FFDCIgnore(ParseCompletedException.class)
     public static boolean isVersion10ResourceAdapter(InputStream xmlStream) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setValidating(false);
+
             XMLReader parser = factory.newSAXParser().getXMLReader();
-            SAXVersionHandler handler = new SAXVersionHandler();
-            parser.setEntityResolver(resolver);
-            parser.setContentHandler(handler);
-            parser.parse(new InputSource(xmlStream));
-            return handler.isVersion10ResourceAdapter;
-        } catch (SAXException ex) {
-            // Check for FFDC
-        } catch (ParserConfigurationException e) {
-            // Check for FFDC
-        } catch (IOException e) {
-            // Check for FFDC
+            parser.setEntityResolver(stubResolver);
+            parser.setContentHandler( new SAXVersionHandler() );
+            parser.parse( new InputSource(xmlStream) );
+
+            return false;
+
+        } catch ( ParseCompletedException e ) {
+            return e.isVersion10; // FFDCIgnore
+
+        } catch ( SAXException | ParserConfigurationException | IOException e ) {
+            return false; // AutoFFDC
         }
-        return false;
     }
 
     /**
-     * Converts a ra.xml (or wlp-ra.xml) into a RaConnector/RaConnector10 or WlpRaConnector object.
-     *
-     * @param xmlStream the stream to the wlp-/ra.xml file
-     * @return the parsed xml file
-     * @throws SAXException
-     * @throws JAXBException
-     * @throws ParserConfigurationException
+     * Used to complete parsing as soon as the version has been read. 
      */
-    public static Object parseResourceAdapterXml(InputStream xmlStream, String name, boolean version10) throws JAXBException, SAXException, ParserConfigurationException {
+    private static class ParseCompletedException extends SAXException {
+        private static final long serialVersionUID = 1L;
+
+        public final boolean isVersion10;
+
+        public ParseCompletedException(boolean isVersion10) {
+            this.isVersion10 = isVersion10;
+        }
+    }
+
+    /**
+     * Handler used to read the specification version of
+     * a resource adapter.
+     *
+     * This handler throws a <@link ParseCompletedException>
+     * immediately after parsing the text of the "spec-version"
+     * element, or immediately after completing the "spec-version"
+     * element, in case no text was provided.
+     *
+     * The thrown completion exception encapsulates whether the
+     * version was "1.0".  False is stored if no version text was
+     * handled.
+     *
+     * Use of non-local control flow is to avoid processing the entire
+     * document.  SAX processing does not provide a convenient way
+     * to terminate parsing.
+     * 
+     * This handler implementation works only for resource descriptors,
+     * which are expected to have at most one "spec-version" element,
+     * which specifies the specification version of the document.
+     */
+    @Trivial
+    private static class SAXVersionHandler extends DefaultHandler {
+        private boolean inSpecVersion;
+
+        @SuppressWarnings("unused")
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if ( qName.equalsIgnoreCase("spec-version") ) {
+                inSpecVersion = true;
+            }
+        }
+
+        @Override
+        @FFDCIgnore(ParseCompletedException.class)        
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if ( qName.equalsIgnoreCase("spec-version") ) {
+                inSpecVersion = false;
+                throw new ParseCompletedException(false);
+            }
+        }
+
+        @Override
+        @FFDCIgnore(ParseCompletedException.class)        
+        public void characters(char ch[], int start, int length) throws SAXException {
+            if ( inSpecVersion ) {
+                String versionStr = new String(ch, start, length);
+                throw new ParseCompletedException( "1.0".equals(versionStr) );
+            }
+        }
+    }
+
+    public static final boolean IS_VERSION_10 = true;
+
+    /**
+     * Create a RaConnector or WlpRaConnector from an input stream for
+     * a resource adapter "ra.xml" "wlp-ra.xml" resources.
+     * 
+     * If parsing creates an RaConnector10, convert that into an RaConnector.
+     * 
+     * RaConnector implements Connector.  WlpRaConnector does not implement
+     * connector.  Object is the only common super-type of the two return types.
+     * 
+     * @param xmlStream Stream containing XML format data, usually from a
+     *     "ra.xml" or "wlp-ra.xml" resource.
+     * @param name The name of the resource.  Should be "ra.xml" or "wlp-ra.xml".
+     * @param isVersion10 Control parameter.  Tells if the resource is to be
+     *     parsed using the 1.0 specification rules.  This is only attempted if
+     *     parsing using post-1.0 specification rules fails. 
+     *     
+     * @throws JAXBException Thrown if parsing fails.
+     * @throws SAXException Thrown if parsing fails.
+     * @throws ParserConfigurationException Thrown if parsing fails.
+     */
+    @SuppressWarnings("null")
+    public static Object parseResourceAdapterXml(
+        InputStream xmlStream, String name,
+        boolean isVersion10)
+        throws JAXBException, SAXException, ParserConfigurationException {
+
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        if (!version10) {
+        if ( !isVersion10 ) {
             factory.setNamespaceAware(true);
         }
         factory.setValidating(false);
+
         SAXParser parser = factory.newSAXParser();
+
         NamespaceFilter filter = null;
-        if (!version10) {
+        if ( !isVersion10 ) {
             filter = new NamespaceFilter();
-            filter.setParent(parser.getXMLReader());
+            filter.setParent( parser.getXMLReader() );
         }
-        parser.getXMLReader().setEntityResolver(resolver);
-        Unmarshaller unmarshaller = null;
-        if (name.equals("ra.xml") && !version10) {
-            unmarshaller = raContext.createUnmarshaller();
-        } else if (name.equals("ra.xml") && version10) {
-            unmarshaller = ra10Context.createUnmarshaller();
+
+        parser.getXMLReader().setEntityResolver(stubResolver);
+
+        JAXBContext context =
+            ( name.equals("ra.xml") ? (isVersion10 ? getRA10Context() : raContext)
+                                    : wlpRaContext );
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        
+        SAXSource source;
+        if ( !isVersion10 ) {
+            filter.setContentHandler( unmarshaller.getUnmarshallerHandler() );
+            source = new SAXSource( filter, new InputSource(xmlStream) );
         } else {
-            unmarshaller = wlpRaContext.createUnmarshaller();
+            parser.getXMLReader().setContentHandler( unmarshaller.getUnmarshallerHandler() );
+            source = new SAXSource( parser.getXMLReader(), new InputSource(xmlStream) );
         }
-        SAXSource source = null;
-        if (!version10) {
-            filter.setContentHandler(unmarshaller.getUnmarshallerHandler());
-            source = new SAXSource(filter, new InputSource(xmlStream));
-        } else {
-            parser.getXMLReader().setContentHandler(unmarshaller.getUnmarshallerHandler());
-            source = new SAXSource(parser.getXMLReader(), new InputSource(xmlStream));
-        }
+
         Object connector = unmarshaller.unmarshal(source);
-        if (connector instanceof Ra10Connector) {
-            RaConnector temp = new RaConnector();
-            temp.copyRa10Settings((Ra10Connector) connector);
-            connector = temp;
+        if ( connector instanceof Ra10Connector ) {
+            RaConnector raConnector = new RaConnector();
+            raConnector.copyRa10Settings((Ra10Connector) connector);
+            connector = raConnector;
         }
+        // Or, is a RaConnector already, or is a WlpRaConnector.
 
         return connector;
     }
 
     /**
-     * Called for parsing the ra.xml/wlp-ra.xml dd for the resource adapter.
+     * Parse an entry as an XML serialized connector.
      *
-     * @param ddEntry Entry corresponding to the deployment descriptor
+     * The return type depends on the entry name: "ra.xml" parses as
+     * <@link RaConnector>.  "wlp-ra.xml" parses as <@link WlpRaConnector>.
      *
-     * @throws JAXBException
-     * @throws SAXException
-     * @throws ParserConfigurationException
+     * A descriptor which uses the 1.0 specification is parsed as
+     * <@link Ra10Connector>.  That is converted to <@link RaConnector> as
+     * the return value.
+     *
+     * Parsing is attempted first using the post 1.0 specifications.  Only
+     * if that first parse attempt fails is a parse of the 1.0 specification
+     * attempt.
+     *
+     * @param ddEntry The entry of the deployment descriptor.
+     * 
+     * @throws JAXBException, SAXException, ParserConfigurationException
+     *     Thrown if parsing fails.  Usually, because the descriptor XML
+     *     text is not valid.
+     * @throws UnableToAdaptException Thrown if there was a problem reading
+     *     the XML resource.
      */
     @FFDCIgnore(JAXBException.class)
-    public static Object parseRaDeploymentDescriptor(com.ibm.wsspi.adaptable.module.Entry ddEntry) throws JAXBException, SAXException, ParserConfigurationException, UnableToAdaptException {
-        Object connector = null;
+    public static Object parseRaDeploymentDescriptor(Entry ddEntry)
+        throws JAXBException, SAXException, ParserConfigurationException, UnableToAdaptException {
+
+        String ddName = ddEntry.getName();
+
         try {
-            connector = parseResourceAdapterXml(ddEntry.adapt(InputStream.class), ddEntry.getName(), false);
-        } catch (JAXBException jax) {
-            if (isVersion10ResourceAdapter(ddEntry.adapt(InputStream.class))) {
-                if (ra10Context == null) {
-                    ra10Context = JAXBContext.newInstance(Ra10Connector.class);
-                }
-                connector = parseResourceAdapterXml(ddEntry.adapt(InputStream.class), ddEntry.getName(), true);
-            } else {
+            try ( InputStream ddStream = ddEntry.adapt(InputStream.class) ) {
+                return parseResourceAdapterXml(ddStream, ddName, !IS_VERSION_10);
+            } catch ( IOException e ) {
+                throw new UnableToAdaptException(e);
+            }
+
+        } catch ( JAXBException jax ) {
+            boolean isVersion10;
+            try ( InputStream ddStream = ddEntry.adapt(InputStream.class) ) {
+                isVersion10 = isVersion10ResourceAdapter(ddStream);
+            } catch ( IOException e ) {
+                throw new UnableToAdaptException(e);
+            }
+            if ( !isVersion10 ) {
                 throw jax;
             }
+
+            try ( InputStream ddStream = ddEntry.adapt(InputStream.class) ) {
+                return parseResourceAdapterXml(ddStream, ddName, IS_VERSION_10);
+            } catch ( IOException e ) {
+                throw new UnableToAdaptException(e);
+            }
         }
-        return connector;
     }
 
-    // TODOCJN raConnector should be the ra.xml combined with annotations and javabeans, if any
-    // before being called since it can be used to override any of those?  Need to look for all places where this is
-    // invoked.  It's probably ok to merge ra.xml + wlp-ra.xml before doing annotations/javabeans?
-    // That will happen in ConnectorAdapter
-    /**
-     * Combines a converted wlp-ra.xml into a parsed ra.xml
-     *
-     * @param raConnector the combined parsed ra.xml file, annotations, java bean properties, if any
-     * @param wlpRaConnector the parsed wlp-ra.xml file
-     * @throw InvalidPropertyException
-     * @throws UnavailableException
-     */
-    public static void combineWlpAndRaXmls(final String adapterName, RaConnector raConnector, WlpRaConnector wlpRaConnector) throws InvalidPropertyException, UnavailableException {
-        raConnector.copyWlpSettings(wlpRaConnector);
+    @Deprecated // Use DeploymentDescriptorMerger::merge directly.
+    public static void combineWlpAndRaXmls(
+        String adapterName,
+        RaConnector raConnector,
+        WlpRaConnector wlpRaConnector) throws InvalidPropertyException, UnavailableException {
 
-        WlpRaResourceAdapter wlpResourceAdapter = wlpRaConnector.getResourceAdapter();
-        RaResourceAdapter raResourceAdapter = raConnector.getResourceAdapter();
-
-        if (wlpResourceAdapter != null) {
-            raResourceAdapter.copyWlpSettings(wlpResourceAdapter);
-            // process resourceadapter level config-property
-            if (wlpResourceAdapter.getConfigProperties() != null) {
-                List<WlpRaConfigProperty> wlpConfigProperties = wlpResourceAdapter.getConfigProperties();
-                for (WlpRaConfigProperty wlpConfigProperty : wlpConfigProperties) {
-                    if (wlpConfigProperty.addWlpPropertyToMetatype()) {
-                        if (raResourceAdapter.isConfigPropertyAlreadyDefined(wlpConfigProperty.getWlpPropertyName()))
-                            throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(), adapterName));
-                        else {
-                            RaConfigProperty property = new RaConfigProperty();
-                            property.copyWlpSettings(wlpConfigProperty);
-                            raResourceAdapter.getConfigProperties().add(property);
-                        }
-                    } else {
-                        RaConfigProperty raConfigProperty = raResourceAdapter.getConfigPropertyById(wlpConfigProperty.getWlpPropertyName());
-                        if (raConfigProperty == null)
-                            throw new UnavailableException(Tr.formatMessage(tc, "J2CA9909.missing.matching.config.prop", wlpConfigProperty.getWlpPropertyName(), adapterName));
-                        else
-                            raConfigProperty.copyWlpSettings(wlpConfigProperty);
-                    }
-                }
-            }
-
-            // process resourceadapter level adminobject
-            List<WlpRaAdminObject> wlpAdminObjects = wlpResourceAdapter.getAdminObjects();
-            if (wlpAdminObjects != null) {
-                for (WlpRaAdminObject wlpAdminObject : wlpAdminObjects) {
-                    RaAdminObject raAdminObject = raResourceAdapter.getAdminObject(wlpAdminObject.getAdminObjectInterface(), wlpAdminObject.getAdminObjectClass());
-                    if (raAdminObject == null)
-                        throw new UnavailableException(Tr.formatMessage(tc, "J2CA9910.missing.matching.adminobject",
-                                                                        wlpAdminObject.getAdminObjectInterface(), wlpAdminObject.getAdminObjectClass(), adapterName));
-                    else {
-                        raAdminObject.copyWlpSettings(wlpAdminObject);
-                        if (wlpAdminObject.getConfigProperties() != null) {
-                            List<WlpRaConfigProperty> wlpConfigProperties = wlpAdminObject.getConfigProperties();
-                            for (WlpRaConfigProperty wlpConfigProperty : wlpConfigProperties) {
-                                if (wlpConfigProperty.addWlpPropertyToMetatype()) {
-                                    if (raAdminObject.isConfigPropertyAlreadyDefined(wlpConfigProperty.getWlpPropertyName()))
-                                        throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(), adapterName));
-                                    else {
-                                        RaConfigProperty property = new RaConfigProperty();
-                                        property.copyWlpSettings(wlpConfigProperty);
-                                        raAdminObject.getConfigProperties().add(property);
-                                    }
-                                } else {
-                                    RaConfigProperty raConfigProperty = raAdminObject.getConfigPropertyById(wlpConfigProperty.getWlpPropertyName());
-                                    if (raConfigProperty == null)
-                                        throw new UnavailableException(Tr.formatMessage(tc, "J2CA9909.missing.matching.config.prop", wlpConfigProperty.getWlpPropertyName(),
-                                                                                        adapterName));
-                                    else
-                                        raConfigProperty.copyWlpSettings(wlpConfigProperty);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // process outbound-resourceadapter
-            WlpRaOutboundResourceAdapter wlpOutboundAdapter = wlpResourceAdapter.getOutboundResourceAdapter();
-            if (wlpOutboundAdapter != null) {
-                RaOutboundResourceAdapter raOutboundAdapter = raResourceAdapter.getOutboundResourceAdapter();
-                if (wlpOutboundAdapter.getConnectionDefinitions() != null) {
-                    List<WlpRaConnectionDefinition> wlpConnectionDefinitions = wlpOutboundAdapter.getConnectionDefinitions();
-                    for (WlpRaConnectionDefinition wlpConnectionDefinition : wlpConnectionDefinitions) {
-                        RaConnectionDefinition raConnectionDefinition = raOutboundAdapter.getConnectionDefinitionByInterface(wlpConnectionDefinition.getConnectionFactoryInterface());
-                        if (raConnectionDefinition == null)
-                            throw new UnavailableException(Tr.formatMessage(tc, "J2CA9911.missing.matching.type",
-                                                                            "connection-definition", wlpConnectionDefinition.getConnectionFactoryInterface(),
-                                                                            ConnectionDefinition.class.getSimpleName(), adapterName));
-                        else {
-                            raConnectionDefinition.copyWlpSettings(wlpConnectionDefinition);
-                            if (wlpConnectionDefinition.getConfigProperties() != null) {
-                                List<WlpRaConfigProperty> wlpConfigProperties = wlpConnectionDefinition.getConfigProperties();
-                                // process connection-definition config-property
-                                for (WlpRaConfigProperty wlpConfigProperty : wlpConfigProperties) {
-                                    if (wlpConfigProperty.addWlpPropertyToMetatype()) {
-                                        if (raConnectionDefinition.isConfigPropertyAlreadyDefined(wlpConfigProperty.getWlpPropertyName()))
-                                            throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(),
-                                                                                                adapterName));
-                                        else {
-                                            RaConfigProperty property = new RaConfigProperty();
-                                            property.copyWlpSettings(wlpConfigProperty);
-                                            raConnectionDefinition.getConfigProperties().add(property);
-                                        }
-                                    } else {
-                                        RaConfigProperty raConfigProperty = raConnectionDefinition.getConfigPropertyById(wlpConfigProperty.getWlpPropertyName());
-                                        if (raConfigProperty == null)
-                                            throw new UnavailableException(Tr.formatMessage(tc, "J2CA9909.missing.matching.config.prop", wlpConfigProperty.getWlpPropertyName(),
-                                                                                            adapterName));
-                                        else
-                                            raConfigProperty.copyWlpSettings(wlpConfigProperty);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // process inbound-resourceadapter
-            WlpRaInboundResourceAdapter wlpInboundAdapter = wlpResourceAdapter.getInboundResourceAdapter();
-            if (wlpInboundAdapter != null) {
-                RaInboundResourceAdapter raInboundAdapter = raResourceAdapter.getInboundResourceAdapter();
-                // process messageadapter
-                WlpRaMessageAdapter wlpMessageAdapter = wlpInboundAdapter.getMessageAdapter();
-                if (wlpMessageAdapter != null) {
-                    if (wlpMessageAdapter.getMessageListeners() != null) {
-                        RaMessageAdapter raMessageAdapter = raInboundAdapter.getMessageAdapter();
-                        List<WlpRaMessageListener> wlpMessageListeners = wlpMessageAdapter.getMessageListeners();
-                        for (WlpRaMessageListener wlpMessageListener : wlpMessageListeners) {
-                            RaMessageListener raMessageListener = raMessageAdapter == null ? null : raMessageAdapter.getMessageListenerByType(wlpMessageListener.getMessageListenerType());
-                            if (raMessageListener == null)
-                                throw new UnavailableException(Tr.formatMessage(tc, "J2CA9911.missing.matching.type",
-                                                                                "messagelistener", wlpMessageListener.getMessageListenerType(),
-                                                                                Activation.class.getSimpleName(), adapterName));
-                            else {
-                                raMessageListener.copyWlpSettings(wlpMessageListener);
-                                if (wlpMessageListener.getActivationSpec() != null) {
-                                    WlpRaActivationSpec wlpActivationSpec = wlpMessageListener.getActivationSpec();
-                                    RaActivationSpec raActivationSpec = raMessageListener.getActivationSpec();
-                                    if (raActivationSpec == null)
-                                        throw new UnavailableException(Tr.formatMessage(tc, "J2CA9911.missing.matching.type",
-                                                                                        "activationspec", raMessageListener.getMessageListenerType(),
-                                                                                        Activation.class.getSimpleName(), adapterName));
-                                    else if (wlpActivationSpec.getConfigProperties() != null) {
-                                        List<WlpRaConfigProperty> wlpConfigProperties = wlpActivationSpec.getConfigProperties();
-                                        for (WlpRaConfigProperty wlpConfigProperty : wlpConfigProperties) {
-                                            if (wlpConfigProperty.addWlpPropertyToMetatype())
-                                                if (raActivationSpec.isConfigPropertyAlreadyDefined(wlpConfigProperty.getWlpPropertyName()))
-                                                    throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(),
-                                                                                                        adapterName));
-                                                else {
-                                                    RaConfigProperty property = new RaConfigProperty();
-                                                    property.copyWlpSettings(wlpConfigProperty);
-                                                    raActivationSpec.getConfigProperties().add(property);
-                                                }
-                                            else {
-                                                RaConfigProperty raConfigProperty = raActivationSpec.getConfigPropertyById(wlpConfigProperty.getWlpPropertyName());
-                                                if (raConfigProperty == null)
-                                                    throw new UnavailableException(Tr.formatMessage(tc, "J2CA9909.missing.matching.config.prop",
-                                                                                                    wlpConfigProperty.getWlpPropertyName(),
-                                                                                                    adapterName));
-                                                else
-                                                    raConfigProperty.copyWlpSettings(wlpConfigProperty);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        DeploymentDescriptorMerger.merge(adapterName, raConnector, wlpRaConnector);
     }
 
     @Trivial
     static class NamespaceFilter extends XMLFilterImpl {
+        /**
+         * Override: Change the namespace URI to the current maximum supported
+         * namespace URI.  That is the connectors 2.0 namespace URI, which also
+         * is the connetors 2.1 namespace URI.
+         * 
+         * This means that connector parsing is always enabled to the highest
+         * supported specification, regardless of which specification version
+         * is provisioned.  Any uplevel data values will be read, and will
+         * be ignored.
+         */
         @Override
-        public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
-            String JCA15NamespaceURI = "http://java.sun.com/xml/ns/j2ee";
-            String JCA16NamespaceURI = "http://java.sun.com/xml/ns/javaee";
-            String JCA17NamespaceURI = "http://xmlns.jcp.org/xml/ns/javaee";
-            String Connectors20NamespaceURI = "https://jakarta.ee/xml/ns/jakartaee";
-            namespaceURI = namespaceURI.trim().toLowerCase().intern(); // on zOS it is required that Namespace URIs are interned
-            //Convert the older namespaces as we need to process for multiple namespaces with the same objects.
-            if (namespaceURI.equals(JCA15NamespaceURI) || namespaceURI.equals(JCA16NamespaceURI) || namespaceURI.contentEquals(JCA17NamespaceURI)) {
-                super.startElement(Connectors20NamespaceURI, localName, qualifiedName, attributes);
-            } else {
-                super.startElement(namespaceURI, localName, qualifiedName, attributes);
+        public void startElement(
+                String namespaceURI,
+                String localName, String qualifiedName,
+                Attributes attributes)
+            throws SAXException {
+
+            // On zOS it is required that Namespace URIs be interned.
+            // TODO: Why??
+
+            namespaceURI = namespaceURI.trim().toLowerCase().intern();
+
+            // Convert the older namespaces as we need to process for multiple namespaces
+            // with the same objects.
+
+            if ( namespaceURI.equals(jca15NamespaceURI) ||
+                 namespaceURI.equals(jca16NamespaceURI) ||
+                 namespaceURI.contentEquals(jca17NamespaceURI) ) {
+                namespaceURI = connectors20NamespaceURI;
             }
+
+            super.startElement(namespaceURI, localName, qualifiedName, attributes);
         }
-    }
-
-    // Handler for the SAX Parser to check version.
-    @Trivial
-    static class SAXVersionHandler extends DefaultHandler {
-        public boolean isVersion10ResourceAdapter = false;
-        boolean isVersion = false;
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            if (qName.equalsIgnoreCase("spec-version"))
-                isVersion = true;
-        }
-
-        @Override
-        public void characters(char ch[], int start, int length) throws SAXException {
-            if (isVersion) {
-                String version = new String(ch, start, length);
-                if ("1.0".equals(version)) {
-                    isVersion10ResourceAdapter = true;
-                }
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            if (qName.equalsIgnoreCase("spec-version"))
-                isVersion = false;
-        }
-
     }
 }

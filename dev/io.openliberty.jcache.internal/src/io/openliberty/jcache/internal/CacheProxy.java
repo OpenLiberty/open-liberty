@@ -85,6 +85,11 @@ public class CacheProxy implements Cache<Object, Object> {
         cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws DeserializeException if the retrieved value cannot be deserialized.
+     */
     @Override
     @Sensitive
     public Object get(Object key) {
@@ -95,6 +100,11 @@ public class CacheProxy implements Cache<Object, Object> {
         return deserializeIfNecessary(jObject);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws DeserializeException if any of the retrieved values cannot be deserialized.
+     */
     @Override
     @Sensitive
     public Map<Object, Object> getAll(Set<? extends Object> keys) {
@@ -111,6 +121,11 @@ public class CacheProxy implements Cache<Object, Object> {
         return results;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws DeserializeException if the old value cannot be deserialized.
+     */
     @Override
     @Sensitive
     public Object getAndPut(Object key, @Sensitive Object value) {
@@ -124,12 +139,22 @@ public class CacheProxy implements Cache<Object, Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws DeserializeException if the retrieved value cannot be deserialized.
+     */
     @Override
     @Sensitive
     public Object getAndRemove(Object key) {
         return deserializeIfNecessary((CacheObject) cache.getAndRemove(key));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws DeserializeException if the retrieved value cannot be deserialized.
+     */
     @Override
     @Sensitive
     public Object getAndReplace(Object key, @Sensitive Object value) {
@@ -174,6 +199,11 @@ public class CacheProxy implements Cache<Object, Object> {
         return cache.isClosed();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * The Iterator returned from this method can throw DeserializationException when accessing the values.
+     */
     @Override
     public Iterator<Cache.Entry<Object, Object>> iterator() {
         return new CacheProxyIterator(cache.iterator());
@@ -191,6 +221,11 @@ public class CacheProxy implements Cache<Object, Object> {
         cache.put(key, newValue);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws SerializeException if any values in map cannot be serialized.
+     */
     @Override
     public void putAll(@Sensitive Map<? extends Object, ? extends Object> map) {
         Map<Object, Object> values = new HashMap<Object, Object>();
@@ -204,6 +239,11 @@ public class CacheProxy implements Cache<Object, Object> {
         cache.putAll(values);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws SerializeException if value cannot be serialized.
+     */
     @Override
     public boolean putIfAbsent(Object key, @Sensitive Object value) {
         CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
@@ -221,6 +261,11 @@ public class CacheProxy implements Cache<Object, Object> {
         return cache.remove(key);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws SerializeException if oldValue cannot be serialized.
+     */
     @Override
     public boolean remove(Object key, @Sensitive Object oldValue) {
         CacheObject oldValue1 = new CacheObject(oldValue, cacheService.serialize(oldValue));
@@ -237,12 +282,22 @@ public class CacheProxy implements Cache<Object, Object> {
         cache.removeAll(keys);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws SerializeException if value cannot be serialized.
+     */
     @Override
     public boolean replace(Object key, @Sensitive Object value) {
         CacheObject newValue = new CacheObject(value, cacheService.serialize(value));
         return cache.replace(key, newValue);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws SerializeException if oldValue or newValue cannot be serialized.
+     */
     @Override
     public boolean replace(Object key, @Sensitive Object oldValue, @Sensitive Object newValue) {
         CacheObject oldValue1 = new CacheObject(oldValue, cacheService.serialize(oldValue));
@@ -260,6 +315,7 @@ public class CacheProxy implements Cache<Object, Object> {
      *
      * @param jObject The {@link CacheObject} to deserialize the object within.
      * @return The deserialized object that was in the {@link CacheObject}.
+     * @throws DeserializeException if jObject cannot be deserialized.
      */
     @Sensitive
     private Object deserializeIfNecessary(@Sensitive CacheObject jObject) {

@@ -17,13 +17,15 @@ Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
 
 -dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
-                com.ibm.ws.cdi.impl.BeanParserImpl
+                com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl,\
+                com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
                 com.ibm.ws.cdi.proxy
 
-Import-Package: *
+Import-Package: com.ibm.ws.cdi.internal.resources,\
+                *
                
 Private-Package: \
                 com.ibm.ws.cdi.impl

@@ -21,6 +21,7 @@ Export-Package: \
         com.ibm.ws.cdi.internal.interfaces,\
         com.ibm.ws.cdi.internal.archive,\
         com.ibm.ws.cdi.internal.archive.liberty,\
+        com.ibm.ws.cdi.internal.config,\
         com.ibm.ws.cdi.internal.resources
 
 instrument.classesExcludes: com/ibm/ws/cdi/internal/resources/*.class

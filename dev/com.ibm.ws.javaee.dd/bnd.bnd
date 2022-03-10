@@ -24,7 +24,6 @@ Bundle-Description: JavaEE Deployment Descriptor API service, version ${bVersion
 # exporting) everything from com.ibm.ws.javaee.dd.common, which is a lib 
 # dependency of this bundle
 Export-Package: \
-    com.ibm.ws.javaee.dd, \
     com.ibm.ws.javaee.dd.app, \
     com.ibm.ws.javaee.dd.appbnd, \
     com.ibm.ws.javaee.dd.appext, \

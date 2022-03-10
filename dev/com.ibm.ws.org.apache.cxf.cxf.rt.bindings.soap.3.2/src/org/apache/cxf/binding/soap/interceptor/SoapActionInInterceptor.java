@@ -254,7 +254,7 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
             if (boi == null) {
                 return;
             }
-            LOG.fine("boi = " + boi + " action = " + action + " message = " + message); // Liberty code change
+            LOG.finest("boi = " + boi + " action = " + action + " message = " + message); // Liberty code change
             if (StringUtils.isEmpty(action)) {
                 return;
             }

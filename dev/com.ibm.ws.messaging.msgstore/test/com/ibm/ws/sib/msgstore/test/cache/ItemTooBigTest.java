@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /*
- * 
+ *
  *
  * Change activity:
  *
@@ -29,80 +29,63 @@ import com.ibm.ws.sib.msgstore.ItemStream;
 import com.ibm.ws.sib.msgstore.MessageStore;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
 import com.ibm.ws.sib.msgstore.Statistics;
+import com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;
 import com.ibm.ws.sib.msgstore.test.MessageStoreTestCase;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 
 /**
- * Test the behaviour when adding a new item to a full cache.
- * The existing items are all avaialable
- * 
+ * Test the behaviour when adding a new item to a full cache. The existing items
+ * are all avaialable
+ *
  * @author DrPhill
- * 
+ *
  */
-public class ItemTooBigTest extends MessageStoreTestCase implements MessageStoreConstants
-{
-    public ItemTooBigTest(String arg0)
-    {
+public class ItemTooBigTest extends MessageStoreTestCase implements MessageStoreConstants {
+    private static final class PropertySetter implements AutoCloseable {
+        private final String key;
+        private final String originalValue;
+
+        PropertySetter(String key, String value) {
+            this.key = key;
+            this.originalValue = System.getProperty(key);
+            System.setProperty(key, value);
+        }
+
+        public void close() {
+            if (null == originalValue) System.clearProperty(key);
+            else System.setProperty(key, originalValue);
+        }
+    }
+
+    public ItemTooBigTest(String arg0) {
         super(arg0);
     }
 
-    public void testItemTooBig()
-    {
+    public void testItemTooBig() throws Exception {
         // set maximum in cache
-        String originalStored = System.getProperty(STANDARD_PROPERTY_PREFIX + PROP_STORED_CACHE_SIZE);
-        String originalUnstored = System.getProperty(STANDARD_PROPERTY_PREFIX + PROP_UNSTORED_CACHE_SIZE);
+        final String keyForStored = STANDARD_PROPERTY_PREFIX + PROP_STORED_CACHE_SIZE;
+        final String keyForUnstored = STANDARD_PROPERTY_PREFIX + PROP_UNSTORED_CACHE_SIZE;
 
-        System.setProperty(STANDARD_PROPERTY_PREFIX + PROP_STORED_CACHE_SIZE, "5000");
-        System.setProperty(STANDARD_PROPERTY_PREFIX + PROP_UNSTORED_CACHE_SIZE, "5000");
-        // set trace
-        //        String trace = "com.ibm.ws.sib.msgstore.cache.ref.*=all=enabled";
-        //        configureTrace(trace);
-        //        turnOnTrace();
-
-        MessageStore messageStore = null;
-        try
-        {
-            messageStore = MessageStore.createInstance();
+        try (
+                PropertySetter s1 = new PropertySetter(keyForStored, "5000");
+                PropertySetter s2 = new PropertySetter(keyForUnstored, "5000")) {
             Configuration configuration = Configuration.createBasicConfiguration();
             configuration.setObjectManagerLogDirectory("build");
             configuration.setObjectManagerPermanentStoreDirectory("build");
             configuration.setObjectManagerTemporaryStoreDirectory("build");
             configuration.setCleanPersistenceOnStart(true);
+
+            final MessageStore messageStore = MessageStoreImpl.createForTesting();
             messageStore.initialize(configuration);
             messageStore.start();
+            try {
+                JsHealthState state = messageStore.getHealthState();
+                if (!state.isOK()) {
+                    fail("Failed to start message store. Health State: " + state);
+                }
 
-            JsHealthState state = messageStore.getHealthState();
-            if (!state.isOK())
-            {
-                fail("Failed to start message store. Health State: " + state);
-            }
-
-            testMe(messageStore);
-
-        } catch (Exception e)
-        {
-            e.printStackTrace(System.err);
-            fail("exception: " + e);
-        } finally
-        {
-            if (null == originalStored)
-            {
-                System.getProperties().remove(STANDARD_PROPERTY_PREFIX + PROP_STORED_CACHE_SIZE);
-            }
-            else
-            {
-                System.setProperty(STANDARD_PROPERTY_PREFIX + PROP_STORED_CACHE_SIZE, originalStored);
-            }
-            if (null == originalStored)
-            {
-                System.getProperties().remove(STANDARD_PROPERTY_PREFIX + PROP_UNSTORED_CACHE_SIZE);
-            }
-            else
-            {
-                System.setProperty(STANDARD_PROPERTY_PREFIX + PROP_UNSTORED_CACHE_SIZE, originalUnstored);
-            }
-            if (null != messageStore)
-            {
+                testMe(messageStore);
+            } finally {
                 messageStore.stop(0);
             }
         }

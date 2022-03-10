@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
-import java.security.Key;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -19,10 +18,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -32,7 +29,6 @@ import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -247,10 +243,7 @@ public class UserInfoHelper {
         JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            JsonWebStructure jwsStructure = jose4jUtil.getJsonWebStructureFromJwtContext(jwtContext);
-            Key signingKey = jose4jUtil.getSignatureVerificationKeyFromJsonWebStructure(jwsStructure, clientConfig, oidcClientRequest);
-            Jose4jValidator validator = new Jose4jValidator(signingKey, clientConfig.getClockSkewInSeconds(), null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
-            JwtClaims claims = validator.validateJwsSignature((JsonWebSignature) jwsStructure, responseString);
+            JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, clientConfig, oidcClientRequest);
             if (claims != null) {
                 return claims.toJson();
             }

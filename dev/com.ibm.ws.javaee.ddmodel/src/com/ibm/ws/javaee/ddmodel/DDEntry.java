@@ -49,7 +49,6 @@ public class DDEntry<T> implements ArtifactEntry {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public String getPhysicalPath() {
         throw new UnsupportedOperationException();
     }

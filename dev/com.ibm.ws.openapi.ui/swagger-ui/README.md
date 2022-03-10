@@ -102,11 +102,21 @@ When started like this, it expects to be able to load an openapi document from `
    ./gradlew :com.ibm.ws.openapi.ui:assemble :com.ibm.ws.openapi.ui.private:assemble :com.ibm.ws.microprofile.openapi.ui:assemble
    ```
 
-1. Test (see below) and check in all the changes from this directory.
+1. Make a commit with your changes. This should include:
+   * Updating `package.json` and `package-lock.json` with the new dependency versions
+   * Deleting the existing `.js` file in `dist` and creating a new one with a different filename
+   * If there were styling changes in the new version of swagger-ui:
+     * Changes to files in `src/style/original`
+     * Deleting the existing `.css` file in `dist` and creating a new one with a different filename
+   * Updating the `.html` files in `dist` with the new `.js` and `.css` file names
+
+1. Make a PR and run a personal build.
+
+1. Using the result of your personal build, follow the manual test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
 
 ### Testing
 
-Before delivering changes, follow the test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
+Before delivering changes, create a PR and run a personal build. Using the personal build result, follow the test plan available at https://github.com/OpenLiberty/openapi-ui-test-app
 
 ### Other references
 

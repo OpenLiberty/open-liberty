@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,25 @@ import java.util.List;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 
 public interface ValidationConfig extends DeploymentDescriptor {
+    String DD_SHORT_NAME = "validation.xml";
 
+    String DD_NAME_WEB = "WEB-INF/validation.xml";
+    String DD_NAME_EJB = "META-INF/validation.xml";
+    String DD_NAME_WEB_ALT = "WEB-INF/classes/META-INF/validation.xml";
+
+    String[] DD_NAMES = {
+        DD_NAME_WEB,
+        DD_NAME_WEB_ALT,
+        DD_NAME_EJB
+    };
+    
     int VERSION_1_0 = 10;
     int VERSION_1_1 = 11;
     
     // The "1.0" validation configuration schema does not have
     // a version attribute.
     // String VERSION_1_0_STR = "1.0";
+
     String VERSION_1_1_STR = "1.1";
 
     int getVersionID();

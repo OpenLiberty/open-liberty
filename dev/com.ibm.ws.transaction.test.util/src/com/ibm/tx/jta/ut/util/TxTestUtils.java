@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.tx.jta.ut.util;
 
+import java.net.ConnectException;
+import java.sql.SQLException;
+import java.sql.SQLNonTransientException;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,10 +33,14 @@ public class TxTestUtils {
     /**  */
     private static final long serialVersionUID = 1L;
 
+	public static final String CONNECTION_MANAGER_FAILS = "CONNECTION_MANAGER_FAILS";
+
     /**
      * Message written to servlet to indicate that is has been successfully invoked.
      */
     public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
+
+	private static int connectCount;
 
     public static String printStatus(int status) {
         switch (status) {
@@ -77,4 +87,26 @@ public class TxTestUtils {
             }
         });
     }
+
+	public static void scupperConnection() throws SQLException {
+
+        String fails = System.getenv(CONNECTION_MANAGER_FAILS);
+        System.out.println("SIMHADB: getDriverConnection: " + CONNECTION_MANAGER_FAILS + "=" + fails);
+
+        HashSet<Integer> failSet = new HashSet<Integer>();
+        if (fails != null) {
+            StringTokenizer st = new StringTokenizer(fails, ",");
+            while (st.hasMoreTokens()) {
+                failSet.add(Integer.parseInt(st.nextToken()));
+            }
+        }
+
+        connectCount++;
+        System.out.println("SIMHADB: getDriverConnection: connectCount=" + connectCount);
+
+        if (failSet.contains(connectCount)) {
+            System.out.println("SIMHADB: getDriverConnection: scuppering now");
+            throw new SQLNonTransientException(new ConnectException("Scuppering connection attempt number " + connectCount));
+        }
+	}
 }

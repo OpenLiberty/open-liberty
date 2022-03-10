@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -280,17 +280,23 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
 
     //
     
-    AssemblyDescriptor getAssemblyDescriptor(String adXML) throws Exception {
-        EJBJar ejbJar = parseEJBJar( ejbJar11(adXML), EJBJar.VERSION_4_0 );
-        return ejbJar.getAssemblyDescriptor();
+    protected AssemblyDescriptor getAssemblyDescriptor(String adXML) throws Exception {
+        EJBJar ejbJar = parseEJBJarMax( ejbJar11(adXML) );
+        return ejbJar.getAssemblyDescriptor();        
+    }
+
+    private Failable<AssemblyDescriptor> assemblyDescriptor =
+            new Failable<>( () -> getAssemblyDescriptor(assemblyDescriptorXML ) );
+
+    protected AssemblyDescriptor getAssemblyDescriptor() throws Exception {
+        return assemblyDescriptor.get();
     }
 
     //
-
+    
     @Test
     public void testAssemblyDescriptorSecurityRole() throws Exception {
-        AssemblyDescriptor assemblyDescriptor =
-            getAssemblyDescriptor(assemblyDescriptorXML);
+        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
 
         Assert.assertNotNull(assemblyDescriptor);
         List<SecurityRole> secRoleList = assemblyDescriptor.getSecurityRoles();
@@ -300,9 +306,8 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
     }
 
     void testMethod0(Method method0) {
-        Assert.assertEquals(
-                Method.INTERFACE_TYPE_UNSPECIFIED,
-                method0.getInterfaceTypeValue());
+        Assert.assertEquals( Method.INTERFACE_TYPE_UNSPECIFIED,
+                             method0.getInterfaceTypeValue() );
         Assert.assertEquals("ejbName0", method0.getEnterpriseBeanName());
         Assert.assertEquals("methodName0", method0.getMethodName());
         Assert.assertEquals("methodParm0", method0.getMethodParamList().get(0));
@@ -312,8 +317,7 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testAssemblyDescriptorMethodPermission0() throws Exception {
-        AssemblyDescriptor assemblyDescriptor =
-            getAssemblyDescriptor(assemblyDescriptorXML);
+        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
 
         List<MethodPermission> methPermList = assemblyDescriptor.getMethodPermissions();
         MethodPermission methPerm0 = methPermList.get(0);
@@ -351,8 +355,7 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testAssemblyDescriptorMethodPermission1() throws Exception {
-        AssemblyDescriptor assemblyDescriptor =
-            getAssemblyDescriptor(assemblyDescriptorXML);
+        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
 
         List<MethodPermission> methPermList = assemblyDescriptor.getMethodPermissions();
         MethodPermission methPerm1 = methPermList.get(1);
@@ -365,7 +368,7 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testAssemblyDescriptorContainerTransactions() throws Exception {
-        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor(assemblyDescriptorXML);
+        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
 
         List<ContainerTransaction> contTrans =
                 assemblyDescriptor.getContainerTransactions();
@@ -493,31 +496,30 @@ public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testMethodIntfLifecycleCallback() throws Exception {
-        EJBJar ejbJar = parseEJBJar( ejbJar32( "", lifecycleCallbackXML),
-                               EJBJar.VERSION_4_0 );
+        EJBJar ejbJar = parseEJBJarMax( ejbJar32( "", lifecycleCallbackXML) );
 
         Assert.assertEquals(Method.INTERFACE_TYPE_LIFECYCLE_CALLBACK,
-                            ejbJar.getAssemblyDescriptor().getContainerTransactions().get(0).getMethodElements().get(0).getInterfaceTypeValue());
+                            ejbJar.getAssemblyDescriptor()
+                                .getContainerTransactions().get(0)
+                                .getMethodElements().get(0)
+                                .getInterfaceTypeValue());
     }
 
     @Test
     public void testMethodIntfLifecycleCallbackEJB31() throws Exception {
-        parseEJBJar( ejbJar31("", lifecycleCallbackXML),
-                EJBJar.VERSION_4_0,
-                "invalid.enum.value", "CWWKC2273E" ); 
+        parseEJBJarMax( ejbJar31("", lifecycleCallbackXML),
+                        "invalid.enum.value", "CWWKC2273E" ); 
     }
 
     @Test
     public void testMethodIntfErrorEJB31() throws Exception {
-        parseEJBJar( ejbJar31("", invalidMethodIntfXML),
-               EJBJar.VERSION_4_0,
-               "invalid.enum.value", "CWWKC2273E" ); 
+        parseEJBJarMax( ejbJar31("", invalidMethodIntfXML),
+                        "invalid.enum.value", "CWWKC2273E" ); 
     }
 
     @Test
     public void testMethodIntfErrorEJB32() throws Exception {
-        parseEJBJar( ejbJar32("",  invalidMethodIntfXML),
-               EJBJar.VERSION_4_0,
-               "invalid.enum.value", "CWWKC2273E" );
+        parseEJBJarMax( ejbJar32("",  invalidMethodIntfXML),
+                        "invalid.enum.value", "CWWKC2273E" );
     }
 }

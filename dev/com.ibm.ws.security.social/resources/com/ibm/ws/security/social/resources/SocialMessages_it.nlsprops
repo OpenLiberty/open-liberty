@@ -133,6 +133,14 @@ USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: La risposta API utente indica ch
 USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Il token di accesso che si trova nella richiesta API utente potrebbe essere mancante, scaduto, malformato o non valido. Il token potrebbe non essere associato ad un utente noto all'API utente.
 USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verificare che un token di accesso sia incluso nella richiesta API utente. Assicurarsi che il token non sia scaduto o malformato. Verificare che l'utente associato al token di accesso sia noto all'API utente.
 
+INVALID_CONFIG_PARAM=CWWKS5390E: Un parametro di configurazione richiesto {0} manca o ha un valore non valido {1}
+INVALID_CONFIG_PARAM.explanation=Il codice di runtime del login social non ha trovato un parametro richiesto durante l'elaborazione della richiesta client.
+INVALID_CONFIG_PARAM.useraction=Controllare il parametro mancante nella configurazione e assicurarsi che sia specificato e corretto.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configurazione oidcLogin \u00e8 configurata per rilevare gli endpoint del provider OpenID Connect attraverso l'URL di rilevamento, ma il processo di rilevamento non \u00e8 riuscito. Il client non \u00e8 in grado di elaborare le richieste di autenticazione fino a quando la configurazione di discoveryEndpoint non viene corretta o il rilevamento ha esito positivo.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correggere la configurazione oidcLogin per assicurarsi che 1) l'URL dell'endpoint di rilevamento faccia riferimento al provider OpenID Connect corretto, 2) l'URL dell'endpoint di rilevamento sia HTTPS e 3) la funzione SSL e gli elementi keystore siano configurati correttamente con l'attendibilit\u00e0 per il provider OpenID Connect 4) assicurarsi che l'endpoint di rilevamento del provider OpenID Connect sia correttamente funzionante.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Non \u00e8 richiesta alcuna azione.
@@ -638,11 +646,3 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verificare che la configurazione J
 REQUEST_URL_NOT_VALID=CWWKS5499E: La funzione di login social non \u00e8 in grado di reindirizzare la risposta all''URL della richiesta originale [{0}] perch\u00e9 l''URL non \u00e8 valido. {1}
 REQUEST_URL_NOT_VALID.explanation=L'URL della richiesta originale non \u00e8 un URL valido. L'URL potrebbe contenere caratteri non validi oppure potrebbe avere un formato non corretto.
 REQUEST_URL_NOT_VALID.useraction=Verificare che l'URL della richiesta specificato nel messaggio sia corrispondente all'URL della richiesta alla risorsa protetta originale. Verificare che l'URL abbia un formato corretto e che contenga solo caratteri URI validi.
-
-INVALID_CONFIG_PARAM=CWWKS5500E: Un parametro di configurazione richiesto {0} manca o ha un valore non valido {1}
-INVALID_CONFIG_PARAM.explanation=Il codice di runtime del login social non ha trovato un parametro richiesto durante l'elaborazione della richiesta client.
-INVALID_CONFIG_PARAM.useraction=Controllare il parametro mancante nella configurazione e assicurarsi che sia specificato e corretto.
-
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto. 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configurazione oidcLogin \u00e8 configurata per rilevare gli endpoint del provider OpenID Connect attraverso l'URL di rilevamento, ma il processo di rilevamento non \u00e8 riuscito. Il client non \u00e8 in grado di elaborare le richieste di autenticazione fino a quando la configurazione di discoveryEndpoint non viene corretta o il rilevamento ha esito positivo.
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correggere la configurazione oidcLogin per assicurarsi che 1) l'URL dell'endpoint di rilevamento faccia riferimento al provider OpenID Connect corretto, 2) l'URL dell'endpoint di rilevamento sia HTTPS e 3) la funzione SSL e gli elementi keystore siano configurati correttamente con l'attendibilit\u00e0 per il provider OpenID Connect 4) assicurarsi che l'endpoint di rilevamento del provider OpenID Connect sia correttamente funzionante.

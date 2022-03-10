@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,8 @@ import com.ibm.ejs.container.EJSRemoteWrapper;
 import com.ibm.ejs.container.EJSWrapper;
 import com.ibm.ejs.container.RemoteAsyncResult;
 import com.ibm.ejs.container.WrapperManager;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ejbcontainer.jitdeploy.CORBA_Utils;
 import com.ibm.ws.ejbcontainer.osgi.EJBRemoteRuntime;
@@ -64,6 +66,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component
 public class EJBRemoteRuntimeImpl implements EJBRemoteRuntime, RemoteObjectReplacer {
+    private static final TraceComponent tc = Tr.register(EJBRemoteRuntimeImpl.class);
     /**
      * The primary POA name. This name must not be changed or else existing
      * serialized stubs will fail.
@@ -314,6 +317,23 @@ public class EJBRemoteRuntimeImpl implements EJBRemoteRuntime, RemoteObjectRepla
             createPOA(poa);
         }
         return ejbAdapter;
+    }
+
+    /**
+     * Checks if we are able to successfully obtain the ORB and CORBA name server.
+     *
+     * @return true if the ORB and CORBA name server are available
+     */
+    @Override
+    @FFDCIgnore(IllegalStateException.class)
+    public boolean isRemoteEjbAdapterAvailable() {
+        try {
+            return (getEjbAdapter() != null);
+        } catch (IllegalStateException ise) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The orb is not available");
+            return false;
+        }
     }
 
     private void createPOA(POA rootAdapter) {

@@ -46,6 +46,7 @@ Service-Component: \
 
 -buildpath: \
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\

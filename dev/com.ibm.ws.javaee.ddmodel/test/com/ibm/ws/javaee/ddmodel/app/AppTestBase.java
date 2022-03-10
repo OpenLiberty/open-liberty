@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
@@ -23,10 +22,10 @@ public class AppTestBase extends DDTestBase {
         @SuppressWarnings("unchecked")
         ServiceReference<JavaEEVersion> versionRef =
             mockery.mock(ServiceReference.class, "sr" + mockId++);
-        String versionText = DDParser.getDottedVersionText(maxSchemaVersion);
+        String versionText = getDottedVersionText(maxSchemaVersion);
         mockery.checking(new Expectations() {
             {                
-                allowing(versionRef).getProperty(JavaEEVersion.VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(versionText));
             }
         });
@@ -70,7 +69,7 @@ public class AppTestBase extends DDTestBase {
                " \"http://java.sun.com/j2ee/dtds/application_1_3.dtd\">" +
         "<application>";
 
-    // 1.4, 5.0. 6.0, 7.0, and 8.0 are schema based:    
+    //
     
     protected static String app14Head = 
         "<application" +
@@ -132,6 +131,16 @@ public class AppTestBase extends DDTestBase {
                " id=\"Application_ID\"" +
                ">";
 
+    protected static String app100Head =
+            "<application" +
+                   " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee" +
+                   " https://jakarta.ee/xml/ns/jakartaee/application_10.xsd\"" +
+                   " version=\"10\"" +
+                   " id=\"Application_ID\"" +
+                   ">";
+    
     protected static String appBody =
             "<display-name>Deployment Descriptor FAT Enterprise Application</display-name>\n" +
 
@@ -165,22 +174,24 @@ public class AppTestBase extends DDTestBase {
     protected static String app(int schemaVersion, String appBody) {
         String appHead;
         
-        if ( schemaVersion == JavaEEVersion.VERSION_1_2_INT ) {
+        if ( schemaVersion == VERSION_1_2_INT ) {
             appHead = app12Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_1_3_INT ) {
+        } else if ( schemaVersion == VERSION_1_3_INT ) {
             appHead = app13Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_1_4_INT ) {
+        } else if ( schemaVersion == VERSION_1_4_INT ) {
             appHead = app14Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_5_0_INT ) {
+        } else if ( schemaVersion == VERSION_5_0_INT ) {
             appHead = app50Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_6_0_INT ) {
+        } else if ( schemaVersion == VERSION_6_0_INT ) {
             appHead = app60Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_7_0_INT ) {
+        } else if ( schemaVersion == VERSION_7_0_INT ) {
             appHead = app70Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_8_0_INT ) {
+        } else if ( schemaVersion == VERSION_8_0_INT ) {
             appHead = app80Head;
-        } else if ( schemaVersion == JavaEEVersion.VERSION_9_0_INT ) {
+        } else if ( schemaVersion == VERSION_9_0_INT ) {
             appHead = app90Head;
+        } else if ( schemaVersion == VERSION_10_0_INT ) {
+            appHead = app100Head;            
         } else {
             throw new IllegalArgumentException("Unknown application version [ " + schemaVersion + " ]");
         }

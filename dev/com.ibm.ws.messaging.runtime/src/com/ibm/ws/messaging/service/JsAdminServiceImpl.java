@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,13 @@
 
 package com.ibm.ws.messaging.service;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.Vector;
 
 import javax.management.ObjectName;
@@ -24,6 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsBus;
 import com.ibm.ws.sib.admin.JsConstants;
@@ -34,11 +37,8 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-@Component (service=JsAdminService.class,
-            configurationPolicy=ConfigurationPolicy.IGNORE,
-            property="service.vendor=IBM")
-public class JsAdminServiceImpl extends JsAdminService {
-
+@Component (configurationPolicy=REQUIRE, property="service.vendor=IBM")
+public class JsAdminServiceImpl implements JsAdminService, Singleton {
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 
   // Debugging aid
@@ -50,9 +50,6 @@ public class JsAdminServiceImpl extends JsAdminService {
   private JsMainImpl _jsmain = null;
   private boolean _multipleSet = false;
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#quoteJmxPropertyValue(java.lang.String)
-   */
   public String quoteJmxPropertyValue(String s) {
     if (JsAdminService.isValidJmxPropertyValue(s) == true)
       return s;
@@ -60,16 +57,10 @@ public class JsAdminServiceImpl extends JsAdminService {
       return ObjectName.quote(s);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#unquoteJmxPropertyValue(java.lang.String)
-   */
   public String unquoteJmxPropertyValue(String s) {
     return ObjectName.unquote(s);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#setAdminMain(com.ibm.ws.sib.admin.JsMain)
-   */
   public synchronized void setAdminMain(JsMain o) {
     if (_jsmain != null) {
       // We have received a second or subsequent set request. This indicates an internal
@@ -83,16 +74,10 @@ public class JsAdminServiceImpl extends JsAdminService {
     return;
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#isInitialized()
-   */
   public boolean isInitialized() {
     return _jsmain != null;
   }
 
-  /**
-   * @throws Exception
-   */
   private synchronized void validateEnvironment() throws Exception {
     if (_multipleSet) {
       throw new Exception("Invalid object instance for admin service; multiple sets received");
@@ -101,17 +86,11 @@ public class JsAdminServiceImpl extends JsAdminService {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getAdminMain()
-   */
   public synchronized JsMain getAdminMain() throws Exception {
     validateEnvironment();
     return _jsmain;
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getBus(java.lang.String)
-   */
   public JsBus getBus(String name) throws SIBExceptionBusNotFound {
     if (!isInitialized()) {
       return null;
@@ -133,9 +112,6 @@ public class JsAdminServiceImpl extends JsAdminService {
     return _jsmain.listDefinedBuses();
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getProcessComponent(java.lang.String)
-   */
   public JsProcessComponent getProcessComponent(String className) {
     if (!isInitialized()) {
       return null;
@@ -143,9 +119,6 @@ public class JsAdminServiceImpl extends JsAdminService {
     return _jsmain.getProcessComponent(className);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#listMessagingEngines()
-   */
   public Enumeration listMessagingEngines() {
     if (!isInitialized()) {
       Vector v = new Vector();
@@ -154,9 +127,6 @@ public class JsAdminServiceImpl extends JsAdminService {
     return _jsmain.listMessagingEngines();
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#listMessagingEngines(java.lang.String)
-   */
   public Enumeration listMessagingEngines(String busName) {
     if (!isInitialized()) {
       Vector v = new Vector();
@@ -165,20 +135,13 @@ public class JsAdminServiceImpl extends JsAdminService {
     return _jsmain.listMessagingEngines(busName);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getMessagingEngineSet(java.lang.String)
-   */
   public Set getMessagingEngineSet(String busName) {
     if (!isInitialized()) {
-      HashSet s = new HashSet();
-      return s;
+      return new HashSet();
     }
     return _jsmain.getMessagingEngineSet(busName);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getMessagingEngine(java.lang.String, java.lang.String)
-   */
   public JsMessagingEngine getMessagingEngine(String busName, String engine) {
     if (!isInitialized()) {
       return null;
@@ -186,36 +149,18 @@ public class JsAdminServiceImpl extends JsAdminService {
     return _jsmain.getMessagingEngine(busName, engine);
   }
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#activateJMSResource()
-   */
-  public void activateJMSResource() {
-	   
-  }
+  public void activateJMSResource() {}
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#deactivateJMSResource()
-   */
-  public void deactivateJMSResource() {
-   
-  }
+  public void deactivateJMSResource() {}
 
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getService(java.lang.Class)
-   */
-  public Object getService(Class c) {
+  public Object getService(Class<?> c) {
     if (!isInitialized()) {
       return null;
     }
     return _jsmain.getService(c);
   }
 
-  /* will return true for liberty
-   * @see com.ibm.ws.sib.admin.JsAdminService#isStandaloneServer()
-   */
   public boolean isStandaloneServer() {
-    
       return true;
-   
   }
 }

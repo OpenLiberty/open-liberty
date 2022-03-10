@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,28 +12,37 @@ package com.ibm.ws.javaee.ddmodel.jsf;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
 import com.ibm.ws.javaee.ddmodel.DDParserSpec;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-final class FacesConfigDDParser extends DDParserSpec {
+public final class FacesConfigDDParser extends DDParserSpec {
     public static final String FACES_CONFIG_DTD_PUBLIC_ID_10 =
         "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN";
     public static final String FACES_CONFIG_DTD_PUBLIC_ID_11 =
         "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN";
 
-    private static final VersionData[] VERSION_DATA = {
-        new VersionData("1.0", FACES_CONFIG_DTD_PUBLIC_ID_10, null, FacesConfig.VERSION_1_0, JavaEEVersion.VERSION_1_2_INT),    
-        new VersionData("1.1", FACES_CONFIG_DTD_PUBLIC_ID_11, null, FacesConfig.VERSION_1_1, JavaEEVersion.VERSION_1_3_INT),
+    public static final VersionData[] VERSION_DATA = {
+        new VersionData("1.0", FACES_CONFIG_DTD_PUBLIC_ID_10, null, FacesConfig.VERSION_1_0, VERSION_1_2_INT),    
+        new VersionData("1.1", FACES_CONFIG_DTD_PUBLIC_ID_11, null, FacesConfig.VERSION_1_1, VERSION_1_3_INT),
 
-        new VersionData("1.2", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_1_2, JavaEEVersion.VERSION_5_0_INT),                    
-        new VersionData("2.0", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_0, JavaEEVersion.VERSION_6_0_INT),            
-        new VersionData("2.1", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_1, JavaEEVersion.VERSION_6_0_INT),
-        new VersionData("2.2", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_2, JavaEEVersion.VERSION_7_0_INT),
-        new VersionData("2.3", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_3, JavaEEVersion.VERSION_8_0_INT),                            
+        new VersionData("1.2", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_1_2, VERSION_5_0_INT),                    
+        new VersionData("2.0", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_0, VERSION_6_0_INT),            
+        new VersionData("2.1", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_1, VERSION_6_0_INT),
+
+        new VersionData("2.2", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_2, VERSION_7_0_INT),
+        new VersionData("2.3", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_3, VERSION_8_0_INT),                            
         
-        new VersionData("3.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_3_0, JavaEEVersion.VERSION_9_0_INT)
+        new VersionData("3.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_3_0, VERSION_9_0_INT),
+        new VersionData("4.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_4_0, VERSION_10_0_INT)
     };
+    
+    public static int getMaxTolerated() {
+        return FacesConfig.VERSION_4_0;
+    }
+    
+    public static int getMaxImplemented() {
+        return FacesConfig.VERSION_3_0;
+    }
     
     @Override
     protected VersionData[] getVersionData() {
@@ -52,7 +61,7 @@ final class FacesConfigDDParser extends DDParserSpec {
     }
 
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
-        this(ddRootContainer, ddEntry, FacesConfig.VERSION_2_0);
+        this(ddRootContainer, ddEntry, FacesConfig.VERSION_4_0);
     }
 
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {

@@ -206,7 +206,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
                     expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not get a message in social server logs about a missing clientId.", SocialMessageConstants.CWWKS5416W_OUTGOING_REQUEST_MISSING_PARAMETER + ".+\\[" + "client_id" + "\\]");
                 } else {
                     expectations = vData.addResponseStatusExpectation(expectations, perform_social_login, SocialConstants.BAD_REQUEST_STATUS);
-                    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that clientid is invalid", SocialMessageConstants.CWWKS5500E_BAD_CONFIG_PARAM);
+                    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that clientid is invalid", SocialMessageConstants.CWWKS5390E_BAD_CONFIG_PARAM);
                 }
             } else if (provider.equals(SocialConstants.FACEBOOK_PROVIDER)) {
                 expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
@@ -321,7 +321,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
             if (provider.equals(SocialConstants.LIBERTYOP_PROVIDER)) {
                 if (isTestingOidc) {
                     if (failsOidcConfigCheck) {
-                        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, finalAction, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unable to contact provider exception", SocialMessageConstants.CWWKS5500E_BAD_CONFIG_PARAM);
+                        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, finalAction, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unable to contact provider exception", SocialMessageConstants.CWWKS5390E_BAD_CONFIG_PARAM);
                     } else {
                         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, finalAction, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unable to contact provider exception", SocialMessageConstants.CWWKS1708E_UNABLE_TO_CONTACT_PROVIDER);
                     }
@@ -718,7 +718,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
         }
 
         if (isTestingOidc) {
-            expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that the auth endpoint was bad", SocialMessageConstants.CWWKS5500E_BAD_CONFIG_PARAM);
+            expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that the auth endpoint was bad", SocialMessageConstants.CWWKS5390E_BAD_CONFIG_PARAM);
         } else {
             expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + badMessage, null, badMessage);
             expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.RESPONSE_FULL, SocialConstants.STRING_CONTAINS, "Was expecting the response to contain: " + badString, null, badString);

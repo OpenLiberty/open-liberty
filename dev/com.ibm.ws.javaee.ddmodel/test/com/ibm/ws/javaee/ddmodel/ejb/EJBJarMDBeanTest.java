@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,10 +59,7 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
     
     @Test
     public void testMessageDrivenBeanMethods() throws Exception {
-        List<EnterpriseBean> beans =
-             parseEJBJar( ejbJar20(mdbXML), EJBJar.VERSION_4_0 )
-                .getEnterpriseBeans();
-
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar20(mdbXML) ).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
@@ -82,6 +79,8 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
         Assert.assertEquals("messageDestinationType0", bean1.getMessageDestinationName());
         Assert.assertEquals("messageDestinationLink0", bean1.getLink());
     }
+
+    // V0 has no 'destination-type', which means there is no provisioning dependency.
 
     protected static final String mdbMessageDriven0XML =
             "<enterprise-beans>" +
@@ -107,13 +106,29 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
                     "</activation-config>" +
                 "</message-driven>" +
             "</enterprise-beans>";
-            
-    @Test
-    public void testMessageDrivenActivationConfig() throws Exception {
-        List<EnterpriseBean> beans = parseEJBJar(
-            ejbJar21(mdbMessageDriven0XML), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans();
 
+    @Test
+    public void testMessageDrivenActivationConfig_V0_AtMax() throws Exception {
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar21(mdbMessageDriven0XML) )
+            .getEnterpriseBeans();
+        validateMDBs_V0(beans);
+    }
+    
+    @Test
+    public void testMessageDrivenActivationConfig_V0_At21() throws Exception {
+        List<EnterpriseBean> beans = parseEJBJar( ejbJar21(mdbMessageDriven0XML), EJBJar.VERSION_2_1 )
+            .getEnterpriseBeans();
+        validateMDBs_V0(beans);
+    }
+    
+    @Test
+    public void testMessageDrivenActivationConfig_V0_At40() throws Exception {
+        List<EnterpriseBean> beans = parseEJBJar( ejbJar21(mdbMessageDriven0XML), EJBJar.VERSION_4_0 )
+                .getEnterpriseBeans();
+        validateMDBs_V0(beans);
+    }    
+
+    protected void validateMDBs_V0(List<EnterpriseBean> beans) throws Exception {
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         Assert.assertEquals(EnterpriseBean.KIND_MESSAGE_DRIVEN, bean0.getKindValue());
         Assert.assertEquals(null, bean0.getActivationConfigValue());
@@ -129,6 +144,8 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
         Assert.assertEquals("value2", actConProps.get(2).getValue());
     }
 
+    // V0 uses 'destination-type', which is a provisioning dependency.
+    
     protected static final String mdbMessageDriven1XML =
             "<enterprise-beans>" +
                 "<message-driven>" +
@@ -141,13 +158,29 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
                     "</message-driven-destination>" +
                 "</message-driven>" +
             "</enterprise-beans>";
+
+    @Test
+    public void testMessageDrivenActivationConfig_V1_Max() throws Exception {
+        parseEJBJarMax( ejbJar20(mdbMessageDriven1XML), "CWWKC2273E", "invalid.enum.value"); 
+    }
     
     @Test
-    public void testMessageDrivenActivationConfigEJB20() throws Exception {
+    public void testMessageDrivenActivationConfig_V1_At21() throws Exception {
         List<EnterpriseBean> beans =
-            parseEJBJar( ejbJar20(mdbMessageDriven1XML), EJBJar.VERSION_3_2)
+            parseEJBJar( ejbJar20(mdbMessageDriven1XML), EJBJar.VERSION_2_1)
                 .getEnterpriseBeans();
 
+        validateMDBs_V1(beans);
+    }
+    
+    @Test
+    public void testMessageDrivenActivationConfig_V1_At40() throws Exception {
+        parseEJBJar( ejbJar20(mdbMessageDriven1XML),
+                     EJBJar.VERSION_4_0,
+                     "CWWKC2273E", "invalid.enum.value"); 
+    }
+
+    protected void validateMDBs_V1(List<EnterpriseBean> beans) throws Exception {
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -174,13 +207,22 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
                     "</message-driven-destination>" +
                 "</message-driven>" +
             "</enterprise-beans>";
+    
+    @Test
+    public void testMessageDrivenActivationConfig_V2_Max() throws Exception {
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar20(mdbMessageDriven2XML) )
+            .getEnterpriseBeans();
+        validateMDBs_V2(beans);
+    }
 
     @Test
-    public void testMessageDrivenActivationConfigEJB20v40() throws Exception {
-        List<EnterpriseBean> beans =
-            parseEJBJar(ejbJar20(mdbMessageDriven2XML), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans();
+    public void testMessageDrivenActivationConfig_V2_At21() throws Exception {
+        parseEJBJar( ejbJar20(mdbMessageDriven2XML),
+                     EJBJar.VERSION_2_1,
+                     "CWWKC2273E", "invalid.enum.value"); 
+    }
 
+    protected void validateMDBs_V2(List<EnterpriseBean> beans) throws Exception {    
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -210,9 +252,8 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenActivationConfigEJB20Exception() throws Exception {
-        parseEJBJar( ejbJar20(mdbMessageDriven3XML),
-               EJBJar.VERSION_4_0,
-               "CWWKC2273E", "invalid.enum.value");
+        parseEJBJarMax( ejbJar20(mdbMessageDriven3XML),
+                        "CWWKC2273E", "invalid.enum.value");
     }
 
     protected static final String mdbTimeoutXML =
@@ -245,9 +286,7 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenTimeOutServiceBean() throws Exception {
-        List<EnterpriseBean> beans = parseEJBJar(
-            ejbJar20(mdbTimeoutXML), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans();
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar20(mdbTimeoutXML) ).getEnterpriseBeans();
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         Assert.assertEquals(EnterpriseBean.KIND_MESSAGE_DRIVEN, bean0.getKindValue());
@@ -286,9 +325,7 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenTransactionalBean() throws Exception {
-        List<EnterpriseBean> beans =
-            parseEJBJar(ejbJar20(mdbTransactionalXML), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans();
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar20(mdbTransactionalXML) ).getEnterpriseBeans();
 
         MessageDriven mdb0 = (MessageDriven) beans.get(0);
         MessageDriven mdb1 = (MessageDriven) beans.get(1);
@@ -323,10 +360,8 @@ public class EJBJarMDBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenMethodInterceptorBean() throws Exception {
-        List<EnterpriseBean> beans =
-            parseEJBJar(ejbJar20(mdbInterceptorXML), EJBJar.VERSION_4_0)
-                .getEnterpriseBeans();
-        
+        List<EnterpriseBean> beans = parseEJBJarMax( ejbJar20(mdbInterceptorXML) ).getEnterpriseBeans();
+
         MessageDriven mdb0 = (MessageDriven) beans.get(0);
         MessageDriven mdb1 = (MessageDriven) beans.get(1);
         Assert.assertEquals(true, mdb0.getAroundInvoke().isEmpty());

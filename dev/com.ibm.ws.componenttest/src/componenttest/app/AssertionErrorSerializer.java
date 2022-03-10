@@ -186,7 +186,9 @@ public class AssertionErrorSerializer {
         JsonObjectBuilder builder = BUILDER_FACTORY.createObjectBuilder();
         builder.add(CLASS_NAME_KEY, stackTraceElement.getClassName());
         builder.add(METHOD_NAME_KEY, stackTraceElement.getMethodName());
-        builder.add(FILE_NAME_KEY, stackTraceElement.getFileName());
+        if (stackTraceElement.getFileName() != null) {
+            builder.add(FILE_NAME_KEY, stackTraceElement.getFileName());
+        }
         builder.add(LINE_NUMBER_KEY, stackTraceElement.getLineNumber());
         return builder.build();
     }
@@ -198,9 +200,9 @@ public class AssertionErrorSerializer {
      * @return A StackTraceElement instance
      */
     private static StackTraceElement deserializeStackTraceElement(JsonObject jsonObject) {
-        String declaringClass = jsonObject.getString(CLASS_NAME_KEY);
-        String methodName = jsonObject.getString(METHOD_NAME_KEY);
-        String fileName = jsonObject.getString(FILE_NAME_KEY);
+        String declaringClass = jsonObject.getString(CLASS_NAME_KEY, null);
+        String methodName = jsonObject.getString(METHOD_NAME_KEY, null);
+        String fileName = jsonObject.getString(FILE_NAME_KEY, null);
         int lineNumber = jsonObject.getInt(LINE_NUMBER_KEY);
         StackTraceElement element = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
         return element;

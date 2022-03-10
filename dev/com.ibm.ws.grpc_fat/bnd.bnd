@@ -10,8 +10,10 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-grpcVersion=1.38.1
+
+grpcVersion=1.43.2
 nettyVersion=4.1.72.Final
+
 
 src: \
     fat/src,\
@@ -80,8 +82,8 @@ tested.features:\
     org.brotli:dec;version=0.1.2,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
     xml-apis:xml-apis;version=1.4.01,\
-    com.google.protobuf:protobuf-java;version=3.13.0, \
-    com.google.protobuf:protobuf-java-util;version=3.11.4, \
+    com.google.protobuf:protobuf-java;version=3.19.2, \
+    com.google.protobuf:protobuf-java-util;version=3.19.2, \
     com.ibm.websphere.javaee.jaxrs.2.1,\
     com.ibm.websphere.javaee.cdi.2.0,\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\

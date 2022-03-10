@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +45,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SuppressWarnings("restriction")
 public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
@@ -59,6 +59,22 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
     public static LibertyServer server2;
 
     private String groupName;
+
+    private static ServerConfiguration SERVER1_ORIGINAL_CONFIG;
+    private static ServerConfiguration SERVER2_ORIGINAL_CONFIG;
+
+    @BeforeClass
+    public static void beforeClass() {
+        /*
+         * Backup the original / starting configurations for each server.
+         */
+        try {
+            SERVER1_ORIGINAL_CONFIG = server1.getServerConfiguration().clone();
+            SERVER2_ORIGINAL_CONFIG = server2.getServerConfiguration().clone();
+        } catch (Exception e) {
+            fail("Failed to clone the server configurations: " + e);
+        }
+    }
 
     @Before
     public void before() throws Exception {
@@ -113,6 +129,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
          * 1. Start server1.
          */
         server1.addInstalledAppForValidation("subjectcast");
+        server1.updateServerConfiguration(SERVER1_ORIGINAL_CONFIG);
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
@@ -126,6 +143,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
          * 2. Start server2.
          */
         server2.addInstalledAppForValidation("subjectcast");
+        server2.updateServerConfiguration(SERVER2_ORIGINAL_CONFIG);
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
@@ -140,7 +158,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(URL_PATTERN, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
         assertResponseContainsClassCastException(response, false);
 
         /*
@@ -191,7 +209,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
          * 1. Start the server1 replacing the applications library with one that does not match
          * either the library used by custom login module or the authentication cache's JCache.
          */
-        ServerConfiguration serverConfig = server1.getServerConfiguration().clone();
+        ServerConfiguration serverConfig = SERVER1_ORIGINAL_CONFIG.clone();
         Application app = getApplication(serverConfig, "subjectcast");
         app.getClassloaders().get(0).getCommonLibraryRefs().clear();
         app.getClassloaders().get(0).getCommonLibraryRefs().add("ClassCastingAppLib");
@@ -210,7 +228,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
          * 2. Start the server2 replacing the applications library with one that does not match
          * either the library used by custom login module or the authentication cache's JCache.
          */
-        serverConfig = server2.getServerConfiguration().clone();
+        serverConfig = SERVER2_ORIGINAL_CONFIG.clone();
         app = getApplication(serverConfig, "subjectcast");
         app.getClassloaders().get(0).getCommonLibraryRefs().clear();
         app.getClassloaders().get(0).getCommonLibraryRefs().add("ClassCastingAppLib");
@@ -230,7 +248,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(URL_PATTERN, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
         assertResponseContainsClassCastException(response, true);
 
         /*
@@ -272,9 +290,9 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
             assertTrue("Did not find ClassCastException for CustomPublicCredential in response.",
                        response.contains("Error casting CustomPublicCredential: CustomPublicCredential"));
         } else {
-            assertTrue("Did not find successfull class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPrincipal"));
-            assertTrue("Did not find successfull class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPrivateCredential"));
-            assertTrue("Did not find successfull class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPublicCredential"));
+            assertTrue("Did not find successful class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPrincipal"));
+            assertTrue("Did not find successful class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPrivateCredential"));
+            assertTrue("Did not find successful class cast for CustomPrincipal in response.", response.contains("Successfully cast CustomPublicCredential"));
         }
     }
 

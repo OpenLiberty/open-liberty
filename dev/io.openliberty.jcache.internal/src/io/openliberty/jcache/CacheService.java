@@ -35,6 +35,8 @@ public interface CacheService {
      *
      * @param bytes The serialized object.
      * @return The deserialized object.
+     *
+     * @throws DeserializationException If there was an issue deserializing the object.
      */
     public Object deserialize(byte[] bytes);
 
@@ -43,6 +45,8 @@ public interface CacheService {
      *
      * @param o The object to serialize.
      * @return The serialized object.
+     *
+     * @throws SerializationException If there was an issue serializing the object.
      */
     public byte[] serialize(Object o);
 }

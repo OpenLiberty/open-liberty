@@ -712,6 +712,30 @@ error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
+error.set.securitymanager.jdk18=CWWKE0955E: The websphere.java.security property was set in the bootstrap.properties file but the Java version is {0}.  This property enables the Java Security Manager and is not valid with Java 18 or later.
+error.set.securitymanager.jdk18.explanation= As part of the deprecation of the Java Security Manager, as specified by JEP 411, Liberty does not support the Java Security Manager with Java 18 or later.
+error.set.securitymanager.jdk18.useraction=Remove the websphere.java.security property from the bootstrap.properties file or use a Java version that is earlier than Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Failed to set the Java Security Manager due to exception: {0}.  This occurs if the server is using Java 18 or later, and the Java system property "java.security.manager" was not set to "allow".
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager could not be enabled because the system is using Java 18, which by default disallows use of a Java Security Manager.
+error.cannotset.securitymanager.jdk18.useraction=Start the server with the JVM argument -Djava.security.manager=allow.
+
+error.checkpoint.delete=CWWKE0955E: The server checkpoint request failed because the existing checkpoint image cannot be deleted from the {0} directory.
+error.checkpoint.delete.explanation=A checkpoint request for the server failed because an existing checkpoint image cannot be deleted.
+error.checkpoint.delete.useraction=Ensure the user has permission to delete the existing directory. Reissue the command with a user that has sufficient permissions.
+
+error.checkpoint.workarea.backup=CWWKE0956E: The server checkpoint request failed because the {0} directory cannot be backed up.
+error.checkpoint.workarea.backup.explanation=An error occurred backing up the checkpoint server workarea directory.
+error.checkpoint.workarea.backup.useraction=Ensure the user has sufficient permissions to back up the checkpoint workarea directory. Reissue the command with a user that has sufficient permissions.
+
+error.checkpoint.workarea.restore=CWWKE0957E: The checkpoint server workarea directory cannot be restored from the {0} directory.
+error.checkpoint.workarea.restore.explanation=An error occurred restoring the checkpoint workarea directory.
+error.checkpoint.workarea.restore.useraction=Ensure the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
+
+info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
+info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
+info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
@@ -49,12 +49,14 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
     private static final TraceComponent tc = Tr.register(TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     private static InitializedQualifier initializedQualifier = initializedQualifier = new InitializedQualifier() {
+        @Override
         public Class value() {
             return TransactionScoped.class;
         }
     };
 
     private static DestroyedQualifier destroyedQualifier = destroyedQualifier = new DestroyedQualifier() {
+        @Override
         public Class value() {
             return TransactionScoped.class;
         }
@@ -292,7 +294,10 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
     }
 
     //These can be removed in java 8.
-    public abstract static class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {} 
-    public abstract static class InitializedQualifier extends AnnotationLiteral<Initialized> implements Initialized {} 
+    public abstract static class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {
+    }
+
+    public abstract static class InitializedQualifier extends AnnotationLiteral<Initialized> implements Initialized {
+    }
 
 }

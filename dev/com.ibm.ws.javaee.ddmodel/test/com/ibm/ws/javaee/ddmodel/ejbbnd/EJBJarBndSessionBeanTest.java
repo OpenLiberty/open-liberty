@@ -56,7 +56,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionEmptyXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\"/>" +
@@ -92,7 +92,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeNameTestXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -129,7 +129,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeSimpleBindingTestXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -229,7 +229,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementEJBRefXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -270,7 +270,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -330,7 +330,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefOptionalElementsXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -385,7 +385,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceEnvRefTestXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
@@ -434,7 +434,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementMessageDestinationXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +

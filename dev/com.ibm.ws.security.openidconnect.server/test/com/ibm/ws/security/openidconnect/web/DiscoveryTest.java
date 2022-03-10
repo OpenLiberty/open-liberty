@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.openidconnect.server.internal.HttpUtils;
+import com.ibm.ws.security.openidconnect.server.plugins.OIDCAbstractDiscoveryModel;
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCWASDiscoveryModel;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -266,6 +267,8 @@ public class DiscoveryTest {
                 will(returnValue(BACKING_IDP_PREFIX_URI));
                 one(provider).getAuthProxyEndpointUrl();
                 will(returnValue(PROXY_URI));
+                one(provider).isBackchannelLogoutSupported();
+                will(returnValue(false));
             }
         });
 
@@ -274,7 +277,7 @@ public class DiscoveryTest {
 
     private static String getExpectedDiscoveryModelJsonString() {
 
-        return JsonTokenUtil.toJsonFromObj(getExpectedDiscoveryModel());
+        return JsonTokenUtil.toJsonFromObj(OIDCAbstractDiscoveryModel.GSON, getExpectedDiscoveryModel());
 
     }
 

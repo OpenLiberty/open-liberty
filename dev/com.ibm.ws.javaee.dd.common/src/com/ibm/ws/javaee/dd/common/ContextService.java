@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,26 +13,26 @@ package com.ibm.ws.javaee.dd.common;
 import java.util.List;
 
 /**
- * Represents &lt;context-service>.
+ * Represents &lt;context-service&gt;.
  */
 public interface ContextService extends JNDIEnvironmentRef, Describable {
     /**
-     * @return &lt;cleared> elements as a read-only list
+     * @return &lt;cleared&gt; elements as a read-only list
      */
     String[] getCleared();
 
     /**
-     * @return &lt;propagated> elements as a read-only list
+     * @return &lt;propagated&gt; elements as a read-only list
      */
     String[] getPropagated();
 
     /**
-     * @return &lt;unchanged> elements as a read-only list
+     * @return &lt;unchanged&gt; elements as a read-only list
      */
     String[] getUnchanged();
 
     /**
-     * @return &lt;property> elements as a read-only list
+     * @return &lt;property&gt; elements as a read-only list
      */
     List<Property> getProperties();
 }

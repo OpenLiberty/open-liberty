@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2017 IBM Corporation and others.
+  Copyright (c) 2017, 2022 IBM Corporation and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -18,5 +18,13 @@
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  <filter>
+    <filter-name>headers-filter</filter-name>
+    <filter-class>com.ibm.ws.microprofile.openapi.servlet.filter.OpenAPIUIFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>headers-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
   
 </web-app>

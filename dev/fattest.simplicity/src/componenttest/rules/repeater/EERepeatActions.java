@@ -19,12 +19,19 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 public class EERepeatActions extends RepeatActions {
 
+    //The EE FeatureSet IDs
+    public static final String EE6_ID = EE6FeatureReplacementAction.ID;
+    public static final String EE7_ID = EE7FeatureReplacementAction.ID;
+    public static final String EE8_ID = EE8FeatureReplacementAction.ID;
+    public static final String EE9_ID = JakartaEE9Action.ID;
+    public static final String EE10_ID = JakartaEE10Action.ID;
+
     //The EE FeatureSets
-    public static final FeatureSet EE6 = new FeatureSet(EE6FeatureReplacementAction.ID, EE6FeatureReplacementAction.EE6_FEATURE_SET, EEVersion.EE6);
-    public static final FeatureSet EE7 = new FeatureSet(EE7FeatureReplacementAction.ID, EE7FeatureReplacementAction.EE7_FEATURE_SET, EEVersion.EE7);
-    public static final FeatureSet EE8 = new FeatureSet(EE8FeatureReplacementAction.ID, EE8FeatureReplacementAction.EE8_FEATURE_SET, EEVersion.EE8);
-    public static final FeatureSet EE9 = new FeatureSet(JakartaEE9Action.ID, JakartaEE9Action.EE9_FEATURE_SET, EEVersion.EE9);
-    public static final FeatureSet EE10 = new FeatureSet(JakartaEE10Action.ID, JakartaEE10Action.EE10_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet EE6 = new FeatureSet(EE6_ID, EE6FeatureReplacementAction.EE6_FEATURE_SET, EEVersion.EE6);
+    public static final FeatureSet EE7 = new FeatureSet(EE7_ID, EE7FeatureReplacementAction.EE7_FEATURE_SET, EEVersion.EE7);
+    public static final FeatureSet EE8 = new FeatureSet(EE8_ID, EE8FeatureReplacementAction.EE8_FEATURE_SET, EEVersion.EE8);
+    public static final FeatureSet EE9 = new FeatureSet(EE9_ID, JakartaEE9Action.EE9_FEATURE_SET, EEVersion.EE9);
+    public static final FeatureSet EE10 = new FeatureSet(EE10_ID, JakartaEE10Action.EE10_FEATURE_SET, EEVersion.EE10);
 
     //The FeatureSet for the latest EE version
     public static final FeatureSet LATEST = EE10;

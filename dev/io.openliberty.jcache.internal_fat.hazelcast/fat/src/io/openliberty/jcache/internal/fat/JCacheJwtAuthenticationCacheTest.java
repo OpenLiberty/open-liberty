@@ -142,7 +142,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         response = basicAuthClient1.accessProtectedServletWithAuthorizedCookie(BasicAuthClient.PROTECTED_ALL_ROLE, jwtCookie);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertJwtAuthCacheHit(true, server1, jwtCookie);
+        assertJCacheJwtAuthCacheHit(true, server1, jwtCookie);
 
         /*
          * 3. Call server2 using the JWT cookie from the first request. This will result in an authentication cache hit since the first
@@ -152,7 +152,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCookie(BasicAuthClient.PROTECTED_ALL_ROLE, jwtCookie);
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertJwtAuthCacheHit(true, server2, jwtCookie);
+        assertJCacheJwtAuthCacheHit(true, server2, jwtCookie);
 
         /*
          * 4. Wait for the TTL to expire so the cached entry has been evicted. Make a call to server 1 using the JWT cookie from the
@@ -164,7 +164,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
             response = basicAuthClient1.accessProtectedServletWithAuthorizedCookie(BasicAuthClient.PROTECTED_ALL_ROLE, basicAuthClient1.getCookieFromLastLogin());
             assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
             assertResponseContainsCustomCredentials(response);
-            assertJwtAuthCacheHit(false, server1, basicAuthClient1.getCookieFromLastLogin());
+            assertJCacheJwtAuthCacheHit(false, server1, basicAuthClient1.getCookieFromLastLogin());
         }
     }
 

@@ -34,7 +34,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache authentication cache tests for the DeleteAuthCache Mbean.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheDeleteAuthCacheTest extends BaseTestCase {
@@ -115,7 +114,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
 
         /*
          * 2. Call server1 using basic authentication. This will result in an authentication cache hit.
@@ -124,7 +123,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(true, server1);
+        assertJCacheBasicAuthCacheHit(true, server1);
 
         /*
          * 3. Call server2 using basic authentication. This will result in an authentication cache hit,
@@ -133,7 +132,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(true, server2);
+        assertJCacheBasicAuthCacheHit(true, server2);
 
         /*
          * 4. Call the DeleteAuthCache MBean on server1. This will clear the cache and output an
@@ -157,7 +156,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCredentials(BasicAuthClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server2);
+        assertJCacheBasicAuthCacheHit(false, server2);
 
         /*
          * 6. Call the DeleteAuthCache MBean on server2. This will clear the cache and output an
@@ -181,7 +180,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(BasicAuthClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
     }
 
 }

@@ -15,10 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,7 +92,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
      * Construct a thread context descriptor from bytes.
      *
      * @param execProps execution properties
-     * @param bytes serialized bytes
+     * @param bytes     serialized bytes
      * @throws IOException if a deserialization error occurs.
      */
     public ThreadContextDescriptorImpl(Map<String, String> execProps, @Sensitive byte[] bytes) throws ClassNotFoundException, IOException {
@@ -134,34 +130,29 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
         String skip = execProps.get(WSContextService.SKIP_CONTEXT_PROVIDERS);
         providerNamesToSkip = skip == null ? Collections.<String> emptyList() : Arrays.asList(skip.split(","));
 
-        // these single element arrays are used to allow the inner class for the privileged action to return multiple values
-        @SuppressWarnings("unchecked")
-        final ServiceReference<WSContextService>[] threadContextMgrRef = new ServiceReference[1];
-        final BundleContext[] bundleContext = new BundleContext[1];
+        ServiceReference<WSContextService> threadContextMgrRef = null;
+        BundleContext bundleContext = null;
 
         boolean successful = false;
         try {
-            ThreadContextProvider[] contextProviders = AccessController.doPrivileged(new PrivilegedExceptionAction<ThreadContextProvider[]>() {
-                @Override
-                public ThreadContextProvider[] run() throws InvalidSyntaxException {
-                    ThreadContextProvider[] contextProviders = new ThreadContextProvider[contextBytes.length];
-                    bundleContext[0] = FrameworkUtil.getBundle(ThreadContextManager.class).getBundleContext();
-                    threadContextMgrRef[0] = bundleContext[0].getServiceReferences(WSContextService.class, "(component.name=com.ibm.ws.context.manager)").iterator().next();
-                    threadContextMgr = (ThreadContextManager) bundleContext[0].getService(threadContextMgrRef[0]);
+            ThreadContextProvider[] contextProviders = new ThreadContextProvider[contextBytes.length];
+            bundleContext = ThreadContextManager.priv.getBundleContext(FrameworkUtil.getBundle(ThreadContextManager.class));
+            threadContextMgrRef = ThreadContextManager.priv.getServiceReferences(bundleContext,
+                                                                                 WSContextService.class,
+                                                                                 "(component.name=com.ibm.ws.context.manager)")
+                            .iterator().next();
+            threadContextMgr = (ThreadContextManager) ThreadContextManager.priv.getService(bundleContext, threadContextMgrRef);
 
-                    // Locate the thread context provider corresponding to each type of thread context
-                    for (int i = 0; i < contextBytes.length; i++) {
-                        String providerName = providerNames.get(i);
-                        ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
-                        if (contextProvider == null && !MP_CLEARED_CONTEXT.equals(providerName))
-                            throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
-                        contextProviders[i] = contextProvider;
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, providerName, contextProvider);
-                    }
-                    return contextProviders;
-                }
-            });
+            // Locate the thread context provider corresponding to each type of thread context
+            for (int i = 0; i < contextBytes.length; i++) {
+                String providerName = providerNames.get(i);
+                ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
+                if (contextProvider == null && !MP_CLEARED_CONTEXT.equals(providerName))
+                    throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
+                contextProviders[i] = contextProvider;
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, providerName, contextProvider);
+            }
 
             // Have each context provider deserialize its own context, so that the correct class loader is used.
             for (int i = 0; i < contextBytes.length; i++) {
@@ -173,21 +164,21 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                 }
             }
             successful = true;
-        } catch (PrivilegedActionException x) {
+        } catch (InvalidSyntaxException x) {
             throw new IOException(x.getCause());
         } finally {
-            if (!successful && threadContextMgrRef[0] != null)
-                bundleContext[0].ungetService(threadContextMgrRef[0]);
+            if (!successful && threadContextMgrRef != null)
+                bundleContext.ungetService(threadContextMgrRef);
         }
     }
 
     /**
      * Construct a thread context descriptor.
      *
-     * @param execProps execution properties
+     * @param execProps             execution properties
      * @param internalExecPropNames names of internal execution properties. Null if all execution properties are internal.
-     * @param initialCapacity expected maximum count of thread context types
-     * @param threadContextMgr thread context manager
+     * @param initialCapacity       expected maximum count of thread context types
+     * @param threadContextMgr      thread context manager
      */
     @Trivial
     ThreadContextDescriptorImpl(Map<String, String> execProps, int initialCapacity, ThreadContextManager threadContextMgr) {
@@ -206,7 +197,10 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
     /**
      * {@inheritDoc}
      */
+    @Trivial
     final void add(String providerName, ThreadContext context) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "add " + providerName, context);
         providerNames.add(providerName);
         threadContext.add(context);
     }
@@ -231,7 +225,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
      * Utility method that indicates whether or not a list of thread context providers contains all of the specified prerequisites.
      *
      * @param contextProviders list of thread context providers (actually a map, but the keys are used as a list)
-     * @param prereqs prerequisite thread context providers
+     * @param prereqs          prerequisite thread context providers
      * @return true if all prerequisites are met. Otherwise false.
      */
     @Trivial
@@ -259,8 +253,8 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
     /**
      * Raises IllegalStateException because the application or application component is unavailable.
      *
-     * @param jeeName The metadata identifier, which is the JEE name (Application/Module/Component name with parts separated by hash signs).
-     *            For now, we'll parse the string and issue the appropriate message. This may not be appropriate in the future.
+     * @param jeeName  The metadata identifier, which is the JEE name (Application/Module/Component name with parts separated by hash signs).
+     *                     For now, we'll parse the string and issue the appropriate message. This may not be appropriate in the future.
      * @param taskName identifier for the task or contextual operation that cannot be performed
      * @throws IllegalStateException indicating that the task cannot run because the application or application component is not available.
      */
@@ -353,8 +347,11 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
      * @throws RejectedExecutionException if context cannot be established on the thread.
      */
     @Override
+    @Trivial // method name is misleading in trace
     public ArrayList<ThreadContext> taskStarting() throws RejectedExecutionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "contextualize");
 
         // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
@@ -382,31 +379,23 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
         LinkedHashMap<ThreadContextProvider, ThreadContext> contextAppliedToThread = new LinkedHashMap<ThreadContextProvider, ThreadContext>();
         try {
-            // lazily obtaining services is a privileged operation
-            Map<ThreadContextProvider, ThreadContext> contextNotApplied = AccessController.doPrivileged(new PrivilegedAction<Map<ThreadContextProvider, ThreadContext>>() {
-                @Override
-                public Map<ThreadContextProvider, ThreadContext> run() {
-                    Map<ThreadContextProvider, ThreadContext> contextNotApplied = new LinkedHashMap<ThreadContextProvider, ThreadContext>();
+            Map<ThreadContextProvider, ThreadContext> contextNotApplied = new LinkedHashMap<ThreadContextProvider, ThreadContext>();
 
-                    // First pass through configured context, and figure out what default context is needed
-                    for (int i = 0; i < threadContext.size(); i++) {
-                        String providerName = providerNames.get(i);
-                        providerNamesForDefaultContext.remove(providerName);
+            // First pass through configured context, and figure out what default context is needed
+            for (int i = 0; i < threadContext.size(); i++) {
+                String providerName = providerNames.get(i);
+                providerNamesForDefaultContext.remove(providerName);
 
-                        ThreadContextProvider provider = MP_CLEARED_CONTEXT.equals(providerName) //
-                                        ? threadContextMgr.threadContextProviders.getService(providerName) // optional
-                                        : threadContextMgr.threadContextProviders.getServiceWithException(providerName);
-                        if (provider != null)
-                            contextNotApplied.put(provider, threadContext.get(i));
-                    }
+                ThreadContextProvider provider = MP_CLEARED_CONTEXT.equals(providerName) //
+                                ? threadContextMgr.threadContextProviders.getService(providerName) // optional
+                                : threadContextMgr.threadContextProviders.getServiceWithException(providerName);
+                if (provider != null)
+                    contextNotApplied.put(provider, threadContext.get(i));
+            }
 
-                    // First pass through default context
-                    for (String providerName : providerNamesForDefaultContext)
-                        contextNotApplied.put(threadContextMgr.threadContextProviders.getServiceWithException(providerName), null);
-
-                    return contextNotApplied;
-                }
-            });
+            // First pass through default context
+            for (String providerName : providerNamesForDefaultContext)
+                contextNotApplied.put(threadContextMgr.threadContextProviders.getServiceWithException(providerName), null);
 
             // Make multiple passes through context that hasn't been applied until the size stops changing
             for (int count = contextNotApplied.size(), prev = count + 1; count > 0 && count < prev; prev = count, count = contextNotApplied.size())
@@ -416,11 +405,11 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     List<ThreadContextProvider> prereqs = provider.getPrerequisites();
                     if (prereqs == null || containsAll(contextAppliedToThread, prereqs)) {
                         ThreadContext context = entry.getValue();
-                        context = context == null
-                                        ? provider.createDefaultThreadContext(execProps)
+                        context = context == null //
+                                        ? provider.createDefaultThreadContext(execProps) //
                                         : context.clone();
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "taskStarting " + toString(context));
+                            Tr.debug(this, tc, "begin context " + toString(context));
                         context.taskStarting();
                         contextAppliedToThread.put(provider, context);
                         it.remove();
@@ -436,7 +425,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                         ThreadContextProvider provider = entry.getKey();
                         context = provider.createDefaultThreadContext(execProps);
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "taskStarting " + toString(context));
+                            Tr.debug(this, tc, "begin context " + toString(context));
                         context.taskStarting();
                         contextAppliedToThread.put(provider, context);
                         it.remove();
@@ -452,7 +441,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
             for (int c = contextToRemove.size() - 1; c >= 0; c--)
                 try {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "taskStopping " + toString(contextToRemove.get(c)));
+                        Tr.debug(this, tc, "end context " + toString(contextToRemove.get(c)));
                     contextToRemove.get(c).taskStopping();
                 } catch (Throwable stopX) {
                 }
@@ -475,14 +464,17 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
      * @param threadContext list of context previously applied to thread, ordered according to the order in which it was applied to the thread.
      */
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStopping(ArrayList<ThreadContext> threadContext) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "restore context");
 
         Throwable failure = null;
         for (int c = threadContext.size() - 1; c >= 0; c--)
             try {
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "taskStopping " + toString(threadContext.get(c)));
+                    Tr.debug(this, tc, "end context " + toString(threadContext.get(c)));
                 threadContext.get(c).taskStopping();
             } catch (Throwable x) {
                 if (failure == null)

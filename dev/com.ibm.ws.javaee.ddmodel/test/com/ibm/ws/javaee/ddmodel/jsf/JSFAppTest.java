@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class JSFAppTest extends JSFAppTestBase {
     @Test
     public void testGetVersion() throws Exception {
         for ( int schemaVersion : FacesConfig.VERSIONS ) {
-            String schemaVersionStr = DDParser.getDottedVersionText(schemaVersion);
+            String schemaVersionStr = getDottedVersionText(schemaVersion);
             
             for ( int maxSchemaVersion : FacesConfig.VERSIONS ) {
                 // The Faces config parser uses a maximum schema
@@ -146,8 +145,7 @@ public class JSFAppTest extends JSFAppTestBase {
     }
 
     /*
-     * This test should fail as <contract-map> is not valid
-     * Assert on exception
+     * This test should fail as <contract-map> is not valid.
      */
     @Test
     public void testJSF22_ContractFail() throws Exception {
@@ -162,12 +160,11 @@ public class JSFAppTest extends JSFAppTestBase {
                             "</contract-map>" +
                         "</resource-library-contracts>" +
                     "</application>"),
-               FacesConfig.VERSION_2_2, "CWWKC2259E", "unexpected.child.element" );
+               FacesConfig.VERSION_2_2,
+               "CWWKC2259E", "unexpected.child.element" );
     }
 
-    // The following snippet examples for Flow
     /*
-     * This test for
      * <flow-definition>
      * <start-node>
      * <view>
@@ -198,7 +195,6 @@ public class JSFAppTest extends JSFAppTestBase {
     }
 
     /*
-     * This test for
      * <flow-definition>
      * <flow-call>
      * <flow-reference>
@@ -242,7 +238,6 @@ public class JSFAppTest extends JSFAppTestBase {
     }
 
     /*
-     * This test for
      * <flow-definition>
      * <flow-return>
      * <from-outcome>
@@ -352,4 +347,6 @@ public class JSFAppTest extends JSFAppTestBase {
                     "</application>"),
                FacesConfig.VERSION_2_3 );
     }
+
+    // TODO: JSF 3.0 / Jakarta EE 9 cases
 }

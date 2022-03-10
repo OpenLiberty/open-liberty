@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requeste
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=A checkpoint was requested. The server is halted and its current state is written to disk.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the documentation for details of the checkpoint and restore operations.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: The Liberty server is resuming operation from a checkpoint.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: The Liberty server process resumed operation from a checkpoint in {0} seconds.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=A restore operation was run on a Liberty server checkpoint image.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Check the documentation for details of the checkpoint and restore operations.
 

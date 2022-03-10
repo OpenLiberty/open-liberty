@@ -17,7 +17,6 @@ Subsystem-Name: Jakarta EE Web Profile 10.0
   io.openliberty.persistence-3.1, \
   io.openliberty.beanValidation-3.0, \
   io.openliberty.managedBeans-2.0, \
-  io.openliberty.restfulWS-3.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.pages-3.1, \
@@ -25,5 +24,6 @@ Subsystem-Name: Jakarta EE Web Profile 10.0
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.expressionLanguage-5.0, \
   io.openliberty.jsonp-2.1
+#TODO io.openliberty.restfulWS-3.1, \
 kind=noship
 edition=full

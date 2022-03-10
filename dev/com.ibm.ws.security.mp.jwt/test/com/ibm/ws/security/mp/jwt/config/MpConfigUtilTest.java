@@ -10,9 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -21,9 +20,6 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -36,6 +32,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 
 import test.common.SharedOutputManager;
 
@@ -51,13 +50,13 @@ public class MpConfigUtilTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.mp.jwt.*=all");
 
-    @SuppressWarnings("unchecked")
-    private final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef = mockery.mock(AtomicServiceReference.class, "mpConfigProxyServiceRef");
     private final MpConfigProxyService mpConfigProxyService = mockery.mock(MpConfigProxyService.class);
     private final HttpServletRequest req = mockery.mock(HttpServletRequest.class);
     private final ServletContext servletCtx = mockery.mock(ServletContext.class);
     private final SRTServletRequest srtReq = mockery.mock(SRTServletRequest.class);
     private final ClassLoader cl = mockery.mock(ClassLoader.class);
+
+    MpConfigUtil mpConfigUtil = null;
 
     @Rule
     public final TestName testName = new TestName();
@@ -85,6 +84,8 @@ public class MpConfigUtilTest {
      */
     @Before
     public void beforeTest() throws Exception {
+        mpConfigUtil = new MpConfigUtil();
+        mpConfigUtil.setMpConfigProxyService(mpConfigProxyService);
     }
 
     /**
@@ -92,6 +93,7 @@ public class MpConfigUtilTest {
      */
     @After
     public void tearDown() throws Exception {
+        mpConfigUtil.unsetMpConfigProxyService(null);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -101,13 +103,7 @@ public class MpConfigUtilTest {
      */
     @Test
     public void getMpConfigNoConfigProxyService() {
-        mockery.checking(new Expectations() {
-            {
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(null));
-            }
-        });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
+        mpConfigUtil.unsetMpConfigProxyService(null);
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
         assertTrue("the map should be empty.", map.isEmpty());
     }
@@ -124,8 +120,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(null));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(null, MpConstants.ISSUER, String.class);
@@ -136,7 +130,6 @@ public class MpConfigUtilTest {
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
         assertEquals("the map should be 3 items.", 3, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -159,8 +152,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -171,7 +162,6 @@ public class MpConfigUtilTest {
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 3 items.", 3, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -194,8 +184,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -206,7 +194,6 @@ public class MpConfigUtilTest {
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.PUBLIC_KEY, map.containsKey(MpConstants.PUBLIC_KEY));
@@ -227,8 +214,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -239,7 +224,6 @@ public class MpConfigUtilTest {
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -260,8 +244,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -272,7 +254,6 @@ public class MpConfigUtilTest {
                 will(throwException(new NoSuchElementException()));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -293,8 +274,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -305,7 +284,6 @@ public class MpConfigUtilTest {
                 will(throwException(new NoSuchElementException()));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertTrue("the map should be empty when none of the properties is available.", map.isEmpty());
     }
@@ -322,8 +300,6 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyServiceRef).getService();
-                will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -334,7 +310,6 @@ public class MpConfigUtilTest {
                 will(returnValue("     value_" + MpConstants.KEY_LOCATION + "          "));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 1 item.", 1, map.size());
         assertTrue("the map should contain the value" + MpConstants.KEY_LOCATION, map.get(MpConstants.KEY_LOCATION).equals("value_" + MpConstants.KEY_LOCATION));
