@@ -261,6 +261,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 }
             }
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCANNING CHILDREN");
+            }
+
             //find the names of all potential bean classes in this archive
             Set<String> rawBeanclassNames = scanForBeanClassNames();
 
