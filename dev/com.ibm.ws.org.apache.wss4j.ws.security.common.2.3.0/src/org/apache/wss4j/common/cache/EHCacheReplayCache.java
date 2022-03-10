@@ -21,10 +21,7 @@ package org.apache.wss4j.common.cache;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import org.apache.wss4j.common.ext.WSSecurityException;
@@ -158,7 +155,7 @@ public class EHCacheReplayCache implements ReplayCache {
         
         ResourcePoolsBuilder resourcePoolsBuilder = null;
         CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder = null;
-        final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        //final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
                             .heap(heapEntries, EntryUnit.ENTRIES);
@@ -175,7 +172,7 @@ public class EHCacheReplayCache implements ReplayCache {
                                                                                               String.class, EHCacheValue.class, resourcePoolsBuilder).withExpiry(
                                                                                                                                                                  expiry);
             }
-            Thread.currentThread().setContextClassLoader(org.ehcache.core.spi.service.CacheManagerProviderService.class.getClassLoader());
+            //Thread.currentThread().setContextClassLoader(org.ehcache.core.spi.service.CacheManagerProviderService.class.getClassLoader());
             if (diskstorePath != null) {
                 cacheManager = CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(diskstorePath.toFile())).withCache(key,
                                                                                                                                                     configurationBuilder).build();
@@ -205,7 +202,7 @@ public class EHCacheReplayCache implements ReplayCache {
             cacheManager.init();
             cache = cacheManager.getCache(key, String.class, EHCacheValue.class);
         } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+            //Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
         
     } 
