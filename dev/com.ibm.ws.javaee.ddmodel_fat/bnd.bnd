@@ -18,6 +18,7 @@ src: \
     test-applications/EJBTestNoBnd.jar/src, \
     test-applications/ServletTest.war/src, \
     test-applications/ServletTestNoBnd.war/src, \
+    test-applications/Simple.war/src, \
     test-bundles/ddmodel_fat_bundle/src
 
 test.project: true
@@ -37,25 +38,32 @@ test.project: true
 #   componenttest-1.0
 
 -buildpath: \
+    com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+    com.ibm.websphere.javaee.ejb.3.2;version=latest, \
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
+    io.openliberty.jakarta.annotation.2.0;version=latest, \
+    io.openliberty.jakarta.servlet.5.0;version=latest, \
+    io.openliberty.jakarta.enterpriseBeans.4.0;version=latest, \
+    io.openliberty.jakarta.interceptor.2.0;version=latest, \
+\
     com.ibm.ws.javaee.dd.common;version=latest, \
     com.ibm.ws.javaee.dd;version=latest, \
     com.ibm.ws.javaee.dd.ejb;version=latest, \
     com.ibm.ws.javaee.ddmodel;version=latest, \
     com.ibm.ws.javaee.ddmodel.wsbnd;version=latest, \
+\
     com.ibm.websphere.org.osgi.core;version=latest, \
     com.ibm.websphere.org.osgi.service.cm;version=latest, \
     com.ibm.websphere.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+\
     com.ibm.ws.bnd.annotations;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.artifact;version=latest, \
     com.ibm.ws.adaptable.module;version=latest, \
     com.ibm.ws.container.service;version=latest, \
-    com.ibm.ws.app.manager;version=latest, \
-    com.ibm.websphere.javaee.annotation.1.2;version=latest, \
-    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
-    com.ibm.websphere.javaee.ejb.3.2;version=latest, \
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest
+    com.ibm.ws.app.manager;version=latest
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

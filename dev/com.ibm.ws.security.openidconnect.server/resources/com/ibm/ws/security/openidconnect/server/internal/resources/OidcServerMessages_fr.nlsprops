@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Une demande pour une cha\u00eene JWK J
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=Pour produire une cha\u00eene JWK JSON, l'attribut signatureAlgorithm du fournisseur OpenID Connect doit avoir pour valeur RS256. Les attributs KeyStoreRef et keyAliasName doivent \u00eatre valides s'ils sont sp\u00e9cifi\u00e9s. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Corrigez les attributs de configuration du fournisseur OpenID Connect.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Les r\u00e9clamations provenant du jeton d''ID tiers n''ont pas pu \u00eatre propag\u00e9es pour le fournisseur OpenID Connect {0}. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Les r\u00e9clamations provenant du jeton d'ID tiers ne peuvent pas \u00eatre extraites. Pour plus d'informations, consultez le message d'erreur.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=V\u00e9rifiez que le fournisseur tiers OpenID Connect envoie un jeton d'ID valide.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La version Java utilis\u00e9e par cet environnement d''ex\u00e9cution [{0}] n''est pas prise en charge par le SPI Mediator du jeton d''ID. Celle prise en charge est la version Java 1.7, ou ult\u00e9rieure.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=La version Java dans le message ne peut pas prendre en charge la fonction de SPI Mediator du jeton d'ID. 

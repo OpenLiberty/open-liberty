@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package com.ibm.ws.cache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -582,7 +585,24 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
 
         ConfigurationAdmin configAdmin = configAdminRef.get();
         if (null != configAdmin) {
-            Configuration[] configs = configAdmin.listConfigurations(filter.toString());
+            Configuration[] configs;
+            try {
+                configs = AccessController.doPrivileged(new PrivilegedExceptionAction<Configuration[]>() {
+                    @Override
+                    public Configuration[] run() throws IOException, InvalidSyntaxException {
+                        return configAdmin.listConfigurations(filter.toString());
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                Exception e2 = e.getException();
+                if (e2 instanceof IOException) {
+                    throw (IOException) e2;
+                } else if (e2 instanceof InvalidSyntaxException) {
+                    throw (InvalidSyntaxException) e2;
+                } else {
+                    throw (RuntimeException) e2;
+                }
+            }
 
             if (null != configs && configs.length > 0) { // For configurations from server.xml
                 Configuration osgiCacheConfig = configs[0];
@@ -602,7 +622,23 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                     props.put("libraryRef", config.libraryRef);
                     props.put("sharedLib.target", "(service.pid=" + config.libraryRef + ")");
                 }
-                Configuration osgiCacheConfig = configAdmin.createFactoryConfiguration(FACTORY_PID);
+                Configuration osgiCacheConfig;
+                try {
+                    osgiCacheConfig = AccessController.doPrivileged(new PrivilegedExceptionAction<Configuration>() {
+                        @Override
+                        public Configuration run() throws IOException {
+                            return configAdmin.createFactoryConfiguration(FACTORY_PID);
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    Exception e2 = e.getException();
+                    if (e2 instanceof IOException) {
+                        throw (IOException) e2;
+                    } else {
+                        throw (RuntimeException) e2;
+                    }
+                }
+                
                 osgiCacheConfig.update(props);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Created OSGI Configuration", osgiCacheConfig.getProperties());
@@ -866,7 +902,8 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
         cacheProvider = provider;
     }
 
-    protected void unsetCacheProvider(CacheProvider provider) {}
+    protected void unsetCacheProvider(CacheProvider provider) {
+    }
 
     @Reference(name = "sharedLib", service = Library.class, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
@@ -880,7 +917,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
      * Declarative Services method for unsetting the shared library service reference
      *
      * @param ref
-     *            reference to the service
+     *                reference to the service
      */
     protected void unsetSharedLib(Library ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

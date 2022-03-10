@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,4 +28,5 @@ DUPLICATE_PROPERTY_ENTITY.useraction=Check the entity's schema to determine if t
 
 GENERIC=CWIML1999E: The user registry operation could not be completed. A runtime error occurred during processing: {0}
 GENERIC.explanation=The program encountered the specified error during the operation.
-GENERIC.useraction= Review the logs for the cause of this error and take appropriate action.
+GENERIC.useraction= Review the logs for the cause of this error and take appropriate corrective actions.
+

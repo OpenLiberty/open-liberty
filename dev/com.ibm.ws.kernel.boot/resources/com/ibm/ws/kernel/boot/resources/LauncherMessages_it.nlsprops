@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,10 +76,7 @@ error.archiveTarget=CWWKE0011E: Il parametro --archive richiede un argomento: --
 error.archiveTarget.explanation=Non \u00e8 stato fornito un argomento richiesto.
 error.archiveTarget.useraction=Fornire l'argomento corretto, quindi ripetere il comando. Provare ad utilizzare --help per una descrizione degli argomenti per l'opzione fornita.
 
-error.serverNameCharacter=CWWKE0012E: Il nome del server specificato contiene un carattere non valido (nome={0}). \
-I caratteri validi sono: caratteri alfanumerici Unicode (ad esempio, \
-0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). \
-Un nome server non pu\u00f2 iniziare con un trattino (-) o con un punto (.).
+error.serverNameCharacter=CWWKE0012E: Il nome del server specificato contiene un carattere non valido (nome={0}). I caratteri validi sono: caratteri alfanumerici Unicode (ad esempio, 0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). Un nome server non pu\u00f2 iniziare con un trattino (-) o con un punto (.).
 error.serverNameCharacter.explanation=Nel nome del server \u00e8 stato utilizzato un carattere non valido.
 error.serverNameCharacter.useraction=Ridenominare il server utilizzando solo caratteri validi: caratteri alfanumerici Unicode (ad esempio, 0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.).
 
@@ -125,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: La definizione del kernel specificata ({0}) non 
 error.kernelDefFile.explanation=Non \u00e8 stato possibile trovare la definizione del kernel specificata.
 error.kernelDefFile.useraction=Verificare che la risorsa definizione del kernel esista e che possa essere letta dall'utente corrente.
 
-error.specifiedLocation=CWWKE0025E: Il valore di {0} deve fare riferimento ad una directory. \
-Il valore specificato fa riferimento a una risorsa file esistente. \
-Valore: {1}
+error.specifiedLocation=CWWKE0025E: Il valore di {0} deve fare riferimento ad una directory. Il valore specificato fa riferimento a una risorsa file esistente. Valore: {1}
 error.specifiedLocation.explanation=L'ubicazione fornita fa riferimento ad un file esistente invece che ad una directory.
 error.specifiedLocation.useraction=Sostituire l'ubicazione specificata con una directory, quindi ripetere l'azione.
 
@@ -469,10 +464,7 @@ info.addProductExtension.useraction=Non \u00e8 richiesta alcuna azione.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: Il nome client specificato contiene un carattere non valido (nome={0}). \
-I caratteri validi sono: caratteri alfanumerici Unicode (ad esempio, \
-0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). \
-Un nome client non pu\u00f2 iniziare con un trattino (-) o un punto (.).
+error.clientNameCharacter=CWWKE0900E: Il nome client specificato contiene un carattere non valido (nome={0}). I caratteri validi sono: caratteri alfanumerici Unicode (ad esempio, 0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). Un nome client non pu\u00f2 iniziare con un trattino (-) o un punto (.).
 error.clientNameCharacter.explanation=Nel nome client \u00e8 stato utilizzato un carattere non valido.
 error.clientNameCharacter.useraction=Ridenominare il client utilizzando solo caratteri validi: caratteri alfanumerici Unicode (ad esempio, 0-9, a-z, A-Z), caratteri di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.).
 
@@ -523,14 +515,12 @@ info.java2security.started.useraction=Non \u00e8 richiesta alcuna azione.
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Errore nell''impostazione del gestore di sicurezza predefinito a causa di un''eccezione: {0}.  Ci\u00f2 si verifica se il gestore della sicurezza \u00e8 gi\u00e0 stato impostato e il relativo metodo checkPermission non gli consente di essere sostituito.
 error.set.securitymanager.explanation=Java 2 Security \u00e8 abilitato, ma si \u00e8 verificato un errore durante l'impostazione del gestore della sicurezza predefinito.
-error.set.securitymanager.useraction=Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  \
-Se gi\u00e0 impostato, rimuovere l'opzione -Djava.security.manager e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties. 
+error.set.securitymanager.useraction=Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  Se gi\u00e0 impostato, rimuovere l'opzione -Djava.security.manager e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: Errore nell''impostazione del gestore di sicurezza NoRethrow a causa di un''eccezione: {0}.  Ci\u00f2 si verifica se il gestore della sicurezza \u00e8 gi\u00e0 stato impostato e il relativo metodo checkPermission non gli consente di essere sostituito.
 error.set.trace.securitymanager.explanation=Java 2 Security \u00e8 abilitato, ma si \u00e8 verificato un errore durante l'impostazione del gestore di sicurezza NoRethrow.
-error.set.trace.securitymanager.useraction=Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  \
-Se gi\u00e0 impostato, rimuovere l'opzione -Djava.security.manager e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties. 
+error.set.trace.securitymanager.useraction=Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  Se gi\u00e0 impostato, rimuovere l'opzione -Djava.security.manager e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: La politica Java 2 Security corrente ha notificato una possibile violazione dell''autorizzazione Java 2 Security. {0}Autorizzazione:{1}Codice:{2}{3}Traccia di stack:{4}Ubicazione codebase:{5}
 warning.java.security.permdenied.explanation=Java Security Manager checkPermission() ha generato una SecurityException sull'oggetto Permission.
@@ -538,9 +528,7 @@ warning.java.security.permdenied.useraction=Verificare che l'operazione tentata 
 
 error.java.security.exception.codebase=CWWKE0913E: \u00c8 stata rilevata un''eccezione non prevista durante il tentativo di determinare l''ubicazione della codebase.  Eccezione: {0}.  
 error.java.security.exception.codebase.explanation=Si \u00e8 verificato un errore durante la  determinazione dell'ubicazione del codice che ha generato un'eccezione di controllo accessi autorizzazione di Java 2 Security.
-error.java.security.exception.codebase.useraction=Controllare i log di eccezione e del server per i dettagli. \
-\  Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  \
-Se uno o entrambi sono impostati, rimuovere le impostazioni e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties.
+error.java.security.exception.codebase.useraction=Controllare i log di eccezione e del server per i dettagli.   Verificare che il gestore della sicurezza non sia gi\u00e0 stato impostato avviando il server con l'opzione -Djava.security.manager.  Se uno o entrambi sono impostati, rimuovere le impostazioni e riavviare il server con Java 2 Security abilitato specificando la propriet\u00e0 websphere.java.security nel file bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: La politica Java 2 Security corrente ha notificato una possibile violazione dell''autorizzazione Java 2 Security. Fare riferimento al Knowledge Center per ulteriori informazioni.{0}Autorizzazione:{1}Codice:{2}Ubicazione codebase:{3}
 warning.zOS.java.security.permdenied1.explanation=Java Security Manager checkPermission() ha generato una SecurityException sull'oggetto Permission. Un chiamante sullo stack di chiamate non dispone dell'autorizzazione richiesta.  Potrebbe non essere un problema, se il chiamante gestisce correttamente questa eccezione.
@@ -562,7 +550,7 @@ error.client.runner.useraction=Controllare i messaggi di errore per i dettagli s
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  Impossibile eseguire l''operazione richiesta. Fare riferimento ai log sul Liberty Profile Server {0} sull''host {1} all''ubicazione {2} per la richiesta {3} per dettagli.
+error.mbean.operation.failure=CWWKE0918E: \ Impossibile eseguire l''operazione richiesta. Fare riferimento ai log sul Liberty Profile Server {0} sull''host {1} all''ubicazione {2} per la richiesta {3} per dettagli.
 error.mbean.operation.failure.explanation=Si \u00e8 verificato un errore durante il tentativo di eseguire l'operazione richiesta.
 error.mbean.operation.failure.useraction=Per ulteriori informazioni sull'errore dell'operazione, controllare i log del server.
 
@@ -706,6 +694,10 @@ warning.earlyRelease=CWWKE0953W: Questa versione di {0} \u00e8 una versione di r
 warning.earlyRelease.explanation=Le nuove funzioni che non sono ancora state completamente verificate vengono rese disponibili nelle release anticipate al fine di ottenere un feedback prima che vengano incluse in una release supportata.
 warning.earlyRelease.useraction=Non utilizzare una versione di release anticipata su sistema di produzione, poich\u00e9 le versioni di release anticipate non sono supportate.
 
+error.invalidPhaseName=CWWKE0954E: La fase del punto di controllo "{0}" specificata \u00e8 vuota o sconosciuta.
+error.invalidPhaseName.explanation=\u00c8 stata specificata una fase sconosciuta come valore dell'opzione del punto di controllo.
+error.invalidPhaseName.useraction=Consultare la documentazione per determinare i nomi di fase validi. Immettere nuovamente il comando utilizzando una fase del punto di controllo valida.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.
@@ -748,22 +740,16 @@ info.runtimePackageException=Package del runtime non riuscito. Per i dettagli, c
 
 info.pausingListeners=Sospensione del server {0}.
 info.pausedListeners=Sospensione del server {0} completata.
-info.pauseFailedException=Sospensione del server {0} non riuscita. Per ulteriori informazioni, \
-controllare i log del server.
+info.pauseFailedException=Sospensione del server {0} non riuscita. Per ulteriori informazioni, controllare i log del server.
 info.pausingListeners.target=Sospensione dei componenti di destinazione specificati del server {0}.
 info.pausedListeners.target=Sospensione dei componenti di destinazione specificati del server {0} completata.
-info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. \
-Per ulteriori informazioni, \
-controllare i log del server.
+info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, controllare i log del server.
 info.resumingListeners=Riattivazione del server {0}.
 info.resumedListeners=Riattivazione del server {0} completata.
-info.resumeFailedException=Riattivazione del server {0} non riuscita. Per ulteriori informazioni, \
-controllare i log del server.
+info.resumeFailedException=Riattivazione del server {0} non riuscita. Per ulteriori informazioni, controllare i log del server.
 info.resumingListeners.target=Riattivazione dei componenti di destinazione specificati del server {0}.
 info.resumedListeners.target=Riattivazione dei componenti di destinazione specificati del server {0} completata.
-info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. \
-Per ulteriori informazioni, \
-controllare i log del server.
+info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, controllare i log del server.
 info.serverCommandAuthFailure=Il comando {0} non \u00e8 riuscito perch\u00e9 il processo non ha potuto eliminare il file {1}.
 info.serverCommandCommFailure=Il comando {0} non \u00e8 riuscito a causa di un problema di comunicazione con il server.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,8 +38,7 @@ SEC_AUTHZ_FAILED=CWWKS9104A: La autorizaci\u00f3n ha fallado para el usuario {0}
 SEC_AUTHZ_FAILED.explanation=El usuario no tiene el permiso necesario para acceder al recurso.
 SEC_AUTHZ_FAILED.useraction=P\u00f3ngase en contacto con el administrador de seguridad si esta situaci\u00f3n es inesperada. El usuario debe estar correlacionado con uno de los roles que protegen el recurso si es necesario el acceso al recurso protegido.
 
-SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: No se ha podido determinar el puerto SSL para redirecci\u00f3n autom\u00e1tica. \
-Compruebe las anotaciones cronol\u00f3gicas para asegurarse de que el puerto HTTPS (SSL) se haya iniciado o para buscar posibles errores en relaci\u00f3n con la configuraci\u00f3n SSL, como por ejemplo un elemento keyStore ausente o incorrecto.
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: No se ha podido determinar el puerto SSL para redirecci\u00f3n autom\u00e1tica. Compruebe las anotaciones cronol\u00f3gicas para asegurarse de que el puerto HTTPS (SSL) se haya iniciado o para buscar posibles errores en relaci\u00f3n con la configuraci\u00f3n SSL, como por ejemplo un elemento keyStore ausente o incorrecto.
 SSL_CAN_NOT_DETERMINE_PORT.explanation=Se ha producido un error interno. No se ha podido determinar el puerto SSL.
 SSL_CAN_NOT_DETERMINE_PORT.useraction=No se puede realizar ninguna acci\u00f3n.
 
@@ -52,23 +51,16 @@ SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Los par\u00e1metros Post son nulos, 
 SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Si los par\u00e1metros Post son demasiado grandes, aumente el tama\u00f1o de la opci\u00f3n postParamCookieSize.
 
 SEC_TAI_VALIDATE_FAILED=CWWKS9107E: La inicializaci\u00f3n de asociaciones de confianza no puede cargar la clase de asociaci\u00f3n de confianza {0}.
-SEC_TAI_VALIDATE_FAILED.explanation=Cuando se encuentra el interceptor adecuado para una solicitud determinada, el interceptor valida su confianza con el servidor proxy inverso. \
-Este mensaje de error indica que se ha producido un error de validaci\u00f3n y, por lo tanto, no se puede confiar en el servidor proxy de retroceso. \
-Por ejemplo, es posible que se haya proporcionado una contrase\u00f1a incorrecta o caducada.
-SEC_TAI_VALIDATE_FAILED.useraction=En un entorno de producci\u00f3n, se puede avisar al usuario para que compruebe si hay un intruso en el sistema. \
-En un entorno de desarrollo en el que se realizan pruebas, compruebe que se est\u00e9n pasando correctamente las entradas esperadas desde el servidor proxy inverso al interceptor.  \
-La naturaleza de estas entradas depende de c\u00f3mo se establezca la asociaci\u00f3n de confianza. \
-Por ejemplo, el m\u00e9todo m\u00e1s sencillo es pasar un nombre de usuario y contrase\u00f1a a trav\u00e9s de la cabecera de autenticaci\u00f3n b\u00e1sica.  
+SEC_TAI_VALIDATE_FAILED.explanation=Cuando se encuentra el interceptor adecuado para una solicitud determinada, el interceptor valida su confianza con el servidor proxy inverso. Este mensaje de error indica que se ha producido un error de validaci\u00f3n y, por lo tanto, no se puede confiar en el servidor proxy de retroceso. Por ejemplo, es posible que se haya proporcionado una contrase\u00f1a incorrecta o caducada.
+SEC_TAI_VALIDATE_FAILED.useraction=En un entorno de producci\u00f3n, se puede avisar al usuario para que compruebe si hay un intruso en el sistema. En un entorno de desarrollo en el que se realizan pruebas, compruebe que se est\u00e9n pasando correctamente las entradas esperadas desde el servidor proxy inverso al interceptor.  La naturaleza de estas entradas depende de c\u00f3mo se establezca la asociaci\u00f3n de confianza. Por ejemplo, el m\u00e9todo m\u00e1s sencillo es pasar un nombre de usuario y contrase\u00f1a a trav\u00e9s de la cabecera de autenticaci\u00f3n b\u00e1sica.  
 
 SEC_TAI_USER_EXCEPTION=CWWKS9108E: No se encuentra un usuario v\u00e1lido para la asociaci\u00f3n de confianza.
-SEC_TAI_USER_EXCEPTION.explanation=Un interceptor devuelve el nombre de usuario de autenticaci\u00f3n. \
-No se ha devuelto dicho nombre de usuario.
+SEC_TAI_USER_EXCEPTION.explanation=Un interceptor devuelve el nombre de usuario de autenticaci\u00f3n. No se ha devuelto dicho nombre de usuario.
 SEC_TAI_USER_EXCEPTION.useraction=Verifique que el servidor proxy inverso inserta el nombre de usuario correcto en la solicitud HTTP antes de enviar la solicitud al servidor de aplicaciones.
 
 SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: Se ha producido una excepci\u00f3n inesperada durante la asociaci\u00f3n de confianza. La excepci\u00f3n es {0}.
 SEC_TAI_GENERAL_EXCEPTION.explanation=Esta excepci\u00f3n se refiere a todas las otras excepciones que puede crear un interceptor cuando valida la confianza con el servidor proxy inverso y cuando se obtiene el nombre de usuario autenticado, excepto para WebTrustAssociationFailedException y WebTrustAssociationUserException.
-SEC_TAI_GENERAL_EXCEPTION.useraction=Depure el problema del rastreo de pilas impreso junto a este mensaje de error. \
-Tambi\u00e9n puede activar el rastreo de depuraci\u00f3n para obtener m\u00e1s informaci\u00f3n sobre la naturaleza de la excepci\u00f3n.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Depure el problema del rastreo de pilas impreso junto a este mensaje de error. Tambi\u00e9n puede activar el rastreo de depuraci\u00f3n para obtener m\u00e1s informaci\u00f3n sobre la naturaleza de la excepci\u00f3n.
 
 AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Varias aplicaciones tienen el nombre {0}. Las pol\u00edticas de autorizaci\u00f3n de seguridad requieren que los nombres sean exclusivos.
 AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Los nombres de aplicaci\u00f3n deben ser exclusivos para poder aplicar la pol\u00edtica de autorizaci\u00f3n de seguridad.
@@ -118,11 +110,11 @@ OSGI_SERVICE_ERROR=CWWKS9121E: El servicio OSGi {0} no est\u00e1 disponible.
 OSGI_SERVICE_ERROR.explanation=El servicio OSGi especificado no est\u00e1 disponible.
 OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n "clean".
 
-UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  Para el URL {0} en la aplicaci\u00f3n {1}, se han descubierto los siguientes m\u00e9todos HTTP, que son accesibles: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I: \ Para el URL {0} en la aplicaci\u00f3n {1}, se han descubierto los siguientes m\u00e9todos HTTP, que son accesibles: {2}
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=El elemento deny-uncovered-http-methods no se especifica en el archivo web.xml para el servlet y hay m\u00e9todos HTTP para un patr\u00f3n de URL que no est\u00e1n protegidos. Estos m\u00e9todos sin proteger ser\u00e1n accesibles.
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Aseg\u00farese de que todos los m\u00e9todos HTTP en todos los patrones de URL restringidos tienen las protecciones de seguridad previstas.
 
-UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  Para el URL {0} en la aplicaci\u00f3n {1}, se han descubierto los siguientes m\u00e9todos HTTP, que no son accesibles: {2}
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I: \ Para el URL {0} en la aplicaci\u00f3n {1}, se han descubierto los siguientes m\u00e9todos HTTP, que no son accesibles: {2}
 UNCOVERED_HTTP_METHODS_FOUND.explanation=El elemento deny-uncovered-http-methods se especifica en el archivo web.xml para el servlet y hay m\u00e9todos HTTP para un patr\u00f3n de URL que no est\u00e1n protegidos. Estos m\u00e9todos sin proteger no ser\u00e1n accesibles.
 UNCOVERED_HTTP_METHODS_FOUND.useraction=Aseg\u00farese de que todos los m\u00e9todos HTTP en todos los patrones de URL restringidos tienen las protecciones de seguridad previstas.
 
@@ -146,3 +138,11 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Use el protocolo HTTPS o establezca el a
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
+
+JCACHE_PUT_FAILURE=CWWKS9130E: La memoria cach\u00e9 de cookie de finalizaci\u00f3n de sesi\u00f3n no ha podido colocar la cookie de finalizaci\u00f3n de sesi\u00f3n en la memoria cach\u00e9 JCache. El error es: {0}
+JCACHE_PUT_FAILURE.explanation=La memoria cach\u00e9 de cookies de finalizaci\u00f3n de sesi\u00f3n ha encontrado un error al intentar colocar la cookie de finalizaci\u00f3n de sesi\u00f3n en la memoria cach\u00e9 JCache.
+JCACHE_PUT_FAILURE.useraction=Resuelva la causa del error.
+
+JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: La memoria cach\u00e9 de cookie de finalizaci\u00f3n de sesi\u00f3n no ha podido comprobar la memoria cach\u00e9 JCache para la cookie. El error es: {0}
+JCACHE_CONTAINSKEY_FAILURE.explanation=La memoria cach\u00e9 de cookie de finalizaci\u00f3n de sesi\u00f3n ha encontrado un error al intentar comprobar la memoria cach\u00e9 JCache para la cookie. 
+JCACHE_CONTAINSKEY_FAILURE.useraction=Resuelva la causa del error.

@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2021, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jcache.internal/resources/io/openliberty/jcache/internal/resources/JCacheMessages.nlsprops
+#COMPONENTPREFIX CWLJC SESN
+#COMPONENTNAMEFOR Open Liberty JCache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: configura\u00e7\u00e3o do Infinispan gerada para persist\u00eancia de sess\u00e3o de HTTP: {0}. Para substituir, configure o atributo uri do elemento de configura\u00e7\u00e3o httpSessionCache ou do elemento de configura\u00e7\u00e3o cacheManager.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Os caches Infinispan que s\u00e3o usados para a persist\u00eancia de sess\u00e3o HTTP requerem configura\u00e7\u00e3o adicional para persistir sess\u00f5es entre servidores. O Liberty gera essa configura\u00e7\u00e3o quando ela n\u00e3o \u00e9 fornecida pelo usu\u00e1rio.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria caso se esteja satisfeito com a configura\u00e7\u00e3o gerada. Caso contr\u00e1rio, \u00e9 poss\u00edvel usar a configura\u00e7\u00e3o gerada como ponto de in\u00edcio.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: O JCache {0} foi criado em {1} ms.
+CWLJC0001_CACHE_CREATED.explanation=O JCache nomeado foi criado porque ele n\u00e3o foi localizado.
+CWLJC0001_CACHE_CREATED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: O JCache {0} existente foi localizado em {1} ms.
+CWLJC0002_CACHE_FOUND.explanation=O JCache nomeado foi localizado, portanto, n\u00e3o foi criado.
+CWLJC0002_CACHE_FOUND.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: O JCache {0} est\u00e1 usando o provedor de armazenamento em cache {1}.
+CWLJC0003_USING_PROVIDER.explanation=O JCache nomeado est\u00e1 usando o provedor especificado.
+CWLJC0003_USING_PROVIDER.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: O provedor de armazenamento em cache {0} falhou ao carregar. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=A configura\u00e7\u00e3o do cachingProvider falhou ao carregar.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=Resolva o erro inclu\u00eddo na mensagem e tente novamente.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: O JCache CacheManager {0} levou {1} ms para ser carregado. 
+CWLJC0005_MANAGER_LOADED.explanation=O JCache CacheManager foi carregado com sucesso.
+CWLJC0005_MANAGER_LOADED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Sintaxe inv\u00e1lida no URI do cacheManager.  O motivo \u00e9 {0}.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=A sintaxe do URI de configura\u00e7\u00e3o do JCache especificado \u00e9 inv\u00e1lida.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=Corrija a sintaxe do URI de configura\u00e7\u00e3o especificado.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: Erro ao desserializar o objeto a partir do JCache {0}: {1}.
+CWLJC0008_DESERIALIZE_ERR.explanation=O objeto recuperado do JCache nomeado n\u00e3o p\u00f4de ser desserializado.
+CWLJC0008_DESERIALIZE_ERR.useraction=Assegure-se de que todas as classes estejam dispon\u00edveis em uma biblioteca inclu\u00edda na configura\u00e7\u00e3o do JCache.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: Erro ao serializar o objeto para o JCache {0}: {1}.
+CWLJC0009_SERIALIZE_ERR.explanation=O objeto a ser armazenado no JCache nomeado n\u00e3o p\u00f4de ser serializado.
+CWLJC0009_SERIALIZE_ERR.useraction=Assegure-se de que todas as classes possam ser serializadas.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Erro ao configurar o JCache CacheManager: {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=O JCache CacheManager n\u00e3o p\u00f4de ser configurado devido ao erro especificado.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=Resolva o erro inclu\u00eddo na mensagem e tente novamente.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Erro encontrado ao recuperar o JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR.explanation=O cache n\u00e3o foi recuperado devido ao erro especificado.
+CWLJC0011_GET_CACHE_ERR.useraction=Resolva o erro inclu\u00eddo na mensagem e tente novamente.

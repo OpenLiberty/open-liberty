@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ bVersion=1.0
 Bundle-Name: Messaging Interfaces
 Bundle-SymbolicName: com.ibm.ws.messaging.common
 Bundle-Description: Messaging Interfaces ; version=${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-   
+Include-Resource: OSGI-INF=resources/OSGI-INF
+
 Export-Package: com.ibm.websphere.sib,\
  com.ibm.websphere.sib.exception,\
  com.ibm.websphere.sib.management,\
@@ -24,6 +26,7 @@ Export-Package: com.ibm.websphere.sib,\
  com.ibm.wsspi.sib.core.selector,\
  com.ibm.wsspi.sib.core.trm,\
  com.ibm.wsspi.sib.messagecontrol,\
+ com.ibm.ws.messaging.lifecycle,\
  com.ibm.ws.sib.admin,\
  com.ibm.ws.sib.admin.exception,\
  com.ibm.ws.sib.matchspace,\
@@ -63,8 +66,7 @@ Export-Package: com.ibm.websphere.sib,\
  com.ibm.ws.sib.core.impl,\
  com.ibm.ws.sib.common.service,\
  com.ibm.ws.sib.jfapchannel
- 
- 
+
 Private-Package: \
  com.ibm.ws.sib.mfp.schema,\
  com.ibm.ws.sib.mfp.jmf,\
@@ -74,7 +76,10 @@ Private-Package: \
  com.ibm.ws.sib.mfp.util,\
  com.ibm.ws.sib.common.service
 
--dsannotations=com.ibm.ws.sib.common.service.CommonServiceFacade
+-dsannotations: \
+ com.ibm.ws.sib.common.service.CommonServiceFacade, \
+ com.ibm.ws.messaging.lifecycle.SingletonMonitor, \
+ com.ibm.ws.messaging.lifecycle.SingletonsReady
 
 instrument.disabled: true
 

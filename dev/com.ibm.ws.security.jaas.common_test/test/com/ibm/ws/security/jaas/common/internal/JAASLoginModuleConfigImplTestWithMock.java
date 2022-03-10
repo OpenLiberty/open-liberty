@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import org.osgi.framework.BundleContext;
+
 import com.ibm.ws.security.authentication.jaas.modules.WSLoginModuleImpl;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
@@ -53,9 +55,10 @@ public class JAASLoginModuleConfigImplTestWithMock {
     };
 
     private final ClassLoadingService classLoadingService = mockery.mock(ClassLoadingService.class);
+    private final BundleContext bundleContext = mockery.mock(BundleContext.class);
     private final ClassLoader classLoader = mockery.mock(ClassLoader.class);
     protected final Library sharedLibrary = mockery.mock(Library.class);
-    private final Class wsLoginClass = WSLoginModuleImpl.class;
+    private final Class<?> wsLoginClass = WSLoginModuleImpl.class;
     private final String delegateClassName = wsLoginClass.getName();
 
     private final JAASLoginModuleConfigImpl jaasLoginModuleConfig = new JAASLoginModuleConfigImpl();
@@ -64,6 +67,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
     public void setUp() throws Exception {
         mockery.checking(new Expectations() {
             {
+                allowing(bundleContext).addBundleListener(jaasLoginModuleConfig);
                 allowing(classLoadingService).getSharedLibraryClassLoader(sharedLibrary);
                 will(returnValue(classLoader));
                 allowing(classLoader).loadClass(delegateClassName);
@@ -88,7 +92,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         ModuleConfig moduleConfig = moduleConfig();
         jaasLoginModuleConfig.setClassLoadingSvc(classLoadingService);
         jaasLoginModuleConfig.setSharedLib(sharedLibrary);
-        jaasLoginModuleConfig.activate(moduleConfig, Collections.<String, Object> emptyMap());
+        jaasLoginModuleConfig.activate(bundleContext, moduleConfig, Collections.<String, Object> emptyMap());
 
         assertEquals("userNameAndPassword1", jaasLoginModuleConfig.getId());
 //        assertEquals("simpleClass", jaasLoginModuleConfig.getOptions().get("delegate"));
@@ -99,8 +103,8 @@ public class JAASLoginModuleConfigImplTestWithMock {
 
     ModuleConfig moduleConfig() {
         ModuleConfig moduleConfig = new ModuleConfig() {
-            private Library sharedLibrary;
-            private ClassLoadingService classLoadingService;
+//            private Library sharedLibrary;
+//            private ClassLoadingService classLoadingService;
 
             @Override
             public Class<? extends Annotation> annotationType() {
@@ -189,7 +193,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         ModuleConfig moduleConfig = moduleConfig();
         jaasLoginModuleConfig.setClassLoadingSvc(classLoadingService);
         jaasLoginModuleConfig.setSharedLib(sharedLibrary);
-        jaasLoginModuleConfig.activate(moduleConfig, orops);
+        jaasLoginModuleConfig.activate(bundleContext, moduleConfig, orops);
         assertEquals("userNameAndPassword1", jaasLoginModuleConfig.getId());
         assertEquals(JAASLoginModuleConfigImpl.LOGIN_MODULE_PROXY, jaasLoginModuleConfig.getClassName());
 //        assertEquals("simpleClass", jaasLoginModuleConfig.getOptions().get("delegate"));
@@ -204,9 +208,8 @@ public class JAASLoginModuleConfigImplTestWithMock {
 
         ModuleConfig moduleConfig = moduleConfig();
 
-        JAASLoginModuleConfigImpl jaasLoginModuleConfig = new JAASLoginModuleConfigImpl();
         jaasLoginModuleConfig.setSharedLib(sharedLibrary);
-        jaasLoginModuleConfig.activate(moduleConfig, orops);
+        jaasLoginModuleConfig.activate(bundleContext, moduleConfig, orops);
 
         assertEquals("Should have two options", 2, jaasLoginModuleConfig.getOptions().size());
     }

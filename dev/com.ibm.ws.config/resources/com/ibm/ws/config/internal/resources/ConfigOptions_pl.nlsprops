@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Sk\u0142adnia: java [opcje JVM] -jar {0} [opcje] plikWyjsciowy  
+briefUsageScript=Sk\u0142adnia: ./{0} [opcje] plik_wyj\u015bciowy
+
 
 use.options=Opcje:
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,8 +33,14 @@ option-desc.locale=Ustawienia narodowe u\u017cywane na potrzeby danych wyj\u015b
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=Schemat wyj\u015bciowy nie b\u0119dzie zawiera\u0142 wci\u0119\u0107 sk\u0142adaj\u0105cych si\u0119 ze spacji, znak\u00f3w nowego wiersza ani komentarzy XML.
 option-key.productExtension=--productExtension
-option-desc.productExtension=Nazwa rozszerzenia produktu do przetwarzania. \n\
-Je\u015bli rozszerzenie produktu jest zainstalowane w po\u0142o\u017ceniu\n\
-domy\u015blnym u\u017cytkownika, u\u017cyj s\u0142owa kluczowego: usr. \n\
-Je\u015bli ta opcja nie zosta\u0142a okre\u015blona, dzia\u0142anie jest wykonywane\n\
-na pliku core serwera Liberty.
+option-desc.productExtension=Nazwa rozszerzenia produktu do przetwarzania. \nJe\u015bli rozszerzenie produktu jest zainstalowane w po\u0142o\u017ceniu\ndomy\u015blnym u\u017cytkownika, u\u017cyj s\u0142owa kluczowego: usr. \nJe\u015bli ta opcja nie zosta\u0142a okre\u015blona, dzia\u0142anie jest wykonywane\nna pliku core serwera Liberty.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Je\u015bli podano opcj\u0119 schemaVersion=1.1, to w pliku wyj\u015bciowym b\u0119d\u0105 zapisywane zar\u00f3wno jawnie nazwane elementy podrz\u0119dne, jak i elementy xsd:any.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Je\u015bli podano opcj\u0119 outputVersion=2.0, w pliku wyj\u015bciowym b\u0119d\u0105 zapisywane tylko elementy xsd:any, tak aby nieznane elementy pomy\u015blnie przesz\u0142y sprawdzanie poprawno\u015bci XSD kosztem utraty mo\u017cliwo\u015bci sprawdzania poprawno\u015bci znanych element\u00f3w.

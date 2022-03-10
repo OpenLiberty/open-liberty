@@ -159,12 +159,12 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      <version>3.13.0</version>
+      <version>3.19.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.13.0</version>
+      <version>3.19.2</version>
     </dependency>
     <dependency>
       <groupId>com.graphql-java</groupId>
@@ -208,11 +208,6 @@
     </dependency>
     <dependency>
       <groupId>com.ibm.ws.componenttest</groupId>
-      <artifactId>infra.buildtasks-core</artifactId>
-      <version>4.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.ws.componenttest</groupId>
       <artifactId>mantis-collections</artifactId>
       <version>2.5.0</version>
     </dependency>
@@ -235,6 +230,11 @@
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail</artifactId>
       <version>1.5.10</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.1.54</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -444,42 +444,42 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf-lite</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.38.1</version>
+      <version>1.43.2</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
@@ -1979,7 +1979,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
       <artifactId>microprofile-graphql-api</artifactId>
-      <version>2.0-RC1</version>
+      <version>2.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
@@ -2399,7 +2399,7 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.faces</artifactId>
-      <version>2.3.3</version>
+      <version>2.3.9</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -3409,17 +3409,12 @@
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.1</version>
-    </dependency>
-    <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
       <version>2.7.2</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.12.1</version>
+      <version>2.12.2</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>

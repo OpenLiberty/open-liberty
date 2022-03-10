@@ -1,0 +1,32 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <httpEndpoint
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"
+        virtualHost="fromApp">
+    </httpEndpoint>
+
+    <virtualHost id="fromApp">
+        <hostAlias>*:${bvt.prop.HTTP_secondary}</hostAlias>
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+
+    <javaPermission
+        className="java.io.FilePermission"
+        name="ALL FILES"
+        actions="read,write,delete"/>
+
+    <featureManager>
+        <feature>osgiConsole-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejb-3.2</feature>
+        <feature>libertyinternals-1.0</feature>
+    </featureManager>
+
+    <enterpriseApplication id="simpleEar" location="Simple.ear" name="Simple">
+        <web-ext id="simpleWar" moduleName="Simple" context-root="ext"/>
+    </enterpriseApplication>
+
+</server>

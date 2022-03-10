@@ -193,13 +193,13 @@ public abstract class AbstractBindingBuilder {
     private void insertAfter(Element child, Element sib) {
         child = (Element)DOMUtils.getDomElement(child);
         sib = (Element)DOMUtils.getDomElement(sib);
-        LOG.info("insertAfter:  child = " + child + " sib = " + topDownElement);
+	LOG.log(Level.FINEST, "insertAfter:  child = " + child + " sib = " + topDownElement);
         if (sib.getNextSibling() == null) {
-            LOG.info("insertAfter:  secHeader.getSecurityHeader() = " + secHeader.getSecurityHeader());
+	    LOG.log(Level.FINEST, "insertAfter:  secHeader.getSecurityHeader() = " + secHeader.getSecurityHeader());
             secHeader.getSecurityHeader().appendChild(child);
         } else {
-            LOG.info("insertAfter:  secHeader.getSecurityHeader() = " + secHeader.getSecurityHeader());
-            LOG.info("insertAfter: child = " + child + " sib.getNextSibling() = " + sib.getNextSibling());
+	    LOG.log(Level.FINEST, "insertAfter:  secHeader.getSecurityHeader() = " + secHeader.getSecurityHeader());
+	    LOG.log(Level.FINEST, "insertAfter: child = " + child + " sib.getNextSibling() = " + sib.getNextSibling());
             secHeader.getSecurityHeader().insertBefore(child, sib.getNextSibling());
         }
     }
@@ -231,7 +231,7 @@ public abstract class AbstractBindingBuilder {
             secHeader.getSecurityHeader().insertBefore(el, lastDerivedKeyElement);
         } else if (topDownElement != null) {
             //el = (Element)getDomElement(el);
-            LOG.info("element = " + el + " topDownElement = " + topDownElement);
+	    LOG.log(Level.FINEST, "element = " + el + " topDownElement = " + topDownElement);
             insertAfter(el, topDownElement);
         } else if (secHeader.getSecurityHeader().getFirstChild() != null) {
             el = (Element)DOMUtils.getDomElement(el);
@@ -252,7 +252,7 @@ public abstract class AbstractBindingBuilder {
         } else if (lastDerivedKeyElement != null) {
             insertAfter(el, lastDerivedKeyElement);
         } else if (lastEncryptedKeyElement != null) {
-            LOG.info("element = " + el + " topDownElement = " + topDownElement);
+	    LOG.log(Level.FINEST, "element = " + el + " topDownElement = " + topDownElement);
             insertAfter(el, lastEncryptedKeyElement);
         } else if (topDownElement != null) {
             insertAfter(el, topDownElement);

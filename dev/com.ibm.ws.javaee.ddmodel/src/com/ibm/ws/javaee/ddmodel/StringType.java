@@ -32,6 +32,21 @@ public class StringType extends AnySimpleType {
             }
             return stringList;
         }
+
+        public String[] getArray() {
+            int size = list.size();
+            String[] stringArray = new String[size];
+            for ( int elNo = 0; elNo < size; elNo++ ) {
+                stringArray[elNo] = list.get(elNo).getLexicalValue();
+            }
+            return stringArray;
+        }
+
+        public static final String[] EMPTY_ARRAY = new String[] {};
+
+        public static String[] getEmptyArray() {
+            return EMPTY_ARRAY;
+        }
     }
 
     public String getValue() {

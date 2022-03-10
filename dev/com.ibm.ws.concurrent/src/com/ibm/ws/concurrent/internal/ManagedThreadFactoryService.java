@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2021 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,16 +77,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-
-    /**
-     * Privileged action to lazily obtain the context service.
-     */
-    private final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
-        @Override
-        public WSContextService run() {
-            return contextSvcRef.getServiceWithException();
-        }
-    };
 
     /**
      * Reference to the context service for this managed thread factory service.
@@ -329,10 +319,11 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
          * @param serverAccessControlContext server access control context, which we can use to run certain privileged operations
          *                                       that aren't available to application threads.
          */
+        @SuppressWarnings("unchecked")
         ManagedThreadFactoryImpl(AccessControlContext serverAccessControlContext) {
             this.serverAccessControlContext = serverAccessControlContext;
 
-            WSContextService contextSvc = AccessController.doPrivileged(service.contextSvcAccessor);
+            WSContextService contextSvc = contextSvcRef.getServiceWithException();
             threadContextDescriptor = contextSvc.captureThreadContext(defaultExecutionProperties);
 
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();

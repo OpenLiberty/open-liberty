@@ -397,7 +397,8 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             }
 
             if (newVariableValue == null) {
-                newVariableValue = lookupVariableDefaultValue(variableName);
+                LibertyVariable cv = configVariables.get(variableName);
+                newVariableValue = cv == null ? null : cv.getDefaultValue();
             }
 
             DeltaType deltaType = getDeltaType(oldVariableValue, newVariableValue);

@@ -152,13 +152,11 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final DeclaredApiAccess apiAccess;
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
-    protected final ClassLoader parent;
     private final ClassLoaderHook hook;
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
         this.systemTransformers = systemTransformers;
-        this.parent = parent;
         this.config = config;
         this.apiAccess = access;
         for (Container container : config.getNativeLibraryContainers())
@@ -313,45 +311,18 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      *              don't override this method and lose the common library classloader support.
      */
     @Override
-    protected final Class<?> findClass(String name) throws ClassNotFoundException {
-        if (transformers.isEmpty() && systemTransformers.isEmpty()) {
-            Class<?> clazz = null;
-            Object token = ThreadIdentityManager.runAsServer();
-            try {
-                synchronized (getClassLoadingLock(name)) {
-                    // This method may be invoked directly instead of via loadClass
-                    // (e.g. when doing a "shallow" scan of the common library classloaders).
-                    // So we first must check whether we've already defined/loaded the class.
-                    // Otherwise we'll get a LinkageError on the second findClass call because
-                    // it will attempt to define the class a 2nd time.
-                    clazz = findLoadedClass(name);
-                    if (clazz == null) {
-                        String resourceName = Util.convertClassNameToResourceName(name);
-                        ByteResourceInformation byteResInfo = this.findClassBytes(name, resourceName);
-                        if (byteResInfo != null) {
-                            clazz = definePackageAndClass(name, resourceName, byteResInfo, byteResInfo.getBytes());
-                        } else {
-                            // Check the common libraries.
-                            clazz = findClassCommonLibraryClassLoaders(name);
-                        }
-                    }
-                }
-            } finally {
-                ThreadIdentityManager.reset(token);
-            }
-            return clazz;
-        }
-
+    protected final Class<?> findClass(String name, boolean returnNull) throws ClassNotFoundException {
         String resourceName = Util.convertClassNameToResourceName(name);
-        ByteResourceInformation byteResourceInformation = findClassBytes(name, resourceName);
-        if (byteResourceInformation == null) {
+        ByteResourceInformation byteResInfo = findClassBytes(name, resourceName);
+        if (byteResInfo == null) {
             // Check the common libraries.
-            return findClassCommonLibraryClassLoaders(name);
+            return findClassCommonLibraryClassLoaders(name, returnNull);
         }
 
-        byte[] bytes = transformClassBytes(name, byteResourceInformation);
+        byte[] bytes = transformers.isEmpty() && systemTransformers.isEmpty() ?
+                        byteResInfo.getBytes() : transformClassBytes(name, byteResInfo);
 
-        return definePackageAndClass(name, resourceName, byteResourceInformation, bytes);
+        return definePackageAndClass(name, resourceName, byteResInfo, bytes);
     }
 
     byte[] transformClassBytes(String name, ByteResourceInformation toTransform) throws ClassNotFoundException {
@@ -584,8 +555,14 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Override
     @Trivial
-    @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return loadClass(name, resolve, false, false);
+    }
+
+    @Override
+    @Trivial
+    @FFDCIgnore(ClassNotFoundException.class)
+    protected final Class<?> loadClass(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
         // Fail classes which are forbidden.  For example, by a CVE.
         if ( forbiddenClassNames.contains(name) ) {
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
@@ -601,6 +578,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             // message adds little value outside of direct calls
             // to 'Class.forName' and 'ClassLoader.loadClass'.
 
+            if (returnNull) {
+                return null;
+            }
             throw new ClassNotFoundException(name);
         }
 
@@ -609,7 +589,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         try {
             synchronized (getClassLoadingLock(name)) {
                 try {
-                    return findOrDelegateLoadClass(name);
+                    Class<?> result = findOrDelegateLoadClass(name, onlySearchSelf, returnNull);
+                    if (result != null) {
+                        return result;
+                    }
                 } catch (ClassNotFoundException e) {
                     cnfe = e;
                 }
@@ -623,8 +606,16 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             ThreadIdentityManager.reset(token);
         }
 
-        // could not generate class - throw CNFE
-        throw FeatureSuggestion.getExceptionWithSuggestion(cnfe);
+        // Could not generate class - throw CNFE
+        // Event if going to return null, still call getExceptionWithSuggestion so that
+        // the appropriate info message is output to the message.log.
+        ClassNotFoundException toThrow = FeatureSuggestion.getExceptionWithSuggestion(cnfe, name, returnNull);
+
+        if (returnNull) {
+            return null;
+        }
+
+        throw toThrow;
     }
 
     @Trivial
@@ -703,7 +694,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * loader.
      */
     @FFDCIgnore(ClassNotFoundException.class)
-    protected Class<?> findOrDelegateLoadClass(String name) throws ClassNotFoundException {
+    protected Class<?> findOrDelegateLoadClass(String name, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
         // parent is really only null for unit tests
         if (parent == null) {
             return super.loadClass(name, false);
@@ -712,19 +703,21 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         if (result != null) {
             return result;
         }
-        if (parent instanceof NoClassNotFoundLoader) {
-            result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
-        } else {
-            try {
-                result = parent.loadClass(name);
-            } catch (ClassNotFoundException e) {
-                // move on to local findClass
+        if (!onlySearchSelf) {
+            if (parent instanceof NoClassNotFoundLoader) {
+                result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
+            } else {
+                try {
+                    result = parent.loadClass(name);
+                } catch (ClassNotFoundException e) {
+                    // move on to local findClass
+                }
+            }
+            if (result != null) {
+                return result;
             }
         }
-        if (result != null) {
-            return result;
-        }
-        return findClass(name);
+        return findClass(name, returnNull);
     }
 
     /**
@@ -737,15 +730,21 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * @throws ClassNotFoundException if the class isn't found.
      */
     @FFDCIgnore(ClassNotFoundException.class)
-    private Class<?> findClassCommonLibraryClassLoaders(String name) throws ClassNotFoundException {
+    private Class<?> findClassCommonLibraryClassLoaders(String name, boolean returnNull) throws ClassNotFoundException {
         for (LibertyLoader cl : delegateLoaders) {
             try {
-                return cl.findClass(name);
+                Class<?> rc = cl.loadClass(name, false, true, true);
+                if (rc != null) {
+                    return rc;
+                }
             } catch (ClassNotFoundException e) {
                 // Ignore. Will throw at the end if class is not found.
             }
         }
         // If we reached here, then the class was not loaded.
+        if (returnNull) {
+            return null;
+        }
         throw new ClassNotFoundException(name);
     }
 

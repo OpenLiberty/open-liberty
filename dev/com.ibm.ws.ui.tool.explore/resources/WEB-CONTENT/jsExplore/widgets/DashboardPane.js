@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ define([
         collection : null,
         templateString : template,
         dashboardIconId : '',
+        dashboardIconLabelId: '',
         dashboardResourceLabel : '',
         viewAllLabel : '',   // Button title/aria-label for left side
         totalLabel : i18n.TOTAL,
@@ -61,6 +62,9 @@ define([
         dashboardResourceUnknownButtonNumberId : '',
         dashboardResourceRunningButtonNumberId : '',
         dashboardResourceStoppedButtonNumberId : '',
+        dashboardResourceUnknownLabelId: '',
+        dashboardResourceRunningLabelId: '',
+        dashboardResourceStoppedLabelId: '',
 
         constructor : function(params) {              // collectionType, label
             this.collectionType = params[0];          // Host, Application, Server, etc
@@ -68,12 +72,16 @@ define([
             
             this.id = this.view + this.collectionType + '-DashboardPane';
             this.dashboardIconId = this.view + this.collectionType + '-Icon';
+            this.dashboardIconLabelId = this.view + this.collectionType + '-Icon-Label';
             this.dashboardResourceId = this.view + this.collectionType + '-OverviewPane';
             this.dashboardGraphPaneId = this.view + this.collectionType + '-GraphPane';
             this.dashboardResourceNumberId = this.view + this.collectionType + '-OverviewPane' + '-Number';
             this.dashboardResourceUnknownButtonNumberId = this.view + this.collectionType + '-Unknown-Count';
             this.dashboardResourceRunningButtonNumberId = this.view + this.collectionType + '-Running-Count';
             this.dashboardResourceStoppedButtonNumberId = this.view + this.collectionType + '-Stopped-Count';
+            this.dashboardResourceUnknownLabelId = this.view + this.collectionType + '-Unknown-Label';
+            this.dashboardResourceRunningLabelId = this.view + this.collectionType + '-Running-Label';
+            this.dashboardResourceStoppedLabelId = this.view + this.collectionType + '-Stopped-Label';
             
             this.__setViewAllLabel();
             // initialize the labels for the states (like 'Running' vs. 'Started')
@@ -98,11 +106,11 @@ define([
             this.inherited(arguments);
 
             if(this.iconTypeNode){
-              this.iconTypeNode.innerHTML = imgUtils.getSVG(this.collectionType.toLowerCase() + '-dashboard');
+              this.iconTypeNode.innerHTML = imgUtils.getSVGWithAriaLabelledBy(this.collectionType.toLowerCase() + '-dashboard', '', this.dashboardIconLabelId);
             
-              this.runIcon.innerHTML = imgUtils.getSVG("status-running");
-              this.stopIcon.innerHTML = imgUtils.getSVG("status-stopped");
-              this.unknownIcon.innerHTML = imgUtils.getSVGSmall("unknown-white");
+              this.runIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("status-running", '', this.dashboardResourceRunningLabelId);
+              this.stopIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("status-stopped", '', this.dashboardResourceStoppedLabelId);
+              this.unknownIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("unknown-white", 'small', this.dashboardResourceUnknownLabelId);
             }                        
         },
         

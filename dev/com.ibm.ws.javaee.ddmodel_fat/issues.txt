@@ -1,0 +1,33 @@
+com.ibm.ws.javaee.ddmodel.common.BndExtAdapter<ApplicationBnd>
+
+com.ibm.ws.javaee.ddmodel.appbnd.ApplicationBndAdapter.adapt
+com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndAdapter.adapt
+com.ibm.ws.javaee.ddmodel.appext.ApplicationExtAdapter.adapt
+com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndAdapter.adapt
+com.ibm.ws.javaee.ddmodel.ejbext.EJBJarExtAdapter.adapt
+com.ibm.ws.javaee.ddmodel.webbnd.WebBndAdapter.adapt
+com.ibm.ws.javaee.ddmodel.webext.WebExtAdapter.adapt
+
+protected void warningObsoleteBindings(Entry xmiEntry, Entry ddEntry, String ddVersion, String maxDDVersion) {
+    Tr.warning(OBSOLETE_BINDINGS, xmiEntry.getName(), describeEntry(ddEntry), ddVersion, maxDDVersion);
+}
+
+protected void warningObsoleteExtensions(Entry xmiEntry, Entry ddEntry, String ddVersion, String maxDDVersion) {
+    Tr.warning(OBSOLETE_EXTENSIONS, xmiEntry.getName(), describeEntry(ddEntry), ddVersion, maxDDVersion);
+}
+
+OBSOLETE_BINDINGS:
+    // Ignoring obsolete XMI format bindings {0} for the {1} deployment descriptor.
+    // The {2} version of the deployment descriptor is higher than the {3} maximum version which supports XMI format bindings.
+    //
+    // Above the specified maximum deployment descriptor version, XML format bindings must be used.
+    // 
+    // The XMI format bindings should be converted to XML format bindings.
+
+OBSOLETE_EXTENSIONS:
+    // Ignoring obsolete XMI format extensions {0} for the {1} deployment descriptor.
+    // The {2} version of the deployment descriptor is higher than the {3} maximum version which supports XMI format extensions.
+    //
+    // Above the specified maximum deployment descriptor version, XML format extensions must be used.
+    // 
+    // The XMI format bindings should be converted to XML format bindings.

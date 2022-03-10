@@ -1,7 +1,7 @@
 package com.ibm.tx.remote;
 
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+
+import org.osgi.resource.Resource;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -40,7 +42,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * They are implemented in this wrapper class so they can be invoked
  * either from the Corba object implementations or the private JTA2
  * WSCoordinator flows.
- * 
+ *
  * A TransactionWrapper is created for each RecoveryCoordinator,
  * CoordinatorResource and WSCoordinatorImpl.TidHolder. So, in the
  * case of Corba interop, if we are in intermediate node, we may have
@@ -61,7 +63,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * destroyed until the transaction is completely forgotten, even though a
  * RecoveryCoordinator Ris not required after the local subordinate transaction
  * has completed.
- * 
+ *
  * The completion methods in this class make use of the TransactionImpl associations
  * support to prevent possible concurrency issues with transaction timeouts and
  * incoming requests and also in-doubt timeouts (ie replay_completion) and
@@ -72,22 +74,20 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * a comms timeout and it is retried while the original request is still active.
  * Synchronizations occur at this level of implementation as this is the common
  * code for both WSCoordinatorImpl and CoordinatorResourceImpl, etc.
- * 
+ *
  */
 
-public final class TransactionWrapper implements ResourceCallback
-{
+public final class TransactionWrapper implements ResourceCallback {
     private static final TraceComponent tc = Tr.register(TransactionWrapper.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     private final EmbeddableTransactionImpl _transaction;
-    private int _heuristic = StatefulResource.NONE;
+    private Exception _heuristic = null;
     private ResourceCallback _resourceCallback;
     private final int _retryWait = (ConfigurationProviderManager.getConfigurationProvider().getHeuristicRetryInterval() <= 0) ? EmbeddableTransactionImpl.defaultRetryTime : ConfigurationProviderManager.getConfigurationProvider().getHeuristicRetryInterval();
 
     private static final Hashtable<String, TransactionWrapper> _wrappers = new Hashtable<String, TransactionWrapper>();
 
-    public TransactionWrapper(EmbeddableTransactionImpl transaction)
-    {
+    public TransactionWrapper(EmbeddableTransactionImpl transaction) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionWrapper", new Object[] { transaction, transaction.getGlobalId() });
 
@@ -111,25 +111,24 @@ public final class TransactionWrapper implements ResourceCallback
      * on to the TransactionImpl that registered the CoordinatorResourceImpl.
      * <p>
      * The result from the TransactionImpl is returned to the caller.
-     * 
+     *
      * @param
-     * 
+     *
      * @return The vote.
-     * 
+     *
      * @exception SystemException The operation failed.
      * @throws RollbackException
-     * @exception HeuristicMixed Indicates that a participant voted to roll the
-     *                transaction back, but one or more others have already heuristically committed.
+     * @exception HeuristicMixed  Indicates that a participant voted to roll the
+     *                                transaction back, but one or more others have already heuristically committed.
      * @exception HeuristicHazard Indicates that a participant voted to roll the
-     *                transaction back, but one or more others may have already heuristically
-     *                committed.
-     * 
+     *                                transaction back, but one or more others may have already heuristically
+     *                                committed.
+     *
      * @see Resource
      */
     //----------------------------------------------------------------------------
 
-    public synchronized Vote prepare() throws SystemException, HeuristicMixedException, HeuristicHazardException, RollbackException
-    {
+    public synchronized Vote prepare() throws SystemException, HeuristicMixedException, HeuristicHazardException, RollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "prepare", this);
 
@@ -139,8 +138,7 @@ public final class TransactionWrapper implements ResourceCallback
         // cause the superior transaction to be rolled back.  We should only lose
         // the transaction if we do a destroy, eg on a rollback, or previous prepare
         // vote, etc. in which case we should never be calling prepare again.
-        if (_transaction == null)
-        {
+        if (_transaction == null) {
             final SystemException se = new SystemException(MinorCode.NO_COORDINATOR);
 
             FFDCFilter.processException(se, "com.ibm.tx.remote.TransactionWrapper.prepare", "157", this);
@@ -191,7 +189,7 @@ public final class TransactionWrapper implements ResourceCallback
             } catch (HeuristicMixedException hme) {
                 // No FFDC code needed.
                 // This exception should not be raised by internalPrepare for a subordinate
-                // but may be raised by internalRollback 
+                // but may be raised by internalRollback
 
                 // must rollback any prepared resources ...
                 try {
@@ -203,14 +201,13 @@ public final class TransactionWrapper implements ResourceCallback
 
                 ((DistributableTransaction) _transaction).removeAssociation();
 
-                final HeuristicMixedException hm = new HeuristicMixedException();
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "prepare", hm);
-                throw hm;
+                    Tr.exit(tc, "prepare", hme);
+                throw hme;
             } catch (HeuristicHazardException hhe) {
                 // No FFDC code needed.
                 // This exception should not be raised by internalPrepare for a subordinate
-                // but may be raised by internalRollback 
+                // but may be raised by internalRollback
 
                 // must rollback any prepared resources ...
                 try {
@@ -222,10 +219,9 @@ public final class TransactionWrapper implements ResourceCallback
 
                 ((DistributableTransaction) _transaction).removeAssociation();
 
-                final HeuristicHazardException hh = new HeuristicHazardException();
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "prepare", hh);
-                throw hh;
+                    Tr.exit(tc, "prepare", hhe);
+                throw hhe;
             } catch (Throwable t) { // IllegalState or javax.transaction.SystemException
                 FFDCFilter.processException(t, "com.ibm.tx.remote.TransactionWrapper.prepare", "241", this);
                 result = Vote.VoteRollback;
@@ -256,19 +252,19 @@ public final class TransactionWrapper implements ResourceCallback
      * <p>
      * If the TransactionImpl does not raise any heuristic exception, the
      * CoordinatorResourceImpl destroys itself.
-     * 
+     *
      * @param
-     * 
+     *
      * @return
-     * 
+     *
      * @exception HeuristicRollback The transaction has already been rolled back.
-     * @exception HeuristicMixed At least one participant in the transaction has
-     *                rolled back its changes.
-     * @exception HeuristicHazard At least one participant in the transaction may
-     *                not report its outcome.
-     * @exception SystemException An error occurred. The minor code indicates
-     *                the reason for the exception.
-     * 
+     * @exception HeuristicMixed    At least one participant in the transaction has
+     *                                  rolled back its changes.
+     * @exception HeuristicHazard   At least one participant in the transaction may
+     *                                  not report its outcome.
+     * @exception SystemException   An error occurred. The minor code indicates
+     *                                  the reason for the exception.
+     *
      * @see Resource
      */
     //----------------------------------------------------------------------------
@@ -316,13 +312,13 @@ public final class TransactionWrapper implements ResourceCallback
                     _transaction.notifyCompletion();
                 } catch (HeuristicMixedException hme) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_MIXED;
-                } catch (HeuristicHazardException hme) {
+                    _heuristic = hme;
+                } catch (HeuristicHazardException hhe) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_HAZARD;
+                    _heuristic = hhe;
                 } catch (HeuristicRollbackException hre) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_ROLLBACK;
+                    _heuristic = hre;
                 } catch (Throwable exc) { // javax.transaction.SystemException
                     FFDCFilter.processException(exc, "com.ibm.tx.remote.TransactionWrapper.commit", "380", this);
                     Tr.error(tc, "WTRN0068_COMMIT_FAILED", exc);
@@ -338,7 +334,7 @@ public final class TransactionWrapper implements ResourceCallback
             case TransactionState.STATE_HEURISTIC_ON_COMMIT:
             case TransactionState.STATE_COMMITTED:
                 // Return last heuristic value and allow for recovery
-                _heuristic = _transaction.getResources().getHeuristicOutcome();
+                setHeuristic();
                 break;
 
             case TransactionState.STATE_COMMITTING:
@@ -359,7 +355,7 @@ public final class TransactionWrapper implements ResourceCallback
             case TransactionState.STATE_ROLLED_BACK:
                 // Admin heuristic rollback ...
                 // again retry ... respond with heurrb
-                _heuristic = StatefulResource.HEURISTIC_ROLLBACK;
+                _heuristic = new HeuristicRollbackException();
                 break;
 
             case TransactionState.STATE_NONE:
@@ -381,30 +377,18 @@ public final class TransactionWrapper implements ResourceCallback
 
         ((DistributableTransaction) _transaction).removeAssociation();
 
-        switch (_heuristic) {
-            case StatefulResource.NONE:
-                break;
-
-            case StatefulResource.HEURISTIC_ROLLBACK:
-//                _transaction.addHeuristic();
-                final HeuristicRollbackException hr = new HeuristicRollbackException();
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "commit", hr);
-                throw hr;
-
-            case StatefulResource.HEURISTIC_HAZARD:
-//                _transaction.addHeuristic();
-                final HeuristicHazardException hh = new HeuristicHazardException();
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "commit", hh);
-                throw hh;
-
-            default:
-//                _transaction.addHeuristic();
-                final HeuristicMixedException hm = new HeuristicMixedException();
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "commit", hm);
-                throw hm;
+        if (_heuristic instanceof HeuristicRollbackException) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "commit", _heuristic);
+            throw (HeuristicRollbackException) _heuristic;
+        } else if (_heuristic instanceof HeuristicHazardException) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "commit", _heuristic);
+            throw (HeuristicHazardException) _heuristic;
+        } else if (_heuristic instanceof HeuristicMixedException) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "commit", _heuristic);
+            throw (HeuristicMixedException) _heuristic;
         }
 
         if (sysException) {
@@ -428,18 +412,18 @@ public final class TransactionWrapper implements ResourceCallback
      * The result from the TransactionImpl is returned to the caller. If the
      * TransactionImpl did not raise any heuristic exception, the CoordinatorResourceImpl
      * destroys itself.
-     * 
+     *
      * @param
-     * 
+     *
      * @return
-     * 
+     *
      * @exception TRANSACTION_ROLLEDBACK The transaction could not be committed and
-     *                has been rolled back.
-     * @exception HeuristicHazard One or more resources in the transaction may have
-     *                not report its outcome.
-     * @exception SystemException An error occurred. The minor code indicates
-     *                the reason for the exception.
-     * 
+     *                                       has been rolled back.
+     * @exception HeuristicHazard        One or more resources in the transaction may have
+     *                                       not report its outcome.
+     * @exception SystemException        An error occurred. The minor code indicates
+     *                                       the reason for the exception.
+     *
      * @see Resource
      */
     //----------------------------------------------------------------------------
@@ -478,13 +462,13 @@ public final class TransactionWrapper implements ResourceCallback
                     _transaction.prolongFinish();
                     _transaction.commit_one_phase();
                     _transaction.notifyCompletion();
-                } catch (HeuristicMixedException exc) {
+                } catch (HeuristicMixedException hme) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_MIXED;
-                } catch (HeuristicHazardException exc) {
+                    _heuristic = hme;
+                } catch (HeuristicHazardException hhe) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_HAZARD;
-                } catch (HeuristicRollbackException exc) {
+                    _heuristic = hhe;
+                } catch (HeuristicRollbackException hre) {
                     // No FFDC code needed.
                     rolledBack = true;
                     _transaction.notifyCompletion();
@@ -506,12 +490,12 @@ public final class TransactionWrapper implements ResourceCallback
                 // response on the original commit calls.  We can be in committing
                 // state either if we are retrying local resources or in recovery
                 // Check the heuristic state and return that.
-                _heuristic = _transaction.getResources().getHeuristicOutcome();
-                if (_heuristic != StatefulResource.NONE)
+                setHeuristic();
+                if (_heuristic != null)
                     break;
 
                 // If we are not in any heuristic state then we are not retrying and
-                // must be in recovery about to perform the commit. 
+                // must be in recovery about to perform the commit.
                 // Continue to return transient until we have a real outcome to return.
                 // The superior will consider this as heuristic hazard.  Also the
                 // same for LPS state.
@@ -523,8 +507,8 @@ public final class TransactionWrapper implements ResourceCallback
                 throw tre;
 
             case TransactionState.STATE_COMMITTED:
-                // this is probably a retry ... check heuristic state 
-                _heuristic = _transaction.getResources().getHeuristicOutcome();
+                // this is probably a retry ... check heuristic state
+                setHeuristic();
                 break;
 
             case TransactionState.STATE_HEURISTIC_ON_COMMIT:
@@ -559,28 +543,26 @@ public final class TransactionWrapper implements ResourceCallback
 
         ((DistributableTransaction) _transaction).removeAssociation();
 
-        switch (_heuristic)
-        {
-            case StatefulResource.NONE:
-                break;
-
-            default:
-//                _transaction.addHeuristic();
-                final HeuristicHazardException hh = new HeuristicHazardException();
+        if (_heuristic != null) {
+            if (_heuristic instanceof HeuristicHazardException) {
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "commit_one_phase", hh);
-                throw hh;
+                    Tr.exit(tc, "commit_one_phase", _heuristic);
+                throw (HeuristicHazardException) _heuristic;
+            } else {
+                final HeuristicHazardException hhe = new HeuristicHazardException();
+                hhe.initCause(_heuristic);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "commit_one_phase", hhe);
+                throw hhe;
+            }
         }
 
-        if (rolledBack)
-        {
+        if (rolledBack) {
             final TRANSACTION_ROLLEDBACK tre = new TRANSACTION_ROLLEDBACK(0, Boolean.TRUE);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "commit_one_phase", tre);
             throw tre;
-        }
-        else if (sysException)
-        {
+        } else if (sysException) {
             final INTERNAL ie = new INTERNAL(MinorCode.LOGIC_ERROR, null);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "commit_one_phase", ie);
@@ -599,25 +581,24 @@ public final class TransactionWrapper implements ResourceCallback
      * <p>
      * If the TransactionImpl does not raise any heuristic exception, the
      * CoordinatorResourceImpl destroys itself.
-     * 
+     *
      * @param
-     * 
+     *
      * @return
-     * 
+     *
      * @exception HeuristicCommit The transaction has already been committed.
-     * @exception HeuristicMixed At least one participant in the transaction has
-     *                committed its changes.
+     * @exception HeuristicMixed  At least one participant in the transaction has
+     *                                committed its changes.
      * @exception HeuristicHazard At least one participant in the transaction may
-     *                not report its outcome.
+     *                                not report its outcome.
      * @exception SystemException An error occurred. The minor code indicates
-     *                the reason for the exception.
-     * 
+     *                                the reason for the exception.
+     *
      * @see Resource
      */
     //----------------------------------------------------------------------------
 
-    public synchronized void rollback() throws HeuristicCommitException, HeuristicMixedException, HeuristicHazardException, SystemException
-    {
+    public synchronized void rollback() throws HeuristicCommitException, HeuristicMixedException, HeuristicHazardException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "rollback", this);
 
@@ -630,43 +611,35 @@ public final class TransactionWrapper implements ResourceCallback
         EmbeddableTimeoutManager.setTimeout(_transaction, EmbeddableTimeoutManager.CANCEL_TIMEOUT, 0);
 
         final int state = _transaction.getTransactionState().getState();
-        switch (state)
-        {
+        switch (state) {
             case TransactionState.STATE_ACTIVE:
             case TransactionState.STATE_PREPARED:
-                try
-                {
+                try {
                     _transaction.getTransactionState().setState(TransactionState.STATE_ROLLING_BACK);
-                } catch (javax.transaction.SystemException se)
-                {
+                } catch (javax.transaction.SystemException se) {
                     FFDCFilter.processException(se, "com.ibm.tx.remote.TransactionWrapper.rollback", "586", this);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Exception caught setting state to ROLLING_BACK!", se);
                     sysException = true;
                 }
 
-                try
-                {
+                try {
                     // Resume the transaction created from the incoming
                     // request so that it is installed on the thread.
                     ((EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager()).resume(_transaction);
 
                     _transaction.internalRollback();
                     _transaction.notifyCompletion();
-                } catch (HeuristicMixedException hme)
-                {
+                } catch (HeuristicMixedException hme) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_MIXED;
-                } catch (HeuristicHazardException hhe)
-                {
+                    _heuristic = hme;
+                } catch (HeuristicHazardException hhe) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_HAZARD;
-                } catch (HeuristicCommitException hce)
-                {
+                    _heuristic = hhe;
+                } catch (HeuristicCommitException hce) {
                     // No FFDC code needed.
-                    _heuristic = StatefulResource.HEURISTIC_COMMIT;
-                } catch (Throwable exc) // javax.transaction.SystemException
-                {
+                    _heuristic = hce;
+                } catch (Throwable exc) { // javax.transaction.SystemException
                     FFDCFilter.processException(exc, "com.ibm.tx.remote.TransactionWrapper.rollback", "610", this);
                     Tr.error(tc, "WTRN0071_ROLLBACK_FAILED", exc);
                     _transaction.notifyCompletion();
@@ -681,7 +654,7 @@ public final class TransactionWrapper implements ResourceCallback
             case TransactionState.STATE_HEURISTIC_ON_ROLLBACK:
             case TransactionState.STATE_ROLLED_BACK:
                 // Return last heuristic value and allow for recovery
-                _heuristic = _transaction.getResources().getHeuristicOutcome();
+                setHeuristic();
                 break;
 
             case TransactionState.STATE_ROLLING_BACK:
@@ -701,7 +674,7 @@ public final class TransactionWrapper implements ResourceCallback
             case TransactionState.STATE_COMMITTED:
                 // Admin heuristic commit ...
                 // again retry ... respond with heurcom
-                _heuristic = StatefulResource.HEURISTIC_COMMIT;
+                _heuristic = new HeuristicCommitException();
                 break;
 
             case TransactionState.STATE_NONE:
@@ -724,35 +697,29 @@ public final class TransactionWrapper implements ResourceCallback
 
         ((DistributableTransaction) _transaction).removeAssociation();
 
-        switch (_heuristic)
-        {
-            case StatefulResource.NONE:
-                break;
-
-            case StatefulResource.HEURISTIC_HAZARD:
-//                _transaction.addHeuristic();
-                final HeuristicHazardException hh = new HeuristicHazardException();
+        if (_heuristic != null) {
+            if (_heuristic instanceof HeuristicHazardException) {
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", hh);
-                throw hh;
-
-            case StatefulResource.HEURISTIC_COMMIT:
-//                _transaction.addHeuristic();
-                final HeuristicCommitException hc = new HeuristicCommitException();
+                    Tr.exit(tc, "rollback", _heuristic);
+                throw (HeuristicHazardException) _heuristic;
+            } else if (_heuristic instanceof HeuristicCommitException) {
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", hc);
-                throw hc;
-
-            default:
-//                _transaction.addHeuristic();
-                final HeuristicMixedException hm = new HeuristicMixedException();
+                    Tr.exit(tc, "rollback", _heuristic);
+                throw (HeuristicCommitException) _heuristic;
+            } else if (_heuristic instanceof HeuristicMixedException) {
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", hm);
-                throw hm;
+                    Tr.exit(tc, "rollback", _heuristic);
+                throw (HeuristicMixedException) _heuristic;
+            } else {
+                final HeuristicMixedException hme = new HeuristicMixedException();
+                hme.initCause(_heuristic);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "rollback", hme);
+                throw hme;
+            }
         }
 
-        if (sysException)
-        {
+        if (sysException) {
             // destroy();
             final INTERNAL ie = new INTERNAL(MinorCode.LOGIC_ERROR, null);
             if (tc.isEntryEnabled())
@@ -772,21 +739,20 @@ public final class TransactionWrapper implements ResourceCallback
      * If we return a heuristic, we could start an indoubt timer to ensure we clean
      * up in case the superior dies prior to a forget. Note: we do poll on recovery
      * but not in normal running.
-     * 
-     * 
+     *
+     *
      * @param
-     * 
+     *
      * @return
-     * 
+     *
      * @exception SystemException An error occurred. The minor code indicates
-     *                the reason for the exception.
-     * 
+     *                                the reason for the exception.
+     *
      * @see Resource
      */
     //----------------------------------------------------------------------------
 
-    public synchronized void forget() throws SystemException
-    {
+    public synchronized void forget() throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "forget", this);
 
@@ -810,19 +776,18 @@ public final class TransactionWrapper implements ResourceCallback
      * OBJECT_NOT_EXIST as the effect of commit_one_phase is to delegate all
      * completion responsiblity to the resource (ie subordinate). Note: this
      * test is limited in that it does not check for read-only votes.
-     * 
+     *
      * @param
-     * 
+     *
      * @return The status.
-     * 
+     *
      * @exception NotPrepared The transaction is not yet prepared.
-     * 
+     *
      * @see RecoveryCoordinator
      */
     //----------------------------------------------------------------------------
 
-    public int replay_completion() throws NotPrepared
-    {
+    public int replay_completion() throws NotPrepared {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "replay_completion");
 
@@ -835,17 +800,14 @@ public final class TransactionWrapper implements ResourceCallback
         if (tc.isDebugEnabled())
             Tr.debug(tc, "replay_completion status:" + status);
 
-        switch (status)
-        {
-        // If the transaction is still active, raise the NotPrepared exception.
-        // The transaction must be marked rollback-only at this point because we
-        // cannot allow the transaction to complete if a participant has failed.
+        switch (status) {
+            // If the transaction is still active, raise the NotPrepared exception.
+            // The transaction must be marked rollback-only at this point because we
+            // cannot allow the transaction to complete if a participant has failed.
             case javax.transaction.Status.STATUS_ACTIVE:
-                try
-                {
+                try {
                     _transaction.setRollbackOnly();
-                } catch (Throwable exc)
-                {
+                } catch (Throwable exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.remote.TransactionWrapper.replay_completion", "171", this);
                     if (tc.isEventEnabled())
                         Tr.event(tc, "replay_completion caught exception setting coordinator rollback_only", exc);
@@ -856,17 +818,16 @@ public final class TransactionWrapper implements ResourceCallback
                     Tr.exit(tc, "replay_completion", npe);
                 throw npe;
 
-                // If the transaction is prepared, the caller must wait for the
-                // Coordinator to tell it what to do, so return an unknown status, and
-                // do nothing.  Note that if this Coordinator is sitting waiting for
-                // its superior, this could take a long time.
+            // If the transaction is prepared, the caller must wait for the
+            // Coordinator to tell it what to do, so return an unknown status, and
+            // do nothing.  Note that if this Coordinator is sitting waiting for
+            // its superior, this could take a long time.
             case javax.transaction.Status.STATUS_PREPARED:
                 result = Status.STATUS_UNKNOWN;
                 break;
 
             case javax.transaction.Status.STATUS_PREPARING:
-                if (numberOfResources == 1)
-                {
+                if (numberOfResources == 1) {
                     // There is only 1 resource registered and it is the caller so
                     // we will be issuing commit_one_phase to it, ie will have delegated
                     // responsibility to it to complete the txn, so we "no longer exist"
@@ -885,8 +846,7 @@ public final class TransactionWrapper implements ResourceCallback
                 break;
 
             case javax.transaction.Status.STATUS_COMMITTED:
-                if (numberOfResources == 1)
-                {
+                if (numberOfResources == 1) {
                     // There is only 1 resource registered and it is the caller so
                     // we have issued commit_one_phase to it, ie will have delegated
                     // responsibility to it to complete the txn, so we "no longer exist"
@@ -904,8 +864,7 @@ public final class TransactionWrapper implements ResourceCallback
                 break;
 
             case javax.transaction.Status.STATUS_ROLLEDBACK:
-                if (numberOfResources == 1)
-                {
+                if (numberOfResources == 1) {
                     // There is only 1 resource registered and it is the caller so
                     // we have issued commit_one_phase to it, ie will have delegated
                     // responsibility to it to complete the txn, so we "no longer exist"
@@ -937,17 +896,14 @@ public final class TransactionWrapper implements ResourceCallback
      */
     //----------------------------------------------------------------------------
 
-    public void rollback_only()
-    {
+    public void rollback_only() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "rollback_only");
 
-        try
-        {
+        try {
             _transaction.setRollbackOnly();
             _transaction.subRollback();
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.tx.remote.TransactionWrapper.rollback_only", "813", this);
             if (tc.isEventEnabled())
                 Tr.event(tc, "rollback_only caught exception setting coordinator rollback_only", exc);
@@ -957,23 +913,21 @@ public final class TransactionWrapper implements ResourceCallback
             Tr.exit(tc, "rollback_only");
     }
 
-    public EmbeddableTransactionImpl getTransaction()
-    {
+    public EmbeddableTransactionImpl getTransaction() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getTransaction");
 
         return _transaction;
     }
 
-    public void setResourceCallback(ResourceCallback callback)
-    {
+    public void setResourceCallback(ResourceCallback callback) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setResourceCallback");
 
         _resourceCallback = callback;
     }
 
-    // This is the afterFinished/destroy callback.  
+    // This is the afterFinished/destroy callback.
     // This method used to be synchronized, but was changed for APAR PK20881 as
     // it was found to cause deadlocks if two threads on the same server tried
     // to rollback the same transaction at the same time. This situation could
@@ -1006,5 +960,25 @@ public final class TransactionWrapper implements ResourceCallback
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "destroy");
+    }
+
+    private void setHeuristic() {
+        switch (_transaction.getResources().getHeuristicOutcome()) {
+            case StatefulResource.HEURISTIC_COMMIT:
+                _heuristic = new HeuristicCommitException();
+                break;
+            case StatefulResource.HEURISTIC_MIXED:
+                _heuristic = new HeuristicMixedException();
+                break;
+            case StatefulResource.HEURISTIC_HAZARD:
+                _heuristic = new HeuristicHazardException();
+                break;
+            case StatefulResource.HEURISTIC_ROLLBACK:
+                _heuristic = new HeuristicRollbackException();
+                break;
+            default:
+                _heuristic = null;
+                break;
+        }
     }
 }

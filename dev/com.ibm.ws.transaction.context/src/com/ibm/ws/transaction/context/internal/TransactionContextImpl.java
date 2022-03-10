@@ -18,6 +18,8 @@ import java.io.ObjectStreamField;
 import java.util.concurrent.RejectedExecutionException;
 
 import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -32,6 +34,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  * Transaction context implementation.
  */
 public class TransactionContextImpl implements ThreadContext {
+    private static final TraceComponent tc = Tr.register(TransactionContextImpl.class);
 
     /**
      * Serialization UID.
@@ -78,6 +81,7 @@ public class TransactionContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public ThreadContext clone() {
         try {
             TransactionContextImpl copy = (TransactionContextImpl) super.clone();
@@ -89,8 +93,12 @@ public class TransactionContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStarting() throws RejectedExecutionException {
         if (suspendTranOfExecutionThread) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "clear");
+
             // Suspend whatever is currently on the thread.
             try {
                 UOWManager uowManager = UOWManagerFactory.getUOWManager();
@@ -106,6 +114,7 @@ public class TransactionContextImpl implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStopping() {
         if (suspendTranOfExecutionThread) {
             Throwable exception = null;
@@ -139,6 +148,9 @@ public class TransactionContextImpl implements ThreadContext {
                     exception = new Exception("Invalid transaction type: " + uowCurrent.getUOWType());
                     break;
             }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "restore   " + suspendedUOW);
 
             // Resume the original transaction.
             try {
@@ -180,7 +192,11 @@ public class TransactionContextImpl implements ThreadContext {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder sb = new StringBuilder(100).append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())).append(" suspend=").append(suspendTranOfExecutionThread);
+        StringBuilder sb = new StringBuilder(100).append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode()));
+        if (suspendTranOfExecutionThread)
+            sb.append(" suspend=true");
+        else
+            sb.append(" unchanged");
         return sb.toString();
     }
 

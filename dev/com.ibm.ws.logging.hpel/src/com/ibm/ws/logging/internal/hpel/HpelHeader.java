@@ -36,6 +36,8 @@ public class HpelHeader {
      "Classpath = {java.class.path}",
      "Java Library path = {java.library.path}",
      "Orb Version = {orb.version}",
+     "wlp.install.dir = {wlp.install.dir}",
+     "server.config.dir = {server.config.dir}",
      "************* End Display Current Environment *************"
     };
 

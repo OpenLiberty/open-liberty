@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@
     return svgResource + name + '-small';
   },
   
-  imgUtils.__getSVGObject = function(name, Class, size, ariaLabel) {
+  imgUtils.__getSVGObject = function(name, Class, size, ariaLabel, ariaLabelledBy) {
     name = imgUtils.normalizeName(name);
     var svgNS = "http://www.w3.org/2000/svg";
     var xlinkNS = "http://www.w3.org/1999/xlink";
@@ -60,11 +60,12 @@
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('viewBox', '0 0 64 64');
     svg.setAttribute('role', 'img');
-    if (ariaLabel) {
+    if (ariaLabelledBy) {
+      svg.setAttribute('aria-labelledby', ariaLabelledBy);
+    } else if (ariaLabel) {
       svg.setAttribute('aria-label', ariaLabel);
       svg.setAttribute("alt", ariaLabel);
-    }
-    else{
+    } else{
       svg.setAttribute("alt", name);
     }
     if (size) {
@@ -80,10 +81,10 @@
     return svg;
   }
 
-  imgUtils.__getSVGIcon = function(name, Class, size, title, ariaLabel) {
+  imgUtils.__getSVGIcon = function(name, Class, size, title, ariaLabel, ariaLabelledBy) {
     // IE doesn't support outerHTML on SVG objects, so need div to grab SVG text
     var svgHolderSpan = document.createElement('span');
-    var svg = this.__getSVGObject(name, Class, size, ariaLabel ? title : null);    
+    var svg = this.__getSVGObject(name, Class, size, ariaLabel ? title : null, ariaLabelledBy);
     svgHolderSpan.appendChild(svg);
 
     if (title) {
@@ -110,7 +111,23 @@
    * @return {String} the <svg> text, without the <span> if no title specified
    */
   imgUtils.getSVG = function(name, Class, title, ariaLabel) {
-    return this.__getSVGIcon(name, Class, '', title, ariaLabel);
+    return this.__getSVGIcon(name, Class, '', title, ariaLabel, null);
+  };
+
+  /**
+   * Obtain the SVG icon in text format.
+   *
+   * @method
+   * @param {String}
+   *          name - the name of the icon without any file extensions or platform modifiers. e.g. 'toolbox'
+   * @param {String}
+   *          size - either empty string (default size) or small
+   * @param {String}
+   *          ariaLabelledBy - the id of the label field
+   * @return {String} the <svg> text
+   */
+  imgUtils.getSVGWithAriaLabelledBy = function(name, size, ariaLabelledBy) {
+    return this.__getSVGIcon(name, null, size, null, null, ariaLabelledBy);
   };
 
   imgUtils.getSVGSmall = function(name, Class, title, ariaLabel) {

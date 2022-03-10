@@ -49,13 +49,13 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.beforeSuite();
+        FATSuite.beforeSuite();
         setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
     }
-    
+
     @AfterClass
     public static void afterClass() throws Exception {
-    	FATSuite.afterSuite();
+        FATSuite.afterSuite();
     }
 
     @After

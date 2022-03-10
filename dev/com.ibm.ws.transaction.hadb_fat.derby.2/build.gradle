@@ -25,8 +25,8 @@ task copyFAT {
       into new File('fat/src/com/ibm/ws/transaction/test/tests')
     }
 	copy {
-      from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('test-bundles/ifxlib/src/com/informix/jdbcx')
-      into new File('test-bundles/ifxlib/src/com/informix/jdbcx')
+      from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('test-bundles')
+      into new File('test-bundles')
     }
 }
 
@@ -78,8 +78,8 @@ clean.doLast {
   if (file('test-applications').exists()){
     file('test-applications').deleteDir()
   }
-  if (file('test-bundles/ifxlib/src/com/informix/jdbcx').exists()){
-    file('test-bundles/ifxlib/src/com/informix/jdbcx').deleteDir()
+  if (file('test-bundles').exists()){
+    file('test-bundles').deleteDir()
   }
   if (file('publish').exists()){
     file('publish').deleteDir()

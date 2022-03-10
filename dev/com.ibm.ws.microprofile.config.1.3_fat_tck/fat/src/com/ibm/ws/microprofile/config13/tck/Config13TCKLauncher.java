@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,27 +55,10 @@ public class Config13TCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig13Tck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config.1.3_fat_tck", this.getClass() + ":launchConfig13Tck");
-        Map<String, String> resultInfo = new HashMap<>();
-            try{
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
-            String productVersion = "";
-            resultInfo.put("results_type", "MicroProfile");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "Config");
-            resultInfo.put("feature_version", "1.3");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-            }finally{
-                MvnUtils.preparePublicationFile(resultInfo);
-            }
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Config");
+        resultInfo.put("feature_version", "1.3");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 }

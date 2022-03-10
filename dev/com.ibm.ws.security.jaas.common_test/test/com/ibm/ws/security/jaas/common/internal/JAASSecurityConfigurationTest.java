@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.CertificateAuthenticator;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
@@ -74,6 +72,8 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.security.auth.callback.WSX509CertificateChainCallback;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -102,7 +102,8 @@ public class JAASSecurityConfigurationTest {
 
     protected final Library sharedLib = mock.mock(Library.class);
     final ClassLoader loader1 = Thread.currentThread().getContextClassLoader();
-    final ClassLoader loader2 = new ClassLoader() {};
+    final ClassLoader loader2 = new ClassLoader() {
+    };
 
     private final ServiceReference<ClassLoadingService> classLoadingRef = mock.mock(ServiceReference.class, JAASLoginModuleConfig.KEY_CLASSLOADING_SVC);
     private final ClassLoadingService classLoadSvc = mock.mock(ClassLoadingService.class);
@@ -127,8 +128,8 @@ public class JAASSecurityConfigurationTest {
     private final JAASConfiguration jaasConfiguration = mock.mock(JAASConfiguration.class, "TestJaasConfiguration");
     private final static Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries = new HashMap<String, List<AppConfigurationEntry>>();
 
-    protected final ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators =
-                    new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(JAASServiceImpl.KEY_CERT_AUTHENTICATOR + "s");
+    protected final ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators = new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(JAASServiceImpl.KEY_CERT_AUTHENTICATOR
+                                                                                                                                                                                    + "s");
 
     protected final org.osgi.service.cm.Configuration config = mock.mock(org.osgi.service.cm.Configuration.class);
 
@@ -136,7 +137,7 @@ public class JAASSecurityConfigurationTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -160,7 +161,7 @@ public class JAASSecurityConfigurationTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -189,7 +190,7 @@ public class JAASSecurityConfigurationTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -384,7 +385,7 @@ public class JAASSecurityConfigurationTest {
         });
         JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
         jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
         jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
         jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, partialSubject);
         boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -401,7 +402,7 @@ public class JAASSecurityConfigurationTest {
         });
         JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
         jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
         jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
         jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
         boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -418,7 +419,7 @@ public class JAASSecurityConfigurationTest {
         });
         JAASServiceTestDoubleForTestingCreateLoginInvocation jaasServiceDouble = new JAASServiceTestDoubleForTestingCreateLoginInvocation();
         jaasServiceDouble.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
         jaasServiceDouble.activate(componentContext, Collections.<String, Object> emptyMap());
         jaasServiceDouble.performLogin(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, tokenAuthenticationData, partialSubject);
         boolean wasInvoked = jaasServiceDouble.createLoginContextWasInvoked;
@@ -471,7 +472,7 @@ public class JAASSecurityConfigurationTest {
     private JAASServiceImpl createActivatedJAASService() throws IOException {
         JAASServiceImpl jaasService = new JAASServiceImpl();
         jaasService.jaasLoginContextEntries = jaasLoginContextEntries;
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasService.certificateAuthenticators = certificateAuthenticators;
         final String custom = "custom";
         final String pid = "pid";
         mock.checking(new Expectations() {
@@ -503,7 +504,7 @@ public class JAASSecurityConfigurationTest {
     private JAASServiceTestDouble createActivatedJAASServiceTestDouble() throws IOException {
         JAASServiceTestDouble jaasServiceDouble = new JAASServiceTestDouble();
         jaasServiceDouble.jaasLoginContextEntries = jaasLoginContextEntries;
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasServiceDouble.certificateAuthenticators = certificateAuthenticators;
         final Map<String, Object> someProps = new Hashtable<String, Object>();
         String[] values = { "value1", "value2" };
         someProps.put("otherProps", values);

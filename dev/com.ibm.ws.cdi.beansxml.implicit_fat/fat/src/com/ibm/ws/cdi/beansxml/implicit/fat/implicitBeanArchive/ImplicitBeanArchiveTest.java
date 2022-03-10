@@ -53,7 +53,8 @@ public class ImplicitBeanArchiveTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.fat.implicitBeanArchive.war.ImplicitBeanArchiveServlet.class, contextRoot = IMPLICIT_BEAN_ARCHIVE_APP_NAME) //LITE
+                    @TestServlet(servlet = com.ibm.ws.cdi.beansxml.implicit.fat.implicitBeanArchive.war.ImplicitBeanArchiveServlet.class,
+                                    contextRoot = IMPLICIT_BEAN_ARCHIVE_APP_NAME) //LITE
     })
     public static LibertyServer server;
 
@@ -62,7 +63,7 @@ public class ImplicitBeanArchiveTest extends FATServletClient {
 
         JavaArchive archiveWithBeansXML = ShrinkWrap.create(JavaArchive.class, "archiveWithBeansXML.jar");
         archiveWithBeansXML.addClass(UnannotatedBeanInAllModeBeanArchive.class);
-        CDIArchiveHelper.addBeansXML(archiveWithBeansXML, UnannotatedBeanInAllModeBeanArchive.class.getPackage(), "empty-beans.xml");
+        CDIArchiveHelper.addBeansXML(archiveWithBeansXML, UnannotatedBeanInAllModeBeanArchive.class.getPackage(), "all-beans.xml");
 
         JavaArchive archiveWithNoScanBeansXML = ShrinkWrap.create(JavaArchive.class, "archiveWithNoScanBeansXML.jar");
         archiveWithNoScanBeansXML.addClass(RequestScopedButNoScan.class);
@@ -80,7 +81,6 @@ public class ImplicitBeanArchiveTest extends FATServletClient {
 
         WebArchive implicitBeanArchive = ShrinkWrap.create(WebArchive.class, IMPLICIT_BEAN_ARCHIVE_APP_NAME + ".war");
         implicitBeanArchive.addClass(ImplicitBeanArchiveServlet.class);
-        CDIArchiveHelper.addBeansXML(implicitBeanArchive, ImplicitBeanArchiveServlet.class.getPackage(), "empty-beans.xml");
         implicitBeanArchive.addAsLibrary(archiveWithBeansXML);
         implicitBeanArchive.addAsLibrary(archiveWithImplicitBeans);
         implicitBeanArchive.addAsLibrary(archiveWithNoImplicitBeans);

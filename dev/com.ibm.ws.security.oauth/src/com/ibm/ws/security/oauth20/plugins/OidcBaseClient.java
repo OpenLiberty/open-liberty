@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 
+import io.openliberty.security.common.serialization.Beta;
+
 public class OidcBaseClient extends BaseClient implements Serializable, OidcOAuth20Client {
 
     public static final String SN_CLIENT_ID_ISSUED_AT = OIDCConstants.OIDC_CLIENTREG_ISSUED_AT;
@@ -39,6 +41,8 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     public static final String SN_RESOURCE_IDS = "resource_ids";
     public static final String SN_FUNCTIONAL_USER_ID = "functional_user_id";
     public static final String SN_FUNCTIONAL_USER_GROUP_IDS = OIDCConstants.JSA_CLIENTREG_FUNCTIONAL_USER_GROUP_IDS;
+    public static final String SN_BACKCHANNEL_LOGOUT_URI = "backchannel_logout_uri";
+    public static final String SN_BACKCHANNEL_LOGOUT_SESSION_REQUIRED = "backchannel_logout_session_required";
 
     private static final long serialVersionUID = -2407700528170555986L;
 
@@ -109,10 +113,10 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
 
     @Expose
     private boolean proofKeyForCodeExchange = false;
-    
+
     @Expose
     private boolean publicClient = false;
-    
+
     @Expose
     private boolean appPasswordAllowed = false;
 
@@ -134,6 +138,16 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     @Expose
     @SerializedName(OAuth20Constants.HASH_LENGTH)
     private int length = HashSecretUtils.DEFAULT_KEYSIZE;
+
+    @Expose
+    @Beta
+    @SerializedName(SN_BACKCHANNEL_LOGOUT_URI)
+    private String backchannelLogoutUri = null;
+
+    @Expose
+    @Beta
+    @SerializedName(SN_BACKCHANNEL_LOGOUT_SESSION_REQUIRED)
+    private boolean backchannelLogoutSessionRequired = false;
 
     public OidcBaseClient(String clientId,
             @Sensitive String clientSecret,
@@ -424,6 +438,26 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
         this.publicClient = publicClient;
     }
 
+    @Override
+    public String getBackchannelLogoutUri() {
+        return backchannelLogoutUri;
+    }
+
+    @Trivial
+    public void setBackchannelLogoutUri(String backchannelLogoutUri) {
+        this.backchannelLogoutUri = backchannelLogoutUri;
+    }
+
+    @Override
+    public boolean isBackchannelLogoutSessionRequired() {
+        return backchannelLogoutSessionRequired;
+    }
+
+    @Trivial
+    public void setBackchannelLogoutSessionRequired(boolean backchannelLogoutSessionRequired) {
+        this.backchannelLogoutSessionRequired = backchannelLogoutSessionRequired;
+    }
+
     @Trivial
     public OidcBaseClient getDeepCopy() {
         // RTC246290
@@ -460,6 +494,8 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
         dc.setAlgorithm(this.getAlgorithm());
         dc.setIterations(this.getIterations());
         dc.setLength(this.getLength());
+        dc.setBackchannelLogoutUri(this.backchannelLogoutUri);
+        dc.setBackchannelLogoutSessionRequired(this.backchannelLogoutSessionRequired);
         return dc;
     }
 

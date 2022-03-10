@@ -439,7 +439,7 @@ public class AnnotationScanTest {
         } else {
             messageCount = server.findStringsInLogs("CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3").size();
         }
-        assertEquals("Did not find expected warning indicating servlet contains invalid Application class", 1,
+        assertEquals("Did not find expected warning indicating servlet contains invalid Application class; jakarta=" + JakartaEE9Action.isActive(), 1,
                      messageCount);
     }
 }

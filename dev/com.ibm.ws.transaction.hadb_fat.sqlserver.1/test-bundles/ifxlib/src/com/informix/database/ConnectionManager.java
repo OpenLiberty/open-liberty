@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 
 /**
  *
@@ -55,6 +57,9 @@ public class ConnectionManager {
         mssqlProps.put("password", password);
         mssqlProps.put("selectMethod", selectMethod);
         mssqlProps.put("portNumber", String.valueOf(portNumber));
+
+        TxTestUtils.scupperConnection();
+
         // For MS SQL Server call the getConnection method of the DriverManager class. The DriverManager is "registered" in the IfxConnectionPoolDataSource constructor.
         //
         // Note this is not a pooled connection but a raw connection is perfectly good for our requirements.

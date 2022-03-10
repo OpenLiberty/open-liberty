@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -180,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: Egy JWK JSON karaktersorozatra vonatko
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=A JWK JSON karaktersorozat el\u0151\u00e1ll\u00edt\u00e1sa megk\u00f6veteli, hogy az OpenID Connect szolg\u00e1ltat\u00f3 signatureAlgorithm attrib\u00fatuma RS256 \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva. Ha meg vannak adva, akkor a KeyStoreRef \u00e9s keyAliasName attrib\u00fatumoknak \u00e9rv\u00e9nyeseknek kell lenni\u00fck. 
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=Jav\u00edtsa az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3s attrib\u00fatumait.
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 azonos\u00edt\u00f3 token ig\u00e9nyek nem tov\u00e1bb\u00edthat\u00f3k az OpenID Connect szolg\u00e1ltat\u00f3 {0} fel\u00e9. {1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 azonos\u00edt\u00f3 token ig\u00e9nyek nem nyerhet\u0151k ki. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hiba\u00fczenetet.
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00fcls\u0151 OpenID Connect szolg\u00e1ltat\u00f3 \u00e9rv\u00e9nyes azonos\u00edt\u00f3 tokent k\u00fcldj\u00f6n.
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: A fut\u00e1si k\u00f6rnyezet \u00e1ltal haszn\u00e1lt Java v\u00e1ltozatot [{0}] az ID token Mediator SPI nem t\u00e1mogatja. A t\u00e1mogatott Java v\u00e1ltozat 1.7 vagy \u00fajabb.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Az \u00fczenetben l\u00e1that\u00f3 Java v\u00e1ltozat nem t\u00e1mogatja a ID token Mediator SPI funkci\u00f3t. 

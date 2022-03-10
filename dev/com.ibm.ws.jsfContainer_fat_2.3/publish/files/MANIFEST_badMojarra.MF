@@ -4,16 +4,16 @@ Created-By: 1.8.0_45 (Oracle Corporation)
 Built-By: hudson_local
 Build-Jdk: 1.8.0_45
 Ant-Version: Apache Ant 1.7.0
-Bnd-LastModified: 1507527047900
-Bundle-Description: Mojarra JSF Implementation (javax.faces/2.3) 2.3.3
-  (20171008-2230) 673408fa9199477d87f44521ff873d709128c88b
+Bnd-LastModified: 1554172629804
+Bundle-Description: Mojarra JSF Implementation (javax.faces/2.3) 2.3.9
+  (20190401-1936) 77894020e94a338c9701619b7ef6e9871c5a9079
 Bundle-ManifestVersion: 2
-Bundle-Name: Mojarra JSF Implementation 2.3.3 (20171008-2230) 673408fa
- 9199477d87f44521ff873d709128c88b
+Bundle-Name: Mojarra JSF Implementation 2.3.9 (20190401-1936) 77894020
+ e94a338c9701619b7ef6e9871c5a9079
 Bundle-SymbolicName: org.glassfish.javax.faces
-Bundle-Version: 2.3.3
+Bundle-Version: 2.3.9
 DocName: Mojarra Implementation Javadoc
-DSTAMP: 20171008
+DSTAMP: 20190401
 Export-Package: javax.faces;version="2.3",javax.faces.annotation;versi
  on="2.3";uses:="javax.enterprise.util,javax.inject",javax.faces.appli
  cation;version="2.3";uses:="javax.el,javax.faces,javax.faces.componen
@@ -207,32 +207,49 @@ Extension-Name: javax.faces
 Implementation-Title: Mojarra
 Implementation-Vendor: Oracle America, Inc.
 Implementation-Vendor-Id: com.sun
-Implementation-Version: 2.3.3
+Implementation-Version: 2.3.9
 Import-Package: javax.servlet.annotation;resolution:=optional,javax.se
  rvlet,javax.servlet.http,javax.servlet.jsp,javax.servlet.jsp.jstl.cor
  e,javax.servlet.jsp.jstl.sql,javax.servlet.jsp.tagext,javax.el,javax.
  inject,javax.enterprise.inject,javax.enterprise.inject.spi,javax.ente
  rprise.util,javax.enterprise.context,javax.enterprise.context.spi,jav
- ax.annotation,javax.crypto,javax.crypto.spec,javax.websocket;resoluti
- on:=optional,javax.websocket.server;resolution:=optional,javax.json;r
- esolution:=optional,javax.json.stream;resolution:=optional,javax.vali
- dation;resolution:=optional,javax.validation.groups;resolution:=optio
- nal,javax.enterprise.event;resolution:=optional,javax.ejb;resolution:
- =optional,javax.persistence;resolution:=optional,javax.xml.bind,javax
- .xml.namespace,javax.xml.parsers,javax.xml.transform,javax.xml.transf
- orm.dom,javax.xml.transform.stream,javax.xml.validation,javax.xml.ws,
- javax.xml.xpath,org.w3c.dom,org.w3c.dom.ls,com.sun.enterprise;resolut
- ion:=optional,com.sun.enterprise.deployment;resolution:=optional,groo
- vy.lang;resolution:=optional,groovy.util;resolution:=optional,org.mor
- tbay.jetty.annotations;resolution:=optional,org.mortbay.jetty.plus.an
- notation;resolution:=optional,org.apache;resolution:=optional,org.xml
- .sax,org.xml.sax.ext,org.xml.sax.helpers,javax.naming,javax.naming.spi
+ ax.annotation;version="[1.0.0,2.0.0)",javax.crypto,javax.crypto.spec,
+ javax.websocket;resolution:=optional,javax.websocket.server;resolutio
+ n:=optional,javax.json;resolution:=optional,javax.json.stream;resolut
+ ion:=optional,javax.validation;resolution:=optional,javax.validation.
+ groups;resolution:=optional,javax.enterprise.event;resolution:=option
+ al,javax.ejb;resolution:=optional,javax.persistence;resolution:=optio
+ nal,javax.xml.bind,javax.xml.namespace,javax.xml.parsers,javax.xml.tr
+ ansform,javax.xml.transform.dom,javax.xml.transform.stream,javax.xml.
+ validation,javax.xml.ws,javax.xml.xpath,org.w3c.dom,org.w3c.dom.ls,co
+ m.sun.enterprise;resolution:=optional,com.sun.enterprise.deployment;r
+ esolution:=optional,groovy.lang;resolution:=optional,groovy.util;reso
+ lution:=optional,org.mortbay.jetty.annotations;resolution:=optional,o
+ rg.mortbay.jetty.plus.annotation;resolution:=optional,org.apache;reso
+ lution:=optional,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,java
+ x.naming,javax.naming.spi
 Include-Resource: META-INF=build/classes/META-INF,build/classes
 Originally-Created-By: 1.5.0_19-137 (Apple Inc.)
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Provide-Capability: osgi.extender;osgi.extender="jsp.taglib";uri="http
+ ://java.sun.com/jsf/html";version:Version="2.3",osgi.extender;osgi.ex
+ tender="jsp.taglib";uri="http://java.sun.com/jsf/core";version:Versio
+ n="2.3"
+Require-Capability: osgi.serviceloader;filter:="(osgi.serviceloader=co
+ m.sun.faces.spi.AnnotationProvider)";resolution:=optional;cardinality
+ :=multiple,osgi.serviceloader;filter:="(osgi.serviceloader=com.sun.fa
+ ces.spi.FaceletConfigResourceProvider)";resolution:=optional;cardinal
+ ity:=multiple,osgi.serviceloader;filter:="(osgi.serviceloader=com.sun
+ .faces.spi.FacesConfigResourceProvider)";resolution:=optional;cardina
+ lity:=multiple,osgi.serviceloader;filter:="(osgi.serviceloader=com.su
+ n.faces.util.cdi11.CDIUtil)";resolution:=optional;cardinality:=multip
+ le,osgi.serviceloader;filter:="(osgi.serviceloader=javax.faces.applic
+ ation.ApplicationConfigurationPopulator)";resolution:=optional;cardin
+ ality:=multiple,osgi.extender;filter:="(osgi.extender=osgi.serviceloa
+ der.processor)";resolution:=optional,osgi.ee;filter:="(&(osgi.ee=Java
+ SE)(version=1.8))"
 Specification-Title: JavaServer Faces
 Specification-Version: 2.1
-TODAY: October 8 2017
+TODAY: April 1 2019
 Tool: Bnd-2.4.0.201411031536
-TSTAMP: 2230
+TSTAMP: 1936
 

@@ -186,6 +186,8 @@ import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 import com.ibm.wsspi.webcontainer.util.URIMapper;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * @author mmolden
  */
@@ -360,7 +362,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     
     private static Object[] OBJ_EMPTY = new Object[] {};
     private static Class<?>[] CLASS_EMPTY = new Class<?>[] {};
-
+    private final CheckpointPhase checkpointPhase;
+    
     // PK37608 Start
     static {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
@@ -384,9 +387,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
   public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
   
     // PK37698 End
-    public WebApp(WebAppConfiguration webAppConfig, Container parent) {
+    public WebApp(WebAppConfiguration webAppConfig, Container parent, CheckpointPhase checkpointPhase) {
         super(webAppConfig.getId(), parent);
         this.config = webAppConfig;
+        this.checkpointPhase = checkpointPhase;
         // PK63920 Start
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
             logger.entering(CLASS_NAME, "<init> [ " + this + " ] with name -> [ " + name + " ] and parent [ " + parent + " ]");
@@ -1055,6 +1059,11 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
 
+            // if we're checkpointing, call commonInitializationFinally before the initTaskComplete
+            if (checkpointPhase == CheckpointPhase.APPLICATIONS) {
+                commonInitializationFinally(extensionFactories);
+            }
+            
             if (moduleConfig instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
                 // complete the notification here for app manager
                 ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) moduleConfig).initTaskComplete();
@@ -1064,13 +1073,14 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
             
-            commonInitializationFinally(extensionFactories); // NEVER INVOKED BY
-            // WEBSPHERE
-            // APPLICATION
-            // SERVER (Common
-            // Component
-            // Specific)
-            
+            if (checkpointPhase != CheckpointPhase.APPLICATIONS) {
+                commonInitializationFinally(extensionFactories); // NEVER INVOKED BY
+                // WEBSPHERE
+                // APPLICATION
+                // SERVER (Common
+                // Component
+                // Specific)
+            }
             // Fix for 96420, in which if the first call to AnnotationHelperManager happens in destroy(), we can get 
             // errors because the bundle associated with the thread context classloader may have been uninstalled, 
             // resulting in us being unable to load a resource bundle for AnnotationHelperManager. 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@
 
 AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE=CWWKS1000E: O Servi\u00e7o JAAS est\u00e1 indispon\u00edvel.
 AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.explanation=O Servi\u00e7o de Autentica\u00e7\u00e3o n\u00e3o est\u00e1 configurado com o Servi\u00e7o JAAS.
-AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 # JAAS Message prefix block: CWWKS1100 - CWWKS1132
 
@@ -54,11 +54,7 @@ JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Verifique se o ID do usu\u00e1rio 
 
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: As op\u00e7\u00f5es de WSLoginModuleProxy s\u00e3o nulas ou vazias.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=A autentica\u00e7\u00e3o n\u00e3o foi bem-sucedida porque o elemento de op\u00e7\u00f5es WSLoginModuleProxy \u00e9 nulo ou vazio.
-JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Verifique se a configura\u00e7\u00e3o WSLoginModuleProxy inclui o elemento de op\u00e7\u00f5es.  
-
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: A op\u00e7\u00e3o de delega\u00e7\u00e3o de WSLoginModuleProxy n\u00e3o est\u00e1 configurada.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=A autentica\u00e7\u00e3o n\u00e3o foi bem-sucedida porque o jaasLoginModule com ID WSLoginModuleProxy n\u00e3o tem o atributo delegado no elemento de op\u00e7\u00f5es.
-JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verifique se o jaasLoginModule com ID WSLoginModuleProxy inclui o atributo delegado no elemento de op\u00e7\u00f5es.  
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Verifique se a configura\u00e7\u00e3o WSLoginModuleProxy inclui o elemento de op\u00e7\u00f5es.
 
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy n\u00e3o \u00e9 suportado no jaasLoginContextEntry system.DEFAULT.
 JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=O WSLoginModuleProxy n\u00e3o \u00e9 suportado no jaasLoginContextEntry system.DEFAULT.
@@ -76,10 +72,14 @@ JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1122W: Devido ao nome duplicado
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=O mesmo nome \u00e9 definido por mais de um elemento jassLoginContextEntry. Como resultado, o valor original \u00e9 sobrescrito por outro valor.
 JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Certifique-se de que cada elemento jaasLoginContextEntry possui um ID e nome exclusivos.
 
-JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE=CWWKS1123I:  O plug-in de autentica\u00e7\u00e3o coletivo com o nome de classe {0} foi ativado. 
-JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.explanation= Um plug-in de autentica\u00e7\u00e3o coletivo foi ativado e agora est\u00e1 dispon\u00edvel para autenticar solicita\u00e7\u00f5es coletivas.
-JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE=CWWKS1123I: O plug-in de autentica\u00e7\u00e3o coletivo com o nome de classe {0} foi ativado. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.explanation=Um plug-in de autentica\u00e7\u00e3o coletivo foi ativado e agora est\u00e1 dispon\u00edvel para autenticar solicita\u00e7\u00f5es coletivas.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
-JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I:  O plug-in de autentica\u00e7\u00e3o coletivo com o nome de classe {0} foi desativado. 
-JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation= Um plug-in de autentica\u00e7\u00e3o coletivo foi desativado e n\u00e3o est\u00e1 mais dispon\u00edvel para autenticar solicita\u00e7\u00f5es coletivas.
-JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: O plug-in de autentica\u00e7\u00e3o coletivo com o nome de classe {0} foi desativado. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Um plug-in de autentica\u00e7\u00e3o coletivo foi desativado e n\u00e3o est\u00e1 mais dispon\u00edvel para autenticar solicita\u00e7\u00f5es coletivas.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: O cache de autentica\u00e7\u00e3o limpou todas as entradas no cache do JCache {0}. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=O cache de autentica\u00e7\u00e3o limpa todas as entradas no cache do JCache de apoio quando a configura\u00e7\u00e3o de seguran\u00e7a ou de registro do usu\u00e1rio \u00e9 modificada ou quando o MBean DeleteAuthCache \u00e9 chamado. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

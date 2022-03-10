@@ -11,6 +11,7 @@ com.ibm.ws.concurrent_fat_jakarta
 com.ibm.ws.concurrent_fat_policy
 com.ibm.ws.concurrent_fat_quartz
 com.ibm.ws.concurrent_fat_work
+com.ibm.ws.concurrent_fat_zcontext
 com.ibm.ws.context_fat
 com.ibm.ws.context_fat_customproviders
 com.ibm.ws.context_fat_serialization

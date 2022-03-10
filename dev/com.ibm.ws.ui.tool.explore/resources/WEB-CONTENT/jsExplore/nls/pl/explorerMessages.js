@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Niektóre aplikacje działają",
     SOME_SERVERS_RUNNING : "Niektóre serwery działają",
     SOME_CLUSTERS_RUNNING : "Niektóre klastry działają",
-    NO_APPS_RUNNING : "Nie działają żadne aplikacje",
     NO_SERVERS_RUNNING : "Nie działają żadne serwery",
     NO_CLUSTERS_RUNNING : "Nie działają żadne klastry",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: instancja aplikacji nie działa", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: nie wszystkie aplikacje działają", // serverName[]
-    NO_APPS_RUNNING : "{0}: nie działają żadne aplikacje", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "Liczba serwerów, na których działają nie wszystkie aplikacje: {0}", // quantity
     NO_APPS_RUNNING_SERVERS : "Liczba serwerów, na których nie działają żadne aplikacje: {0}", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Uwagi ({0})",  // note value
     SET_ATTRIBUTES: "Znaczniki i metadane",
     SETATTR_RUNTIME_NAME: "Zasób {0} w zasobie {1}",  // runtime, host
-    SAVE: "Zapisz",
     TAGINVALIDCHARS: "Znaki '/', '<' i '>' nie są poprawne.",
     ERROR_GET_TAGS_METADATA: "Produkt nie może pobrać bieżących znaczników i metadanych dla tego zasobu.",
     ERROR_SET_TAGS_METADATA: "Błąd uniemożliwił produktowi ustawienie znaczników i metadanych.",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
     private final int version = counter.incrementAndGet();
     private final ConfigurationAdmin configurationAdmin;
     private final Set<String> declaredPrereqs;
-    private final Set<String> realisedPrereqs = new TreeSet<>();
+    private final Set<String> realizedPrereqs = new TreeSet<>();
 
     private boolean configModified = false;
 
@@ -113,11 +113,11 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     synchronized void setApplicationPrereq(ApplicationPrereq applicationPrereq) {
-        realisedPrereqs.add(applicationPrereq.getApplicationPrereqID());
+        realizedPrereqs.add(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, this + " Prereq added:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs
-                         + "\n  Realised:" + realisedPrereqs);
+                         + "\n  Realized:" + realizedPrereqs);
         }
 
         // If the configuration has been modified we cannot reliably detect surplus Prereqs.
@@ -126,14 +126,14 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
 
         // Check for unexpected Prereqs.
         // If there are no unexpected Prereqs, we don't raise an error.
-        if (declaredPrereqs.containsAll(realisedPrereqs))
+        if (declaredPrereqs.containsAll(realizedPrereqs))
             return;
 
         // The configuration has not been modified but we have at least one prereq which we did not expect.
         // Caused by implementing ApplicationPrereq without,
         // Either adding application prereq in DefaultInstances,
         // Or add ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" to the OCD in metatype.xml.
-        Set<String> surplusPrereqs = new TreeSet<>(realisedPrereqs);
+        Set<String> surplusPrereqs = new TreeSet<>(realizedPrereqs);
         surplusPrereqs.removeAll(declaredPrereqs);
         try {
             throw new IllegalStateException("Undeclared Prereqs:" + surplusPrereqs);
@@ -145,11 +145,11 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
     }
 
     synchronized void unsetApplicationPrereq(ApplicationPrereq applicationPrereq) {
-        realisedPrereqs.remove(applicationPrereq.getApplicationPrereqID());
+        realizedPrereqs.remove(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, this + " Prereq removed:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs
-                         + "\n  Realised:" + realisedPrereqs);
+                         + "\n  Realized:" + realizedPrereqs);
         }
     }
 
@@ -179,12 +179,14 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
 
     @Override
     public String getIntrospectorDescription() {
-        return String.format("List the declared and the realized application prereqs.%n" +
+        return String.format("List the declared (D) and the realized (R) application prereqs.%n" +
                              "Application Handlers cannot start until all the declared prereqs become available (i.e. are realized).");
     }
 
     @Override
     public void introspect(PrintWriter out) throws Exception {
-        out.printf("Declared prereqs: %s%nRealised prereqs: %s", declaredPrereqs, realisedPrereqs);
+        Stream.concat(declaredPrereqs.stream(),
+                      realizedPrereqs.stream()).sorted().distinct().sequential().peek(s -> out.print('[')).peek(s -> out.print(declaredPrereqs.contains(s) ? 'D' : ' ')).peek(s -> out.print(realizedPrereqs.contains(s) ? 'R' : ' ')).peek(s -> out.print("] ")).forEach(out::println);
+
     }
 }

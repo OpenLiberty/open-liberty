@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nincs teend\u0151.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Az egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3, melynek oszt\u00e1lyneve {0}, deaktiv\u00e1lva lett. 
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Egy egy\u00fcttes hiteles\u00edt\u00e9si bedolgoz\u00f3 deaktiv\u00e1lva lett, \u00e9s m\u00e1r nem \u00e9rhet\u0151 el egy\u00fcttes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nincs teend\u0151.
+
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: A hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1r elt\u00e1vol\u00edtotta a(z) {0} JCache gyors\u00edt\u00f3t\u00e1r \u00f6sszes bejegyz\u00e9s\u00e9t. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=A hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1r a biztons\u00e1gi vagy felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s konfigur\u00e1ci\u00f3 m\u00f3dos\u00edt\u00e1sakor, illetve a DeleteAuthCache MBean megh\u00edv\u00e1sakor t\u00f6rli a h\u00e1tt\u00e9r JCache gyors\u00edt\u00f3t\u00e1r \u00f6sszes bejegyz\u00e9s\u00e9t. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nincs teend\u0151.

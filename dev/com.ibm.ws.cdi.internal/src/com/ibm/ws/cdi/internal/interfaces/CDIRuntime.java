@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.internal.interfaces;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -190,7 +191,12 @@ public interface CDIRuntime extends CDIService {
     public WebSphereCDIDeployment getCurrentDeployment();
 
     /**
-     * @return a BeanParser instance
+     * @return a BeansXmlParser instance
      */
-    public BeanParser getBeanParser();
+    public BeansXmlParser getBeansXmlParser();
+
+    /**
+     * @return all registered ExtensionArchiveProviders
+     */
+    public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders();
 }

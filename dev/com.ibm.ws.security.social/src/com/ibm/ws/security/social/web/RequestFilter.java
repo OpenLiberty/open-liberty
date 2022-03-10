@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.social.web;
@@ -39,9 +39,9 @@ public class RequestFilter implements Filter {
             TraceConstants.TRACE_GROUP,
             TraceConstants.MESSAGE_BUNDLE);
     public static final String REDIRECT = "/redirect/";
-    public static final int REDIRECT_LEN = REDIRECT.length();
     public static final String WELLKNOWN_CONFIG = "/.well-known/configuration";
     public static final String LOGOUT = "/logout";
+    public static final String BACKCHANNEL_LOGOUT = "/backchannel_logout/";
     public static final String UNKNOWN = "UNKNOWN";
 
     /**
@@ -68,30 +68,36 @@ public class RequestFilter implements Filter {
         SocialLoginRequest socialLoginRequest = null;
         String pathInfo = request.getPathInfo();
         if (pathInfo.startsWith(REDIRECT)) {
-            String provider = pathInfo.substring(REDIRECT_LEN);
-            SocialLoginConfig socialLoginConfig = RequestUtil.getSocialLoginConfig(provider);
-            if (socialLoginConfig != null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "doFilter redirect providerId:" + socialLoginConfig.getUniqueId());
-                }
-                socialLoginRequest = new SocialLoginRequest(socialLoginConfig, REDIRECT, request, response);
-            } else {
-                // note that if we could not get a socialLoginConfig, we will try to dig the error out when we handle the redirect.
-                // in EndpointServices.
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to find a social login configuration for ID [" + provider + "]");
-                }
-                socialLoginRequest = new SocialLoginRequest(REDIRECT, request, response);
-            }
+            socialLoginRequest = createSocialLoginRequestWithAssociatedConfig(request, response, pathInfo, REDIRECT);
         } else if (pathInfo.startsWith(WELLKNOWN_CONFIG)) {
             socialLoginRequest = new SocialLoginRequest(WELLKNOWN_CONFIG, request, response);
         } else if (pathInfo.startsWith(LOGOUT)) {
             socialLoginRequest = new SocialLoginRequest(LOGOUT, request, response);
+        } else if (pathInfo.startsWith(BACKCHANNEL_LOGOUT)) {
+            socialLoginRequest = createSocialLoginRequestWithAssociatedConfig(request, response, pathInfo, BACKCHANNEL_LOGOUT);
         } else {
             socialLoginRequest = new SocialLoginRequest(UNKNOWN, request, response);
         }
         request.setAttribute(Constants.ATTRIBUTE_SOCIALMEDIA_REQUEST, socialLoginRequest);
         chain.doFilter(request, response);
+    }
+
+    protected SocialLoginRequest createSocialLoginRequestWithAssociatedConfig(HttpServletRequest request, HttpServletResponse response, String pathInfo, String requestType) {
+        String provider = pathInfo.substring(requestType.length());
+        SocialLoginConfig socialLoginConfig = RequestUtil.getSocialLoginConfig(provider);
+        if (socialLoginConfig != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "doFilter redirect providerId:" + socialLoginConfig.getUniqueId());
+            }
+            return new SocialLoginRequest(socialLoginConfig, requestType, request, response);
+        } else {
+            // note that if we could not get a socialLoginConfig, we will try to dig the error out when we handle the request
+            // in EndpointServices.
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find a social login configuration for ID [" + provider + "]");
+            }
+            return new SocialLoginRequest(requestType, request, response);
+        }
     }
 
     protected String getProviderNameFromUrl(Matcher m) {

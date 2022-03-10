@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Syntaxe : java [options JVM] -jar {0} [options] fichierSortie  
+briefUsageScript=Syntaxe : ./{0} [options] outputFile
+
 
 use.options=Options :
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,7 +33,14 @@ option-desc.locale=L'environnement local (param\u00e8tres r\u00e9gionaux) \u00e0
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=Le sch\u00e9ma de sortie ne contiendra pas d'espaces d'indentation, de nouveaux sauts de ligne ou des commentaires XML
 option-key.productExtension=--productExtension
-option-desc.productExtension=Nom d'extension de produit \u00e0 traiter.                            \n Si \
-l'extension de produit est install\u00e9e dans l'emplacement utilisateur par d\u00e9faut,    \n\
-utilisez le mot cl\u00e9 : usr.                                                  \n\
-Si cette option n'est pas indiqu\u00e9e, l'action est effectu\u00e9e sur la fonction Liberty centrale.
+option-desc.productExtension=Nom d'extension de produit \u00e0 traiter.                            \n Si l'extension de produit est install\u00e9e dans l'emplacement utilisateur par d\u00e9faut,    \nutilisez le mot cl\u00e9 : usr.                                                  \nSi cette option n'est pas indiqu\u00e9e, l'action est effectu\u00e9e sur la fonction Liberty centrale.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Si schemaVersion=1.1 est sp\u00e9cifi\u00e9, les deux \u00e9l\u00e9ments enfant explicitement nomm\u00e9s et l'\u00e9l\u00e9ment xsd:any sont \u00e9crits dans le fichier de sortie.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Si outputVersion=2.0 est sp\u00e9cifi\u00e9, seul l'\u00e9l\u00e9ment xsd:any est utilis\u00e9 dans le fichier de sortie, de sorte que des \u00e9l\u00e9ments inconnus transmettent la validation XSD au d\u00e9triment de la validation des \u00e9l\u00e9ments connus.

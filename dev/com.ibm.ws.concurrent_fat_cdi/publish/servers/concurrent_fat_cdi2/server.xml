@@ -17,7 +17,7 @@
     <feature>servlet-4.0</feature>
   </featureManager>
 
-  <cdi12 enableImplicitBeanArchives='false'/>
+  <cdi enableImplicitBeanArchives='false'/>
 
   <include location="../fatTestPorts.xml"/>
 </server>

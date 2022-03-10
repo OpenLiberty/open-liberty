@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.time.Duration;
+import java.time.Instant;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
@@ -28,8 +29,13 @@ public class FATUtils {
 	public static final Duration TESTCONTAINER_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 	public static final int LOG_SEARCH_TIMEOUT = 300000;
 
-    public static void startServers(LibertyServer... servers) throws Exception {
-    	startServers((SetupRunner)null, servers);
+    /**
+     * @param servers
+     * @return Mean server start time
+     * @throws Exception
+     */
+    public static Duration startServers(LibertyServer... servers) throws Exception {
+    	return startServers((SetupRunner)null, servers);
     }
 
     private static final FATServletClient fsc = new FATServletClient();
@@ -90,9 +96,16 @@ public class FATUtils {
         }
     }
 
-
-    public static void startServers(SetupRunner r, LibertyServer... servers) throws Exception {
+    /**
+     * @param r
+     * @param servers
+     * @return Mean server start time
+     * @throws Exception
+     */
+    public static Duration startServers(SetupRunner r, LibertyServer... servers) throws Exception {
         final String method = "startServers";
+
+        Instant startStart = Instant.now();
 
         for (LibertyServer server : servers) {
             assertNotNull("Attempted to start a null server", server);
@@ -162,6 +175,13 @@ public class FATUtils {
                                                      + " Maybe it is on the way down.");
                         server.printProcessHoldingPort(server.getHttpDefaultPort());
                     }
+                } else {
+                	// Start failed in an unusual way. Make sure it's stopped prior to next attempt.
+                	try {
+						server.stopServer(".*");
+					} catch (Exception e) {
+						Log.error(c, method, e);
+					}
                 }
             } while (attempt < maxAttempts);
 
@@ -170,6 +190,8 @@ public class FATUtils {
                 throw new Exception("Failed to start " + server.getServerName() + " after " + attempt + " attempts");
             }
         }
+
+        return Duration.between(startStart, Instant.now()).dividedBy(servers.length); // better not be 0
     }
 
     public static void stopServers(String[] toleratedMsgs, LibertyServer... servers) throws Exception {

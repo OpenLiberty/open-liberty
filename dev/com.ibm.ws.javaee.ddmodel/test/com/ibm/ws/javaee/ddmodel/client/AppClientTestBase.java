@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,6 +131,16 @@ public class AppClientTestBase extends DDTestBase {
                 " id=\"ApplicationClient_ID\"" +
                 ">";
 
+    protected static String appClient100Head =
+        "<application-client" +
+                " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
+                  " https://jakarta.ee/xml/ns/jakartaee/application-client_10.xsd\"" +
+                " version=\"10\"" +
+                " id=\"ApplicationClient_ID\"" +
+                ">";
+
     protected static String appClientTail =
         "</application-client>";
     
@@ -152,6 +162,8 @@ public class AppClientTestBase extends DDTestBase {
             appClientHead = appClient80Head;
         } else if ( schemaVersion == ApplicationClient.VERSION_9 ) {
             appClientHead = appClient90Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_10 ) {
+            appClientHead = appClient100Head;
         } else {
             throw new IllegalArgumentException("Unsupported application client version [ " + schemaVersion + " ]");
         }

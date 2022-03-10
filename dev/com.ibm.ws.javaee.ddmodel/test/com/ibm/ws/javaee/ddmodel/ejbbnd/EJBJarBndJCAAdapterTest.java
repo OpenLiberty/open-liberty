@@ -55,7 +55,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingNameXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0\">" +
@@ -103,7 +103,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAliasXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(ejbJar21(
+        EJBJar ejbJar = parseEJBJar32(ejbJar21(
                         "<enterprise-beans>" +
                             "<message-driven id=\"md0\">" +
                                 "<ejb-name>MessageDrivenBean2</ejb-name>" +
@@ -147,7 +147,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeDestinationBindingNameXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
+        EJBJar ejbJar = parseEJBJar32(
                 ejbJar21(
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0\">" +

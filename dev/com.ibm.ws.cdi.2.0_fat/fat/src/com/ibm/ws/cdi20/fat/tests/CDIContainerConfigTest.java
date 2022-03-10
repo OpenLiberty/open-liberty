@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.explicit.MyExplicitBean;
 import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.implicit.MyImplicitBean;
 import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.web.CDIContainerConfigServlet;
@@ -61,7 +62,7 @@ public class CDIContainerConfigTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addClass(CDIContainerConfigServlet.class);
         app.addClass(MyBeanCDI20.class);
-        CDIArchiveHelper.addEmptyBeansXML(app);
+        CDIArchiveHelper.addBeansXML(app, DiscoveryMode.ALL);
 
         JavaArchive implicitJar = ShrinkWrap.create(JavaArchive.class, "implicit.jar");
         implicitJar.addClass(MyImplicitBean.class);
@@ -69,7 +70,7 @@ public class CDIContainerConfigTest extends FATServletClient {
 
         JavaArchive explicitJar = ShrinkWrap.create(JavaArchive.class, "explicit.jar");
         explicitJar.addClass(MyExplicitBean.class);
-        CDIArchiveHelper.addEmptyBeansXML(explicitJar);
+        CDIArchiveHelper.addBeansXML(explicitJar, DiscoveryMode.ALL);
         app.addAsLibrary(explicitJar);
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
@@ -79,6 +80,6 @@ public class CDIContainerConfigTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWOWB1009W");
+        server.stopServer("CWOWB1009W", "CWOWB1015W");
     }
 }

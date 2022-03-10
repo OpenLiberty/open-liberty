@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,14 +31,12 @@
 # 1000 - 1099 com.ibm.ws.kernel.boot.resources.LauncherMessages
 # ---------- ERROR msgs ----------------------------
 
-audit.launchTime=CWWKE0001I: O servidor {0} foi \
-ativado.
+audit.launchTime=CWWKE0001I: O servidor {0} foi ativado.
 audit.launchTime.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
 audit.launchTime.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 audit.kernelStartTime=CWWKE0002I: O kernel foi iniciado ap\u00f3s {0}
-audit.kernelStartTime.explanation=O kernel foi iniciado. O intervalo (em segundos) \u00e9 relativo a quando a plataforma foi \
-ativada.
+audit.kernelStartTime.explanation=O kernel foi iniciado. O intervalo (em segundos) \u00e9 relativo a quando a plataforma foi ativada.
 audit.kernelStartTime.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 info.bootstrapChange=CWWKE0003I: Os locais de autoinicializa\u00e7\u00e3o foram alterados, portanto, o servidor passar\u00e1 por um in\u00edcio limpo.
@@ -50,73 +48,43 @@ error.badLocation.explanation=Uma instala\u00e7\u00e3o de servidor n\u00e3o p\u0
 error.badLocation.useraction=Reinstale ou repare o perfil do Liberty. Se o problema persistir, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
 
 error.unableToLaunch=CWWKE0005E: O ambiente de tempo de execu\u00e7\u00e3o n\u00e3o p\u00f4de ser ativado.
-error.unableToLaunch.explanation=Foi encontrado um problema que impediu que o ambiente de tempo de execu\u00e7\u00e3o fosse \
-ativado.
+error.unableToLaunch.explanation=Foi encontrado um problema que impediu que o ambiente de tempo de execu\u00e7\u00e3o fosse ativado.
 error.unableToLaunch.useraction=Revise os logs dispon\u00edveis para identificar o problema e resolv\u00ea-lo.
 
 error.enableIIOPTransport=CWWKE0006E: Ative o recurso orb para suporte de ORB.
 error.enableIIOPTransport.explanation=O suporte de Object Request Broker (ORB) requer o recurso orb.
 error.enableIIOPTransport.useraction=Ative o recurso orb para ativar o suporte de ORB.
  
-error.cannotConvertEbcdicToAscii=CWWKE0007E: O \
-sistema n\u00e3o converteu o arquivo a seguir do EBCDIC para ASCII: {0} \
-com sucesso
-error.cannotConvertEbcdicToAscii.explanation=Ao \
-processar o arquivo especificado, ocorreu um erro que evitava que \
-o sistema convertesse do formato EBCDIC para ASCII. A vers\u00e3o EBCDIC \
-do arquivo permanece intacta.
-error.cannotConvertEbcdicToAscii.useraction=Converta \
-manualmente o arquivo se desejar visualiz\u00e1-lo em um sistema \
-baseado em ASCII.  Nenhuma a\u00e7\u00e3o \u00e9 requerida se este arquivo for \
-processado pelo suporte IBM.
+error.cannotConvertEbcdicToAscii=CWWKE0007E: O sistema n\u00e3o converteu o arquivo a seguir do EBCDIC para ASCII: {0} com sucesso
+error.cannotConvertEbcdicToAscii.explanation=Ao processar o arquivo especificado, ocorreu um erro que evitava que o sistema convertesse do formato EBCDIC para ASCII. A vers\u00e3o EBCDIC do arquivo permanece intacta.
+error.cannotConvertEbcdicToAscii.useraction=Converta manualmente o arquivo se desejar visualiz\u00e1-lo em um sistema baseado em ASCII.  Nenhuma a\u00e7\u00e3o \u00e9 requerida se este arquivo for processado pelo suporte IBM.
 
 error.bootPropsURI=CWWKE0008E: O URI das propriedades de autoinicializa\u00e7\u00e3o est\u00e1 malformado. uri={0}, raz\u00e3o={1}
 error.bootPropsURI.explanation=Existe um erro no URI para o arquivo de propriedades de autoinicializa\u00e7\u00e3o especificado.
-error.bootPropsURI.useraction=Corrija o URI para as propriedades de autoinicializa\u00e7\u00e3o, em seguida, tente o comando \
-novamente.
+error.bootPropsURI.useraction=Corrija o URI para as propriedades de autoinicializa\u00e7\u00e3o, em seguida, tente o comando novamente.
 
 # {0} is the path to the missing Java dump file
-error.missingDumpFile=CWWKE0009E: O sistema \
-n\u00e3o pode localizar o arquivo a seguir e este arquivo n\u00e3o ser\u00e1 \
-inclu\u00eddo no archive dump do servidor: {0}
-error.missingDumpFile.explanation=O sistema \
-est\u00e1 configurado para solicitar que os dumps Java sejam pegos e \
-coletados no archive dump do servidor. O dump Java requerido n\u00e3o \
-p\u00f4de ser localizado no sistema de arquivos na localiza\u00e7\u00e3o indicada e \
-n\u00e3o ser\u00e1 coletado no archive dump do servidor.
-error.missingDumpFile.useraction=Verifique os \
-logs do servidor, o console.log e o messages.log, ou ambos, para \
-determinar se os dumps Java requeridos est\u00e3o dispon\u00edveis em outra \
-localiza\u00e7\u00e3o ou determinar por que o dump Java falhou. Tente \
-adquirir e coletar qualquer dump Java ausente manualmente. Consulte as \
-informa\u00e7\u00f5es de determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte \
-do WebSphere Application Server para obter informa\u00e7\u00f5es sobre \
-como gerar manualmente os javacores: http://www.ibm.com/software/webservers/appserv/was/support
+error.missingDumpFile=CWWKE0009E: O sistema n\u00e3o pode localizar o arquivo a seguir e este arquivo n\u00e3o ser\u00e1 inclu\u00eddo no archive dump do servidor: {0}
+error.missingDumpFile.explanation=O sistema est\u00e1 configurado para solicitar que os dumps Java sejam pegos e coletados no archive dump do servidor. O dump Java requerido n\u00e3o p\u00f4de ser localizado no sistema de arquivos na localiza\u00e7\u00e3o indicada e n\u00e3o ser\u00e1 coletado no archive dump do servidor.
+error.missingDumpFile.useraction=Verifique os logs do servidor, o console.log e o messages.log, ou ambos, para determinar se os dumps Java requeridos est\u00e3o dispon\u00edveis em outra localiza\u00e7\u00e3o ou determinar por que o dump Java falhou. Tente adquirir e coletar qualquer dump Java ausente manualmente. Consulte as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server para obter informa\u00e7\u00f5es sobre como gerar manualmente os javacores: http://www.ibm.com/software/webservers/appserv/was/support
 
-error.badConfigRoot=CWWKE0010E: O arquivo server.xml necess\u00e1rio deve existir e ser leg\u00edvel. Path: \
-{0} Raz\u00e3o: {1}
+error.badConfigRoot=CWWKE0010E: O arquivo server.xml necess\u00e1rio deve existir e ser leg\u00edvel. Path: {0} Raz\u00e3o: {1}
 error.badConfigRoot.explanation=O arquivo server.xml n\u00e3o pode ser lido ou n\u00e3o existe.
 error.badConfigRoot.useraction=Assegure-se de que o arquivo server.xml existe e que pode ser lido pelo usu\u00e1rio atual.
 
 error.archiveTarget=CWWKE0011E: O par\u00e2metro --archive requer um argumento: --archive="<file to archive>"
 error.archiveTarget.explanation=Um argumento necess\u00e1rio n\u00e3o foi fornecido.
-error.archiveTarget.useraction=Forne\u00e7a o argumento correto, em seguida, tente o comando novamente. Tente usar --help \
-para obter uma descri\u00e7\u00e3o dos argumentos para a op\u00e7\u00e3o fornecida.
+error.archiveTarget.useraction=Forne\u00e7a o argumento correto, em seguida, tente o comando novamente. Tente usar --help para obter uma descri\u00e7\u00e3o dos argumentos para a op\u00e7\u00e3o fornecida.
 
-error.serverNameCharacter=CWWKE0012E: O nome do servidor especificado cont\u00e9m um caractere que n\u00e3o \u00e9 v\u00e1lido (nome={0}). \
-Os caracteres v\u00e1lidos s\u00e3o: Unicode alfanum\u00e9rico (por exemplo, \
-0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). \
-Um nome de servidor n\u00e3o pode iniciar com um tra\u00e7o (-) ou um ponto (.).
+error.serverNameCharacter=CWWKE0012E: O nome do servidor especificado cont\u00e9m um caractere que n\u00e3o \u00e9 v\u00e1lido (nome={0}). Os caracteres v\u00e1lidos s\u00e3o: Unicode alfanum\u00e9rico (por exemplo, 0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). Um nome de servidor n\u00e3o pode iniciar com um tra\u00e7o (-) ou um ponto (.).
 error.serverNameCharacter.explanation=Um caractere que n\u00e3o \u00e9 v\u00e1lido foi usado no nome do servidor.
 error.serverNameCharacter.useraction=Renomeie o servidor usando apenas caracteres v\u00e1lidos: Unicode alfanum\u00e9rico (por exemplo, 0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.).
 
 error.unknownArgument=CWWKE0013E: Op\u00e7\u00e3o desconhecida: {0}
 error.unknownArgument.explanation=A op\u00e7\u00e3o especificada n\u00e3o foi reconhecida.
-error.unknownArgument.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista \
-de op\u00e7\u00f5es v\u00e1lidas.
+error.unknownArgument.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
 
-error.bootPropsStream=CWWKE0014E: O sistema n\u00e3o p\u00f4de abrir ou ler as propriedades de autoinicializa\u00e7\u00e3o especificadas. Path: \
-{0} Raz\u00e3o: {1}
+error.bootPropsStream=CWWKE0014E: O sistema n\u00e3o p\u00f4de abrir ou ler as propriedades de autoinicializa\u00e7\u00e3o especificadas. Path: {0} Raz\u00e3o: {1}
 error.bootPropsStream.explanation=O arquivo bootstrap.properties n\u00e3o pode ser lido ou n\u00e3o existe.
 error.bootPropsStream.useraction=Assegure-se de que o arquivo especificado existe e que pode ser lido pelo usu\u00e1rio atual.
 
@@ -124,12 +92,9 @@ error.platformBundleException=CWWKE0015E: Ocorreram erros internos ao iniciar o 
 error.platformBundleException.explanation=Pelo menos uma exce\u00e7\u00e3o foi encontrada ao instalar ou iniciar o servidor. 
 error.platformBundleException.useraction=Verifique se o produto foi instalado corretamente. Se o problema persistir, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
-error.secPermission=CWWKE0016E: O arquivo JAR de autoinicializa\u00e7\u00e3o requer a configura\u00e7\u00e3o de seguran\u00e7a AllPermission para \
-ativar o ambiente de tempo de execu\u00e7\u00e3o e a estrutura OSGi ({0}).
-error.secPermission.explanation=As permiss\u00f5es Java 2 Security s\u00e3o insuficientes para o arquivo JAR de autoinicializa\u00e7\u00e3o \
-ativar o ambiente de tempo de execu\u00e7\u00e3o e a estrutura OSGi.
-error.secPermission.useraction=Assegure que o arquivo JAR de autoinicializa\u00e7\u00e3o tenha concedido privil\u00e9gios \
-AllPermission no arquivo de pol\u00edtica Java 2 Security.
+error.secPermission=CWWKE0016E: O arquivo JAR de autoinicializa\u00e7\u00e3o requer a configura\u00e7\u00e3o de seguran\u00e7a AllPermission para ativar o ambiente de tempo de execu\u00e7\u00e3o e a estrutura OSGi ({0}).
+error.secPermission.explanation=As permiss\u00f5es Java 2 Security s\u00e3o insuficientes para o arquivo JAR de autoinicializa\u00e7\u00e3o ativar o ambiente de tempo de execu\u00e7\u00e3o e a estrutura OSGi.
+error.secPermission.useraction=Assegure que o arquivo JAR de autoinicializa\u00e7\u00e3o tenha concedido privil\u00e9gios AllPermission no arquivo de pol\u00edtica Java 2 Security.
 
 # CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
 
@@ -143,8 +108,7 @@ error.frameworkDef.useraction=Verifique se o produto foi instalado corretamente.
 
 error.frameworkDefFile=CWWKE0020E: A defini\u00e7\u00e3o de estrutura especificada ({0}) n\u00e3o existe.
 error.frameworkDefFile.explanation=O arquivo de defini\u00e7\u00e3o da estrutura n\u00e3o foi localizado.
-error.frameworkDefFile.useraction=Assegure que o recurso de defini\u00e7\u00e3o da estrutura exista e possa ser lido pelo usu\u00e1rio \
-atual.
+error.frameworkDefFile.useraction=Assegure que o recurso de defini\u00e7\u00e3o da estrutura exista e possa ser lido pelo usu\u00e1rio atual.
 
 error.frameworkJarFile=CWWKE0021E: O pacote configur\u00e1vel da estrutura especificado ({0}) n\u00e3o existe.
 error.frameworkJarFile.explanation=O artefato do pacote configur\u00e1vel da estrutura especificado n\u00e3o p\u00f4de ser localizado.
@@ -156,12 +120,9 @@ error.kernelDef.useraction=Verifique se o produto foi instalado corretamente. Se
 
 error.kernelDefFile=CWWKE0023E: A defini\u00e7\u00e3o de kernel especificada ({0}) n\u00e3o existe.
 error.kernelDefFile.explanation=A defini\u00e7\u00e3o de kernel especificada n\u00e3o p\u00f4de ser localizada.
-error.kernelDefFile.useraction=Assegure que o recurso de defini\u00e7\u00e3o de kernel exista e possa ser lido pelo usu\u00e1rio \
-atual.
+error.kernelDefFile.useraction=Assegure que o recurso de defini\u00e7\u00e3o de kernel exista e possa ser lido pelo usu\u00e1rio atual.
 
-error.specifiedLocation=CWWKE0025E: O valor de {0} deve referir-se a um diret\u00f3rio. \
-O valor especificado referencia um recurso do arquivo existente. \
-Valor: {1}
+error.specifiedLocation=CWWKE0025E: O valor de {0} deve referir-se a um diret\u00f3rio. O valor especificado referencia um recurso do arquivo existente. Valor: {1}
 error.specifiedLocation.explanation=O local fornecido se refere a um arquivo existente em vez de um diret\u00f3rio.
 error.specifiedLocation.useraction=Altere o local especificado para um diret\u00f3rio, em seguida, tente a a\u00e7\u00e3o novamente.
 
@@ -169,10 +130,8 @@ warning.noPlatformCache=CWWKE0026W: O sistema n\u00e3o p\u00f4de gravar o arquiv
 warning.noPlatformCache.explanation=O arquivo de cache de plataforma especificado n\u00e3o p\u00f4de ser gravado.
 warning.noPlatformCache.useraction=Verifique e resolva a exce\u00e7\u00e3o e, em seguida, tente novamente a a\u00e7\u00e3o.
 
-warning.singleServer=CWWKE0027W: Somente um servidor pode ser especificado na linha de comandos; nomes subsequentes ser\u00e3o \
-ignorados (servidor={0}, ignorado={1}).
-warning.singleServer.explanation=Pode ser especificado somente um servidor na linha de comandos. O primeiro nome do \
-servidor foi processado; os nomes restantes foram ignorados.
+warning.singleServer=CWWKE0027W: Somente um servidor pode ser especificado na linha de comandos; nomes subsequentes ser\u00e3o ignorados (servidor={0}, ignorado={1}).
+warning.singleServer.explanation=Pode ser especificado somente um servidor na linha de comandos. O primeiro nome do servidor foi processado; os nomes restantes foram ignorados.
 warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
   
 error.serverAlreadyRunning=CWWKE0029E: Uma inst\u00e2ncia do servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
@@ -188,15 +147,12 @@ error.creatingNewServer.useraction=Verifique e resolva a exce\u00e7\u00e3o e, em
 
 error.noExistingServer=CWWKE0031E: O servidor {0} especificado n\u00e3o existe; use a a\u00e7\u00e3o de cria\u00e7\u00e3o para criar um novo servidor. serverPath: {1}
 error.noExistingServer.explanation=O servidor especificado n\u00e3o existe, portanto, nenhuma a\u00e7\u00e3o pode ser executada nele.
-error.noExistingServer.useraction=Verifique o nome do servidor ou crie um servidor com o nome especificado, em seguida, \
-tente o comando novamente.
+error.noExistingServer.useraction=Verifique o nome do servidor ou crie um servidor com o nome especificado, em seguida, tente o comando novamente.
 
 ## No longer used
-error.bundleInstallException=CWWKE0032E: Uma ou mais exce\u00e7\u00f5es ocorreram durante a instala\u00e7\u00e3o de pacotes configur\u00e1veis da \
-plataforma.
+error.bundleInstallException=CWWKE0032E: Uma ou mais exce\u00e7\u00f5es ocorreram durante a instala\u00e7\u00e3o de pacotes configur\u00e1veis da plataforma.
 error.bundleInstallException.explanation=Pelo menos uma exce\u00e7\u00e3o foi encontrada ao instalar os pacotes configur\u00e1veis da plataforma.
-error.bundleInstallException.useraction=Revise os logs para identificar e resolver as exce\u00e7\u00f5es, em seguida, tente instalar os \
-pacotes configur\u00e1veis novamente.
+error.bundleInstallException.useraction=Revise os logs para identificar e resolver as exce\u00e7\u00f5es, em seguida, tente instalar os pacotes configur\u00e1veis novamente.
 
 error.missingBundleException=CWWKE0033E: Os pacotes configur\u00e1veis da plataforma n\u00e3o puderam ser localizados.
 error.missingBundleException.explanation=Um ou mais pacotes configur\u00e1veis da plataforma n\u00e3o puderam ser localizados.
@@ -207,21 +163,16 @@ error.noStartedBundles.explanation=A imagem de instala\u00e7\u00e3o pode estar i
 error.noStartedBundles.useraction=Verifique a instala\u00e7\u00e3o, em seguida, tente instalar os pacotes configur\u00e1veis novamente.
 
 error.initLog=CWWKE0035E: Houve um problema com o arquivo de log inicial especificado. logPath={0}
-error.initLog.explanation=O local do arquivo de log inicial n\u00e3o foi especificado corretamente ou o arquivo n\u00e3o \
-estava  leg\u00edvel.
+error.initLog.explanation=O local do arquivo de log inicial n\u00e3o foi especificado corretamente ou o arquivo n\u00e3o estava  leg\u00edvel.
 error.initLog.useraction=Verifique o local e o estado do arquivo de log inicial.
 
-audit.kernelUpTime=CWWKE0036I: O servidor {0} foi \
-interrompido depois de {1}.
-audit.kernelUpTime.explanation=O kernel foi interrompido ap\u00f3s o intervalo especificado (em segundos). Este intervalo \u00e9 \
-relativo a quando a plataforma foi ativada.
+audit.kernelUpTime=CWWKE0036I: O servidor {0} foi interrompido depois de {1}.
+audit.kernelUpTime.explanation=O kernel foi interrompido ap\u00f3s o intervalo especificado (em segundos). Este intervalo \u00e9 relativo a quando a plataforma foi ativada.
 audit.kernelUpTime.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 error.unknown.console.protocol=CWWKE0037E: {0} n\u00e3o \u00e9 um protocolo do console suportado. O protocolo telnet ser\u00e1 usado no lugar. 
-error.unknown.console.protocol.explanation=O protocolo especificado n\u00e3o \u00e9 suportado, portanto, o sistema usa o protocolo padr\u00e3o \
-(telnet) no lugar.
-error.unknown.console.protocol.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria para usar o protocolo padr\u00e3o. Caso contr\u00e1rio, modifique a \
-configura\u00e7\u00e3o para usar um protocolo suportado.
+error.unknown.console.protocol.explanation=O protocolo especificado n\u00e3o \u00e9 suportado, portanto, o sistema usa o protocolo padr\u00e3o (telnet) no lugar.
+error.unknown.console.protocol.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria para usar o protocolo padr\u00e3o. Caso contr\u00e1rio, modifique a configura\u00e7\u00e3o para usar um protocolo suportado.
 
 error.rasProvider=CWWKE0038E: O provedor de log necess\u00e1rio n\u00e3o foi especificado.
 error.rasProvider.explanation=Est\u00e3o faltando arquivos obrigat\u00f3rios na instala\u00e7\u00e3o do servidor e n\u00e3o foi poss\u00edvel inici\u00e1-lo.
@@ -232,9 +183,7 @@ error.rasProviderResolve.explanation=N\u00e3o foi poss\u00edvel localizar o recu
 error.rasProviderResolve.useraction=Assegure-se de que o recurso de provedor de log exista e possa ser lido pelo usu\u00e1rio atual.
 
 error.frameworkRestart=CWWKE0040E: Os pacotes configur\u00e1veis da plataforma n\u00e3o puderam ser resolvidos com rela\u00e7\u00e3o ao cache. Reinicie o servidor com um in\u00edcio limpo.
-error.frameworkRestart.explanation=Os pacotes configur\u00e1veis da plataforma n\u00e3o puderam ser resolvidos com rela\u00e7\u00e3o ao cache \
-da plataforma. Este problema normalmente pode ser resolvido com uma reinicializa\u00e7\u00e3o \
-limpa.
+error.frameworkRestart.explanation=Os pacotes configur\u00e1veis da plataforma n\u00e3o puderam ser resolvidos com rela\u00e7\u00e3o ao cache da plataforma. Este problema normalmente pode ser resolvido com uma reinicializa\u00e7\u00e3o limpa.
 error.frameworkRestart.useraction=Reinicie o servidor usando a op\u00e7\u00e3o --clean para limpar o cache.
 
 info.frameworkRestart=CWWKE0041I: O cache da plataforma est\u00e1 fora de sincroniza\u00e7\u00e3o. Reinicializando a estrutura.
@@ -242,47 +191,36 @@ info.frameworkRestart.explanation=A estrutura foi reiniciada porque o cache da p
 info.frameworkRestart.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 error.badVersion=CWWKE0042E: A vers\u00e3o de Java correta n\u00e3o est\u00e1 em execu\u00e7\u00e3o. O ambiente de tempo de execu\u00e7\u00e3o requer a vers\u00e3o Java 8 ou superior.
-error.badVersion.explanation=Uma vers\u00e3o de Java n\u00e3o suportada est\u00e1 em execu\u00e7\u00e3o ou a vari\u00e1vel do sistema JAVA_HOME \
-est\u00e1 configurada para apontar para uma vers\u00e3o mais antiga de Java.
+error.badVersion.explanation=Uma vers\u00e3o de Java n\u00e3o suportada est\u00e1 em execu\u00e7\u00e3o ou a vari\u00e1vel do sistema JAVA_HOME est\u00e1 configurada para apontar para uma vers\u00e3o mais antiga de Java.
 error.badVersion.useraction= Fa\u00e7a upgrade para a vers\u00e3o Java 8 ou ajuste a vari\u00e1vel do sistema JAVA_HOME para apontar para a vers\u00e3o Java 8.
 
 error.unsupportedLaunch=CWWKE0043E: O local da ativa\u00e7\u00e3o n\u00e3o \u00e9 um arquivo local. ({0})
-error.unsupportedLaunch.explanation=O ambiente de tempo de execu\u00e7\u00e3o deve ser ativado a partir de um arquivo local, por \
-exemplo um arquivo JAR.
+error.unsupportedLaunch.explanation=O ambiente de tempo de execu\u00e7\u00e3o deve ser ativado a partir de um arquivo local, por exemplo um arquivo JAR.
 error.unsupportedLaunch.useraction=Verifique se o comando usado est\u00e1 usando o comando java -jar <localJarFile> para ativar o ambiente de tempo de execu\u00e7\u00e3o. 
 
 error.serverDirPermission=CWWKE0044E: N\u00e3o h\u00e1 permiss\u00e3o de grava\u00e7\u00e3o para o diret\u00f3rio do servidor {0}
 error.serverDirPermission.explanation=O diret\u00f3rio do servidor deve ser grav\u00e1vel para iniciar o servidor.
-error.serverDirPermission.useraction=Verifique se voc\u00ea possui acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e \u00e0 \u00e1rea de \
-trabalho.
+error.serverDirPermission.useraction=Verifique se voc\u00ea possui acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e \u00e0 \u00e1rea de trabalho.
 
-error.serverDirExists=CWWKE0045E: N\u00e3o foi poss\u00edvel criar o servidor chamado {0} porque o diret\u00f3rio do servidor {1} j\u00e1 \
-existe.
+error.serverDirExists=CWWKE0045E: N\u00e3o foi poss\u00edvel criar o servidor chamado {0} porque o diret\u00f3rio do servidor {1} j\u00e1 existe.
 error.serverDirExists.explanation=O diret\u00f3rio do servidor ainda n\u00e3o deve existir durante a cria\u00e7\u00e3o de um servidor.
 error.serverDirExists.useraction=Escolha um novo nome do servidor ou exclua o diret\u00f3rio e, em seguida, execute novamente o comando.
 
 error.noAttachAPI=CWWKE0046E: Uma implementa\u00e7\u00e3o da API de Conex\u00e3o Java n\u00e3o p\u00f4de ser localizada.
-error.noAttachAPI.explanation=A fun\u00e7\u00e3o solicitada requer a API de Conex\u00e3o Java e uma implementa\u00e7\u00e3o n\u00e3o p\u00f4de ser \
-localizada.
+error.noAttachAPI.explanation=A fun\u00e7\u00e3o solicitada requer a API de Conex\u00e3o Java e uma implementa\u00e7\u00e3o n\u00e3o p\u00f4de ser localizada.
 error.noAttachAPI.useraction=Especifique o local da API de Conex\u00e3o Java no CLASSPATH.
 
 error.shutdownClientException=CWWKE0047E: O agente de controle de processo foi interrompido com uma exce\u00e7\u00e3o inesperada {0}
-error.shutdownClientException.explanation=A exce\u00e7\u00e3o especificada impediu que o agente de controle de processo fosse executado \
-corretamente.
+error.shutdownClientException.explanation=A exce\u00e7\u00e3o especificada impediu que o agente de controle de processo fosse executado corretamente.
 error.shutdownClientException.useraction=Resolva a exce\u00e7\u00e3o, em seguida, tente novamente a a\u00e7\u00e3o.
 
-warning.serverNotFound=CWWKE0048W: Uma inst\u00e2ncia em execu\u00e7\u00e3o do servidor com nome {0} e diret\u00f3rio do servidor {1} n\u00e3o p\u00f4de \
-ser localizada.
-warning.serverNotFound.explanation=O agente de controle de processo n\u00e3o p\u00f4de localizar uma inst\u00e2ncia em execu\u00e7\u00e3o do \
-servidor especificado.
-warning.serverNotFound.useraction=Verifique se uma inst\u00e2ncia do servidor especificado est\u00e1 em execu\u00e7\u00e3o e se ela est\u00e1 em \
-execu\u00e7\u00e3o sob a mesma implementa\u00e7\u00e3o de JRE.
+warning.serverNotFound=CWWKE0048W: Uma inst\u00e2ncia em execu\u00e7\u00e3o do servidor com nome {0} e diret\u00f3rio do servidor {1} n\u00e3o p\u00f4de ser localizada.
+warning.serverNotFound.explanation=O agente de controle de processo n\u00e3o p\u00f4de localizar uma inst\u00e2ncia em execu\u00e7\u00e3o do servidor especificado.
+warning.serverNotFound.useraction=Verifique se uma inst\u00e2ncia do servidor especificado est\u00e1 em execu\u00e7\u00e3o e se ela est\u00e1 em execu\u00e7\u00e3o sob a mesma implementa\u00e7\u00e3o de JRE.
 
 error.stopServerError=CWWKE0049E: O servidor {0} n\u00e3o p\u00f4de ser interrompido. 
-error.stopServerError.explanation=Uma inst\u00e2ncia em execu\u00e7\u00e3o do servidor especificado foi localizada, mas ela n\u00e3o foi \
-encerrada corretamente em resposta a um comando de parada. 
-error.stopServerError.useraction=Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais sobre a raz\u00e3o pela qual o \
-servidor n\u00e3o foi encerrado corretamente.
+error.stopServerError.explanation=Uma inst\u00e2ncia em execu\u00e7\u00e3o do servidor especificado foi localizada, mas ela n\u00e3o foi encerrada corretamente em resposta a um comando de parada. 
+error.stopServerError.useraction=Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais sobre a raz\u00e3o pela qual o servidor n\u00e3o foi encerrado corretamente.
 
 error.invalid.directory=CWWKE0050E: N\u00e3o foi poss\u00edvel inicializar o listener de comando do servidor. O diret\u00f3rio do servidor {0} n\u00e3o \u00e9 v\u00e1lido.
 error.invalid.directory.explanation=O diret\u00f3rio n\u00e3o existe ou n\u00e3o \u00e9 leg\u00edvel.
@@ -319,11 +257,9 @@ info.introspect.request.received=CWWKE0057I: Solicita\u00e7\u00e3o de introspec\
 info.introspect.request.received.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
 info.introspect.request.received.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-warn.packageServer.include.unknownOption=CWWKE0058W: N\u00e3o \u00e9 poss\u00edvel usar a op\u00e7\u00e3o --include={0}, ser\u00e1 usada --include=all no \
-lugar.
+warn.packageServer.include.unknownOption=CWWKE0058W: N\u00e3o \u00e9 poss\u00edvel usar a op\u00e7\u00e3o --include={0}, ser\u00e1 usada --include=all no lugar.
 warn.packageServer.include.unknownOption.explanation=A op\u00e7\u00e3o foi ignorada porque ela n\u00e3o foi reconhecida.
-warn.packageServer.include.unknownOption.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista \
-de op\u00e7\u00f5es v\u00e1lidas.
+warn.packageServer.include.unknownOption.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
 
 warn.unableWriteFile=CWWKE0059W: N\u00e3o \u00e9 poss\u00edvel gravar o arquivo {0} devido a uma exce\u00e7\u00e3o de E/S {1}. 
 warn.unableWriteFile.explanation=Ocorreu uma exce\u00e7\u00e3o de E/S.
@@ -445,21 +381,18 @@ audit.jvm.shutdown.explanation=O servidor interceptou uma solicita\u00e7\u00e3o 
 audit.jvm.shutdown.useraction=Se a parada do servidor foi inesperada, determine se um sinal de t\u00e9rmino foi enviado ao processo do servidor.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: O in\u00edcio do servidor foi iniciado para o servidor {0}, mas n\u00e3o \u00e9 poss\u00edvel afirmar se a inicializa\u00e7\u00e3o foi conclu\u00edda, porque a porta de comando do servidor est\u00e1 desativada.
-warning.serverStartedCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando foi desativada explicitamente para este servidor, portanto, n\u00e3o \u00e9 poss\u00edvel dizer quando o servidor \
-concluiu a inicializa\u00e7\u00e3o.
+warning.serverStartedCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando foi desativada explicitamente para este servidor, portanto, n\u00e3o \u00e9 poss\u00edvel dizer quando o servidor concluiu a inicializa\u00e7\u00e3o.
 warning.serverStartedCommandPortDisabled.useraction=Examine manualmente os logs do servidor para verificar se o servidor iniciou com \u00eaxito.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: O in\u00edcio do servidor foi iniciado para o servidor {0} com ID de processo {1}, mas n\u00e3o \u00e9 poss\u00edvel afirmar se a inicializa\u00e7\u00e3o foi conclu\u00edda, porque a porta de comando do servidor est\u00e1 desativada.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando foi desativada explicitamente para este servidor, portanto, n\u00e3o \u00e9 poss\u00edvel dizer quando o servidor \
-concluiu a inicializa\u00e7\u00e3o.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando foi desativada explicitamente para este servidor, portanto, n\u00e3o \u00e9 poss\u00edvel dizer quando o servidor concluiu a inicializa\u00e7\u00e3o.
 warning.serverStartedWithPIDCommandPortDisabled.useraction=Examine manualmente os logs do servidor para verificar se o servidor iniciou com \u00eaxito.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: O servidor {0} n\u00e3o p\u00f4de ser interrompido porque a porta de comando do servidor est\u00e1 desativada.
 error.serverStopCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando est\u00e1 desativada para esse servidor, portanto, n\u00e3o pode ser interrompida a partir desse script.  Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
 error.serverStopCommandPortDisabled.useraction=Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, o servidor poder\u00e1 ser interrompido a partir do console do operador.  Caso contr\u00e1rio, o processo do servidor poder\u00e1 ser interrompido a partir de um shell.
 
-warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Dump do servidor {0} \
-conclu\u00eddo no {1}.  Algumas informa\u00e7\u00f5es n\u00e3o puderam ser obtidas, porque a porta de comando do servidor est\u00e1 desativada, impedindo a comunica\u00e7\u00e3o direta com o servidor em execu\u00e7\u00e3o.
+warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Dump do servidor {0} conclu\u00eddo no {1}.  Algumas informa\u00e7\u00f5es n\u00e3o puderam ser obtidas, porque a porta de comando do servidor est\u00e1 desativada, impedindo a comunica\u00e7\u00e3o direta com o servidor em execu\u00e7\u00e3o.
 warning.serverDumpCompleteCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando est\u00e1 desativada para esse servidor, portanto algumas partes do dump do servidor que requerem comunica\u00e7\u00e3o direta com o servidor n\u00e3o puderam ser obtidas.  Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
 warning.serverDumpCompleteCommandPortDisabled.useraction=Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, um dump de servidor completo poder\u00e1 ser solicitado a partir do console do operador.  Consulte o centro de informa\u00e7\u00f5es para obter detalhes.
 
@@ -485,8 +418,7 @@ warning.unableToPackageLooseConfigFileMissingPath.useraction=Modifique os caminh
 
 warn.packageRuntime.include.unknownOption=CWWKE0099W: N\u00e3o \u00e9 poss\u00edvel usar a op\u00e7\u00e3o --include={0}, --include=wlp ser\u00e1 usada no lugar.
 warn.packageRuntime.include.unknownOption.explanation=A op\u00e7\u00e3o foi ignorada porque ela n\u00e3o foi reconhecida.
-warn.packageRuntime.include.unknownOption.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista \
-de op\u00e7\u00f5es v\u00e1lidas.
+warn.packageRuntime.include.unknownOption.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Este produto \u00e9 licenciado para uso de desenvolvimento e de produ\u00e7\u00e3o limitada. Os termos de licen\u00e7a integrais podem ser visualizados aqui: {0}
 audit.licenseRestriction.base_ilan.ilan.explanation=Este produto \u00e9 licenciado para uso e desenvolvimento de produ\u00e7\u00e3o limitada. Para ver a defini\u00e7\u00e3o de uso e desenvolvimento e entender as limita\u00e7\u00f5es de produ\u00e7\u00e3o, leia os arquivos de licen\u00e7a do produto.
@@ -520,13 +452,8 @@ error.zosProcStart.start.length=CWWKE0107E: O procedimento {0} do z/OS STC n\u00
 error.zosProcStart.start.length.explanation=O nome do procedimento, o nome do servidor e os par\u00e2metros de inicializa\u00e7\u00e3o fornecidos para iniciar o servidor como uma tarefa iniciada excedem o comprimento m\u00e1ximo do comando do console MVS.
 error.zosProcStart.start.length.useraction=Diminua o nome do servidor e o nome do procedimento, para que o comando inicial do MVS tenha menos de 126 caracteres.
 
-info.addProductExtension=CWWKE0108I: A \
-extens\u00e3o de produto {0} foi ativada programaticamente. O \
-identificador do produto da extens\u00e3o de produto \u00e9 {1}. O local de \
-instala\u00e7\u00e3o do produto da extens\u00e3o de produto \u00e9 {2}.
-info.addProductExtension.explanation= Esta mensagem tem apenas prop\u00f3sitos informativos.  \
-A extens\u00e3o de produto foi inclu\u00edda por uma chamada para o SPI em \
-com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
+info.addProductExtension=CWWKE0108I: A extens\u00e3o de produto {0} foi ativada programaticamente. O identificador do produto da extens\u00e3o de produto \u00e9 {1}. O local de instala\u00e7\u00e3o do produto da extens\u00e3o de produto \u00e9 {2}.
+info.addProductExtension.explanation= Esta mensagem tem apenas prop\u00f3sitos informativos.  A extens\u00e3o de produto foi inclu\u00edda por uma chamada para o SPI em com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # CWWKE0109W removed because it's no longer used - do not reuse 
@@ -537,10 +464,7 @@ info.addProductExtension.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ri
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: O nome do cliente especificado cont\u00e9m um caractere que n\u00e3o \u00e9 v\u00e1lido (nome={0}). \
-Os caracteres v\u00e1lidos s\u00e3o: Unicode alfanum\u00e9rico (por exemplo, \
-0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). \
-Um nome de cliente n\u00e3o pode iniciar com um tra\u00e7o (-) ou ponto (.).
+error.clientNameCharacter=CWWKE0900E: O nome do cliente especificado cont\u00e9m um caractere que n\u00e3o \u00e9 v\u00e1lido (nome={0}). Os caracteres v\u00e1lidos s\u00e3o: Unicode alfanum\u00e9rico (por exemplo, 0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). Um nome de cliente n\u00e3o pode iniciar com um tra\u00e7o (-) ou ponto (.).
 error.clientNameCharacter.explanation=Um caractere que n\u00e3o \u00e9 v\u00e1lido foi usado no nome do cliente.
 error.clientNameCharacter.useraction=Renomeie o cliente usando somente caracteres v\u00e1lidos: alfanum\u00e9rico Unicode (por exemplo, 0-9, a-z, A-Z), sublinhado (_), tra\u00e7o (-), mais (+) e ponto (.).
 
@@ -580,8 +504,7 @@ audit.launchTime.client.explanation=Esta mensagem tem apenas prop\u00f3sitos inf
 audit.launchTime.client.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 audit.kernelUpTime.client=CWWKE0908I: O cliente {0} foi interrompido ap\u00f3s {1}.
-audit.kernelUpTime.client.explanation=O kernel foi interrompido ap\u00f3s o intervalo especificado (em segundos). Este intervalo \u00e9 \
-relativo a quando a plataforma foi ativada.
+audit.kernelUpTime.client.explanation=O kernel foi interrompido ap\u00f3s o intervalo especificado (em segundos). Este intervalo \u00e9 relativo a quando a plataforma foi ativada.
 audit.kernelUpTime.client.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # {0} The server name 
@@ -592,32 +515,20 @@ info.java2security.started.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Falha ao configurar o Security Manager padr\u00e3o devido \u00e0 exce\u00e7\u00e3o: {0}  Isso ocorre se o gerente de seguran\u00e7a j\u00e1 foi definido e seu m\u00e9todo checkPermission n\u00e3o permite que ele seja substitu\u00eddo.
 error.set.securitymanager.explanation=A Seguran\u00e7a Java 2 est\u00e1 ativada, mas uma falha ocorreu ao configurar o Gerenciador de Seguran\u00e7a padr\u00e3o.
-error.set.securitymanager.useraction=Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, \
-iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager.  \
-Se j\u00e1 estiver configurado, remova a op\u00e7\u00e3o -Djava.security.manager e reinicie o servidor com Seguran\u00e7a Java 2 ativada \
-especificando a propriedade websphere.java.security no arquivo bootstrap.properties. 
+error.set.securitymanager.useraction=Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager.  Se j\u00e1 estiver configurado, remova a op\u00e7\u00e3o -Djava.security.manager e reinicie o servidor com Seguran\u00e7a Java 2 ativada especificando a propriedade websphere.java.security no arquivo bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: Falha ao configurar o NoRethrow Security Manager devido \u00e0 exce\u00e7\u00e3o: {0}.  Isso ocorre se o gerente de seguran\u00e7a j\u00e1 foi definido e seu m\u00e9todo checkPermission n\u00e3o permite que ele seja substitu\u00eddo.
 error.set.trace.securitymanager.explanation=A Seguran\u00e7a Java 2 est\u00e1 ativada, mas ocorreu uma falha ao configurar o Gerenciador de Seguran\u00e7a NoRethrow.
-error.set.trace.securitymanager.useraction=Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, \
-iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager.  \
-Se j\u00e1 estiver configurado, remova a op\u00e7\u00e3o -Djava.security.manager e reinicie o servidor com Seguran\u00e7a Java 2 ativada \
-especificando a propriedade websphere.java.security no arquivo bootstrap.properties. 
+error.set.trace.securitymanager.useraction=Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager.  Se j\u00e1 estiver configurado, remova a op\u00e7\u00e3o -Djava.security.manager e reinicie o servidor com Seguran\u00e7a Java 2 ativada especificando a propriedade websphere.java.security no arquivo bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: A pol\u00edtica de Seguran\u00e7a Java 2 atual relatou uma poss\u00edvel viola\u00e7\u00e3o da Permiss\u00e3o de Seguran\u00e7a Java 2. {0}Permiss\u00e3o:{1}C\u00f3digo:{2}{3}Rastreio de pilha:{4}Localiza\u00e7\u00e3o do c\u00f3digo base:{5}
 warning.java.security.permdenied.explanation=checkPermission() do Gerenciador de Seguran\u00e7a Java emitiu uma SecurityException na Permiss\u00e3o do assunto.
 warning.java.security.permdenied.useraction=Verifique se a tentativa de opera\u00e7\u00e3o \u00e9 permitida e atualize o arquivo de pol\u00edticas de permiss\u00f5es para o pacote configur\u00e1vel ou aplicativo conforme necess\u00e1rio.
 
 error.java.security.exception.codebase=CWWKE0913E: Uma exce\u00e7\u00e3o inesperada foi capturada ao tentar determinar a localiza\u00e7\u00e3o do c\u00f3digo base.  Exce\u00e7\u00e3o: {0}.  
-error.java.security.exception.codebase.explanation=Ocorreu uma falha ao determinar a localiza\u00e7\u00e3o do c\u00f3digo base que gerou \
-uma exce\u00e7\u00e3o de controle de acesso da Permiss\u00e3o de Seguran\u00e7a Java 2.
-error.java.security.exception.codebase.useraction=Verifique a exce\u00e7\u00e3o e os logs do servidor para obter detalhes. \
-\ Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, \
-iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager e \
-especificando uma op\u00e7\u00e3o -Djava.security.policy.  \
-Se um ou ambos j\u00e1 estiverem configurados, remova as configura\u00e7\u00f5es e reinicie o servidor com Seguran\u00e7a Java 2 ativada especificando a \
-propriedade websphere.java.security no arquivo bootstrap.properties.
+error.java.security.exception.codebase.explanation=Ocorreu uma falha ao determinar a localiza\u00e7\u00e3o do c\u00f3digo base que gerou uma exce\u00e7\u00e3o de controle de acesso da Permiss\u00e3o de Seguran\u00e7a Java 2.
+error.java.security.exception.codebase.useraction=Verifique a exce\u00e7\u00e3o e os logs do servidor para obter detalhes.  Certifique-se de que o gerente de seguran\u00e7a n\u00e3o foi definido ainda, iniciando o servidor com a op\u00e7\u00e3o -Djava.security.manager e especificando uma op\u00e7\u00e3o -Djava.security.policy.  Se um ou ambos j\u00e1 estiverem configurados, remova as configura\u00e7\u00f5es e reinicie o servidor com Seguran\u00e7a Java 2 ativada especificando a propriedade websphere.java.security no arquivo bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: A pol\u00edtica de Seguran\u00e7a Java 2 atual relatou uma viola\u00e7\u00e3o potencial de uma Permiss\u00e3o de Seguran\u00e7a Java 2. Consulte o Knowledge Center para obter informa\u00e7\u00f5es adicionais.{0}Permiss\u00e3o:{1}C\u00f3digo:{2}Localiza\u00e7\u00e3o do c\u00f3digo base:{3}
 warning.zOS.java.security.permdenied1.explanation=checkPermission() do Gerenciador de Seguran\u00e7a Java emitiu uma SecurityException na Permiss\u00e3o do assunto. Um respons\u00e1vel pela chamada da pilha de chamadas n\u00e3o tem a permiss\u00e3o requerida.  Isto poder\u00e1 n\u00e3o ser um problema se o respons\u00e1vel pela chamada manipular corretamente esta exce\u00e7\u00e3o.
@@ -639,18 +550,16 @@ error.client.runner.useraction=Consulte as mensagens de erro para obter detalhes
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o solicitada. Para obter detalhes, consulte os logs do perfil do Liberty, servidor {0} no host {1} no local {2} para a solicita\u00e7\u00e3o {3}.
+error.mbean.operation.failure=CWWKE0918E: \ N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o solicitada. Para obter detalhes, consulte os logs do perfil do Liberty, servidor {0} no host {1} no local {2} para a solicita\u00e7\u00e3o {3}.
 error.mbean.operation.failure.explanation=Ocorreu um erro ao tentar executar a opera\u00e7\u00e3o solicitada.
 error.mbean.operation.failure.useraction=Verifique os logs do servidor para obter detalhes sobre o erro da opera\u00e7\u00e3o.
 
 java.security.permdenied.class.info=CWWKE0919I: A classe inv\u00e1lida \u00e9: {0}
-java.security.permdenied.class.info.explanation=O gerenciador de seguran\u00e7a Java checkPermission() emitiu \
-uma SecurityException devido \u00e0 classe n\u00e3o possuir as permiss\u00f5es necess\u00e1rias.
+java.security.permdenied.class.info.explanation=O gerenciador de seguran\u00e7a Java checkPermission() emitiu uma SecurityException devido \u00e0 classe n\u00e3o possuir as permiss\u00f5es necess\u00e1rias.
 java.security.permdenied.class.info.useraction=Verifique se a tentativa de opera\u00e7\u00e3o \u00e9 permitida e atualize o arquivo de pol\u00edticas de permiss\u00f5es para o pacote configur\u00e1vel ou aplicativo conforme necess\u00e1rio.
 
 java.security.permdenied.codebaseloc.info=CWWKE0920I: No local do c\u00f3digo base: {0}
-java.security.permdenied.codebaseloc.info.explanation=O gerenciador de seguran\u00e7a Java checkPermission() \
-emitiu uma SecurityException para uma classe no local do c\u00f3digo base especificado.
+java.security.permdenied.codebaseloc.info.explanation=O gerenciador de seguran\u00e7a Java checkPermission() emitiu uma SecurityException para uma classe no local do c\u00f3digo base especificado.
 java.security.permdenied.codebaseloc.info.useraction=Verifique se a tentativa de opera\u00e7\u00e3o \u00e9 permitida e atualize o arquivo de pol\u00edticas de permiss\u00f5es para o pacote configur\u00e1vel ou aplicativo conforme necess\u00e1rio.
 
 warning.java.security.permdenied.quickmsg=CWWKE0921W: A pol\u00edtica de Seguran\u00e7a Java 2 atual relatou uma poss\u00edvel viola\u00e7\u00e3o da Permiss\u00e3o de Seguran\u00e7a Java 2. {0}
@@ -658,8 +567,7 @@ warning.java.security.permdenied.quickmsg.explanation=checkPermission() do Geren
 warning.java.security.permdenied.quickmsg.useraction=Verifique se a tentativa de opera\u00e7\u00e3o \u00e9 permitida e atualize o arquivo de pol\u00edticas de permiss\u00f5es para o pacote configur\u00e1vel ou aplicativo conforme necess\u00e1rio.
 
 error.package.missingLibExtractDir=CWWKE0922E: O comando do pacote n\u00e3o pode ser conclu\u00eddo, pois o diret\u00f3rio lib/extract est\u00e1 ausente na instala\u00e7\u00e3o.
-error.package.missingLibExtractDir.explanation=O diret\u00f3rio lib/extract cont\u00e9m metadados e classes de extra\u00e7\u00e3o autom\u00e1tica necess\u00e1rios para a conclus\u00e3o do comando do \
-pacote.  Se esse diret\u00f3rio estiver ausente, isso poder\u00e1 indicar que a instala\u00e7\u00e3o do Perfil do WebSphere Liberty estava incompleta ou que o diret\u00f3rio foi exclu\u00eddo.
+error.package.missingLibExtractDir.explanation=O diret\u00f3rio lib/extract cont\u00e9m metadados e classes de extra\u00e7\u00e3o autom\u00e1tica necess\u00e1rios para a conclus\u00e3o do comando do pacote.  Se esse diret\u00f3rio estiver ausente, isso poder\u00e1 indicar que a instala\u00e7\u00e3o do Perfil do WebSphere Liberty estava incompleta ou que o diret\u00f3rio foi exclu\u00eddo.
 error.package.missingLibExtractDir.useraction=Reinstale o Perfil do WebSphere Liberty e certifique-se de que o diret\u00f3rio lib/extract exista no diret\u00f3rio WLP_HOME.
 
 
@@ -698,27 +606,20 @@ error.server.resume.failed=CWWKE0930E: Uma solicita\u00e7\u00e3o de continua\u00
 error.server.resume.failed.explanation=O servidor processou uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o, mas alguns componentes pausados falharam ao serem continuados. Todos os outros componentes pausados foram continuados com sucesso.
 error.server.resume.failed.useraction=Verifique os logs do servidor para obter os erros adicionais dos componentes que falharam.
 
-warning.server.pause.invalid.targets=CWWKE0931W: Uma solicita\u00e7\u00e3o foi recebida para pausar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
-a\u00e7\u00e3o foi tomada.
+warning.server.pause.invalid.targets=CWWKE0931W: Uma solicita\u00e7\u00e3o foi recebida para pausar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma a\u00e7\u00e3o foi tomada.
 warning.server.pause.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de pausa com uma lista de metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
 warning.server.pause.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para pausar. Para pausar todos os componentes com capacidade de pausa no servidor, emita uma solicita\u00e7\u00e3o de pausa sem a op\u00e7\u00e3o de destino.
 
-warning.server.resume.invalid.targets=CWWKE0932W: Uma solicita\u00e7\u00e3o foi recebida para continuar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
-a\u00e7\u00e3o foi tomada.
+warning.server.resume.invalid.targets=CWWKE0932W: Uma solicita\u00e7\u00e3o foi recebida para continuar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma a\u00e7\u00e3o foi tomada.
 warning.server.resume.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o com uma lista de metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
-warning.server.resume.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para continuar. Para \
-continuar todos os componentes pausados no servidor, emita uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o sem a op\u00e7\u00e3o de destino.
+warning.server.resume.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para continuar. Para continuar todos os componentes pausados no servidor, emita uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o sem a op\u00e7\u00e3o de destino.
 
-warning.server.pause.no.targets=CWWKE0933W: Uma solicita\u00e7\u00e3o de pausa foi recebida, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma \
-a\u00e7\u00e3o foi tomada.
-warning.server.pause.no.targets.explanation=O servidor processou uma solicita\u00e7\u00e3o de pausa, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma \
-a\u00e7\u00e3o foi tomada.
+warning.server.pause.no.targets=CWWKE0933W: Uma solicita\u00e7\u00e3o de pausa foi recebida, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma a\u00e7\u00e3o foi tomada.
+warning.server.pause.no.targets.explanation=O servidor processou uma solicita\u00e7\u00e3o de pausa, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma a\u00e7\u00e3o foi tomada.
 warning.server.pause.no.targets.useraction=Verifique se os componentes com capacidade de pausa est\u00e3o dispon\u00edveis no servidor.
 
-warning.server.resume.no.targets=CWWKE0934W: Uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o foi recebida, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma \
-a\u00e7\u00e3o foi tomada.
-warning.server.resume.no.targets.explanation=O servidor processou uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o, mas nenhum componente com capacidade de pausa foi localizado. Nenhuma \
-a\u00e7\u00e3o foi tomada.
+warning.server.resume.no.targets=CWWKE0934W: Uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o foi recebida, mas nenhum componente com capacidade de pausa foi localizado no servidor. Nenhuma a\u00e7\u00e3o foi tomada.
+warning.server.resume.no.targets.explanation=O servidor processou uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o, mas nenhum componente com capacidade de pausa foi localizado. Nenhuma a\u00e7\u00e3o foi tomada.
 warning.server.resume.no.targets.useraction=Verifique se os componentes com capacidade de pausa est\u00e3o dispon\u00edveis no servidor.
 
 warning.server.pause.missing.targets=CWWKE0935W: Uma solicita\u00e7\u00e3o de pausa foi recebida, mas os componentes a seguir n\u00e3o puderam ser localizados: {0}
@@ -749,20 +650,13 @@ warning.variable.invalid=CWWKE0941W: A declara\u00e7\u00e3o de vari\u00e1vel {0}
 warning.variable.invalid.explanation=Somente caracteres alfanum\u00e9ricos s\u00e3o permitidos nos nomes de vari\u00e1veis especificados no arquivo server.env.
 warning.variable.invalid.useraction=Modifique o nome de vari\u00e1vel para usar somente caracteres alfanum\u00e9ricos ou mova a defini\u00e7\u00e3o da vari\u00e1vel para o arquivo bootstrap.properties.
 
-error.zosProcStart.procedure.invalid=CWWKE0942E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome do \
-procedimento n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome do procedimento n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha uma v\u00edrgula.
-error.zosProcStart.procedure.invalid.explanation=O nome do procedimento STC especificado pela \
-propriedade WLP_ZOS_PROCEDURE no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome do procedimento n\u00e3o deve ter mais de 8 caracteres e n\u00e3o \
-deve conter v\u00edrgula.
-error.zosProcStart.procedure.invalid.useraction=Verifique se o nome do procedimento n\u00e3o tem mais de oito \
-caracteres e n\u00e3o cont\u00e9m v\u00edrgula.
+error.zosProcStart.procedure.invalid=CWWKE0942E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome do procedimento n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome do procedimento n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha uma v\u00edrgula.
+error.zosProcStart.procedure.invalid.explanation=O nome do procedimento STC especificado pela propriedade WLP_ZOS_PROCEDURE no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome do procedimento n\u00e3o deve ter mais de 8 caracteres e n\u00e3o deve conter v\u00edrgula.
+error.zosProcStart.procedure.invalid.useraction=Verifique se o nome do procedimento n\u00e3o tem mais de oito caracteres e n\u00e3o cont\u00e9m v\u00edrgula.
 
 error.zosProcStart.jobname.invalid=CWWKE0943E: Falha ao iniciar o procedimento {0} do z/OS STC. O nome da tarefa {1} n\u00e3o \u00e9 v\u00e1lido. Assegure-se de que o nome da tarefa n\u00e3o tenha mais de oito caracteres e n\u00e3o contenha v\u00edrgula.
-error.zosProcStart.jobname.invalid.explanation=O nome da tarefa STC especificado pela propriedade \
-WLP_ZOS_JOBNAME no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome da tarefa n\u00e3o deve ter mais de 8 caracteres e n\u00e3o deve conter \
-v\u00edrgula.
-error.zosProcStart.jobname.invalid.useraction=Verifique se o nome da tarefa n\u00e3o tem mais de oito caracteres e n\u00e3o \
-cont\u00e9m v\u00edrgula.
+error.zosProcStart.jobname.invalid.explanation=O nome da tarefa STC especificado pela propriedade WLP_ZOS_JOBNAME no arquivo server.env n\u00e3o \u00e9 v\u00e1lido. O nome da tarefa n\u00e3o deve ter mais de 8 caracteres e n\u00e3o deve conter v\u00edrgula.
+error.zosProcStart.jobname.invalid.useraction=Verifique se o nome da tarefa n\u00e3o tem mais de oito caracteres e n\u00e3o cont\u00e9m v\u00edrgula.
 
 error.server.pause.command.port.disabled=CWWKE0944E: Uma solicita\u00e7\u00e3o de pausa foi recebida para o servidor {0}, mas a porta de comando do servidor est\u00e1 desativada. A solicita\u00e7\u00e3o n\u00e3o pode ser processada. Ative a porta de comando e tente novamente.
 error.server.pause.command.port.disabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o. A porta de comando est\u00e1 desativada para esse servidor, portanto, a solicita\u00e7\u00e3o de pausa n\u00e3o p\u00f4de ser processada. Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
@@ -772,25 +666,16 @@ error.server.resume.command.port.disabled=CWWKE0945E: Uma solicita\u00e7\u00e3o 
 error.server.resume.command.port.disabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o. A porta de comando est\u00e1 desativada para esse servidor, portanto, a solicita\u00e7\u00e3o para continuar n\u00e3o p\u00f4de ser processada. Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
 error.server.resume.command.port.disabled.useraction=Ative a porta de comando para este servidor. Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, esta continua\u00e7\u00e3o poder\u00e1, alternativamente, ser solicitada do console do operador.
 
-warning.server.status.invalid.targets=CWWKE0946W: Uma solicita\u00e7\u00e3o de status foi recebida para componentes \
-espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
-a\u00e7\u00e3o foi tomada.
-warning.server.status.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de status com uma lista de \
-metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
-warning.server.status.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para \
-verificar seus status. Para verificar o status cumulativo de todos os componentes com capacidade de pausa no servidor, emita a \
-solicita\u00e7\u00e3o de status sem a op\u00e7\u00e3o de destino.
+warning.server.status.invalid.targets=CWWKE0946W: Uma solicita\u00e7\u00e3o de status foi recebida para componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma a\u00e7\u00e3o foi tomada.
+warning.server.status.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de status com uma lista de metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
+warning.server.status.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para verificar seus status. Para verificar o status cumulativo de todos os componentes com capacidade de pausa no servidor, emita a solicita\u00e7\u00e3o de status sem a op\u00e7\u00e3o de destino.
 
 warning.package.root.invalid=CWWKE0947W: Uma op\u00e7\u00e3o --server-root com um argumento vazio n\u00e3o \u00e9 permitida quando Extens\u00f5es do Produto est\u00e3o instaladas. O argumento padr\u00e3o de wlp ser\u00e1 usado.
 warning.package.root.invalid.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma op\u00e7\u00e3o --server-root especificando um argumento vazio e Extens\u00f5es do Produto foram detectadas. A raiz de servidor padr\u00e3o de wlp ser\u00e1 usada.
 warning.package.root.invalid.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-warning.package.root.invalid.runnable=CWWKE0948W: Uma op\u00e7\u00e3o --server-root com \
---include=runnable n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. O argumento padr\u00e3o de wlp \u00e9 usado para a raiz do \
-servidor.
-warning.package.root.invalid.runnable.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de \
-pacote com uma op\u00e7\u00e3o --server-root e --include=runnable, que n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. A raiz do \
-servidor padr\u00e3o de wlp \u00e9 usada.
+warning.package.root.invalid.runnable=CWWKE0948W: Uma op\u00e7\u00e3o --server-root com --include=runnable n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. O argumento padr\u00e3o de wlp \u00e9 usado para a raiz do servidor.
+warning.package.root.invalid.runnable.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma op\u00e7\u00e3o --server-root e --include=runnable, que n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. A raiz do servidor padr\u00e3o de wlp \u00e9 usada.
 warning.package.root.invalid.runnable.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 error.package.extension=CWWKE0950E: O nome do arquivo do archive deve terminar com .jar quando a op\u00e7\u00e3o execut\u00e1vel for usada.
@@ -809,15 +694,17 @@ warning.earlyRelease=CWWKE0953W: Esta vers\u00e3o de {0} \u00e9 uma vers\u00e3o 
 warning.earlyRelease.explanation=Novos recursos que n\u00e3o s\u00e3o totalmente testados s\u00e3o disponibilizados em libera\u00e7\u00f5es iniciais para obter feedback antes de serem inclu\u00eddos em uma libera\u00e7\u00e3o suportada.
 warning.earlyRelease.useraction=N\u00e3o use uma vers\u00e3o de libera\u00e7\u00e3o anterior em sistemas de produ\u00e7\u00e3o, uma vez que as vers\u00f5es de libera\u00e7\u00e3o anteriores n\u00e3o s\u00e3o suportadas.
 
+error.invalidPhaseName=CWWKE0954E: A fase de ponto de verifica\u00e7\u00e3o "{0}" especificada est\u00e1 vazia ou \u00e9 desconhecida.
+error.invalidPhaseName.explanation=Uma fase desconhecida foi especificada como o valor da op\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
+error.invalidPhaseName.useraction=Revise a documenta\u00e7\u00e3o para determinar nomes de fase v\u00e1lidos. Emita novamente o comando usando uma fase de ponto de verifica\u00e7\u00e3o v\u00e1lida.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
-info.serverStartedWithPID=O servidor {0} foi \
-iniciado com o ID de processo {1}.
+info.serverStartedWithPID=O servidor {0} foi iniciado com o ID de processo {1}.
 info.serverIsRunning=O servidor {0} est\u00e1 em execu\u00e7\u00e3o.
 info.clientIsRunning=O cliente {0} est\u00e1 em execu\u00e7\u00e3o.
 info.serverIsAlreadyRunning=O servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
-info.serverIsRunningWithPID=O servidor {0} \
-est\u00e1 em execu\u00e7\u00e3o com o ID de processo {1}.
+info.serverIsRunningWithPID=O servidor {0} est\u00e1 em execu\u00e7\u00e3o com o ID de processo {1}.
 info.serverIsAlreadyRunningWithPID=O servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o com o ID de processo {1}.
 info.serverNotRunning=O servidor {0} n\u00e3o est\u00e1 em execu\u00e7\u00e3o.
 info.serverStopping=Parando servidor {0}.
@@ -828,25 +715,19 @@ info.serverPackaging=Empacotando servidor {0}.
 info.clientPackaging=Empacotando o cliente {0}.
 info.serverPackagingCollectingInformation=Consultando o servidor {0} quanto a conte\u00fado.
 info.serverPackagingBuildingArchive=Construindo archive para o servidor {0}.
-info.serverPackageComplete=Pacote do \
-servidor {0} conclu\u00eddo no {1}.
+info.serverPackageComplete=Pacote do servidor {0} conclu\u00eddo no {1}.
 info.clientPackageComplete=Pacote {0} do cliente conclu\u00eddo em {1}.
 info.serverDumping=Executando dump do servidor {0}.
-info.serverDumpComplete=Dump do servidor {0} \
-conclu\u00eddo no {1}.
+info.serverDumpComplete=Dump do servidor {0} conclu\u00eddo no {1}.
 info.serverDumpCompleteZos=A solicita\u00e7\u00e3o de Dump de Transa\u00e7\u00e3o do Sistema do Servidor {0} (SYSTDUMP) foi conclu\u00edda.
 info.serverStartException=O in\u00edcio do servidor {0} falhou. Verifique os logs do servidor para obter detalhes.
-info.serverStartUnreachable=N\u00e3o foi poss\u00edvel \
-determinar o status do servidor {0}. Remova o arquivo {1} se o ID do \
-processo {2} n\u00e3o for o processo do servidor.
-info.serverStatusException=N\u00e3o foi poss\u00edvel \
-determinar o status do servidor {0}. Verifique os logs do servidor para obter detalhes.
+info.serverStartUnreachable=N\u00e3o foi poss\u00edvel determinar o status do servidor {0}. Remova o arquivo {1} se o ID do processo {2} n\u00e3o for o processo do servidor.
+info.serverStatusException=N\u00e3o foi poss\u00edvel determinar o status do servidor {0}. Verifique os logs do servidor para obter detalhes.
 info.serverStopException=A parada do servidor {0} falhou. Verifique os logs do servidor para obter detalhes.
 info.serverPackageException=Pacote do servidor {0} falhou. Verifique os logs do servidor para obter detalhes.
 info.serverPackageUnreachable=Pacote do servidor {0} falhou. Ele deve ser interrompido antes de poder ser empacotado.
 info.clientPackageException=O pacote {0} do cliente falhou. Verifique os logs do cliente para obter detalhes.
-info.clientPackageUnreachable=O pacote {0} do cliente falhou. Deve-se parar o cliente antes que ele \
-possa ser empacotado.
+info.clientPackageUnreachable=O pacote {0} do cliente falhou. Deve-se parar o cliente antes que ele possa ser empacotado.
 info.serverDumpOptionUnsupported=O servidor {0} n\u00e3o suporta o tipo de dump Java {1}.
 info.serverDumpException=Dump do servidor {0} falhou. Verifique os logs do servidor para obter detalhes.
 info.unableZipFile=N\u00e3o \u00e9 poss\u00edvel arquivar o arquivo {0} devido a {1}.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,13 +57,14 @@ public class RestClientTckPackageTest {
     	    Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
     	    Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
     	}
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
-//            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+//            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
         }
     }
 
@@ -71,28 +72,11 @@ public class RestClientTckPackageTest {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClientTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.rest.client.2.0.internal_fat_tck", this.getClass() + ":testRestClientTck");
-        Map<String, String> resultInfo = new HashMap<>();
-        try{
-            JavaInfo javaInfo = JavaInfo.forCurrentVM();
-            String productVersion = "";
-            resultInfo.put("results_type", "MicroProfile");
-            resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
-            resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-            resultInfo.put("feature_name", "Rest Client");
-            resultInfo.put("feature_version", "2.0");
-            resultInfo.put("os_name",System.getProperty("os.name"));
-            List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
-                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
-                Matcher nameMatcher =olVersionPattern.matcher(matches.get(0));
-                if (nameMatcher.find()) {
-                    productVersion = nameMatcher.group(1);
-                }
-                resultInfo.put("product_version", productVersion);
-            }
-        }finally{
-            MvnUtils.preparePublicationFile(resultInfo);
-        };
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
+        resultInfo.put("results_type", "MicroProfile");
+        resultInfo.put("feature_name", "Rest Client");
+        resultInfo.put("feature_version", "2.0");
+        MvnUtils.preparePublicationFile(resultInfo);
     }
 
 }

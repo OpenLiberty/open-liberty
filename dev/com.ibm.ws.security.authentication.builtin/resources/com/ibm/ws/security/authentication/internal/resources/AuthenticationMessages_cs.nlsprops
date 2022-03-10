@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Byl deaktivov\u00e1n kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed s n\u00e1zvem t\u0159\u00eddy {0}. 
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed byl deaktivov\u00e1n a ji\u017e nen\u00ed dostupn\u00fd k ov\u011b\u0159en\u00ed kolektivn\u00edch po\u017eadavk\u016f.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Mezipam\u011b\u0165 ov\u011b\u0159en\u00ed vymazala v\u0161echny polo\u017eky v mezipam\u011bti JCache {0}. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Mezipam\u011b\u0165 ov\u011b\u0159en\u00ed vyma\u017ee v\u0161echny polo\u017eky v z\u00e1lo\u017en\u00ed mezipam\u011bti JCache, kdy\u017e je upravena konfigurace zabezpe\u010den\u00ed nebo konfigurace registru u\u017eivatel\u016f, nebo kdy\u017e se vol\u00e1 objekt DeleteAuthCache MBean. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
