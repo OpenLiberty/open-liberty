@@ -99,9 +99,12 @@ public class AcmeFatUtils {
 	 *             If the certificate could not be generated from the passed in
 	 *             PEM bytes.
 	 */
-	public static X509Certificate getX509Certificate(byte pemBytes[]) throws CertificateException {
+	public static X509Certificate getX509Certificate(byte pemBytes[]) throws CertificateException, IOException {
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(pemBytes));
+		
+		try (ByteArrayInputStream in = new ByteArrayInputStream(pemBytes)) {
+			return (X509Certificate) cf.generateCertificate(in);
+		}
 	}
 
 	/**
@@ -606,7 +609,11 @@ public class AcmeFatUtils {
 		 * Load the keystore and return the certificate.
 		 */
 		KeyStore keystore = KeyStore.getInstance("PKCS12");
-		keystore.load(new FileInputStream(certFile), SELF_SIGNED_KEYSTORE_PASSWORD.toCharArray());
+		
+		
+		try (FileInputStream fos = new FileInputStream(certFile)) {
+			keystore.load(fos, SELF_SIGNED_KEYSTORE_PASSWORD.toCharArray());
+		}
 		return keystore.getCertificateChain(DefaultSSLCertificateCreator.ALIAS);
 	}
 
@@ -873,57 +880,6 @@ public class AcmeFatUtils {
  		}
  		return false;
  	}
-
-	/**
-	 * Check if the test is running on Windows OS and a specific java
-	 * 
-	 * @param methodName
-	 * @return True if the test is running on the specific OS/JDK combo
-	 */
-	public static boolean isWindowsWithOpenJDK(String methodName) {
-		String os = System.getProperty("os.name").toLowerCase();
-		String javaVendor = System.getProperty("java.vendor").toLowerCase();
-		String javaVersion = System.getProperty("java.version");
-		Log.info(AcmeFatUtils.class, methodName,
-				"isWindowsWithOpenJDK Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
-		boolean skipOnWin = false;
-
-		if (os.startsWith("win")) {
-			if ((javaVendor.contains("openjdk") || javaVendor.contains("oracle")) && (javaVersion.equals("11.0.11") || javaVersion.equals("14.0.1") || javaVersion.equals("1.8.0_181")
-					|| javaVersion.equals("15") || javaVersion.equals("16") || javaVersion.equals("17") || javaVersion.equals("11.0.13") || javaVersion.equals("17.0.1")|| javaVersion.equals("18"))) {
-				/*
-				 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
-				 * deleting the Acme related files. Later JDK11s seem to be working. 11.0.7+10, 11.0.8+10, 11.0.10+9, 11.0.12+7
-				 * are fine.
-				 * 
-				 * "The process cannot access the file because it is being used by another
-				 * process"
-				 * 
-				 */
-				skipOnWin = true;
-			} else if (javaVendor.contains("temurin") && javaVersion.equals("1.8.0_302")) {
-				/*
-				 * Delete issue popped on new AdoptOpenJDK name, temurin, as well. The "if" check was getting complicated to read so breaking these vendor/version checks into
-				 * more if/else branches to making it easier to follow.
-				 */
-				skipOnWin = true;
-			} else if (javaVendor.contains("eclipse adoptium") && (javaVersion.equals("11.0.13") || javaVersion.equals("17.0.1") || javaVersion.equals("11.0.14") || javaVersion.equals("17.0.2"))) {
-				/*
-				 * Delete issue popped on new AdoptOpenJDK name, eclipse adoptium, as well. The "if" check was getting complicated to read so breaking these vendor/version checks into
-				 * more if/else branches to making it easier to follow.
-				 */
-				skipOnWin = true;
-			}
-
-			if (skipOnWin) {
-				Log.info(AcmeFatUtils.class, methodName,
-						"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")
-						+ " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
-				return true;
-			}
-		}
-		return false;
-	}
 
  	/**
  	 * Handle adding CWPKI2045W as an allowed warning message to all stopServer requests.
