@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package com.ibm.ws.ejbcontainer.war.internal;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.state.ModuleStateListener;
@@ -22,6 +24,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 public class EJBWARRuntimeImpl implements ModuleStateListener {
+    private static final TraceComponent tc = Tr.register(EJBWARRuntimeImpl.class);
     private final AtomicServiceReference<EJBContainer> ejbContainerSR = new AtomicServiceReference<EJBContainer>("ejbContainer");
     private EJBWARMetaDataRuntime ejbWARMetaDataRuntime;
 
@@ -50,6 +53,11 @@ public class EJBWARRuntimeImpl implements ModuleStateListener {
     }
 
     private ModuleMetaData getEJBModuleMetaData(ModuleInfo moduleInfo) {
+        if (ejbWARMetaDataRuntime == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "EJBWARRuntime deactivated, cannot obtain EJBModuleMetaData for " + moduleInfo.getName());
+            return null;
+        }
         return ejbWARMetaDataRuntime.getEJBModuleMetaData(((ExtendedModuleInfo) moduleInfo).getMetaData());
     }
 
@@ -70,7 +78,8 @@ public class EJBWARRuntimeImpl implements ModuleStateListener {
     }
 
     @Override
-    public void moduleStopping(ModuleInfo moduleInfo) {}
+    public void moduleStopping(ModuleInfo moduleInfo) {
+    }
 
     @Override
     public void moduleStopped(ModuleInfo moduleInfo) {

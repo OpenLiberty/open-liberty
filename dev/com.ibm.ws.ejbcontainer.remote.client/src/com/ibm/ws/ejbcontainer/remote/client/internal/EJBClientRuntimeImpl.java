@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.state.ModuleStateListener;
@@ -28,13 +30,16 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(service = ModuleStateListener.class)
 public class EJBClientRuntimeImpl implements ModuleStateListener {
+    private static final TraceComponent tc = Tr.register(EJBClientRuntimeImpl.class);
     private final AtomicServiceReference<EJBContainer> ejbContainerSR = new AtomicServiceReference<EJBContainer>("ejbContainer");
     private EJBClientMetaDataRuntime ejbClientMetaDataRuntime;
 
     @Reference(service = LibertyProcess.class, target = "(wlp.process.type=client)")
-    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
 
-    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
 
     @Reference(name = "ejbContainer", service = EJBContainer.class)
     protected void setEJBContainer(ServiceReference<EJBContainer> reference) {
@@ -65,6 +70,11 @@ public class EJBClientRuntimeImpl implements ModuleStateListener {
     }
 
     private ModuleMetaData getEJBModuleMetaData(ModuleInfo moduleInfo) {
+        if (ejbClientMetaDataRuntime == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "EJBClientRuntime deactivated, cannot obtain EJBModuleMetaData for " + moduleInfo.getName());
+            return null;
+        }
         return ejbClientMetaDataRuntime.getEJBModuleMetaData(((ExtendedModuleInfo) moduleInfo).getMetaData());
     }
 
@@ -85,7 +95,8 @@ public class EJBClientRuntimeImpl implements ModuleStateListener {
     }
 
     @Override
-    public void moduleStopping(ModuleInfo moduleInfo) {}
+    public void moduleStopping(ModuleInfo moduleInfo) {
+    }
 
     @Override
     public void moduleStopped(ModuleInfo moduleInfo) {
