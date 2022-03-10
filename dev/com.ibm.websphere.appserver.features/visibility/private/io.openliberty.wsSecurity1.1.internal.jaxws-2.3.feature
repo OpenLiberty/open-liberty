@@ -11,6 +11,7 @@ singleton=true
  com.ibm.ws.org.joda.time.2.9.9, \
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
  com.ibm.ws.org.ehcache.ehcache.107.3.8.1, \
+ com.ibm.ws.net.sf.ehcache.core.2.5.2, \
  com.ibm.ws.org.jasypt.jasypt.1.9.3, \
  com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1, \
  com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1, \

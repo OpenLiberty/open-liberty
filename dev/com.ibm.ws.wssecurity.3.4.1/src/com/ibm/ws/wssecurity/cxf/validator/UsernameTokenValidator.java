@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -393,16 +393,20 @@ public class UsernameTokenValidator implements Validator {
 
         WSSConfig wssConfig = data.getWssConfig();
 
-        int timeStampTTL = 300;
-        int futureTimeToLive = 300;
+        // in the older cxf/wss4j versions we did not have ws-security.usernametoken.timeToLive option
+        // so we depended on ws-security.timestamp.timeToLive for both timestamp and unt
+        // int timeStampTTL = 300; 
+        // int futureTimeToLive = 300;
+        int utTTL = 300;
+        int utFutureTTL = 300;
         if (wssConfig != null) {
             //timeStampTTL = wssConfig.getTimeStampTTL(); //@2020
-            timeStampTTL = data.getTimeStampTTL();//data.getUtTTL(); //v3 TODO
+            utTTL = data.getUtTTL();
             //futureTimeToLive = wssConfig.getTimeStampFutureTTL(); //@2020
-            futureTimeToLive = data.getTimeStampFutureTTL();//data.getUtFutureTTL(); //v3 TODO
+            utFutureTTL = data.getUtFutureTTL();
         }
 
-        boolean isValid = verifyCreated(created, timeStampTTL, futureTimeToLive);
+        boolean isValid = verifyCreated(created, utTTL, utFutureTTL);
         if (!isValid) {
             throw new WSSecurityException(
                             WSSecurityException.ErrorCode.MESSAGE_EXPIRED);
