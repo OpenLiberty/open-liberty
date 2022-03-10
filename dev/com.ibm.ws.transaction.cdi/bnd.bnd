@@ -55,4 +55,4 @@ Export-Package: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.logging;version=latest
 
-jakartaeeMe: true
+test.project: true

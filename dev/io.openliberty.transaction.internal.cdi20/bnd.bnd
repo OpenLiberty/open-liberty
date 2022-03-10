@@ -21,9 +21,18 @@ Include-Resource: META-INF=resources/META-INF
 WS-TraceGroup: Transaction
 
 Import-Package: \
- javax.enterprise.inject.spi; version="[2.0,3.0)", \
+ !com.ibm.tx.jta.cdi, \
+ javax.enterprise.context; version="[2.0,3.0)", \
  javax.enterprise.context.spi; version="[2.0,3.0)", \
+ javax.enterprise.event; version="[2.0,3.0)", \
+ javax.enterprise.inject; version="[2.0,3.0)", \
+ javax.enterprise.inject.spi; version="[2.0,3.0)", \
+ javax.enterprise.util; version="[2.0,3.0)", \
  *
+
+Export-Package: \
+ com.ibm.tx.jta.cdi,\
+ com.ibm.tx.jta.cdi.interceptors;thread-context=true;mandatory:="thread-context"
 
 Private-Package: \
  io.openliberty.transaction.internal.cdi20
