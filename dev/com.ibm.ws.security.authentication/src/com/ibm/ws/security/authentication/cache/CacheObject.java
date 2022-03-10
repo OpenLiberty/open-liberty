@@ -53,10 +53,10 @@ public class CacheObject implements Serializable {
      * (using the synchronized block) when iterating over it . Failure to follow this
      * advice may result in non-deterministic behavior.
      *
-     * @return the unmodifiable list of lookup keys in the cache object
+     * @return the list of lookup keys in the cache object
      */
     public List<Object> getLookupKeys() {
-        return Collections.unmodifiableList(lookupKeys);
+        return lookupKeys;
     }
 
     public Subject getSubject() {
