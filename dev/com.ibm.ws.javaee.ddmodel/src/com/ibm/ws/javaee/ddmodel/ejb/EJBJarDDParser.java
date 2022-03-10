@@ -65,25 +65,4 @@ public class EJBJarDDParser extends DDParserSpec {
     protected EJBJarType createRootElement() {
         return new EJBJarType( getDeploymentDescriptorPath() );
     }
-    
-    /**
-     * Subclass API: Adjust the EE platform version for EE 10.
-     *
-     * When the maximum version is specified to "5.0" / 50,
-     * and the platform version is obtained as "9.0" / 90,
-     * change the platform version to "10.0" / 100.
-     *
-     * @param maxVersion The specified maximum schema version.
-     * @param platformVersion The selected platform version.
-     *
-     * @return The adjusted EE platform version.
-     */
-    public int selectPlatform(int maxVersion, int platformVersion) {
-        if ( (maxVersion == EJBJar.VERSION_5_0) &&
-             (platformVersion == VERSION_9_0_INT) ) {
-            return VERSION_10_0_INT;
-        } else {
-            return platformVersion;
-        }
-    }    
 }

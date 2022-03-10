@@ -28,11 +28,9 @@ public interface EJBJar extends ModuleDeploymentDescriptor, DeploymentDescriptor
     int VERSION_3_1 = 31;
     int VERSION_3_2 = 32;
     int VERSION_4_0 = 40; // Jakarta EE 9
-    
-    // Not an actual schema version.  This is used to enable
-    // parsing of the Jakarta EE 10 elements in 4.0 descriptor.
 
-    int VERSION_5_0 = 50; // Jakarta EE 10    
+    // EJB was not updated for EE 10. See issue 20386.
+    // int VERSION_5_0 = 50; // Jakarta EE 10
 
     int MAX_VERSION = 40;
     
