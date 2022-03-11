@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,6 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 
-/**
- * A simple pool for SRTConnectionContext31 objects.
- */
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=60", "servlet.version=6.0" })
 public class SRTConnectionContextPool60Impl implements SRTConnectionContextPool {
     private final ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext> head = new ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext>();
