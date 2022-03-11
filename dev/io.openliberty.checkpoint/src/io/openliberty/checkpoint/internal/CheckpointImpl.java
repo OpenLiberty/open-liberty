@@ -15,8 +15,11 @@ import java.lang.instrument.ClassFileTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,6 +38,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
@@ -83,6 +87,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
     private final ServiceRegistration<ClassFileTransformer> transformerReg;
 
+    private final AtomicBoolean jvmRestore = new AtomicBoolean(false);
+    private final AtomicReference<CountDownLatch> waitForConfig = new AtomicReference<>();
     private final ExecuteCRIU criu;
 
     private static volatile CheckpointImpl INSTANCE = null;
@@ -145,6 +151,23 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
                 @Override
                 public void failedCompletion(Future<Boolean> future, Throwable t) {
+                }
+            });
+        } else if (jvmRestore.compareAndSet(true, false) && RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+            debug(tc, () -> "Processing config on restore.");
+            final CountDownLatch localLatch = new CountDownLatch(1);
+            waitForConfig.set(localLatch);
+            notification.onCompletion(new CompletionListener<Boolean>() {
+                @Override
+                public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                    debug(tc, () -> "Config has been successfully processed on restore.");
+                    localLatch.countDown();
+                }
+
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                    debug(tc, () -> "Failed to process config on restore");
+                    localLatch.countDown();
                 }
             });
         }
@@ -231,9 +254,23 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         restore(multiThreadRestoreHooks);
 
+        waitForConfig();
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
+    }
+
+    private void waitForConfig() {
+        CountDownLatch l = waitForConfig.getAndSet(null);
+        if (l != null) {
+            debug(tc, () -> "Waiting for config to be processed on restore.");
+            try {
+                l.await(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            debug(tc, () -> "Config to is done being processed on restore.");
+        }
     }
 
     /**
@@ -304,6 +341,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
+        // The first thing is to set the jvmRestore flag
+        jvmRestore.set(true);
         callHooks("restore",
                   checkpointHooks,
                   CheckpointHook::restore,
@@ -330,6 +369,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
+    @Trivial
     static void debug(TraceComponent trace, Supplier<String> message) {
         if (TraceComponent.isAnyTracingEnabled() && trace.isDebugEnabled()) {
             Tr.debug(trace, message.get());

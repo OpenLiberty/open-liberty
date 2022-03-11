@@ -9,7 +9,7 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "criu", messageBundle = "io.openliberty.checkpoint.resources.CheckpointMessages")
+@TraceOptions(traceGroup = "checkpoint", messageBundle = "io.openliberty.checkpoint.resources.CheckpointMessages")
 package io.openliberty.checkpoint.internal.criu;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
