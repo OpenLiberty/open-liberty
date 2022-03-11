@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -36,7 +36,8 @@
 		id="DefaultSSLSettings"
 		keyStoreRef="myKeyStore"
 		trustStoreRef="myTrustStore"
-		clientAuthentication="true" />
+		clientAuthentication="true"
+		sslProtocol="TLSv1.2" /> <!-- we need the server to pass the "hint" back to the client for the test using this config TLSv1.3 no longer sends the hint -->
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
@@ -46,7 +47,7 @@
 		id="myTrustStore"
 		password="Liberty"
 		type="jks"
-		location="${server.config.dir}/commonTrustStore.jks.jks" />
+		location="${server.config.dir}/commonTrustStore.jks" />
 
 	<authorization-roles id="com.ibm.ws.security.oidc10">
 		<security-role name="authenticated">
