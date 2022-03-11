@@ -165,7 +165,7 @@ public class AppTestBase extends DDTestBase {
             "<module>\n" +
                 "<ejb>EJBTestNoBnd.jar</ejb>\n" +
             "</module>\n";    
-    
+
     protected static String appTail =
         "</application>";
 
