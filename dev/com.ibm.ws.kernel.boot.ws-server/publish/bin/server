@@ -1228,7 +1228,7 @@ backupWorkarea()
   fi
 
   # copy the workarea to the checkpoint folder so it can be restored later
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
   rc=$?
   if [ $rc -ne 0 ]; then
     return 3
@@ -1260,7 +1260,7 @@ restoreWorkarea()
   fi
   rm -rf "${SERVER_OUTPUT_DIR}/workarea"
   # copy backup to workarea
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
   rc=$?
   # mv checkpoint directory back
   mkdirs "${SERVER_OUTPUT_DIR}/workarea/"
