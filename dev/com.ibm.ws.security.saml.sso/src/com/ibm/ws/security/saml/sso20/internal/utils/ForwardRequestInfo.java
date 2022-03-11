@@ -121,6 +121,13 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                                          cookieName,
                                          cookieValue);
             }
+            //@AV999-092821 TODO: save this in another form also
+            if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_END_SESSION_REDIRECT attribute");
+                }
+                req.removeAttribute("OIDC_END_SESSION_REDIRECT");
+            }
 
             // HTTP 1.1.
             resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");

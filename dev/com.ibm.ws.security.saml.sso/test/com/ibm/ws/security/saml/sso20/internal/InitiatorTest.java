@@ -283,6 +283,8 @@ public class InitiatorTest {
             {
                 allowing(request).getAttribute("FormLogoutExitPage");
                 will(returnValue(null));
+                allowing(request).getAttribute("OIDC_END_SESSION_REDIRECT");
+                will(returnValue(null));
                 allowing(request).setAttribute("SpSLOInProgress", "true"); // why no work?
                 one(ssoConfig).getLoginPageURL();
                 will(returnValue(null));
