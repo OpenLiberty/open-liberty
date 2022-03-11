@@ -554,16 +554,16 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
         String authorizationEndpoint = config.getAuthorizationEndpointUrl();
         String jwksUri = config.getJwkEndpointUrl();
         if (clientId == null || clientId.length() == 0) {
-            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientId, clientId }); //CWWKS5500E
+            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientId, clientId });
             valid = false;
         }
         if (clientSecret == null || clientSecret.length() == 0) {
-            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientSecret, "" }); //CWWKS5500E
+            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientSecret, "" });
             valid = false;
         }
         if (authorizationEndpoint == null || authorizationEndpoint.length() == 0
                 || (!authorizationEndpoint.toLowerCase().startsWith("http"))) {
-            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_authorizationEndpoint, authorizationEndpoint }); //CWWKS5500E
+            Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_authorizationEndpoint, authorizationEndpoint });
             valid = false;
         }
 
@@ -571,7 +571,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
         /*
          * if (jwksUri == null || jwksUri.length() == 0
          * || (!jwksUri.toLowerCase().startsWith("http"))) {
-         * Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_jwksUri, jwksUri }); //CWWKS5500E
+         * Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_jwksUri, jwksUri });
          *
          * }
          */

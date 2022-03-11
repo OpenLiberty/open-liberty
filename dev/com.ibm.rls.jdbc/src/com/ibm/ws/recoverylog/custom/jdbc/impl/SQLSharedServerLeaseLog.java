@@ -132,6 +132,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
 
+        // if the server is stopping, we should simply return
+        if (_serverStopping) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "getLeasesForPeers", "server stopping");
+            return;
+        }
+
         // The Database Connection
         Connection conn = null;
 
@@ -185,6 +192,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     // Trace the exception
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Tidy up Failed, after lease retrieval failure, got exception: " + exc);
+                }
+
+                // if the server is stopping, we should simply return without driving any retry logic
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "getLeasesForPeers", "server stopping");
+                    return;
                 }
 
                 boolean failAndReport = true;
@@ -336,7 +350,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         // if the server is stopping, we should simply return
         if (_serverStopping) {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "updateServerLease", this);
+                Tr.exit(tc, "updateServerLease", "server stopping");
             return;
         }
 
@@ -424,6 +438,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     // Trace the exception
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Tidy up Failed, after lease update failure, got exception: " + exc);
+                }
+
+                // if the server is stopping, we should simply return without driving any retry logic
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "server stopping");
+                    return;
                 }
 
                 boolean failAndReport = true;
@@ -899,6 +920,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
 
+        // if the server is stopping, we should simply return
+        if (_serverStopping) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "deleteServerLease", "server stopping");
+            return;
+        }
+
         try {
             // Get a connection to the DB
             conn = getConnection();
@@ -950,6 +978,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     // Trace the exception
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Tidy up Failed, after lease delete failure, got exception: " + exc);
+                }
+
+                // if the server is stopping, we should simply return without driving any retry logic
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "deleteServerLease", "server stopping");
+                    return;
                 }
 
                 boolean failAndReport = true;
@@ -1033,6 +1068,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
 
+        // if the server is stopping, we should simply return
+        if (_serverStopping) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "claimPeerLeaseForRecovery", "server stopping");
+            return false;
+        }
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Recovering server with recoveryIdentity - ", recoveryIdentityToRecover);
 
@@ -1064,13 +1106,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 Tr.debug(tc, "Lease claim failed with exception: " + sqlex);
             Tr.audit(tc, "WTRN0107W: " +
                          "Caught SQLException for server with recovery identity " + myRecoveryIdentity +
-                         "when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + sqlex);
+                         " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
             Tr.audit(tc, "WTRN0107W: " +
                          "Caught non-SQLException Throwable for server with recovery identity " + myRecoveryIdentity +
-                         "when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + exc);
+                         " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + exc);
             nonTransientException = exc;
         } finally {
 
@@ -1090,6 +1132,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     // Trace the exception
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Tidy up Failed, after lease claim failure, got exception: " + exc);
+                }
+
+                // if the server is stopping, we should simply return without driving any retry logic
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "claimPeerLeaseForRecovery", "server stopping");
+                    return false;
                 }
 
                 boolean failAndReport = true;
@@ -1312,17 +1361,18 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "UpdateServerLeaseRetry.retryCode", new Object[] { conn });
+
             // If we were unable to get a connection, throw an exception, but not if we're stopping
+            if (_serverStopping) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", "server stopping");
+                return;
+            }
+
             if (conn == null) {
-                if (!_serverStopping) {
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", "Null connection InternalLogException");
-                    throw new InternalLogException("Failed to get JDBC Connection", null);
-                } else {
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", "null connection");
-                    return;
-                }
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", "Null connection InternalLogException");
+                throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
             if (tc.isDebugEnabled())
@@ -1388,10 +1438,15 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "DeleteServerLeaseRetry.retryCode", new Object[] { conn });
 
-            // If we were unable to get a connection, throw an exception
+            // If we were unable to get a connection, throw an exception, but not if we're stopping
+            if (_serverStopping) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "DeleteServerLeaseRetry.retryCode", "server stopping");
+                return;
+            }
             if (conn == null) {
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "deleteServerLease", "Null connection InternalLogException");
+                    Tr.exit(tc, "DeleteServerLeaseRetry.retryCode", "Null connection InternalLogException");
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
@@ -1441,6 +1496,22 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "GetPeerLeaseRetry.retryCode", new Object[] { conn });
 
+            // If we were unable to get a connection, throw an exception, but not if we're stopping
+            if (_serverStopping) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "GetPeerLeaseRetry.retryCode", "server stopping");
+                return;
+            }
+            if (conn == null) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "GetPeerLeaseRetry.retryCode", "Null connection InternalLogException");
+                throw new InternalLogException("Failed to get JDBC Connection", null);
+            }
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Set autocommit FALSE on the connection");
+            conn.setAutoCommit(false);
+
             getPeerLeasesFromTable(_peerLeaseTable, _recoveryGroup, conn);
 
             if (tc.isEntryEnabled())
@@ -1482,6 +1553,22 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "ClaimPeerLeaseRetry.retryCode", new Object[] { conn });
+
+            // If we were unable to get a connection, throw an exception, but not if we're stopping
+            if (_serverStopping) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "ClaimPeerLeaseRetry.retryCode", "server stopping");
+                return;
+            }
+            if (conn == null) {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "ClaimPeerLeaseRetry.retryCode", "Null connection InternalLogException");
+                throw new InternalLogException("Failed to get JDBC Connection", null);
+            }
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Set autocommit FALSE on the connection");
+            conn.setAutoCommit(false);
 
             _peerClaimed = claimPeerLeaseFromTable(_recoveryIdentityToRecover, _myRecoveryIdentity, _leaseInfo, conn);
 

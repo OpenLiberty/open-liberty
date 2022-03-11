@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,10 +56,8 @@ error.enableIIOPTransport.explanation=Podpora zprost\u0159edkovatele ORB (Object
 error.enableIIOPTransport.useraction=Povolte funkci protokolu orb, aby mohla b\u00fdt zapnuta podpora ORB.
  
 error.cannotConvertEbcdicToAscii=CWWKE0007E: Syst\u00e9mu se nepoda\u0159ilo \u00fasp\u011b\u0161n\u011b p\u0159ev\u00e9st n\u00e1sleduj\u00edc\u00ed soubor z EBCDIC do ASCII: {0}
-error.cannotConvertEbcdicToAscii.explanation=P\u0159i zpracov\u00e1n\u00ed uveden\u00e9ho souboru do\u0161lo k chyb\u011b, kter\u00e1 syst\u00e9mu zabr\u00e1nila v p\u0159evodu form\u00e1tu EBCDIC do ASCII. EBCDIC verze souboru \
-z\u016fstala neporu\u0161en\u00e1.
-error.cannotConvertEbcdicToAscii.useraction=Pokud chcete soubor zobrazit v syst\u00e9mu pou\u017e\u00edvaj\u00edc\u00edm ASCII, p\u0159eve\u010fte jej ru\u010dn\u011b. Pokud bude tento soubor zpracov\u00e1n podporou IBM, nen\u00ed vy\u017eadov\u00e1na \
-\u017e\u00e1dn\u00e1 akce.
+error.cannotConvertEbcdicToAscii.explanation=P\u0159i zpracov\u00e1n\u00ed uveden\u00e9ho souboru do\u0161lo k chyb\u011b, kter\u00e1 syst\u00e9mu zabr\u00e1nila v p\u0159evodu form\u00e1tu EBCDIC do ASCII. EBCDIC verze souboru z\u016fstala neporu\u0161en\u00e1.
+error.cannotConvertEbcdicToAscii.useraction=Pokud chcete soubor zobrazit v syst\u00e9mu pou\u017e\u00edvaj\u00edc\u00edm ASCII, p\u0159eve\u010fte jej ru\u010dn\u011b. Pokud bude tento soubor zpracov\u00e1n podporou IBM, nen\u00ed vy\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
 
 error.bootPropsURI=CWWKE0008E: Identifik\u00e1tor URI vlastnost\u00ed zav\u00e1d\u011bc\u00edho programu je chybn\u00fd. Identifik\u00e1tor uri={0}, p\u0159\u00ed\u010dina={1}.
 error.bootPropsURI.explanation=V identifik\u00e1toru URI pro ur\u010den\u00fd soubor vlastnost\u00ed zav\u00e1d\u011bc\u00edho programu je chyba.
@@ -67,12 +65,8 @@ error.bootPropsURI.useraction=Opravte identifik\u00e1tor URI pro vlastnosti zav\
 
 # {0} is the path to the missing Java dump file
 error.missingDumpFile=CWWKE0009E: Syst\u00e9m nem\u016f\u017ee naj\u00edt n\u00e1sleduj\u00edc\u00ed soubor a tento soubor nebude zahrnut v archivu v\u00fdpis\u016f pam\u011bti serveru: {0}
-error.missingDumpFile.explanation=Syst\u00e9m je nakonfigurov\u00e1n, aby vy\u017eadoval vytv\u00e1\u0159en\u00ed v\u00fdpis\u016f pam\u011bti v prost\u0159ed\u00ed Java a jejich shroma\u017e\u010fov\u00e1n\u00ed v archivu v\u00fdpis\u016f serveru. Po\u017eadovan\u00fd v\u00fdpis \
-pam\u011bti prost\u0159ed\u00ed Java nelze v syst\u00e9mu soubor\u016f v uveden\u00e9m um\u00edst\u011bn\u00ed nal\u00e9zt a nebude shrom\u00e1\u017ed\u011bn v archivu v\u00fdpis\u016f pam\u011bti serveru.
-error.missingDumpFile.useraction=Zkontrolujte protokoly serveru, console.log a messages.log, p\u0159\u00edpadn\u011b oboj\u00ed a zjist\u011bte, zda jsou po\u017eadovan\u00e9 v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java dostupn\u00e9 v jin\u00e9m \
-um\u00edst\u011bn\u00ed, p\u0159\u00edpadn\u011b pro\u010d se v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java nezda\u0159ily. Pokuste se v\u0161echny chyb\u011bj\u00edc\u00ed v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java z\u00edskat a shrom\u00e1\u017edit ru\u010dn\u011b. Informace pro ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010din probl\u00e9m\u016f naleznete na \
-webov\u00e9 str\u00e1nce podpory produktu WebSphere Application Server, kde jsou i informace o ru\u010dn\u00edm generov\u00e1n\u00ed soubor\u016f javacore: \
-http://www.ibm.com/software/webservers/appserv/was/support
+error.missingDumpFile.explanation=Syst\u00e9m je nakonfigurov\u00e1n, aby vy\u017eadoval vytv\u00e1\u0159en\u00ed v\u00fdpis\u016f pam\u011bti v prost\u0159ed\u00ed Java a jejich shroma\u017e\u010fov\u00e1n\u00ed v archivu v\u00fdpis\u016f serveru. Po\u017eadovan\u00fd v\u00fdpis pam\u011bti prost\u0159ed\u00ed Java nelze v syst\u00e9mu soubor\u016f v uveden\u00e9m um\u00edst\u011bn\u00ed nal\u00e9zt a nebude shrom\u00e1\u017ed\u011bn v archivu v\u00fdpis\u016f pam\u011bti serveru.
+error.missingDumpFile.useraction=Zkontrolujte protokoly serveru, console.log a messages.log, p\u0159\u00edpadn\u011b oboj\u00ed a zjist\u011bte, zda jsou po\u017eadovan\u00e9 v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java dostupn\u00e9 v jin\u00e9m um\u00edst\u011bn\u00ed, p\u0159\u00edpadn\u011b pro\u010d se v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java nezda\u0159ily. Pokuste se v\u0161echny chyb\u011bj\u00edc\u00ed v\u00fdpisy pam\u011bti prost\u0159ed\u00ed Java z\u00edskat a shrom\u00e1\u017edit ru\u010dn\u011b. Informace pro ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010din probl\u00e9m\u016f naleznete na webov\u00e9 str\u00e1nce podpory produktu WebSphere Application Server, kde jsou i informace o ru\u010dn\u00edm generov\u00e1n\u00ed soubor\u016f javacore: http://www.ibm.com/software/webservers/appserv/was/support
 
 error.badConfigRoot=CWWKE0010E: Po\u017eadovan\u00fd soubor server.xml mus\u00ed existovat a b\u00fdt \u010diteln\u00fd. Cesta: {0} P\u0159\u00ed\u010dina: {1}
 error.badConfigRoot.explanation=Soubor server.xml nelze \u010d\u00edst nebo neexistuje.
@@ -82,10 +76,7 @@ error.archiveTarget=CWWKE0011E: Parametr --archive vy\u017eaduje argument: --arc
 error.archiveTarget.explanation=Nebyl zad\u00e1n po\u017eadovan\u00fd argument.
 error.archiveTarget.useraction=Zadejte spr\u00e1vn\u00fd argument a p\u0159\u00edkaz zopakujte. Zkuste pou\u017e\u00edt p\u0159\u00edkaz --help pro popis argument\u016f zad\u00e1van\u00fdch voleb.
 
-error.serverNameCharacter=CWWKE0012E: Zadan\u00fd n\u00e1zev serveru obsahuje neplatn\u00fd znak (name={0}). \
-Platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. \
-0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.). \
-N\u00e1zev serveru nesm\u00ed za\u010d\u00ednat poml\u010dkou (-) ani te\u010dkou (.).
+error.serverNameCharacter=CWWKE0012E: Zadan\u00fd n\u00e1zev serveru obsahuje neplatn\u00fd znak (name={0}). Platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.). N\u00e1zev serveru nesm\u00ed za\u010d\u00ednat poml\u010dkou (-) ani te\u010dkou (.).
 error.serverNameCharacter.explanation=V n\u00e1zvu serveru byl pou\u017eit neplatn\u00fd znak.
 error.serverNameCharacter.useraction=K p\u0159ejmenov\u00e1n\u00ed serveru pou\u017eijte pouze platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.).
 
@@ -131,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: Zadan\u00e1 definice j\u00e1dra ({0}) neexistuje
 error.kernelDefFile.explanation=Zadanou definici j\u00e1dra nelze naj\u00edt.
 error.kernelDefFile.useraction=Zkontrolujte, zda existuje prost\u0159edek definice j\u00e1dra a m\u016f\u017ee jej p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel.
 
-error.specifiedLocation=CWWKE0025E: Hodnota {0} mus\u00ed odkazovat na adres\u00e1\u0159. \
-Zadan\u00e1 hodnota odkazuje na existuj\u00edc\u00ed prost\u0159edek souboru. \
-Hodnota: {1}
+error.specifiedLocation=CWWKE0025E: Hodnota {0} mus\u00ed odkazovat na adres\u00e1\u0159. Zadan\u00e1 hodnota odkazuje na existuj\u00edc\u00ed prost\u0159edek souboru. Hodnota: {1}
 error.specifiedLocation.explanation=Zadan\u00e9 um\u00edst\u011bn\u00ed odkazuje m\u00edsto adres\u00e1\u0159e na existuj\u00edc\u00ed soubor.
 error.specifiedLocation.useraction=Zm\u011b\u0148te zadan\u00e9 um\u00edst\u011bn\u00ed na adres\u00e1\u0159 a potom akci zopakujte.
 
@@ -475,10 +464,7 @@ info.addProductExtension.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: Uveden\u00fd n\u00e1zev klienta obsahuje neplatn\u00fd znak (name={0}). \
-Platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. \
-0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.). \
-N\u00e1zev klienta nesm\u00ed za\u010d\u00ednat poml\u010dkou (-) nebo te\u010dkou (.).
+error.clientNameCharacter=CWWKE0900E: Uveden\u00fd n\u00e1zev klienta obsahuje neplatn\u00fd znak (name={0}). Platn\u00e9 znaky: alfanumerick\u00e9 Unicode (nap\u0159. 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.). N\u00e1zev klienta nesm\u00ed za\u010d\u00ednat poml\u010dkou (-) nebo te\u010dkou (.).
 error.clientNameCharacter.explanation=V n\u00e1zvu klienta byl pou\u017eit neplatn\u00fd znak.
 error.clientNameCharacter.useraction=K p\u0159ejmenov\u00e1n\u00ed klienta pou\u017e\u00edvejte pouze platn\u00e9 znaky: alfanumerick\u00e9 znaky Unicode (nap\u0159. 0-9, a-z, A-Z), podtr\u017e\u00edtko (_), poml\u010dka (-), plus (+) a te\u010dka (.).
 
@@ -529,14 +515,12 @@ info.java2security.started.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Selh\u00e1n\u00ed nastaven\u00ed v\u00fdchoz\u00edho spr\u00e1vce zabezpe\u010den\u00ed kv\u016fli v\u00fdjimce: {0}. K tomu doch\u00e1z\u00ed, pokud ji\u017e byl spr\u00e1vce zabezpe\u010den\u00ed nastaven a jeho metoda checkPermission nepovoluje nahrazen\u00ed.
 error.set.securitymanager.explanation=Zabezpe\u010den\u00ed Java 2 je povoleno, ale do\u0161lo k selh\u00e1n\u00ed nastaven\u00ed v\u00fdchoz\u00edho spr\u00e1vce zabezpe\u010den\u00ed.
-error.set.securitymanager.useraction=Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. \
-Pokud ji\u017e nastaven byl, odeberte volbu -Djava.security.manager a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties. 
+error.set.securitymanager.useraction=Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. Pokud ji\u017e nastaven byl, odeberte volbu -Djava.security.manager a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: Selh\u00e1n\u00ed nastaven\u00ed spr\u00e1vce Security Manager NoRethrow kv\u016fli v\u00fdjimce: {0}  K tomu doch\u00e1z\u00ed, pokud ji\u017e byl spr\u00e1vce zabezpe\u010den\u00ed nastaven a jeho metoda checkPermission nepovoluje nahrazen\u00ed.
 error.set.trace.securitymanager.explanation=Zabezpe\u010den\u00ed Java 2 je povoleno, ale do\u0161lo k selh\u00e1n\u00ed nastaven\u00ed spr\u00e1vce Security Manager NoRethrow.
-error.set.trace.securitymanager.useraction=Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. \
-Pokud ji\u017e nastaven byl, odeberte volbu -Djava.security.manager a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties. 
+error.set.trace.securitymanager.useraction=Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. Pokud ji\u017e nastaven byl, odeberte volbu -Djava.security.manager a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: Aktu\u00e1ln\u00ed z\u00e1sada zabezpe\u010den\u00ed Java 2 ohl\u00e1sila potenci\u00e1ln\u00ed naru\u0161en\u00ed opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2. {0} Opr\u00e1vn\u011bn\u00ed: {1} K\u00f3d: {2} {3} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku: {4} Um\u00edst\u011bn\u00ed z\u00e1kladu k\u00f3du: {5}
 warning.java.security.permdenied.explanation=Metoda checkPermission() spr\u00e1vce zabezpe\u010den\u00ed Java vyvolala v\u00fdjimku SecurityException u opr\u00e1vn\u011bn\u00ed k subjektu.
@@ -544,9 +528,7 @@ warning.java.security.permdenied.useraction=Ov\u011b\u0159te, zda je operace, o 
 
 error.java.security.exception.codebase=CWWKE0913E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce p\u0159i pokusu o ur\u010den\u00ed um\u00edst\u011bn\u00ed z\u00e1kladu k\u00f3du. V\u00fdjimka: {0}. 
 error.java.security.exception.codebase.explanation=P\u0159i ur\u010dov\u00e1n\u00ed z\u00e1kladn\u00edho um\u00edst\u011bn\u00ed k\u00f3du do\u0161lo k selh\u00e1n\u00ed, co\u017e zp\u016fsobilo v\u00fdjimku \u0159\u00edzen\u00ed p\u0159\u00edstupu opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2.
-error.java.security.exception.codebase.useraction=Podrobnosti naleznete v protokolu v\u00fdjimky a protokolu serveru. \
-\  Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager a volbou -Djava.security.policy zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. \
-Pokud ji\u017e n\u011bco z toho nastaveno bylo, odeberte toto nastaven\u00ed a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties.
+error.java.security.exception.codebase.useraction=Podrobnosti naleznete v protokolu v\u00fdjimky a protokolu serveru.   Spu\u0161t\u011bn\u00edm serveru s volbou -Djava.security.manager a volbou -Djava.security.policy zkontrolujte, zda ji\u017e nebyl nastaven spr\u00e1vce zabezpe\u010den\u00ed. Pokud ji\u017e n\u011bco z toho nastaveno bylo, odeberte toto nastaven\u00ed a restartujte server se zapnut\u00fdm zabezpe\u010den\u00edm Java 2 a vlastnost\u00ed websphere.java.security v souboru bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: Aktu\u00e1ln\u00ed z\u00e1sada zabezpe\u010den\u00ed Java 2 ohl\u00e1sila potenci\u00e1ln\u00ed naru\u0161en\u00ed opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2. Dal\u0161\u00ed informace naleznete v Centru znalost\u00ed. {0} Opr\u00e1vn\u011bn\u00ed: {1} K\u00f3d: {2} Um\u00edst\u011bn\u00ed z\u00e1kladu k\u00f3du: {3}
 warning.zOS.java.security.permdenied1.explanation=Metoda checkPermission() spr\u00e1vce zabezpe\u010den\u00ed Java vyvolala v\u00fdjimku SecurityException u opr\u00e1vn\u011bn\u00ed k subjektu. Volaj\u00edc\u00ed z\u00e1sobn\u00edku vol\u00e1n\u00ed nem\u00e1 po\u017eadovan\u00e1 opr\u00e1vn\u011bn\u00ed. Pokud volaj\u00edc\u00ed tuto v\u00fdjimku spr\u00e1vn\u011b zpracuje, pravd\u011bpodobn\u011b nedojde k \u017e\u00e1dn\u00fdm pot\u00ed\u017e\u00edm.
@@ -568,7 +550,7 @@ error.client.runner.useraction=Podrobnosti o chyb\u011b aplikace klienta viz chy
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  Nelze prov\u00e9st po\u017eadovanou operaci. Podrobnosti naleznete v protokolech na serveru profilu Liberty {0} na hostiteli {1} v um\u00edst\u011bn\u00ed {2} pro po\u017eadavek {3}.
+error.mbean.operation.failure=CWWKE0918E: \ Nelze prov\u00e9st po\u017eadovanou operaci. Podrobnosti naleznete v protokolech na serveru profilu Liberty {0} na hostiteli {1} v um\u00edst\u011bn\u00ed {2} pro po\u017eadavek {3}.
 error.mbean.operation.failure.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o proveden\u00ed po\u017eadovan\u00e9 operace.
 error.mbean.operation.failure.useraction=Podrobnosti o chyb\u011b operace naleznete v protokolech serveru.
 
@@ -585,8 +567,7 @@ warning.java.security.permdenied.quickmsg.explanation=Metoda checkPermission() s
 warning.java.security.permdenied.quickmsg.useraction=Ov\u011b\u0159te, zda je operace, o jej\u00ed\u017e proveden\u00ed se pokou\u0161\u00edte, povolena, a podle pot\u0159eby aktualizujte soubor z\u00e1sad opr\u00e1vn\u011bn\u00ed pro bal\u00edk nebo aplikaci.
 
 error.package.missingLibExtractDir=CWWKE0922E: P\u0159\u00edkaz package nelze dokon\u010dit, proto\u017ee v adres\u00e1\u0159i lib/extract chyb\u00ed instalace.
-error.package.missingLibExtractDir.explanation=Adres\u00e1\u0159 lib/extract obsahuje metadata a samorozbalovac\u00ed skupiny nezbytn\u00e9 pro dokon\u010den\u00ed p\u0159\u00edkazu package. Pokud tento adres\u00e1\u0159 chyb\u00ed, m\u016f\u017ee to \
-znamenat, \u017ee byla instalace profilu WebSphere Liberty ne\u00fapln\u00e1 nebo byl tento adres\u00e1\u0159 odstran\u011bn.
+error.package.missingLibExtractDir.explanation=Adres\u00e1\u0159 lib/extract obsahuje metadata a samorozbalovac\u00ed skupiny nezbytn\u00e9 pro dokon\u010den\u00ed p\u0159\u00edkazu package. Pokud tento adres\u00e1\u0159 chyb\u00ed, m\u016f\u017ee to znamenat, \u017ee byla instalace profilu WebSphere Liberty ne\u00fapln\u00e1 nebo byl tento adres\u00e1\u0159 odstran\u011bn.
 error.package.missingLibExtractDir.useraction=Znovu nainstalujte profil WebSphere Liberty a ujist\u011bte se, \u017ee v adres\u00e1\u0159i WLP_HOME existuje adres\u00e1\u0159 lib/extract.
 
 
@@ -713,6 +694,10 @@ warning.earlyRelease=CWWKE0953W: Tato verze {0} je nepodporovanou p\u0159ednostn
 warning.earlyRelease.explanation=V p\u0159ednostn\u00edch vyd\u00e1n\u00edch jsou k dispozici nov\u00e9 funkce, kter\u00e9 nejsou pln\u011b testov\u00e1ny, aby se z\u00edskala zp\u011btn\u00e1 vazba p\u0159ed t\u00edm, ne\u017e jsou zahrnuty do podporovan\u00e9ho vyd\u00e1n\u00ed.
 warning.earlyRelease.useraction=P\u0159ednostn\u011b vyd\u00e1van\u00e9 verze nepou\u017e\u00edvejte v produk\u010dn\u00edch syst\u00e9mech, proto\u017ee pro takov\u00e9 verze nen\u00ed poskytov\u00e1na podpora.
 
+error.invalidPhaseName=CWWKE0954E: Zadan\u00e1 f\u00e1ze kontroln\u00edho bodu "{0}" je pr\u00e1zdn\u00e1 nebo nezn\u00e1m\u00e1.
+error.invalidPhaseName.explanation=Jako hodnota volby kontroln\u00edho bodu byla ur\u010dena nezn\u00e1m\u00e1 f\u00e1ze.
+error.invalidPhaseName.useraction=Prohl\u00e9dn\u011bte si dokumentaci a ur\u010dete platn\u00e9 n\u00e1zvy f\u00e1z\u00ed. Zadejte p\u0159\u00edkaz znovu s pou\u017eit\u00edm platn\u00e9 f\u00e1ze kontroln\u00edho bodu.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.
@@ -735,47 +720,36 @@ info.clientPackageComplete=Bal\u00edk klienta {0} je dokon\u010den v {1}.
 info.serverDumping=V\u00fdpis pam\u011bti serveru {0}.
 info.serverDumpComplete=V\u00fdpis pam\u011bti serveru {0} je dokon\u010den v {1}.
 info.serverDumpCompleteZos=\u017d\u00e1dost syst\u00e9mov\u00e9ho v\u00fdpisu pam\u011bti transakc\u00ed serveru {0} (SYSTDUMP) je dokon\u010dena.
-info.serverStartException=Spu\u0161t\u011bn\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.serverStartException=Spu\u0161t\u011bn\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.serverStartUnreachable=Stav serveru {0} nelze ur\u010dit. Odeberte soubor {1}, pokud nen\u00ed ID procesu {2} procesem serveru.
-info.serverStatusException=Stav serveru {0} nelze ur\u010dit. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
-info.serverStopException=Zastaven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
-info.serverPackageException=V bal\u00edku serveru {0} do\u0161lo k selh\u00e1n\u00ed. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.serverStatusException=Stav serveru {0} nelze ur\u010dit. Podrobn\u00e9 informace naleznete v protokolech serveru.
+info.serverStopException=Zastaven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
+info.serverPackageException=V bal\u00edku serveru {0} do\u0161lo k selh\u00e1n\u00ed. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.serverPackageUnreachable=V bal\u00edku serveru {0} do\u0161lo k selh\u00e1n\u00ed. Mus\u00ed b\u00fdt p\u0159ed zabalen\u00edm zastaven.
 info.clientPackageException=V bal\u00edku klienta {0} do\u0161lo k nezdaru. Podrobn\u00e9 informace naleznete v protokolech klienta.
 info.clientPackageUnreachable=V bal\u00edku klienta {0} do\u0161lo k nezdaru. P\u0159ed zabalen\u00edm klienta jej mus\u00edte zastavit.
 info.serverDumpOptionUnsupported=Server {0} nepodporuje v\u00fdpis pam\u011bti prost\u0159ed\u00ed Java typu {1}.
-info.serverDumpException=Ve v\u00fdpisu pam\u011bti serveru {0} do\u0161lo k selh\u00e1n\u00ed. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.serverDumpException=Ve v\u00fdpisu pam\u011bti serveru {0} do\u0161lo k selh\u00e1n\u00ed. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.unableZipFile=Nelze archivovat soubor {0}. P\u0159\u00ed\u010dina: {1}.
 info.LibInventoryGenerationException=Nelze generovat invent\u00e1\u0159 knihovny b\u011bhem v\u00fdpisu pam\u011bti serveru {0}.
-info.defaultServer=Nebyl \
-zad\u00e1n server. Bude pou\u017eit v\u00fdchoz\u00ed: {0}.
+info.defaultServer=Nebyl zad\u00e1n server. Bude pou\u017eit v\u00fdchoz\u00ed: {0}.
 info.defaultClient=Nebyl zad\u00e1n klient. Bude pou\u017eit v\u00fdchoz\u00ed: {0}.
 info.runtimePackaging=Balen\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed Liberty.
 info.runtimePackageComplete=Bal\u00edk b\u011bhov\u00e9ho prost\u0159ed\u00ed dokon\u010den v {0}.
-info.runtimePackageException=Bal\u00edk b\u011bhov\u00e9ho prost\u0159ed\u00ed se nezda\u0159il. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.runtimePackageException=Bal\u00edk b\u011bhov\u00e9ho prost\u0159ed\u00ed se nezda\u0159il. Podrobn\u00e9 informace naleznete v protokolech serveru.
 
 info.pausingListeners=Pozastaven\u00ed serveru {0}.
 info.pausedListeners=Pozastaven\u00ed serveru {0} dokon\u010deno.
-info.pauseFailedException=Pozastaven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.pauseFailedException=Pozastaven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.pausingListeners.target=Pozastaven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0}.
 info.pausedListeners.target=Pozastaven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} bylo dokon\u010deno.
-info.pauseFailedException.target=Pozastaven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.pauseFailedException.target=Pozastaven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.resumingListeners=Obnoven\u00ed serveru {0}.
 info.resumedListeners=Obnoven\u00ed serveru {0} dokon\u010deno.
-info.resumeFailedException=Obnoven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.resumeFailedException=Obnoven\u00ed serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.resumingListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0}.
 info.resumedListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} bylo dokon\u010deno.
-info.resumeFailedException.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
-protokolech serveru.
+info.resumeFailedException.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v protokolech serveru.
 info.serverCommandAuthFailure=P\u0159\u00edkaz {0} se nezda\u0159il, proto\u017ee proces nem\u016f\u017ee odstranit soubor {1}.
 info.serverCommandCommFailure=P\u0159\u00edkaz {0} se nezda\u0159il kv\u016fli chyb\u011b komunikace se serverem.
 

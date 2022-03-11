@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,17 +22,11 @@ TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Es ist eine Konfigur
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Jedes TokenService-Implementierungsbundle gibt den unterst\u00fctzten Typ an.
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Geben Sie einen unterst\u00fctzten Typ an, oder installieren Sie das Bundle, das die TokenService-Instanz des angeforderten Typs bereitstellt.
 
-TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Das Sicherheitstoken konnte nicht validiert werden. Dies kann die folgenden Gr\u00fcnde haben: \n\
-1. Das Sicherheitstoken wurde in einem anderen Server mit unterschiedlichen Schl\u00fcsseln generiert. \n\
-2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, die das Token erstellt haben, wurden ge\u00e4ndert. \n\
-3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Das Sicherheitstoken konnte nicht validiert werden. Dies kann die folgenden Gr\u00fcnde haben: \n1. Das Sicherheitstoken wurde in einem anderen Server mit unterschiedlichen Schl\u00fcsseln generiert. \n2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, die das Token erstellt haben, wurden ge\u00e4ndert. \n3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
 TOKEN_SERVICE_INVALID_TOKEN.explanation=Das Token konnte von den momentan konfigurierten Token-Services nicht erneut erstellt werden.
 TOKEN_SERVICE_INVALID_TOKEN.useraction=Vergewissern Sie sich, dass mindestens ein Feature einen Token-Service enth\u00e4lt, der ordnungsgem\u00e4\u00df konfiguriert ist, damit das Token erneut erstellt werden kann.
 
-TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Das Sicherheitstoken kann nicht validiert werden. Die folgenden Ursachen sind m\u00f6glich:\n\
-1. Das Sicherheitstoken wurde auf einem anderen Server generiert, der andere Schl\u00fcssel verwendet.\n\
-2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, der das Token erstellt hat, wurden ge\u00e4ndert.\n\
-3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Das Sicherheitstoken kann nicht validiert werden. Die folgenden Ursachen sind m\u00f6glich:\n1. Das Sicherheitstoken wurde auf einem anderen Server generiert, der andere Schl\u00fcssel verwendet.\n2. Die Tokenkonfiguration oder die Sicherheitsschl\u00fcssel des Token-Service, der das Token erstellt hat, wurden ge\u00e4ndert.\n3. Der Token-Service, der das Token erstellt hat, ist nicht mehr verf\u00fcgbar.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Das Token kann mit den momentan konfigurierten Token-Services nicht erneut erstellt werden.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Vergewisssern Sie sich, dass mindestens ein Feature einen Token-Service enth\u00e4lt, der ordnungsgem\u00e4\u00df konfiguriert ist, um das Token erneut erstellen zu k\u00f6nnen.
 
@@ -43,3 +37,11 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass Sie IBM JavaSE 1
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Der OSGi-Service f\u00fcr beschr\u00e4nkte Delegierung, {0}, ist nicht verf\u00fcgbar.
 KRB_OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
 KRB_OSGI_SERVICE_ERROR.useraction=Stellen Sie sicher, dass das Feature f\u00fcr die beschr\u00e4nkte Delegierung aktiviert ist und dass IBM JavaSE 1.8 als Java Runtime Environment verwendet wird. Suchen Sie in den Serverprotokollen nach weiteren Informationen.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: Der Bundlekontext f\u00fcr das Bundle {0} konnte nicht abgerufen werden. Das Bundle wird m\u00f6glicherweise noch geladen. Versuchen Sie es zu einem sp\u00e4teren Zeitpunkt erneut.
+BUNDLE_CONTEXT_MISSING.explanation=Der angegebene OSGi-Bundlekontext ist nicht verf\u00fcgbar.
+BUNDLE_CONTEXT_MISSING.useraction=Das Bundle wird m\u00f6glicherweise noch geladen. Versuchen Sie es zu einem sp\u00e4teren Zeitpunkt erneut.
+
+OSGI_INVALID_FILTER=CWWKS4005E: W\u00e4hrend des Abrufens des Tokenservice mithilfe des Servicefilters {0} ist ein Syntaxfehler aufgetreten: {1}
+OSGI_INVALID_FILTER.explanation=Beim Abrufen des Tokenservice mit dem angegebenen Servicefilter ist eine Ausnahmebedingung aufgetreten.
+OSGI_INVALID_FILTER.useraction=Der Servicefilter wird aus dem SSO-Tokentyp generiert, der im serialisierten Token gespeichert ist. Stellen Sie sicher, dass der f\u00fcr alle Server konfigurierte SSO-Tokentyp nicht dazu f\u00fchrt, dass der OSGi-Servicefilter ung\u00fcltig ist. 

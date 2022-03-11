@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -98,7 +99,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<String> additionalBeanDefiningAnnotations = new HashSet<String>();
 
     private final Set<String> extensionClassNames = new HashSet<String>();
-    private final Set<String> spiExtensionClassNames = new HashSet<String>();
+    private final Set<Supplier<Object>> spiExtensionSuppliers = new HashSet<>();
 
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
@@ -669,7 +670,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     // that we load Liberty's XML parser rather than any parser defined
                     // in the application.
                     setContextClassLoader(BeanDeploymentArchiveImpl.class.getClassLoader());
-                    beansXml = getCDIRuntime().getBeanParser().parse(getCDIDeployment(), beansXmlUrl);
+                    beansXml = getCDIRuntime().getBeansXmlParser().parse(getCDIDeployment(), beansXmlUrl);
                 } finally {
                     setContextClassLoader(origTCCL);
                 }
@@ -1057,14 +1058,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     }
 
     @Override
-    public Set<String> getSPIExtensionClassNames() {
-        return spiExtensionClassNames;
+    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+        return spiExtensionSuppliers;
     }
 
     @Override
-    public void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames) {
-        this.spiExtensionClassNames.clear();
-        this.spiExtensionClassNames.addAll(spiExtensionsClassNames);
+    public void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers) {
+        this.spiExtensionSuppliers.clear();
+        this.spiExtensionSuppliers.addAll(spiExtensionSuppliers);
     }
 
     private static ClassLoader getContextClassLoader() {

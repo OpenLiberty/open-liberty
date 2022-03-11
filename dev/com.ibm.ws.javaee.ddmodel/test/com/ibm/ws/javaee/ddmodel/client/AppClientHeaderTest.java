@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,13 +94,24 @@ public class AppClientHeaderTest extends AppClientTestBase {
             "<application-client version=\"5\"/>";
 
     // 70 and 80 use jcp.javaee
-
+    
     protected static String appClient70NamespaceOnly =
             "<application-client xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
 
     protected static String appClient70VersionOnly =
             "<application-client version=\"7\"/>";
 
+    // 90 and 100 use jakarta.ee
+
+    protected static String appClient90NamespaceOnly =
+            "<application-client xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
+
+    protected static String appClient90VersionOnly =
+            "<application-client version=\"9\"/>";
+    
+    protected static String appClient100VersionOnly =
+            "<application-client version=\"10\"/>";    
+    
     //
 
     protected static String appClient50VersionMismatch =
@@ -116,7 +127,7 @@ public class AppClientHeaderTest extends AppClientTestBase {
     protected static String appClientNamespaceBad =
             "<application-client xmlns=\"http://junk\"/>";
 
-    protected static String appClientVersionBead =
+    protected static String appClientVersionBad =
             "<application-client version=\"9.9\"/>";
 
     //
@@ -240,6 +251,45 @@ public class AppClientHeaderTest extends AppClientTestBase {
         Assert.assertEquals( 80, appClient.getVersionID() );
     }
 
+    // Jakarta EE
+    
+    @Test
+    public void testAppClient90VersionOnlyAt90() throws Exception {
+        ApplicationClient appClient =
+            parse(appClient90VersionOnly, ApplicationClient.VERSION_9);
+        Assert.assertEquals( 90, appClient.getVersionID() );
+    }    
+
+    @Test
+    public void testAppClient90VersionOnlyAt100() throws Exception {
+        ApplicationClient appClient =
+            parse(appClient90VersionOnly, ApplicationClient.VERSION_10);
+        Assert.assertEquals( 90, appClient.getVersionID() );
+    }    
+
+    @Test
+    public void testAppClient90NamespaceOnlyAt90() throws Exception {
+        ApplicationClient appClient =
+            parse(appClient90NamespaceOnly, ApplicationClient.VERSION_9);
+        Assert.assertEquals( 90, appClient.getVersionID() );
+    }
+
+    @Test
+    public void testAppClient90NamespaceOnlyAt100() throws Exception {
+        ApplicationClient appClient =
+            parse(appClient90NamespaceOnly, ApplicationClient.VERSION_10);
+        Assert.assertEquals( 100, appClient.getVersionID() );
+    }
+
+    // There is no 100 namespace only test, since the same namespace is used for 90 and 100.
+
+    @Test
+    public void testAppClient100VersionOnlyAt100() throws Exception {
+        ApplicationClient appClient =
+            parse(appClient100VersionOnly, ApplicationClient.VERSION_10);
+        Assert.assertEquals( 100, appClient.getVersionID() );
+    }    
+    
     //
 
     @Test
@@ -258,7 +308,7 @@ public class AppClientHeaderTest extends AppClientTestBase {
 
     @Test
     public void testAppClientVersionBead() throws Exception {
-        parse(appClientVersionBead, ApplicationClient.VERSION_6,
+        parse(appClientVersionBad, ApplicationClient.VERSION_6,
                 UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
                 UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }

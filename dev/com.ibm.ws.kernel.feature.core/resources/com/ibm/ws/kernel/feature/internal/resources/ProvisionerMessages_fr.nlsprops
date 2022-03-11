@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -202,9 +202,7 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Retirez la fonction
 # CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Une d\u00e9finition de fonction est introuvable pour la fonction {0}.  Essayez d''ex\u00e9cuter la commande, bin/installUtility install {0},  pour installer la fonction. Vous pouvez aussi ex\u00e9cuter la commande, bin/installUtility install {1}, pour installer toutes les fonctions qui sont r\u00e9f\u00e9renc\u00e9es par cette configuration.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Le gestionnaire de fonctions n'a pas trouv\u00e9 de d\u00e9finition pour la fonction sp\u00e9cifi\u00e9e.
-UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=V\u00e9rifiez que le nom de la fonction sp\u00e9cifi\u00e9e est correct.  \
-V\u00e9rifiez \u00e9galement que la d\u00e9finition de fonction existe et qu'elle est lisible dans le r\u00e9pertoire lib/features.  \
-Si la fonction n'existe pas, essayez d'ex\u00e9cuter la commande bin/installUtility install nom_fonction pour installer la fonction ou la commande bin/installUtility install nom_serveur pour installer toutes les fonctions qui sont r\u00e9f\u00e9renc\u00e9es par cette configuration.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=V\u00e9rifiez que le nom de la fonction sp\u00e9cifi\u00e9e est correct.  V\u00e9rifiez \u00e9galement que la d\u00e9finition de fonction existe et qu'elle est lisible dans le r\u00e9pertoire lib/features.  Si la fonction n'existe pas, essayez d'ex\u00e9cuter la commande bin/installUtility install nom_fonction pour installer la fonction ou la commande bin/installUtility install nom_serveur pour installer toutes les fonctions qui sont r\u00e9f\u00e9renc\u00e9es par cette configuration.
 
 # CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: La fonction configur\u00e9e {2} de {0} est incompatible avec la fonction configur\u00e9e {3} de {1}.  La configuration inclut une combinaison incompatible de fonctions {4} qui n''est pas prise en charge.  Mettez \u00e0 jour la configuration pour utiliser des versions compatibles des fonctions configur\u00e9es qui prennent en charge les mod\u00e8les de programmation {0} ou {1}.
@@ -229,6 +227,11 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Sp\u00e9cifiez une autre version
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Les fonctions {2} et {3} ne peuvent pas \u00eatre charg\u00e9es simultan\u00e9ment. La fonction {2} de {0} est incompatible avec la fonction {3} de {1}. La configuration inclut une combinaison incompatible de fonctions {6} qui n''est pas prise en charge. Les fonctions configur\u00e9es {4} et {5} incluent une combinaison incompatible de fonctions. Votre configuration n''est pas prise en charge. Mettez \u00e0 jour la configuration pour utiliser des versions compatibles des fonctions configur\u00e9es qui prennent en charge les mod\u00e8les de programmation {0} ou {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configuration du serveur contient une combinaison incompatible de fonctions pour les mod\u00e8les de programmation indiqu\u00e9s. Ce conflit peut survenir si les deux fonctions incompatibles sont configur\u00e9es directement dans la configuration du serveur ou si elles incluent des versions diff\u00e9rentes d'une fonction qui sont incompatibles.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Essayez de sp\u00e9cifier une version compatible des fonctions configur\u00e9es \u00e0 l'origine du conflit dans le fichier server.xml. Si aucune autre version n'est disponible, les fonctions configur\u00e9es ne sont pas compatibles entre elles et ne peuvent pas \u00eatre configur\u00e9es en m\u00eame temps.
+
+#CWWKF0048E
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: La commande serveur a sp\u00e9cifi\u00e9 l'action de point de contr\u00f4le. Un point de contr\u00f4le ne peut pas \u00eatre pris car la fonction checkpoint-1.0 n'est pas configur\u00e9e dans le fichier server.xml.
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=L'action de point de contr\u00f4le du serveur requiert la configuration de la fonction checkpoint-1.0.  
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=La fonction checkpoint-1.0 doit \u00eatre configur\u00e9e pour utiliser une action de point de contr\u00f4le de serveur.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
@@ -273,8 +276,7 @@ tool.install.missing.content=CWWKF1012E: La ressource {0} n''existe pas dans l''
 tool.install.missing.content.explanation=Lors du traitement du contenu de sous-syst\u00e8me, un fichier a \u00e9t\u00e9 r\u00e9f\u00e9renc\u00e9 mais il n'a pas \u00e9t\u00e9 trouv\u00e9 dans l'archive.
 tool.install.missing.content.useraction=Prenez contact avec l'auteur du sous-syst\u00e8me pour obtenir une archive mise \u00e0 jour qui contient le contenu requis.
 tool.install.content.notfound=CWWKF1013E: Le contenu {0} dans le sous-syst\u00e8me est introuvable dans l''archive de sous-syst\u00e8me.
-tool.install.content.notfound.explanation=Lors du traitement du contenu de \
-sous-syst\u00e8me, certains bundles requis n'ont pas \u00e9t\u00e9 trouv\u00e9s dans l'archive de sous-syst\u00e8me.
+tool.install.content.notfound.explanation=Lors du traitement du contenu de sous-syst\u00e8me, certains bundles requis n'ont pas \u00e9t\u00e9 trouv\u00e9s dans l'archive de sous-syst\u00e8me.
 tool.install.content.notfound.useraction=Prenez contact avec l'auteur du sous-syst\u00e8me pour obtenir une archive mise \u00e0 jour qui contient le contenu requis.
 tool.install.bad.zip=CWWKF1014E: Une erreur s''est produite lors de la lecture du fichier archive {0}, exception {1}
 tool.install.bad.zip.explanation=Il n'a pas \u00e9t\u00e9 possible de lire l'archive de sous-syst\u00e8me.
@@ -284,9 +286,7 @@ tool.install.file.exists.explanation=L'installation de l'archive de sous-syst\u0
 tool.install.file.exists.useraction=Examinez les fichiers qui existent d\u00e9j\u00e0. Si l'op\u00e9ration d'installation peut se poursuivre, relancez-la \u00e0 l'aide de l'option --when-file-exists=replace pour remplacer les fichiers existants ou \u00e0 l'aide de l'option --when-file-exists=ignore pour continuer sans le fichier existant.
 tool.install.dir.create.fail=CWWKF1016E: Impossible de cr\u00e9er la structure de r\u00e9pertoire {0}.
 tool.install.dir.create.fail.explanation=Les r\u00e9pertoires requis par la fonction en cours d'installation n'ont pas pu \u00eatre cr\u00e9\u00e9s.
-tool.install.dir.create.fail.useraction=V\u00e9rifiez que le r\u00e9pertoire indiqu\u00e9 \
-existe et que les autorisations n\u00e9cessaires sont en place pour permettre la cr\u00e9ation de la \
-structure de r\u00e9pertoire. Relancez l'op\u00e9ration d'installation.
+tool.install.dir.create.fail.useraction=V\u00e9rifiez que le r\u00e9pertoire indiqu\u00e9 existe et que les autorisations n\u00e9cessaires sont en place pour permettre la cr\u00e9ation de la structure de r\u00e9pertoire. Relancez l'op\u00e9ration d'installation.
 tool.install.feature.ok=CWWKF1017I: Une ou plusieurs fonctions ont \u00e9t\u00e9 install\u00e9es avec succ\u00e8s : {0}.
 tool.install.feature.ok.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
 tool.install.feature.ok.useraction=Aucune action n'est requise.

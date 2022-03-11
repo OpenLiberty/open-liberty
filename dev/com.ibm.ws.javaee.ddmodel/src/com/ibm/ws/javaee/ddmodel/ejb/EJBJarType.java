@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.DisplayName;
 import com.ibm.ws.javaee.dd.common.Icon;
@@ -150,7 +149,7 @@ import com.ibm.ws.javaee.ddmodel.common.XSDTokenType;
  type="xsd:ID"/>
  </xsd:complexType>
  */
-public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor, EJBJar, DDParser.RootParsable {
+public class EJBJarType extends DescriptionGroup implements EJBJar, DDParser.RootParsable {
     public EJBJarType(String path) {
         this.path = path;
     }
@@ -3463,6 +3462,9 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
                 // or, jakarta.jms.Queue or jakarta.jms.Topic, depending on whether
                 // jakarta is provisioned.  That is, whether the maximum EJB
                 // specification version is 4.0 or higher.
+                //
+                // Note that this is a validation of the element value,
+                // not of the XML structure!
 
                 String type_queue;
                 String type_topic;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,25 +15,18 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.SelectionCriteria;
 import com.ibm.wsspi.sib.core.SelectorDomain;
 
-/**
- * This class contains the implementation of the SelectionCriteria from the CoreSPI.
- */
-public class SelectionCriteriaImpl implements SelectionCriteria
-{
-    //trace
-    private static final TraceComponent tc =
-                    SibTr.register(
-                                   SelectionCriteriaImpl.class,
-                                   SICoreConstants.CORE_TRACE_GROUP,
-                                   SICoreConstants.RESOURCE_BUNDLE);
+public class SelectionCriteriaImpl implements SelectionCriteria{
+    private static final TraceComponent tc = SibTr.register(SelectionCriteriaImpl.class, SICoreConstants.CORE_TRACE_GROUP, SICoreConstants.RESOURCE_BUNDLE);
 
     private String discriminator = null;
     private String selectorString = null;
     private SelectorDomain domain = null;
 
-    /**
-     * Create a new SelectionCriteriaImpl object
-     */
+
+    public SelectionCriteriaImpl() {
+        this(null, "", SelectorDomain.SIMESSAGE);
+    }
+
     public SelectionCriteriaImpl(String discriminator,
                                  String selectorString,
                                  SelectorDomain selectorDomain)
@@ -55,57 +48,36 @@ public class SelectionCriteriaImpl implements SelectionCriteria
             SibTr.exit(tc, "SelectionCriteriaImpl");
     }
 
-    /**
-     * @return
-     */
     @Override
     public SelectorDomain getSelectorDomain() {
         return domain;
     }
 
-    /**
-     * @return
-     */
     @Override
     public String getSelectorString() {
         return selectorString;
     }
 
-    /**
-     * @param domain
-     */
     @Override
     public void setSelectorDomain(SelectorDomain domain) {
         this.domain = domain;
     }
 
-    /**
-     * @param string
-     */
     @Override
     public void setSelectorString(String string) {
         selectorString = string;
     }
 
-    /**
-     * @return
-     */
     @Override
     public String getDiscriminator() {
         return discriminator;
     }
 
-    /**
-     * @param string
-     */
     @Override
     public void setDiscriminator(String string) {
         discriminator = string;
     }
 
-    /**
-     * equals method.
-     */
     @Override
     public boolean equals(Object other)
     {
@@ -129,7 +101,7 @@ public class SelectionCriteriaImpl implements SelectionCriteria
                         {
                             // Go on to check selector domain
                             if (domain.equals(otherCriteria.domain))
-                                res = true; // Null discriminator, nonnull string        
+                                res = true; // Null discriminator, nonnull string
                         }
                     }
                 }
@@ -151,7 +123,7 @@ public class SelectionCriteriaImpl implements SelectionCriteria
                         {
                             // Go on to check selector domain
                             if (domain.equals(otherCriteria.domain))
-                                res = true; // nonnull discriminator, nonnull string        
+                                res = true; // nonnull discriminator, nonnull string
                         }
                     }
                 }
@@ -163,8 +135,6 @@ public class SelectionCriteriaImpl implements SelectionCriteria
     @Override
     public String toString()
     {
-        String retString = discriminator + " : " + selectorString + " : " + domain;
-
-        return retString;
+        return discriminator + " : " + selectorString + " : " + domain;
     }
 }

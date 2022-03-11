@@ -69,7 +69,7 @@ public class WebAppTestBase {
 
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
 
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(maxVersion));
             }
         });
@@ -122,7 +122,7 @@ public class WebAppTestBase {
 
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
 
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(maxVersion));
             }
         });

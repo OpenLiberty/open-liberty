@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -10,30 +10,47 @@
         IBM Corporation - initial API and implementation
 -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	     xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
-	     xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-	     id="WebApp_ID" version="2.4">
-	
+		 xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+		 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+		 id="WebApp_ID" version="2.4">
+
 	<display-name>OpenID Connect Client Redirect Servlet</display-name>
-	
+
 	<servlet>
 		<description>OpenID Connect Client Redirect Servlet</description>
 		<display-name>OpenID Connect Client Redirect Servlet</display-name>
 		<servlet-name>OpenIdConnectClientRedirectServlet</servlet-name>
 		<servlet-class>com.ibm.ws.security.openidconnect.client.web.OidcRedirectServlet</servlet-class>
 	</servlet>
-	
+	<servlet>
+		<description>OpenID Connect Client Backchannel Logout Servlet</description>
+		<display-name>OpenID Connect Client Backchannel Logout Servlet</display-name>
+		<servlet-name>OidcBackchannelLogoutServlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.openidconnect.client.web.OidcBackchannelLogoutServlet</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>OpenIdConnectClientRedirectServlet</servlet-name>
 		<url-pattern>/redirect/*</url-pattern>
 	</servlet-mapping>
-	
+	<servlet-mapping>
+		<servlet-name>OidcBackchannelLogoutServlet</servlet-name>
+		<url-pattern>/backchannel_logout/*</url-pattern>
+	</servlet-mapping>
+
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>OpenID Connect Client Redirect Servlet</web-resource-name>
 			<url-pattern>/redirect/*</url-pattern>
 			<http-method>*</http-method>
+		</web-resource-collection>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>OpenID Connect Client Backchannel Logout Servlet</web-resource-name>
+			<url-pattern>/backchannel_logout/*</url-pattern>
+			<http-method>POST</http-method>
 		</web-resource-collection>
 	</security-constraint>
 

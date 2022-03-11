@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,17 +22,11 @@ TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Se ha producido una 
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Cada paquete de implementaci\u00f3n TokenService especifica su tipo proporcionado.
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Especifique un tipo soportado, o instale el paquete que proporciona la instancia de TokenService del tipo solicitado.
 
-TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: No se puede validar la se\u00f1al de seguridad. Puede ser debido a las razones siguientes\n\
-1. La se\u00f1al de seguridad se ha generado en otro servidor con otras claves.\n\
-2. La configuraci\u00f3n de la se\u00f1al o las claves de seguridad del servicio de se\u00f1al que ha creado la se\u00f1al se han modificado.\n\
-3. El servicio de se\u00f1al que ha creado la se\u00f1al ya no est\u00e1 disponible.
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: No se puede validar la se\u00f1al de seguridad. Puede ser debido a las razones siguientes\n1. La se\u00f1al de seguridad se ha generado en otro servidor con otras claves.\n2. La configuraci\u00f3n de la se\u00f1al o las claves de seguridad del servicio de se\u00f1al que ha creado la se\u00f1al se han modificado.\n3. El servicio de se\u00f1al que ha creado la se\u00f1al ya no est\u00e1 disponible.
 TOKEN_SERVICE_INVALID_TOKEN.explanation=No se puede recrear la se\u00f1al con los servicios de se\u00f1al configurados actualmente.
 TOKEN_SERVICE_INVALID_TOKEN.useraction=Compruebe que al menos una caracter\u00edstica incluya un servicio de se\u00f1al que se haya configurado correctamente para recrear la se\u00f1al.
 
-TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: No se puede validar la se\u00f1al de seguridad. Puede ser debido a las razones siguientes\n\
-1. La se\u00f1al de seguridad se ha generado en otro servidor con otras claves.\n\
-2. La configuraci\u00f3n de la se\u00f1al o las claves de seguridad del servicio de se\u00f1al que ha creado la se\u00f1al se han modificado.\n\
-3. El servicio de se\u00f1al que ha creado la se\u00f1al ya no est\u00e1 disponible.
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: No se puede validar la se\u00f1al de seguridad. Puede ser debido a las razones siguientes\n1. La se\u00f1al de seguridad se ha generado en otro servidor con otras claves.\n2. La configuraci\u00f3n de la se\u00f1al o las claves de seguridad del servicio de se\u00f1al que ha creado la se\u00f1al se han modificado.\n3. El servicio de se\u00f1al que ha creado la se\u00f1al ya no est\u00e1 disponible.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=No se puede recrear la se\u00f1al con los servicios de se\u00f1al configurados actualmente.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Compruebe que al menos una caracter\u00edstica incluya un servicio de se\u00f1al que se haya configurado correctamente para recrear la se\u00f1al.
 
@@ -43,3 +37,11 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Aseg\u00farese de que utiliza un entorno 
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: El servicio OSGi de delegaci\u00f3n restringida {0} no est\u00e1 disponible.
 KRB_OSGI_SERVICE_ERROR.explanation=El servicio OSGi especificado no est\u00e1 disponible.
 KRB_OSGI_SERVICE_ERROR.useraction=Aseg\u00farese de que la caracter\u00edstica de delegaci\u00f3n restringida est\u00e9 habilitada y que utiliza un entorno de ejecuci\u00f3n Java de la versi\u00f3n IBM JavaSE 1.8. Revise los registros del servidor para obtener m\u00e1s informaci\u00f3n.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: No se ha podido recuperar BundleContext para el paquete {0}. Es posible que el paquete todav\u00eda se est\u00e9 cargando. Vuelva a intentarlo m\u00e1s tarde.
+BUNDLE_CONTEXT_MISSING.explanation=El OSGi BundleContext especificado no est\u00e1 disponible.
+BUNDLE_CONTEXT_MISSING.useraction=Es posible que el paquete todav\u00eda se est\u00e9 cargando. Vuelva a intentarlo m\u00e1s tarde.
+
+OSGI_INVALID_FILTER=CWWKS4005E: Se ha encontrado un error de sintaxis al recuperar TokenService utilizando el filtro de servicio de {0}: {1}
+OSGI_INVALID_FILTER.explanation=El filtro de servicio proporcionado ha generado una excepci\u00f3n al recuperar TokenService.
+OSGI_INVALID_FILTER.useraction=El filtro de servicio se genera a partir del tipo de se\u00f1al SSO almacenado en la se\u00f1al serializada. Aseg\u00farese de que el tipo de se\u00f1al SSO configurado para todos los servidores no genere un filtro de servicio OSGi no v\u00e1lido. 

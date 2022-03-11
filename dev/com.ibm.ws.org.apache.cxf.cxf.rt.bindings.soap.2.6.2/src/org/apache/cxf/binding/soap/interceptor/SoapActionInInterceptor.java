@@ -269,7 +269,7 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
             if (boi == null) {
                 return;
             }
-            LOG.info("boi = " + boi + " action = " + action + " message = " + message);
+            LOG.finest("boi = " + boi + " action = " + action + " message = " + message);
             if (StringUtils.isEmpty(action)) {
                 return;
             }

@@ -859,8 +859,14 @@ public class JSSEHelper {
 
         try {
             SSLConfig sslProperties = (SSLConfig) getProperties(sslAliasName, connectionInfo, listener);
-            String contextProvider = sslProperties.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
-            sslSocketFactory = JSSEProviderFactory.getInstance(contextProvider).getSSLSocketFactory(connectionInfo, sslProperties);
+            if (sslProperties != null) {
+                String contextProvider = sslProperties.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
+                sslSocketFactory = JSSEProviderFactory.getInstance(contextProvider).getSSLSocketFactory(connectionInfo, sslProperties);
+            } else {
+                String message = TraceNLSHelper.getInstance().getString("ssl.no.properties.error.CWPKI0315E",
+                                                                        "SSL configuration properites are null. Could be a problem parsing the SSL client configuraton.");
+                throw new SSLException(message);
+            }
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "getSSLSocketFactory (2)", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -925,8 +931,14 @@ public class JSSEHelper {
 
         try {
             SSLConfig sslProperties = (SSLConfig) getProperties(sslAliasName, connectionInfo, listener);
-            String contextProvider = sslProperties.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
-            sslServerSocketFactory = JSSEProviderFactory.getInstance(contextProvider).getSSLServerSocketFactory(sslProperties);
+            if (sslProperties != null) {
+                String contextProvider = sslProperties.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
+                sslServerSocketFactory = JSSEProviderFactory.getInstance(contextProvider).getSSLServerSocketFactory(sslProperties);
+            } else {
+                String message = TraceNLSHelper.getInstance().getString("ssl.no.properties.error.CWPKI0315E",
+                                                                        "SSL configuration properites are null. Could be a problem parsing the SSL client configuraton.");
+                throw new SSLException(message);
+            }
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "getSSLServerSocketFactory (2)", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

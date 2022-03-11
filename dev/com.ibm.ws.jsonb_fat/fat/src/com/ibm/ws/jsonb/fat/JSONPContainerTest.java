@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,13 +17,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonptest.JSONPTestServlet;
 
@@ -38,13 +36,19 @@ import web.jsonptest.JSONPTestServlet;
 public class JSONPContainerTest extends FATServletClient {
 
     private static final String appName = "jsonpapp";
+    private static final String javaeeServer = "com.ibm.ws.jsonp.container.fat";
+    private static final String jakartaee9Server = "com.ibm.ws.jsonp.container.ee9.fat";
 
-    @Server("com.ibm.ws.jsonp.container.fat")
     @TestServlet(servlet = JSONPTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        if (JakartaEE9Action.isActive()) {
+            server = LibertyServerFactory.getLibertyServer(jakartaee9Server);
+        } else {
+            server = LibertyServerFactory.getLibertyServer(javaeeServer);
+        }
         ShrinkHelper.defaultApp(server, appName, "web.jsonptest");
         server.startServer();
     }
@@ -55,9 +59,6 @@ public class JSONPContainerTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(EE9_FEATURES)
-    //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
-    //TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonpProviderAvailableJohnzon() throws Exception {
         runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
     }

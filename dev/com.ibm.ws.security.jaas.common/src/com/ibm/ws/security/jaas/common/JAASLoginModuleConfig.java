@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.jaas.common;
 import java.util.Map;
 
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import javax.security.auth.spi.LoginModule;
 
 /**
  *
@@ -24,8 +25,18 @@ public interface JAASLoginModuleConfig {
     public static final String WAS_LM_SHARED_LIB = "WAS_LM_SHAREDLIB";
     public static final String KEY_CLASSLOADING_SVC = "classLoadingSvc";
 
+    /**
+     * Get the ID for this {@link JAASLoginModuleConfig}.
+     *
+     * @return
+     */
     String getId();
 
+    /**
+     * Get the class name for the configured {@link LoginModule}.
+     *
+     * @return
+     */
     String getClassName();
 
     /**
@@ -33,7 +44,24 @@ public interface JAASLoginModuleConfig {
      */
     LoginModuleControlFlag getControlFlag();
 
+    /**
+     * Get the options that JAAS will pass into the {@link LoginModule#initialize(javax.security.auth.Subject, javax.security.auth.callback.CallbackHandler, Map, Map) method.
+     *
+     * @return The map of options.
+     */
     Map<String, ?> getOptions();
 
+    /**
+     * Is this the configuration for the default {@link LoginModule}?
+     *
+     * @return True if if this is the default {@link LoginModule} configuration.
+     */
     boolean isDefaultLoginModule();
+
+    /**
+     * Reload the delegate class that is stored in the {@link LoginModule}'s options. This should
+     * typically be called any time the bundles for those classes stored in the options map have
+     * been reloaded.
+     */
+    void reloadDelegateClass();
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -202,9 +202,7 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Elimine la caracter
 # CWWK0042E  {0} = feature Name: {1} = server name 
 UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: No se puede encontrar una definici\u00f3n de caracter\u00edstica para la caracter\u00edstica {0}.  Intente ejecutar el mandato, bin/installUtility install {0}, para instalar la caracter\u00edstica. Otra posibilidad es ejecutar el mandato, bin/installUtility install {1}, para instalar todas las caracter\u00edsticas a las que hace referencia esta configuraci\u00f3n.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=El gestor de caracter\u00edsticas no ha podido encontrar una definici\u00f3n para la caracter\u00edstica especificada.
-UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Compruebe que el nombre de la caracter\u00edstica especificada est\u00e9 bien escrito.  \
-Compruebe tambi\u00e9n que la definici\u00f3n de la caracter\u00edstica existe y que se puede leer en el directorio lib/features.  \
-Si la caracter\u00edstica no existe, intente ejecutar el mandato, bin/installUtility install nombre_caracter\u00edstica, para instalar la caracter\u00edstica o intente ejecutar el mandato, bin/installUtility install nombre_servidor, para instalar todas las caracter\u00edsticas a las que hace referencia esta configuraci\u00f3n.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Compruebe que el nombre de la caracter\u00edstica especificada est\u00e9 bien escrito.  Compruebe tambi\u00e9n que la definici\u00f3n de la caracter\u00edstica existe y que se puede leer en el directorio lib/features.  Si la caracter\u00edstica no existe, intente ejecutar el mandato, bin/installUtility install nombre_caracter\u00edstica, para instalar la caracter\u00edstica o intente ejecutar el mandato, bin/installUtility install nombre_servidor, para instalar todas las caracter\u00edsticas a las que hace referencia esta configuraci\u00f3n.
 
 # CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: La caracter\u00edstica configurada {2} de {0} es incompatible con la caracter\u00edstica configurada {3} de {1}.  La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de {4} caracter\u00edsticas que no se soporta.  Actualice la configuraci\u00f3n para utilizar versiones compatibles de las caracter\u00edsticas configuradas que soportan los modelos de programaci\u00f3n {0} o {1}.
@@ -229,6 +227,11 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Especifique una versi\u00f3n dif
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Las caracter\u00edsticas {2} y {3} no se pueden cargar al mismo tiempo. La caracter\u00edstica {2} de {0} es incompatible con la caracter\u00edstica {3} de {1}. La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de {6} caracter\u00edsticas que no se soporta.  Las caracter\u00edsticas configuradas {4} y {5} incluyen una combinaci\u00f3n incompatible de caracter\u00edsticas. No se soporta la configuraci\u00f3n.  Actualice la configuraci\u00f3n para utilizar versiones compatibles de las caracter\u00edsticas configuradas que soportan los modelos de programaci\u00f3n {0} o {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configuraci\u00f3n de servidor contiene una combinaci\u00f3n incompatible de caracter\u00edsticas para los modelos de programaci\u00f3n indicados.  Este conflicto se puede producir si se configuran directamente las dos caracter\u00edsticas incompatibles en la configuraci\u00f3n de servidor o si las caracter\u00edsticas configuradas incluyen versiones diferentes de una caracter\u00edstica que son incompatibles.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Intente especificar una versi\u00f3n compatible de las caracter\u00edsticas configuradas que han provocado el conflicto en el archivo server.xml.  Si no hay disponible ninguna otra versi\u00f3n, las caracter\u00edsticas configuradas no son compatibles entre s\u00ed y no se pueden configurar a la vez.
+
+#CWWKF0048E
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: El mandato server ha especificado la acci\u00f3n de punto de comprobaci\u00f3n. No se puede tomar un punto de comprobaci\u00f3n porque la caracter\u00edstica checkpoint-1.0 no est\u00e1 configurada en el archivo server.xml.
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=La acci\u00f3n de punto de comprobaci\u00f3n del servidor requiere que la caracter\u00edstica checkpoint-1.0 est\u00e9 configurada.  
+CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=La caracter\u00edstica checkpoint-1.0 debe estar configurada para poder utilizar una acci\u00f3n de punto de comprobaci\u00f3n de servidor.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

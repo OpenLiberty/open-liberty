@@ -130,7 +130,7 @@ public class DefaultCDI40SecurityService implements SecurityServices {
             threadContext = contextService.captureThreadContext(new HashMap<String, String>(), THREAD_CONTEXT_PROVIDERS);
         }
         // Set the captured context into the org.jboss.weld.security.spi.SecurityContext object
-        mySecurityContext = new CDI20SecurityContext(threadContext);
+        mySecurityContext = new CDI40SecurityContext(threadContext);
 
         return mySecurityContext;
     }

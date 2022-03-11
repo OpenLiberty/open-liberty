@@ -48,7 +48,6 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
     protected volatile WebAppSecurityConfig webAppSecurityConfig;
     private volatile PostParameterHelper postParameterHelper;
     private final WebProviderAuthenticatorProxy providerAuthenticatorProxy;
-    public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
     public WebAuthenticatorProxy(WebAppSecurityConfig webAppSecurityConfig,
                                  PostParameterHelper postParameterHelper,
@@ -89,6 +88,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
             if (authenticator instanceof CertificateLoginAuthenticator &&
                 authResult != null && authResult.getStatus() != AuthResult.SUCCESS &&
                 webAppSecurityConfig.allowFailOver() && !webRequest.isDisableClientCertFailOver()) {
+                HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
                 extraAuditData.put(AuditConstants.ORIGINAL_AUTH_TYPE, authType);
                 authType = getFailOverToAuthType(webRequest);
                 extraAuditData.put(AuditConstants.FAILOVER_AUTH_TYPE, authType);

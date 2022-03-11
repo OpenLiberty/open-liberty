@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Za\u017c\u0105dano punktu kontrolnego serwera. Po zako\u0144czeniu punktu kontrolnego serwer zostanie zatrzymany.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Za\u017c\u0105dano punktu kontrolnego. Serwer zosta\u0142 zatrzymany, a jego bie\u017c\u0105cy stan zapisany na dysku.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Serwer Liberty jest wznawiany z punktu kontrolnego.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Operacja odtwarzania zosta\u0142a uruchomiona na obrazie punktu kontrolnego serwera Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o i zosta\u0142 wygenerowany nast\u0119puj\u0105cy komunikat: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=\u017b\u0105danie punktu kontrolnego dla serwera si\u0119 nie powiod\u0142o.  Poprawny obraz procesu punktu kontrolnego dla serwera nie zosta\u0142 utworzony.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Sprawd\u017a katalog punkt\u00f3w kontrolnych znajduj\u0105cy si\u0119 w katalogu dziennik\u00f3w serwera, aby uzyska\u0107 dodatkowe pliki dziennik\u00f3w i okre\u015bli\u0107, dlaczego punkt kontrolny si\u0119 nie powi\u00f3d\u0142.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Nie powiod\u0142o si\u0119 odtworzenie serwera z punktu kontrolnego z nast\u0119puj\u0105cym komunikatem: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Pr\u00f3ba odtworzenia serwera z punktu kontrolnego si\u0119 nie powiod\u0142a.  Serwer nie jest uruchomiony.
+RESTORE_FAILED_CWWKC0454E.useraction=Sprawd\u017a katalog punkt\u00f3w kontrolnych znajduj\u0105cy si\u0119 w katalogu dziennik\u00f3w serwera, aby uzyska\u0107 dodatkowe pliki dziennik\u00f3w i okre\u015bli\u0107, dlaczego nie mo\u017cna by\u0142o odtworzy\u0107 serwera.
+

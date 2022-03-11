@@ -855,14 +855,26 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
-     *
-     * @param  newFeatures
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
         RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + SERVER_CONFIG_FILE_NAME);
 
+        publishServerXML.copyToDest(serverXML, false, true);
+    }
+
+    /**
+     * Swaps in a different server.xml file from the server directory.
+     *
+     * @param  fileName
+     * @throws Exception
+     */
+    public void swapInServerXMLFromPublish(String fileName) throws Exception {
+        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + fileName);
+
+        Log.info(c, "swapInServerXMLFromPublish", "Reconfiguring server to use config file: " + publishServerXML.toString());
         publishServerXML.copyToDest(serverXML, false, true);
     }
 

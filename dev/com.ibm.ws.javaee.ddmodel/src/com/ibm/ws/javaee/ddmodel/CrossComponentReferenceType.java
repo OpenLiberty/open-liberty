@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,8 +97,8 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
 
     public <R> R resolveReferent(DDParser parser, Class<R> referentClass) throws ParseException {
         if ( href == null ) {
-            // This is a new warning: Previously, a null pointer exception would occur.
-            parser.error( parser.missingHRef(hrefElementName) );
+            // This is a new error: Previously, a null pointer exception would occur.
+            parser.fatal( parser.missingHRef(hrefElementName) );
             return null;
         }
         String hrefValue = href.getValue();
@@ -106,7 +106,7 @@ public class CrossComponentReferenceType extends DDParser.ElementContentParsable
         int hashIndex = hrefValue.indexOf('#');
         if ( (hashIndex == -1) ||
              (hashIndex == 0) || (hashIndex == hrefValue.length() - 1) ) {
-            // This is a new warning: Previously, an index out of bounds exception would occur.
+            // This is a new error: Previously, an index out of bounds exception would occur.
             parser.fatal( parser.invalidHRef(hrefElementName, hrefValue) );
             return null;
         }

@@ -63,6 +63,10 @@ public class JsonTokenUtil {
         return new Gson().toJson(json);
     }
 
+    public static String toJsonFromObj(Gson gson, Object json) {
+        return gson.toJson(json);
+    }
+
     public static String convertToBase64(String source) {
         return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
     }

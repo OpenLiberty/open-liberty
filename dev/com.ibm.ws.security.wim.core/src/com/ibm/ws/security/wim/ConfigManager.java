@@ -105,7 +105,7 @@ public class ConfigManager implements RuntimeUpdateListener {
 
     private volatile Map<String, SupportedEntityConfig> entityTypeMap;
 
-    private final ArrayList<RealmConfigChangeListener> listeners = new ArrayList<RealmConfigChangeListener>();
+    private final List<RealmConfigChangeListener> listeners = Collections.synchronizedList(new ArrayList<RealmConfigChangeListener>());
 
     /**
      * Map to store the default RDN Mappings
@@ -668,8 +668,13 @@ public class ConfigManager implements RuntimeUpdateListener {
                             Tr.debug(this, tc, "RuntimeUpdate completed on config update, calling notifyRealmConfigChange. " + notification.getName());
                         }
                         if (listeners != null) {
-                            for (RealmConfigChangeListener listener : listeners)
-                                listener.notifyRealmConfigChange();
+                            synchronized (listeners) {
+                                for (RealmConfigChangeListener listener : listeners)
+                                    listener.notifyRealmConfigChange();
+                            }
+                        }
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "RuntimeUpdate completed on config update, finished calling notifyRealmConfigChange.");
                         }
                     }
                 }

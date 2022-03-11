@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,17 +22,11 @@ TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Si \u00e8 verificata
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Ciascun bundle di implementazione TokenService specifica il proprio tipo fornito.
 TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Specificare un tipo supportato o installare il bundle che fornisce l'istanza di TokenService del tipo richiesto.
 
-TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Impossibile convalidare il token di sicurezza. Questo pu\u00f2 verificarsi per i seguenti motivi\n\
-1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi diverse.\n\
-2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate.\n\
-3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Impossibile convalidare il token di sicurezza. Questo pu\u00f2 verificarsi per i seguenti motivi\n1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi diverse.\n2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate.\n3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
 TOKEN_SERVICE_INVALID_TOKEN.explanation=Il token non pu\u00f2 essere ricreato dai servizi token configurati correntemente.
 TOKEN_SERVICE_INVALID_TOKEN.useraction=Controllare che almeno una funzione includa un servizio token appropriatamente configurato per ricreare il token.
 
-TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Impossibile convalidare il token di sicurezza. Possibili cause:\n\
-1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi differenti.\n\
-2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate. \n\
-3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Impossibile convalidare il token di sicurezza. Possibili cause:\n1. Il token di sicurezza \u00e8 stato generato su un altro server utilizzando chiavi differenti.\n2. La configurazione del token o le chiavi di sicurezza del servizio token che ha creato il token sono state modificate. \n3. Il servizio token che ha creato il token non \u00e8 pi\u00f9 disponibile.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Il token non pu\u00f2 essere ricreato dai servizi token configurati correntemente.
 TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Controllare che almeno una funzione includa un servizio token appropriatamente configurato per ricreare il token.
 
@@ -42,5 +36,12 @@ KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Accertarsi di utilizzare un JRE (Java run
 
 KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Il servizio OSGi di delega vincolata {0} non \u00e8 disponibile.
 KRB_OSGI_SERVICE_ERROR.explanation=Il servizio OSGi specificato non \u00e8 disponibile.
-KRB_OSGI_SERVICE_ERROR.useraction=Assicurarsi che la funzione di delega vincolata sia abilitata e accertarsi di utilizzare un JRE (Java runtime environment) di IBM JavaSE 1.8. \
-Per ulteriori informazioni, esaminare i log del server.
+KRB_OSGI_SERVICE_ERROR.useraction=Assicurarsi che la funzione di delega vincolata sia abilitata e accertarsi di utilizzare un JRE (Java runtime environment) di IBM JavaSE 1.8. Per ulteriori informazioni, esaminare i log del server.
+
+BUNDLE_CONTEXT_MISSING=CWWKS4004E: Impossibile richiamare il BundleContext per il bundle {0}. Il caricamento del bundle potrebbe essere ancora in corso. Riprovare in seguito.
+BUNDLE_CONTEXT_MISSING.explanation=Il BundleContext OSGi specificato non \u00e8 disponibile.
+BUNDLE_CONTEXT_MISSING.useraction=Il caricamento del bundle potrebbe essere ancora in corso. Riprovare in seguito.
+
+OSGI_INVALID_FILTER=CWWKS4005E: Si \u00e8 verificato un errore di sintassi durante il richiamo del TokenService utilizzando il filtro del servizio {0}: {1}
+OSGI_INVALID_FILTER.explanation=Il filtro del servizio fornito ha generato un'eccezione durante il richiamo del TokenService.
+OSGI_INVALID_FILTER.useraction=Il filtro del servizio viene generato dal tipo di token SSO memorizzato nel token serializzato. Assicurarsi che il tipo di token SSO configurato per tutti i server non risulti in un filtro del servizio OSGi non valido. 

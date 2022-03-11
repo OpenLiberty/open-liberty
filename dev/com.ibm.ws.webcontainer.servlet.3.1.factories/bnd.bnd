@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ WLP-ServerVersion: ${liberty.beta.version}
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: !*.internal.*, \
+    com.ibm.ws.webcontainer.speclevel,\
     com.ibm.ws.webcontainer31.*factory*;provide:=true
 
 Import-Package: \
@@ -81,7 +82,8 @@ instrument.disabled: true
     com.ibm.ws.transport.http;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
     
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

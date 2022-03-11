@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Unele aplicaţii care rulează",
     SOME_SERVERS_RUNNING : "Unele servere care rulează",
     SOME_CLUSTERS_RUNNING : "Unele cluster-e care rulează",
-    NO_APPS_RUNNING : "Nicio aplicaţie care rulează",
     NO_SERVERS_RUNNING : "Niciun server care rulează",
     NO_CLUSTERS_RUNNING : "Niciun cluster care rulează",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: instanţa de aplicaţii nu rulează", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: nu toate aplicaţiile rulează", // serverName[]
-    NO_APPS_RUNNING : "{0}: nicio aplicaţie nu rulează", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} servere nu cu toate aplicaţiile care rulează", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} servere cu nicio aplicaţie care rulează", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Nota {0}",  // note value
     SET_ATTRIBUTES: "Taguri şi metadate",
     SETATTR_RUNTIME_NAME: "{0} pe {1}",  // runtime, host
-    SAVE: "Salvare",
     TAGINVALIDCHARS: "Caracterele '/', '<', şi '>' nu sunt valide.",
     ERROR_GET_TAGS_METADATA: "Produsul nu poate obţine curent taguri şi metadate pentru resursă.",
     ERROR_SET_TAGS_METADATA: "O eroare a împiedicat produsul de la setarea tagurilor şi metadatelor.",

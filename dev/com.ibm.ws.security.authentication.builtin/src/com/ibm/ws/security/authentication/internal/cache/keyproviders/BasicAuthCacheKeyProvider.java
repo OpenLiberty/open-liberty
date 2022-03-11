@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,11 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
 
     private static final TraceComponent tc = Tr.register(BasicAuthCacheKeyProvider.class);
-    private static final String MESSAGE_DIGEST_ALGORITHM = "SHA";
     private static final String KEY_SEPARATOR = ":";
+
+    private static final String SHA_512 = "SHA-512";
     private static MessageDigest CLONEABLE_MESSAGE_DIGEST = null;
+    private static final Object SYNC_OBJECT = new Object();
 
     /** {@inheritDoc} */
     @Override
@@ -183,28 +185,32 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
     @Trivial
     @FFDCIgnore(CloneNotSupportedException.class)
     private static MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
-        // If we've never been asked for a MessageDigest, create the parent of
-        // our clones. This is not thread safe, but it does not really need to
-        // be, since we're just establishing the parent. If we incur the cost
-        // of creating two clones the first time through, that's really not
-        // worth synchronizing this whole method.
+        /*
+         * If we've never been asked for a MessageDigest, create the parent of
+         * our clones.
+         */
         if (CLONEABLE_MESSAGE_DIGEST == null) {
-            CLONEABLE_MESSAGE_DIGEST = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+            synchronized (SYNC_OBJECT) {
+                if (CLONEABLE_MESSAGE_DIGEST == null) {
+                    CLONEABLE_MESSAGE_DIGEST = MessageDigest.getInstance(SHA_512);
+                }
+            }
         }
 
-        // Try to clone the parent. If we can't, then we'll ignore the FFDC and create a
-        // new instance. If the clone fails, which is REALLY unlikely, as we
-        // know the SHA MessageDigest is cloneable on IBM and Sun JDKs
-        //
+        /*
+         * Try to clone the parent. If we can't, then we'll ignore the FFDC and create a
+         * new instance. If the clone fails, which is REALLY unlikely, as we
+         * know the SHA MessageDigest is cloneable on IBM and Sun JDKs
+         */
         try {
             return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
         } catch (CloneNotSupportedException cnse) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + MESSAGE_DIGEST_ALGORITHM
+                Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + SHA_512
                              + ". This is pretty unlikely, and we need to get details about the JDK which is in use.",
                          cnse);
             }
-            return MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+            return MessageDigest.getInstance(SHA_512);
         }
     }
 

@@ -98,13 +98,8 @@ public class Jose4jUtil {
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
-            checkJwtFormatAgainstConfigRequirements(tokenStr, clientConfig);
-            if (JweHelper.isJwe(tokenStr)) {
-                tokenStr = JweHelper.extractJwsFromJweToken(tokenStr, clientConfig, null);
-            }
-
-            JwtContext jwtContext = parseJwtWithoutValidation(tokenStr);
-            JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, tokenStr, jwtContext, oidcClientRequest);
+            JwtContext jwtContext = validateJwtStructureAndGetContext(tokenStr, clientConfig);
+            JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtContext.getJwt(), jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "post jwtClaims: " + jwtClaims + " firstPass jwtClaims=" + jwtContext.getJwtClaims());
             }
@@ -203,7 +198,7 @@ public class Jose4jUtil {
         return clientConfig.getUseAccessTokenAsIdToken();
     }
 
-    void checkJwtFormatAgainstConfigRequirements(String jwtString, ConvergedClientConfig clientConfig) throws JWTTokenValidationFailedException {
+    public void checkJwtFormatAgainstConfigRequirements(String jwtString, ConvergedClientConfig clientConfig) throws JWTTokenValidationFailedException {
         if (JweHelper.isJwsRequired(clientConfig) && !JweHelper.isJws(jwtString)) {
             String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS", new Object[] { clientConfig.getId() });
             throw new JWTTokenValidationFailedException(errorMsg);
@@ -283,13 +278,17 @@ public class Jose4jUtil {
             if (caughtException != null) {
                 objs = new Object[] { clientConfig.getSignatureAlgorithm(), caughtException.getLocalizedMessage() };
             }
-            oidcClientRequest.setRsFailMsg(OidcClientRequest.NO_KEY, Tr.formatMessage(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs));
-            throw oidcClientRequest.error(true, tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs);
+            if (oidcClientRequest != null) {
+                oidcClientRequest.setRsFailMsg(OidcClientRequest.NO_KEY, Tr.formatMessage(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs));
+                throw oidcClientRequest.error(true, tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs);
+            } else {
+                throw JWTTokenValidationFailedException.format(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs);
+            }
         }
         return key;
     }
 
-    protected Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t) throws Exception {
+    public Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t) throws Exception {
         Key keyValue = null;
         String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
         if (signatureAlgorithm == null) {
@@ -427,6 +426,33 @@ public class Jose4jUtil {
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return null;
+    }
+
+    /**
+     * Verifies that the JWT is either a JWS or a JWE, depending on the client configuration, and does simple parsing of the
+     * token to ensure it is formatted correctly. If the token is a JWE, this decrypts and extracts the JWS payload from the
+     * token.
+     */
+    public JwtContext validateJwtStructureAndGetContext(String logoutTokenString, ConvergedClientConfig clientConfig) throws Exception {
+        checkJwtFormatAgainstConfigRequirements(logoutTokenString, clientConfig);
+        if (JweHelper.isJwe(logoutTokenString)) {
+            logoutTokenString = JweHelper.extractJwsFromJweToken(logoutTokenString, clientConfig, null);
+        }
+        return Jose4jUtil.parseJwtWithoutValidation(logoutTokenString);
+    }
+
+    public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig) throws Exception {
+        return validateJwsSignature(jwtContext, clientConfig, null);
+
+    }
+
+    public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
+        JsonWebStructure jwStructure = getJsonWebStructureFromJwtContext(jwtContext);
+        Key key = getSignatureVerificationKeyFromJsonWebStructure(jwStructure, clientConfig, oidcClientRequest);
+
+        // Clock skew and issuer aren't needed to validate the signature
+        Jose4jValidator validator = new Jose4jValidator(key, 0L, null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
+        return validator.validateJwsSignature((JsonWebSignature) jwStructure, jwtContext.getJwt());
     }
 
 }

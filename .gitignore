@@ -24,3 +24,6 @@
 
 # Ignore Eclipse metadata
 .metadata/
+
+# Ignore JetBrains .idea
+.idea

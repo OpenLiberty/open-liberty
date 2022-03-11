@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,9 @@ import com.ibm.wsspi.security.ltpa.Token;
 public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
     private static final TraceComponent tc = Tr.register(LoggedOutTokenCacheImpl.class);
 
-    private DistributedMap dmns = null;
-
     private static final AtomicServiceReference<TokenManager> tokenManager = new AtomicServiceReference<TokenManager>("tokenManager");
+
+    private final InMemoryLoggedOutTokenCache inMemoryCookieCache = new InMemoryLoggedOutTokenCache();
 
     protected void setTokenManager(ServiceReference<TokenManager> ref) {
         tokenManager.setReference(ref);
@@ -65,52 +65,25 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
         return Singleton.instance;
     }
 
-    /*
-     * Look up the key from the DistributedMap if it exists
-     */
     @Override
-    public Object getDistributedObjectLoggedOutToken(Object key) {
-        //check to see if the token is in the distributed map
-        if (dmns != null) {
-            DistributedMap map = dmns;
-            Object dist_object = map.get(key);
-            return dist_object;
-        }
-
-        // if dmns does not exist there are no entries in the DistributedMap
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "The LoggedOutTokenMap DistributedMap does not exist.");
-        }
-        return null;
-    }
-
-    /*
-     * Add the token to the DistributedMap
-     *
-     * key is the token string
-     * value is the subject
-     * timeToLive is the about of time left before the token expires, to become the expiring time of the distributed map entry
-     */
-    @Override
-    public Object putDistributedObjectLoggedOutToken(Object key, Object value, int timeToLive) {
-
-        DistributedMap map = getDMLoggedOutTokenMap();
-
-        if (map != null) {
-            Object dist_object = map.put(key, value, 1, timeToLive, EntryInfo.SHARED_PUSH, null);
-            return dist_object;
-        }
-        return null;
-    }
-
-    /*
-     * Add the token to the DistributedMap, will create the loggedOutTokenMap if it does not exist.
-     * Calculates the about of time left on the token so the DistributedMap will expire the entry at
-     * time.
-     */
-    @Override
-    public Object addTokenToDistributedMap(Object key, Object value) {
+    public boolean contains(Object key) {
         String keyStr = (String) key;
+
+        LoggedOutCookieCache jCacheCookieCache = LoggedOutCookieCacheHelper.getLoggedOutCookieCacheService();
+        if (jCacheCookieCache != null) {
+            return jCacheCookieCache.contains(keyStr);
+        } else {
+            return inMemoryCookieCache.contains(keyStr);
+        }
+    }
+
+    @Override
+    public void put(Object key, Object value) {
+        String keyStr = (String) key;
+
+        /*
+         * Determine if the token is still valid. If it is not, don't cache it.
+         */
         TokenManager tm = LoggedOutTokenCacheImpl.tokenManager.getService();
         int timeOut = -1;
         try {
@@ -129,39 +102,95 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Token is not valid so do not cache it " + e.getMessage());
             }
-            return null;
+            return;
         } catch (TokenExpiredException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Token is expired so do not cache it " + e.getMessage());
             }
+            return;
+        }
+
+        /*
+         * Choose between using the in-memory logged out cookie cache, or the JCache logged out cookie cache.
+         */
+        LoggedOutCookieCache jCacheCookieCache = LoggedOutCookieCacheHelper.getLoggedOutCookieCacheService();
+        if (jCacheCookieCache != null) {
+            jCacheCookieCache.put(keyStr, value);
+        } else {
+            inMemoryCookieCache.put(keyStr, value, timeOut);
+        }
+    }
+
+    @Override
+    public boolean shouldTrackTokens() {
+        /*
+         * Indicate we should always track tokens if LoggedOutCookieCacheService is available.
+         */
+        return LoggedOutCookieCacheHelper.getLoggedOutCookieCacheService() != null;
+    }
+
+    /**
+     * In-memory cache to store logged out tokens.
+     */
+    private class InMemoryLoggedOutTokenCache {
+        private DistributedMap dmns = null;
+
+        /*
+         * Look up the key from the DistributedMap if it exists
+         */
+        public boolean contains(Object key) {
+            //check to see if the token is in the distributed map
+            if (dmns != null) {
+                return dmns.containsKey(key);
+            }
+
+            // if dmns does not exist there are no entries in the DistributedMap
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The LoggedOutTokenMap DistributedMap does not exist.");
+            }
+            return false;
+        }
+
+        /*
+         * Add the token to the DistributedMap
+         *
+         * key is the token string
+         * value is the subject
+         * timeToLive is the about of time left before the token expires, to become the expiring time of the distributed map entry
+         */
+        public Object put(Object key, Object value, int timeToLive) {
+
+            DistributedMap map = getDMLoggedOutTokenMap();
+
+            if (map != null) {
+                Object dist_object = map.put(key, value, 1, timeToLive, EntryInfo.SHARED_PUSH, null);
+                return dist_object;
+            }
             return null;
         }
 
-        return putDistributedObjectLoggedOutToken(key, value, timeOut);
-    }
+        /*
+         * Get the LoggedOutTokenMap
+         */
+        private DistributedMap getDMLoggedOutTokenMap() {
 
-    /*
-     * Get the LoggedOutTokenMap
-     */
-    private DistributedMap getDMLoggedOutTokenMap() {
+            if (dmns == null) {
+                dmns = getDistributedMap("LoggedOutTokenMap");
+            }
 
-        if (dmns == null) {
-            dmns = getDistrubedMap("LoggedOutTokenMap");
+            return dmns;
+
         }
 
-        return dmns;
+        /*
+         * Creates the LoggedOutTokeMap if it does not exist.
+         */
+        private DistributedMap getDistributedMap(String mapName) {
+            DistributedMap dm = null;
 
+            dm = DistributedObjectCacheFactory.getMap(mapName, new Properties());
+
+            return dm;
+        }
     }
-
-    /*
-     * Creates the LoggedOutTokeMap if it does not exist.
-     */
-    private DistributedMap getDistrubedMap(String mapName) {
-        DistributedMap dm = null;
-
-        dm = DistributedObjectCacheFactory.getMap(mapName, new Properties());
-
-        return dm;
-    }
-
 }

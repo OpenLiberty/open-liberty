@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,6 +155,7 @@ OIDC_SERVER_USERINFO_UNSUPPORTED_PARAMETER.useraction=\u8bf7\u5728\u672a\u6307\u
 OIDC_REQUEST_ATTRIBUTE_MISSING=CWWKS1634E: \u8bf7\u6c42\u7aef\u70b9 {0} \u6ca1\u6709\u5c5e\u6027 {1}\u3002
 OIDC_REQUEST_ATTRIBUTE_MISSING.explanation=\u8bf7\u6c42\u4e2d\u7f3a\u5c11\u8be5\u5c5e\u6027
 OIDC_REQUEST_ATTRIBUTE_MISSING.useraction=\u8bf7\u68c0\u67e5 server.xml \u6587\u4ef6\u4e2d\u7684\u8bf7\u6c42\u7aef\u70b9\u4ee5\u786e\u4fdd\u60a8\u5177\u6709\u6b63\u786e\u7684\u63d0\u4f9b\u7a0b\u5e8f
+
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS=CWWKS1635W: \u5982\u679c httpsRequired \u8bbe\u7f6e\u4e3a true\uff0c\u90a3\u4e48 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u5c5e\u6027 issuerIdentifier={0} \u5fc5\u987b\u4f7f\u7528 HTTPS \u65b9\u6848\u3002\u6b63\u91cd\u7f6e\u4e3a\u7f3a\u7701\u503c\u3002
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.explanation=issuerIdentifier \u672a\u6b63\u786e\u8bbe\u7f6e\u3002
 OIDC_SERVER_ISSUER_IDENTIFIER_NOT_HTTPS.useraction=\u8bf7\u4fee\u6539 OpenIDConnect \u63d0\u4f9b\u7a0b\u5e8f\u5c5e\u6027 issuerIdentifier \u4ee5\u4f7f\u7528 HTTPS \u65b9\u6848\u3002
@@ -179,6 +180,9 @@ OIDC_SERVER_JWK_NOT_AVAILABLE=CWWKS1640W: \u65e0\u6cd5\u5904\u7406\u9488\u5bf9 J
 OIDC_SERVER_JWK_NOT_AVAILABLE.explanation=\u751f\u6210 JWK JSON \u5b57\u7b26\u4e32\u65f6\uff0c\u9700\u8981 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f signatureAlgorithm \u5c5e\u6027\u8bbe\u7f6e\u4e3a RS256\u3002\u5982\u679c\u6307\u5b9a\u4e86\u5c5e\u6027 KeyStoreRef \u548c keyAliasName\uff0c\u90a3\u4e48\u5b83\u4eec\u5fc5\u987b\u6709\u6548\u3002
 OIDC_SERVER_JWK_NOT_AVAILABLE.useraction=\u66f4\u6b63 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u914d\u7f6e\u5c5e\u6027\u3002
 
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: \u672a\u80fd\u9488\u5bf9 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f {0} \u4f20\u64ad\u6765\u81ea\u7b2c\u4e09\u65b9\u6807\u8bc6\u4ee4\u724c\u7684\u58f0\u660e\u3002{1}
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=\u65e0\u6cd5\u4ece\u7b2c\u4e09\u65b9\u6807\u8bc6\u4ee4\u724c\u4e2d\u62bd\u53d6\u58f0\u660e\u3002 \u67e5\u770b\u9519\u8bef\u6d88\u606f\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=\u8bf7\u786e\u4fdd\u7b2c\u4e09\u65b9 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u6b63\u5728\u53d1\u9001\u6709\u6548\u6807\u8bc6\u4ee4\u724c\u3002
 
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: \u6807\u8bc6\u4ee4\u724c\u4ecb\u4f53 SPI \u4e0d\u652f\u6301\u6b64\u8fd0\u884c\u65f6 [{0}] \u6240\u4f7f\u7528\u7684 Java \u7248\u672c\u3002\u53d7\u652f\u6301\u7684 Java \u7248\u672c\u4e3a 1.7 \u6216\u66f4\u9ad8\u7248\u672c\u3002
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=\u6d88\u606f\u4e2d\u7684 Java \u7248\u672c\u65e0\u6cd5\u652f\u6301\u6807\u8bc6\u4ee4\u724c\u4ecb\u4f53 SPI \u529f\u80fd\u3002

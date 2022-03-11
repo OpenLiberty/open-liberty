@@ -1,5 +1,5 @@
 /*==============================================================================
- * Copyright (c) 2012,2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import com.ibm.ws.sib.msgstore.ReferenceStream;
 import com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;
 import com.ibm.ws.sib.msgstore.transactions.ExternalLocalTransaction;
 
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_PERSISTENT_MESSAGE_STORE_CLASS;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.STANDARD_PROPERTY_PREFIX;
 import static java.lang.Math.max;
 
 //import com.ibm.websphere.ws.sib.unittest.ras.Trace;
@@ -37,10 +39,10 @@ public abstract class MessageStoreTestCase extends LoggingTestCase {
     public final static boolean OLD_LOCKING = false;
 
     // Changing the spilling & dispatching decision making from using the 'persistent size'
-    // to the 'in memory size' of the Item means that every test Item needs to provide an 
+    // to the 'in memory size' of the Item means that every test Item needs to provide an
     // inMemorySize which is suitably plausible so as not to change the tet results.
     // We've used a first pass estimate of the inMemory:persistent size for a 'standard' message
-    // being 4:1, but we may refine it. So that we don't have to change umpteen unit test 
+    // being 4:1, but we may refine it. So that we don't have to change umpteen unit test
     // Items everytime, we'll make them use a multiple of their old persistentDataSize and define
     // the multiplier here as a single constant.
     public final static int ITEM_SIZE_MULTIPLIER = com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink.MEMORY_SIZE_MULTIPLIER;
@@ -54,7 +56,7 @@ public abstract class MessageStoreTestCase extends LoggingTestCase {
     /**
      * Assert that the two abstract items are equivalent (ie appear to
      * be the same under all tests EXCEPT identity).
-     * 
+     *
      * @param item1
      * @param item2
      */
@@ -68,57 +70,31 @@ public abstract class MessageStoreTestCase extends LoggingTestCase {
     }
 
     protected final MessageStore createMessageStore(boolean clean, String persistence) {
-        MessageStore messageStore = null;
-        try {
-            messageStore = MessageStore.createInstance();
-            Configuration configuration = Configuration.createBasicConfiguration();
-            configuration.setObjectManagerLogDirectory("build");
-            configuration.setObjectManagerPermanentStoreDirectory("build");
-            configuration.setObjectManagerTemporaryStoreDirectory("build");
+        MessageStoreImpl messageStore = MessageStoreImpl.createForTesting();
+        Configuration configuration = Configuration.createBasicConfiguration();
+        configuration.setObjectManagerLogDirectory("build");
+        configuration.setObjectManagerPermanentStoreDirectory("build");
+        configuration.setObjectManagerTemporaryStoreDirectory("build");
 
-            configuration.setCleanPersistenceOnStart(clean);
-            messageStore.initialize(configuration);
+        configuration.setCleanPersistenceOnStart(clean);
+        messageStore.initialize(configuration);
 
-            if (persistence != null) {
-                ((MessageStoreImpl) messageStore).setCustomProperty(MessageStoreConstants.STANDARD_PROPERTY_PREFIX
-                                                                    + MessageStoreConstants.PROP_PERSISTENT_MESSAGE_STORE_CLASS
-                                                                    , persistence);
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            fail("failed to initialize message store: " + e);
+        if (persistence != null) {
+            messageStore.setCustomProperty(STANDARD_PROPERTY_PREFIX + PROP_PERSISTENT_MESSAGE_STORE_CLASS, persistence);
         }
         return messageStore;
     }
 
     protected final MessageStore createAndStartPreviouslyUnhealthyMessageStore(boolean clean) {
-        MessageStore messageStore = null;
-
-        try {
-            messageStore = MessageStore.createInstance();
-            // make the message store unhealthy
-            messageStore.reportLocalError();
-            messageStore = createAndStartMessageStoreImpl(clean, messageStore, null);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            fail("failed to create message store: " + e);
-        }
-
+        MessageStore messageStore = MessageStoreImpl.createForTesting();
+        // make the message store unhealthy
+        messageStore.reportLocalError();
+        messageStore = createAndStartMessageStoreImpl(clean, messageStore, null);
         return messageStore;
     }
 
     protected final MessageStore createAndStartMessageStore(boolean clean, String persistence) {
-        MessageStore messageStore = null;
-
-        try {
-            messageStore = MessageStore.createInstance();
-            messageStore = createAndStartMessageStoreImpl(clean, messageStore, persistence);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            fail("failed to create message store: " + e);
-        }
-
-        return messageStore;
+        return createAndStartMessageStoreImpl(clean, MessageStoreImpl.createForTesting(), persistence);
     }
 
     private final MessageStore createAndStartMessageStoreImpl(boolean clean, MessageStore messageStore, String persistence) {
@@ -234,43 +210,6 @@ public abstract class MessageStoreTestCase extends LoggingTestCase {
         print(String.format("* %-" + contentWidth + "s%s" , s.substring(max(0, s.length() - contentWidth)), right));
     }
 
-/*
- * protected final void turnOnTrace()
- * {
- * turnOnTrace(false, "com.ibm.ws.sib.*=all=enabled");
- * }
- * 
- * protected final void turnOnTrace(String traceSpec)
- * {
- * turnOnTrace(false, traceSpec);
- * }
- * 
- * protected final void turnOnTrace(boolean console, String traceSpec)
- * {
- * String destination = ManagerAdmin.file;
- * if (console)
- * {
- * destination = ManagerAdmin.stdout;
- * }
- * ManagerAdmin.configureClientTrace(traceSpec,
- * destination,
- * "trace",
- * true,
- * ManagerAdmin.BASIC,
- * false);
- * }
- * 
- * protected final void turnOffTrace()
- * {
- * ManagerAdmin.setTraceState("*=info");
- * }
- * 
- * protected final void configureTrace(String traceSpec)
- * {
- * // eg "com.ibm.ws.sib.*=all=enabled"
- * ManagerAdmin.setTraceState(traceSpec);
- * }
- */
     protected final void setPersistence(String persistence) {
         PERSISTENCE = persistence;
     }

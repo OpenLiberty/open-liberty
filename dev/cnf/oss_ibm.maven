@@ -1,6 +1,7 @@
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
 com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
+com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0
 com.ibm.ws.javax.j2ee:connector:1.6
@@ -43,12 +44,12 @@ com.ibm.ws.org.apache.el:jasper-el:2.2
 com.ibm.ws.org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0.1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-interceptor_1.1_spec:1.0
 com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1
-com.ibm.ws.org.apache.yoko:yoko-core:1.5.0.f7fb23186a
-com.ibm.ws.org.apache.yoko:yoko-osgi:1.5.0.f7fb23186a
-com.ibm.ws.org.apache.yoko:yoko-rmi-impl:1.5.0.f7fb23186a
-com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.f7fb23186a
-com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.f7fb23186a
-com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.f7fb23186a
+com.ibm.ws.org.apache.yoko:yoko-core:1.5.0.4b4f72e852
+com.ibm.ws.org.apache.yoko:yoko-osgi:1.5.0.4b4f72e852
+com.ibm.ws.org.apache.yoko:yoko-rmi-impl:1.5.0.4b4f72e852
+com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.4b4f72e852
+com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.4b4f72e852
+com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.4b4f72e852
 com.ibm.ws.org.apache:xalan:2.7.2
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.9.13
@@ -68,6 +69,8 @@ com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws:nekohtml:1.9.18
 io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.0.20220120
+io.openliberty.jakarta.json.bind:jakarta.json.bind-api:3.0.0
+io.openliberty.org.eclipse:yasson:3.0.0-RC1
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.cxf:cxf-rt-ws-mex:2.6.2-ibm-s20180529-1900

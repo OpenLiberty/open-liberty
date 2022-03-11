@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2010 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,9 +106,7 @@ public class CommsByteBuffer extends JFapByteBuffer
    private static String CLASS_NAME = CommsByteBuffer.class.getName();
 
    /** Register Class with Trace Component */
-   private static final TraceComponent tc = SibTr.register(CommsByteBuffer.class,
-                                                           CommsConstants.MSG_GROUP,
-                                                           CommsConstants.MSG_BUNDLE);
+   private static final TraceComponent tc = SibTr.register(CommsByteBuffer.class, CommsConstants.MSG_GROUP, CommsConstants.MSG_BUNDLE);
 
    /** The poolManager the byte buffer was allocated from */
    private CommsByteBufferPool poolManager = null;
@@ -210,7 +208,7 @@ public class CommsByteBuffer extends JFapByteBuffer
             // If the isMediation() flag has been set, ensure we propagate this as a special UUId.
             // We can do this because a mediation destination only carries a name and the UUId
             // field is actually redundant.
-            
+
             //lohith liberty change
        /*     if (jsDestAddr.isFromMediation())
             {
@@ -2095,21 +2093,21 @@ public class CommsByteBuffer extends JFapByteBuffer
       if(TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "calculateEncodedStringLength", Integer.valueOf(length));
       return length;
    }
-   
+
    /**
     * Write a boolean value to the buffer.
-    * 
+    *
     * @param b the boolean value to write.
     */
    public synchronized void putBoolean(final boolean b)
    {
       put(b ? CommsConstants.TRUE_BYTE : CommsConstants.FALSE_BYTE);
    }
-   
+
    /**
     * Returns the next value in the buffer interpreted as a boolean. Should only be called when
     * the next byte in the buffer was written by a call to putBoolean.
-    * 
+    *
     * @return the next value in the buffer interpreted as a boolean.
     */
    public synchronized boolean getBoolean()
@@ -2117,6 +2115,6 @@ public class CommsByteBuffer extends JFapByteBuffer
       final byte value = get();
       if(value == CommsConstants.TRUE_BYTE) return true;
       else if(value == CommsConstants.FALSE_BYTE) return false;
-      else throw new IllegalStateException("Unexpected byte: " + value);     
-   }  
+      else throw new IllegalStateException("Unexpected byte: " + value);
+   }
 }

@@ -114,7 +114,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
      * localhost in our test automation. 
      *
      * CWWKS6115E: A successful response was not returned from the URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample/.mal-formed/openid-configuration]. ...
-     * CWWKS5501E: The social login client [oidcLogin_hostNameVerificationEnabledTrue] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample_JWT_JWK/.well-known/openid-configuration]. 
+     * CWWKS5391E: The social login client [oidcLogin_hostNameVerificationEnabledTrue] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample_JWT_JWK/.well-known/openid-configuration].
      *   Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
      * @throws Exception
      */
@@ -135,7 +135,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE, inovke_social_login_actions);
         expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + SocialConstants.FORBIDDEN, null, SocialConstants.FORBIDDEN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS6115E");
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
 
         genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
     }
@@ -145,7 +145,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
      *
      * CWWKS6114E: A successful response was not returned from the URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample/.mal-formed/openid-configuration]. 
      *    The [404] response status and the [Not Found] error are from the discovery request.
-     * CWWKS5501E: The social login client [oidcLogin1] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample/.mal-formed/openid-configuration].
+     * CWWKS5391E: The social login client [oidcLogin1] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [https://localhost:8947/oidc/endpoint/OidcConfigSample/.mal-formed/openid-configuration].
      *    Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
      * @throws Exception
      */
@@ -163,7 +163,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE, inovke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS6114E.*404");
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
 
         genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
     }
@@ -221,7 +221,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
     /**
      * Verify that when the discovery endpoint Url is not HTTPS that an error is logged so the administrator can diagnose and fix the error.
      * 
-     * CWWKS5501E: The social login client [oidcLogin1] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [http://localhost:8947/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration]. 
+     * CWWKS5391E: The social login client [oidcLogin1] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [http://localhost:8947/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration].
      *   Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
      * 
      * @throws Exception
@@ -238,7 +238,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
         
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE, inovke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.UNAUTHORIZED_STATUS);
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
 
         genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
     }
@@ -386,7 +386,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
    *   unable to find valid certification path to requested target java.security.cert.CertificateException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: 
    *   unable to find valid certification path to requested target] error and failed to access the OpenID Connect provider discovery endpoint.
    *
-   * CWWKS5501E: The OpenID Connect client [oidcLogin_badTrust] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of 
+   * CWWKS5391E: The OpenID Connect client [oidcLogin_badTrust] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of
    * [https://localhost:8947/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration].
    * Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL.
    *
@@ -409,7 +409,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.FORBIDDEN_STATUS);
       expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating there was a Handshake Exception", SocialMessageConstants.CWPKI0823E_HANDSHAKE_EXCEPTION + ".*SSL HANDSHAKE FAILURE.*" + provider);
       expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery endpoint response was not successful", "CWWKS6115E");
-      expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+      expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
      
       genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
   }
@@ -443,7 +443,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       List<validationData> expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE, inovke_social_login_actions);
       expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.UNAUTHORIZED_STATUS);
       expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS6114E.*404");
-      expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+      expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
 
       genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
       
@@ -484,7 +484,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       
       List<validationData> expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE, inovke_social_login_actions);
     expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.UNAUTHORIZED_STATUS);
-    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5501E");
+    expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that discovery failed", "CWWKS5391E");
 
       genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
       

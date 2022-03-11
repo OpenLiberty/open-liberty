@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Utilizare: java [op\u0163iuni JVM] -jar {0} [op\u0163iuni] outputFile  
+briefUsageScript=Utilizare: ./{0} [op\u021biuni] fi\u0219ier_ie\u0219ire
+
 
 use.options=Op\u0163iuni:
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,7 +33,14 @@ option-desc.locale=Locale-ul de folosit pentru ie\u015fire
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=Schema de ie\u015fire nu va con\u0163ine spa\u0163ii de indentare, linii noi sau comentarii XML
 option-key.productExtension=--productExtension
-option-desc.productExtension=Numele extensiei de produs de procesat.                            \n\
-Dac\u0103 extensia de produs este instalat\u0103 \u00een loca\u0163ia de utilizator implicit\u0103,    \n\
-folosi\u0163i cuv\u00e2ntul cheie: usr.                                                 \n\
-Dac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, se face ac\u0163iunea pe nucleul Liberty.
+option-desc.productExtension=Numele extensiei de produs de procesat.                            \nDac\u0103 extensia de produs este instalat\u0103 \u00een loca\u0163ia de utilizator implicit\u0103,    \nfolosi\u0163i cuv\u00e2ntul cheie: usr.                                                 \nDac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, se face ac\u0163iunea pe nucleul Liberty.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=\u00cen cazul \u00een care este specificat schemaVersion=1.1 atunci sunt scrise \u00een fi\u0219ierul de ie\u0219ire at\u00e2t elementele copil numite explicit, c\u00e2t \u0219i elementul xsd:any.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=\u00cen cazul \u00een care este specificat outputVersion=2.0 doar elementul xsd:any este utilizat \u00een fi\u0219ierul de ie\u0219ire, astfel \u00eenc\u00e2t elementele necunoscute trec de validarea XSD \u00een detrimentul pierderii valid\u0103rii pentru elemente cunoscute.

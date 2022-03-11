@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
     private OpentracingFilterHelper helper;
 
+    private boolean spanErrorLogged = false;
+
     public OpentracingClientFilter() {}
     
     public OpentracingClientFilter(OpentracingFilterHelper helper) {
@@ -97,7 +99,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             }
             return;
         }
-
         /*
          * In restfulWS-3.0, currentTracer is expected to be set and we might be running on a non-managed thread.
          *
@@ -147,19 +148,25 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                 spanBuilder.ignoreActiveSpan().asChildOf(parentSpanContext);
             }
 
-            Span span = spanBuilder.start();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " span", span);
+            try{
+                Span span = spanBuilder.start();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " span", span);
+                }
+
+                Scope scope = null;
+
+                tracer.inject(
+                              span.context(),
+                              Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+
+                clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, new ActiveSpan(span, scope));
+            } catch (NoSuchMethodError e){
+                  if (!spanErrorLogged) {
+                    Tr.error(tc, "OPENTRACING_COULD_NOT_START_SPAN", e);
+                    spanErrorLogged = true;
+                  }
             }
-
-            Scope scope = null;
-
-            tracer.inject(
-                          span.context(),
-                          Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
-
-            clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, new ActiveSpan(span, scope));
-
         } else {
 
             Span currentSpan = tracer.activeSpan();

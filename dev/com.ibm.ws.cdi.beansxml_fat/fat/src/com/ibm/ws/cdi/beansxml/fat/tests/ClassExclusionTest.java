@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.ClassExclusionTestServlet;
 import com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludedpackage.ExcludedPackageBean;
 import com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludedpackagetree.subpackage.ExcludedPackageTreeBean;
@@ -94,7 +95,7 @@ public class ClassExclusionTest extends FATServletClient {
         WebArchive testVetoedAlternativeWar = ShrinkWrap.create(WebArchive.class, "TestVetoedAlternative.war");
         testVetoedAlternativeWar.setManifest(VetoedAlternativeTestServlet.class.getPackage(), "MANIFEST.MF");
         testVetoedAlternativeWar.addClass(VetoedAlternativeTestServlet.class);
-        CDIArchiveHelper.addEmptyBeansXML(testVetoedAlternativeWar);
+        CDIArchiveHelper.addBeansXML(testVetoedAlternativeWar, DiscoveryMode.ALL);
 
         EnterpriseArchive testVetoedAlternativeEar = ShrinkWrap.create(EnterpriseArchive.class, "TestVetoedAlternative.ear");
         testVetoedAlternativeEar.setApplicationXML(VetoedAlternativeTestServlet.class.getPackage(), "application.xml");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -434,18 +434,35 @@ public abstract class InstallPackagesToolTest {
         Log.info(c, METHOD_NAME, "Checking ownership of :" + Folder + "\nExpected User:" + User + "\nExpected Group:" + Group + "\n");
         //find . \! -user openliberty -print
         String[] param1 = { "find", Folder, "\\!", "-user " + User + " -print " };
-        ProgramOutput po1 = runCommand(METHOD_NAME, "sudo", param1);
+        ProgramOutput findUserPO = runCommand(METHOD_NAME, "sudo", param1);
 
         String[] param2 = { "find", Folder, "\\!", "-group " + Group + " -print" };
-        ProgramOutput po2 = runCommand(METHOD_NAME, "sudo", param2);
+        ProgramOutput findGroupPO = runCommand(METHOD_NAME, "sudo", param2);
 
-        // check that po1 and po2 returned no files
-        if ((po1.getStdout().length() == 0) && (po2.getStdout().length() == 0)) {
-            returnCode = true;
+        int findUserRC = findUserPO.getReturnCode();
+        int findGroupRC = findGroupPO.getReturnCode();
+
+        // ensure both find commands ran successfully
+        if ((findUserRC == 0) && (findGroupRC == 0)) {
+            // check that both find commands returned no files
+            if ((findUserPO.getStdout().length() == 0) && (findGroupPO.getStdout().length() == 0)) {
+                returnCode = true;
+            } else {
+                // ensure stdout of either find command contains the folder we are supposed to be checking
+                if (findUserPO.getStdout().contains(Folder) || findGroupPO.getStdout().contains(Folder)) {
+                    Log.info(c, METHOD_NAME, "found folders or files with unexpected user/group");
+                    returnCode = false;
+                } else {
+                    returnCode = true;
+                }
+             }
         } else {
+            Log.info(c, METHOD_NAME, "find command RC!=0.  invalid folder, user, or group specified?");
             returnCode = false;
         }
-
+        // log output from find commands
+        Log.info(c, METHOD_NAME, "stdout from find \\! -user:" + findUserPO.getStdout() + ",RC=" + findUserRC);
+        Log.info(c, METHOD_NAME, "stdout from find \\! -group:" + findGroupPO.getStdout() + ",RC=" + findGroupRC);
         return returnCode;
     }
 

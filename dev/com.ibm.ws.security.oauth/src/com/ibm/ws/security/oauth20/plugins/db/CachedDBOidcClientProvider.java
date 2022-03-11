@@ -398,7 +398,7 @@ public class CachedDBOidcClientProvider extends OAuthJDBCImpl implements OidcOAu
         return OidcBaseClientValidator.getInstance(deepCopyClient).setDefaultsForOmitted();
     }
 
-    static boolean isUninitializedClientMetdata(JsonObject clientMetadata) {
+    static boolean isUninitializedClientMetdata(@Sensitive JsonObject clientMetadata) {
         return (clientMetadata == null || clientMetadata.isJsonNull() || clientMetadata.entrySet().size() == 0);
     }
 

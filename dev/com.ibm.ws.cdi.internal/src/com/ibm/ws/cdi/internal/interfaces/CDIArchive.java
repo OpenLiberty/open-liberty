@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ public interface CDIArchive {
      * Get a specific resource from this archive
      *
      * @param path the relative path of the resource within the archive
-     * @return a Resource
+     * @return a Resource, or {@code null} if there is no such resource
      */
     Resource getResource(String path);
 
@@ -80,14 +80,14 @@ public interface CDIArchive {
     /**
      * Get the Application which contains this Archive. May be null in the case of Archives created for Runtime Extensions.
      *
-     * @return the parent Application
+     * @return the parent Application, or {@code null} if there isn't one
      */
     Application getApplication();
 
     /**
      * If this archive is a Client Module, get the name of the Main Class.
      *
-     * @return the name of the Client Module Main Class
+     * @return the name of the Client Module Main Class, or {@code null} if this is not a client module
      * @throws CDIException
      */
     String getClientModuleMainClass() throws CDIException;
@@ -102,17 +102,19 @@ public interface CDIArchive {
 
     /**
      * Get the MetaData for this archive.
+     * <p>
+     * Must not be called on non-application archives.
      *
-     * @return
+     * @return the MetaData
      * @throws CDIException
      */
     MetaData getMetaData() throws CDIException;
 
     /**
-     * Get all bindings from the ibm-managed-bean-bnd.xml file in this archive
+     * Get all bindings from the ibm-managed-bean-bnd.xml file in this archive. May be {@code null} for non-application archives.
      *
      * @param resourceRefConfigFactory
-     * @return
+     * @return the bindings, or {@code null}
      * @throws CDIException
      */
     ResourceInjectionBag getAllBindings() throws CDIException;
@@ -120,15 +122,17 @@ public interface CDIArchive {
     /**
      * If this archive is a Client Module, get the name of the Application Callback Handler.
      *
-     * @return the application callback handler
+     * @return the application callback handler, or {@code null} if the archive is not a client module
      * @throws CDIException
      */
     String getClientAppCallbackHandlerName() throws CDIException;
 
     /**
      * Get the relative path of this archive. Should be unique within the application.
+     * <p>
+     * May be {@code null} for objects which don't correspond to a physical archive.
      *
-     * @return the path of the archive
+     * @return the path of the archive, or {@code null}
      * @throws CDIException
      */
     String getPath() throws CDIException;
@@ -161,7 +165,7 @@ public interface CDIArchive {
     /**
      * Get a Resource which represents the beans.xml file in the archive
      *
-     * @return a resource
+     * @return a resource for the beans.xml, or {@code null} if there is no beans.xml
      */
     Resource getBeansXml();
 
@@ -184,13 +188,17 @@ public interface CDIArchive {
 
     /**
      * Get the CDIRuntime associated with this Archive
+     *
+     * @return the CDIRuntime
      */
     CDIRuntime getCDIRuntime();
 
     /**
      * Return the reference context for this archive
+     * <p>
+     * Must not be called on non-application archives.
      *
-     * @return
+     * @return the reference context
      * @throws CDIException
      */
     ReferenceContext getReferenceContext() throws CDIException;
