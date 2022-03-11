@@ -14,5 +14,6 @@
 	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve" />
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
 	<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:" />
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
      
 </server>
