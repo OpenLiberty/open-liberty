@@ -1213,11 +1213,6 @@ serverCmd()
 #        checkpoint/workarea contains the backup of workarea contents, less the checkpoint dir
 backupWorkarea()
 {
-  if $X_WLP_IN_CONTAINER
-  then
-    return 0
-  fi
-
   # first remove the temporary destination to ensure we get errors if it exists and cannot be deleted
   rm -fr "${SERVER_OUTPUT_DIR}/checkpoint"
   rc=$?
