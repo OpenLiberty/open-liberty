@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.server.fat.claimPropagation.CommonTests;
+package com.ibm.ws.security.oidc_social.claimPropagation.fat.CommonTests;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,10 +63,10 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     protected static String[] steps = null;
     protected static String loginStep = null;
 
-    protected static String OPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op";
-    protected static String ExternalOPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op.external";
-    protected static String RPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp";
-    protected static String SocialServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social";
+    protected static String OPServerName = "com.ibm.ws.security.claimPropagation_fat.op";
+    protected static String ExternalOPServerName = "com.ibm.ws.security.claimPropagation_fat.op.external";
+    protected static String RPServerName = "com.ibm.ws.security.claimPropagation_fat.rp";
+    protected static String SocialServerName = "com.ibm.ws.security.claimPropagation_fat.social";
     public static TestServer testExternalOPServer = null;
     protected static Map<String, String> externalProps = new HashMap<String, String>();
     protected static Map<String, String> intermedProps = new HashMap<String, String>();
@@ -125,14 +125,18 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> addShouldContain_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
-        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        if (!testSettings.getFlowType().equals(socialFlow)) {
+            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        }
         return expectations;
     }
 
     private List<validationData> addShouldMatch_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
-        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        if (!testSettings.getFlowType().equals(socialFlow)) {
+            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        }
         return expectations;
     }
 

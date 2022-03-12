@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.server.fat.claimPropagation.OIDC;
+package com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
-import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.CommonTests.BasicIdTokenClaimPropagationTests;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.CommonTests.BasicIdTokenClaimPropagationTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -38,10 +38,6 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
 
     private static final Class<?> thisClass = OIDCBasicIdTokenClaimPropagationTestss.class;
     static HashMap<String, String> bootstrapProps = new HashMap<String, String>();
-
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
-    //    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"));
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_rp"))
@@ -61,11 +57,6 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
 
         List<String> extraApps = new ArrayList<String>();
         extraApps.add(Constants.APP_FORMLOGIN);
-
-        //        String[] propagationTokenTypes = rsTools.chooseTokenSettings(Constants.OIDC_OP);
-        //        String tokenType = propagationTokenTypes[0];
-        //        String certType = propagationTokenTypes[1];
-        //        Log.info(thisClass, "setupBeforeTest", "inited tokenType to: " + tokenType);
 
         Log.info(thisClass, "setupBeforeTest", "actions: " + RepeatTestFilter.getRepeatActionsAsString());
         repeatAction = RepeatTestFilter.getRepeatActionsAsString(); // only really returns the current action

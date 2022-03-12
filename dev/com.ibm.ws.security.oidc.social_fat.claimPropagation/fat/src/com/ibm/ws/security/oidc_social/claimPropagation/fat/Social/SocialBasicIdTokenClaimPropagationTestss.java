@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.server.fat.claimPropagation.Social;
+package com.ibm.ws.security.oidc_social.claimPropagation.fat.Social;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
-import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.CommonTests.BasicIdTokenClaimPropagationTests;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.CommonTests.BasicIdTokenClaimPropagationTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -40,10 +40,9 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
     static HashMap<String, String> bootstrapProps = new HashMap<String, String>();
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"));
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"));
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"))
+            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_socialClient"))
+            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_socialClient"));
 
     //    @ClassRule
     //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_socialClient"))
@@ -63,11 +62,6 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
 
         List<String> extraApps = new ArrayList<String>();
         extraApps.add(Constants.APP_FORMLOGIN);
-
-        //        String[] propagationTokenTypes = rsTools.chooseTokenSettings(Constants.OIDC_OP);
-        //        String tokenType = propagationTokenTypes[0];
-        //        String certType = propagationTokenTypes[1];
-        //        Log.info(thisClass, "setupBeforeTest", "inited tokenType to: " + tokenType);
 
         Log.info(thisClass, "setupBeforeTest", "actions: " + RepeatTestFilter.getRepeatActionsAsString());
         repeatAction = RepeatTestFilter.getRepeatActionsAsString(); // only really returns the current action
@@ -101,7 +95,6 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
 
         testRPServer = commonSetUp(SocialServerName, "server_orig.xml", Constants.OIDC_RP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
 
-        //        testSettings.setFlowType(Constants.RP_FLOW);
         testSettings.setFlowType(socialFlow);
 
         testSettings.setUserName("LDAPUser1");

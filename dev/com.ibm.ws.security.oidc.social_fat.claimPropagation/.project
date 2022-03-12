@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.security.oidc.server_fat.claimPropagation</name>
+	<name>com.ibm.ws.security.oidc.social_fat.claimPropagation</name>
 	<comment></comment>
 	<projects>
 	</projects>

@@ -9,15 +9,15 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.openidconnect.server.fat.claimPropagation;
+package com.ibm.ws.security.oidc_social.claimPropagation.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
-import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
-import com.ibm.ws.security.openidconnect.server.fat.claimPropagation.Social.SocialBasicIdTokenClaimPropagationTestss;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.Social.SocialBasicIdTokenClaimPropagationTestss;
 
 @RunWith(Suite.class)
 @SuiteClasses({

@@ -88,10 +88,10 @@ autoFVT.doLast {
    * Copy common artifacts to test servers.
    */
   def servers = [
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op',
-	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.op.external',
-	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp',
-	'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social'
+    'com.ibm.ws.security.claimPropagation_fat.op',
+	'com.ibm.ws.security.claimPropagation_fat.op.external',
+	'com.ibm.ws.security.claimPropagation_fat.rp',
+	'com.ibm.ws.security.claimPropagation_fat.social'
   ]
 
   servers.each { server ->
@@ -125,8 +125,8 @@ autoFVT.doLast {
    * Copy formlogin application to the applicable test server.
    */
   servers = [
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.rp',
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.claimPropagation.social'
+    'com.ibm.ws.security.claimPropagation_fat.rp',
+    'com.ibm.ws.security.claimPropagation_fat.social'
   ]
   servers.each { server ->
     copy {
