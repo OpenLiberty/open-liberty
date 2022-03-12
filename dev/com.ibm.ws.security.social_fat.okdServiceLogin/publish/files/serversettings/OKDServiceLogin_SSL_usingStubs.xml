@@ -1,0 +1,54 @@
+<!--
+    Copyright (c) 2020, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+ 
+	<okdServiceLogin
+       	id="okdServiceLogin1"
+        userValidationApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/StubbedOKDServiceLogin/apis/user.openshift.io/v1/users/~"
+        authFilterRef="xyz"
+         >
+	</okdServiceLogin>
+
+	<authFilter id="xyz">
+		<requestUrl
+			id="myOmitRequestUrl1"
+			urlPattern="user.openshift.io"
+			matchType="notContain" />
+		<requestUrl
+			id="myOmitRequestUrl2"
+			urlPattern="helloworld_"
+			matchType="notContain" />	
+	</authFilter>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_gooddSSLRef"
+        userValidationApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/StubbedOKDServiceLogin/apis/user.openshift.io/v1/users/~"
+        sslRef="OKDSSLSettings"
+        authFilterRef="authFilter_goodSSLRef"
+         >
+	</okdServiceLogin>
+	
+	<okdServiceLogin
+       	id="okdServiceLogin_badSSLRef"
+        userValidationApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/StubbedOKDServiceLogin/apis/user.openshift.io/v1/users/~"
+        sslRef="BadSSLSettings"
+        authFilterRef="authFilter_badSSLRef"
+         >
+	</okdServiceLogin>
+	
+	<okdServiceLogin
+       	id="okdServiceLogin_missingSSLRef"
+        userValidationApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/StubbedOKDServiceLogin/apis/user.openshift.io/v1/users/~"
+        sslRef="someNotDefinedSSLSettings"
+        authFilterRef="authFilter_missingSSLRef"
+         >
+	</okdServiceLogin>	
+</server>

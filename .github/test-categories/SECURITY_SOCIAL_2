@@ -1,0 +1,4 @@
+com.ibm.ws.security.social_fat.OpenShift
+com.ibm.ws.security.social_fat.delegated
+com.ibm.ws.security.social_fat.multiProvider
+com.ibm.ws.security.social_fat.okdServiceLogin

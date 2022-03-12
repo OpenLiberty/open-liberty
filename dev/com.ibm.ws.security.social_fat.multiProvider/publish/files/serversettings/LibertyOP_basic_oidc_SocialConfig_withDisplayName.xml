@@ -1,0 +1,70 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oidcLogin
+		id="oidcLogin_displayName1"
+		signatureAlgorithm="RS256"
+		trustAliasName="rsacert"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		displayName="oidc_1"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	<oidcLogin
+		id="oidcLogin_displayName2"
+		signatureAlgorithm="RS256"
+		trustAliasName="rsacert"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		displayName="oidc_2"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	<oidcLogin
+		id="oidcLogin_displayName3"
+		signatureAlgorithm="RS256"
+		trustAliasName="rsacert"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		displayName="oidc_3"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	<oidcLogin
+		id="oidcLogin_displayName4"
+		signatureAlgorithm="RS256"
+		trustAliasName="rsacert"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="badSecret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		displayName="oidc_3"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+</server>

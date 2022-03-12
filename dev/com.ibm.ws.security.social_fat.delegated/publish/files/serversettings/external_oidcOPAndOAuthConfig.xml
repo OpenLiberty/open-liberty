@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <openidConnectProvider id="ExternalOP"
+        oauthProviderRef="ExternalOauth"
+        signatureAlgorithm="RS256"
+        keyStoreRef="rsa_key"
+        requireOpenidScopeForUserInfo="false"
+    >
+    </openidConnectProvider>
+
+    <oauthProvider id="ExternalOauth" httpsRequired="false" autoAuthorize="true">
+        <autoAuthorizeClient>rp</autoAuthorizeClient>
+        <localStore>
+            <client name="rp" secret="{xor}LDo8LTor" displayname="rp" resourceIds="abc123" introspectTokens="true" scope="openid profile scope1 email phone address" enabled="true">
+                <redirect>http://localhost:${bvt.prop.security_1_HTTP_default}/ibm/api/social-login/redirect/oauth2Login1</redirect>
+                <redirect>https://localhost:${bvt.prop.security_1_HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1</redirect>
+                <redirect>http://localhost:${bvt.prop.security_1_HTTP_default}/ibm/api/social-login/redirect/oidcLogin1</redirect>
+                <redirect>https://localhost:${bvt.prop.security_1_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1</redirect>
+            </client>
+        </localStore>
+    </oauthProvider>
+
+    <oauth-roles>
+        <authenticated>
+            <special-subject type="ALL_AUTHENTICATED_USERS" />
+        </authenticated>
+    </oauth-roles>
+
+</server>

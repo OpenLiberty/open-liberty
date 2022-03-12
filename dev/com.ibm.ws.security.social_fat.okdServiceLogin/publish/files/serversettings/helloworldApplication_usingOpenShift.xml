@@ -1,0 +1,91 @@
+<!--
+    Copyright (c) 2020, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<application
+		type="war"
+		id="helloworldApp_goodGroup"
+		name="helloworldGoodGroup"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<group name="goodGroup" access-id="group:${oauth.server.userapi}/${service.acct.project}"/>
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="helloworldApp_badGroup"
+		name="helloworldBadGroup"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<group name="badGroup" access-id="group:${oauth.server.userapi}/someBadGroup"/>
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="helloworldApp_goodUser"
+		name="helloworldGoodUser"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="goodUser" access-id="user:${oauth.server.userapi}/${service.acct.project}:${service.acct.id}"/>
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="helloworldApp_badUser"
+		name="helloworldBadUser"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="badUser" access-id="user:${oauth.server.userapi}/someBadUser"/>
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="helloworldApp_goodGroupRealm"
+		name="helloworldGoodGroupRealm"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<group name="goodGroupRealm" access-id="group:SomeOtherRealmName/${service.acct.project}"/>
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="helloworldApp_goodUserRealm"
+		name="helloworldGoodUserRealm"
+		location="${server.config.dir}/test-apps/helloworld.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="goodUserRealm" access-id="user:SomeOtherRealmName/${service.acct.project}:${service.acct.id}"/>
+			</security-role>
+		</application-bnd>
+	</application>
+	
+</server>    

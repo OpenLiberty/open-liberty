@@ -36,16 +36,16 @@
 				name="client01"
 				secret="{xor}LDo8LTor"
 				displayname="client01"
-				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/hs256,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/hs384,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/hs512,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/rs256,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/rs256Implicit,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/rs384,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/rs512,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/es256,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/es384,
-					https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/es512"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/hs256,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/hs384,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/hs512,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/rs256,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/rs256Implicit,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/rs384,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/rs512,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/es256,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/es384,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/es512"
 				scope="ALL_SCOPES"
 				enabled="true" />
 				
@@ -76,7 +76,7 @@
 				name="client01"
 				secret="{xor}LDo8LTor"
 				displayname="client01"
-				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/oidcclient/redirect/hs256Implicit"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/hs256Implicit"
 				scope="ALL_SCOPES"
 				enabled="true" />
 				
