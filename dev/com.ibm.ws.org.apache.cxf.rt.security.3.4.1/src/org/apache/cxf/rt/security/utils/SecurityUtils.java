@@ -37,6 +37,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.resource.ResourceManager;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * Some common functionality
@@ -69,12 +71,14 @@ public final class SecurityUtils {
         }
         return handler;
     }
-
+    @Trivial // Liberty code change
     public static URL getConfigFileURL(Message message, String configFileKey, String configFileDefault) {
+        LOG.entering("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault");
         Object o = message.getContextualProperty(configFileKey);
         if (o == null) {
             o = configFileDefault;
         }
+        LOG.exiting("SecurityUtils.getConfigFileURL", "message, configFileKey, configFileDefault");
 
         return loadResource(message, o);
     }
@@ -83,7 +87,9 @@ public final class SecurityUtils {
         return loadResource((Message)null, o);
     }
 
+    @Trivial
     public static URL loadResource(Message message, Object o) {
+        LOG.entering("SecurityUtils.loadResource", "message, Object");
         Message msg = message;
         if (msg == null) {
             msg = PhaseInterceptorChain.getCurrentMessage();
@@ -92,6 +98,7 @@ public final class SecurityUtils {
         if (msg != null && msg.getExchange() != null && msg.getExchange().getBus() != null) {
             manager = msg.getExchange().getBus().getExtension(ResourceManager.class);
         }
+        LOG.exiting("SecurityUtils.loadResource", "Message, Object");
         return loadResource(manager, o);
     }
 
@@ -181,11 +188,14 @@ public final class SecurityUtils {
      * Get the security property value for the given property. It also checks for the older "ws-"* property
      * values.
      */
+    @Trivial
     public static Object getSecurityPropertyValue(String property, Message message) {
+        LOG.entering("SecurityUtils.getSecurityPropertyValue", property);
         Object value = message.getContextualProperty(property);
         if (value != null) {
             return value;
         }
+        LOG.exiting("SecurityUtils.getSecurityPropertyValue", "String, Message");
         return message.getContextualProperty("ws-" + property);
     }
 
@@ -193,12 +203,16 @@ public final class SecurityUtils {
      * Get the security property boolean for the given property. It also checks for the older "ws-"* property
      * values. If none is configured, then the defaultValue parameter is returned.
      */
+    @Trivial
     public static boolean getSecurityPropertyBoolean(String property, Message message, boolean defaultValue) {
+        LOG.entering("SecurityUtils.getSecurityPropertyBoolean", property);
         Object value = getSecurityPropertyValue(property, message);
 
         if (value != null) {
+            LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean");
             return PropertyUtils.isTrue(value);
         }
+        LOG.exiting("SecurityUtils.getSecurityPropertyBoolean", "String, Message, boolean");
         return defaultValue;
     }
 }

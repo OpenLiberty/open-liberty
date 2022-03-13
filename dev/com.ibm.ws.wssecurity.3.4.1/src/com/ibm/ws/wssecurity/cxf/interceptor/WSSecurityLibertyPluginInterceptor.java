@@ -297,7 +297,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param message
      */
     @FFDCIgnore (Exception.class)
-    private void handleehcacheconfigfile(Map<String, Object> providerconfigmap2, SoapMessage message) {
+    private void handleehcacheconfigfile(Map<String, Object> providerconfigmap2, @Sensitive SoapMessage message) {
         
         boolean ncache = false, tcache = false, scache = false;
         URL configfile = null;
@@ -349,7 +349,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param tokenStoreCacheInstance
      * @param message
      */
-    private void createtokenstorecacheinstance(String cacheKey, SoapMessage message) throws Exception {
+    private void createtokenstorecacheinstance(String cacheKey, @Sensitive SoapMessage message) throws Exception {
         
         String key = "liberty:".concat(cacheKey);
         if (message.getContextualProperty(key) != null) {
@@ -396,7 +396,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param nonceCacheInstance
      * @param message
      */
-    private void createwss4jcacheinstance(String instanceKey, SoapMessage message) throws Exception {
+    private void createwss4jcacheinstance(String instanceKey, @Sensitive SoapMessage message) throws Exception {
         
         String key = "liberty:".concat(instanceKey);
         if (message.getContextualProperty(key) != null) {
@@ -457,7 +457,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param enableNonceCache 
      * @param message
      */
-    private boolean isWSS4JCacheEnabled(String enablekey, SoapMessage message) {
+    private boolean isWSS4JCacheEnabled(String enablekey, @Sensitive SoapMessage message) {
         boolean specified = false;
         Object o = message.getContextualProperty(enablekey);
         if (o != null) {
@@ -479,7 +479,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param message 
      */
     @FFDCIgnore (Exception.class)
-    private void parseehcachefile(String instanceKey, URL configfile, SoapMessage message) throws Exception{
+    private void parseehcachefile(String instanceKey, URL configfile, @Sensitive SoapMessage message) throws Exception{
         net.sf.ehcache.CacheManager cacheManager = null;
 
         final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
@@ -527,7 +527,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param cc
      * @param config 
      */
-    private void updateMessageCacheMap(String instanceKey, SoapMessage message, net.sf.ehcache.config.CacheConfiguration cc, Configuration config) {
+    private void updateMessageCacheMap(String instanceKey, @Sensitive SoapMessage message, net.sf.ehcache.config.CacheConfiguration cc, Configuration config) {
         String key = "liberty:".concat(instanceKey);
         if (cc != null) {
             Map<String, Object> configmap = new HashMap<String, Object>();
@@ -577,7 +577,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param message
      * @return
      */
-    private boolean ehcacheinstanceavailable(String cachekey, SoapMessage message) {
+    private boolean ehcacheinstanceavailable(String cachekey, @Sensitive SoapMessage message) {
         
         if (message.getContextualProperty(cachekey) != null) {
             return true;
