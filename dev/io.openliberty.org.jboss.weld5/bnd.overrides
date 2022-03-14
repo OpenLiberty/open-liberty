@@ -100,8 +100,6 @@ Export-Package: \
 
 # The first 2 imported packages are additions, the rest come from the original manifest
 Import-Package: \
- javax.security.auth,\
- jakarta.xml.ws;version="[3.0,4)",\
  jakarta.annotation,\
  jakarta.ejb;resolution:=optional,\
  jakarta.el;resolution:=optional,\
