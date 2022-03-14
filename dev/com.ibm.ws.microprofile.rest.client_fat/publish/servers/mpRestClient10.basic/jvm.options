@@ -1,0 +1,3 @@
+# Added to test https://github.com/OpenLiberty/open-liberty/pull/20426
+-Dhttp.nonProxyHosts=*.svc|.cluster.local|localhost|127.0.0.1
+-Dhttp.proxyHost=localhost
