@@ -121,15 +121,4 @@
         <Object ocdref="com.ibm.ws.sib.alias" />
     </Designate>
 
-    <!-- ======================= Singleton declarations ======================= -->
-    <!-- ============ (used by StartBarrier and Singleton Monitor) ============ -->
-    <!-- === N.B. ensure defaultInstance.xml contains matching declarations === -->
-
-    <OCD id="com.ibm.ws.sib.processor.impl.store.ItemInterfaceFactory" name="internal" description="internal use only" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton" />
-    <Designate pid="com.ibm.ws.sib.processor.impl.store.ItemInterfaceFactory"><Object ocdref="com.ibm.ws.sib.processor.impl.store.ItemInterfaceFactory" /></Designate>
-
-    <OCD id="com.ibm.ws.messaging.service.JsAdminServiceImpl" name="internal" description="internal use only" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton" />
-    <Designate pid="com.ibm.ws.messaging.service.JsAdminServiceImpl"><Object ocdref="com.ibm.ws.messaging.service.JsAdminServiceImpl" /></Designate>
-
-
 </metatype:MetaData>

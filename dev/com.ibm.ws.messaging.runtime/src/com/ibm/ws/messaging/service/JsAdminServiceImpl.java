@@ -11,7 +11,7 @@
 
 package com.ibm.ws.messaging.service;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +23,6 @@ import java.util.Vector;
 import javax.management.ObjectName;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.lifecycle.Singleton;
@@ -37,17 +36,17 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-@Component (configurationPolicy=REQUIRE, property="service.vendor=IBM")
+@Component (configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.admin.JsAdminService", "service.vendor=IBM"})
 public class JsAdminServiceImpl implements JsAdminService, Singleton {
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 
-  static {
+static {
     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
       SibTr.debug(tc, "Source info: com/ibm/ws/messaging/service/JsAdminServiceImpl.java");
   }
 
   private JsMainImpl jsMain = null;
-  
+
   public String quoteJmxPropertyValue(String s) {
     if (JsAdminService.isValidJmxPropertyValue(s) == true)
       return s;
@@ -62,7 +61,6 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
   public synchronized void setAdminMain(JsMain newJsMain) throws IllegalStateException {
     if (jsMain != null) 
           throw new IllegalStateException("JsMain is already set:"+jsMain+" new JsMain:"+ newJsMain);
-   
     jsMain = (JsMainImpl) newJsMain;
     return;
   }
@@ -71,11 +69,10 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
     return jsMain != null;
   }
 
-
   public synchronized void reset() {
 	  jsMain = null;
   }
-  
+
   public synchronized JsMain getAdminMain() throws IllegalStateException {
     if (jsMain == null) 
     	throw new IllegalStateException("Object instance for the admin service was never set");

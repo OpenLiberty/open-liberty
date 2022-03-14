@@ -78,8 +78,7 @@ Private-Package: \
 
 -dsannotations: \
  com.ibm.ws.sib.common.service.CommonServiceFacade, \
- com.ibm.ws.messaging.lifecycle.SingletonMonitor, \
- com.ibm.ws.messaging.lifecycle.SingletonsReady
+ com.ibm.ws.messaging.lifecycle.*
 
 instrument.disabled: true
 
