@@ -108,14 +108,14 @@ public class SingletonMonitor implements Introspector {
     }
 
     @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY, target = "(id=unbound)" /* config will supply the correct target filter */)
-    synchronized void addSingleton(Singleton singleton, Map<String, Object> props) {
-	realizedSingletons.add(getServicePid(props));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format(" Singleton added: %s%nConfigured: %s%n:  Realized: %s", singleton.getClass(), declaredSingletons, realizedSingletons));
+    synchronized void addSingleton(SingletonAgent agent, Map<String, Object> props) {
+	realizedSingletons.add(getSingletonType(props));
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Singleton added: %s%nConfigured: %s%n:  Realized: %s", agent, declaredSingletons, realizedSingletons));
     }
 
-    synchronized void removeSingleton(Singleton singleton, Map<String, Object> props) {
-        realizedSingletons.remove(getServicePid(props));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format("%s singleton removed: %s%nConfigured: %s%n  Realized: %s", this, singleton.getClass(), declaredSingletons, realizedSingletons));
+    synchronized void removeSingleton(Singleton agent, Map<String, Object> props) {
+        realizedSingletons.remove(getSingletonType(props));
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Singleton removed: %s%nConfigured: %s%n  Realized: %s", agent, declaredSingletons, realizedSingletons));
     }
 
     @Override
@@ -147,7 +147,7 @@ public class SingletonMonitor implements Introspector {
             .forEach(out::println);
     }
 
-    private static String getServicePid(Map<String, Object> props) {
-        return (String)props.getOrDefault(SERVICE_PID, "no service pid found in props: " + props);
+    private static String getSingletonType(Map<String, Object> props) {
+        return (String)props.getOrDefault("type", "no 'type' property found: " + props);
     }
 }

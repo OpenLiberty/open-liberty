@@ -17,7 +17,7 @@
              of every configuration whose ibm:objectClass matches this AD's ibm:service -->
         <AD id="singletonDeclarations" name="internal" description="internal use only"
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
-            ibm:service="com.ibm.ws.messaging.lifecycle.Singleton"
+            ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
             default="*" />
         <!-- Config processing sets the number of singleton services to expect equal to the number declared (see AD above) -->
         <AD id="singletons.cardinality.minimum" name="internal" description="internal use only"
@@ -36,7 +36,7 @@
              of every configuration whose ibm:objectClass matches this AD's ibm:service -->
         <AD id="singletonDeclarations" name="internal" description="internal use only"
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
-            ibm:service="com.ibm.ws.messaging.lifecycle.Singleton"
+            ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
             default="*" />
         <!-- Config processing will generate an LDAP filter to match only configured singletons -->
         <AD id="Singleton.target" name="internal" description="internal use only"
@@ -45,10 +45,9 @@
     </OCD>
     <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonMonitor"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonMonitor"/></Designate>
 
-    <!-- ======================= Singleton declarations ======================= -->
-    <!-- ============ (used by SingletonsReady and Singleton Monitor) ============ -->
-    <!-- === N.B. ensure defaultInstance.xml contains matching declarations === -->
-
-    <OCD id="com.ibm.ws.sib.common.service.CommonServiceFacade"  description="internal use only" name="internal" ibm:objectClass="com.ibm.ws.messaging.lifecycle.Singleton"/>
-    <Designate pid="com.ibm.ws.sib.common.service.CommonServiceFacade"><Object ocdref="com.ibm.ws.sib.common.service.CommonServiceFacade" /></Designate>
+    <OCD id="com.ibm.ws.messaging.lifecycle.SingletonAgent" name="internal" description="internal use only" ibm:alias="messaging-singleton">
+        <AD id="type" name="internal" description="internal use only" type="String" required="true" ibm:unique="type" />
+        <AD id="singleton.target" ibm:final="true" name="internal" description="internal use only" type="String" default="(type=${type})" />
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.messaging.lifecycle.SingletonAgent"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonAgent" /></Designate>
 </metatype:MetaData>

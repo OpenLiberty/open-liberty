@@ -15,6 +15,7 @@ import static com.ibm.websphere.ras.Tr.entry;
 import static com.ibm.websphere.ras.Tr.exit;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.util.HashSet;
@@ -69,12 +70,14 @@ public class SingletonsReady {
     public SingletonsReady(
             // This @Reference is filtered and will only match configured singletons
             // (e.g. in server.xml or a defaultInstances.xml snippet)
-            @Reference(name = "singletons") List<Singleton> singletons,
+            @Reference(name = "singletons") List<SingletonAgent> singletonAgents,
             // This @Reference is unfiltered and will receive every
             // available singleton whether it matches anything or not
             @Reference List<Singleton> allSingletons) {
 
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletons, allSingletons);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletonAgents, allSingletons);
+        
+        List<Singleton> singletons = singletonAgents.stream().map(SingletonAgent::getSingleton).collect(toList()); 
 
         {
             final List<String> unexpected = allSingletons
