@@ -40,7 +40,7 @@ import static com.ibm.ws.sib.msgstore.XmlConstants.XML_MESSAGE_STORE;
 import static com.ibm.ws.sib.utils.ras.SibTr.debug;
 import static com.ibm.ws.sib.utils.ras.SibTr.entry;
 import static com.ibm.ws.sib.utils.ras.SibTr.exit;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -119,7 +119,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * 
  */
 
-@Component(service = {MessageStore.class, Singleton.class}, configurationPolicy = REQUIRE, property="service.vendor=IBM")
+@Component(service = {MessageStore.class, Singleton.class}, configurationPolicy = IGNORE, property={"type=com.ibm.ws.sib.msgstore.MessageStore", "service.vendor=IBM"})
 public final class MessageStoreImpl extends MessageStore {
     private static TraceNLS nls = TraceNLS.getTraceNLS(MessageStoreConstants.MSG_BUNDLE);
     private static final TraceComponent tc = SibTr.register(MessageStoreImpl.class, MSG_GROUP, MSG_BUNDLE);
