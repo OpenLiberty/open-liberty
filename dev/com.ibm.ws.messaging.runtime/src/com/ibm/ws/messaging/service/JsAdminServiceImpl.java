@@ -11,7 +11,7 @@
 
 package com.ibm.ws.messaging.service;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +23,6 @@ import java.util.Vector;
 import javax.management.ObjectName;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.lifecycle.Singleton;
@@ -37,7 +36,7 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-@Component (configurationPolicy=REQUIRE, property="service.vendor=IBM")
+@Component (configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.admin.JsAdminService", "service.vendor=IBM"})
 public class JsAdminServiceImpl implements JsAdminService, Singleton {
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 
