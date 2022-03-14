@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,15 +32,65 @@ import com.ibm.ws.jca.utils.xml.wlp.ra.WlpIbmuiGroups;
 import com.ibm.ws.jca.utils.xml.wlp.ra.WlpRaConnector;
 
 /**
- * ra.xml connector element. We are using this for now, until we get the STAX Parser implemented. If we do not go for the parser, then we can use
- * this with some refactoring such that there are implementations for all declared by Connector interface.
+ * ra.xml connector element. We are using this for now,
+ * until we get the STAX Parser implemented.
+ *
+ * If we do not go for the parser, then we can use this
+ * with some refactoring such that there are implementations
+ * for all declared by Connector interface.
  */
 @Trivial
 @XmlRootElement(name = "connector")
-@XmlType(name = "connectorType", propOrder = { "moduleName", "description", "displayName", "icon", "vendorName", "eisType",
-                                              "resourceAdapterVersion", "license",
-                                              "resourceAdapter", "requiredWorkContext" })
+@XmlType(name = "connectorType",
+         propOrder = { "moduleName", "description", "displayName", "icon", "vendorName", "eisType",
+                       "resourceAdapterVersion", "license",
+                       "resourceAdapter", "requiredWorkContext" })
 public class RaConnector implements Connector {
+    public RaConnector() {
+        // Empty
+    }
+
+    public RaConnector(Ra10Connector ra10Connector) {
+        this();
+
+        this.copyRa10Settings(ra10Connector);
+    }
+
+    public void copyRa10Settings(Ra10Connector ra10Connector) {
+        if (ra10Connector.getDescription() != null) {
+            RaDescription desc = new RaDescription();
+            desc.setValue(ra10Connector.getDescription());
+            description.add(desc);
+        }
+
+        RaDisplayName name = new RaDisplayName();
+        name.setValue(ra10Connector.getDisplayName());
+        displayName.add(name);
+
+        Ra10Icon ra10Icon = ra10Connector.getIcon();
+        if (ra10Icon != null) {
+            RaIcon raIcon = new RaIcon();
+            raIcon.copyRa10Settings(ra10Icon);
+            icon.add(raIcon);
+        }
+
+        eisType = ra10Connector.getEisType();
+
+        if (ra10Connector.getLicense() != null) {
+            license = new RaLicense();
+            license.copyRa10Settings(ra10Connector.getLicense());
+        }
+
+        resourceAdapter = new RaResourceAdapter();
+        resourceAdapter.copyRa10Settings(ra10Connector.getResourceAdapter());
+
+        version = ra10Connector.getSpecVersion();
+        vendorName = ra10Connector.getVendorName();
+        resourceAdapterVersion = ra10Connector.getVersion();
+    }
+
+    //
+
     private String version;
     private List<RaDescription> description = new LinkedList<RaDescription>();
     private List<RaDisplayName> displayName = new LinkedList<RaDisplayName>();
@@ -193,9 +243,6 @@ public class RaConnector implements Connector {
         }
     }
 
-    /**
-     * @return &lt;display-name> as a read-only list
-     */
     @Override
     public List<DisplayName> getDisplayNames() {
         List<DisplayName> names = new ArrayList<DisplayName>();
@@ -205,9 +252,6 @@ public class RaConnector implements Connector {
         return names;
     }
 
-    /**
-     * @return &lt;icon> as a read-only list
-     */
     @Override
     public List<Icon> getIcons() {
         List<Icon> icons = new ArrayList<Icon>();
@@ -217,9 +261,6 @@ public class RaConnector implements Connector {
         return icons;
     }
 
-    /**
-     * @return &lt;description> as a read-only list
-     */
     @Override
     public List<Description> getDescriptions() {
         List<Description> descs = new ArrayList<Description>();
@@ -229,65 +270,24 @@ public class RaConnector implements Connector {
         return descs;
     }
 
-    /**
-     * @return the metadataComplete
-     */
     public Boolean getMetadataComplete() {
         if (metadataComplete == null)
             metadataComplete = Boolean.FALSE;
         return metadataComplete;
     }
 
-    /**
-     * @param metadataComplete the metadataComplete to set
-     */
     @XmlAttribute(name = "metadata-complete")
     public void setMetadataComplete(Boolean metadataComplete) {
         this.metadataComplete = metadataComplete;
     }
 
-    public void copyRa10Settings(Ra10Connector ra10Connector) {
-        if (ra10Connector.getDescription() != null) {
-            RaDescription desc = new RaDescription();
-            desc.setValue(ra10Connector.getDescription());
-            description.add(desc);
-        }
-        RaDisplayName name = new RaDisplayName();
-        name.setValue(ra10Connector.getDisplayName());
-        this.displayName.add(name);
-        Ra10Icon ra10Icon = ra10Connector.getIcon();
-        if (ra10Icon != null) {
-            RaIcon raIcon = new RaIcon();
-            raIcon.copyRa10Settings(ra10Icon);
-            icon.add(raIcon);
-        }
-        this.eisType = ra10Connector.getEisType();
-        if (ra10Connector.getLicense() != null) {
-            this.license = new RaLicense();
-            license.copyRa10Settings(ra10Connector.getLicense());
-        }
-        this.resourceAdapter = new RaResourceAdapter();
-        resourceAdapter.copyRa10Settings(ra10Connector.getResourceAdapter());
-        this.version = ra10Connector.getSpecVersion();
-        this.vendorName = ra10Connector.getVendorName();
-        this.resourceAdapterVersion = ra10Connector.getVersion();
-
-    }
-
-    /**
-     * @return the id
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     @XmlID
     @XmlAttribute(name = "id")
     public void setId(String id) {
         this.id = id;
     }
-
 }

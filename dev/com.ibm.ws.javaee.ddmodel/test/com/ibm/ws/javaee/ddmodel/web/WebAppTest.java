@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.javaee.dd.common.ContextService;
 import com.ibm.ws.javaee.dd.common.EnvEntry;
+import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
+import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
 
 public class WebAppTest extends WebAppTestBase {
     // Absolute ordering fragments.
@@ -205,4 +210,134 @@ public class WebAppTest extends WebAppTestBase {
                      "unexpected.content",
                      "CWWKC2257E", "deny-uncovered-http-methods", "MyWar.war : WEB-INF/web.xml" );                     
     }
+    
+    // EE10 element testing ...
+
+    @Test
+    public void testEE10ContextServiceWeb31() throws Exception {
+        parseWebApp( webApp(WebApp.VERSION_3_1, DDJakarta10Elements.CONTEXT_SERVICE_XML),
+                     WebApp.VERSION_3_1,
+                     "unexpected.child.element",
+                     "CWWKC2259E", "context-service",
+                     "MyWar.war : WEB-INF/web.xml" );                     
+    }    
+    
+    @Test
+    public void testEE10ManagedExecutorWeb31() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_3_1, DDJakarta10Elements.MANAGED_EXECUTOR_XML),
+                     WebApp.VERSION_3_1,
+                     "unexpected.child.element",
+                     "CWWKC2259E", "managed-executor",
+                     "MyWar.war : WEB-INF/web.xml" );                     
+    }    
+    
+    @Test
+    public void testEE10ManagedScheduledExecutorWeb31() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_3_1, DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                     WebApp.VERSION_3_1,
+                     "unexpected.child.element",
+                     "CWWKC2259E", "managed-scheduled-executor",
+                     "MyWar.war : WEB-INF/web.xml" );                     
+    }
+
+    @Test
+    public void testEE10ManagedThreadFactoryWeb31() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_3_1, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
+                     WebApp.VERSION_3_1,
+                     "unexpected.child.element",
+                     "CWWKC2259E", "managed-thread-factory",
+                     "MyWar.war : WEB-INF/web.xml" );                     
+    }    
+
+    //
+
+    @Test
+    public void testEE10ContextServiceWeb50() throws Exception {
+        parseWebApp( webApp(WebApp.VERSION_5_0, DDJakarta10Elements.CONTEXT_SERVICE_XML),
+                WebApp.VERSION_5_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "context-service",
+                "MyWar.war : WEB-INF/web.xml" );
+    }    
+
+    @Test
+    public void testEE10ManagedExecutorWeb50() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_5_0, DDJakarta10Elements.MANAGED_EXECUTOR_XML),
+                WebApp.VERSION_5_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "managed-executor",
+                "MyWar.war : WEB-INF/web.xml" );
+    }    
+
+    @Test
+    public void testEE10ManagedScheduledExecutorWeb50() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_5_0, DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                WebApp.VERSION_5_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "managed-scheduled-executor",
+                "MyWar.war : WEB-INF/web.xml" );
+    }        
+
+    @Test
+    public void testEE10ManagedThreadFactoryWeb50() throws Exception {
+        parseWebApp( webApp( WebApp.VERSION_5_0, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
+                WebApp.VERSION_5_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "managed-thread-factory",
+                "MyWar.war : WEB-INF/web.xml" );
+    }    
+
+    //
+
+    @Test
+    public void testEE10ContextServiceWeb60() throws Exception {
+        WebApp webApp = parseWebApp(
+                webApp( WebApp.VERSION_6_0, DDJakarta10Elements.CONTEXT_SERVICE_XML),
+                WebApp.VERSION_6_0);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "contextServices");
+
+        List<ContextService> services = webApp.getContextServices();
+        DDJakarta10Elements.verifySize(names, 1, services);
+        DDJakarta10Elements.verify(names, services.get(0));        
+    }    
+    
+    @Test
+    public void testEE10ManagedExecutorWeb60() throws Exception {
+        WebApp webApp = parseWebApp(
+                webApp( WebApp.VERSION_6_0, DDJakarta10Elements.MANAGED_EXECUTOR_XML),
+                WebApp.VERSION_6_0);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedExecutors");
+
+        List<ManagedExecutor> executors = webApp.getManagedExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));        
+    }    
+
+    @Test
+    public void testEE10ManagedScheduledExecutorWeb60() throws Exception {
+        WebApp webApp = parseWebApp(
+                webApp( WebApp.VERSION_6_0, DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                WebApp.VERSION_6_0);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedScheduledExecutors");
+        
+        List<ManagedScheduledExecutor> executors = webApp.getManagedScheduledExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));        
+    }        
+
+    @Test
+    public void testEE10ManagedThreadFactoryWeb60() throws Exception {
+        WebApp webApp = parseWebApp(
+                webApp( WebApp.VERSION_6_0, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
+                WebApp.VERSION_6_0);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedThreadFactories");
+        
+        List<ManagedThreadFactory> factories = webApp.getManagedThreadFactories();
+        DDJakarta10Elements.verifySize(names, 1, factories);
+        DDJakarta10Elements.verify(names, factories.get(0));
+    }    
 }

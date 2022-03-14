@@ -452,7 +452,7 @@ public class RecoveryManager implements Runnable {
 
         // Now ensure that any initial recovery processing has completed before we return.
         // (Note: a call to shutdownInProgress will cause this to complete since this is a logical chunk)
-        waitForRecoveryCompletion();
+        waitForRecoveryCompletion(true);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "prepareToShutdown");
@@ -1225,9 +1225,9 @@ public class RecoveryManager implements Runnable {
      * called us to recreate the objects, rather than just rejecting the call with
      * some transient execption, we wait a while as we know we will be ready soon.
      */
-    public void waitForReplayCompletion() {
+    public void waitForReplayCompletion(boolean localRecovery) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "waitForReplayCompletion");
+            Tr.entry(tc, "waitForReplayCompletion", localRecovery);
 
         if (!_replayCompleted) {
             try {
@@ -1239,7 +1239,8 @@ public class RecoveryManager implements Runnable {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "completed wait for replay completion");
             } catch (InterruptedException exc) {
-                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForReplayCompletion", "1242", this);
+                if (localRecovery)
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForReplayCompletion", "1242", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Wait for resync complete interrupted.");
             }
@@ -1270,9 +1271,9 @@ public class RecoveryManager implements Runnable {
     /**
      * Blocks the current thread until initial recovery has completed.
      */
-    public void waitForRecoveryCompletion() {
+    public void waitForRecoveryCompletion(boolean localRecovery) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "waitForRecoveryCompletion");
+            Tr.entry(tc, "waitForRecoveryCompletion", localRecovery);
 
         if (!_recoveryCompleted) {
             try {
@@ -1284,7 +1285,8 @@ public class RecoveryManager implements Runnable {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "completed wait for recovery completion");
             } catch (InterruptedException exc) {
-                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForRecoveryCompletion", "1242", this);
+                if (localRecovery)
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForRecoveryCompletion", "1242", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Wait for recovery complete interrupted.");
             }
@@ -1307,8 +1309,18 @@ public class RecoveryManager implements Runnable {
             _recoveryInProgress.post();
         }
 
+        // If the home server is shutting down and we are recovering a peer, then don't drive initialRecoveryComplete()
+        boolean bypass = false;
+        if (!_failureScopeController.localFailureScope()) {
+            if (_shutdownInProgress) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Shutdown in progress bypass initialRecoveryComplete processing");
+                bypass = true;
+            }
+        }
+
         // Check for null currently required as z/OS creates this object with a null agent reference.
-        if (_agent != null) {
+        if (!bypass && _agent != null) {
             try {
                 RecoveryDirectorFactory.recoveryDirector().initialRecoveryComplete(_agent, _failureScopeController.failureScope());
             } catch (Exception exc) {
@@ -1344,13 +1356,18 @@ public class RecoveryManager implements Runnable {
         if (_failureScopeController.localFailureScope()) {
             TMHelper.asynchRecoveryProcessingComplete(t);
         } else {
-            // Check for null currently required as z/OS creates this object with a null agent reference.
-            if (_agent != null) {
-                try {
-                    RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
-                } catch (Exception exc) {
-                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+            if (!_shutdownInProgress) {
+                // Check for null currently required as z/OS creates this object with a null agent reference.
+                if (_agent != null) {
+                    try {
+                        RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
+                    } catch (Exception exc) {
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                    }
                 }
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Shutdown in progress bypass initialRecoveryFailed processing");
             }
         }
 
@@ -1758,7 +1775,7 @@ public class RecoveryManager implements Runnable {
             Tr.entry(tc, "run");
 
         final String serverName = _failureScopeController.serverName();
-
+        boolean localRecovery = true;
         try {
 
             if (tc.isDebugEnabled())
@@ -1772,8 +1789,13 @@ public class RecoveryManager implements Runnable {
                 // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
-                    if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName))
+                    if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName)) {
                         _leaseLog.updateServerLease(serverName, _recoveryGroup, true);
+                    } else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "This is peer recovery");
+                        localRecovery = false;
+                    }
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
                     Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _leaseLog);
@@ -1801,7 +1823,7 @@ public class RecoveryManager implements Runnable {
                     _tranLog.openLog();
 
                     // If this is a peer tran log, then flag that we have opened it.
-                    if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
+                    if (!localRecovery)
                         _peerTranLogEverOpened = true;
                 } catch (LogIncompatibleException exc) {
                     // No FFDC Code needed.
@@ -1840,6 +1862,24 @@ public class RecoveryManager implements Runnable {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1830", this);
                     Tr.error(tc, "WTRN0111_LOG_ALLOCATION", _tranLog);
 
+                    closeLogs();
+
+                    recoveryFailed(exc);
+
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
+                    return;
+                } catch (InternalLogException exc) {
+                    if (!localRecovery && _shutdownInProgress) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Peer recovery and shutdown in progress, fail quietly");
+                    } else {
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
+                        Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _tranLog);
+                    }
+
+                    // If the logs were opened successfully then attempt to close them with a close immediate. This does
+                    // not cause any keypointing, it just closes the file channels and handles (if they are still open)
                     closeLogs();
 
                     recoveryFailed(exc);
@@ -1921,6 +1961,24 @@ public class RecoveryManager implements Runnable {
                 } catch (LogAllocationException exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1922", this);
                     Tr.error(tc, "WTRN0111_LOG_ALLOCATION", _xaLog);
+
+                    // If the logs were opened successfully then attempt to close them with a close immediate. This does
+                    // not cause any keypointing, it just closes the file channels and handles (if they are still open)
+                    closeLogs();
+
+                    recoveryFailed(exc);
+
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
+                    return;
+                } catch (InternalLogException exc) {
+                    if (!localRecovery && _shutdownInProgress) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Peer recovery and shutdown in progress, fail quietly");
+                    } else {
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1922", this);
+                        Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _xaLog);
+                    }
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)

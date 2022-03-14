@@ -151,6 +151,7 @@ task autoFVT {
       include 'org.apache.aries.util-*.jar'
       include 'osgi.core*.jar'
       include 'jackson*.jar'
+      include 'jsch-*.jar'
     }
 
     // Copy the com.ibm.ws.junit.extensions jar
@@ -162,7 +163,7 @@ task autoFVT {
       
     // Copy the infra jar
     copy {
-      from cnf.file('mavenlibs/infra.buildtasks-core-4.0.0.jar')
+      from cnf.file('mavenlibs/infra.buildtasks-core-6.0.6.jar')
       into new File(autoFvtDir, 'build/lib')
     }
 

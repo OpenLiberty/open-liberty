@@ -1928,7 +1928,7 @@ public final class StaxUtils {
             } finally {
                 StaxUtils.close(writer);
             }
-            LOG.info(sw.toString());
+            LOG.finest(sw.toString());
         } catch (XMLStreamException e) {
             LOG.severe(e.getMessage());
         }

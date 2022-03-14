@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Es ist keine Aktion erforderli
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Das Verbundauthentifizierungs-Plug-in mit dem Klassennamen {0} wurde inaktiviert. 
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Es wurde ein Verbundauthentifizierungs-Plug-in inaktiviert, das jetzt nicht mehr f\u00fcr die Authentifizierung von Verbundanforderungen verf\u00fcgbar ist.
 JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Es ist keine Aktion erforderlich.
+
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Vom Authentifizierungscache wurden alle Eintr\u00e4ge im JCache-Cache {0} gel\u00f6scht. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Vom Authentifizierungscache werden alle Eintr\u00e4ge im JCache-Sicherungscache bereinigt, wenn die Konfiguration der Sicherheit oder der Benutzerregistry ge\u00e4ndert wird oder wenn die MBean "DeleteAuthCache" aufgerufen wird. 
+JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Es ist keine Aktion erforderlich.

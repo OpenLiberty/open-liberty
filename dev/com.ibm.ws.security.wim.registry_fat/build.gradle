@@ -61,4 +61,19 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
     rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry_test.custom_1.0.jar'
   }
+  
+    /*
+   * Copy sample CustomRepositoryDelay user feature to this test bucket.
+   */
+  copy { 
+    from project(':com.ibm.ws.security.wim.repository_test.custom.delay').file('publish/usr/extension/lib/features/customRepositorySampleDelay-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.wim.repository_test.custom.delay').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.delay.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.wim.repository_test.custom.delay.jar', 'com.ibm.ws.security.wim.repository_test.custom.delay_1.0.jar'
+    
+  }
+  
 }

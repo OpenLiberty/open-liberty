@@ -44,7 +44,6 @@ WS-TraceGroup: REACTIVESTREAMS
 
 
 src: src
-testsrc: test/src
   
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

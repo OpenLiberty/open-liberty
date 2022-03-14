@@ -55,11 +55,11 @@ public class GraphQLTckPackageTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testRestClientTck() throws Exception {
+    public void testGraphQLTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.graphql_fat_tck", this.getClass() + ":testGraphQLTck");
         Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
         resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Graph QL");
+        resultInfo.put("feature_name", "GraphQL");
         resultInfo.put("feature_version", "1.0");
         MvnUtils.preparePublicationFile(resultInfo);
     }

@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Un point de contr\u00f4le du serveur a \u00e9t\u00e9 demand\u00e9. Une fois le point de contr\u00f4le termin\u00e9, le serveur s'arr\u00eate.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Un point de contr\u00f4le a \u00e9t\u00e9 demand\u00e9. Le serveur est arr\u00eat\u00e9 et son \u00e9tat en cours est \u00e9crit sur le disque.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le serveur Liberty reprend ses op\u00e9rations \u00e0 partir d'un point de contr\u00f4le.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=Une op\u00e9ration de restauration a \u00e9t\u00e9 ex\u00e9cut\u00e9e sur une image de point de contr\u00f4le du serveur Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 avec le message suivant : {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9.  Aucune image valide du processus de point de contr\u00f4le pour le serveur n'a \u00e9t\u00e9 cr\u00e9\u00e9e.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Examinez le r\u00e9pertoire des points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires afin de d\u00e9terminer la raison de l'\u00e9chec du point de contr\u00f4le.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Le serveur n''a pas pu \u00eatre restaur\u00e9 \u00e0 partir d''un point de contr\u00f4le avec le message suivant : {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Une tentative de restauration du serveur \u00e0 partir d'un point de contr\u00f4le a \u00e9chou\u00e9.  Le serveur est inactif.
+RESTORE_FAILED_CWWKC0454E.useraction=Examinez le r\u00e9pertoire des points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires afin de d\u00e9terminer la raison de l'\u00e9chec de la restauration du serveur.
+

@@ -29,16 +29,22 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Abstract test class that can extended from concrete test classes to user common testing functionality.
  */
-@SuppressWarnings("restriction")
 public abstract class BaseTestCase {
 
     protected static final String USER1_NAME = "user1";
     protected static final String USER1_PASSWORD = "user1Password";
+    protected static final String USER1_PASSWORD_HASH = "hQM3o73+TAyCGqHR7no3DJLDgBUTLpyH7mWR0e7bHhqIqlfbL1gMLxtRP+nfJ0XZUnriq4NGpAgW4WGdnq92cw==";
+
     protected static final String JCACHE_HIT = "JCache HIT for key ";
     protected static final String JCACHE_MISS = "JCache MISS for key ";
-    protected static final String JCACHE_HIT_USER1_BASICAUTH = JCACHE_HIT + "BasicRealm:user1:BjVc2C4Xh1a2Xc1EJ5Y1F0zyui8=";
-    protected static final String JCACHE_MISS_USER1_BASICAUTH = JCACHE_MISS + "BasicRealm:user1:BjVc2C4Xh1a2Xc1EJ5Y1F0zyui8=";
+    protected static final String JCACHE_HIT_USER1_BASICAUTH = JCACHE_HIT + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
+    protected static final String JCACHE_MISS_USER1_BASICAUTH = JCACHE_MISS + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
     protected static final String JCACHE_CLEAR_ALL_ENTRIES = "CWWKS1125I";
+
+    protected static final String IN_MEMORY_HIT = "In-memory cache HIT for key ";
+    protected static final String IN_MEMORY_MISS = "In-memory cache MISS for key ";
+    protected static final String IN_MEMORY_HIT_USER1_BASICAUTH = IN_MEMORY_HIT + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
+    protected static final String IN_MEMORY_MISS_USER1_BASICAUTH = IN_MEMORY_MISS + "BasicRealm:user1:" + encodeForRegex(USER1_PASSWORD_HASH);
 
     protected static final String AUTH_CACHE_NAME = "AuthCache";
     protected static final String COOKIE_CACHE_NAME = "LoggedOutCookieCache";
@@ -168,22 +174,41 @@ public abstract class BaseTestCase {
     }
 
     /**
-     * Assert whether there was or was not a basic auth (user/password) cache hit.
+     * Assert whether there was or was not a basic auth (user/password) cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
      * @param server         The server to check.
      * @throws Exception If the check failed for some unforeseen reason.
      */
-    protected static void assertBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
+    protected static void assertJCacheBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
         if (expectCacheHit) {
-            assertFalse("Request should have resulted in an auth cache hit.", server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT_USER1_BASICAUTH).isEmpty());
+            assertFalse("Request should have resulted in an JCache auth cache hit for: " + JCACHE_HIT_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT_USER1_BASICAUTH).isEmpty());
         } else {
-            assertFalse("Request should have resulted in an auth cache miss.", server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS_USER1_BASICAUTH).isEmpty());
+            assertFalse("Request should have resulted in an JCache auth cache miss for: " + JCACHE_MISS_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS_USER1_BASICAUTH).isEmpty());
         }
     }
 
     /**
-     * Assert whether there was or was not an LTPA authentication cache hit.
+     * Assert whether there was or was not a basic auth (user/password) cache hit to the in-memory cache.
+     *
+     * @param expectCacheHit Whether to expect there was a cache hit.
+     * @param server         The server to check.
+     * @throws Exception If the check failed for some unforeseen reason.
+     */
+    protected static void assertInMemoryBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
+        if (expectCacheHit) {
+            assertFalse("Request should have resulted in an in-memory auth cache hit for: " + IN_MEMORY_HIT_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_HIT_USER1_BASICAUTH).isEmpty());
+        } else {
+            assertFalse("Request should have resulted in an in-memory auth cache miss for: " + IN_MEMORY_MISS_USER1_BASICAUTH,
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_MISS_USER1_BASICAUTH).isEmpty());
+        }
+    }
+
+    /**
+     * Assert whether there was or was not an LTPA authentication cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
      * @param server         The server to check the logs for the cache hit.
@@ -213,7 +238,7 @@ public abstract class BaseTestCase {
      * @param cookie         The JWT cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
-    protected static void assertJwtAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
+    protected static void assertJCacheJwtAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
         String hashedCookie = HashUtils.digest(cookie);
         String encodedCookie = encodeForRegex(hashedCookie);
 

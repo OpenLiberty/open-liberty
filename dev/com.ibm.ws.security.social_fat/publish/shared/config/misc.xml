@@ -17,8 +17,8 @@
 	<httpEndpoint
 		id="defaultHttpEndpoint"
 		host="*"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}"
+		httpPort="${bvt.prop.security_2_HTTP_default}"
+		httpsPort="${bvt.prop.security_2_HTTP_default.secure}"
 	>
 		<tcpOptions soReuseAddr="true" />
 	</httpEndpoint>

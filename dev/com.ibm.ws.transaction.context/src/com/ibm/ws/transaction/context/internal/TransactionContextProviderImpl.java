@@ -22,6 +22,7 @@ import javax.enterprise.concurrent.ManagedTask;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -174,6 +175,7 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
      * @see com.ibm.wsspi.threadcontext.ThreadContextProvider#getPrerequisites()
      */
     @Override
+    @Trivial
     public List<ThreadContextProvider> getPrerequisites() {
         return null;
     }

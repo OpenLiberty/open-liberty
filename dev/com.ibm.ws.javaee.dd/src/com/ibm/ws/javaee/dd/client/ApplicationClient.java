@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import com.ibm.ws.javaee.dd.common.PersistenceContextRef;
  * client.
  */
 public interface ApplicationClient extends ModuleDeploymentDescriptor, DeploymentDescriptor, JNDIEnvironmentRefsGroup {
-
-    static final String DD_NAME = "META-INF/application-client.xml";
+    String DD_SHORT_NAME = "application-client.xml";
+    String DD_NAME = "META-INF/application-client.xml";
 
     int VERSION_1_2 = 12;
     int VERSION_1_3 = 13;
@@ -38,13 +38,15 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
     int VERSION_7 = 70;
     int VERSION_8 = 80;
     int VERSION_9 = 90;
+    int VERSION_10 = 100;
 
     public int[] VERSIONS = {
             VERSION_1_2, VERSION_1_3, // DTD versions
             VERSION_1_4, // sun.j2ee
             VERSION_5, VERSION_6, // sun.javaee
             VERSION_7, VERSION_8, // jcp.j2ee
-            VERSION_9, // jakarta
+            VERSION_9, // jakarta ee 9
+            VERSION_10 // jakarta ee 10
     };
 
     int getVersionID();

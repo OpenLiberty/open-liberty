@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,3 +16,58 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: El\u0151\u00e1ll\u00edtott Infinispan konfigur\u00e1ci\u00f3 HTTP munkamenet megmarad\u00e1shoz: {0}. Ha fel\u00fcl k\u00edv\u00e1nja \u00edrni, akkor \u00e1ll\u00edtsa be a httpSessionCache konfigur\u00e1ci\u00f3s elem vagy a cacheManager konfigur\u00e1ci\u00f3s elem uri attrib\u00fatum\u00e1t.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=A HTTP munkamenet perzisztenci\u00e1hoz haszn\u00e1lt Infinispan gyors\u00edt\u00f3t\u00e1rak tov\u00e1bbi konfigur\u00e1ci\u00f3t ig\u00e9nyelnek a munkamenetek t\u00e1rol\u00e1s\u00e1hoz kiszolg\u00e1l\u00f3k k\u00f6z\u00f6tt. A Liberty el\u0151\u00e1ll\u00edtja ezt a konfigur\u00e1ci\u00f3t, ha a felhaszn\u00e1l\u00f3 nem biztos\u00edtja.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Ha el\u00e9gedett az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3val, akkor nincs teend\u0151je. M\u00e1sk\u00fcl\u00f6nben az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3 kiindul\u00e1si pontk\u00e9nt haszn\u00e1lhat\u00f3.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: A(z) {0} JCache {1} ezredm\u00e1sodpercen bel\u00fcl l\u00e9trej\u00f6tt.
+CWLJC0001_CACHE_CREATED.explanation=A megnevezett JCache l\u00e9trehoz\u00e1sra ker\u00fclt, mert nem volt megtal\u00e1lhat\u00f3.
+CWLJC0001_CACHE_CREATED.useraction=Semmit sem kell tennie.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: A megl\u00e9v\u0151 {0} JCache {1} ezredm\u00e1sodpercen bel\u00fcl megtal\u00e1lhat\u00f3 volt.
+CWLJC0002_CACHE_FOUND.explanation=A megnevezett JCache megtal\u00e1lhat\u00f3, \u00edgy nem ker\u00fclt l\u00e9trehoz\u00e1sra.
+CWLJC0002_CACHE_FOUND.useraction=Semmit sem kell tennie.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: A(z) {0} JCache a(z) {1} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3t haszn\u00e1lja.
+CWLJC0003_USING_PROVIDER.explanation=A megnevezett JCache a megadott szolg\u00e1ltat\u00f3t haszn\u00e1lja.
+CWLJC0003_USING_PROVIDER.useraction=Semmit sem kell tennie. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: A(z) {0} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 bet\u00f6lt\u00e9se meghi\u00fasult. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=A cachingProvider konfigur\u00e1ci\u00f3 bet\u00f6lt\u00e9se meghi\u00fasult.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=Kezelje az \u00fczenetben szerepl\u0151 hib\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: A(z) {0} JCache CacheManager {1} ezredm\u00e1sodperc alatt bet\u00f6lt\u00e9sre ker\u00fclt. 
+CWLJC0005_MANAGER_LOADED.explanation=A JCache CacheManager sikeresen bet\u00f6lt\u00e9sre ker\u00fclt.
+CWLJC0005_MANAGER_LOADED.useraction=Semmit sem kell tennie.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: \u00c9rv\u00e9nytelen szintaxis tal\u00e1lhat\u00f3 a cacheManager URI-azonos\u00edt\u00f3ban.  Ok: {0}.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=A megadott JCache konfigur\u00e1ci\u00f3s URI szintaxisa \u00e9rv\u00e9nytelen.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=Jav\u00edtsa ki a megadott konfigur\u00e1ci\u00f3s URI szintaxis\u00e1t.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: Hiba t\u00f6rt\u00e9nt az objektum visszaalak\u00edt\u00e1sa sor\u00e1n a k\u00f6vetkez\u0151b\u0151l: {0} JCache: {1}.
+CWLJC0008_DESERIALIZE_ERR.explanation=A megnevezett JCache f\u00e1jlb\u00f3l lek\u00e9rt objektum nem volt visszaalak\u00edthat\u00f3.
+CWLJC0008_DESERIALIZE_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden oszt\u00e1ly rendelkez\u00e9sre \u00e1ll a JCache konfigur\u00e1ci\u00f3 valamelyik k\u00f6nyvt\u00e1r\u00e1ban.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: Hiba t\u00f6rt\u00e9nt az objektum soros\u00edt\u00e1sakor a {0} JCache sz\u00e1m\u00e1ra: {1}.
+CWLJC0009_SERIALIZE_ERR.explanation=A megnevezett JCache f\u00e1jlba t\u00e1roland\u00f3 objektum nem volt soros\u00edthat\u00f3.
+CWLJC0009_SERIALIZE_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden soros\u00edtani k\u00edv\u00e1nt oszt\u00e1ly soros\u00edthat\u00f3.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Hiba t\u00f6rt\u00e9nt a JCache CacheManager konfigur\u00e1l\u00e1sakor: {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=A JCache CacheManager nem volt konfigur\u00e1lhat\u00f3 a megadott hiba miatt.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=Kezelje az \u00fczenetben szerepl\u0151 hib\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Hiba t\u00f6rt\u00e9nt a(z) {0} JCache lek\u00e9r\u00e9se sor\u00e1n: {1}.
+CWLJC0011_GET_CACHE_ERR.explanation=A gyors\u00edt\u00f3t\u00e1r a megadott hiba miatt nem volt lek\u00e9rhet\u0151.
+CWLJC0011_GET_CACHE_ERR.useraction=Kezelje az \u00fczenetben szerepl\u0151 hib\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra.

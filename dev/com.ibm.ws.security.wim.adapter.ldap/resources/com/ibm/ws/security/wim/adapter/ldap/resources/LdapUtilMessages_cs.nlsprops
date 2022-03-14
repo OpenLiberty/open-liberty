@@ -27,14 +27,6 @@ ENTITY_NOT_FOUND=CWIML4001E: Operaci registru u\u017eivatel\u016f nelze dokon\u0
 ENTITY_NOT_FOUND.explanation=Zadan\u00fd n\u00e1zev entity, co\u017e by mohl b\u00fdt jedine\u010dn\u00fd n\u00e1zev uniqueName nebo jedine\u010dn\u00fd identifik\u00e1tor uniqueId, nelze nal\u00e9zt v z\u00e1kladn\u00edm \u00falo\u017ei\u0161ti. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez nalezen\u00ed t\u00e9to entity pokra\u010dovat.
 ENTITY_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee entita v z\u00e1kladn\u00edm \u00falo\u017ei\u0161ti existuje. Pokud entita existuje, ov\u011b\u0159te, \u017ee m\u00e1 nastaven\u00e9 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed a zkuste operaci zopakovat.
 
-INVALID_LEVEL_IN_CONTROL=CWIML4514E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Nespr\u00e1vn\u00e1 hodnota pro \u00farove\u0148 vlastnosti {0} je zad\u00e1na v {1}. Hodnota vlastnosti \u00farove\u0148 mus\u00ed b\u00fdt bu\u010f 0, nebo kladn\u00e9 \u010d\u00edslo.
-INVALID_LEVEL_IN_CONTROL.explanation=\u00darove\u0148 vlastnosti byla zad\u00e1na jako z\u00e1porn\u00e9 \u010d\u00edslo.
-INVALID_LEVEL_IN_CONTROL.useraction=Hodnota vlastnosti \u00farove\u0148 mus\u00ed b\u00fdt bu\u010f 0, nebo kladn\u00e9 \u010d\u00edslo. Zm\u011b\u0148te hodnotu \u00farovn\u011b vlastnosti a zopakujte operaci.
-
-NAMING_EXCEPTION=CWIML4520E: Operaci LDAP nelze dokon\u010dit. P\u0159i zpracov\u00e1n\u00ed do\u0161lo k v\u00fdjimce pojmenov\u00e1n\u00ed LDAP {0}.
-NAMING_EXCEPTION.explanation=Zpr\u00e1va informuje, \u017ee p\u0159i operaci LDAP do\u0161lo k obecn\u00e9 v\u00fdjimce pojmenov\u00e1n\u00ed. Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. 
-NAMING_EXCEPTION.useraction=Ujist\u011bte se, \u017ee souvisej\u00edc\u00ed \u00falo\u017ei\u0161t\u011b (nap\u0159\u00edklad datab\u00e1ze nebo server LDAP) je spu\u0161t\u011bno a spr\u00e1vn\u011b nastaveno.
-
 SYSTEM_EXCEPTION=CWIML1998E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. P\u0159i zpracov\u00e1n\u00ed registru u\u017eivatel\u016f do\u0161lo k t\u00e9to syst\u00e9mov\u00e9 v\u00fdjimce: {0} 
 SYSTEM_EXCEPTION.explanation=Program rozpoznal syst\u00e9movou v\u00fdjimku p\u0159i prov\u00e1d\u011bn\u00ed operace registru u\u017eivatel\u016f. 
 SYSTEM_EXCEPTION.useraction= P\u0159ezkoumejte v protokolech p\u0159\u00ed\u010dinu t\u00e9to chyby a prove\u010fte odpov\u00eddaj\u00edc\u00ed akce. 
@@ -51,10 +43,6 @@ MISSING_MANDATORY_PROPERTY=CWIML1028E: Operaci registru u\u017eivatel\u016f nelz
 MISSING_MANDATORY_PROPERTY.explanation=Operace nem\u016f\u017ee b\u00fdt provedena, proto\u017ee chyb\u00ed hodnota povinn\u00e9 vlastnosti. Nap\u0159\u00edklad nemus\u00ed b\u00fdt ur\u010dena vlastnost RDN (Relative Distinguished Name) p\u0159i vytv\u00e1\u0159en\u00ed entity nebo chyb\u00ed vlastnost propertyName \u010di entityTypeName v prvku PropertyDefinitionControl nebo ExtensionPropertyDefinitionControl. Nebo chyb\u00ed vlastnost entityName v prvku entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Zadejte hodnotu povinn\u00e9 vlastnosti.
 
-ENTITY_IS_NOT_A_GROUP=CWIML4525E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Zadan\u00fd typ entity {0} nen\u00ed typ Skupina. Tuto operaci podporuje pouze entita typu Skupina.
-ENTITY_IS_NOT_A_GROUP.explanation=Operace souvisej\u00edc\u00ed se skupinou, tj. nap\u0159\u00edklad p\u0159i\u0159azov\u00e1n\u00ed \u010dlen\u016f do skupiny nebo vy\u0159azov\u00e1n\u00ed \u010dlen\u016f ze skupiny, lze pou\u017e\u00edt pouze pro typ entity Skupina. Nevykazuje-li zadan\u00e1 entita typ Skupina, dojde k vygenerov\u00e1n\u00ed v\u00fdjimky.
-ENTITY_IS_NOT_A_GROUP.useraction=Zajist\u011bte, aby zadan\u00e1 entita vykazovala typ Skupina. Pro adapt\u00e9r LDAP zajist\u011bte, aby t\u0159\u00edda objekt\u016f, kter\u00e1 je definov\u00e1na pro typ entity Skupina, odpov\u00eddala skute\u010dn\u00e9 t\u0159\u00edd\u011b objektu skupiny.
-
 CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ U\u017eivatel {2} p\u0159edal \u0159\u00edzen\u00ed mezipam\u011bti re\u017eim maz\u00e1n\u00ed mezipam\u011bti {1} pro \u00falo\u017ei\u0161t\u011b {0}. Cel\u00e1 mezipam\u011b\u0165 \u00falo\u017ei\u0161t\u011b LDAP byla vymaz\u00e1na.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Uveden\u00fd u\u017eivatel se pokou\u0161\u00ed vymazat celou mezipam\u011b\u0165 uveden\u00e9ho \u00falo\u017ei\u0161t\u011b pomoc\u00ed re\u017eimu clearAll.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Tato zpr\u00e1va je protokolov\u00e1na pro \u00fa\u010dely auditu.
@@ -66,10 +54,6 @@ UNKNOWN_CLEAR_CACHE_MODE.useraction=Zadejte re\u017eim maz\u00e1n\u00ed mezipam\
 INVALID_PROPERTY_DATA_TYPE=CWIML4522E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Datov\u00fd typ vlastnosti {0} je neplatn\u00fd. Konfigurovan\u00fd registr u\u017eivatel\u016f a back-endov\u00e9 \u00falo\u017ei\u0161t\u011b by m\u011bly m\u00edt ve vlastnosti stejn\u00fd datov\u00fd typ. 
 INVALID_PROPERTY_DATA_TYPE.explanation=Uveden\u00fd datov\u00fd typ neodpov\u00edd\u00e1 datov\u00e9mu typu, kter\u00fd je pro vlastnost definov\u00e1n. Nap\u0159\u00edklad datov\u00fd typ definovan\u00fd v konfigurovan\u00e9m registru u\u017eivatel\u016f je typu binary, av\u0161ak datov\u00fd typ definovan\u00fd v back-endov\u00e9m \u00falo\u017ei\u0161ti je typu string.
 INVALID_PROPERTY_DATA_TYPE.useraction=Zajist\u011bte, aby se datov\u00fd typ vlastnosti v konfigurovan\u00e9m registru u\u017eivatel\u016f shodoval s datov\u00fdm typem v back-endov\u00e9m \u00falo\u017ei\u0161ti. 
-
-LDAP_ENTRY_NOT_FOUND=CWIML4527E: Operaci LDAP nelze dokon\u010dit. Z\u00e1znam LDAP {0} nebyl nalezen: {1} Zadejte spr\u00e1vn\u00fd jedine\u010dn\u00fd n\u00e1zev entity a definujte spr\u00e1vn\u00e9 mapov\u00e1n\u00ed uzlu pro \u00falo\u017ei\u0161t\u011b LDAP.
-LDAP_ENTRY_NOT_FOUND.explanation=LDAP z\u00e1znam pro uvedenou entitu nebyl na serveru LDAP nalezen.
-LDAP_ENTRY_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee jedine\u010dn\u00fd n\u00e1zev entity je spr\u00e1vn\u011b uveden. Ujist\u011bte se, \u017ee mapov\u00e1n\u00ed uzlu \u00falo\u017ei\u0161t\u011b LDAP je spr\u00e1vn\u011b definov\u00e1no.
 
 PROPERTY_NOT_DEFINED=CWIML0514W: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Vlastnost {0} nen\u00ed definovan\u00e1. Definujte nebo pou\u017eijte spr\u00e1vn\u00fd n\u00e1zev vlastnosti.
 PROPERTY_NOT_DEFINED.explanation=Zadan\u00e1 vlastnost nen\u00ed definovan\u00e1.
@@ -86,10 +70,6 @@ NULL_CHECKPOINT_VALUE.useraction=Pokud adapt\u00e9r registru u\u017eivatel\u016f
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze prov\u00e9st, proto\u017ee chyb\u00ed heslo nebo je pr\u00e1zdn\u00e9.
 MISSING_OR_EMPTY_PASSWORD.explanation=Pokud je b\u011bhem p\u0159ihla\u0161ov\u00e1n\u00ed uveden n\u00e1zev \u010dinitele, nem\u016f\u017ee b\u00fdt heslo pr\u00e1zdn\u00e9 nebo null.
 MISSING_OR_EMPTY_PASSWORD.useraction=Zadejte heslo.
-
-PASSWORD_CHECKED_FAILED=CWIML4529E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Ov\u011b\u0159en\u00ed hesla pro n\u00e1zev \u010dinitele {0} se nezda\u0159ilo. Hlavn\u00ed p\u0159\u00ed\u010dina: {1}. Zadejte spr\u00e1vn\u011b n\u00e1zev \u010dinitele a heslo a ov\u011b\u0159te, \u017ee je \u00fa\u010det povolen\u00fd a \u017ee nen\u00ed zam\u010den\u00fd.
-PASSWORD_CHECKED_FAILED.explanation=Uveden\u00fd \u010dinitel nem\u016f\u017ee b\u00fdt ov\u011b\u0159en, proto\u017ee se nezda\u0159ilo ov\u011b\u0159en\u00ed hesla.
-PASSWORD_CHECKED_FAILED.useraction=Ujist\u011bte se, \u017ee \u010dinitel i heslo jsou uvedeny spr\u00e1vn\u011b. Ujist\u011bte se, \u00fa\u010det nen\u00ed uzam\u010den, ani zablokov\u00e1n.
 
 UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Operaci vymaz\u00e1n\u00ed mezipam\u011bti \u00falo\u017ei\u0161t\u011b LDAP nelze dokon\u010dit. Re\u017eim maz\u00e1n\u00ed mezipam\u011bti {1} p\u0159edan\u00fd do \u0159\u00edzen\u00ed mezipam\u011bti nen\u00ed pro tuto operaci podporov\u00e1n zadan\u00fdm \u00falo\u017ei\u0161t\u011bm {0}. Zadejte podporovan\u00fd re\u017eim maz\u00e1n\u00ed mezipam\u011bti.
 UNSUPPORTED_CLEAR_CACHE_MODE.explanation=Zadan\u00fd re\u017eim vymaz\u00e1n\u00ed mezipam\u011bti je pro toto \u00falo\u017ei\u0161t\u011b neplatn\u00fd.
@@ -109,11 +89,11 @@ INVALID_CERTIFICATE_FILTER.explanation=Syntaxe nebo struktura tohoto filtru: atr
 INVALID_CERTIFICATE_FILTER.useraction=Ov\u011b\u0159te, \u017ee filtr certifik\u00e1t\u016f odpov\u00edd\u00e1 dokumentovan\u00e9 syntaxi.
 
 TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Operace getTBSCertificate() ve v\u00fdrazu filtru nen\u00ed podporovan\u00e1. Zadejte spr\u00e1vn\u00fd filtr certifik\u00e1t\u016f.
-TBS_CERTIFICATE_UNSUPPORTED.explanation=Atribut certifik\u00e1tu TBSCertificate nesm\u00ed b\u00fdt pou\u017eit ve specifikaci filtru. Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edvat n\u00e1sleduj\u00edc\u00ed hodnoty atribut\u016f certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=Atribut certifik\u00e1tu TBSCertificate nesm\u00ed b\u00fdt pou\u017eit ve specifikaci filtru. Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edvat n\u00e1sleduj\u00edc\u00ed hodnoty atribut\u016f certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Ujist\u011bte se, \u017ee je filtr pro certifik\u00e1ty spr\u00e1vn\u00fd.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Ve specifikaci filtru byl pou\u017eit nezn\u00e1m\u00fd atribut certifik\u00e1tu {0}. Zadejte podporovan\u00fd filtr certifik\u00e1t\u016f.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edt pouze n\u00e1sleduj\u00edc\u00ed hodnoty atributu certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edt pouze n\u00e1sleduj\u00edc\u00ed hodnoty atributu certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Ujist\u011bte se, \u017ee je filtr pro certifik\u00e1ty spr\u00e1vn\u00fd.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Konfigurovan\u00e9 pole rozli\u0161uj\u00edc\u00edho n\u00e1zvu {0} je neplatn\u00e9. Zadejte platn\u00e9 pole rozli\u0161uj\u00edc\u00edho n\u00e1zvu.
@@ -124,33 +104,13 @@ EXT_ID_VALUE_IS_NULL=CWIML4548E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze do
 EXT_ID_VALUE_IS_NULL.explanation=Atribut LDAP pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor mus\u00ed obsahovat hodnotu pro ka\u017edou entitu.
 EXT_ID_VALUE_IS_NULL.useraction=Ujist\u011bte se, \u017ee pro extern\u00ed identifik\u00e1tor je vybr\u00e1n spr\u00e1vn\u00fd atribut. Pokud \u017e\u00e1dn\u00fd vhodn\u00fd atribut neexistuje, m\u016f\u017ee b\u00fdt jako extern\u00ed identifik\u00e1tor pou\u017eit rozli\u0161uj\u00edc\u00ed n\u00e1zev.
 
-EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Operaci hled\u00e1n\u00ed nelze dokon\u010dit. Atribut LDAP pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor obsahuje v\u00edce hodnot: {0}. Zvolte jako extern\u00ed identifik\u00e1tor spr\u00e1vn\u00fd atribut LDAP.
-EXT_ID_HAS_MULTIPLE_VALUES.explanation=LDAP atribut pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor mus\u00ed b\u00fdt jedine\u010dn\u00fd a nesm\u00ed obsahovat v\u00edce hodnot.
-EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ujist\u011bte se, \u017ee pro extern\u00ed identifik\u00e1tor je vybr\u00e1n spr\u00e1vn\u00fd atribut. Pokud \u017e\u00e1dn\u00fd vhodn\u00fd atribut neexistuje, m\u016f\u017ee b\u00fdt jako extern\u00ed identifik\u00e1tor pou\u017eit rozli\u0161uj\u00edc\u00ed n\u00e1zev.
-
 INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Definice z\u00e1kladn\u00ed polo\u017eky {0} je neplatn\u00e1.  Opravte definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
 INVALID_BASE_ENTRY_DEFINITION.explanation=Zadan\u00e1 definice z\u00e1kladn\u00ed polo\u017eky je neplatn\u00e1.
 INVALID_BASE_ENTRY_DEFINITION.useraction=Nakonfigurujte platnou definici z\u00e1kladn\u00ed polo\u017eky v souboru server.xml.
 
-INVALID_DN_SYNTAX=CWIML4517E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) {0} je neplatn\u00fd. Zadejte spr\u00e1vnou syntaxi rozli\u0161uj\u00edc\u00edho n\u00e1zvu.
-INVALID_DN_SYNTAX.explanation=Uveden\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) je neplatn\u00fd. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez platn\u00e9ho rozli\u0161uj\u00edc\u00edho n\u00e1zvu pokra\u010dovat.
-INVALID_DN_SYNTAX.useraction=P\u0159esv\u011bd\u010dte se o spr\u00e1vnosti syntaxe rozli\u0161uj\u00edc\u00edho n\u00e1zvu. Nap\u0159\u00edklad zkontrolujte \u0159\u00eddic\u00ed znaky.
-
-INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f {0} je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f {1}. Fond kontext\u016f byl proto zak\u00e1z\u00e1n.
-INIT_POOL_SIZE_TOO_BIG.explanation=Po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f by m\u011bla b\u00fdt men\u0161\u00ed, ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f.
-INIT_POOL_SIZE_TOO_BIG.useraction=Ov\u011b\u0159te, \u017ee po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f je men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f nebo nastavte maxim\u00e1ln\u00ed velikost fondu kontext\u016f na hodnotu 0.
-
-PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Up\u0159ednost\u0148ovan\u00e1 velikost fondu kontext\u016f {0} mus\u00ed b\u00fdt men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f {1}. Fond kontext\u016f byl proto zak\u00e1z\u00e1n.
-PREF_POOL_SIZE_TOO_BIG.explanation=Velikost preferovan\u00e9ho fondu kontext\u016f by m\u011bla b\u00fdt men\u0161\u00ed, ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f.
-PREF_POOL_SIZE_TOO_BIG.useraction=Ov\u011b\u0159te, \u017ee up\u0159ednost\u0148ovan\u00e1 velikost fondu kontext\u016f je men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f nebo nastavte maxim\u00e1ln\u00ed velikost fondu kontext\u016f na hodnotu 0.
-
 MISSING_INI_PROPERTY=CWIML0004E: P\u0159i inicializaci registru u\u017eivatel\u016f do\u0161lo k chyb\u011b. V souboru server.xml chyb\u00ed vlastnost inicializace {0}. Zadejte do souboru server.xml vlastnost inicializace.
 MISSING_INI_PROPERTY.explanation=Uveden\u00e1 vlastnost inicializace je povinn\u00e1. Operace registru u\u017eivatel\u016f nem\u016f\u017ee b\u00fdt bez n\u00ed spu\u0161t\u011bna.
 MISSING_INI_PROPERTY.useraction=Ov\u011b\u0159te, \u017ee je tato vlastnost zadan\u00e1 v souboru server.xml. Ujist\u011bte se, \u017ee hodnota vlastnosti nen\u00ed pr\u00e1zdn\u00e1 nebo null.
-
-DUPLICATE_ENTITY_TYPE=CWIML4531E: V souboru server.xml je definovan\u00fd duplicitn\u00ed typ entity {0}.
-DUPLICATE_ENTITY_TYPE.explanation=Typ entity definovan\u00fd v souboru server.xml mus\u00ed b\u00fdt jedine\u010dn\u00fd.
-DUPLICATE_ENTITY_TYPE.useraction=Upravte soubor server.xml tak, \u017ee odeberete duplicitn\u00ed typ entity.
 
 LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Do\u0161lo k v\u00fdjimce konfigurace. Atribut {0} mus\u00ed b\u00fdt definov\u00e1n.
 LDAP_CONFIG_INCOMPLETE.explanation=Ur\u010den\u00fd atribut mus\u00ed b\u00fdt definov\u00e1n.
@@ -183,10 +143,6 @@ LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Nelze prov\u00e9st ov\u011b\u01
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=Je mo\u017en\u00e9, \u017ee hodnoty bindDN a bindPassword jsou nespr\u00e1vn\u00e9, nebo \u017ee je chybn\u00fd port.
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Zkontrolujte, zda jsou nakonfigurovan\u00e9 hodnoty bindDN a bindPassword spr\u00e1vn\u00e9 pro nakonfigurovan\u00fd server LDAP.
 
-ENTITY_HAS_DESCENDENTS=CWIML4519E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Entita {0} m\u00e1 n\u00e1sledn\u00edky. Nem\u016f\u017ee b\u00fdt odstran\u011bna nebo p\u0159ejmenov\u00e1na. P\u0159ed pokusem o odstran\u011bn\u00ed nebo p\u0159ejmenov\u00e1n\u00ed entity odstra\u0148te v\u0161echny jej\u00ed n\u00e1sledn\u00edky.
-ENTITY_HAS_DESCENDENTS.explanation=Funkce odstran\u011bn\u00ed nebo p\u0159ejmenov\u00e1n\u00ed m\u016f\u017ee b\u00fdt provedena na koncov\u00e9 entit\u011b, to je entit\u011b bez pod\u0159\u00edzen\u00fdch prvk\u016f. Uveden\u00e1 entita m\u00e1 pod\u0159\u00edzen\u00e9 prvky.
-ENTITY_HAS_DESCENDENTS.useraction=Odstra\u0148te nejprve v\u0161echny pod\u0159\u00edzen\u00e9 prvky entity, potom entitu odstra\u0148te nebo p\u0159ejmenujte.
-
 ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Uveden\u00fd typ entity {0} nen\u00ed pro tuto operaci platn\u00fd.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Byla po\u017eadov\u00e1na operace s entitou, ale tato operace nepodporuje uveden\u00fd typ entity.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Zkontrolujte, zda entity uveden\u00e9 ve vstupu jsou podporovan\u00fdmi typy entit, a odeberte ze vstupu nepodporovan\u00e9 typy entit.
@@ -194,10 +150,6 @@ ENTITY_TYPE_NOT_SUPPORTED.useraction=Zkontrolujte, zda entity uveden\u00e9 ve vs
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Nelze vytvo\u0159it nebo aktualizovat vlastnost {0} v \u00falo\u017ei\u0161ti {1}.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=V operaci vytvo\u0159en\u00ed nebo aktualizace je uvedena hodnota vlastnosti, kterou nelze zapsat do \u00falo\u017ei\u0161t\u011b. Nap\u0159\u00edklad pro operaci CREATE nem\u016f\u017eete zadat principalName.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Odeberte chybnou vlastnost ze vstupu a zopakujte operaci s platn\u00fdmi vlastnostmi a hodnotami.
-
-PARENT_NOT_FOUND=CWIML4526E: Operace registru u\u017eivatel\u016f CREATE nebyla dokon\u010dena. Entita nebyla vytvo\u0159ena, proto\u017ee nad\u0159\u00edzen\u00e1 entita nebyla nalezena. Z\u00e1kladn\u00ed v\u00fdjimka JNDI byla: {0}
-PARENT_NOT_FOUND.explanation=Pokud b\u011bhem vytv\u00e1\u0159en\u00ed entity nen\u00ed nalezena nad\u0159\u00edzen\u00e1, je vyvol\u00e1na v\u00fdjimka.
-PARENT_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee v\u00fdchoz\u00ed nad\u0159\u00edzen\u00e1 entita pro vytv\u00e1\u0159enou entitu existuje. Pokud neexistuje, mus\u00edte ji vytvo\u0159it a zopakovat operaci.
 
 ENTITY_ALREADY_EXIST=CWIML4501E: Operace registru u\u017eivatel\u016f CREATE nebyla dokon\u010dena. Ji\u017e existuje entita se stejn\u00fdm jedine\u010dn\u00fdm n\u00e1zvem {0} nebo se stejnou hodnotou RDN.
 ENTITY_ALREADY_EXIST.explanation=V \u00falo\u017ei\u0161ti ji\u017e existuje zadan\u00fd jedine\u010dn\u00fd n\u00e1zev nebo entita se stejnou hodnotou RDN. Do \u00falo\u017ei\u0161t\u011b nelze p\u0159idat duplicitn\u00ed entitu se stejn\u00fdm jedine\u010dn\u00fdm n\u00e1zvem nebo stejn\u00fdm n\u00e1zvem RDN.
@@ -243,7 +195,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: P\u0159ihl\u00e1\u0161en\u00ed Kerbe
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Bu\u010f je zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos neplatn\u00fd, nebo je v\u00fdchoz\u00ed mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) neplatn\u00e1 nebo vypr\u0161ela jej\u00ed platnost.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a nevypr\u0161ela v\u00fdchoz\u00ed platnost mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos (ccache).
 
-# CWIML4510 already used
+# CWIML4510 already used (WimUtilMessages.nlsprops)
 
 KRB5_TICKETCACHE_USED=CWIML4511E: Registr LDAP {0} je nakonfigurov\u00e1n s n\u00e1zvem souboru mezipam\u011bti tiketu Kerberos (ccache) {1} a n\u00e1zvem souboru keytab {2}. Mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) se pou\u017e\u00edv\u00e1 pro ov\u011b\u0159en\u00ed vazeb Kerberos na server LDAP.
 KRB5_TICKETCACHE_USED.explanation=Chcete-li pou\u017e\u00edt keytab, mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru keytab a nesm\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru (ccache) mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos.
@@ -257,21 +209,31 @@ CANNOT_READ_KRB5_FILE=CWIML4513E: Registr LDAP {0} nem\u016f\u017ee p\u0159e\u01
 CANNOT_READ_KRB5_FILE.explanation=Soubor Kerberos nelze otev\u0159\u00edt. Bu\u010f jsou opr\u00e1vn\u011bn\u00ed k souboru nespr\u00e1vn\u00e1, nebo soubor neexistuje.
 CANNOT_READ_KRB5_FILE.useraction=Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a \u017ee server p\u0159e\u010detl opr\u00e1vn\u011bn\u00ed k souboru.
 
-# CWIML4514 already used
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Nespr\u00e1vn\u00e1 hodnota pro \u00farove\u0148 vlastnosti {0} je zad\u00e1na v {1}. Hodnota vlastnosti \u00farove\u0148 mus\u00ed b\u00fdt bu\u010f 0, nebo kladn\u00e9 \u010d\u00edslo.
+INVALID_LEVEL_IN_CONTROL.explanation=\u00darove\u0148 vlastnosti byla zad\u00e1na jako z\u00e1porn\u00e9 \u010d\u00edslo.
+INVALID_LEVEL_IN_CONTROL.useraction=Hodnota vlastnosti \u00farove\u0148 mus\u00ed b\u00fdt bu\u010f 0, nebo kladn\u00e9 \u010d\u00edslo. Zm\u011b\u0148te hodnotu \u00farovn\u011b vlastnosti a zopakujte operaci.
 
 KRB5_FILE_NOT_FOUND=CWIML4515E: Atribut {0} z prvku {1} je nakonfigurov\u00e1n k souboru, kter\u00fd neexistuje v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {2}
 KRB5_FILE_NOT_FOUND.explanation=Konfigurace odkazuje na soubor, kter\u00fd je bu\u010f ne\u010diteln\u00fd, nebo neexistuje.
 KRB5_FILE_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee konfigurace ukazuje na soubor, kter\u00fd existuje a kter\u00fd je \u010diteln\u00fd pro proces aplikace.
 
-# CWIML4516 already used
-# CWIML4517 already used
+# CWIML4516 already used (WimUtilMessages.nlsprops)
 
-IDMAP_INVALID_FORMAT=CWIML4518W: Hodnota {0} {1} je chybn\u00e1. Hodnota mus\u00ed b\u00fdt st\u0159edn\u00edky odd\u011blen\u00fd seznam dvojic ''objectclass: attribute'' nebo ''*:attribute''.
+INVALID_DN_SYNTAX=CWIML4517E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) {0} je neplatn\u00fd. Zadejte spr\u00e1vnou syntaxi rozli\u0161uj\u00edc\u00edho n\u00e1zvu.
+INVALID_DN_SYNTAX.explanation=Uveden\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) je neplatn\u00fd. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez platn\u00e9ho rozli\u0161uj\u00edc\u00edho n\u00e1zvu pokra\u010dovat.
+INVALID_DN_SYNTAX.useraction=P\u0159esv\u011bd\u010dte se o spr\u00e1vnosti syntaxe rozli\u0161uj\u00edc\u00edho n\u00e1zvu. Nap\u0159\u00edklad zkontrolujte \u0159\u00eddic\u00ed znaky.
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Hodnota {0} {1} je chybn\u00e1. Hodnota mus\u00ed b\u00fdt st\u0159edn\u00edky odd\u011blen\u00fd seznam dvojic "objectclass: attribute" nebo "*:attribute".
 IDMAP_INVALID_FORMAT.explanation=Hodnota userIdMap mus\u00ed b\u00fdt v platn\u00e9m form\u00e1tu tak, aby bylo mo\u017en\u00e9 analyzovat t\u0159\u00eddu objekt\u016f a atribut.
 IDMAP_INVALID_FORMAT.useraction=Aktualizujte hodnotu userIdMap tak, aby odpov\u00eddala zadan\u00e9mu form\u00e1tu.
 
-# CWIML4519 already used
-# CWIML4520 already used
+ENTITY_HAS_DESCENDENTS=CWIML4519E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Entita {0} m\u00e1 n\u00e1sledn\u00edky. Nem\u016f\u017ee b\u00fdt odstran\u011bna nebo p\u0159ejmenov\u00e1na. P\u0159ed pokusem o odstran\u011bn\u00ed nebo p\u0159ejmenov\u00e1n\u00ed entity odstra\u0148te v\u0161echny jej\u00ed n\u00e1sledn\u00edky.
+ENTITY_HAS_DESCENDENTS.explanation=Funkce odstran\u011bn\u00ed nebo p\u0159ejmenov\u00e1n\u00ed m\u016f\u017ee b\u00fdt provedena na koncov\u00e9 entit\u011b, to je entit\u011b bez pod\u0159\u00edzen\u00fdch prvk\u016f. Uveden\u00e1 entita m\u00e1 pod\u0159\u00edzen\u00e9 prvky.
+ENTITY_HAS_DESCENDENTS.useraction=Odstra\u0148te nejprve v\u0161echny pod\u0159\u00edzen\u00e9 prvky entity, potom entitu odstra\u0148te nebo p\u0159ejmenujte.
+
+NAMING_EXCEPTION=CWIML4520E: Operaci LDAP nelze dokon\u010dit. P\u0159i zpracov\u00e1n\u00ed do\u0161lo k v\u00fdjimce pojmenov\u00e1n\u00ed LDAP {0}.
+NAMING_EXCEPTION.explanation=Zpr\u00e1va informuje, \u017ee p\u0159i operaci LDAP do\u0161lo k obecn\u00e9 v\u00fdjimce pojmenov\u00e1n\u00ed. Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. 
+NAMING_EXCEPTION.useraction=Ujist\u011bte se, \u017ee souvisej\u00edc\u00ed \u00falo\u017ei\u0161t\u011b (nap\u0159\u00edklad datab\u00e1ze nebo server LDAP) je spu\u0161t\u011bno a spr\u00e1vn\u011b nastaveno.
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registr LDAP {0} se pokusil sv\u00e1zat se serverem LDAP s pou\u017eit\u00edm pov\u011b\u0159en\u00ed Kerberos pro n\u00e1zev \u010dinitele {1}, ale slu\u017eba Kerberos, kter\u00e1 poskytuje tato pov\u011b\u0159en\u00ed, nen\u00ed k dispozici. Mechanizmus ov\u011b\u0159ov\u00e1n\u00ed vazby: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Slu\u017eba Kerberos nebyla k dispozici, kdy\u017e se registr LDAP pokusil sv\u00e1zat se serverem LDAP. Nen\u00ed-li slu\u017eba ov\u011b\u0159ov\u00e1n\u00ed Kerberos k dispozici, nemohou prov\u00e9st ov\u011b\u0159en\u00ed \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
@@ -285,3 +247,40 @@ KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: P\u0159ihl\u00e1\u0161en\u00ed Kerb
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos je neplatn\u00fd, nebo je neplatn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a je platn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
 
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Zadan\u00fd typ entity {0} nen\u00ed typ Skupina. Tuto operaci podporuje pouze entita typu Skupina.
+ENTITY_IS_NOT_A_GROUP.explanation=Operace souvisej\u00edc\u00ed se skupinou, tj. nap\u0159\u00edklad p\u0159i\u0159azov\u00e1n\u00ed \u010dlen\u016f do skupiny nebo vy\u0159azov\u00e1n\u00ed \u010dlen\u016f ze skupiny, lze pou\u017e\u00edt pouze pro typ entity Skupina. Nevykazuje-li zadan\u00e1 entita typ Skupina, dojde k vygenerov\u00e1n\u00ed v\u00fdjimky.
+ENTITY_IS_NOT_A_GROUP.useraction=Zajist\u011bte, aby zadan\u00e1 entita vykazovala typ Skupina. Pro adapt\u00e9r LDAP zajist\u011bte, aby t\u0159\u00edda objekt\u016f, kter\u00e1 je definov\u00e1na pro typ entity Skupina, odpov\u00eddala skute\u010dn\u00e9 t\u0159\u00edd\u011b objektu skupiny.
+
+PARENT_NOT_FOUND=CWIML4526E: Operace registru u\u017eivatel\u016f CREATE nebyla dokon\u010dena. Entita nebyla vytvo\u0159ena, proto\u017ee nad\u0159\u00edzen\u00e1 entita nebyla nalezena. Z\u00e1kladn\u00ed v\u00fdjimka JNDI byla: {0}
+PARENT_NOT_FOUND.explanation=Pokud b\u011bhem vytv\u00e1\u0159en\u00ed entity nen\u00ed nalezena nad\u0159\u00edzen\u00e1, je vyvol\u00e1na v\u00fdjimka.
+PARENT_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee v\u00fdchoz\u00ed nad\u0159\u00edzen\u00e1 entita pro vytv\u00e1\u0159enou entitu existuje. Pokud neexistuje, mus\u00edte ji vytvo\u0159it a zopakovat operaci.
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Operaci LDAP nelze dokon\u010dit. Z\u00e1znam LDAP {0} nebyl nalezen: {1} Zadejte spr\u00e1vn\u00fd jedine\u010dn\u00fd n\u00e1zev entity a definujte spr\u00e1vn\u00e9 mapov\u00e1n\u00ed uzlu pro \u00falo\u017ei\u0161t\u011b LDAP.
+LDAP_ENTRY_NOT_FOUND.explanation=LDAP z\u00e1znam pro uvedenou entitu nebyl na serveru LDAP nalezen.
+LDAP_ENTRY_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee jedine\u010dn\u00fd n\u00e1zev entity je spr\u00e1vn\u011b uveden. Ujist\u011bte se, \u017ee mapov\u00e1n\u00ed uzlu \u00falo\u017ei\u0161t\u011b LDAP je spr\u00e1vn\u011b definov\u00e1no.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Operaci hled\u00e1n\u00ed nelze dokon\u010dit. Atribut LDAP pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor obsahuje v\u00edce hodnot: {0}. Zvolte jako extern\u00ed identifik\u00e1tor spr\u00e1vn\u00fd atribut LDAP.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=LDAP atribut pou\u017eit\u00fd jako extern\u00ed identifik\u00e1tor mus\u00ed b\u00fdt jedine\u010dn\u00fd a nesm\u00ed obsahovat v\u00edce hodnot.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Ujist\u011bte se, \u017ee pro extern\u00ed identifik\u00e1tor je vybr\u00e1n spr\u00e1vn\u00fd atribut. Pokud \u017e\u00e1dn\u00fd vhodn\u00fd atribut neexistuje, m\u016f\u017ee b\u00fdt jako extern\u00ed identifik\u00e1tor pou\u017eit rozli\u0161uj\u00edc\u00ed n\u00e1zev.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Ov\u011b\u0159en\u00ed hesla pro n\u00e1zev \u010dinitele {0} se nezda\u0159ilo. Hlavn\u00ed p\u0159\u00ed\u010dina: {1}. Zadejte spr\u00e1vn\u011b n\u00e1zev \u010dinitele a heslo a ov\u011b\u0159te, \u017ee je \u00fa\u010det povolen\u00fd a \u017ee nen\u00ed zam\u010den\u00fd.
+PASSWORD_CHECKED_FAILED.explanation=Uveden\u00fd \u010dinitel nem\u016f\u017ee b\u00fdt ov\u011b\u0159en, proto\u017ee se nezda\u0159ilo ov\u011b\u0159en\u00ed hesla.
+PASSWORD_CHECKED_FAILED.useraction=Ujist\u011bte se, \u017ee \u010dinitel i heslo jsou uvedeny spr\u00e1vn\u011b. Ujist\u011bte se, \u00fa\u010det nen\u00ed uzam\u010den, ani zablokov\u00e1n.
+
+# CWIML4530 already used (WimUtilMessages.nlsprops)
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: V souboru server.xml je definovan\u00fd duplicitn\u00ed typ entity {0}.
+DUPLICATE_ENTITY_TYPE.explanation=Typ entity definovan\u00fd v souboru server.xml mus\u00ed b\u00fdt jedine\u010dn\u00fd.
+DUPLICATE_ENTITY_TYPE.useraction=Upravte soubor server.xml tak, \u017ee odeberete duplicitn\u00ed typ entity.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f {0} je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f {1}. Fond kontext\u016f byl proto zak\u00e1z\u00e1n.
+INIT_POOL_SIZE_TOO_BIG.explanation=Po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f by m\u011bla b\u00fdt men\u0161\u00ed, ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f.
+INIT_POOL_SIZE_TOO_BIG.useraction=Ov\u011b\u0159te, \u017ee po\u010d\u00e1te\u010dn\u00ed velikost fondu kontext\u016f je men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f nebo nastavte maxim\u00e1ln\u00ed velikost fondu kontext\u016f na hodnotu 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Up\u0159ednost\u0148ovan\u00e1 velikost fondu kontext\u016f {0} mus\u00ed b\u00fdt men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f {1}. Fond kontext\u016f byl proto zak\u00e1z\u00e1n.
+PREF_POOL_SIZE_TOO_BIG.explanation=Velikost preferovan\u00e9ho fondu kontext\u016f by m\u011bla b\u00fdt men\u0161\u00ed, ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f.
+PREF_POOL_SIZE_TOO_BIG.useraction=Ov\u011b\u0159te, \u017ee up\u0159ednost\u0148ovan\u00e1 velikost fondu kontext\u016f je men\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost fondu kontext\u016f nebo nastavte maxim\u00e1ln\u00ed velikost fondu kontext\u016f na hodnotu 0.
+
+LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: \u00dalo\u017ei\u0161ti LDAP {0} se nezda\u0159ilo zpracovat aktualizace konfigurace z federovan\u00fdch \u00falo\u017ei\u0161\u0165. Hlavn\u00ed p\u0159\u00ed\u010dina: {1}
+LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Zm\u011bny konfigurace federovan\u00fdch \u00falo\u017ei\u0161\u0165 spustily aktualizaci \u00falo\u017ei\u0161t\u011b LDAP, ale do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed t\u011bchto zm\u011bn. 
+LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=P\u0159ezkoumejte v protokolech p\u0159\u00ed\u010dinu t\u00e9to chyby a prove\u010fte odpov\u00eddaj\u00edc\u00ed akce.

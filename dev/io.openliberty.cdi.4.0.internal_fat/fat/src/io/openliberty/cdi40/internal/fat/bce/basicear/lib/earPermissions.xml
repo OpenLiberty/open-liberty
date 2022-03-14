@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+        https://jakarta.ee/xml/ns/jakartaee/permissions_9.xsd"
+    version="9">
+    <!-- Update to version=10 when implemented -->
+    <!-- Work around WELD-2705 -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>accessDeclaredMembers</name>
+        <actions>*</actions>
+    </permission>
+</permissions>

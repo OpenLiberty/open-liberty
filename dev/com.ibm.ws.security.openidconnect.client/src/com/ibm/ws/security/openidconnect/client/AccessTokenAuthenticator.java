@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.client;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -30,10 +29,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
-import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 
 import com.google.gson.JsonParser;
 import com.ibm.json.java.JSONObject;
@@ -53,7 +50,6 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -441,10 +437,7 @@ public class AccessTokenAuthenticator {
         JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            JsonWebStructure jwsStructure = jose4jUtil.getJsonWebStructureFromJwtContext(jwtContext);
-            Key signingKey = jose4jUtil.getSignatureVerificationKeyFromJsonWebStructure(jwsStructure, clientConfig, oidcClientRequest);
-            Jose4jValidator validator = new Jose4jValidator(signingKey, clientConfig.getClockSkewInSeconds(), null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
-            JwtClaims claims = validator.validateJwsSignature((JsonWebSignature) jwsStructure, responseString);
+            JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, clientConfig, oidcClientRequest);
             if (claims != null) {
                 return JSONObject.parse(claims.toJson());
             }

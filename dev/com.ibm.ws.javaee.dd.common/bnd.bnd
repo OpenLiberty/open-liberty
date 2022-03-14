@@ -21,8 +21,9 @@ Bundle-Description: JavaEE Deployment Descriptor API service, version ${bVersion
 # for the exported API.
 
 Export-Package: \
+    com.ibm.ws.javaee.dd, \
     com.ibm.ws.javaee.dd.common, \
     com.ibm.ws.javaee.dd.common.wsclient
 
 -buildpath: \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest

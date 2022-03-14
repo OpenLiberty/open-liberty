@@ -232,39 +232,40 @@ public class FrameworkManager {
             String j2secNoRethrow = config.get(BootstrapConstants.JAVA_2_SECURITY_NORETHROW);
 
             if (j2secManager) {
-
-                if (j2secNoRethrow == null || j2secNoRethrow.equals("false")) {
-                    try {
-                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
-                            @Override
-                            public Void run() throws Exception {
-                                System.setSecurityManager(new SecurityManager());
-                                return null;
-                            }
-                        });
-                    } catch (Exception ex) {
-
-                        Tr.error(tc, "error.set.securitymanager", ex.getMessage());
-                    }
+                // OLGH#20289 -- Java 2 Security Manager is no longer supported with Java 18+
+                if (javaVersion() >= 18) {
+                    Tr.error(tc, "error.set.securitymanager.jdk18", javaVersion());
                 } else {
-                    if ("true".equals(config.get(BootstrapConstants.JAVA_2_SECURITY_UNIQUE)))
-                        MissingDoPrivDetectionSecurityManager.setUniqueOnly(true);
-                    try {
-                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
-                            @Override
-                            public Void run() throws Exception {
-                                System.setSecurityManager(new MissingDoPrivDetectionSecurityManager());
-                                return null;
-                            }
-                        });
-                    } catch (Exception ex) {
+                    if (j2secNoRethrow == null || j2secNoRethrow.equals("false")) {
+                        try {
+                            AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
+                                @Override
+                                public Void run() throws Exception {
+                                    System.setSecurityManager(new SecurityManager());
+                                    return null;
+                                }
+                            });
+                        } catch (Exception ex) {
+                            Tr.error(tc, "error.set.securitymanager", ex.getMessage());
+                        }
+                    } else {
+                        if ("true".equals(config.get(BootstrapConstants.JAVA_2_SECURITY_UNIQUE)))
+                            MissingDoPrivDetectionSecurityManager.setUniqueOnly(true);
+                        try {
+                            AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
+                                @Override
+                                public Void run() throws Exception {
+                                    System.setSecurityManager(new MissingDoPrivDetectionSecurityManager());
+                                    return null;
+                                }
+                            });
+                        } catch (Exception ex) {
+                            Tr.error(tc, "error.set.trace.securitymanager", ex.getMessage());
+                        }
 
-                        Tr.error(tc, "error.set.trace.securitymanager", ex.getMessage());
                     }
-
+                    Tr.info(tc, "info.java2security.started", config.getProcessName());
                 }
-                Tr.info(tc, "info.java2security.started", config.getProcessName());
-
             }
 
             // Init the framework.
@@ -356,6 +357,16 @@ public class FrameworkManager {
                 frameworkShutdownLatch.countDown();
             }
         }
+    }
+
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        return Integer.valueOf(versionElements[i]);
     }
 
     private void launchClient() {

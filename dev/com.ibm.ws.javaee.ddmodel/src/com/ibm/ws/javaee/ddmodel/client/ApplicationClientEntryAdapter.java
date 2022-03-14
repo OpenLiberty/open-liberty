@@ -23,13 +23,12 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class ApplicationClientEntryAdapter implements EntryAdapter<ApplicationClient> {
-    private static final int DEFAULT_MAX_VERSION = ApplicationClient.VERSION_9;
+    private static final int DEFAULT_MAX_VERSION = ApplicationClient.VERSION_10;
 
     private ServiceReference<ApplicationClientDDParserVersion> versionRef;
     private volatile int version = DEFAULT_MAX_VERSION;
 
     public synchronized void setVersion(ServiceReference<ApplicationClientDDParserVersion> reference) {
-
         versionRef = reference;
         version = (Integer) reference.getProperty(ApplicationClientDDParserVersion.VERSION);
     }

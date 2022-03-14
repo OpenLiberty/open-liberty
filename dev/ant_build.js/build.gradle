@@ -63,7 +63,7 @@ dependencies {
     library "commons-digester:commons-digester:1.8.1"
     library "commons-lang:commons-lang:2.6"
     library "commons-logging:commons-logging:1.1.1"
-    library "infra-buildtasks-core:infra-buildtasks-core:4.0"
+    library "com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6"
     library "org.mortbay.jetty:servlet-api-2.5:6.0.0"
     library "javax.xml.bind:activation:1.0.2"
     library "javax.xml.bind:jaxb-api:2.3.0"
@@ -106,7 +106,7 @@ dependencies {
 }
 
 def dependencyToPath = [
-  "infra-buildtasks-core:infra-buildtasks-core:4.0": "lib/buildtasks/infra.buildtasks-core_4.0.jar",
+  "com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6": "lib/buildtasks/infra.buildtasks-core_6.0.6.jar",
   "com.fasterxml.jackson.core:jackson-annotations:2.2.3": "lib/buildtasks/jackson-annotations-2.2.3.jar",
   "com.fasterxml.jackson.core:jackson-core:2.2.3": "lib/buildtasks/jackson-core-2.2.3.jar",
   "com.fasterxml.jackson.core:jackson-databind:2.2.3": "lib/buildtasks/jackson-databind-2.2.3.jar",

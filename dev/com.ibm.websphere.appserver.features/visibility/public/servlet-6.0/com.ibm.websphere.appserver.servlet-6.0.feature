@@ -54,14 +54,14 @@ Subsystem-Category: JakartaEE10Application
  com.ibm.websphere.security, \
  com.ibm.ws.org.apache.commons.fileupload.jakarta, \
  com.ibm.ws.webcontainer.servlet.4.0.jakarta, \
- com.ibm.ws.webcontainer.servlet.4.0.factories.jakarta, \
  com.ibm.ws.webcontainer.servlet.3.1.jakarta, \
  com.ibm.ws.session.jakarta, \
  com.ibm.ws.webcontainer.jakarta, \
  com.ibm.ws.webcontainer.cors.jakarta, \
  com.ibm.ws.http.plugin.merge, \
  com.ibm.ws.webserver.plugin.runtime.jakarta, \
- com.ibm.ws.webserver.plugin.runtime.interfaces
+ com.ibm.ws.webserver.plugin.runtime.interfaces,\
+ io.openliberty.servlet.internal.6.0.factories.jakarta
 -jars=com.ibm.ws.webserver.plugin.utility, \
  io.openliberty.servlet; location:=dev/api/ibm/
 -files=bin/tools/ws-webserverPluginutil.jar, \

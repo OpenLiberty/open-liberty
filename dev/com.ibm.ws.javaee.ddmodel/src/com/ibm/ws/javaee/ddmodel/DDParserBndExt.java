@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2021,2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel;
 
 import com.ibm.wsspi.adaptable.module.Container;
@@ -32,7 +42,7 @@ public abstract class DDParserBndExt extends DDParser {
             new XMLVersionMapping("1.2", 12);    
 
     protected static final XMLVersionMapping[] XML_VERSION_MAPPINGS_10_10 = {
-            XML_VERSION_MAPPING_10
+            XML_VERSION_MAPPING_10 // "1.0", not "10.0"
     };
 
     protected static final XMLVersionMapping[] XML_VERSION_MAPPINGS_10_11 = {
@@ -67,7 +77,7 @@ public abstract class DDParserBndExt extends DDParser {
 
         this.xmlVersionMappings = xmlVersionMappings;
         this.xmlDefaultVersion = xmlDefaultVersion;
-    }    
+    }
     
     private final Class<?> crossComponentType;
 
@@ -179,7 +189,7 @@ public abstract class DDParserBndExt extends DDParser {
         namespace = null;
         namespaceOriginal = null;
         idNamespace = NAMESPACE_OMG_XMI;
-        version = 9;
+        version = 9; // Note: "0.9", not "9.0".
 
         return createRoot();
     }

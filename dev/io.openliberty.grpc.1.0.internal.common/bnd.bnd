@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-grpcVersion=1.38.1
+grpcVersion=1.43.2
 
 Bundle-Name: gRPC Common Components
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.common
@@ -67,7 +67,7 @@ instrument.disabled: true
   com.google.guava:failureaccess;version=1.0.1,\
   com.google.guava:guava;version=30.1, \
   com.google.j2objc:j2objc-annotations;version=1.1, \
-  com.google.protobuf:protobuf-java;version=3.13.0, \
+  com.google.protobuf:protobuf-java;version=3.19.2, \
   io.grpc:grpc-census;version=${grpcVersion}, \
   io.grpc:grpc-context;version=${grpcVersion}, \
   io.grpc:grpc-core;version=${grpcVersion}, \

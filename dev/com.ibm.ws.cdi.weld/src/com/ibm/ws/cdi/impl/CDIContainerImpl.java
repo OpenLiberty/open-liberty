@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainer;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
+import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
@@ -612,6 +613,11 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 }
                 extensionSet.add(extensionArchive);
             }
+        }
+
+        for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
+            //add any custom archives from ExtensionArchiveProvider service providers
+            extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
         }
 
         if (CDIUtils.isDevelopementMode()) {

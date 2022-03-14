@@ -133,6 +133,14 @@ USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: The user API response indicates 
 USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=The access token that is in the user API request might be missing, expired, malformed, or otherwise not valid. The token might not be associated with a user that is known to the user API.
 USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verify that an access token is included in the user API request. Ensure that the token is not expired or malformed. Verify that the user that is associated with the access token is known to the user API.
 
+INVALID_CONFIG_PARAM=CWWKS5390E: Der erforderliche Konfigurationsparameter {0} fehlt oder er hat den ung\u00fcltigen Wert {1}.
+INVALID_CONFIG_PARAM.explanation=Der Social Login-Laufzeitcode hat bei der Verarbeitung der Clientanforderung einen erforderlichen Parameter nicht gefunden.
+INVALID_CONFIG_PARAM.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und stellen Sie sicher, dass der fehlende Parameter korrekt angegeben wird.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Der Social Login-Client [{0}] konnte die OpenID Connect-Provider-Endpunktinformationen \u00fcber den Erkennungsendpunkt-URL [{1}] nicht abrufen. Aktualisieren Sie die Konfiguration f\u00fcr das Social Login (oidcLogin-Konfiguration) mit der richtigen HTTPS-Erkennungsendpunkt-URL. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Die oidcLogin-Konfiguration ist f\u00fcr die Erkennung der OpenID Connect Provider-Endpunkte \u00fcber die Erkennungs-URL konfiguriert, aber der Erkennungsprozess ist fehlgeschlagen. Der Client kann die Authentifizierungsanforderung erst verarbeiten, wenn die Konfiguration des Erkennungsendpunkts richtig ist, oder die Erkennung erfolgreich war.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Korrigieren Sie die oidcLogin-Konfiguration, um sicherzustellen, dass 1) die Erkennungsendpunkt-URL sich auf den richtigen OpenID Connect-Provider bezieht, 2) die Erkennungsendpunkt-URL HTTPs verwendet und 3) das SSL-Feature und die Keystoreelemente ordnungsgem\u00e4\u00df konfiguriert wurden, um eine Vertrauensbeziehung zum OpenID Connect-Provider herzustellen. 4) Stellen Sie sicher, dass der OpenID Connect-Providererkennungsendpunkt funktional ist. 
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.
@@ -638,11 +646,3 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Vergewissern Sie sich, dass die in
 REQUEST_URL_NOT_VALID=CWWKS5499E: Das Social Login-Feature kann die Anforderung nicht an die urspr\u00fcngliche Anforderungs-URL [{0}] umleiten, weil die URL nicht g\u00fcltig ist. {1}
 REQUEST_URL_NOT_VALID.explanation=Die urspr\u00fcngliche Anforderungs-URL ist keine g\u00fcltige URL. Die URL enth\u00e4lt m\u00f6glicherweise ung\u00fcltige Zeichen oder die URL ist fehlerhaft.
 REQUEST_URL_NOT_VALID.useraction=Vergewissern Sie sich, dass die in der Nachricht angegebene Anforderungs-URL mit der urspr\u00fcnglichen Anforderungs-URL f\u00fcr die gesch\u00fctzte Ressource \u00fcbereinstimmt. Stellen Sie sicher, dass die URL korrekt formatiert ist und nur g\u00fcltige URI-Zeichen enth\u00e4lt.
-
-INVALID_CONFIG_PARAM=CWWKS5500E: Der erforderliche Konfigurationsparameter {0} fehlt oder er hat den ung\u00fcltigen Wert {1}.
-INVALID_CONFIG_PARAM.explanation=Der Social Login-Laufzeitcode hat bei der Verarbeitung der Clientanforderung einen erforderlichen Parameter nicht gefunden.
-INVALID_CONFIG_PARAM.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und stellen Sie sicher, dass der fehlende Parameter korrekt angegeben wird.
-
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: Der Social Login-Client [{0}] konnte die OpenID Connect-Provider-Endpunktinformationen \u00fcber den Erkennungsendpunkt-URL [{1}] nicht abrufen. Aktualisieren Sie die Konfiguration f\u00fcr das Social Login (oidcLogin-Konfiguration) mit der richtigen HTTPS-Erkennungsendpunkt-URL. 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Die oidcLogin-Konfiguration ist f\u00fcr die Erkennung der OpenID Connect Provider-Endpunkte \u00fcber die Erkennungs-URL konfiguriert, aber der Erkennungsprozess ist fehlgeschlagen. Der Client kann die Authentifizierungsanforderung erst verarbeiten, wenn die Konfiguration des Erkennungsendpunkts richtig ist, oder die Erkennung erfolgreich war.
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Korrigieren Sie die oidcLogin-Konfiguration, um sicherzustellen, dass 1) die Erkennungsendpunkt-URL sich auf den richtigen OpenID Connect-Provider bezieht, 2) die Erkennungsendpunkt-URL HTTPs verwendet und 3) das SSL-Feature und die Keystoreelemente ordnungsgem\u00e4\u00df konfiguriert wurden, um eine Vertrauensbeziehung zum OpenID Connect-Provider herzustellen. 4) Stellen Sie sicher, dass der OpenID Connect-Providererkennungsendpunkt funktional ist. 

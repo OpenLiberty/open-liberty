@@ -61,6 +61,12 @@ public class FaultToleranceInterceptor {
 
     private static final TraceComponent tc = Tr.register(FaultToleranceInterceptor.class);
 
+    /**
+     * Class name of Jakarta EE Concurrency annotation that must not be intermixed with
+     * MicroProfile Fault Tolerance.
+     */
+    private static final String CONCURRENCY_ASYNC_ANNO = "jakarta.enterprise.concurrent.Asynchronous";
+
     @Inject
     private BeanManager beanManager;
 
@@ -244,6 +250,10 @@ public class FaultToleranceInterceptor {
             Executor<Object> executor = aggregatedFTPolicy.getExecutor();
 
             Method method = invocationContext.getMethod();
+            for (Annotation anno : method.getAnnotations())
+                if (CONCURRENCY_ASYNC_ANNO.equals(anno.annotationType().getName()))
+                    throw new UnsupportedOperationException(Tr.formatMessage(tc, "anno.conflict.CWMFT5022E", CONCURRENCY_ASYNC_ANNO));
+
             Object[] params = invocationContext.getParameters();
             ExecutionContext executionContext = executor.newExecutionContext(generateId(method), method, params);
 

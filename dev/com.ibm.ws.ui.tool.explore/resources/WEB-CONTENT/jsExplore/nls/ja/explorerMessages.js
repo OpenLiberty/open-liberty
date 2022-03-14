@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "一部のアプリケーションが実行中",
     SOME_SERVERS_RUNNING : "一部のサーバーが稼働中",
     SOME_CLUSTERS_RUNNING : "一部のクラスターが稼働中",
-    NO_APPS_RUNNING : "実行中のアプリケーションはありません",
     NO_SERVERS_RUNNING : "稼働中のサーバーはありません",
     NO_CLUSTERS_RUNNING : "稼働中のクラスターはありません",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: アプリケーション・インスタンスが実行されていません", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: 一部のアプリケーションが実行されていません", // serverName[]
-    NO_APPS_RUNNING : "{0}: アプリケーションが実行されていません", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} サーバーは一部のアプリケーションが実行されていません", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} サーバーは実行されているアプリケーションがありません", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "注記 {0}",  // note value
     SET_ATTRIBUTES: "タグおよびメタデータ",
     SETATTR_RUNTIME_NAME: "{1} 上の {0}",  // runtime, host
-    SAVE: "保存(S)",
     TAGINVALIDCHARS: "「/」、「<」、および「>」文字は無効です。",
     ERROR_GET_TAGS_METADATA: "製品は、リソースの現行のタグおよびメタデータを取得できません。",
     ERROR_SET_TAGS_METADATA: "エラーにより、製品はタグおよびメタデータを設定できませんでした。",

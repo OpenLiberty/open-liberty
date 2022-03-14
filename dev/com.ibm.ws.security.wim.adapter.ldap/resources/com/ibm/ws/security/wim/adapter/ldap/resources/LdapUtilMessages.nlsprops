@@ -88,11 +88,11 @@ INVALID_CERTIFICATE_FILTER.explanation=The syntax or structure of this filter is
 INVALID_CERTIFICATE_FILTER.useraction=Ensure that the certificate filter follows the documented syntax.
 
 TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: The login operation could not be completed. The getTBSCertificate() operation is not supported in filter expression. Specify the correct certificate filter.
-TBS_CERTIFICATE_UNSUPPORTED.explanation=TBSCertificate certificate attribute cannot be used in the filter specification. You can use the following certificate attribute values on the right side of the filter specification. The strings are case sensitive: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=TBSCertificate certificate attribute cannot be used in the filter specification. You can use the following certificate attribute values on the right side of the filter specification. The strings are case sensitive: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Ensure that the certificate filter is correct.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: The login operation could not be completed. An unknown certificate attribute {0} was used in the filter specification. Specify a supported certificate filter.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=You can use only the following certificate attribute values on the right side of the filter specification. The strings are case sensitive: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=You can use only the following certificate attribute values on the right side of the filter specification. The strings are case sensitive: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Ensure that the certificate filter is correct.
 
 UNKNOWN_DN_FIELD=CWIML0003E: The login operation could not be completed. The configured Distinguished Name field {0} is not valid. Specify a valid Distinguished Name field.
@@ -222,7 +222,7 @@ INVALID_DN_SYNTAX=CWIML4517E: The login operation could not be completed. The {0
 INVALID_DN_SYNTAX.explanation=The specified distinguished name (DN) is not valid. The user registry operation cannot continue without a valid DN.
 INVALID_DN_SYNTAX.useraction=Ensure that the syntax of the distinguished name is correct. For example, review for escape characters.
 
-IDMAP_INVALID_FORMAT=CWIML4518W: The {0} {1} value is malformed. The value must be a semi-colon separated list of 'objectclass:attribute' or '*:attribute' pairs.
+IDMAP_INVALID_FORMAT=CWIML4518W: The {0} {1} value is malformed. The value must be a semi-colon separated list of "objectclass:attribute" or "*:attribute" pairs.
 IDMAP_INVALID_FORMAT.explanation=The userIdMap value must be in a valid format so that the objectclass and attribute can be parsed.
 IDMAP_INVALID_FORMAT.useraction=Update the userIdMap value so that it adheres to the specified format.
 

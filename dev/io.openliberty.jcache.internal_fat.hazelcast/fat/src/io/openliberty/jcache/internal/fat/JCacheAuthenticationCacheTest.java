@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SuppressWarnings("restriction")
 public class JCacheAuthenticationCacheTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
@@ -122,7 +121,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
 
         /*
          * 2. Call server2 using basic authentication. This will result in an authentication cache hit since the request
@@ -131,7 +130,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(true, server2);
+        assertJCacheBasicAuthCacheHit(true, server2);
 
         /*
          * 3. Wait TTL seconds to make the same request to server2 again. This time the entry will have been evicted since
@@ -144,7 +143,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
             response = basicAuthClient2.accessProtectedServletWithAuthorizedCredentials(BasicAuthClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
             assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
             assertResponseContainsCustomCredentials(response);
-            assertBasicAuthCacheHit(false, server2);
+            assertJCacheBasicAuthCacheHit(false, server2);
         }
     }
 
@@ -173,7 +172,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         String response = basicAuthClient1.accessProtectedServletWithAuthorizedCredentials(ServletClient.PROTECTED_ALL_ROLE, USER1_NAME, USER1_PASSWORD);
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertBasicAuthCacheHit(false, server1);
+        assertJCacheBasicAuthCacheHit(false, server1);
 
         /*
          * 2. Call server2 using the LTPA cookie from the first request. This will result in an authentication cache hit since the request

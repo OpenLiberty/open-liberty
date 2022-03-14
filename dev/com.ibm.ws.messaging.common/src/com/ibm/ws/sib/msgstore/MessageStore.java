@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore;
 
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.exception.ConfigurationError;
 import com.ibm.ws.exception.ConfigurationWarning;
 import com.ibm.ws.exception.RuntimeError;
 import com.ibm.ws.exception.RuntimeWarning;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.sib.admin.JsEngineComponent;
 import com.ibm.ws.sib.admin.JsHealthMonitor;
 import com.ibm.ws.sib.admin.JsMonitoredComponent;
@@ -60,7 +61,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * .......
  * }
  * </PRE>
- * 
+ *
  * Then during start-up check for the existence of your NamedItemStream, and create
  * one if neccessary:
  * <PRE>
@@ -82,7 +83,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * Instances of this class provide factory methods for creating transactions.
  * </p>
  */
-public abstract class MessageStore implements JsEngineComponent, JsMonitoredComponent, JsHealthMonitor, JsReloadableComponent, MessageStoreInterface
+public abstract class MessageStore implements Singleton, JsEngineComponent, JsMonitoredComponent, JsHealthMonitor, JsReloadableComponent, MessageStoreInterface
 {
     private static final String MSGSTORE_CLASS_NAME = "com.ibm.ws.sib.msgstore.impl.MessageStoreImpl";
     private static TraceComponent tc = SibTr.register(MessageStore.class,
@@ -97,77 +98,13 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     // check for whether the server is stopping or not
     public volatile boolean isServerStopping = false;
 
-    /**
-     * Preferred creation method creates an instance of a class implementing {@link MessageStore}. The instance will need to be configured and started
-     * before it is used.
-     * For example:
-     * <PRE>
-     * MessageStore msgStore = MessageStore.createInstance();
-     * msgStore.initialize(config);
-     * msgStore.start();
-     * ...........
-     * msgStore.stop();
-     * </PRE>
-     * 
-     * @return {@link MessageStore}
-     * @throws ConfigurationError
-     * @throws RuntimeError
-     * @throws ConfigurationWarning
-     * @throws RuntimeWarning
-     */
-    public final static MessageStore createInstance() throws ConfigurationError, RuntimeError, ConfigurationWarning, RuntimeWarning
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "createInstance");
-
-        MessageStore messageStore = null;
-        try
-        {
-            messageStore = (MessageStore) Class.forName(MSGSTORE_CLASS_NAME).newInstance();
-        } catch (InstantiationException e1)
-        {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e1, "com.ibm.ws.sib.msgstore.MessageStore.createInstance", "134");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createInstance");
-            throw new ConfigurationError(e1);
-        } catch (ClassNotFoundException e)
-        {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.sib.msgstore.MessageStore.createInstance", "137");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createInstance");
-            throw new ConfigurationError(e);
-        } catch (IllegalArgumentException e)
-        {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.sib.msgstore.MessageStore.createInstance", "140");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createInstance");
-            throw new ConfigurationError(e);
-        } catch (SecurityException e)
-        {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.sib.msgstore.MessageStore.createInstance", "143");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createInstance");
-            throw new ConfigurationError(e);
-        } catch (IllegalAccessException e)
-        {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.sib.msgstore.MessageStore.createInstance", "146");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "createInstance");
-            throw new ConfigurationError(e);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "createInstance", messageStore);
-        return messageStore;
-    }
-
     protected MessageStore() {}
 
     /**
      * Used to call the (package-private) {@link AbstractItem#getMembership()} method from inside the implementation package. A sneaky trick.
-     * 
+     *
      * @param item
-     * 
+     *
      * @return
      */
     protected Membership _getMembership(AbstractItem item)
@@ -178,9 +115,9 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /*
      * Used to call the (package-private) {@link AbstractItem#setMembership()}
      * method from inside the implementation package. A sneaky trick.
-     * 
+     *
      * @param membership
-     * 
+     *
      * @param item
      */
     protected void _setMembership(Membership membership, AbstractItem item)
@@ -214,7 +151,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.MessageStoreInterface#add(com.ibm.ws.sib.msgstore.ItemStream, com.ibm.ws.sib.msgstore.transactions.Transaction)
      */
     @Override
@@ -226,7 +163,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Allow the expirer to begin its work. No expiry will take place until
      * this method has been called.
-     * 
+     *
      * Note: for logistical reasons this method will not be implemented
      * until after the message processor has implemented the calls to it.
      */
@@ -236,14 +173,14 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Allow the expirer to stop its work. No expiry will take place after
      * this method has been called.
-     * 
+     *
      */
     @Override
     public void expirerStop() {}
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.MessageStoreInterface#deliveryDelayManagerStart()
      */
     @Override
@@ -251,7 +188,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.MessageStoreInterface#deliveryDelayManagerStop()
      */
     @Override
@@ -259,7 +196,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /**
      * Reply the {@link Membership} identified by the given value.
-     * 
+     *
      * @param id
      * @return {@link Membership} or null if non exists.
      */
@@ -269,8 +206,8 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     public void serverStarted() {}
 
     // Implementing this method so that we can get notification when WAS server is in stopping state.
-    // This implementation is needed so that we can stop unnecessary retrying for long time(15 minutes for first time)  
-    // to obtain connection in DatasourceController.performFirstAction() method 
+    // This implementation is needed so that we can stop unnecessary retrying for long time(15 minutes for first time)
+    // to obtain connection in DatasourceController.performFirstAction() method
     // when WAS server has already given notification that its in stopping state.
 
     /**
@@ -299,7 +236,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Request that the receiver prints its xml representation
      * (recursively) onto the specified file.
-     * 
+     *
      * @param writer
      * @throws IOException
      */
@@ -313,7 +250,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Request that the receiver prints its xml representation
      * (recursively) onto standard out.
-     * 
+     *
      * @throws IOException
      */
     @Override
@@ -327,9 +264,9 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Request that the receiver prints an xml representation of the
      * persistent data (recursively) onto the specified file.
-     * 
+     *
      * @param writer
-     * 
+     *
      * @throws IOException
      */
     public final void xmlRequestWriteRawDataOnFile(FormattedWriter writer) throws IOException
@@ -341,7 +278,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
     /**
      * Request that the receiver prints an xml representation of the
      * persistent data (recursively) onto standard out.
-     * 
+     *
      * @throws IOException
      */
     public final void xmlRequestWriteRawDataOnSystemOut() throws IOException
@@ -353,7 +290,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /**
      * Write out the raw (persisted) data to the writer.
-     * 
+     *
      * @param writer
      * @param callBackToItem specifies whether or not to include data from a raw item
      * @throws IOException
@@ -362,7 +299,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /**
      * Getter for _hasRedeliveryCountColumn
-     * 
+     *
      * @return
      */
     public boolean isRedeliveryCountColumnAvailable()
@@ -372,7 +309,7 @@ public abstract class MessageStore implements JsEngineComponent, JsMonitoredComp
 
     /**
      * Setter for _hasRedeliveryCountColumn
-     * 
+     *
      * @param hasRedeliveryCountColumn
      */
     public void setRedeliveryCountColumn(boolean hasRedeliveryCountColumn)

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,10 +76,7 @@ error.archiveTarget=CWWKE0011E: Parametrul --archive necesit\u0103 un argument: 
 error.archiveTarget.explanation=Nu s-a furnizat un argument necesar.
 error.archiveTarget.useraction=Furniza\u0163i argumentul corect \u015fi re\u00eencerca\u0163i comanda. \u00cencerca\u0163i s\u0103 folosi\u0163i --help pentru o descriere a argumentelor pentru op\u0163iunea furnizat\u0103.
 
-error.serverNameCharacter=CWWKE0012E: Numele de server specificat con\u0163ine un caracter care nu este valid (name={0}). \
-Caracterele valide sunt: alfanumerice Unicode (de ex. \
-0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). \
-Un nume de erver nu poate \u00eencepe cu liniu\u0163\u0103 (-) sau punct (.).
+error.serverNameCharacter=CWWKE0012E: Numele de server specificat con\u0163ine un caracter care nu este valid (name={0}). Caracterele valide sunt: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). Un nume de erver nu poate \u00eencepe cu liniu\u0163\u0103 (-) sau punct (.).
 error.serverNameCharacter.explanation=Un caracter care nu este valid a fost utilizat \u00een numele serverului.
 error.serverNameCharacter.useraction=Redenumi\u0163i serverul folosind doar caractere valide: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.).
 
@@ -125,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: Nu exist\u0103 defini\u0163ia de kernel specific
 error.kernelDefFile.explanation=Nu s-a putut g\u0103si defini\u0163ia de kernel specificat\u0103.
 error.kernelDefFile.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 resursa defini\u0163iei de kernel \u015fi poate fi citit\u0103 de utilizatorul curent.
 
-error.specifiedLocation=CWWKE0025E: Valoarea {0} trebuie s\u0103 fac\u0103 referire la un director. \
-Valoarea specificat\u0103 face referire la o resurs\u0103 de fi\u015fier existent\u0103. \
-Valoare: {1}
+error.specifiedLocation=CWWKE0025E: Valoarea {0} trebuie s\u0103 fac\u0103 referire la un director. Valoarea specificat\u0103 face referire la o resurs\u0103 de fi\u015fier existent\u0103. Valoare: {1}
 error.specifiedLocation.explanation=Loca\u0163ia furnizat\u0103 face referire la un fi\u015fier existent \u00een loc de un director.
 error.specifiedLocation.useraction=Modifica\u0163i loca\u0163ia specificat\u0103 la un director \u015fi re\u00eencerca\u0163i ac\u0163iunea.
 
@@ -469,10 +464,7 @@ info.addProductExtension.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: Numele de client specificat con\u0163ine un caracter care nu este valid (name={0}). \
-Caracterele valide sunt: alfanumerice Unicode (de ex. \
-0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). \
-Un nume de client nu poate \u00eencepe cu o liniu\u0163\u0103 (-) sau un punct (.).
+error.clientNameCharacter=CWWKE0900E: Numele de client specificat con\u0163ine un caracter care nu este valid (name={0}). Caracterele valide sunt: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). Un nume de client nu poate \u00eencepe cu o liniu\u0163\u0103 (-) sau un punct (.).
 error.clientNameCharacter.explanation=S-a folosit un caracter care nu este valid \u00een numele clientului.
 error.clientNameCharacter.useraction=Redenumi\u0163i clientul folosind numai caractere valide: alfanumerice Unicode (de ex. 0-9, a-z, A-Z), liniu\u0163\u0103 de subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.).
 
@@ -523,14 +515,12 @@ info.java2security.started.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: E\u015fuare la setarea Security Manager implicit datorit\u0103 excep\u0163iei: {0}  Acest lucru survine dac\u0103 managerul de securitate a fost deja setat \u015fi metoda sa checkPermission nu-i permite s\u0103 fie \u00eenlocuit.
 error.set.securitymanager.explanation=Java 2 Security este activat\u0103 dar a ap\u0103rut o e\u015fuare la setarea Security Manager implicit.
-error.set.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  \
-Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
+error.set.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: E\u015fuare la setarea NoRethrow Security Manager datorit\u0103 excep\u0163iei: {0}.  Acest lucru survine dac\u0103 managerul de securitate a fost deja setat \u015fi metoda sa checkPermission nu-i permite s\u0103 fie \u00eenlocuit.
 error.set.trace.securitymanager.explanation=Este activat\u0103 Java 2 Security dar a ap\u0103rut o e\u015fuare la setarea NoRethrow Security Manager.
-error.set.trace.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  \
-Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
+error.set.trace.securitymanager.useraction=Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager.  Dac\u0103 este deja setat\u0103, \u00eenl\u0103tura\u0163i op\u0163iunea -Djava.security.manager \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: Politica actual\u0103 Java 2 Security a raportat o poten\u0163ial\u0103 \u00eenc\u0103lcare a permisiunii Java 2 Security. {0}Permisiune:{1}Cod:{2}{3}Urm\u0103 stiv\u0103:{4}Loca\u0163ie baz\u0103 de cod:{5}
 warning.java.security.permdenied.explanation=Metoda checkPermission() a Java Security Manager a aruncat o excep\u0163ie SecurityException pe Permisiunile subiectului.
@@ -538,9 +528,7 @@ warning.java.security.permdenied.useraction=Verifica\u0163i c\u0103 opera\u0163i
 
 error.java.security.exception.codebase=CWWKE0913E: O excep\u0163ie nea\u015fteptat\u0103 este prins\u0103 la \u00eencercarea de a determina loca\u0163ia de baz\u0103 de cod.  Excep\u0163ie: {0}.  
 error.java.security.exception.codebase.explanation=A ap\u0103rut o e\u015fuare \u00een determinarea loca\u0163iei de baz\u0103 a codului care a generat o excep\u0163ie la controlul de acces Java 2 Security Permission.
-error.java.security.exception.codebase.useraction=Verifica\u0163i excep\u0163ia \u015fi istoricele serverului pentru detalii. \
-\  Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager \u015fi specificarea unei op\u0163iuni -Djava.security.policy.  \
-Dac\u0103 oricare sau ambele sunt setate, \u00eenl\u0103tura\u0163i set\u0103rile \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea  propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties.
+error.java.security.exception.codebase.useraction=Verifica\u0163i excep\u0163ia \u015fi istoricele serverului pentru detalii.   Asigura\u0163i-c\u0103 c\u0103 managerul de securitate nu a fost deja setat prin pornirea serverului cu op\u0163iunea -Djava.security.manager \u015fi specificarea unei op\u0163iuni -Djava.security.policy.  Dac\u0103 oricare sau ambele sunt setate, \u00eenl\u0103tura\u0163i set\u0103rile \u015fi reporni\u0163i serverul cu Java 2 Security activat\u0103 prin specificarea  propriet\u0103\u0163ii websphere.java.security \u00een fi\u015fierul bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: Politica curent\u0103 Java 2 Security a reportat o violare poten\u0163ial\u0103 a Java 2 Security Permission. Referi\u0163i-v\u0103 la Knowledge Center pentru mai multe informa\u0163ii.{0}Permisiune:{1}Cod:{2}Loca\u0163ie de baz\u0103 cod:{3}
 warning.zOS.java.security.permdenied1.explanation=Metoda checkPermission() a Java Security Manager a aruncat o excep\u0163ie SecurityException pe Permisiunile subiectului. Un apelant de pe stiva de apeluri nu are permisiunea necesar\u0103.  Acest lucru se poate s\u0103 nu fie o problem\u0103 dac\u0103 apelantul trateaz\u0103 corespunz\u0103tor aceast\u0103 excep\u0163ie.
@@ -562,7 +550,7 @@ error.client.runner.useraction=Vede\u0163i mesajele de eroare pentru detalii des
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  Nu se poate realiza opera\u0163ia cerut\u0103. Pentru detalii, consulta\u0163i istoricele serverului de profil Liberty {0} pe gazda {1} \u00een loca\u0163ia {2} pentru cererea {3}.
+error.mbean.operation.failure=CWWKE0918E: \ Nu se poate realiza opera\u0163ia cerut\u0103. Pentru detalii, consulta\u0163i istoricele serverului de profil Liberty {0} pe gazda {1} \u00een loca\u0163ia {2} pentru cererea {3}.
 error.mbean.operation.failure.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a realiza opera\u0163ia cerut\u0103.
 error.mbean.operation.failure.useraction=Verifica\u0163i istoricele serverului pentru detalii despre eroarea opera\u0163iei.
 
@@ -706,6 +694,10 @@ warning.earlyRelease=CWWKE0953W: Aceast\u0103 versiune de {0} este o versiune de
 warning.earlyRelease.explanation=Noile caracteristici care nu sunt testate complet sunt puse la dispozi\u0163ie \u00een edi\u0163iile timpurii pentru a solicita reac\u0163ii (feedback) \u00eenainte de a fi incluse \u00eentr-o edi\u0163ie suportat\u0103.
 warning.earlyRelease.useraction=Nu utiliza\u0163i o edi\u0163ie timpurie pe sistemele de produc\u0163ie, deoarece versiunile timpurii nu sunt suportate.
 
+error.invalidPhaseName=CWWKE0954E: Faza punctului de control "{0}" specificat este goal\u0103 sau necunoscut\u0103.
+error.invalidPhaseName.explanation=O faz\u0103 necunoscut\u0103 a fost specificat\u0103 ca valoare a op\u021biunii de punct de control.
+error.invalidPhaseName.useraction=Revede\u021bi documenta\u021bia pentru a determina numele de faz\u0103 valide. Relansa\u021bi comanda folosind o faz\u0103 de punct de control valid\u0103.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.
@@ -786,7 +778,6 @@ info.initlogs=Se redirec\u0163ioneaz\u0103 stdout \u015fi stderr la fi\u015fieru
 
 info.no.servers.defined=Nu este definit niciun server \u00een directorul de utilizatori {0}.
 info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la directorul de utilizatori {0}.
-info.communicate.server=A ap\u0103rut o \
-eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
+info.communicate.server=A ap\u0103rut o eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
 
 info.serialFilterLoaded=Agentul de filtrare serial\u0103 a fost \u00eenc\u0103rcat.

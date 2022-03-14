@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.SIDestinationAddress;
+import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.websphere.sib.SIRCConstants;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
@@ -172,7 +173,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Create a new ConnectionImpl connected to the given Message Processor.
-     * 
+     *
      * @param messageProcessor The MessageProcessor to connect to
      */
     ConnectionImpl(MessageProcessor messageProcessor, Subject subject, Map connectionProperties)
@@ -229,7 +230,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         //to be overkill but it'll do for now.
         _uuid = new SIBUuid12();
 
-        //A boolean to indicate if this connection has been closed. 
+        //A boolean to indicate if this connection has been closed.
         _closed = false;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -239,7 +240,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * Check if this connection has been closed. If it has, a SIObjectClosedException
      * is thrown.
-     * 
+     *
      * @throws SIConnectionUnavailableException
      */
     private void checkNotClosed() throws SIConnectionUnavailableException
@@ -273,7 +274,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Check if the Message Processor is started. If it is not a {@link SIConnectionUnavailableException} is thrown.
-     * 
+     *
      * @throws SIConnectionUnavailableException
      */
     private void checkMPStarted() throws SIConnectionUnavailableException
@@ -308,7 +309,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * Check if the given expected destination type matches the type we are trying
      * to use. If not we throw an exception.
-     * 
+     *
      * @param expectedDestType
      * @param destination - The actual destination we are trying to use
      * @throws SINotSupportedByConfigurationException If the expected type isn't the real type
@@ -425,7 +426,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     }
 
     /**
-     * 
+     *
      * @return
      */
     private String locateCorrectMessage(DestinationType realType, DestinationType expectedType)
@@ -448,9 +449,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             else if (expectedType == DestinationType.SERVICE)
                 return "DELIVERY_ERROR_SIRC_12"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
             else if (expectedType == DestinationType.PORT)
-                return "DELIVERY_ERROR_SIRC_13"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158 
+                return "DELIVERY_ERROR_SIRC_13"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
             else
-                return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168     
+                return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
         }
         else if (realType == DestinationType.SERVICE)
         {
@@ -472,15 +473,15 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             else if (expectedType == DestinationType.SERVICE)
                 return "DELIVERY_ERROR_SIRC_10"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
             else
-                return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168     
+                return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
         }
 
-        return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168     
+        return "DELIVERY_ERROR_SIRC_14"; // INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#close()
      */
     @Override
@@ -491,7 +492,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
             SibTr.entry(CoreSPIConnection.tc, "close", this);
 
-        // Lock on the connections lock object to stop Message Processor from 
+        // Lock on the connections lock object to stop Message Processor from
         // closing us
         _messageProcessor.getConnectionLockManager().lock();
         try
@@ -516,12 +517,12 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /* PM39926-End */
     /**
      * Closes the object and removes all associated state.
-     * 
+     *
      * @param removeConnectionListeners If this is set to true we remove the
      *            connection listeners. (Called by the regular connection.close method).
      *            The _close method is called directly by the stop method and doesn't
      *            want the connection listeners to be removed.
-     * 
+     *
      */
     protected void _close(boolean removeConnectionListeners)
                     throws SIConnectionLostException, SIResourceException, SIErrorException
@@ -591,7 +592,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                 }
             }
 
-            // Close all the bifurcated consumers on this connection 
+            // Close all the bifurcated consumers on this connection
             // before closing all the consumers.
             synchronized (_bifurcatedConsumers)
             {
@@ -697,7 +698,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * This method simply removes a Browser Session from our list. It is generally
      * called by the Browser Session as it is closing down.
-     * 
+     *
      * @param browser
      */
     void removeBrowserSession(BrowserSessionImpl browser)
@@ -716,7 +717,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * This method simply removes a Consumer Session from our list. It is generally
      * called by the Consumer Session as it is closing down.
-     * 
+     *
      * @param consumer
      */
     void removeConsumerSession(ConsumerSessionImpl consumer)
@@ -738,7 +739,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * This method simply removes a Producer Session from our list. It is generally
      * called by the Producer Session as it is closing down.
-     * 
+     *
      * @param producer
      */
     void removeProducerSession(ProducerSessionImpl producer)
@@ -755,7 +756,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createUncoordinatedTransaction()
      */
     @Override
@@ -774,7 +775,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createUncoordinatedTransaction(boolean)
      */
     @Override
@@ -844,7 +845,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createProducerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -877,7 +878,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createProducerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -913,7 +914,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createProducerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -985,7 +986,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Method that creates the producer session.
-     * 
+     *
      * @param destAddress
      * @param destinationType
      * @param system
@@ -1077,7 +1078,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createProducerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -1140,7 +1141,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createMQInterOpConsumerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.SelectionCriteria, com.ibm.websphere.sib.Reliability, boolean, boolean, com.ibm.websphere.sib.Reliability, boolean, java.lang.String, boolean)
      */
@@ -1192,7 +1193,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         ConsumerSession session =
                         internalCreateConsumerSession(destAddress,
                                                       alternateUser,
-                                                      destinationType,//type    
+                                                      destinationType,//type
                                                       criteria,
                                                       reliability,
                                                       enableReadAhead,
@@ -1216,9 +1217,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
      * Checks to see if the destination is temporary and the connection
      * used to create the temp destination is the same as the one trying to
      * access it.
-     * 
+     *
      * Checking skipped if this is a mqinterop request
-     * 
+     *
      * @param destination
      * @param mqinterop
      * @throws SITemporaryDestinationNotFoundException If the temp destination wasn't
@@ -1257,7 +1258,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Internal method for creating the consumer.
-     * 
+     *
      * @param destAddr
      * @param alternateUser
      * @param destinationType
@@ -1390,7 +1391,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         // Get the destination. If it is a remote queue, then we may need
         // to get its definition from Admin
         // (Despite not being able to consume from a foreign bus the bus name
-        // should be used just incase this is an alias to a local bus destination) 
+        // should be used just incase this is an alias to a local bus destination)
         DestinationHandler destination = _destinationManager.getDestination(destName, destAddr.getBusName(), false);
 
         // We may be using an alias, resolve to the actual destination
@@ -1453,7 +1454,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             checkNotClosed();
 
             //create a state object for this consumer session
-            //In this basic form it is just a wrapper for the discriminator and selector 
+            //In this basic form it is just a wrapper for the discriminator and selector
             ConsumerDispatcherState state = new ConsumerDispatcherState(
                             subscriptionName,
                             destination.getUuid(),
@@ -1625,7 +1626,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /*
      * (non-Javadoc)
      * This method is introduced newly in V9 for JMS 2.0 non-durable shared consumer.
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createSharedConsumerSession(java.lang.String, com.ibm.websphere.sib.SIDestinationAddress,
      * com.ibm.wsspi.sib.core.DestinationType, com.ibm.wsspi.sib.core.SelectionCriteria, com.ibm.websphere.sib.Reliability, boolean, boolean, boolean,
      * com.ibm.websphere.sib.Reliability, boolean, java.lang.String, boolean, boolean, java.util.Map)
@@ -1685,7 +1686,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createDurableSubscription(java.lang.String, java.lang.String, com.ibm.websphere.sib.SIDestinationAddress, java.lang.String,
      * java.lang.String, boolean, boolean)
      */
@@ -1708,7 +1709,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
@@ -1737,7 +1738,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                           nolocal,
                                           alternateUser,
                                           selectionCriteriaList, // selectionCriteria array
-                                          null); // userData 
+                                          null); // userData
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
             SibTr.exit(CoreSPIConnection.tc, "createDurableSubscription");
@@ -1748,7 +1749,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
      * An extended version of SICoreConnection.createDurableSubscription which includes
      * a list of selection criteria and a map for user data (these abilities are also available
      * independently from the create, see below)
-     * 
+     *
      * Use of either of the above two parameters is only valid for locally homed subscriptions
      */
     @Override
@@ -1772,7 +1773,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
@@ -1803,8 +1804,8 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     }
 
-    /* 
-   * 
+    /*
+   *
    */
     public void internalCreateDurableSubscription(String subscriptionName,
                                                   String durableSubscriptionHome,
@@ -1825,7 +1826,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -1913,9 +1914,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                             _messageProcessor.getAuthorisationUtils());
 
             // Set the discriminator to null in this check, so that we check access to
-            // the destination only. We break out the discriminator check into a 
+            // the destination only. We break out the discriminator check into a
             // separate loop below so that allowable discriminators can be processed while
-            // those that are disallowed will be discarded.                                     
+            // those that are disallowed will be discarded.
         }
 
         String topicName = null;
@@ -1983,7 +1984,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                         hasAtLeastOneTopic = true;
                         //This is the first selection criteria in the list that we are allowing
                         //so create a new state object representing the subscription and
-                        //this allowed selection criteria. 
+                        //this allowed selection criteria.
                         subState =
                                         new ConsumerDispatcherState(
                                                         subscriptionName,
@@ -2065,7 +2066,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createConsumerSessionForDurableSubscription(java.lang.String, java.lang.String, com.ibm.websphere.sib.SIDestinationAddress,
      * java.lang.String, java.lang.String, boolean, boolean, com.ibm.websphere.sib.Reliability, boolean, com.ibm.websphere.sib.Reliability, com.ibm.wsspi.sib.core.OrderingContext)
      */
@@ -2089,7 +2090,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
@@ -2131,7 +2132,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createConsumerSessionForDurableSubscription(java.lang.String, com.ibm.websphere.sib.SIDestinationAddress, boolean,
      * com.ibm.websphere.sib.Reliability, boolean)
      */
@@ -2187,7 +2188,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         }
 
         //Get the destinationHandler from the ConsumerDispatcher
-        //Note that we know it is PubSub  
+        //Note that we know it is PubSub
         DestinationHandler destination = cd.getDestination();
         SIDestinationAddress destinationAddress = SIMPUtils.createJsDestinationAddress(
                                                                                        destination.getName(),
@@ -2342,7 +2343,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -2368,7 +2369,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                                             false,
                                                             true);
 
-        // Check that the destination name of the real destination and the 
+        // Check that the destination name of the real destination and the
         // Destination supplied on the attachToDurable Sub match.
         HashMap durableSubs = _destinationManager.getDurableSubscriptionsTable();
 
@@ -2420,9 +2421,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                                                false);
         } catch (SINotPossibleInCurrentConfigurationException e)
         {
-            // No FFDC code needed 
+            // No FFDC code needed
 
-            // This error means that the destination name of the destination supplied 
+            // This error means that the destination name of the destination supplied
             // and the destination of the consumer don't match.
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(tc, "internalCreateConsumerSessionForDurableSubscription", "SIDurableSubscriptionMismatchException");
@@ -2440,7 +2441,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         {
             // No FFDC code needed
 
-            // This error means that the destination name of the destination supplied 
+            // This error means that the destination name of the destination supplied
             // and the destination of the consumer don't match.
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(tc, "internalCreateConsumerSessionForDurableSubscription", "SIDurableSubscriptionMismatchException");
@@ -2646,7 +2647,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
@@ -2693,9 +2694,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks made for durable subscription support.
-     * 
+     *
      * returns the uuid of the durable sub home
-     * 
+     *
      * Checks that the connection isn't closed
      * Checks that the subscription name isn't null
      * Checks that the destination address isn't null
@@ -2713,7 +2714,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -2811,7 +2812,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#deleteDurableSubscription(java.lang.String, java.lang.String)
      */
     @Override
@@ -2828,7 +2829,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
             SibTr.entry(CoreSPIConnection.tc, "deleteDurableSubscription",
@@ -2843,7 +2844,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#deleteDurableSubscription(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -2861,7 +2862,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     {
 
         //liberty code change : chetan
-        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME 
+        //Since there is no ME-ME communication the durableSubscriptionHome is always the local ME
         durableSubscriptionHome = _messageProcessor.getMessagingEngineName();
 
         if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
@@ -2946,7 +2947,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                         topicSpaceName = subState.getTopicSpaceName();
 
                         // Check that the user who is attempting to delete this durable subscription
-                        // matches that set in the CD state when the subscription was created           
+                        // matches that set in the CD state when the subscription was created
                         boolean isPriv = false;
                         if (alternateUser == null)
                         {
@@ -3118,7 +3119,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             session.close();
         } catch (SISessionUnavailableException e)
         {
-            // No FFDC code needed     
+            // No FFDC code needed
             SibTr.exception(tc, e);
 
             // If any of these calls failed due to being closed the connection
@@ -3132,7 +3133,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
             throw new SIConnectionUnavailableException(
                             nls_cwsik.getFormattedMessage(
-                                                          "DELIVERY_ERROR_SIRC_22", // OBJECT_CLOSED_ERROR_CWSIP0091 
+                                                          "DELIVERY_ERROR_SIRC_22", // OBJECT_CLOSED_ERROR_CWSIP0091
                                                           new Object[] { _messageProcessor.getMessagingEngineName() },
                                                           null),
                             e);
@@ -3145,7 +3146,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#send(com.ibm.wsspi.sib.core.SIBusMessage, com.ibm.wsspi.sib.core.SITransaction, com.ibm.websphere.sib.SIDestinationAddress,
      * com.ibm.wsspi.sib.core.DestinationType, com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -3186,7 +3187,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#receiveNoWait(com.ibm.wsspi.sib.core.SITransaction, com.ibm.websphere.sib.Reliability,
      * com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType, java.lang.String, java.lang.String, com.ibm.websphere.sib.Reliability,
      * com.ibm.wsspi.sib.core.OrderingContext)
@@ -3303,7 +3304,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         try
         {
             //TODO there may be some optimization we can do here to just receive one message
-            //Create a consumer session 
+            //Create a consumer session
             ConsumerSession session =
                             internalCreateConsumerSession(
                                                           destAddr,
@@ -3330,7 +3331,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             session.close();
         } catch (SISessionUnavailableException e)
         {
-            // No FFDC code needed     
+            // No FFDC code needed
             SibTr.exception(tc, e);
 
             // If any of these calls failed due to being closed the connection
@@ -3344,7 +3345,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
             throw new SIMPConnectionUnavailableException(
                             nls_cwsik.getFormattedMessage(
-                                                          "DELIVERY_ERROR_SIRC_22", // OBJECT_CLOSED_ERROR_CWSIP0091 
+                                                          "DELIVERY_ERROR_SIRC_22", // OBJECT_CLOSED_ERROR_CWSIP0091
                                                           new Object[] { _messageProcessor.getMessagingEngineName() },
                                                           null),
                             e);
@@ -3435,13 +3436,13 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
             session.start(false);
 
-            //receive one message                                                    
+            //receive one message
             message = session.receiveWithWait(tran, timeout);
             //close the session
             session.close();
         } catch (SISessionUnavailableException e)
         {
-            // No FFDC code needed     
+            // No FFDC code needed
             SibTr.exception(tc, e);
 
             // If any of these calls failed due to being closed the connection
@@ -3470,11 +3471,11 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#receiveWithWait(com.ibm.wsspi.sib.core.SITransaction, com.ibm.websphere.sib.Reliability,
      * com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType, java.lang.String, java.lang.String, com.ibm.websphere.sib.Reliability, long,
      * com.ibm.wsspi.sib.core.OrderingContext)
-     * 
+     *
      * Method Added in M7 Core SPI
      */
     @Override
@@ -3558,10 +3559,10 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createBrowserSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType, java.lang.String,
      * boolean)
-     * 
+     *
      * Method Added M7 Core SPI
      */
     @Override
@@ -3578,7 +3579,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
         // See if this connection has been closed
         checkNotClosed();
-        // Check for null parameters    
+        // Check for null parameters
         checkBrowserSessionNullParameters(destinationAddress);
 
         BrowserSession session = createBrowserSession(destinationAddress,
@@ -3595,7 +3596,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createBrowserSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType, java.lang.String,
      * boolean)
      */
@@ -3614,7 +3615,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
         // See if this connection has been closed
         checkNotClosed();
-        // Check for null parameters    
+        // Check for null parameters
         checkBrowserSessionNullParameters(destinationAddress);
 
         BrowserSession session = createBrowserSession(destinationAddress,
@@ -3631,7 +3632,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Creates the Browser session.
-     * 
+     *
      * @param destName
      * @param destinationAddress
      * @param discriminator
@@ -3728,7 +3729,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#addConnectionListener(com.ibm.wsspi.sib.core.SICoreConnectionListener)
      */
     @Override
@@ -3755,7 +3756,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Gets the Message processor to which this is a connection to
-     * 
+     *
      * @return MessageProcessor
      */
     MessageProcessor getMessageProcessor()
@@ -3772,7 +3773,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Returns the unique id of this connection.
-     * 
+     *
      * @return SIBUuid12 of the connection
      */
     SIBUuid12 getUuid()
@@ -3788,7 +3789,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createTemporaryDestination(com.ibm.ws.sib.common.Distribution, java.lang.String)
      */
     @Override
@@ -3808,7 +3809,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         // See if this connection has been closed
         checkNotClosed();
 
-        // Check to make sure that the destination prefix is valid. 
+        // Check to make sure that the destination prefix is valid.
         // If it's not, then we can't continue.
         String result = SICoreUtils.isDestinationPrefixValid(destinationPrefix);
         if (!result.equals(SICoreUtils.VALID)) // if its not valid there is something wrong
@@ -3821,7 +3822,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                                         "INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039",
                                                         null,
                                                         null));
-            } else { // an invalid character is there in the prefix 
+            } else { // an invalid character is there in the prefix
 
                 if (TraceComponent.isAnyTracingEnabled() && CoreSPIConnection.tc.isEntryEnabled())
                     SibTr.exit(CoreSPIConnection.tc, "createTemporaryDestination", "SIInvalidDestinationPrefixException");
@@ -3894,7 +3895,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#deleteTemporaryDestination(com.ibm.websphere.sib.SIDestinationAddress)
      */
     @Override
@@ -3959,7 +3960,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getSIXAResource()
      */
     @Override
@@ -4002,7 +4003,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#cloneConnection()
      */
     @Override
@@ -4041,7 +4042,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#isEquivalentTo(com.ibm.wsspi.sib.core.SICoreConnection)
      */
     @Override
@@ -4090,7 +4091,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getMeName()
      */
     @Override
@@ -4107,7 +4108,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getMeUuid()
      */
     @Override
@@ -4117,7 +4118,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             SibTr.entry(CoreSPIConnection.tc, "getMeUuid", this);
 
         // get the meuuid from the messaging engine instead of messageprocessor
-        // When ME is stopping connection events are sent to MDB and MDB tries to connect 
+        // When ME is stopping connection events are sent to MDB and MDB tries to connect
         // to ME. Earlier messageprocessor.getmessagingengineuuid() was being called but
         // leads to NPE because messageprocessor.getmessagingengineuuid() gets the uuid from persistent
         // store is stopped(null) by now
@@ -4131,7 +4132,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#removeConnectionListener(com.ibm.wsspi.sib.core.SICoreConnectionListener)
      */
     @Override
@@ -4141,7 +4142,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             SibTr.entry(CoreSPIConnection.tc, "removeConnectionListener",
                         new Object[] { this, listener });
 
-        // Synchronize on the _connectionListeners object, 
+        // Synchronize on the _connectionListeners object,
         synchronized (_connectionListeners)
         {
             _connectionListeners.remove(listener);
@@ -4153,9 +4154,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getConnectionListeners()
-     * 
+     *
      * The synchronization of this method is purely around the
      * connectionListeners object. This is because of a timing problem
      * between an asynch consumer processing an error and the server shutting
@@ -4191,7 +4192,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getApiLevelDescription()
      */
     @Override
@@ -4241,7 +4242,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.transactions.TransactionCallback#beforeCompletion(com.ibm.ws.sib.msgstore.Transaction)
      */
     @Override
@@ -4250,7 +4251,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.transactions.TransactionCallback#afterCompletion(com.ibm.ws.sib.msgstore.Transaction, boolean)
      */
     @Override
@@ -4279,7 +4280,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createUniqueId()
      */
     @Override
@@ -4303,7 +4304,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getDestinationConfiguration(com.ibm.websphere.sib.SIDestinationAddress)
      */
     @Override
@@ -4360,7 +4361,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             if (_isBusSecure)
             {
                 SecurityContext secContext = new SecurityContext(this._subject,
-                                null, // alternateUser 
+                                null, // alternateUser
                                 null,
                                 _messageProcessor.getAuthorisationUtils());
 
@@ -4410,7 +4411,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             if (_isBusSecure)
             {
                 SecurityContext secContext = new SecurityContext(this._subject,
-                                null, // alternateUser 
+                                null, // alternateUser
                                 null,
                                 _messageProcessor.getAuthorisationUtils());
 
@@ -4425,7 +4426,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
             }
 
-            // If this is a foreign bus - then there will be no definition associated with the 
+            // If this is a foreign bus - then there will be no definition associated with the
             // destination handler, so construct one based on the BusHandler.
             dc =
                             new DestinationConfigurationImpl(dh.getDefaultPriority(),
@@ -4451,7 +4452,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         {
             // For non-local destinations, will throw SIDestinationNotFoundException
             // In later milestone, Admin will provide i/f for us to query both
-            // local and remove destination configurations  
+            // local and remove destination configurations
             BaseDestinationDefinition baseDefinition = dh.getDefinition();
             if (dh.isAlias())
             {
@@ -4466,7 +4467,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             if (_isBusSecure)
             {
                 SecurityContext secContext = new SecurityContext(this._subject,
-                                null, // alternateUser 
+                                null, // alternateUser
                                 null,
                                 _messageProcessor.getAuthorisationUtils());
 
@@ -4507,7 +4508,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createSystemBrowserSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationFilter,
      * java.lang.String, java.lang.String)
      */
@@ -4547,7 +4548,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                                  destinationType,
                                                  criteria,
                                                  true,
-                                                 null, // alternateUser 
+                                                 null, // alternateUser
                                                  false);
         } catch (SITemporaryDestinationNotFoundException e)
         {
@@ -4587,7 +4588,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createSystemConsumerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationFilter,
      * java.lang.String, java.lang.String, com.ibm.websphere.sib.Reliability, boolean, boolean, com.ibm.websphere.sib.Reliability)
      */
@@ -4695,7 +4696,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createSystemProducerSession(com.ibm.websphere.sib.SIDestinationAddress, java.lang.String,
      * com.ibm.wsspi.sib.core.DestinationFilter, com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -4722,7 +4723,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createSystemProducerSession(com.ibm.websphere.sib.SIDestinationAddress, java.lang.String,
      * com.ibm.wsspi.sib.core.DestinationFilter, com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -4824,7 +4825,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#systemReceiveNoWait(com.ibm.wsspi.sib.core.SITransaction, com.ibm.websphere.sib.Reliability,
      * com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationFilter, java.lang.String, java.lang.String, com.ibm.websphere.sib.Reliability)
      */
@@ -4920,7 +4921,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#systemReceiveWithWait(com.ibm.wsspi.sib.core.SITransaction, com.ibm.websphere.sib.Reliability,
      * com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationFilter, java.lang.String, java.lang.String, com.ibm.websphere.sib.Reliability, long)
      */
@@ -5019,7 +5020,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#systemSend(com.ibm.wsspi.sib.core.SIBusMessage, com.ibm.wsspi.sib.core.SITransaction,
      * com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationFilter, com.ibm.wsspi.sib.core.OrderingContext, boolean)
      */
@@ -5093,7 +5094,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#createSystemDestination(java.lang.String)
      */
     @Override
@@ -5117,7 +5118,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Determines whether a destination prefix for a System destination is valid or not.
-     * 
+     *
      * <p>If the destination prefix has more than 24
      * characters, then it is invalid.
      * <p>The destination prefix is invalid if it contains any characters not in the following
@@ -5132,7 +5133,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
      * </ul>
      * <p>null and empty string values for a destination prefix are valid, and
      * simply indicate an empty prefix.
-     * 
+     *
      * @param destinationPrefix The destination prefix to which the validity
      *            check is applied.
      * @return true if the destination prefix is valid, false if the destination prefix is
@@ -5156,7 +5157,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             }
             else
             {
-                // Cycle through each character in the prefix until we find an invalid character, 
+                // Cycle through each character in the prefix until we find an invalid character,
                 // or until we come to the end of the string.
                 int along = 0;
 
@@ -5171,7 +5172,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                             {
                                 if ('.' != c && '/' != c && '%' != c)
                                 {
-                                    // This character isn't a valid one...  
+                                    // This character isn't a valid one...
                                     isValid = false;
                                 }
                             }
@@ -5189,7 +5190,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#deleteSystemDestination(com.ibm.ws.sib.mfp.JsDestinationAddress)
      */
     @Override
@@ -5223,7 +5224,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#deleteSystemDestination(com.ibm.ws.sib.mfp.JsDestinationAddress)
      */
     @Override
@@ -5245,9 +5246,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#setMessageCopiedWhenSent(boolean)
-     * 
+     *
      * Attribute on the MPCoreConnection. If set, a producer send will not copy
      * the message.
      */
@@ -5273,9 +5274,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#setMessageCopiedWhenReceived(boolean)
-     * 
+     *
      * Attribute on the MPCoreConnection. If set, a consumer receive will not copy
      * the message.
      */
@@ -5324,10 +5325,10 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createConsumerSession(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.DestinationType, java.lang.String,
      * java.lang.String, com.ibm.websphere.sib.Reliability, boolean, boolean, com.ibm.websphere.sib.Reliability, com.ibm.wsspi.sib.core.OrderingContext)
-     * 
+     *
      * Added in the M7 Core SPI updates.
      */
     @Override
@@ -5530,9 +5531,9 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
      * and returns the same class objects. The difference is that this
      * method will only work against MQLink destinations. If a non-mqlink
      * destination is supplied an SIDestinationWrongTypeException is thrown.
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreException#createConsumerSession(SIBUuid12, boolean)
-     * 
+     *
      * @param mqLinkUuid
      * @param selector
      * @param unrecoverableReliability
@@ -5590,7 +5591,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
         SIBUuid8 mqLinkUuid = new SIBUuid8(mqLinkUuidStr);
 
-        // Get the destination. 
+        // Get the destination.
         mqLinkHandler = _destinationManager.getMQLinkLocalization(mqLinkUuid, false);
 
         // Check that it is an MQLink Handler
@@ -5619,7 +5620,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             checkNotClosed();
 
             //create a state object for this consumer session
-            //In this basic form it is just a wrapper for the discriminator and selector 
+            //In this basic form it is just a wrapper for the discriminator and selector
             ConsumerDispatcherState state = new ConsumerDispatcherState(
                             null,
                             mqLinkHandler.getUuid(),
@@ -5816,7 +5817,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Retrieves the MQLink's PubSubBridge ItemStream
-     * 
+     *
      * @param name of the MQLink
      */
     @Override
@@ -5880,7 +5881,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createOrderingContext()
      */
     @Override
@@ -5905,7 +5906,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#getResolvedUserid()
      */
     @Override
@@ -5937,7 +5938,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#createBifurcatedConsumerSession(long)
      */
     @Override
@@ -6018,7 +6019,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Remove a bifurcated consumer from the connection list.
-     * 
+     *
      * @param bifurcatedConsumer
      */
     void removeBifurcatedConsumerSession(BifurcatedConsumerSessionImpl bifurcatedConsumer)
@@ -6040,7 +6041,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * Searches through the local connection, then through any other connections
      * looking for the matching consumer session for the given id.
-     * 
+     *
      * @param id
      * @return
      * @throws SINotAuthorizedException
@@ -6102,7 +6103,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                                 String resolvedConnUserid = _messageProcessor.getAuthorisationUtils().getUserName(connsSubject);
                                 String resolvedUserid = _messageProcessor.getAuthorisationUtils().getUserName(_subject);
 
-                                // NB Sib.security, ensures that resolved Userids are non-null                                 
+                                // NB Sib.security, ensures that resolved Userids are non-null
                                 if (!resolvedConnUserid.equals(resolvedUserid))
                                 {
                                     subjectsDiffer = true;
@@ -6131,7 +6132,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                         }
                         else if (_subject != null)
                         {
-                            // audit the authorization failure  
+                            // audit the authorization failure
                             sibAuthUtils.createBifurcatedConsumerSessionAuthorizationFailed(connsSubject, destinationName, id);
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -6161,7 +6162,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority of a producer to produce to a destination
-     * 
+     *
      */
     // Need to remove this for Liberty Messaging (Holding it till review happens)
     @Deprecated
@@ -6188,7 +6189,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         // queue in the local bus.
         if (!system || (destAddr.getBusName() == null) || destAddr.getBusName().equals(_messageProcessor.getMessagingEngineBus()))
         {
-            // Perform the alternate user check first. If an alternateUser was set then we 
+            // Perform the alternate user check first. If an alternateUser was set then we
             // need to determine whether the connected subject has the authority to perform
             // alternate user checks.
 
@@ -6264,7 +6265,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                 // get the temp prefix from the destination name
                 String destinationPrefix = SIMPUtils.parseTempPrefix(destinationName);
                 if (!_accessChecker.checkTemporaryDestinationAccess(secContext,
-                                                                    destinationName, // name of destination  
+                                                                    destinationName, // name of destination
                                                                     (destinationPrefix == null) ? "" : destinationPrefix, // sib.security wants empty string if prefix is null
                                                                     OperationType.SEND))
                 {
@@ -6337,7 +6338,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority of a consumer to consume from a destination
-     * 
+     *
      */
     @Deprecated
     private void checkConsumerAuthority(DestinationHandler destination,
@@ -6363,7 +6364,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         {
             boolean allowed = true;
             boolean failingOpisIdentityAdopter = false;
-            // Perform the alternate user check first. If an alternateUser was set then we 
+            // Perform the alternate user check first. If an alternateUser was set then we
             // need to determine whether the connected subject has the authority to perform
             // alternate user checks.
 
@@ -6389,7 +6390,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                     if (!_messageProcessor.
                                     getAccessChecker().
                                     checkDestinationAccess(secContext,
-                                                           null, // home bus  
+                                                           null, // home bus
                                                            SIMPConstants.SYSTEM_DEFAULT_EXCEPTION_DESTINATION_PREFIX,
                                                            OperationType.RECEIVE))
                     {
@@ -6473,7 +6474,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     // Security changes for messaging security: Sharath Start
     /**
-     * 
+     *
      * @param destination
      * @param operationType
      * @param descriminator
@@ -6491,7 +6492,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                  * In case of Creating a Temporary Destination, we will get its prefix, comparing is straight forward
                  * In case of other operations such as SEND or RECEIVE, we will get complete destination name, we have to parse it
                  * and check for the prefix in that destination name.
-                 * 
+                 *
                  * Extract prefix from the destination name
                  * Get the substring of the destination from by knocking of the specific prefix which was added for Queue or Topic
                  */
@@ -6546,7 +6547,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority of a consumer to consume from a discriminator
-     * 
+     *
      */
     private boolean checkConsumerDiscriminatorAccess(DestinationHandler destination,
                                                      String discriminator,
@@ -6594,7 +6595,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority of a consumer to consume from a destination
-     * 
+     *
      */
     @Deprecated
     private void checkBrowseAuthority(DestinationHandler destination,
@@ -6618,7 +6619,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         {
             boolean allowed = true;
             boolean failingOpisIdentityAdopter = false;
-            // Perform the alternate user check first. If an alternateUser was set then we 
+            // Perform the alternate user check first. If an alternateUser was set then we
             // need to determine whether the connected subject has the authority to perform
             // alternate user checks.
 
@@ -6644,7 +6645,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                     if (!_messageProcessor.
                                     getAccessChecker().
                                     checkDestinationAccess(secContext,
-                                                           null, // home bus  
+                                                           null, // home bus
                                                            SIMPConstants.SYSTEM_DEFAULT_EXCEPTION_DESTINATION_PREFIX,
                                                            OperationType.RECEIVE))
                     {
@@ -6697,7 +6698,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority to inquire on a destination
-     * 
+     *
      */
     private void checkInquireAuthority(DestinationHandler destination,
                                        String destinationName,
@@ -6807,7 +6808,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#addDestinationListener(java.lang.String, com.ibm.wsspi.sib.core.DestinationListener, com.ibm.wsspi.sib.core.DestinationType,
      * com.ibm.wsspi.sib.core.DestinationAvailability)
      */
@@ -6872,7 +6873,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#sendToExceptionDestination(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.wsspi.sib.core.SIBusMessage, int,
      * java.lang.Object[], com.ibm.wsspi.sib.core.SITransaction, boolean)
      */
@@ -6922,7 +6923,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#setWaitTimeInMessage(boolean)
      */
     @Override
@@ -6948,7 +6949,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     /**
      * Returns true if the subject associated with the connection is the
      * privileged SIBServerSubject.
-     * 
+     *
      * @return true if SIBServerSubject
      */
     private boolean isSIBServerSubject()
@@ -7003,7 +7004,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#checkMessagingRequired(com.ibm.websphere.sib.SIDestinationAddress, com.ibm.websphere.sib.SIDestinationAddress,
      * com.ibm.wsspi.sib.core.DestinationType, java.lang.String)
      */
@@ -7066,7 +7067,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
             if ((busName == null) || (busName.equals(_messageProcessor.getMessagingEngineBus())))
             {
-                //Look up the named destination    
+                //Look up the named destination
                 DestinationHandler destination = null;
                 destination = _destinationManager.getDestination(destinationName, busName, false);
 
@@ -7097,19 +7098,19 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
                     // Go on to check authority to consume from the reply destination.
                     // We do this up front to ensure that an SINotAuth exception can
-                    // be thrown as early as possible.                       
+                    // be thrown as early as possible.
                     if (replyDestAddr != null)
                     {
                         String replyDestinationName = replyDestAddr.getDestinationName();
                         String replyBusName = replyDestAddr.getBusName();
 
-                        //Look up the reply destination    
+                        //Look up the reply destination
                         DestinationHandler replyDestination =
                                         _destinationManager.getDestination(replyDestinationName,
                                                                            replyBusName,
                                                                            false);
 
-                        // Check authority to produce to the reply destination.  The reply will 
+                        // Check authority to produce to the reply destination.  The reply will
                         // be produced with the same userid as the request
                         // If security is disabled then we'll bypass the check
                         checkDestinationAccess(replyDestination,
@@ -7214,7 +7215,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
                 //We have either succesfully checked all the destinations on the
                 //administered forward routing path, or frpDestination will be
-                //referencing the first destination that failed one of the 
+                //referencing the first destination that failed one of the
                 //checks.  Determine here which is the correct response to give
                 //the caller.
                 if ((!foreignBusFound) &&
@@ -7222,10 +7223,10 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                     (destinationIsSendAllowed) &&
                     (frpDestination.hasLocal()) && //local queue-point
                     (frpDestination.getDestinationType() == DestinationType.PORT) &&
-                    (!frpDestination.isPubSub())) //not a topicspace 
+                    (!frpDestination.isPubSub())) //not a topicspace
                 {
                     requestIsFastPath = true;
-                    targetPort = JsMainAdminComponentImpl.getSIDestinationAddressFactory().createSIDestinationAddress(frpDestination.getName(), frpDestination.getBus());
+                    targetPort = SIDestinationAddressFactory.getInstance().createSIDestinationAddress(frpDestination.getName(), frpDestination.getBus());
                 }
 
                 //Now check if the reply message can also be fastpathed.
@@ -7284,7 +7285,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
                             }
                             else
                             {
-                                //Look up the named destination    
+                                //Look up the named destination
                                 destination = _destinationManager.getDestination(destinationName, busName, false);
 
                                 boolean replyDestinationHasFRP = false;
@@ -7325,7 +7326,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Checks the authority of a producer to produce to a destination
-     * 
+     *
      */
     private void checkDestinationAccess(DestinationHandler destination,
                                         String destinationName,
@@ -7369,7 +7370,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /**
      * Retrieve the MPSubscription object that represents the named durable subscription
-     * 
+     *
      * This function is only available on locally homed subscriptions
      **/
     @Override
@@ -7415,7 +7416,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.MPCoreConnection#registerCommandHandler(java.lang.String, com.ibm.ws.sib.processor.CommandHandler)
      */
     @Override
@@ -7434,7 +7435,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#invokeCommand(java.lang.String, java.lang.String, java.io.Serializable)
      */
     @Override
@@ -7461,7 +7462,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     }
 
     /**
-     * 
+     *
      * @param key
      * @param commandName
      * @param commandData
@@ -7508,7 +7509,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
             }
             if (!isTransactionalInvoke && transaction != null)
             {
-                //should never have a transaction associated with the non-tx 
+                //should never have a transaction associated with the non-tx
                 //flavour of invoke.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.exit(tc, "internalInvokeCommand", "SIIncorrectCallException");
@@ -7523,7 +7524,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         //make sure that the connection is open before trying to use it
         checkNotClosed();
 
-        // If the User of the connection is not SIBServerSubject then 
+        // If the User of the connection is not SIBServerSubject then
         // reject the attempt to invoke
         if ((_isBusSecure) && (!isSIBServerSubject()))
         {
@@ -7628,7 +7629,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#invokeCommand(java.lang.String, java.lang.String, java.io.Serializable)
      */
     @Override
@@ -7656,7 +7657,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.sib.core.SICoreConnection#registerConsumerSetMonitor(SIDestinationAddress destinationAddress, String discriminatorExpression, ConsumerSetChangeCallback
      * callback)
      */
@@ -7761,23 +7762,23 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsaddressing.HAResource#getAffinityKey()
      */
     /*
      * public synchronized Identity getAffinityKey() {
      * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
      * SibTr.entry(tc, "getAffinityKey");
-     * 
+     *
      * if (null == _trmMeMain) {
      * _trmMeMain = (TrmMeMain) _messageProcessor.getMessagingEngine()
      * .getEngineComponent(JsConstants.SIB_CLASS_TO_ENGINE);
      * }
      * Identity id = _trmMeMain.getAffinityKey();
-     * 
+     *
      * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
      * SibTr.exit(tc, "getAffinityKey", id);
-     * 
+     *
      * return id;
      * }
      */
@@ -7809,7 +7810,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     }
 
     /**
-     * 
+     *
      * @return connectionType i.e Type of connection whether inprocess/comms/commsSSL
      */
     public int getConnectionType() {

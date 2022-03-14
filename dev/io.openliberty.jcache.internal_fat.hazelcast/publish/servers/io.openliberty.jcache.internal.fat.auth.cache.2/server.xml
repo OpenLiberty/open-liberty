@@ -15,7 +15,7 @@
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 		<feature>timedexit-1.0</feature>
-		<feature>noShip-1.0</feature> <!-- TODO Remove when GA -->
+		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 
 	<httpEndpoint id="defaultHttpEndpoint"
@@ -33,8 +33,7 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 
 	<!--
-		Configure the authentication cache and the logged out cookie cache to use
-		the JCache instances. 
+		Configure the JCache caching provider and cache manager instances.
 	 -->
 	<cachingProvider id="CachingProvider"
 		libraryRef="HazelcastClientLib,CustomLoginLib" />

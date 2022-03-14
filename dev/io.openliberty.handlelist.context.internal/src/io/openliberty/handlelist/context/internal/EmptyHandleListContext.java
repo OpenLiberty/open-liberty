@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class EmptyHandleListContext implements ThreadContext {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public ThreadContext clone() {
         try {
             EmptyHandleListContext copy = (EmptyHandleListContext) super.clone();
@@ -78,29 +79,23 @@ public class EmptyHandleListContext implements ThreadContext {
      * Push a new HandleList onto the thread.
      */
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStarting() {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "taskStarting");
-
         com.ibm.ws.threadContext.ThreadContext<HandleListInterface> threadContext = //
                         ConnectionHandleAccessorImpl.getConnectionHandleAccessor().getThreadContext();
 
         HandleListInterface prevHandleList = threadContext.beginContext(new HandleList());
 
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "taskStarting", prevHandleList + " --> " + threadContext.getContext());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "clear     " + prevHandleList + " --> " + threadContext.getContext());
     }
 
     /**
      * Restore the HandleList (if any) that was previously on the thread.
      */
     @Override
+    @Trivial // method name is misleading in trace
     public void taskStopping() {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "taskStopping");
-
         com.ibm.ws.threadContext.ThreadContext<HandleListInterface> threadContext = //
                         ConnectionHandleAccessorImpl.getConnectionHandleAccessor().getThreadContext();
 
@@ -108,8 +103,8 @@ public class EmptyHandleListContext implements ThreadContext {
         if (removedHandleList != null)
             removedHandleList.close();
 
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "taskStopping", threadContext.getContext() + " <-- " + removedHandleList);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "restore   " + threadContext.getContext() + " <-- " + removedHandleList);
     }
 
     @Override

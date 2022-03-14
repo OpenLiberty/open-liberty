@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: \u00c8 stato richiesto un punto di controllo del server. Quando il punto di controllo \u00e8 completo, il server viene arrestato.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=\u00c8 stato richiesto un punto di controllo. Il server viene arrestato e il relativo stato corrente viene scritto su disco.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultare la documentazione per i dettagli delle operazioni del punto di controllo e del ripristino.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le operazioni del server Liberty vengono riprese da un punto di controllo.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=\u00c8 stata eseguita un'operazione di ripristino su un'immagine del punto di controllo del server Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Consultare la documentazione per i dettagli delle operazioni del punto di controllo e del ripristino.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: La richiesta di punto di controllo del server ha avuto esito negativo con il seguente messaggio: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Una richiesta di punto di controllo per il server non \u00e8 riuscita.  Non \u00e8 stata creata un'immagine del processo del punto di controllo per il server.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Esaminare la directory del punto di controllo ubicata nella directory dei log del server per ulteriori file di log utili per determinare il motivo per cui il punto di controllo ha avuto esito negativo.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Il ripristino del server da un punto di controllo non \u00e8 riuscito con il seguente messaggio: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=Un tentativo di ripristinare il server da un punto di controllo non \u00e8 riuscito.  Il server non \u00e8 in esecuzione.
+RESTORE_FAILED_CWWKC0454E.useraction=Esaminare la directory del punto di controllo ubicata nella directory dei log del server per ulteriori file di log utili per determinare il motivo per cui non \u00e8 stato possibile ripristinare il server.
+

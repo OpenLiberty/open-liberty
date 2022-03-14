@@ -1,7 +1,5 @@
-package com.ibm.ws.sib.msgstore.impl;
-
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +9,52 @@ package com.ibm.ws.sib.msgstore.impl;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+package com.ibm.ws.sib.msgstore.impl;
+
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.MSG_BUNDLE;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.MSG_GROUP;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_DATASTORE_LOCK_CAN_BE_DISABLED;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_DATASTORE_LOCK_CAN_BE_DISABLED_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_DUMP_RAW_XML_ON_STARTUP;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_PARALLELISM;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_PARALLELISM_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_SIZE;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_SIZE_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_TYPE;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_TYPE_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_ITEM_MAP_TYPE_FASTMAP;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_JDBC_SPILL_SIZE_MSG_REFS_BY_MSG_SIZE;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_JDBC_SPILL_SIZE_MSG_REFS_BY_MSG_SIZE_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_LOWER_LIMIT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_LOWER_LIMIT_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_LOWER_SIZE_LIMIT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_LOWER_SIZE_LIMIT_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_UPPER_LIMIT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_UPPER_LIMIT_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_UPPER_SIZE_LIMIT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_SPILL_UPPER_SIZE_LIMIT_DEFAULT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_TRANSACTION_SEND_LIMIT;
+import static com.ibm.ws.sib.msgstore.MessageStoreConstants.PROP_TRANSACTION_SEND_LIMIT_DEFAULT;
+import static com.ibm.ws.sib.msgstore.XmlConstants.XML_MESSAGE_STORE;
+import static com.ibm.ws.sib.utils.ras.SibTr.debug;
+import static com.ibm.ws.sib.utils.ras.SibTr.entry;
+import static com.ibm.ws.sib.utils.ras.SibTr.exit;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.transaction.xa.Xid;
 
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.ras.TraceNLS;
-import com.ibm.ejs.util.am.AlarmManager;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.objectManager.NonExistentLogFileException;
 import com.ibm.ws.sib.admin.JsEObject;
 import com.ibm.ws.sib.admin.JsHealthMonitor;
@@ -48,7 +80,6 @@ import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
 import com.ibm.ws.sib.msgstore.TransactionException;
 import com.ibm.ws.sib.msgstore.WASConfiguration;
 import com.ibm.ws.sib.msgstore.XidInvalidException;
-import com.ibm.ws.sib.msgstore.XmlConstants;
 import com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink;
 import com.ibm.ws.sib.msgstore.cache.links.RootMembership;
 import com.ibm.ws.sib.msgstore.cache.ref.ItemStorageManager;
@@ -68,10 +99,8 @@ import com.ibm.ws.sib.processor.ItemInterface;
 import com.ibm.ws.sib.transactions.PersistentTranId;
 import com.ibm.ws.sib.transactions.TransactionFactory;
 import com.ibm.ws.sib.utils.Runtime;
-import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * This class represents the collection of stored objects.
@@ -89,14 +118,11 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * interface to the particular backing storage in use.</p>
  * 
  */
-public final class MessageStoreImpl extends MessageStore implements MessageStoreConstants, XmlConstants
-{
 
+@Component(service = {MessageStore.class, Singleton.class}, configurationPolicy = REQUIRE, property="service.vendor=IBM")
+public final class MessageStoreImpl extends MessageStore {
     private static TraceNLS nls = TraceNLS.getTraceNLS(MessageStoreConstants.MSG_BUNDLE);
-
-    private static final TraceComponent tc = SibTr.register(MessageStoreImpl.class,
-                                                            MessageStoreConstants.MSG_GROUP,
-                                                            MessageStoreConstants.MSG_BUNDLE);
+    private static final TraceComponent tc = SibTr.register(MessageStoreImpl.class, MSG_GROUP, MSG_BUNDLE);
 
     private static final String XML_CANNOT_BE_WRITTEN = "XML cannot be written as the message store has not started";
     private CacheLoader _cacheLoader = null;
@@ -153,91 +179,8 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     //F1332-52015
     private long _lastDBLockedTimestamp = 0L;
 
-    public static final AtomicServiceReference<AlarmManager> alarmManagerRef = new AtomicServiceReference<AlarmManager>(
-                    "alarmManager");
-
-    /**
-     * ItemInterface service
-     */
-    public static final AtomicServiceReference<ItemInterface> itemInterfaceRef = new AtomicServiceReference<ItemInterface>(
-                    "itemInterface");
-
-    protected void activate(ComponentContext context) {
-        alarmManagerRef.activate(context);
-        itemInterfaceRef.activate(context);
-    }
-
-    protected void deactivate(ComponentContext context) {
-        alarmManagerRef.deactivate(context);
-        itemInterfaceRef.deactivate(context);
-    }
-
-    /**
-     * Declarative Services method for setting the deferrable scheduled executor
-     * service reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void setAlarmManager(ServiceReference<AlarmManager> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "setAlarmManager", ref);
-
-        alarmManagerRef.setReference(ref);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "setAlarmManager");
-    }
-
-    /**
-     * Declarative Services method for unsetting the non-deferrable scheduled
-     * executor service reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void unsetAlarmManager(ServiceReference<AlarmManager> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "unsetAlarmManager", ref);
-
-        alarmManagerRef.unsetReference(ref);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "unsetAlarmManager");
-    }
-
-    /**
-     * Declarative Services method for setting the ItemInterface service
-     * reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void setItemInterface(ServiceReference<ItemInterface> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "setItemInterface", ref);
-        itemInterfaceRef.setReference(ref);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "setItemInterface");
-    }
-
-    /**
-     * Declarative Services method for unsetting the ItemInterface service
-     * reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void unsetItemInterface(ServiceReference<ItemInterface> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "unsetItemInterface", ref);
-        itemInterfaceRef.setReference(ref);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "unsetItemInterface");
-
-    }
-
+    private ItemInterface itemInterface;
+    
     /**
      * Static method for getting the ItemStream instance from the runtime
      * .
@@ -245,47 +188,35 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      * @param itemClassName
      *            Class name for which the instance needs to be returned
      */
-    public static AbstractItem getItemStreamInstance(String itemClassName) {
-        AbstractItem itemStream = itemInterfaceRef.getService().getItemStreamInstance(itemClassName);;
-        return itemStream;
+    public AbstractItem getItemStreamInstance(String itemClassName) {
+        return itemInterface.getItemStreamInstance(itemClassName);
     }
 
-    /**
-     * Null constructor is required for dynamic instantiation.
-     */
-    public MessageStoreImpl()
-    {
-        super();
+    @Activate
+    public MessageStoreImpl(@Reference ItemInterface itemInterface) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>");
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>");
-
-        // This is the Xid Manager for this
-        // MessageStore instance.
-        _manager = new XidManager(this);
-        _expirer = new Expirer(this);
-        _deliveryDelayManager = new DeliveryDelayManager(this);
-        _cacheLoader = new CacheLoader(this);
-
-        _healthState = JsHealthState.getOK();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(this, tc, "Message store state is : " + _state);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "<init>");
+        this.itemInterface = itemInterface;
+        
+        this._manager = new XidManager(this);
+        this._expirer = new Expirer(this);
+        this._deliveryDelayManager = new DeliveryDelayManager(this);
+        this._cacheLoader = new CacheLoader(this);
+        this._healthState = JsHealthState.getOK();
+        
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "Message store state is : " + _state);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "<init>");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.sib.msgstore.MessageStore#findById(long)
-     * TODO: we can optimize this method out later when we use
-     * stream level hashtables.
-     */
+    // only to be used by existing unit tests, not within an OSGi environment
+    // N.B. this is invoked reflectively — run messaging unit tests to validate any changes
+    public static MessageStoreImpl createForTesting() {
+	return new MessageStoreImpl(null);
+    }
+    
     public final AbstractItem _findById(long itemID) throws SevereMessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "_findById", Long.valueOf(itemID));
 
         AbstractItem item = null;
@@ -295,16 +226,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             item = itemLink.getItem();
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "_findById", item);
         return item;
     }
 
-    /**
-     * Return a reference to the expirer.
-     * 
-     * @return an expirer reference.
-     */
     public final Expirer _getExpirer()
     {
         return _expirer;
@@ -314,45 +240,23 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         return _deliveryDelayManager;
     }
 
-    /**
-     * Return a reference to the Membership object for the AbstractItem.
-     * A sneaky trick for testing purposes only.
-     * 
-     * @return a Membership reference.
-     */
     @Override
     public final Membership _getMembership(AbstractItem ai)
     {
         return super._getMembership(ai);
     }
 
-    /**
-     * Return a reference to the JsMessagingEngine object for the message store.
-     * 
-     * @return a JsMessagingEngine reference.
-     */
     public final JsMessagingEngine _getMessagingEngine()
     {
         return _messagingEngine;
     }
 
-    /**
-     * Return a reference to the RootMembership object for the message store.
-     * For testing purposes only.
-     * 
-     * @return a RootMembership reference.
-     */
     public final RootMembership _getRootMembership()
     {
         return _rootMembership;
     }
 
     //723935
-    /**
-     * Return a reference to the MessageStoreState object
-     * 
-     * @return an MessageStoreState reference
-     */
     public MessageStoreState _getState()
     {
         return _state;
@@ -361,10 +265,6 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     /*
      * Used to call the (package-private) {@link AbstractItem#setMembership()}
      * method from inside the implementation package. A sneaky trick.
-     * 
-     * @param membership
-     * 
-     * @param item
      */
     @Override
     public final void _setMembership(Membership membership, AbstractItem item)
@@ -372,32 +272,22 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         super._setMembership(membership, item);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.sib.msgstore.MessageStore#xmlWriteRawOn(com.ibm.ws.sib.msgstore.FormattedWriter, boolean)
-     */
     private final void _xmlWriteRawOn(FormattedWriter writer, boolean callBackToItem) throws IOException
     {
         new RawDataDumper(_persistentMessageStore, writer, callBackToItem).dump();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.sib.store.MessageStore#put(com.ibm.ws.sib.store.AbstractItem, com.ibm.ws.sib.msgstore.Transaction)
-     */
     @Override
     public void add(ItemStream itemStream, long lockID, Transaction transaction) throws MessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "add", new Object[] { itemStream, transaction });
 
         if (_rootMembership != null)
         {
             _rootMembership.addItemStream(itemStream, lockID, transaction);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "add");
         }
         else
@@ -405,18 +295,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "add");
             throw msue;
         }
@@ -424,17 +314,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
     /**
      * Notification that the configuration of the bus has changed.
-     * 
-     * @param newBus The new bus configuration
-     * @param busChg true if the bus has changed
-     * @param destChg true if a destination has changed
-     * @param medChg true if a mediation has changed
      */
     @Override
-    public void busReloaded(Object newBus, boolean busChanged,
-                            boolean destChg, boolean medChg)
+    public void busReloaded(Object newBus, boolean busChanged, boolean destChanged, boolean mediationChanged)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
         {
             SibTr.entry(this, tc, "busReloaded");
             SibTr.exit(this, tc, "busReloaded");
@@ -452,7 +336,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void commitPreparedTransaction(String xid) throws TransactionException, PersistenceException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "commitPreparedTransaction", xid);
 
         if (_manager != null)
@@ -463,18 +347,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 _manager.commit(pid, false);
             } catch (ArrayIndexOutOfBoundsException e)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Invalid XID string", xid);
                 throw new XidInvalidException(nls.getString("INVALID_XID_STRING_SIMS1010"));
             } catch (StringIndexOutOfBoundsException e)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Invalid XID string", xid);
                 throw new XidInvalidException(nls.getString("INVALID_XID_STRING_SIMS1010"));
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "commitPreparedTransaction");
         return;
     }
@@ -482,7 +366,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void destroy()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "destroy");
 
         synchronized (_startLock)
@@ -496,11 +380,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             _state = MessageStoreState.STATE_UNINITIALIZED;
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "Message store state is : " + _state);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "destroy");
     }
 
@@ -547,7 +431,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     public void dump(FormattedWriter fw)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "dump");
 
         try
@@ -556,11 +440,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         } catch (IOException e)
         {
             // No FFDC Code Needed
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isAnyTracingEnabled() && tc.isEventEnabled())
                 SibTr.event(this, tc, "Exception caught writing Mmessage store dump!", e);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "dump");
     }
 
@@ -577,7 +461,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void dump(FormattedWriter fw, String arg)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "dump", arg);
 
         if (arg != null)
@@ -600,7 +484,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             dump(fw);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "dump");
     }
 
@@ -611,7 +495,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     public void dumpRaw(FormattedWriter fw)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "dumpRaw");
 
         try
@@ -620,11 +504,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         } catch (IOException e)
         {
             // No FFDC Code Needed
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isAnyTracingEnabled() && tc.isEventEnabled())
                 SibTr.event(this, tc, "Exception caught writing Mmessage store dump!", e);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "dumpRaw");
     }
 
@@ -637,7 +521,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     public void dumpAll(FormattedWriter fw)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "dumpAll");
 
         try
@@ -648,11 +532,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         } catch (IOException e)
         {
             // No FFDC Code Needed
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isAnyTracingEnabled() && tc.isEventEnabled())
                 SibTr.event(this, tc, "Exception caught writing Mmessage store dump!", e);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "dumpAll");
     }
 
@@ -664,7 +548,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void engineReloaded(Object messagingEngine)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "engineReloaded");
 
         // Defect 337421.1
@@ -673,7 +557,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         // we pick up any changes.
         initialize((JsMessagingEngine) messagingEngine, true);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "engineReloaded");
     }
 
@@ -685,12 +569,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void expirerStart() throws SevereMessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "expirerStart");
 
         _expirer.start(_expiryInterval, _messagingEngine);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "expirerStart");
     }
 
@@ -702,12 +586,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void expirerStop()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "expirerStop");
 
         _expirer.stop();
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "expirerStop");
     }
 
@@ -718,10 +602,10 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     @Override
     public void deliveryDelayManagerStart() throws SevereMessageStoreException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "deliveryDelayManagerStart");
         _deliveryDelayManager.start(_deliveryDelayScanInterval, _messagingEngine);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "deliveryDelayManagerStart");
     }
 
@@ -733,10 +617,10 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void deliveryDelayManagerStop() {
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "deliveryDelayManagerStop");
         _deliveryDelayManager.stop();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "deliveryDelayManagerStop");
     }
 
@@ -748,12 +632,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public AbstractItem findById(long itemID) throws MessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "findById", Long.valueOf(itemID));
 
         AbstractItem item = _findById(itemID);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "findById", item);
         return item;
     }
@@ -766,12 +650,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public ItemStream findByStreamId(long itemStreamId) throws SevereMessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "findByIdInRoot", Long.valueOf(itemStreamId));
 
         ItemStream item = (ItemStream) _findById(itemStreamId);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "findByIdInRoot", item);
         return item;
     }
@@ -784,14 +668,14 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public ItemStream findFirstMatching(Filter filter) throws MessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "findFirstMatching", filter);
 
         if (_rootMembership != null)
         {
             ItemStream item = _rootMembership.findFirstMatchingItemStream(filter);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "findFirstMatching", item);
             return item;
         }
@@ -800,18 +684,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "findFirstMatching");
             throw msue;
         }
@@ -849,7 +733,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final JsHealthState getHealthState()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
         {
             SibTr.entry(this, tc, "getHealthState");
             SibTr.exit(this, tc, "getHealthState", "return=" + _healthState);
@@ -903,7 +787,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public String[] listPreparedTransactions()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getPreparedTransactions");
 
         String[] col = null;
@@ -921,13 +805,13 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 for (int i = 0; i < xids.length; i++)
                 {
                     col[i] = ((PersistentTranId) xids[i]).toString();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    if (isAnyTracingEnabled() && tc.isDebugEnabled())
                         SibTr.debug(this, tc, "xid " + col[i] + " in-doubt");
                 }
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getPreparedTransactions");
         return col;
     }
@@ -950,7 +834,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     public final String getProperty(String key, String defaultValue)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getProperty", new Object[] { "Key=" + key, "Default=" + defaultValue });
 
         String fullKey = MessageStoreConstants.STANDARD_PROPERTY_PREFIX + key;
@@ -984,7 +868,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getProperty", "return=" + value);
         return value;
     }
@@ -1032,7 +916,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public TransactionFactory getTransactionFactory()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
         {
             SibTr.entry(this, tc, "getTransactionFactory");
             SibTr.exit(this, tc, "getTransactionFactory", "return=" + _transactionFactory);
@@ -1043,7 +927,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final long getUniqueLockID(int storageStrategy) throws PersistenceException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getUniqueLockID");
 
         if (_uniqueIdentifierGenerator != null && _uniqueLockIDGenerator != null)
@@ -1059,7 +943,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 key = _uniqueLockIDGenerator.getUniqueValue();
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueLockID", Long.valueOf(key));
             return key;
         }
@@ -1068,18 +952,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueLockID");
             throw msue;
         }
@@ -1093,7 +977,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final long getUniqueTickCount() throws PersistenceException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getUniqueTickCount");
 
         if (_tickCountGenerator != null)
@@ -1102,7 +986,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             key = _tickCountGenerator.getUniqueValue();
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueTickCount", Long.valueOf(key));
             return key;
         }
@@ -1111,18 +995,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueTickCount");
             throw msue;
         }
@@ -1130,7 +1014,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
     public final long getUniqueValue(int storageStrategy) throws PersistenceException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getUniqueValue", Integer.valueOf(storageStrategy));
 
         if (_uniqueIdentifierGenerator != null)
@@ -1147,7 +1031,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 key = _uniqueIdentifierGenerator.getUniqueValue();
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueValue", Long.valueOf(key));
             return key;
         }
@@ -1156,18 +1040,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "getUniqueValue");
             throw msue;
         }
@@ -1176,7 +1060,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     //188494
     public XidManager getXidManager()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
         {
             SibTr.entry(this, tc, "getXidManager");
             SibTr.exit(this, tc, "getXidManager", "return=" + _manager);
@@ -1192,7 +1076,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
     private final void initialize(final Configuration config, boolean isReload)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "initialize", new Object[] { "isReload=" + isReload, "Config=" + config });
 
         synchronized (_startLock)
@@ -1204,21 +1088,21 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             {
                 if (_state != MessageStoreState.STATE_UNINITIALIZED)
                 {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    if (isAnyTracingEnabled() && tc.isEntryEnabled())
                         SibTr.exit(this, tc, "initialize");
                     throw new IllegalStateException(nls.getFormattedMessage("INVALID_MSGSTORE_STATE_SIMS0505", new Object[] { _state }, null));
                 }
 
                 _state = MessageStoreState.STATE_STOPPED;
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Message store state is : " + _state);
             }
 
             _configuration = config;
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "initialize");
     }
 
@@ -1255,7 +1139,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
      */
     private void initialize(JsMessagingEngine engineConfiguration, boolean isReload)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "initialize", new Object[] { "isReload=" + isReload, "Config=" + engineConfiguration });
 
         _messagingEngine = engineConfiguration;
@@ -1305,20 +1189,20 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             // Defect 449837
             if (!isReload)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Messaging engine " + engineConfiguration.getName() + " is using a file store.");
             }
         }
         else
         {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "initialize");
             throw new IllegalStateException(nls.getString("MSGSTORE_CONFIGURATION_ERROR_SIMS0503"));
         }
 
         initialize(configuration, isReload);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "initialize");
     }
 
@@ -1353,13 +1237,13 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
@@ -1370,13 +1254,13 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
     public final void register(AbstractItemLink itemLink)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "register", itemLink);
 
         final long id = itemLink.getID();
         _membershipMap.put(id, itemLink);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "register");
     }
 
@@ -1400,14 +1284,14 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public ItemStream removeFirstMatching(Filter filter, Transaction transaction) throws MessageStoreException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "removeFirstMatching", new Object[] { filter, transaction });
 
         if (_rootMembership != null)
         {
             ItemStream item = _rootMembership.removeFirstMatchingItemStream(filter, (PersistentTransaction) transaction);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "removeFirstMatching", "return=" + item);
             return item;
         }
@@ -1416,18 +1300,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             MessageStoreUnavailableException msue;
             if (!_startupExceptions.isEmpty())
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore failed to start!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore failed to start!", _startupExceptions.get(0));
             }
             else
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isAnyTracingEnabled() && tc.isEventEnabled())
                     SibTr.event(this, tc, "Operation not possible as MessageStore is unavailable!");
                 msue = new MessageStoreUnavailableException("Operation not possible as MessageStore is unavailable!");
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "removeFirstMatching");
             throw msue;
         }
@@ -1439,7 +1323,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void reportGlobalError()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "reportGlobalError");
 
         // Set our health status to GLOBAL_ERROR
@@ -1463,7 +1347,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             _healthMonitor.reportGlobalError();
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "reportGlobalError");
     }
 
@@ -1473,7 +1357,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void reportLocalError()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "reportLocalError");
 
         // Only need to set to LOCAL_ERROR
@@ -1497,7 +1381,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             _healthMonitor.reportLocalError();
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "reportLocalError");
     }
 
@@ -1512,7 +1396,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void rollbackPreparedTransaction(String xid) throws TransactionException, PersistenceException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "rollbackPreparedTransaction", xid);
 
         if (_manager != null)
@@ -1523,18 +1407,18 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 _manager.rollback(pid);
             } catch (ArrayIndexOutOfBoundsException e)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Invalid XID string", xid);
                 throw new XidInvalidException(nls.getString("INVALID_XID_STRING_SIMS1010"));
             } catch (StringIndexOutOfBoundsException e)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Invalid XID string", xid);
                 throw new XidInvalidException(nls.getString("INVALID_XID_STRING_SIMS1010"));
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "rollbackPreparedTransaction");
         return;
     }
@@ -1562,12 +1446,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void setCustomProperty(String key, String value)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "setCustomProperty", new Object[] { "Key=" + key, "Value=" + value });
 
         _customProperties.put(key, value);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "setCustomProperty");
     }
 
@@ -1579,13 +1463,8 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public void start(int arg0) throws Exception
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "start");
-
-        //Venu Liberty change
-        //activating the Alarm manager (i.e this triggers Alarm manager's Activate).. 
-        // Alaram manager has to be ready for Message Store Expirer
-        alarmManagerRef.getService();
 
         //PM44028
         // Reset the health state: we'll assume the database is healthy unless/until some 
@@ -1601,7 +1480,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             _state = MessageStoreState.STATE_STARTING;
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "Message store state is : " + _state);
         }
 
@@ -1626,7 +1505,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 mapParallelism = Integer.parseInt(strMapParallelism);
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "using itemLinkMap(" + mapSize + "/" + mapParallelism + ")");
 
             _membershipMap = new ItemLinkMap(mapSize, mapParallelism);
@@ -1639,7 +1518,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 mapSize = 20;
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "using multiMap(" + mapSize + ")");
 
             _membershipMap = new MultiHashMap(mapSize);
@@ -1649,7 +1528,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         String propValue = getProperty(PROP_JDBC_SPILL_SIZE_MSG_REFS_BY_MSG_SIZE,
                                        PROP_JDBC_SPILL_SIZE_MSG_REFS_BY_MSG_SIZE_DEFAULT);
         _jdbcSpillSizeMsgRefsByMsgSize = "true".equalsIgnoreCase(propValue);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
             SibTr.debug(this, tc, "Using jdbcSpillSizeMsgRefsByMsgSize=" + _jdbcSpillSizeMsgRefsByMsgSize);
         }
 
@@ -1669,7 +1548,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 value = getProperty(PROP_SPILL_LOWER_LIMIT, PROP_SPILL_LOWER_LIMIT_DEFAULT);
                 _spillLowerLimit = Integer.parseInt(value);
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Using spillUpperLimit=" + _spillUpperLimit + "; spillLowerLimit=" + _spillLowerLimit);
 
                 // Defect 484799
@@ -1678,12 +1557,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
                 value = getProperty(PROP_SPILL_LOWER_SIZE_LIMIT, PROP_SPILL_LOWER_SIZE_LIMIT_DEFAULT);
                 _spillLowerSizeLimit = Integer.parseInt(value);
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Using spillUpperSizeLimit=" + _spillUpperSizeLimit + "; spillLowerSizeLimit=" + _spillLowerSizeLimit);
             } catch (NumberFormatException e)
             {
                 // No FFDC code needed
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Exception " + e + " while parsing spill limits");
                 throw e;
             }
@@ -1738,7 +1617,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
                 _state = MessageStoreState.STATE_STARTED;
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Message store state is : " + _state);
             }
 
@@ -1752,7 +1631,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             _datastoreLockCanBeDisabled = Boolean.parseBoolean(strDatastoreLockCanBeDisabled);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "_datastoreLockCanBeDisabled=" + _datastoreLockCanBeDisabled);
         } catch (Exception e)
         {
@@ -1761,7 +1640,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             SibTr.error(tc, "STARTUP_EXCEPTION_SIMS0002", new Object[] { e });
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isAnyTracingEnabled() && tc.isEventEnabled())
                 SibTr.event(this, tc, "Exception: ", e);
 
             // Defect 326323
@@ -1777,7 +1656,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
             throw new Exception(e);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "start");
     }
 
@@ -1789,7 +1668,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
     @Override
     public final void stop(int arg0)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "stop", Integer.valueOf(arg0));
 
         //Shut down processing can only begin when the lock is available.
@@ -1797,7 +1676,7 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         {
             if (_state == MessageStoreState.STATE_UNINITIALIZED)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                if (isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.exit(this, tc, "stop");
                 throw new IllegalStateException(nls.getFormattedMessage("INVALID_MSGSTORE_STATE_SIMS0505", new Object[] { _state }, null));
             }
@@ -1826,11 +1705,11 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
             _state = MessageStoreState.STATE_STOPPED;
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "Message store state is : " + _state);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "stop");
     }
 
@@ -1850,12 +1729,12 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
 
     public final void unregister(AbstractItemLink itemLink)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "unregister", itemLink);
 
         _membershipMap.remove(itemLink.getID());
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "unregister");
     }
 
@@ -1915,11 +1794,6 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         writer.endTag(XML_MESSAGE_STORE);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.sib.msgstore.MessageStore#xmlWriteRawOn(com.ibm.ws.sib.msgstore.FormattedWriter, boolean)
-     */
     @Override
     public final void xmlWriteRawOn(FormattedWriter writer, boolean callbackToItem) throws IOException
     {
@@ -1942,120 +1816,20 @@ public final class MessageStoreImpl extends MessageStore implements MessageStore
         }
     }
 
-    // Defect 337421.1
     /*************************************************************************/
     /* JsReloadableComponent */
     /*************************************************************************/
 
     @Override
-    public void setCustomPropertyByReload(String key, String value)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "setCustomPropertyByReload", new Object[] { "Key=" + key, "Value=" + value });
-
-        _customProperties.put(key, value);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "setCustomPropertyByReload");
-    }
-
+    public void setCustomPropertyByReload(String key, String value) { throw new UnsupportedOperationException(); }
     @Override
-    public void unsetCustomPropertyByReload(String key)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "unsetCustomPropertyByReload", "Key=" + key);
-
-        _customProperties.remove(key);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "unsetCustomPropertyByReload");
-    }
-
-    // We don't make use of any attributes.
-    public void setConfigByReload(JsEObject newConfig) {}
-
-    // We won't get called with this method
+    public void unsetCustomPropertyByReload(String key) { throw new UnsupportedOperationException(); }
     @Override
-    public void reloadComponent(JsEObject config) {}
-
+    public void reloadComponent(JsEObject config) { throw new UnsupportedOperationException(); }
     @Override
-    public boolean isDeleteable()
-    {
-        return false;
-    }
-
-    /*************************************************************************/
-    /* JsReloadableComponent */
-    /*************************************************************************/
-
-    //F1332-52014
-    /**
-     * Set whether to use new database locking algoritham which
-     * holds short duration locks
-     * 
-     * @param restrictLongDBLock boolean value of true or false
-     */
-    public void setRestrictLongDBLock(boolean restrictLongDBLock)
-    {
-        //No trace required
-        this._restrictLongDBLock = restrictLongDBLock;
-    }
-
-    /**
-     * Returns whether the new database locking algorithm is used or not
-     * 
-     * @return restrictLongDBLock
-     */
-    public boolean isRestrictLongDBLock()
-    {
-        //No trace required
-        return _restrictLongDBLock;
-    }
-
-    //F1332-52014
-
-    //F1332-52015 starts
-    /*
-     * Set JVM's System.currentTimeMillis() by NewDBLockingThread
-     * which indicates that when was the last time this ME updated the timestamp
-     * in the database. This is later used by Table.java to check the
-     * NewDBLockingThread is running properly before completing the database
-     * updates
-     */
-    public void setLastDBLockedTimestamp(long lastDBLockedTimestamp)
-    {
-        //No trace required
-        _lastDBLockedTimestamp = lastDBLockedTimestamp;
-    }
-
-    /*
-     * Returns the timestamp when the NewDBLockingThread last updated the DB with
-     * the ownership timestamp
-     */
-    public long getLastDBLockedTimestamp()
-    {
-        //No trace required
-        return _lastDBLockedTimestamp;
-    }
-
-    //F1332-52015 ends
-
-    //lohith liberty change, these are currently dummy as MessageStore is not used as a component by Admin
+    public boolean isDeleteable() { throw new UnsupportedOperationException(); }
     @Override
-    public final void initialize(JsRecoveryMessagingEngine recoveryME, String mode)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "initialize", new Object[] { recoveryME, mode });
-        this._messagingEngine = recoveryME;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "initialize", "Assigned new recoverME to messages store");
-
-    }
-
+    public final void initialize(JsRecoveryMessagingEngine recoveryME, String mode) { throw new UnsupportedOperationException(); }
     @Override
-    public void setConfig(LWMConfig config) {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void setConfig(LWMConfig config) {}
 }

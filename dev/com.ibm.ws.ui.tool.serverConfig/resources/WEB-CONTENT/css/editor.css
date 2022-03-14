@@ -855,7 +855,7 @@ footer  {
 	font-size: 18px;
 	line-height: 25px;
 	text-decoration: none;
-	color: black;
+	color: #58595b;
 	-webkit-flex-shrink: 0;
 	flex-shrink: 0;
 }
@@ -874,8 +874,8 @@ footer  {
 #editorNavigation .editorNavigationTab.active {
 	cursor: default;
 	background-color: inherit;
-	color: #4178BE;
-    box-shadow: inset 0px -2px 0px 0px #4178BE;
+	color: black;
+	box-shadow: inset 0px -2px 0px 0px #4178BE;
 }
 
 #editorDesignViewErrorMessage {

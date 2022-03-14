@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing kann keine JAX-RS
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS-Anforderungen werden normal ausgef\u00fchrt, aber sie werden nicht verfolgt.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Lesen Sie in der Dokumentation nach, wie Sie die verteilte Traceerstellung von OpenTracing aktivieren und konfigurieren. Diese Warnung kann sicher ignoriert werden, wenn die OpenTracing-Funktion nicht verwendet wird.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: OpenTracing konnte keinen Bereich starten und schlug fehl, da eine erforderliche Methode nicht gefunden wurde. Nachricht = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=Dieser Fehler ist wahrscheinlich auf eine inkompatible Implementierung des Traceprogramms zur\u00fcckzuf\u00fchren.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Weitere Informationen zum Aktivieren der verteilten Traceerstellung in OpenTracing und zum Anzeigen kompatibler verteilter Tracingsysteme finden Sie in der Dokumentation.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

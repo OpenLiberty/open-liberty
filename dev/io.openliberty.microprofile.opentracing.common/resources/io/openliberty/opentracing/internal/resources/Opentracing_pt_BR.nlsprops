@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: O OpenTracing n\u00e3o pode r
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Os pedidos de JAX-RS s\u00e3o executados normalmente, mas n\u00e3o ser\u00e3o rastreados.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Veja a documenta\u00e7\u00e3o sobre como ativar e configurar o rastreio distribu\u00eddo OpenTracing. Este aviso pode ser ignorado com seguran\u00e7a se o OpenTracing n\u00e3o estiver em uso.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: O OpenTracing foi incapaz de iniciar um span e falhou porque um m\u00e9todo necess\u00e1rio n\u00e3o foi localizado. Mensagem = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=Essa falha ocorreu provavelmente porque uma implementa\u00e7\u00e3o do rastreador incompat\u00edvel foi fornecida.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Para obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o sobre como ativar o rastreio distribu\u00eddo do OpenTracing e visualizar sistemas de rastreio distribu\u00eddos compat\u00edveis.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

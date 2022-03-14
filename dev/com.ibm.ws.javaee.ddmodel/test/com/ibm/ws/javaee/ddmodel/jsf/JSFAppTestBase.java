@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ public class JSFAppTestBase extends DDTestBase {
 
         mockery.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(FacesVersion.FACES_VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(maxSchemaVersion));
             }
         });
@@ -60,60 +60,71 @@ public class JSFAppTestBase extends DDTestBase {
     protected static final String jsf10Head =
         "<!DOCTYPE faces-config PUBLIC" +
             " \"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN\"" +
-            " \"http://java.sun.com/dtd/web-facesconfig_1_0.dtd\">" + "\n" +
+            " \"http://java.sun.com/dtd/web-facesconfig_1_0.dtd\">" + '\n' +
         "<faces-config>";
 
     protected static final String jsf11Head =
         "<!DOCTYPE faces-config PUBLIC" +
             " \"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN\"" +
-            " \"http://java.sun.com/dtd/web-facesconfig_1_1.dtd\">" + "\n" +
+            " \"http://java.sun.com/dtd/web-facesconfig_1_1.dtd\">" + '\n' +
         "<faces-config>";
 
     protected static final String jsf12Head =
-        "<faces-config" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + 
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd\"" +
-            " version=\"1.2\">";            
+        "<faces-config" + '\n' +
+            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' + 
+            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd\"" + '\n' +
+            " version=\"1.2\"" + '\n' +
+            ">";
 
     protected static final String jsf20Head =
-        "<faces-config" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd\"" +
-            " version=\"2.0\">";
+        "<faces-config" + '\n' +
+            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd\"" + '\n' +
+            " version=\"2.0\""+ '\n' +
+            ">";
     
     protected static final String jsf21Head =
-        "<faces-config" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd\"" +
-            " version=\"2.1\">";    
+        "<faces-config" + '\n' +
+            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd\"" + '\n' +
+            " version=\"2.1\"" + '\n' +
+            ">";    
     
     protected static final String jsf22Head =
-        "<faces-config" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd\"" +
-            " version=\"2.2\"" +
+        "<faces-config" + '\n' +
+            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd\"" + '\n' +
+            " version=\"2.2\"" + '\n' +
             ">";
 
     protected static final String jsf23Head =
-        "<faces-config" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd\"" +
-            " version=\"2.3\"" +
+        "<faces-config" + '\n' +
+            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd\"" + '\n' +
+            " version=\"2.3\"" + '\n' +
             ">";
 
     protected static final String jsf30Head =
-        "<faces-config" +
-            " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd\"" +
-            " version=\"3.0\"" +
+        "<faces-config" + '\n' +
+            " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd\"" + '\n' +
+            " version=\"3.0\"" + '\n' +
             ">";
-    
+
+    protected static final String jsf40Head =
+        "<faces-config" + '\n' +
+            " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" + '\n' +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + '\n' +
+            " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd\"" + '\n' +
+            " version=\"4.0\"" + '\n' +
+            ">";
+            
     protected static final String jsfTail =
         "</faces-config>";
     
@@ -138,12 +149,15 @@ public class JSFAppTestBase extends DDTestBase {
             
         } else if ( version == FacesConfig.VERSION_3_0 ) {
             jsfHead = jsf30Head;
+        } else if ( version == FacesConfig.VERSION_4_0 ) {
+            jsfHead = jsf40Head;
+
         } else {
             throw new IllegalArgumentException("Unknown faces config version [ " + version + " ]");
         }
 
-        return jsfHead + "\n" +
-               jsfBody + "\n" +
+        return jsfHead + '\n' +
+               jsfBody + '\n' +
                jsfTail;
     }
 }

@@ -39,7 +39,8 @@ Export-Package: \
 	com.ibm.ws.microprofile.openapi.impl.core.*,\
 	com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
 	com.ibm.ws.microprofile.openapi.impl.parser.*,\
-	com.ibm.ws.microprofile.openapi.impl.validation
+	com.ibm.ws.microprofile.openapi.impl.validation, \
+	com.ibm.ws.microprofile.openapi.servlet.filter
         
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \

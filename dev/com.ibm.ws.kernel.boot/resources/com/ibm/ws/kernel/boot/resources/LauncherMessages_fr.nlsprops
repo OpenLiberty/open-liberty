@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,10 +76,7 @@ error.archiveTarget=CWWKE0011E: Le param\u00e8tre --archive n\u00e9cessite un ar
 error.archiveTarget.explanation=Un argument obligatoire n'a pas \u00e9t\u00e9 indiqu\u00e9.
 error.archiveTarget.useraction=Fournissez l'argument correct et relancez la commande. Utilisez --help pour obtenir une description des arguments associ\u00e9s \u00e0 l'option fournie.
 
-error.serverNameCharacter=CWWKE0012E: Le nom de serveur sp\u00e9cifi\u00e9 contient un caract\u00e8re qui n''est pas valide (nom={0}). \
-Les caract\u00e8res valides sont : alphanum\u00e9riques Unicode (par exemple : \
-0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.). \
-Un nom de serveur ne peut jamais commencer par un tiret (-) ou un point (.).
+error.serverNameCharacter=CWWKE0012E: Le nom de serveur sp\u00e9cifi\u00e9 contient un caract\u00e8re qui n''est pas valide (nom={0}). Les caract\u00e8res valides sont : alphanum\u00e9riques Unicode (par exemple : 0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.). Un nom de serveur ne peut jamais commencer par un tiret (-) ou un point (.).
 error.serverNameCharacter.explanation=Un caract\u00e8re non valide a \u00e9t\u00e9 utilis\u00e9 dans le nom du serveur.
 error.serverNameCharacter.useraction=Changez le nom du serveur en utilisant uniquement des caract\u00e8res valides : alphanum\u00e9riques Unicode (par exemple : 0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.).
 
@@ -95,9 +92,7 @@ error.platformBundleException=CWWKE0015E: Des erreurs internes se sont produites
 error.platformBundleException.explanation=Une exception au moins a \u00e9t\u00e9 d\u00e9tect\u00e9e au moment de l'installation ou du d\u00e9marrage du serveur. 
 error.platformBundleException.useraction=V\u00e9rifiez que le produit a \u00e9t\u00e9 correctement install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
-error.secPermission=CWWKE0016E: Le fichier JAR d''amor\u00e7age n\u00e9cessite la configuration de \
-s\u00e9curit\u00e9 AllPermission afin de permettre le lancement de l''environnement d''ex\u00e9cution et \
-du framework OSGi ({0}).
+error.secPermission=CWWKE0016E: Le fichier JAR d''amor\u00e7age n\u00e9cessite la configuration de s\u00e9curit\u00e9 AllPermission afin de permettre le lancement de l''environnement d''ex\u00e9cution et du framework OSGi ({0}).
 error.secPermission.explanation=Les droits Java 2 Security sont insuffisants pour permettre au fichier JAR d'amor\u00e7age de lancer l'environnement d'ex\u00e9cution et l'infrastructure OSGi.
 error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age (bootstrap) a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
 
@@ -127,9 +122,7 @@ error.kernelDefFile=CWWKE0023E: La d\u00e9finition de noyau sp\u00e9cifi\u00e9e 
 error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau (kernel) est introuvable.
 error.kernelDefFile.useraction=Assurez-vous que la ressource de d\u00e9finition du noyau existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
-error.specifiedLocation=CWWKE0025E: La valeur {0} doit d\u00e9signer un r\u00e9pertoire. \
-La valeur sp\u00e9cifi\u00e9e fait r\u00e9f\u00e9rence \u00e0 une ressource de type fichier existante. \
-Valeur : {1}
+error.specifiedLocation=CWWKE0025E: La valeur {0} doit d\u00e9signer un r\u00e9pertoire. La valeur sp\u00e9cifi\u00e9e fait r\u00e9f\u00e9rence \u00e0 une ressource de type fichier existante. Valeur : {1}
 error.specifiedLocation.explanation=L'emplacement fourni fait r\u00e9f\u00e9rence \u00e0 un fichier existant au lieu d'un r\u00e9pertoire.
 error.specifiedLocation.useraction=Remplacez l'emplacement sp\u00e9cifi\u00e9 par un r\u00e9pertoire, puis relancez l'action.
 
@@ -471,10 +464,7 @@ info.addProductExtension.useraction=Aucune action n'est requise.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
-error.clientNameCharacter=CWWKE0900E: Le nom de client sp\u00e9cifi\u00e9 contient un caract\u00e8re qui n''est pas valide (nom={0}). \
-Les caract\u00e8res valides sont : alphanum\u00e9riques Unicode (par exemple : \
-0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.). \
-Un nom de client ne peut jamais commencer par un tiret (-) ou un point (.).
+error.clientNameCharacter=CWWKE0900E: Le nom de client sp\u00e9cifi\u00e9 contient un caract\u00e8re qui n''est pas valide (nom={0}). Les caract\u00e8res valides sont : alphanum\u00e9riques Unicode (par exemple : 0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.). Un nom de client ne peut jamais commencer par un tiret (-) ou un point (.).
 error.clientNameCharacter.explanation=Un caract\u00e8re non valide a \u00e9t\u00e9 utilis\u00e9 dans le nom du client.
 error.clientNameCharacter.useraction=Changez le nom du client en utilisant uniquement des caract\u00e8res valides : alphanum\u00e9riques Unicode (par exemple : 0-9, a-z, A-Z), trait de soulignement (_), tiret (-), signe plus (+) et point (.).
 
@@ -525,14 +515,12 @@ info.java2security.started.useraction=Aucune action n'est requise.
 #{0} Cause of exception
 error.set.securitymanager=CWWKE0910E: Echec de la d\u00e9finition du gestionnaire de s\u00e9curit\u00e9 par d\u00e9faut en raison de l''exception : {0}.  Cette situation survient si le gestionnaire de s\u00e9curit\u00e9 a d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini et que sa m\u00e9thode checkPermission ne permet pas son remplacement.
 error.set.securitymanager.explanation=La s\u00e9curit\u00e9 Java 2 est activ\u00e9e mais un incident s'est produit lors de la configuration du gestionnaire de s\u00e9curit\u00e9 par d\u00e9faut.
-error.set.securitymanager.useraction=V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  \
-Si elle est d\u00e9j\u00e0 d\u00e9finie, supprimez l'option -Djava.security.manager et red\u00e9marrez le serveur avec Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties. 
+error.set.securitymanager.useraction=V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  Si elle est d\u00e9j\u00e0 d\u00e9finie, supprimez l'option -Djava.security.manager et red\u00e9marrez le serveur avec Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties. 
 
 #{0} Cause of exception
 error.set.trace.securitymanager=CWWKE0911E: Echec de l''activation du gestionnaire NoRethrow Security Manager en raison de l''exception : {0}.  Cette situation survient si le gestionnaire de s\u00e9curit\u00e9 a d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini et que sa m\u00e9thode checkPermission ne permet pas son remplacement.
 error.set.trace.securitymanager.explanation=La s\u00e9curit\u00e9 Java 2 est activ\u00e9e mais un incident s'est produit lors de la configuration du gestionnaire de s\u00e9curit\u00e9 NoRethrow.
-error.set.trace.securitymanager.useraction=V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  \
-Si elle est d\u00e9j\u00e0 d\u00e9finie, supprimez l'option -Djava.security.manager et red\u00e9marrez le serveur avec Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties. 
+error.set.trace.securitymanager.useraction=V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  Si elle est d\u00e9j\u00e0 d\u00e9finie, supprimez l'option -Djava.security.manager et red\u00e9marrez le serveur avec Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties. 
 
 warning.java.security.permdenied=CWWKE0912W: La strat\u00e9gie de s\u00e9curit\u00e9 Java 2 actuelle a signal\u00e9 une violation potentielle des droits d''acc\u00e8s Java 2. {0}Droit : {1} Code : {2}{3} Pile de trace :{4} Emplacement de base du code : {5}
 warning.java.security.permdenied.explanation=La m\u00e9thode checkPermission() de Java Security Manager a lanc\u00e9 une exception SecurityException sur le droit (Permission) concern\u00e9.
@@ -540,9 +528,7 @@ warning.java.security.permdenied.useraction=V\u00e9rifiez que l'op\u00e9ration t
 
 error.java.security.exception.codebase=CWWKE0913E: Une exception inattendue a \u00e9t\u00e9 intercept\u00e9e lors d''une tentative de d\u00e9termination de l''emplacement de base du code.  Exception : {0}.  
 error.java.security.exception.codebase.explanation=Une exception est survenue lors de la d\u00e9termination de l'emplacement du codebase qui a g\u00e9n\u00e9r\u00e9 une exception de contr\u00f4le d'acc\u00e8s Java 2 Security Permission.
-error.java.security.exception.codebase.useraction=Pour plus de d\u00e9tails, consultez l'exception et les journaux du serveur. \
-\  V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  \
-Si un de ces \u00e9l\u00e9ments (ou les deux) est d\u00e9fini, supprimez les param\u00e8tres et red\u00e9marrez le serveur avec l'\u00e9l\u00e9ment Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties.
+error.java.security.exception.codebase.useraction=Pour plus de d\u00e9tails, consultez l'exception et les journaux du serveur.   V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  Si un de ces \u00e9l\u00e9ments (ou les deux) est d\u00e9fini, supprimez les param\u00e8tres et red\u00e9marrez le serveur avec l'\u00e9l\u00e9ment Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties.
 
 warning.zOS.java.security.permdenied1=CWWKE0914W: La strat\u00e9gie de s\u00e9curit\u00e9 Java 2 a signal\u00e9 une violation possible des droits d''acc\u00e8s de la s\u00e9curit\u00e9 Java 2. Pour plus d''informations, consultez le Knowledge Center.{0} Droit : {1} Code :{2} Emplacement de base du code : {3}
 warning.zOS.java.security.permdenied1.explanation=La m\u00e9thode checkPermission() de Java Security Manager a lanc\u00e9 une exception SecurityException sur le droit (Permission) concern\u00e9. Un appelant de la pile d'appels ne dispose pas des droits d'acc\u00e8s requis.  Cela ne provoque pas d'incident si l'appelant g\u00e8re correctement cette exception.
@@ -564,7 +550,7 @@ error.client.runner.useraction=Consultez les messages d'erreur pour plus de d\u0
 # {1} host name
 # {2} logs location
 # {3} unique request id
-error.mbean.operation.failure=CWWKE0918E:  Impossible d''effectuer l''op\u00e9ration demand\u00e9e. Pour plus de d\u00e9tails, consultez les journaux sur le serveur de profil Liberty {0} sur l''h\u00f4te {1} \u00e0 l''emplacement {2} pour la demande {3}.
+error.mbean.operation.failure=CWWKE0918E: \ Impossible d''effectuer l''op\u00e9ration demand\u00e9e. Pour plus de d\u00e9tails, consultez les journaux sur le serveur de profil Liberty {0} sur l''h\u00f4te {1} \u00e0 l''emplacement {2} pour la demande {3}.
 error.mbean.operation.failure.explanation=Une erreur s'est produite lors de la tentative d'ex\u00e9cution de l'op\u00e9ration demand\u00e9e.
 error.mbean.operation.failure.useraction=Pour plus de d\u00e9tails sur l'erreur d'op\u00e9ration, consultez les journaux du serveur.
 
@@ -690,8 +676,7 @@ warning.package.root.invalid.useraction=Aucune action n'est requise.
 
 warning.package.root.invalid.runnable=CWWKE0948W: La combinaison de l'option --server-root et de --include=runnable n'est pas autoris\u00e9e. L'argument par d\u00e9faut wlp sera utilis\u00e9 pour la racine du serveur.
 warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine du serveur par d\u00e9faut wlp sera utilis\u00e9e.
-warning.package.root.invalid.runnable.useraction=Aucune action n'est \
-requise.
+warning.package.root.invalid.runnable.useraction=Aucune action n'est requise.
 
 error.package.extension=CWWKE0950E: Le nom de fichier archive doit se terminer par .jar lorsque l'option runnable est utilis\u00e9e.
 error.package.extension.explanation=L'option --archive doit inclure l'extension de fichier .jar si vous sp\u00e9cifiez --include=runnable.
@@ -708,6 +693,10 @@ error.missing.version.files.useraction=Assurez-vous que le r\u00e9pertoire exist
 warning.earlyRelease=CWWKE0953W: Cette version de {0} est une version d''\u00e9dition anticip\u00e9e non prise en charge.
 warning.earlyRelease.explanation=De nouvelles fonctions qui n'ont pas \u00e9t\u00e9 enti\u00e8rement test\u00e9es sont mises \u00e0 disposition dans les versions anticip\u00e9es pour que les utilisateurs puissent envoyer leurs commentaires avant qu'elles ne soient incluses dans une \u00e9dition prise en charge.
 warning.earlyRelease.useraction=N'utilisez pas de version d'\u00e9dition anticip\u00e9e sur des syst\u00e8mes de production car elles ne sont pas prises en charge.
+
+error.invalidPhaseName=CWWKE0954E: La phase de point de contr\u00f4le "{0}" sp\u00e9cifi\u00e9e est vide ou inconnue.
+error.invalidPhaseName.explanation=Une phase inconnue a \u00e9t\u00e9 sp\u00e9cifi\u00e9e comme valeur de l'option de point de contr\u00f4le.
+error.invalidPhaseName.useraction=Consultez la documentation pour d\u00e9terminer les noms de phase valides. R\u00e9ex\u00e9cutez la commande \u00e0 l'aide d'une phase de point de contr\u00f4le valide.
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

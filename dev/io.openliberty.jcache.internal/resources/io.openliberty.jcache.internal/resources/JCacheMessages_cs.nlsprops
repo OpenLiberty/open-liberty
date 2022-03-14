@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,3 +16,58 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Vygenerovan\u00e1 konfigurace Infinispan pro perzistenci relace HTTP: {0}. Chcete-li prov\u00e9st p\u0159epis, nakonfigurujte atribut uri bu\u010f prvku konfigurace httpSessionCache, nebo prvku konfigurace cacheManager.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=Mezipam\u011bti Infinistpan, kter\u00e9 se pou\u017e\u00edvaj\u00ed pro perzistenci relace HTTP, vy\u017eaduj\u00ed dal\u0161\u00ed konfiguraci, aby trvaly relace mezi servery. Liberty vygeneruje tuto konfiguraci, pokud ji u\u017eivatel neposkytl.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Pokud jste spokojeni s generovanou konfigurac\u00ed, nen\u00ed vy\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Jinak m\u016f\u017ee b\u00fdt generovan\u00e1 konfigurace pou\u017eita jako v\u00fdchoz\u00ed bod.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: JCache {0} byla vytvo\u0159ena v {1} ms.
+CWLJC0001_CACHE_CREATED.explanation=Pojmenovan\u00e1 JCache byla vytvo\u0159ena, proto\u017ee nebyla nalezena.
+CWLJC0001_CACHE_CREATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: Existuj\u00edc\u00ed JCache {0} byla nalezena v {1} ms.
+CWLJC0002_CACHE_FOUND.explanation=Pojmenovan\u00e1 JCache byla nalezena, tak\u017ee nebyla vytvo\u0159ena.
+CWLJC0002_CACHE_FOUND.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: JCache {0} pou\u017e\u00edv\u00e1 poskytovatele ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti {1}.
+CWLJC0003_USING_PROVIDER.explanation=Pojmenovan\u00e1 JCache pou\u017e\u00edv\u00e1 uveden\u00e9ho poskytovatele.
+CWLJC0003_USING_PROVIDER.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: Na\u010dten\u00ed poskytovatele ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti {0} se nezda\u0159ilo. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=Na\u010dten\u00ed konfigurace cachingProvider se nezda\u0159ilo.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=Vy\u0159e\u0161te chybu uvedenou ve zpr\u00e1v\u011b a zopakujte operaci.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: CacheManager JCache {0} se na\u010detl b\u011bhem {1} ms. 
+CWLJC0005_MANAGER_LOADED.explanation=CacheManager JCache byl \u00fasp\u011b\u0161n\u011b na\u010dten.
+CWLJC0005_MANAGER_LOADED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Neplatn\u00e1 syntaxe v identifik\u00e1toru URI cacheManager.  P\u0159\u00ed\u010dina: {0}.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=Syntaxe uveden\u00e9ho identifik\u00e1toru URI konfigurace JCache je neplatn\u00e1.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=Opravte syntaxi uveden\u00e9ho identifik\u00e1toru URI konfigurace.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: Chyba p\u0159i deserializaci objektu z JCache {0}: {1}.
+CWLJC0008_DESERIALIZE_ERR.explanation=Objekt na\u010dten\u00fd z pojmenovan\u00e9 JCache ne\u0161lo deserializovat.
+CWLJC0008_DESERIALIZE_ERR.useraction=Ujist\u011bte se, \u017ee jsou v\u0161echny t\u0159\u00eddy dostupn\u00e9 v knihovn\u011b obsa\u017een\u00e9 v konfiguraci JCache.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: Chyba p\u0159i serializaci objektu do JCache {0}: {1}.
+CWLJC0009_SERIALIZE_ERR.explanation=Objekt, kter\u00fd m\u00e1 b\u00fdt ulo\u017een do pojmenovan\u00e9 JCache, ne\u0161lo serializovat.
+CWLJC0009_SERIALIZE_ERR.useraction=Ujist\u011bte se, \u017ee jsou v\u0161echny t\u0159\u00eddy, kter\u00e9 se maj\u00ed serializovat, serializovateln\u00e9.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Chyba p\u0159i konfiguraci modulu CacheManager JCache: {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=CacheManager JCache nebyl nakonfigurov\u00e1n kv\u016fli uveden\u00e9 chyb\u011b.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=Vy\u0159e\u0161te chybu uvedenou ve zpr\u00e1v\u011b a zopakujte operaci.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR.explanation=Mezipam\u011b\u0165 ne\u0161lo na\u010d\u00edst kv\u016fli uveden\u00e9 chyb\u011b.
+CWLJC0011_GET_CACHE_ERR.useraction=Vy\u0159e\u0161te chybu uvedenou ve zpr\u00e1v\u011b a zopakujte operaci.

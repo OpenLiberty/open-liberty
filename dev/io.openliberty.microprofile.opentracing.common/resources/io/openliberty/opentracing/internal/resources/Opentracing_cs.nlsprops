@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing nem\u016f\u017ee 
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Po\u017eadavky rozhran\u00ed JAX-RS b\u011b\u017e\u00ed norm\u00e1ln\u011b, ale nejsou sledov\u00e1ny.
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Informace o tom, jak povolit a konfigurovat distribuovan\u00e9 trasov\u00e1n\u00ed OpenTracing, najdete v dokumentaci. Toto varov\u00e1n\u00ed lze bezpe\u010dn\u011b ignorovat, nen\u00ed-li pou\u017eito OpenTracing.
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: OpenTracing nebyl schopen spustit rozp\u011bt\u00ed a selhal, proto\u017ee nebyla nalezena po\u017eadovan\u00e1 metoda. Zpr\u00e1va = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=Toto selh\u00e1n\u00ed je pravd\u011bpodobn\u011b zp\u016fsobeno poskytnutou nekompatibiln\u00ed implementac\u00ed modulu trasov\u00e1n\u00ed.
+OPENTRACING_COULD_NOT_START_SPAN.useraction=Dal\u0161\u00ed informace o tom, jak povolit distribuovan\u00e9 trasov\u00e1n\u00ed OpenTracing a zobrazit kompatibiln\u00ed distribuovan\u00e9 syst\u00e9my trasov\u00e1n\u00ed, naleznete v dokumentaci.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

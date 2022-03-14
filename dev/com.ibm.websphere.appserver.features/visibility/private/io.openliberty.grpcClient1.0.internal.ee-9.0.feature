@@ -9,7 +9,7 @@ Subsystem-Name: Jakarta gRPC Client 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common.jakarta, \
   io.openliberty.grpc.1.0.internal.client.jakarta, \
-  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.38.1", \
+  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.43.2", \
   io.openliberty.grpc.client.1.0.jakarta.thirdparty; location:="dev/api/third-party/,lib/"
 kind=ga
 edition=core

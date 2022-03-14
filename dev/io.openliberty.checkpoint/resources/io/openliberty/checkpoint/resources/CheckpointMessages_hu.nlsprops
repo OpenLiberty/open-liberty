@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: K\u00e9r\u00e9s \u00e9rkezett egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1s\u00e1ra. Amikor az ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sra ker\u00fcl, a kiszolg\u00e1l\u00f3 le\u00e1ll.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1s\u00e1ra \u00e9rkezett k\u00e9r\u00e9s. A kiszolg\u00e1l\u00f3 le\u00e1llt, \u00e9s az aktu\u00e1lis \u00e1llapota lemezre \u00edr\u00f3dott.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Az ellen\u0151rz\u00e9si pont \u00e9s a vissza\u00e1ll\u00edt\u00e1si m\u0171veletek r\u00e9szleteit ellen\u0151rizze a dokument\u00e1ci\u00f3ban.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Egy ellen\u0151rz\u00e9si pont ut\u00e1n a Liberty kiszolg\u00e1l\u00f3 folytatja a m\u0171k\u00f6d\u00e9st.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=A Liberty kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9p\u00e9n vissza\u00e1ll\u00edt\u00e1si m\u0171velet ker\u00fclt futtat\u00e1sra.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Az ellen\u0151rz\u00e9si pont \u00e9s a vissza\u00e1ll\u00edt\u00e1si m\u0171veletek r\u00e9szleteit ellen\u0151rizze a dokument\u00e1ci\u00f3ban.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se a k\u00f6vetkez\u0151 \u00fczenettel meghi\u00fasult: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult.  Nem k\u00e9sz\u00fclt \u00e9rv\u00e9nyes ellen\u0151rz\u00e9si pont folyamatk\u00e9p a kiszolg\u00e1l\u00f3ra vonatkoz\u00f3an.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Keressen a kiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jl ellen\u0151rz\u00e9si pont k\u00f6nyvt\u00e1r\u00e1ban tov\u00e1bbi napl\u00f3f\u00e1jlokat, hogy meg\u00e1llap\u00edthassa, mi\u00e9rt volt sikertelen az ellen\u0151rz\u00e9si pont.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: A kiszolg\u00e1l\u00f3 nem tudta vissza\u00e1ll\u00edtani az ellen\u0151rz\u00e9si pontot a k\u00f6vetkez\u0151 \u00fczenettel: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=A kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet az ellen\u0151rz\u00e9si pontr\u00f3l meghi\u00fasult.  A kiszolg\u00e1l\u00f3 nem fut.
+RESTORE_FAILED_CWWKC0454E.useraction=Keressen a kiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jl ellen\u0151rz\u00e9si pont k\u00f6nyvt\u00e1r\u00e1ban tov\u00e1bbi napl\u00f3f\u00e1jlokat, hogy meg\u00e1llap\u00edthassa, mi\u00e9rt nem lehetett a kiszolg\u00e1l\u00f3t vissza\u00e1ll\u00edtani.
+

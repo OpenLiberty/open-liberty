@@ -73,6 +73,20 @@ public class ApplicationBndAdapter extends BndExtAdapter<ApplicationBnd> {
                 ddPath, xmi);
     }
 
+    // Ignoring obsolete XMI format bindings {0} for the {1} deployment descriptor.
+    // The {0} version of the deployment descriptor is higher than the maximum version {0} which supports XMI format bindings.
+    //
+    // Above the specified maximum deployment descriptor version, XML format bindings must be used.
+    // 
+    // The XMI format bindings should be converted to XML format bindings.
+    
+    // Ignoring obsolete XMI format extensions {0} for the {1} deployment descriptor.
+    // The {0} version of the deployment descriptor is higher than the maximum version {0} which supports XMI format extensions.
+    //
+    // Above the specified maximum deployment descriptor version, XML format extensions must be used.
+    // 
+    // The XMI format bindings should be converted to XML format bindings.
+
     @Override
     protected ApplicationBnd getConfigOverrides(
             OverlayContainer ddOverlay,

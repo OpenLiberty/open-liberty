@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,24 @@ import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-final class PermissionsConfigDDParser extends DDParser {
+public class PermissionsConfigDDParser extends DDParser {
+
+    // Unused; provided as documentation.
+
+    public static final VersionData[] VERSION_DATA = {
+        new VersionData("7", null, NAMESPACE_JCP_JAVAEE, PermissionsConfig.VERSION_7_0, VERSION_7_0_INT),                            
+        new VersionData("9", null, NAMESPACE_JAKARTA, PermissionsConfig.VERSION_9_0, VERSION_9_0_INT),
+        new VersionData("10", null, NAMESPACE_JAKARTA, PermissionsConfig.VERSION_10_0, VERSION_10_0_INT)
+    };
+
+    public static int getMaxTolerated() {
+        return PermissionsConfig.VERSION_10_0;
+    }
+
+    public static int getMaxImplemented() {
+        return PermissionsConfig.VERSION_9_0;
+    }    
+    
     /**
      * Create a permissions configuration parser.
      * 
@@ -62,10 +79,13 @@ final class PermissionsConfigDDParser extends DDParser {
             String expectedNamespace;
             if ( PermissionsConfig.VERSION_7_STR.equals(ddVersionAttr) ) {
                 ddVersion = PermissionsConfig.VERSION_7_0;
-                expectedNamespace = DDParserSpec.NAMESPACE_JCP_JAVAEE;
+                expectedNamespace = NAMESPACE_JCP_JAVAEE;
             } else if ( PermissionsConfig.VERSION_9_STR.equals(ddVersionAttr) ) {
                 ddVersion = PermissionsConfig.VERSION_9_0;
-                expectedNamespace = DDParserSpec.NAMESPACE_JAKARTA;
+                expectedNamespace = NAMESPACE_JAKARTA;
+            } else if ( PermissionsConfig.VERSION_10_STR.equals(ddVersionAttr) ) {
+                ddVersion = PermissionsConfig.VERSION_10_0;
+                expectedNamespace = NAMESPACE_JAKARTA;                
             } else {
                 throw new ParseException( unsupportedDescriptorVersion(ddVersionAttr) );         
             }
@@ -86,6 +106,10 @@ final class PermissionsConfigDDParser extends DDParser {
 
         } else if ( namespace != null ) {
             // Next, try to use the namespace.
+            // No maximum version is set.  We could use that to set the
+            // descriptor version to 8 or 10.  However, permissions parsing
+            // allows reading of higher versioned elements, and ignores
+            // 'maxVersion'.  Contrast with 'ApplicationDDParser', and others.
             if ( namespace.equals(DDParserSpec.NAMESPACE_JCP_JAVAEE) ) {
                 ddVersion = PermissionsConfig.VERSION_7_0;
             } else if ( namespace.equals(DDParserSpec.NAMESPACE_JAKARTA) ) {

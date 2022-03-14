@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class WebAppTestBase extends DDTestBase {
 
         mockery.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                allowing(versionRef).getProperty("version");
                 will(returnValue(maxVersion));
             }
         });
@@ -75,7 +75,7 @@ public class WebAppTestBase extends DDTestBase {
         return "<!DOCTYPE web-app PUBLIC" +
                    " \"-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN\"" +
                    " \"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd\"" +
-               ">" + "\n" +
+               ">" + '\n' +
                    "<web-app>";
     }
 
@@ -83,7 +83,7 @@ public class WebAppTestBase extends DDTestBase {
         return "<!DOCTYPE web-app PUBLIC" +
                    " \"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN\"" +
                    " \"http://java.sun.com/dtd/web-app_2_3.dtd\"" +
-                   ">" + "\n" +
+                   ">" + '\n' +
                "<web-app>";
     }
 
@@ -145,22 +145,31 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
+    protected static String webApp60Head() {
+        return "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd\"" +
+                   " version=\"6.0\"" +
+                   " id=\"WebApp_ID\"" +
+               ">";
+    }
+
     protected static String webAppTail() {
         return "</web-app>";
     }
 
     protected static String webAppBody() {
-        return "<display-name>Bindings and Extensions Override Test Web Application</display-name>" + "\n" +
-               "<description>Used to run override tests for various bindings and extensions</description>" + "\n" +
-               "<servlet id=\"Default\">" + "\n" +
-               "<description>Print's to log... that's it!.</description>" + "\n" +
-               "<servlet-name>Auto Servlet</servlet-name>" + "\n" +      
-               "<servlet-class>servlettest.web.AutoServlet</servlet-class>" + "\n" +
-               "<load-on-startup></load-on-startup>" + "\n" +
-               "</servlet>" + "\n" +
-               "<servlet-mapping id=\"ServletMapping_Default\">" + "\n" +
-                   "<servlet-name>Auto Servlet</servlet-name>" + "\n" +
-                   "<url-pattern>/*</url-pattern>" + "\n" +
+        return "<display-name>Bindings and Extensions Override Test Web Application</display-name>" + '\n' +
+               "<description>Used to run override tests for various bindings and extensions</description>" + '\n' +
+               "<servlet id=\"Default\">" + '\n' +
+               "<description>Print's to log... that's it!.</description>" + '\n' +
+               "<servlet-name>Auto Servlet</servlet-name>" + '\n' +      
+               "<servlet-class>servlettest.web.AutoServlet</servlet-class>" + '\n' +
+               "<load-on-startup></load-on-startup>" + '\n' +
+               "</servlet>" + '\n' +
+               "<servlet-mapping id=\"ServletMapping_Default\">" + '\n' +
+                   "<servlet-name>Auto Servlet</servlet-name>" + '\n' +
+                   "<url-pattern>/*</url-pattern>" + '\n' +
                "</servlet-mapping>";
     }
     
@@ -185,11 +194,14 @@ public class WebAppTestBase extends DDTestBase {
         } else if ( version == WebApp.VERSION_4_0 ) {
             head = webApp40Head();
         } else if ( version == WebApp.VERSION_5_0 ) {
-            head = webApp50Head();  
+            head = webApp50Head();
+        } else if ( version == WebApp.VERSION_6_0 ) {
+            head = webApp60Head();  
+            
         } else {
             throw new IllegalArgumentException("Unexpected WebVersion [ " + version + " ]");
         }
-        return head + "\n" + body + "\n" + webAppTail();
+        return head + '\n' + body + '\n' + webAppTail();
     }
     
     //
@@ -199,8 +211,8 @@ public class WebAppTestBase extends DDTestBase {
     protected WebApp getWebApp24() throws Exception {
         if ( webApp24 == null ) {
             webApp24 = parseWebApp(
-                    webApp24Head() + "\n" +
-                        webAppBody() + "\n" +
+                    webApp24Head() + '\n' +
+                        webAppBody() + '\n' +
                     "</web-app>" );
         }
         return webApp24;

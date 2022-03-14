@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.core.impl;
+
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.sib.utils.ras.SibTr.entry;
+import static com.ibm.ws.sib.utils.ras.SibTr.exit;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.utils.ras.SibTr;
@@ -20,55 +24,28 @@ import com.ibm.wsspi.sib.core.SelectorDomain;
 /**
  * @author Neil Young
  */
-public class SelectionCriteriaFactoryImpl extends SelectionCriteriaFactory
-{
-  //trace
-  private static final TraceComponent tc =
-    SibTr.register(
-      SelectionCriteriaFactoryImpl.class,
-      SICoreConstants.CORE_TRACE_GROUP,
-      SICoreConstants.RESOURCE_BUNDLE);
- 
-  
-  /* (non-Javadoc)
-   * @see com.ibm.wsspi.sib.core.SICoreConnection#createSelectionCriteria()
-   */  
-  public SelectionCriteria createSelectionCriteria()
-    throws SIErrorException
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-      SibTr.entry(tc, "createSelectionCriteria" );        
-    
-    SelectionCriteria criteria = new SelectionCriteriaImpl(null,
-                                                           "",
-                                                           SelectorDomain.SIMESSAGE);
-    
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "createSelectionCriteria", criteria);
-      
-    return criteria;
-  } 
-       
-  /* (non-Javadoc)
-   * @see com.ibm.wsspi.sib.core.SICoreConnection#createSelectionCriteria()
-   */
-  public SelectionCriteria createSelectionCriteria(String discriminator,
-                                                 String selectorString,
-                                                 SelectorDomain selectorDomain) 
-  
-  throws SIErrorException
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-      SibTr.entry(tc, "createSelectionCriteria", 
-        new Object[]{discriminator, selectorString, selectorDomain});        
-    
-    SelectionCriteria criteria = new SelectionCriteriaImpl(discriminator,
-                                                           selectorString,
-                                                           selectorDomain);
-    
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "createSelectionCriteria", criteria);
-      
-    return criteria;
-  }
+public enum SelectionCriteriaFactoryImpl implements SelectionCriteriaFactory {
+    INSTANCE;
+
+    private static final TraceComponent tc =    SibTr.register(SelectionCriteriaFactoryImpl.class, SICoreConstants.CORE_TRACE_GROUP, SICoreConstants.RESOURCE_BUNDLE);
+
+    public SelectionCriteria createSelectionCriteria() throws SIErrorException {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "createSelectionCriteria" );
+
+        SelectionCriteria criteria = new SelectionCriteriaImpl();
+
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(tc, "createSelectionCriteria", criteria);
+
+        return criteria;
+    }
+
+    public SelectionCriteria createSelectionCriteria(String discriminator, String selectorString, SelectorDomain selectorDomain) throws SIErrorException {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "createSelectionCriteria", new Object[]{discriminator, selectorString, selectorDomain});
+
+        SelectionCriteria criteria = new SelectionCriteriaImpl(discriminator, selectorString, selectorDomain);
+
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(tc, "createSelectionCriteria", criteria);
+
+        return criteria;
+    }
 }

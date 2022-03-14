@@ -82,6 +82,10 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing \u65e0\u6cd5\u8dd
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS \u8bf7\u6c42\u6b63\u5e38\u8fd0\u884c\uff0c\u4f46\u672a\u8ddf\u8e2a\u3002
 OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=\u8bf7\u53c2\u9605\u6587\u6863\uff0c\u4e86\u89e3\u5982\u4f55\u542f\u7528\u548c\u914d\u7f6e OpenTracing \u5206\u5e03\u5f0f\u8ddf\u8e2a\u3002 \u5982\u679c\u672a\u4f7f\u7528 OpenTracing\uff0c\u90a3\u4e48\u53ef\u4ee5\u5b89\u5168\u5730\u5ffd\u7565\u6b64\u8b66\u544a\u3002
 
+OPENTRACING_COULD_NOT_START_SPAN=CWMOT0011W: OpenTracing \u65e0\u6cd5\u542f\u52a8\u8de8\u5ea6\uff0c\u5e76\u4e14\u7531\u4e8e\u627e\u4e0d\u5230\u5fc5\u9700\u7684\u65b9\u6cd5\u800c\u5931\u8d25\u3002 \u6d88\u606f = {0}
+OPENTRACING_COULD_NOT_START_SPAN.explanation=\u6b64\u6545\u969c\u53ef\u80fd\u662f\u7531\u4e8e\u63d0\u4f9b\u7684\u8ddf\u8e2a\u5668\u5b9e\u73b0\u4e0d\u517c\u5bb9\u6240\u81f4\u3002
+OPENTRACING_COULD_NOT_START_SPAN.useraction=\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u6709\u5173\u5982\u4f55\u542f\u7528 OpenTracing \u5206\u5e03\u5f0f\u8ddf\u8e2a\u548c\u67e5\u770b\u517c\u5bb9\u7684\u5206\u5e03\u5f0f\u8ddf\u8e2a\u7cfb\u7edf\u7684\u6587\u6863\u3002
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

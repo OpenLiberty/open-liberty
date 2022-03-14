@@ -25,23 +25,25 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class ApplicationAdapter implements ContainerAdapter<Application> {
-
+    // TODO: Should this still be the default??
+    public static final Version DEFAULT_VERSION = new Version(6, 0, 0);
+    
     private ServiceReference<JavaEEVersion> versionRef;
-    private Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
+    private Version platformVersion = DEFAULT_VERSION;
 
     public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
         this.versionRef = referenceRef;
         this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
 
         if ( this.platformVersion == null ) {
-            this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
+            this.platformVersion = DEFAULT_VERSION;
         }
     }
 
     public synchronized void unsetVersion(ServiceReference<JavaEEVersion> versionRef) {
         if ( versionRef == this.versionRef ) {
             this.versionRef = null;
-            this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
+            this.platformVersion = DEFAULT_VERSION;
         }
     }
 

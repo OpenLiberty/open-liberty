@@ -315,4 +315,39 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.exiting(c, METHOD_NAME);
     }
 
+	/**
+	 * Test installServerFeature when a feature is installed but its dependencies
+	 * aren't. This can happen when a feature tolerates two versions of a
+	 * dependency, only one of which is installed, and the solution from the kernel
+	 * resolver uses the other one
+	 */
+	@Test
+	public void testIsfFeatureTolerates() throws Exception {
+		final String METHOD_NAME = "testIsfFeatureTolerates";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("22.0.0.1");
+
+		String[] filesList = { "lib/features/io.openliberty.wimcore.internal.ee-9.0.mf",
+				"lib/features/com.ibm.websphere.appserver.federatedRegistry-1.0.mf" };
+
+		// jakartaee-8.0 and federatedRegistry-1.0
+		copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/plainServerXml2/server.xml");
+
+		// install the server
+		String[] param1s = { "installServerFeatures", "serverX" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/plainServerXml3/server.xml");
+
+		// install server again with jakartaee-9.1 and federatedRegistry-1.0
+		po = runFeatureUtility(METHOD_NAME, param1s);
+
+		assertFilesExist(filesList);
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
 }

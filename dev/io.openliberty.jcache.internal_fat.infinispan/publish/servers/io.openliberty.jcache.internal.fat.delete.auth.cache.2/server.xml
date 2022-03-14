@@ -16,7 +16,7 @@
 		<feature>restConnector-2.0</feature>
 		<feature>servlet-4.0</feature>
 		<feature>timedexit-1.0</feature>
-		<feature>noShip-1.0</feature> <!-- TODO Remove when GA -->
+		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 
 	<httpEndpoint id="defaultHttpEndpoint"

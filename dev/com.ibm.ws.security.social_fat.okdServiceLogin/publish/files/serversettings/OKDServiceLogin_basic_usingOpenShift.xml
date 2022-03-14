@@ -1,0 +1,99 @@
+<!--
+    Copyright (c) 2020, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<okdServiceLogin
+       	id="okdServiceLogin1"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="xyz"
+         >
+	</okdServiceLogin>
+
+	<authFilter id="xyz">
+		<requestUrl
+			id="myOmitRequestUrl1"
+			urlPattern="helloworld_"
+			matchType="notContain" />	
+	</authFilter>
+	
+	<okdServiceLogin
+       	id="okdServiceLogin_authFilter"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_authFilterRef"
+         >
+	</okdServiceLogin>
+	
+	<okdServiceLogin
+       	id="okdServiceLogin_badUserValidationApi"
+        userValidationApi="${oauth.server.userapi}/someBadUrl"
+        authFilterRef="authFilter_badUserValidationApi"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_blankUserValidationApi"
+        userValidationApi=" "
+        authFilterRef="authFilter_blankUserValidationApi"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_emptyUserValidationApi"
+        userValidationApi=""
+        authFilterRef="authFilter_emptyUserValidationApi"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_omitUserValidationApi"
+        authFilterRef="authFilter_omitUserValidationApi"
+         >
+	</okdServiceLogin>
+	
+	<okdServiceLogin
+       	id="okdServiceLogin_defaultCacheLifetime"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_defaultCacheLifetime"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_shortCacheLifetime"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_shortCacheLifetime"
+        apiResponseCacheTime="10s"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_specifyRealmName"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_specifyRealmName"
+        realmName="SomeOtherRealmName"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_realmNameWithSpaces"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_realmNameWithSpaces"
+        realmName="Realm Name With Spaces"
+         >
+	</okdServiceLogin>
+
+	<okdServiceLogin
+       	id="okdServiceLogin_blankRealmName"
+        userValidationApi="${oauth.server.userapi}/apis/user.openshift.io/v1/users/~"
+        authFilterRef="authFilter_blankRealmName"
+        realmName=" "
+         >
+	</okdServiceLogin>
+
+</server>

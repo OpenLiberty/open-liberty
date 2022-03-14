@@ -35,6 +35,7 @@ WS-TraceGroup: \
 # for the exported API.
 
 Export-Package: \
+    com.ibm.ws.security.openidconnect.backchannellogout, \
     com.ibm.ws.security.openidconnect.clients.common, \
     com.ibm.ws.security.openidconnect.client.jose4j.util.*, \
     com.ibm.ws.security.openidconnect.jose4j.*, \
@@ -53,6 +54,8 @@ Private-Package: \
     com.ibm.ws.security.openidconnect.clients.common.resources.*, \
     com.ibm.ws.common.internal.encoder.*, \
     com.ibm.ws.config.xml.internal.nester
+
+-dsannotations=com.ibm.ws.security.openidconnect.backchannellogout.LogoutTokenValidator
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
@@ -104,4 +107,5 @@ Private-Package: \
 	com.ibm.json4j;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.container.service.compat;version=latest
+	com.ibm.ws.container.service.compat;version=latest,\
+	org.slf4j:slf4j-api;strategy=exact;version=1.7.30
