@@ -60,10 +60,11 @@ public class ContextServiceType extends JNDIEnvironmentRefType implements Contex
 
     @Override
     public String[] getCleared() {
-        if ( cleared != null ) {
-            return cleared.getArray();
+        if ( cleared == null ) {
+            // Per the xsd documentation, "Absent other configuration, cleared context defaults to Transaction."
+            return new String[] { "Transaction" };
         } else {
-            return StringType.ListType.getEmptyArray();
+            return cleared.getArray();
         }
     }
 
