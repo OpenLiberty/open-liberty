@@ -159,13 +159,52 @@ public class FailoverTest1 extends FailoverTest {
         FailoverTest.commonCleanup();
     }
 
+    // Test we get back the actual exception that scuppered the test
+    @Test
+    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    public void testGetDriverConnectionFailure() throws Exception {
+        final String method = "testGetDriverConnectionFailure";
+
+        try {
+            FATUtils.startServers(runner, defaultServer);
+
+            runInServletAndCheck(defaultServer, SERVLET_NAME, "setupForRecoverableFailover");
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
+
+            Log.info(this.getClass(), method, "set timeout");
+            defaultServer.setServerStartTimeout(START_TIMEOUT);
+
+            defaultServer.setAdditionalSystemProperties(Collections.singletonMap(TxTestUtils.CONNECTION_MANAGER_FAILS, "1"));
+
+            FATUtils.startServers(runner, defaultServer);
+
+            StringBuilder sb = runInServlet(defaultServer, SERVLET_NAME, "driveTransactions");
+
+            assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed due to Connection failure
+
+            FATUtils.stopServers(new String[] { "WTRN0112E", }, defaultServer);
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof ConnectException) {
+                if (!cause.getMessage().startsWith("Scuppering")) {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
+        } finally {
+            defaultServer.setAdditionalSystemProperties(Collections.singletonMap(TxTestUtils.CONNECTION_MANAGER_FAILS, "0"));
+        }
+    }
+
     /**
      * Run a set of transactions and simulate an HA condition
      */
     @Test
     public void testHADBRecoverableRuntimeFailover() throws Exception {
         final String method = "testHADBRecoverableRuntimeFailover";
-        StringBuilder sb = null;
+
         FATUtils.startServers(runner, defaultServer);
 
         runInServletAndCheck(defaultServer, SERVLET_NAME, "setupForRecoverableFailover");
@@ -441,42 +480,5 @@ public class FailoverTest1 extends FailoverTest {
         assertFalse("Unexpectedly found duplicates on recovery", lines.size() > 0);
 
         FATUtils.stopServers(defaultServer);
-    }
-
-    // Test we get back the actual exception that scuppered the test
-    @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
-    public void testGetDriverConnectionFailure() throws Exception {
-        final String method = "testGetDriverConnectionFailure";
-
-        try {
-            FATUtils.startServers(runner, defaultServer);
-
-            runInServletAndCheck(defaultServer, SERVLET_NAME, "setupForRecoverableFailover");
-
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, defaultServer);
-
-            Log.info(this.getClass(), method, "set timeout");
-            defaultServer.setServerStartTimeout(START_TIMEOUT);
-
-            defaultServer.setAdditionalSystemProperties(Collections.singletonMap(TxTestUtils.CONNECTION_MANAGER_FAILS, "1"));
-
-            FATUtils.startServers(runner, defaultServer);
-
-            StringBuilder sb = runInServlet(defaultServer, SERVLET_NAME, "driveTransactions");
-
-            assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed due to Connection failure
-
-            FATUtils.stopServers(new String[] { "WTRN0112E", }, defaultServer);
-        } catch (Exception e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof ConnectException) {
-                if (!cause.getMessage().startsWith("Scuppering")) {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
-        }
     }
 }
