@@ -12,6 +12,6 @@
 	<com.ibm.ws.sib.queue id="Default.Queue" />
 	<com.ibm.ws.sib.topicSpace id="Default.Topic.Space" />
 	<com.ibm.ws.sib.fileStore id="defaultFileStore"/>
-	<com.ibm.ws.sib.processor.impl.store.ItemInterfaceFactory />
-    <com.ibm.ws.messaging.service.JsAdminServiceImpl />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.processor.ItemInterface" />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.admin.JsAdminService" />
 </server>

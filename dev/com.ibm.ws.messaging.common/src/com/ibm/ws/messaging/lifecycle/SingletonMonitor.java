@@ -16,6 +16,7 @@ import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toSet;
 import static org.osgi.framework.Constants.SERVICE_PID;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
@@ -32,10 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -43,38 +43,35 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.logging.Introspector;
 
 /**
  * This component tracks {@link Singleton} services as they arrive and depart.
+ * If SingletonsReady does not become available, SingletonMonitor will show the progress so far.
  * It also dumps the current state of expected and realised {@link Singleton}s when a server dump is taken.
  * 
  * @see SingletonsReady
  */
-@Component(immediate = true, configurationPolicy = REQUIRE)
+@Component(
+        immediate = true, 
+        configurationPolicy = IGNORE,
+        property = {
+                "osgi.command.scope=sib",
+                "osgi.command.function=singletons",
+                "service.vendor=IBM"
+        })
 public class SingletonMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(SingletonMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
     private final int version = counter.incrementAndGet();
-    private final ConfigurationAdmin configurationAdmin;
-    private final Set<String> declaredSingletons;
+    private final Set<String> declaredSingletons = new TreeSet<>();
     private final Set<String> realizedSingletons = new TreeSet<>();
 
-    /**
-     * Use constructor parameter references to ensure that mandatory references are supplied first.
-     *
-     * @param configurationAdmin must be supplied before any calls to addSingleton
-     */
     @Activate
-    public SingletonMonitor(@Reference ConfigurationAdmin configurationAdmin, Map<String, Object> properties) {
-        properties.entrySet().forEach(e -> debug(tc, "### SingletonMonitor property " + e.getKey() + " = " + (e.getValue() instanceof String[] ? Arrays.toString((Object[]) e.getValue()) : e.getValue())));
-        this.configurationAdmin = configurationAdmin;
-        String[] pids = (String[]) properties.get("singletonDeclarations");
-        Objects.requireNonNull(pids);
-        declaredSingletons = unmodifiableSet(Stream.of(pids).collect(toSet()));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format("%s%nKnown configured messaging singleton pids: %s%nids: ", this, Arrays.toString(pids), declaredSingletons));
+    public SingletonMonitor() {
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "SingletonMonitor constructed");
     }
 
     @Deactivate
@@ -82,40 +79,29 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, this + " deactivate");
     }
 
-    @Trivial
-    private String servicePidToConfigId(String servicePid) {
-        Configuration[] configs;
-        try {
-            configs = this.configurationAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
-
-            if (configs == null) {
-                // This is not strictly an error given that we may be processing a pid from a deleted application
-                Tr.debug(tc, "No configs found matching servicePid=" + servicePid);
-                return "PID not found: " + servicePid;
-            }
-            if (configs.length > 1)
-                throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
-
-        } catch (IOException | InvalidSyntaxException | IllegalStateException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.messaging.lifecycle.SingletonMonitor.servicePidToConfigId", "98");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            return "Error listing singletons:" + sw;
-        }
-
-        String id = (String) configs[0].getProperties().get("id");
-        return id;
+    @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY)
+    synchronized void addDeclaredSingleton(ServiceReference<SingletonAgent> agent, Map<String, Object> properties) {
+    	String id = (String) properties.get("id");
+	    declaredSingletons.add(id);
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Declared Singleton added: %s%nDeclared: %s%n:  Realized: %s", id, declaredSingletons, realizedSingletons));
     }
 
-    @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY, target = "(id=unbound)" /* config will supply the correct target filter */)
-    synchronized void addSingleton(Singleton singleton, Map<String, Object> props) {
-	realizedSingletons.add(getServicePid(props));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format(" Singleton added: %s%nConfigured: %s%n:  Realized: %s", singleton.getClass(), declaredSingletons, realizedSingletons));
+    synchronized void removeDeclaredSingleton(SingletonAgent agent, Map<String, Object> properties) {
+        String id = (String) properties.get("id");
+        boolean removed = declaredSingletons.remove(properties.get("id"));
+        if (!removed) throw new LifecycleError("Cannot remove undeclared Singleton:"+id);           
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Declared Singleton removed: %s%nDeclared: %s%n  Realized: %s", id, declaredSingletons, realizedSingletons));
     }
 
-    synchronized void removeSingleton(Singleton singleton, Map<String, Object> props) {
-        realizedSingletons.remove(getServicePid(props));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format("%s singleton removed: %s%nConfigured: %s%n  Realized: %s", this, singleton.getClass(), declaredSingletons, realizedSingletons));
+    @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY)
+    synchronized void addRealizedSingleton(SingletonAgent agent) {
+	realizedSingletons.add(agent.getSingletonType());
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Realized Singleton added: %s%nDeclared: %s%n:  Realized: %s", agent.getSingletonType(), declaredSingletons, realizedSingletons));
+    }
+
+    synchronized void removeRealizedSingleton(SingletonAgent agent) {
+        realizedSingletons.remove(agent.getSingletonType());
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Realized Singleton removed: %s%nDeclared: %s%n  Realized: %s", agent.getSingletonType(), declaredSingletons, realizedSingletons));
     }
 
     @Override
@@ -146,8 +132,12 @@ public class SingletonMonitor implements Introspector {
             .peek(s -> out.print("] "))
             .forEach(out::println);
     }
-
-    private static String getServicePid(Map<String, Object> props) {
-        return (String)props.getOrDefault(SERVICE_PID, "no service pid found in props: " + props);
+    
+    public void singletons() throws Exception {
+        System.out.println(getIntrospectorName());
+        System.out.println(getIntrospectorDescription());
+        try (PrintWriter pw = new PrintWriter(System.out)) {
+            introspect(pw);
+        }
     }
 }

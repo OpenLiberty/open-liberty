@@ -15,16 +15,16 @@ import static com.ibm.websphere.ras.Tr.entry;
 import static com.ibm.websphere.ras.Tr.exit;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -54,8 +54,9 @@ import com.ibm.websphere.ras.TraceComponent;
         configurationPolicy = REQUIRE,
         property = {
                 "service.vendor=IBM",
-                "singleton.cardinality.minimum=100000",
-                "singleton.target=(id=unbound)"})
+                "singletons.cardinality.minimum=100000",
+                "singletons.target=(id=unbound)",
+                "allSingletons.cardinality.minimum=100000"})
 public class SingletonsReady {
     private static final TraceComponent tc = Tr.register(SingletonsReady.class);
 
@@ -69,12 +70,17 @@ public class SingletonsReady {
     public SingletonsReady(
             // This @Reference is filtered and will only match configured singletons
             // (e.g. in server.xml or a defaultInstances.xml snippet)
-            @Reference(name = "singletons") List<Singleton> singletons,
+            @Reference(name = "singletons") List<SingletonAgent> singletonAgents,
             // This @Reference is unfiltered and will receive every
             // available singleton whether it matches anything or not
-            @Reference List<Singleton> allSingletons) {
+            @Reference(name = "allSingletons") List<Singleton> allSingletons, 
+            Map<String, Object> properties) {
 
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletons, allSingletons);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletonAgents, allSingletons);
+        properties.entrySet().forEach(e -> debug(tc, "### SingletonsReady property " + e.getKey() + " = " + (e.getValue() instanceof String[] ? Arrays.toString((Object[]) e.getValue()) : e.getValue())));
+
+        List<Singleton> singletons = singletonAgents.stream().map(SingletonAgent::getSingleton).collect(toList()); 
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) debug(this, tc, "singletons, allSingletons", singletons, allSingletons);
 
         {
             final List<String> unexpected = allSingletons
