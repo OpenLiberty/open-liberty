@@ -49,7 +49,6 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
@@ -1326,6 +1325,9 @@ public class CommonValidationTools {
                     id_token = getIDTokenFromOutput(response);
                 } else {
                     id_token = getTokenFromResponse(response, Constants.ID_TOKEN_KEY);
+                    if (id_token == null || id_token.equals(Constants.NOT_FOUND)) {
+                        id_token = getTokenFromResponse(response, "ID token:");
+                    }
                 }
             }
             Log.info(thisClass, thisMethod, "id_token : " + id_token);

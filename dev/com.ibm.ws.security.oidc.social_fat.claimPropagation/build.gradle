@@ -27,6 +27,7 @@ repositories {
 dependencies {
    requiredLibs project(':com.ibm.ws.security.fat.common'),
                 project(':com.ibm.ws.security.fat.common.jwt'),
+                project(':com.ibm.ws.security.fat.common.social'),
                 project(':com.ibm.ws.security.oauth.oidc_fat.common'),
                 project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
@@ -71,6 +72,7 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.social:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 
 autoFVT.doLast {
@@ -126,7 +128,6 @@ autoFVT.doLast {
    */
   servers = [
     'com.ibm.ws.security.claimPropagation_fat.rp',
-    'com.ibm.ws.security.claimPropagation_fat.social'
   ]
   servers.each { server ->
     copy {
@@ -136,5 +137,14 @@ autoFVT.doLast {
     }
  
    }
-  
+   servers = [
+    'com.ibm.ws.security.claimPropagation_fat.social'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.social").buildDir, "test-application/formlogin.war")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+ 
+   } 
 }

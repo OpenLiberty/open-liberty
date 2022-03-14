@@ -44,14 +44,6 @@ public class SocialBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimP
             .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_socialClient"))
             .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_socialClient"));
 
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_socialClient"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser + "_socialClient"))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry + "_socialClient"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"))
-    //            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_socialClient"))
-    //            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_socialClient"));
-
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 

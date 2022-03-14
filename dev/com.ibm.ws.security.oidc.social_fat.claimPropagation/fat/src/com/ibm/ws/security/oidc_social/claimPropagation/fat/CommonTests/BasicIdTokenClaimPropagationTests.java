@@ -125,18 +125,19 @@ public class BasicIdTokenClaimPropagationTests extends CommonTest {
     private List<validationData> addShouldContain_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
-        if (!testSettings.getFlowType().equals(socialFlow)) {
-            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+        if (testSettings.getFlowType().equals(socialFlow)) {
+            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*UserInfo: claims: name:.*" + claim + ".*" + value);
         }
+
         return expectations;
     }
 
     private List<validationData> addShouldMatch_idToken(List<validationData> expectations, String claim, String value) throws Exception {
 
         expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the id_token", claim, value);
-        if (!testSettings.getFlowType().equals(socialFlow)) {
-            expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
-        }
+        expectations = vData.addExpectation(expectations, loginStep, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "\"" + claim + "\" was either not found or was not correct in the subject", null, ".*" + claim + ".*" + value);
+
         return expectations;
     }
 

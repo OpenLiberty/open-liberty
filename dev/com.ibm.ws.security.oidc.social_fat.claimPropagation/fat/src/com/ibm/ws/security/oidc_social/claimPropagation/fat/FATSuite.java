@@ -11,13 +11,19 @@
 
 package com.ibm.ws.security.oidc_social.claimPropagation.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
 import com.ibm.ws.security.oidc_social.claimPropagation.fat.Social.SocialBasicIdTokenClaimPropagationTestss;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -45,9 +51,9 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      *
      */
 
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-    //            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().alwaysAddFeature("servlet-5.0").notOnWindows().fullFATOnly());
 
 }
