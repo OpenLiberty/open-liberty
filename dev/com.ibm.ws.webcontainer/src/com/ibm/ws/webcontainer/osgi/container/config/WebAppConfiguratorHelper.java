@@ -1488,7 +1488,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
                     }
                 } else if (existed.getSource() == ConfigSource.WEB_FRAGMENT && configurator.getConfigSource() == ConfigSource.WEB_FRAGMENT
                            && !existed.compareValue(contextService)) {
-                    configurator.addErrorMessage(Tr.formatMessage(tc, "SRVE9950_WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
+                    configurator.addErrorMessage(Tr.formatMessage(tc, "WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
                                                                   "context-service",
                                                                   name,
                                                                   existed.getLibraryURI(),
@@ -1587,7 +1587,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
                     }
                 } else if (existed.getSource() == ConfigSource.WEB_FRAGMENT && configurator.getConfigSource() == ConfigSource.WEB_FRAGMENT
                            && !existed.compareValue(executor)) {
-                    configurator.addErrorMessage(Tr.formatMessage(tc, "SRVE9950_WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
+                    configurator.addErrorMessage(Tr.formatMessage(tc, "WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
                                                                   "managed-executor",
                                                                   name,
                                                                   existed.getLibraryURI(),
@@ -1617,7 +1617,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
                     }
                 } else if (existed.getSource() == ConfigSource.WEB_FRAGMENT && configurator.getConfigSource() == ConfigSource.WEB_FRAGMENT
                            && !existed.compareValue(executor)) {
-                    configurator.addErrorMessage(Tr.formatMessage(tc, "SRVE9950_WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
+                    configurator.addErrorMessage(Tr.formatMessage(tc, "WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
                                                                   "managed-scheduled-executor",
                                                                   name,
                                                                   existed.getLibraryURI(),
@@ -1647,7 +1647,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
                     }
                 } else if (existed.getSource() == ConfigSource.WEB_FRAGMENT && configurator.getConfigSource() == ConfigSource.WEB_FRAGMENT
                            && !existed.compareValue(threadFactory)) {
-                    configurator.addErrorMessage(Tr.formatMessage(tc, "SRVE9950_WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
+                    configurator.addErrorMessage(Tr.formatMessage(tc, "WEB_FRAGMENT_XML_RESOURCE_CONFLICT",
                                                                   "managed-thread-factory",
                                                                   name,
                                                                   existed.getLibraryURI(),
