@@ -95,20 +95,9 @@ public class EJBJarTest extends EJBJarTestBase {
     
     @Test
     public void testGetVersionID() throws Exception {
-        // Setup an extra provisioned version.
-        // See EJBJarDDParser::adjustPlatform.
-        // See also JNDIEnvironmentRefs near line 400,
-        // where the EE 10 reference types are processed.
 
-        int numVersions = EJBJar.VERSIONS.length;
-        int[] provisionedVersions = new int[ numVersions + 1 ];
-        for ( int vNo = 0; vNo < numVersions; vNo++ ) {
-            provisionedVersions[vNo] = EJBJar.VERSIONS[vNo];
-        }
-        provisionedVersions[numVersions] = EJBJar.VERSION_5_0;
-        
         for ( int schemaVersion : EJBJar.VERSIONS ) {
-            for ( int maxSchemaVersion : provisionedVersions ) {
+            for ( int maxSchemaVersion : EJBJar.VERSIONS ) {
                 // The EJB parser uses a maximum schema
                 // version of "max(version, EJBJAR.VERSION_3_1)".
                 // Adjust the message expectations accordingly.

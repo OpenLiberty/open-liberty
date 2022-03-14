@@ -394,17 +394,19 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
                 "CWWKC2259E", "context-service", "ejb-jar.xml" );
     }
 
-    @Test
-    public void testEE10InterceptorsEJB50() throws Exception {
-        EJBJar ejbJar = parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_5_0);
-
-        List<String> names = DDJakarta10Elements.names("EJBJar", "interceptors");
-
-        List<Interceptor> interceptors = ejbJar.getInterceptors().getInterceptorList();
-        DDJakarta10Elements.verifySize(names, 1, interceptors);
-
-        Interceptor interceptor = interceptors.get(0);
-        DDJakarta10Elements.withName(names, "[0]",
-                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, interceptor) );
-    }
+// Issue 20386: There is no EJB 5.0 for Jakarta EE 10.
+//   
+//    @Test
+//    public void testEE10InterceptorsEJB50() throws Exception {
+//        EJBJar ejbJar = parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_5_0);
+//
+//        List<String> names = DDJakarta10Elements.names("EJBJar", "interceptors");
+//
+//        List<Interceptor> interceptors = ejbJar.getInterceptors().getInterceptorList();
+//        DDJakarta10Elements.verifySize(names, 1, interceptors);
+//
+//        Interceptor interceptor = interceptors.get(0);
+//        DDJakarta10Elements.withName(names, "[0]",
+//                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, interceptor) );
+//    }
 }

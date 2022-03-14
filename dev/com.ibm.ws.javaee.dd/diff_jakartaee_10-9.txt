@@ -1,4 +1,10 @@
-jakartaee_10.xsd - jakartaee_9.xsd 
+Changes for Jakarta EE 10 relative to Jakarta EE 9.
+
+---
+
+The central change is the addition of four new JNDI reference element types.  These were introduced through the shared jakarta EE 10 schema:
+
+jakartaee_10.xsd:
 
   <xsd:group name="jndiEnvironmentRefsGroup">
       <xsd:element name="context-service" type="jakartaee:context-serviceType" minOccurs="0" maxOccurs="unbounded"/>
@@ -6,33 +12,53 @@ jakartaee_10.xsd - jakartaee_9.xsd
       <xsd:element name="managed-scheduled-executor" type="jakartaee:managed-scheduled-executorType" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="managed-thread-factory" type="jakartaee:managed-thread-factoryType" minOccurs="0" maxOccurs="unbounded"/>
 
+The changes impact Application and Web.  Application imbeds the new reference types directly.  Web imbeds the new reference types indirectly through the JNDI environment references group.
+
+Application-Client was updated to use the new jakarta EE 10 schema.  However, no path within the client schema reaches the new reference elements.
+
+Similarly, Connector was updated to use the new jakarta EE 10 schema (while *not* changing the schema version).  See the notes, below.
+
+EJB was not updated to use the new jakarta EE 10 schema, and therefore uses none of the new reference element types.  See the notes, below.
+
 ---
 
-j2ee_1_4.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-javaee_5.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-javaee_6.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-javaee_7.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-javaee_8.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-jakartaee_9.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
-jakartaee_10.xsd:  <xsd:group name="jndiEnvironmentRefsGroup">
+application_9.xsd
+application_10.xsd
+  <xsd:include schemaLocation="jakartaee_10.xsd"/>
 
-ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-ejb-jar_4_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+  <xsd:element name="application" type="jakartaee:applicationType">
 
-web-app_2_4.xsd:      <xsd:group ref="j2ee:jndiEnvironmentRefsGroup"/>
-web-app_2_5.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
+  <xsd:complexType name="applicationType">
+    <xsd:sequence>
+      ...
+      <xsd:element name="context-service" type="jakartaee:context-serviceType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-executor" type="jakartaee:managed-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-scheduled-executor" type="jakartaee:managed-scheduled-executorType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="managed-thread-factory" type="jakartaee:managed-thread-factoryType" minOccurs="0" maxOccurs="unbounded"/>
 
-web-common_3_0.xsd:      <xsd:group ref="javaee:jndiEnvironmentRefsGroup"/>
-  --> web-app_3_0.xsd
-  --> web-fragment_3_0.xsd
-web-common_5_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
-  --> web-app_5_0.xsd
-  --> web-fragment_5_0.xsd
-web-common_6_0.xsd:      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+---
+
+application-client_9.xsd
+application-client_10.xsd
+  <xsd:include schemaLocation="jakartaee_10.xsd"/>
+
+---
+
+web-common_6_0.xsd:
   --> web-app_6_0.xsd
   --> web-fragment_6_0.xsd
+
+web-common_6_0.xsd:
+  <xsd:group name="web-commonType">
+      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+
+---
+
+Notes:
+
+--
+
+EJB would obtain the update through the following.  However, the EJB schema was not updated to import the new jakarta EE 10 schema, and does not handle the new reference types.
 
 ejb-jar_4_0.xsd
   <xsd:complexType name="entity-beanType">
@@ -41,11 +67,22 @@ ejb-jar_4_0.xsd
   <xsd:complexType name="session-beanType">
       <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
 
-web-common_6_0.xsd:
-  <xsd:group name="web-commonType">
-      <xsd:group ref="jakartaee:jndiEnvironmentRefsGroup"/>
+--
+
+Connector has an update *WITHIN THE 2.0 SCHEMA* to change from "jakartaee_9.xsd" to "jakartaee_10.xsd".  That is improper.
+Temporarily, a new connector "2.1" schema has been created which has the update?
+
+connector_2_0.xsd
+connector_2_1.xsd
+  <xsd:include schemaLocation="jakartaee_10.xsd"/>
+
+There is no path to any of the new reference elements.  This connector schema update does not seem to be necessary.
 
 ---
+
+Details for the new JNDI reference elements:
+
+--
 
   <xsd:complexType name="context-serviceType">
     <xsd:sequence>
@@ -118,7 +155,7 @@ web-common_6_0.xsd:
     <xsd:attribute name="id" type="xsd:ID"/>
   </xsd:complexType>
 
----
+--
 
   <xsd:complexType name="managed-executorType">
     <xsd:sequence>
@@ -167,7 +204,7 @@ web-common_6_0.xsd:
     <xsd:attribute name="id" type="xsd:ID"/>
   </xsd:complexType>
 
----
+--
 
   <xsd:complexType name="managed-scheduled-executorType">
     <xsd:sequence>
@@ -214,7 +251,7 @@ web-common_6_0.xsd:
     <xsd:attribute name="id" type="xsd:ID"/>
   </xsd:complexType>
 
----
+--
 
   <xsd:complexType name="managed-thread-factoryType">
     <xsd:sequence>
