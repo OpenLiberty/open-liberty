@@ -15,6 +15,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    fallback: {
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer/"),
+    }
   },
   devtool: "hidden-source-map",
   performance : {
@@ -105,7 +109,7 @@ module.exports = {
         {
           // Copy the Swagger OAuth2 redirect file to the project root;
           // that file handles the OAuth2 redirect after authenticating the end-user.
-          from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
+          from: 'node_modules/swagger-ui/dist/oauth2-redirect.html',
           to: './'
         },
         {
@@ -142,5 +146,6 @@ module.exports = {
     path: outputPath,
     library: 'SwaggerUI',
     publicPath: '' // Needed for IE
-  }
+  },
+  ignoreWarnings: [/Failed to parse source map/],
 };
