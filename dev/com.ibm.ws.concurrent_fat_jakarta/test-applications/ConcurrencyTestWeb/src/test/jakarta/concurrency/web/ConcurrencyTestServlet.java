@@ -127,23 +127,6 @@ import test.context.timing.Timestamp;
 @ManagedExecutorDefinition(name = "java:global/concurrent/executor7",
                            maxAsync = 3)
 
-// TODO remove the following once we can enable them in application.xml
-@ContextServiceDefinition(name = "java:app/concurrent/dd/ZPContextService",
-                          cleared = ListContext.CONTEXT_NAME,
-                          propagated = { ZipCode.CONTEXT_NAME, "Priority" },
-                          unchanged = APPLICATION)
-@ManagedExecutorDefinition(name = "java:app/concurrent/dd/ZPExecutor",
-                           context = "java:app/concurrent/dd/ZPContextService",
-                           hungTaskThreshold = 420000,
-                           maxAsync = 2)
-@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/dd/ScheduledExecutor",
-                                    context = "java:comp/DefaultContextService",
-                                    hungTaskThreshold = 410000,
-                                    maxAsync = 1)
-@ManagedThreadFactoryDefinition(name = "java:app/concurrent/dd/ThreadFactory",
-                                context = "java:app/concurrent/appContextSvc",
-                                priority = 4)
-
 //TODO remove the following once enabled in server.xml
 @ContextServiceDefinition(name = "java:comp/concurrent/dd/web/TZContextService",
                           propagated = { Timestamp.CONTEXT_NAME, ZipCode.CONTEXT_NAME },

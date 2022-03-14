@@ -23,7 +23,6 @@
     <ejb>ConcurrencyTestEJB.jar</ejb>
   </module>
 
-<!-- TODO enable these
   <context-service>
     <name>java:app/concurrent/dd/ZPContextService</name>
     <cleared>List</cleared>
@@ -51,5 +50,5 @@
     <context-service-ref>java:app/concurrent/appContextSvc</context-service-ref>
     <priority>4</priority>
   </managed-thread-factory>
--->
+
 </application>
