@@ -23,9 +23,6 @@ import com.ibm.ws.javaee.dd.common.SecurityRoleRef;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejb.SecurityIdentity;
-import com.ibm.ws.javaee.dd.ejb.Session;
-import com.ibm.ws.javaee.dd.ejb.Entity;
-import com.ibm.ws.javaee.dd.ejb.MessageDriven;
 import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
 
 @RunWith(Parameterized.class)
@@ -242,25 +239,28 @@ public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
                 "CWWKC2259E", "context-service", "ejb-jar.xml" );
     }
      
-    @Test
-    public void testEE10SessionEJB50() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
-                ejbJar40( getSessionBeansXml() ),
-                EJBJar.VERSION_5_0);
-
-        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
-
-        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
-        DDJakarta10Elements.verifySize(names, 1, ejbs);
-
-        EnterpriseBean sessionBean = ejbs.get(0);
-        if ( !(sessionBean instanceof Session) ) {
-            Assert.fail("EJBJar.enterpriseBeans.[0] is not a session bean");
-        }
-
-        DDJakarta10Elements.withName(names, "[0]",
-                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, sessionBean) );
-    }
+// Issue 20386: There is no EJB 5.0 for Jakarta EE 10.  The new elements
+//              are not supported by EJB.
+//
+//    @Test
+//    public void testEE10SessionEJB50() throws Exception {
+//        EJBJar ejbJar = parseEJBJar(
+//                ejbJar40( getSessionBeansXml() ),
+//                EJBJar.VERSION_5_0);
+//
+//        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
+//
+//        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
+//        DDJakarta10Elements.verifySize(names, 1, ejbs);
+//
+//        EnterpriseBean sessionBean = ejbs.get(0);
+//        if ( !(sessionBean instanceof Session) ) {
+//            Assert.fail("EJBJar.enterpriseBeans.[0] is not a session bean");
+//        }
+//
+//        DDJakarta10Elements.withName(names, "[0]",
+//                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, sessionBean) );
+//    }
     
     @Test
     public void testEE10EntityEJB40() throws Exception {
@@ -268,26 +268,28 @@ public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
                 "unexpected.child.element",
                 "CWWKC2259E", "managed-executor", "ejb-jar.xml" );
     }
-    
-    @Test
-    public void testEE10EntityEJB50() throws Exception {
-        EJBJar ejbJar = parseEJBJar(
-                ejbJar40( getEntityBeansXml() ),
-                EJBJar.VERSION_5_0);
 
-        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
-
-        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
-        DDJakarta10Elements.verifySize(names, 1, ejbs);
-
-        EnterpriseBean entityBean = ejbs.get(0);
-        if ( !(entityBean instanceof Entity) ) {
-            Assert.fail("EJBJar.enterpriseBeans.[0] is not an entity bean");
-        }
-
-        DDJakarta10Elements.withName(names, "[0]",
-                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, entityBean) );
-    }
+// Issue 20386: There is no EJB 5.0 for Jakarta EE 10.
+//
+//    @Test
+//    public void testEE10EntityEJB50() throws Exception {
+//        EJBJar ejbJar = parseEJBJar(
+//                ejbJar40( getEntityBeansXml() ),
+//                EJBJar.VERSION_5_0);
+//
+//        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
+//
+//        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
+//        DDJakarta10Elements.verifySize(names, 1, ejbs);
+//
+//        EnterpriseBean entityBean = ejbs.get(0);
+//        if ( !(entityBean instanceof Entity) ) {
+//            Assert.fail("EJBJar.enterpriseBeans.[0] is not an entity bean");
+//        }
+//
+//        DDJakarta10Elements.withName(names, "[0]",
+//                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, entityBean) );
+//    }
     
     @Test
     public void testEE10MessageDrivenEJB40() throws Exception {
@@ -295,23 +297,25 @@ public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
                 "unexpected.child.element",
                 "CWWKC2259E", "managed-scheduled-executor", "ejb-jar.xml" );
     }
-    
-    @Test
-    public void testEE10MessageDrivenEJB50() throws Exception {    
-        EJBJar ejbJar = parseEJBJar(
-                ejbJar40( getMessageDrivenBeansXml() ),
-                EJBJar.VERSION_5_0);
 
-        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
-
-        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
-        DDJakarta10Elements.verifySize(names, 1, ejbs);
-
-        EnterpriseBean mdBean = ejbs.get(0);
-        if ( !(mdBean instanceof MessageDriven) ) {
-            Assert.fail("EJBJar.enterpriseBeans.[0] is not a message driven");
-        }
-        DDJakarta10Elements.withName(names, "[0]",
-                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, mdBean) );
-    }
+// Issue 20386: There is no EJB 5.0 for Jakarta EE 10.
+//   
+//    @Test
+//    public void testEE10MessageDrivenEJB50() throws Exception {    
+//        EJBJar ejbJar = parseEJBJar(
+//                ejbJar40( getMessageDrivenBeansXml() ),
+//                EJBJar.VERSION_5_0);
+//
+//        List<String> names = DDJakarta10Elements.names("EJBJar", "enterpriseBeans");
+//
+//        List<EnterpriseBean> ejbs = ejbJar.getEnterpriseBeans();
+//        DDJakarta10Elements.verifySize(names, 1, ejbs);
+//
+//        EnterpriseBean mdBean = ejbs.get(0);
+//        if ( !(mdBean instanceof MessageDriven) ) {
+//            Assert.fail("EJBJar.enterpriseBeans.[0] is not a message driven");
+//        }
+//        DDJakarta10Elements.withName(names, "[0]",
+//                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, mdBean) );
+//    }
 }

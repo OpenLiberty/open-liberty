@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -41,11 +42,14 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.cookies.CookieProperties;
@@ -543,5 +547,70 @@ public class TestHelpers {
         }
 
         return files;
+    }
+
+    public boolean pingExternalServer(String testcase, String serverUrl, String expectedTitle, int waitTime) throws Exception {
+
+        String thisMethod = "pingExternalServer";
+        msgUtils.printMethodName(thisMethod);
+        WebClient webClient = null;
+        WebRequest request = null;
+        boolean status = false;
+
+        try {
+            webClient = getWebClient();
+
+            // Build the request
+            URL url = AutomationTools.getNewUrl(serverUrl);
+            request = new WebRequest(url, HttpMethod.GET);
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+        }
+
+        boolean keepChecking = true;
+        int timeSlept = 0;
+        while (keepChecking) {
+
+            try {
+                msgUtils.printAllCookies(webClient);
+                msgUtils.printRequestParts(webClient, request, testcase, "Outgoing request");
+                Object thePage = webClient.getPage(request);
+                // make sure the page is processed before continuing
+                waitBeforeContinuing(webClient);
+                String title = AutomationTools.getResponseTitle(thePage);
+                Log.info(thisClass, thisMethod, "**********************************************************");
+                Log.info(thisClass, thisMethod, "Was able to get a reponse from the requested url - " + serverUrl);
+                if (expectedTitle != null) {
+                    if (title != null && title.contains(expectedTitle)) {
+                        keepChecking = false;
+                        status = true;
+                        Log.info(thisClass, thisMethod, "The title in the reqponse was what we expected: " + expectedTitle);
+                    } else {
+                        Log.info(thisClass, thisMethod,
+                                "Connected with url with title (" + title + ") - this is NOT wahat we expected - we were expecting (" + expectedTitle + ").  We may try again.");
+                    }
+                } else {
+                    keepChecking = false;
+                    status = true;
+                    Log.info(thisClass, thisMethod, "The title in the reqponse was NOT validated - the actual title was: " + title);
+                }
+                Log.info(thisClass, thisMethod, "**********************************************************");
+            } catch (Exception e) {
+                Log.info(thisClass, thisMethod, "Exception occurred in " + thisMethod + System.getProperty("line.separator") + e.getMessage());
+            }
+            if (keepChecking) {
+                if (timeSlept >= waitTime) {
+                    keepChecking = false;
+                    Log.info(thisClass, thisMethod, "Tried to ping " + serverUrl + " for more than the requested " + waitTime + " seconds - giving up.");
+                } else {
+                    Log.info(thisClass, thisMethod, "Sleeping 5 seconds");
+                    testSleep(5);
+                    timeSlept = timeSlept + 5;
+                }
+            }
+        }
+        destroyWebClient(webClient);
+        return status;
     }
 }

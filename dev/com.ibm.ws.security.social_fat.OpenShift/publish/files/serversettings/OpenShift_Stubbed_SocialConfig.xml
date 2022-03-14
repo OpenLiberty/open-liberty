@@ -1,0 +1,119 @@
+<!--
+    Copyright (c) 2019, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oauth2Login
+		id="openShiftLogin_accessTokenRequiredTrue"
+        scope="user:full"
+        authorizationEndpoint="${bad.oauth.server}/oauth/authorize"
+        userNameAttribute="username"
+        groupNameAttribute="groups"
+        userApiType="kube" 
+        userApi="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/StubbedOpenShift/apis/authentication.k8s.io/v1/tokenreviews"
+        userApiToken="eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJvcGVuc2hpZnQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoidG9rZW4tY2hlY2tlci0wMS10b2tlbi1qa3RzbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJ0b2tlbi1jaGVja2VyLTAxIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMWNjNmU1ZmUtZjY5OC0xMWU5LWFlYzEtMDAxNmFjMTAyYWVhIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Om9wZW5zaGlmdDp0b2tlbi1jaGVja2VyLTAxIn0.5v8TdX4QhoN4O285GeJip_9-_8pfXPcd6IFN3mTusLdagA91T9DcE4YOJ6sIAK0bqz66c9R2wRO5qCnlrFU8R9wSIhCMoEKOBi_LJRD1DWpfMYFw6jb-CobAuX0pk1C7CbeNm1FVxs8t18qHwnEXkeI0H9qfBjDHBkyIKmmLLndz1cFCCr-iSIgXbPjkNy2SBWK8cVoXWzfbm6pTLdrunDc-hulsVVEkxqRvxB9jyxI2jPjKfFdrSro9dpPBuj9ptqs4rqCC3szBQBGwVfUvOhqRWUnyOxKd5jZPmg_twPj9AT_VzbS2VdAKJmokbSD5D7QS5CL_60OFrZlE_Z9dbw"
+		authFilterRef="authFilter_accessTokenRequiredTrue"
+		accessTokenRequired="true"
+	>
+	</oauth2Login>
+	
+	<authFilter id="authFilter_accessTokenRequiredTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenRequiredTrue"
+			matchType="contains" />
+	</authFilter>
+
+	<oauth2Login
+		id="openShiftLogin_mapToUserRegistryTrue"
+        scope="user:full"
+        authorizationEndpoint="${bad.oauth.server}/oauth/authorize"
+        userNameAttribute="username"
+        groupNameAttribute="groups"
+        userApiType="kube" 
+        userApi="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/StubbedOpenShift/apis/authentication.k8s.io/v1/tokenreviews"
+        userApiToken="eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJvcGVuc2hpZnQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoidG9rZW4tY2hlY2tlci0wMS10b2tlbi1qa3RzbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJ0b2tlbi1jaGVja2VyLTAxIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMWNjNmU1ZmUtZjY5OC0xMWU5LWFlYzEtMDAxNmFjMTAyYWVhIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Om9wZW5zaGlmdDp0b2tlbi1jaGVja2VyLTAxIn0.5v8TdX4QhoN4O285GeJip_9-_8pfXPcd6IFN3mTusLdagA91T9DcE4YOJ6sIAK0bqz66c9R2wRO5qCnlrFU8R9wSIhCMoEKOBi_LJRD1DWpfMYFw6jb-CobAuX0pk1C7CbeNm1FVxs8t18qHwnEXkeI0H9qfBjDHBkyIKmmLLndz1cFCCr-iSIgXbPjkNy2SBWK8cVoXWzfbm6pTLdrunDc-hulsVVEkxqRvxB9jyxI2jPjKfFdrSro9dpPBuj9ptqs4rqCC3szBQBGwVfUvOhqRWUnyOxKd5jZPmg_twPj9AT_VzbS2VdAKJmokbSD5D7QS5CL_60OFrZlE_Z9dbw"
+		authFilterRef="authFilter_mapToUserRegistryTrue"
+		accessTokenRequired="true"
+		mapToUserRegistry="true"
+	>
+	</oauth2Login>
+	
+	<authFilter id="authFilter_mapToUserRegistryTrue">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_mapToUserRegistryTrue"
+			matchType="contains" />
+	</authFilter>
+	
+	<oauth2Login
+		id="openShiftLogin_badUserApiToken"
+        scope="user:full"
+        authorizationEndpoint="${bad.oauth.server}/oauth/authorize"
+        userNameAttribute="username"
+        groupNameAttribute="groups"
+        userApiType="kube" 
+        userApi="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/StubbedOpenShift/apis/authentication.k8s.io/v1/tokenreviews"
+        userApiToken="someBadTokenValue.123456.8796asd"
+		accessTokenRequired="true"
+		authFilterRef="authFilter_bad_userApiToken"
+	>
+	</oauth2Login>
+
+	<authFilter id="authFilter_bad_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_bad_userApiToken"
+			matchType="contains" />
+	</authFilter>
+
+	<oauth2Login
+		id="openShiftLogin_blankUserApiToken"
+        scope="user:full"
+        authorizationEndpoint="${bad.oauth.server}/oauth/authorize"
+        userNameAttribute="username"
+        groupNameAttribute="groups"
+        userApiType="kube" 
+        userApi="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/StubbedOpenShift/apis/authentication.k8s.io/v1/tokenreviews"
+        userApiToken=" "
+		accessTokenRequired="true"
+		authFilterRef="authFilter_blank_userApiToken"
+	>
+	</oauth2Login>
+
+	<authFilter id="authFilter_blank_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_blank_userApiToken"
+			matchType="contains" />
+	</authFilter>
+	
+	<oauth2Login
+		id="openShiftLogin_emptyUserApiToken"
+        scope="user:full"
+        authorizationEndpoint="${bad.oauth.server}/oauth/authorize"
+        userNameAttribute="username"
+        groupNameAttribute="groups"
+        userApiType="kube" 
+        userApi="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/StubbedOpenShift/apis/authentication.k8s.io/v1/tokenreviews"
+        userApiToken=""
+		accessTokenRequired="true"
+		authFilterRef="authFilter_empty_userApiToken"
+	>
+	</oauth2Login>	
+	
+	<authFilter id="authFilter_empty_userApiToken">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_empty_userApiToken"
+			matchType="contains" />
+	</authFilter>
+		
+</server>

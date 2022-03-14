@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,8 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public int getMajorVersion() {
-        return WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
+        int level = WebContainer.getServletContainerSpecLevel();
+        return level == WebContainer.SPEC_LEVEL_60 ? 6 : level == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
     }
 
     /*

@@ -1,0 +1,215 @@
+/*******************************************************************************
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+dependencies {
+   requiredLibs project(':com.ibm.ws.security.social_fat'),
+   				project(':com.ibm.ws.security.fat.common'),
+	  	  		project(':com.ibm.ws.security.fat.common.jwt'),
+	            project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+                fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
+                'jtidy:jtidy:4aug2000r7-dev',
+                'rhino:js:1.6R5'
+                
+  /*
+   * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
+   * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
+   * here. The uber jar also was configured to be an OSGi bundle, but it is not necessary for this bucket.
+   */ 
+  requiredLibs project(':com.ibm.ws.org.apache.commons.io'),        // htmlunit-2.44.0 --> 2.8.0
+               project(':com.ibm.ws.org.apache.commons.lang3'),     // htmlunit-2.44.0 --> 3.11
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'org.apache.httpcomponents:httpmime:4.5.12',
+               'org.brotli:dec:0.1.2',
+               'xalan:xalan:2.7.2',
+               project(':io.openliberty.org.apache.xercesImpl'),
+               'xml-apis:xml-apis:1.4.01'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** jaxrsclient.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task customSelection_ZIP (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'customSelection.zip'
+
+  from (new File(projectDir, 'test-applications/customSelection/resources')) {
+    include 'WEB-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/social/fat/multiProvider/web/CustomSelectionServlet.class'
+    include 'com/ibm/ws/security/social/fat/multiProvider/web/CustomSelectionServletWithLocalAuthentication.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
+assemble.dependsOn customSelection_ZIP
+autoFVT.doLast {
+
+  def servers = [
+	"com.ibm.ws.security.social_fat.multiProvider.op",
+	"com.ibm.ws.security.social_fat.multiProvider.social"
+  ]
+  servers.each { server ->
+    copy {
+      from ('../com.ibm.ws.security.social_fat.commonTest.LibertyOP/securitykeys') {
+ 	     include '**.jks'
+      	 exclude 'rsa_badTrust.jks'
+      }
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }   
+    copy { 
+      from new File(project(":com.ibm.ws.security.oauth.oidc_fat.common").projectDir, "securitykeys")
+      into new File(autoFvtDir, "publish/servers/" + server)
+      include 'commonKeyStore.jks', 'commonBasicKeyStore.jks', 'commonTrustStore.jks'
+      include 'commonBadTrustStore.jks', 'commonConfigServerDefault.jks', 'rsa_*.jks'
+      exclude 'rsa_trust.jks'
+    }
+    copy {
+      from project(':com.ibm.ws.security.social_fat').file('publish/files/serversettings')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '**.xml'
+    }   
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+  }
+ 
+     
+  /*
+   * Copy OP server specific files.
+   */
+  servers = [
+	"com.ibm.ws.security.social_fat.multiProvider.op"
+  ]
+  servers.each { server ->
+    copy {
+      from project(':com.ibm.ws.security.oidc.server_fat').file('publish/files/serversettings')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+	  include 'oidc_features.xml'
+	  include 'provider_OAuthConfigTai.xml'
+	  include 'provider_OAuthMediatorProvider.xml'      
+ 	}
+ 	copy { 
+      from new File(project(":com.ibm.ws.security.oauth.oidc_fat.common").projectDir, "securitykeys")
+      into new File(autoFvtDir, "publish/servers/" + server)
+      include 'rsa_trust.jks'
+    }
+ 	
+  }
+    
+  /*
+   * Copy social server specific files.
+   */
+  servers = [
+	"com.ibm.ws.security.social_fat.multiProvider.social"
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application")
+      into new File(autoFvtDir, "publish/servers/" + server + '/test-apps')
+      include 'helloworld.war.zip'
+      rename 'helloworld.war.zip', 'helloworld.war'
+    }
+    copy {
+      from new File(appBuildDir, 'customSelection.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      rename 'customSelection.zip', 'customSelection.war'
+    }    
+    copy { 
+      from new File(projectDir, "securitykeys/rsa_trust_for_all.jks")
+      into new File(autoFvtDir, "publish/servers/" + server)
+    }
+    copy {
+      from project(':com.ibm.ws.security.social_fat').file('securitykeys')
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'validationKeystore.jks'
+    }  
+    copy { 
+      from ('../com.ibm.ws.security.social_fat.commonTest.LibertyOP/publish/files/serversettings') {
+ 	     include 'LibertyOP_basic_*_SocialConfig.xml'
+      }
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+
+    copy { 
+      from new File(projectDir, "Vendors/publish/files/serversettings")
+      into new File(autoFvtDir, "publish/servers/" + server + "/imports")
+      include '*_basic_*Config.xml'
+    } 
+    copy { 
+      from new File(projectDir, "../build.image/wlp/lib")
+      into new File(autoFvtDir, "publish/servers/" + server + "/lib/global")
+      include 'com.ibm.ws.org.apache.commons.lang3*.jar'
+    }
+     copy {
+      from ('../com.ibm.ws.security.social_fat.commonTest.LibertyOP/securitykeys') {
+      	 include 'rsa_badTrust.jks'
+      }
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }   
+  }
+   
+   // make sure project specific config files take precidence 
+  servers = [
+	"com.ibm.ws.security.social_fat.multiProvider.op",
+	"com.ibm.ws.security.social_fat.multiProvider.social"
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(projectDir, "publish/files/serversettings")
+      into new File(autoFvtDir, "publish/servers/" + server + "/imports")
+      include '**.xml'
+    }
+
+  }   
+    // if ever supported, add facebook, git,hub, twitter, ... jks files from those vendor specific project
+
+}

@@ -11,15 +11,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--include= jar:${fileuri;${repo;org.jboss.weld.se:weld-se-core;[4.0.1,4.1.0)}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.jboss.weld.se:weld-se-core;[4.0.3,4.1.0)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld4.se; singleton:=true
 
 -includeresource: \
-  @${repo;org.jboss.weld.se:weld-se-core;[4.0.1,4.1.0)}
+  @${repo;org.jboss.weld.se:weld-se-core;[4.0.3,4.1.0)}
 
 instrument.disabled: true
 
 -buildpath: \
-	org.jboss.weld.se:weld-se-core;version=4.0.1, \
+	org.jboss.weld.se:weld-se-core;version=4.0.3, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
