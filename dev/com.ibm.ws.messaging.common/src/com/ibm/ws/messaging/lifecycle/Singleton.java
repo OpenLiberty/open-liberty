@@ -41,18 +41,13 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
  *      Note: each such interface must only apply to one singleton class (and therefore one object) or the mechanism will report an error.</li>
  *  <li>In the {@link Component} annotation:
  *   <ul>
- *    <li>Set {@link Component#configurationPolicy()} to {@link ConfigurationPolicy#REQUIRE}.</li>
+ *    <li>Set {@link Component#configurationPolicy()} to {@link ConfigurationPolicy#IGNORE}.</li>
  *    <li>Ensure {@link Component#service()} includes <code>Singleton.class</code>,<br>
  *        OR do not declare this attribute and ensure the implementation class implements {@link Singleton} directly.</li>
+ *    <li>Add a property to indicate the singleton type like this <code>"type=com.ibm.ws.sib.processor.ItemInterface"</code></li>
  *   </ul>
  *  </li>
- *  <li>In the <code>metatype.xml</code>:
- *   <ul>
- *    <li>Declare the <code>Designate</code> for the component with a <code>pid</code>, not a <code>factoryPid</code></li>
- *    <li>Declare <code>OCD</code> for the <code>Designate</code> with <code>ibm:objectClass="</code>{@link com.ibm.ws.messaging.lifecycle.Singleton}<code>"</code></li>
- *   </ul>
- *  </li>
- *  <li>In <code>defaultInstances.xml</code>, configure the instance of the Component.</li>
+ *  <li>In <code>defaultInstances.xml</code>, configure the instance of the Component: <code><messaging-singleton type="com.ibm.ws.sib.processor.ItemInterface" /></li>
  *  <li>In <code>bnd.bnd</code>:
  *   <ul>
  *    <li>Use <code>Include-Resource: OSGI-INF=resources/OSGI-INF</code> to pull metatype and default instances into the bundle.</li>
