@@ -195,3 +195,13 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ensure the ID token i
 LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: The OpenID Connect provider cannot determine the set of OpenID Connect clients to log out because of an error: {0}
 LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=The provider failed to retrieve the set of clients that are registered, or the ID token claims might be malformed.
 LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=See the error that is included in the message for more information.
+
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1645E: The issuer claim "{0}" in the ID token does not match the expected issuer "{1}" for the OpenID Connect provider [{2}].
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=The OpenID Connect provider did not issue the ID token, so the token should not be handled by this OpenID Connect provider.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Send only ID tokens whose issuer claim matches the configuration for the OpenID Connect provider that is specified in the message.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1646E: The ID token is not valid because it is missing at least one claim that is required: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=The OpenID Connect specification requires that the claim or claims that are listed in the error message must be present in the ID token.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Ensure that the ID token contains all of the required claims.
+
+# NOTE: Stop at CWWKS1649

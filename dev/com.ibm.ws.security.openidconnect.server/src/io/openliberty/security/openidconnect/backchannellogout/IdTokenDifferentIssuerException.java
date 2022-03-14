@@ -10,20 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
-public class LogoutTokenBuilderException extends Exception {
+public class IdTokenDifferentIssuerException extends LogoutTokenBuilderException {
 
     private static final long serialVersionUID = 1L;
 
-    public LogoutTokenBuilderException(Exception e) {
-        super(e);
-    }
-
-    public LogoutTokenBuilderException(String errorMsg) {
+    public IdTokenDifferentIssuerException(String errorMsg) {
         super(errorMsg);
-    }
-
-    public LogoutTokenBuilderException(String errorMsg, Exception e) {
-        super(errorMsg, e);
     }
 
 }
