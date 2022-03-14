@@ -1353,7 +1353,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
                                                 "Did not land alternate app", null, SAMLConstants.APP2_TITLE);
         }
-        setSimpleServletExpecatations(expectations, testSettings);
+        setSimpleServletExpectations(expectations, testSettings);
         return expectations;
     }
 
@@ -1379,15 +1379,15 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     }
 
-    public void setSimpleServletExpecatations(List<validationData> expectations, SAMLTestSettings testSettings) throws Exception {
+    public void setSimpleServletExpectations(List<validationData> expectations, SAMLTestSettings testSettings) throws Exception {
 
         //		getRequestURL
         // determine where/if we're using SimpleServlet (usually using it as the alternate app, but check both to be sure)
         if (testSettings.getSpTargetApp() != null && testSettings.getSpTargetApp().contains(SAMLConstants.ALTERNATE_SERVLET)) {
-            setSimpleServletExpecatations(expectations, testSettings, SAMLConstants.INVOKE_DEFAULT_APP, testSettings.getSpTargetApp());
+            setSimpleServletExpectations(expectations, testSettings, SAMLConstants.INVOKE_DEFAULT_APP, testSettings.getSpTargetApp());
         }
         if (testSettings.getSpAlternateApp() != null && testSettings.getSpAlternateApp().contains(SAMLConstants.ALTERNATE_SERVLET)) {
-            setSimpleServletExpecatations(expectations, testSettings, SAMLConstants.INVOKE_ALTERNATE_APP, testSettings.getSpAlternateApp());
+            setSimpleServletExpectations(expectations, testSettings, SAMLConstants.INVOKE_ALTERNATE_APP, testSettings.getSpAlternateApp());
         }
 
     }
@@ -1396,7 +1396,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         return "(?s)\\A.*?\\bRunAs subject: Subject:.*?\\bPublic Credential:.*?realmName=" + realm;
     }
 
-    public void setSimpleServletExpecatations(List<validationData> expectations, SAMLTestSettings testSettings, String step, String theApp) throws Exception {
+    public void setSimpleServletExpectations(List<validationData> expectations, SAMLTestSettings testSettings, String step, String theApp) throws Exception {
 
         if (step != null) {
             //			expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on correct app for step: " + step, null, SAMLConstants.APP2_TITLE);

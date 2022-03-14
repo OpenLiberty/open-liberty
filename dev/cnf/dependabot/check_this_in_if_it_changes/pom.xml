@@ -1048,6 +1048,11 @@
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <version>2.59.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
       <version>2.27</version>
     </dependency>

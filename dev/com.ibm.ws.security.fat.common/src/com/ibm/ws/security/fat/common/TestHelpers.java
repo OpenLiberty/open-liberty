@@ -522,7 +522,7 @@ public class TestHelpers {
         }
     }
 
-    public void waitBeforeContinuing(WebClient webClient) throws Exception {
+    public static void waitBeforeContinuing(WebClient webClient) throws Exception {
         Log.info(thisClass, "waitBeforeContinuing", "Waiting for HtmlUnit to finish its business");
         webClient.waitForBackgroundJavaScriptStartingBefore(5000);
         webClient.waitForBackgroundJavaScript(5000);
