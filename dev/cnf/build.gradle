@@ -376,10 +376,10 @@ task ('index', type: Index) {
     description 'Index the release repository. (Does not depend on releaseNeeded)'
     group 'release'
     repositoryName = "OpenLiberty ${version}"
-    destinationDir = releaserepo
+    destinationDirectory = releaserepo
     gzip = true
     /* Bundles to index. */
-    bundles fileTree(destinationDir) {
+    bundles fileTree(destinationDirectory) {
         include '**/*.jar'
         exclude '**/*-latest.jar'
         exclude '**/*-sources.jar'
