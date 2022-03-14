@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,8 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
-import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;
 import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
@@ -63,7 +61,6 @@ public class CommsOutboundChain {
     /** If useSSL is set to true in the outbound connection configuration */
     private boolean _isSSLChain = false;
    
-    @Trivial
     protected void setCommsClientService(CommsClientServiceFacadeInterface service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "setCommsClientService", service);
@@ -76,7 +73,6 @@ public class CommsOutboundChain {
         }
     }
 
-    @Trivial
     protected void setTcpOptions(ChannelConfiguration service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "setTcpOptions", service);
@@ -107,7 +103,6 @@ public class CommsOutboundChain {
         return tcpOptions;
     }
 
-    @Trivial
     protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "setSslOptions", service);
@@ -137,6 +132,18 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this, tc, "getSslOptions", sslOptions);
         return sslOptions;
+    }
+    
+    /**
+     * Force activation to be delayed until all configured SSL options are available.
+     * Discovered when sslKeys were generated late. 
+     */
+    protected void addAllKnownSslOptions(ServiceReference<ChannelConfiguration> service) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "addAllKnownSslOptions", service);
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "addAllKnownSslOptions");
     }
 
     /**
