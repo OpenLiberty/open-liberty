@@ -63,10 +63,6 @@
 #              to y to allow remote debugging. By default, this value is not
 #              defined, which does not allow remote debugging on newer JDK/JREs.
 #
-# WLP_IN_CONTAINER - Set to true to signal that the script is being invoked from
-#              a container. If true, certain code will be optimized out where it 
-#              does not make sense to be run in container.
-#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #              to be used.
 #
@@ -571,12 +567,6 @@ serverEnvDefaults()
     X_PID_FILE=${PID_FILE}
     X_PID_DIR=`dirname "${X_PID_FILE}"`
     unset PID_FILE
-  fi
-
-  if [ -z "$WLP_IN_CONTAINER" ]; then
-    X_WLP_IN_CONTAINER=false
-  else
-    X_WLP_IN_CONTAINER=$WLP_IN_CONTAINER
   fi
 
   if [ -z "${JAVA_HOME}" ]
