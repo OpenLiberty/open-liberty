@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -523,11 +523,14 @@ public class ScheduledTask<T> implements Callable<T> {
 
             // Resubmit this task to run at the next scheduled time
             status = result.getStatus();
-            if (!status.finalExecutionIsComplete && (status.type == Status.Type.DONE || status.type == Status.Type.SKIPPED)) {
-                if (trace && tc.isEventEnabled())
-                    Tr.event(this, tc, "DONE-->NONE (reset for next result)");
-                resultRef.set(result = new Result());
+            Result nextResult;
+            if (!status.finalExecutionIsComplete
+                            && (status.type == Status.Type.DONE || status.type == Status.Type.SKIPPED)
+                            && resultRef.compareAndSet(result, nextResult = new Result())) {
+                result = nextResult;
                 done = false;
+                if (trace && tc.isEventEnabled())
+                    Tr.event(this, tc, (status.type == Status.Type.DONE ? "DONE" : "SKIPPED") + "-->NONE (reset for next result)");
 
                 // compute the delay and estimate the next execution time
                 long delay;
