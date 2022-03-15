@@ -14,4 +14,3 @@
    @${repo;net.sf.ehcache:ehcache-core;2.5.2}
 
 -buildpath: net.sf.ehcache:ehcache-core;version=2.5.2
-jakartaeeMe: true

@@ -11,14 +11,12 @@
 package com.ibm.ws.wssecurity.cxf.interceptor;
 
 
-import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -41,12 +39,10 @@ import org.apache.cxf.ws.security.tokenstore.TokenStore;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreFactory;
 import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
 import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JOutInterceptor;
-
 import org.apache.wss4j.common.cache.EHCacheValue;
 import org.apache.wss4j.common.cache.MemoryReplayCache;
 import org.apache.wss4j.common.cache.ReplayCache;
 import org.apache.wss4j.common.cache.WSS4JCacheUtil;
-
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -59,7 +55,8 @@ import com.ibm.ws.wssecurity.internal.WSSecurityConstants;
 import com.ibm.ws.wssecurity.signature.SignatureAlgorithms;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
-import net.sf.ehcache.config.Configuration;
+import io.openliberty.wssecurity.WSSecurityFeatureHelper;
+
 
 public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor {
 
@@ -301,6 +298,13 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
         
         boolean ncache = false, tcache = false, scache = false;
         URL configfile = null;
+        WSSecurityFeatureHelper helper = new WSSecurityFeatureHelper();
+        if (!helper.isWSSecurityFeatureHelperServiceActive()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Ignoring cache file configuration property, this is not supported : ", SecurityConstants.CACHE_CONFIG_FILE); // TODO : informational
+            }
+            return;
+        }
         try {
             
             ncache = isWSS4JCacheEnabled(SecurityConstants.ENABLE_NONCE_CACHE, message);
@@ -318,15 +322,15 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "try creating nonce cache using oldconfig ");
                     }
-                    parseehcachefile(SecurityConstants.NONCE_CACHE_INSTANCE, configfile, message);
+                    helper.handleEhcache2Mapping(SecurityConstants.NONCE_CACHE_INSTANCE, configfile, message);
                     createwss4jcacheinstance(SecurityConstants.NONCE_CACHE_INSTANCE, message);
                 }
                 if (tcache && !ehcacheinstanceavailable(SecurityConstants.TIMESTAMP_CACHE_INSTANCE, message)) {
-                    parseehcachefile(SecurityConstants.TIMESTAMP_CACHE_INSTANCE, configfile, message);
+                    helper.handleEhcache2Mapping(SecurityConstants.TIMESTAMP_CACHE_INSTANCE, configfile, message);
                     createwss4jcacheinstance(SecurityConstants.TIMESTAMP_CACHE_INSTANCE, message);
                 }
                 if (scache && !ehcacheinstanceavailable(SecurityConstants.SAML_ONE_TIME_USE_CACHE_INSTANCE, message)) {
-                    parseehcachefile(SecurityConstants.SAML_ONE_TIME_USE_CACHE_INSTANCE, configfile, message);
+                    helper.handleEhcache2Mapping(SecurityConstants.SAML_ONE_TIME_USE_CACHE_INSTANCE, configfile, message);
                     createwss4jcacheinstance(SecurityConstants.SAML_ONE_TIME_USE_CACHE_INSTANCE, message);
                 }
                 if (!ehcacheinstanceavailable(SecurityConstants.TOKEN_STORE_CACHE_INSTANCE, message)) {
@@ -335,7 +339,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                     if (cacheIdentifier != null) {
                         cacheKey.append('-').append(cacheIdentifier);
                     }
-                    parseehcachefile(cacheKey.toString(), configfile, message);
+                    helper.handleEhcache2Mapping(cacheKey.toString(), configfile, message);
                     createtokenstorecacheinstance(cacheKey.toString(), message);
                 }
             }
@@ -478,7 +482,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param configfile
      * @param message 
      */
-    @FFDCIgnore (Exception.class)
+    /*@FFDCIgnore (Exception.class)
     private void parseehcachefile(String instanceKey, URL configfile, @Sensitive SoapMessage message) throws Exception{
         net.sf.ehcache.CacheManager cacheManager = null;
 
@@ -519,7 +523,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
             Thread.currentThread().setContextClassLoader(originalClassLoader); 
         }
         
-    }
+    }*/
 
     /**
      * @param instanceKey 
@@ -527,6 +531,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
      * @param cc
      * @param config 
      */
+    /*
     private void updateMessageCacheMap(String instanceKey, @Sensitive SoapMessage message, net.sf.ehcache.config.CacheConfiguration cc, Configuration config) {
         String key = "liberty:".concat(instanceKey);
         if (cc != null) {
@@ -571,7 +576,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
             message.setContextualProperty(key, configmap);
         }
         
-    }
+    } */
 
     /**
      * @param message

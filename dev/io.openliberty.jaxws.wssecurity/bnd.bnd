@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: WSSecurity Feature Helper Service
+Bundle-SymbolicName: io.openliberty.jaxws.wssecurity
+Bundle-Description: Web Services Security Helper Service; version=${bVersion}
+
+WS-TraceGroup: \
+  WSSecurity
+
+Export-Package: \
+ io.openliberty.jaxws.wssecurity;version="1.0"
+
+Import-Package: *
+
+-dsannotations: io.openliberty.jaxws.wssecurity.WSSecurityFeatureHelperServiceImpl
+
+-dsannotations-inherit = true
+
+-buildpath: \
+    com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+    io.openliberty.wssecurity;version=latest,\
+    com.ibm.ws.net.sf.ehcache.core.2.5.2,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.cm;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.websphere.appserver.spi.logging
