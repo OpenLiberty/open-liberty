@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 configurations {
-	testNG { transitive = false; }
+  testNG { transitive = false; }
   arquillian
   wlp
 }
