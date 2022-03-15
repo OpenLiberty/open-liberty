@@ -5,7 +5,7 @@ singleton=true
 WLP-DisableAllFeatures-OnConflict: false
 visibility = private
 
--features= com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1, 4.0"
+-features= com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1, 4.0, 6.0"
 
 -bundles= com.ibm.ws.app.manager.wab; start-phase:=APPLICATION_EARLY
 

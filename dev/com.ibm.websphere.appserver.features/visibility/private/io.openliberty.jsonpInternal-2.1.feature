@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.jsonpInternal-2.1
 visibility=private
 singleton=true
--features=io.openliberty.jsonpImpl-2.1.0
+-features=io.openliberty.jsonpImpl-2.1.1
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

@@ -537,6 +537,16 @@
       <version>4.1.75.Final</version>
     </dependency>
     <dependency>
+      <groupId>io.openliberty.jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.openliberty.org.eclipse.parsson</groupId>
+      <artifactId>parsson</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>io.opentracing</groupId>
       <artifactId>opentracing-api</artifactId>
       <version>0.30.0</version>
