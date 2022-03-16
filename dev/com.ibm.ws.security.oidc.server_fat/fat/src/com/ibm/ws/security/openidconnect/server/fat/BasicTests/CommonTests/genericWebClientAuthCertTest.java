@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,14 @@
 
 package com.ibm.ws.security.openidconnect.server.fat.BasicTests.CommonTests;
 
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.AuthorizationHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -38,6 +41,8 @@ public class genericWebClientAuthCertTest extends CommonTest {
     protected static String server_cert_no_user_config = "";
     protected static String server_cert_user_not_in_trust_config = "";
 
+    private final Class<?> thisClass = genericWebClientAuthCertTest.class;
+
     /**
      * TestDescription:
      * Brief:
@@ -49,7 +54,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * Since certAuthentication and allowCertAuthentication are set to false (not enabled), after SSL handshaking,
      * the Client Certificate is ignored. So, the procedure goes down to the same procedure as
      * testAuthCodeBasicFlow. The test results are the same.
-     * 
+     *
      * Detail:
      * This testcase performs a simple end-end OAuth flow, using httpunit to
      * simulate browser requests. In this scenario, a Web client invokes a front
@@ -64,7 +69,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * owner does not receive the consent form from the authorizarion server.
      * The test verifies that the Oauth code flow, using the authorization grant
      * type of "authorization code" works correctly.
-     * 
+     *
      */
     @Test
     public void testWebClientAuthCodeCertDisabled_doNotAllowCertAuth() throws Exception {
@@ -82,7 +87,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * - certAuthentication is disabled, but allowCertAuthentication is enabled
      * - A certificate will be presented and should be honored since cert authentication is allowed
      * Expected Results:
-     * 
+     *
      * Should authenticate and access the test servlet without issue as testuser should be
      * part of Employee role.
      */
@@ -104,12 +109,12 @@ public class genericWebClientAuthCertTest extends CommonTest {
 
     /**
      * Test Purpose:
-     * 
+     *
      * This is similar to testAuthCodeBasicFlowCertDisabled()
      * But
      * 1) The junit testing client enables the client certificate authentication
      * 2) The certAuthentication is set to true in oauthProvider configuration
-     * 
+     *
      * Since the certAuthentication is set to true, the client-certificate-authentication is checked.
      * So, the client-certificate provided from junit-client will be honored when it handled the redirection from
      * RP to the OP. The client-certificate has CN=user1 in dname. (See
@@ -117,12 +122,12 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * The request will be honored as the user1 login. So, no login panel will be displayed.
      * The test needs to skip the login procedure.
      * The request is expected to be executed successfully.
-     * 
+     *
      * Expected Results:
-     * 
+     *
      * Should authenticate and access the test servlet without issue as testuser should be
      * part of Employee role.
-     * 
+     *
      */
     @Mode(TestMode.LITE)
     @Test
@@ -143,7 +148,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
 
     /**
      * Test Purpose:
-     * 
+     *
      * This is similar to testWebClientAuthCodeCert with
      * a few differences.
      * 1) The junit testing client enables the client certificate authentication
@@ -152,14 +157,14 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * in the basic user registry of OP.
      * When the junit client tries to login with its client-certificate,
      * the login fails accordingly.
-     * 
+     *
      * The request is expected to be rejected since the user is an invalid user.
      * ** Also refer to the comments in the above OidcClientTestMinimumConfigRS256ClientAuth()
-     * 
+     *
      * Expected Results:
-     * 
+     *
      * The request is rejected with error code 401.
-     * 
+     *
      */
     @Test
     @ExpectedFFDC(value = { "com.ibm.oauth.core.api.error.oauth20.OAuth20AccessDeniedException" })
@@ -173,9 +178,9 @@ public class genericWebClientAuthCertTest extends CommonTest {
         expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, Constants.OAUTH_OP, Constants.SUBMIT_TO_AUTH_SERVER, testSettings);
         expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, testOPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Do not get the error of the invalid user of client certification", null, "CWWKS1441E:.*because the Client Certificate provided.*can not.*verified");
         WebConversation wc = new WebConversation();
-        
+
         testOPServer.addIgnoredServerExceptions("CWWKS1441E", "SRVE8094W", "SRVE8115W");
-        
+
         genericOP(_testName, wc, testSettings, Constants.SUBMIT_ACTIONS, expectations);
 
         return;
@@ -183,7 +188,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
 
     /**
      * Test Purpose:
-     * 
+     *
      * This is similar to testWebClientAuthCodeCert with
      * a few differences.
      * 1) The junit testing client enables the client certificate authentication
@@ -191,27 +196,48 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * 3) But, the cert is not in the server's trust store
      * When the junit client tries to make a request to the server, we get
      * a connection refused failure
-     * 
+     *
      * The request is expected to be rejected since the cert is missing from the trust store
-     * 
+     *
      * Expected Results:
-     * 
+     *
      * An exception is thrown on the request
-     * 
+     *
      */
-    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.ChannelException", "java.lang.IllegalArgumentException" })
+    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.ChannelException", "java.lang.IllegalArgumentException", "sun.security.validator.ValidatorException" })
     @Test
     public void testWebClientAuthCodeCertUserNotInTrust() throws Exception {
         testOPServer.reconfigServer(server_cert_user_not_in_trust_config, _testName);
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
 
-        expectations = vData.addExpectation(expectations, Constants.SUBMIT_TO_AUTH_SERVER, Constants.EXCEPTION_MESSAGE, null, "Did not recieve the expected exception of: Connection refused", "javax.net.ssl.SSLHandshakeException", "Connection refused");
         WebConversation wc = new WebConversation();
 
-        testOPServer.addIgnoredServerExceptions("CWPKI0807W", "CWPKI0033E", "CWPKI0809W");
-        
-        genericOP(_testName, wc, testSettings, Constants.SUBMIT_ACTIONS, expectations);
+        testOPServer.addIgnoredServerExceptions("CWPKI0807W", "CWPKI0033E", "CWPKI0809W", "CWPKI0022E");
+
+        try {
+            genericOP(_testName, wc, testSettings, Constants.SUBMIT_ACTIONS, expectations);
+            fail("Request should have failed with a handshake or connection refused exception");
+        } catch (Exception e) {
+            Log.info(thisClass, _testName, "Test using it's own more complex exception validation instead of using the common validation");
+            Log.info(thisClass, _testName, "#########################################################################################");
+            Log.info(thisClass, _testName, "Exception string: " + e.toString());
+            Log.info(thisClass, _testName, "#########################################################################################");
+            Log.info(thisClass, _testName, "Exception message: " + e.getMessage());
+            Log.info(thisClass, _testName, "#########################################################################################");
+            String[] possibleFailures = new String[] { "javax.net.ssl.SSLException", "readHandshakeRecord", "javax.net.ssl.SSLHandshakeException",
+                                                       "Remote host terminated the handshake", "Connection refused" };
+            boolean found = false;
+            for (String err : possibleFailures) {
+                if (e.toString().contains(err)) {
+                    Log.info(thisClass, _testName, "Found: " + err);
+                    found = true;
+                }
+            }
+            if (!found) {
+                fail("Request should have failed with a handshake or connection refused exception");
+            }
+        }
 
         return;
     }
