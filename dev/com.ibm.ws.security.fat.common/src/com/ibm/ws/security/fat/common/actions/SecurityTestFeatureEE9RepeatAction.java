@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
+
+import java.util.Set;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
@@ -92,6 +94,32 @@ public class SecurityTestFeatureEE9RepeatAction extends JakartaEE9Action {
         Log.info(thisClass, "notOnWindows", "set disallow on windows");
         notAllowedOnWindows = true;
         return this;
+    }
+
+    @Override
+    public SecurityTestFeatureEE9RepeatAction addFeature(String addFeature) {
+        return (SecurityTestFeatureEE9RepeatAction) super.addFeature(addFeature);
+    }
+
+    @Override
+    public SecurityTestFeatureEE9RepeatAction alwaysAddFeatures(Set<String> alwaysAddedFeatures) {
+        return (SecurityTestFeatureEE9RepeatAction) super.alwaysAddFeatures(alwaysAddedFeatures);
+    }
+
+    @Override
+    public SecurityTestFeatureEE9RepeatAction alwaysAddFeature(String alwaysAddedFeature) {
+        Log.info(thisClass, "alwaysAddedFeature", alwaysAddedFeature);
+        return (SecurityTestFeatureEE9RepeatAction) super.alwaysAddFeature(alwaysAddedFeature);
+    }
+
+    @Override
+    public SecurityTestFeatureEE9RepeatAction forServerConfigPaths(String... serverPaths) {
+        return (SecurityTestFeatureEE9RepeatAction) super.forServerConfigPaths(serverPaths);
+    }
+
+    @Override
+    public SecurityTestFeatureEE9RepeatAction forceAddFeatures(boolean force) {
+        return (SecurityTestFeatureEE9RepeatAction) super.forceAddFeatures(force);
     }
 
     /*

@@ -49,7 +49,6 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
@@ -1017,9 +1016,14 @@ public class CommonValidationTools {
                             String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length() - 1);
                             String[] splitLine = part1.split(",");
                             if (splitLine != null) {
-                                Log.info(thisClass, thisMethod, "token: " + splitLine[0]);
-                                printJWTToken(splitLine[0]);
-                                return splitLine[0];
+                                if (splitLine[0] != null) {
+                                    String token = splitLine[0].replace("with value:", "").trim();
+                                    Log.info(thisClass, thisMethod, "token: " + token);
+                                    printJWTToken(token);
+                                    return token;
+                                } else {
+                                    return null;
+                                }
                             }
                         }
                     }
@@ -1321,6 +1325,9 @@ public class CommonValidationTools {
                     id_token = getIDTokenFromOutput(response);
                 } else {
                     id_token = getTokenFromResponse(response, Constants.ID_TOKEN_KEY);
+                    if (id_token == null || id_token.equals(Constants.NOT_FOUND)) {
+                        id_token = getTokenFromResponse(response, "ID token:");
+                    }
                 }
             }
             Log.info(thisClass, thisMethod, "id_token : " + id_token);
