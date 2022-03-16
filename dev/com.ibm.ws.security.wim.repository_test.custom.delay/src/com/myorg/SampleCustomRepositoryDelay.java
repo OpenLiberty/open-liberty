@@ -129,13 +129,6 @@ public class SampleCustomRepositoryDelay implements CustomRepository {
      */
     @Override
     public Root login(Root inRoot) throws WIMException {
-        System.out.println(CLASS_NAME + " <login> entry, sleep for test purposes");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            System.out.println(CLASS_NAME + " Sleep was interrupted");
-        }
-
         System.out.println(CLASS_NAME + " <login> entry, inRoot: \n" + inRoot.toString());
         Root outRoot = new Root();
 
