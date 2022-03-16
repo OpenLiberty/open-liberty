@@ -71,7 +71,12 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.SERVER);
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
-        return createBus(extensions, properties, moduleClassLoader);
+        Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+        try {
+            return createBus(extensions, properties, moduleClassLoader);
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
+        }
     }
 
     public LibertyApplicationBus createClientScopedBus(JaxWsModuleMetaData moduleMetaData) {
@@ -85,7 +90,12 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.CLIENT);
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
-        return createBus(extensions, properties, moduleClassLoader);
+        Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+        try {
+            return createBus(extensions, properties, moduleClassLoader);
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
+        }
     }
 
     @Override
