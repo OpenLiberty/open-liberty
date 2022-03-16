@@ -273,7 +273,7 @@ public class FailoverTest1 extends FailoverTest {
      * Run a set of transactions and simulate an unexpected sqlcode
      */
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "java.lang.Exception", "com.ibm.ws.recoverylog.spi.InternalLogException", })
+    @AllowedFFDC(value = { "javax.transaction.SystemException", "java.lang.Exception", "com.ibm.ws.recoverylog.spi.InternalLogException", })
     // Defect RTC171085 - an XAException may or may not be generated during
     // recovery, depending on the "speed" of the recovery relative to work
     // going on in the main thread. It is most sensible to make the potential
