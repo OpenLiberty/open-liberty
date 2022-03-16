@@ -1109,7 +1109,7 @@
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
 		authFilterRef="authFilter_goodRedirectToRPHostAndPort"
-		redirectToRPHostAndPort="https://localhost:${bvt.prop.HTTP_default.secure}"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oauth2Login>
 
@@ -1125,7 +1125,7 @@
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
 		authFilterRef="authFilter_badRedirectToRPHostAndPort"
-		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.HTTP_default.secure}"
+		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oauth2Login>
 

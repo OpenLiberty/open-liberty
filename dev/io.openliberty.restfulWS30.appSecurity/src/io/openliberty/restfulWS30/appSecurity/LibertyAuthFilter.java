@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,11 @@ package io.openliberty.restfulWS30.appSecurity;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
 import jakarta.annotation.Priority;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,10 +32,12 @@ import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.ext.Provider;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
+import com.ibm.ws.security.context.SubjectManager;
 
-// This code is practically an EE9 version of the LibertyAuthFilter in the com.ibm.ws.jaxrs.2.1.common project.
+// This code is practically an EE9 version of the LibertyAuthFilter in the com.ibm.ws.jaxrs.2.1.appSecurity project.
 // Changes here may need to be reflected there also - and vice versa.
 
 // Set the Priority to Priorities.AUTHORIZATION + 1 so that user filters take precedence.
@@ -50,13 +57,15 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
     @Context
     ResourceInfo resourceInfo;
 
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
+
     @Override
     @FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class })
     public void filter(ContainerRequestContext context) {
         try {
             handleMessage();
         } catch (UnauthenticatedException ex) {
-            try { 
+            try {
                 if (authenticate()) {
                     // try again with authenticated user
                     handleMessage();
@@ -85,6 +94,7 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
         if (method == null) {
             throw new ForbiddenException("Method is not available : Unauthorized");
         }
+        setUnauthenticatedSubjectIfNeeded();
         if (securityContext != null && RoleMethodAuthUtil.parseMethodSecurity(method,
                                                        securityContext.getUserPrincipal(),
                                                        s -> securityContext.isUserInRole(s))) {
@@ -96,5 +106,25 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
         }
 
         throw new ForbiddenException("Unauthorized");
+    }
+
+    private void setUnauthenticatedSubjectIfNeeded() {
+        getUnauthenticatedSubjectService();
+
+        SubjectManager subjectManager = new SubjectManager();
+        if (subjectManager.getInvocationSubject() == null) {
+            subjectManager.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+        }
+        if (subjectManager.getCallerSubject() == null) {
+            subjectManager.setCallerSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+        }
+    }
+
+    private void getUnauthenticatedSubjectService() {
+        if (unauthenticatedSubjectService == null) {
+            BundleContext context = FrameworkUtil.getBundle(UnauthenticatedSubjectService.class).getBundleContext();
+            ServiceReference<UnauthenticatedSubjectService> serviceRef = context.getServiceReference(UnauthenticatedSubjectService.class);
+            unauthenticatedSubjectService = context.getService(serviceRef);
+        }
     }
 }

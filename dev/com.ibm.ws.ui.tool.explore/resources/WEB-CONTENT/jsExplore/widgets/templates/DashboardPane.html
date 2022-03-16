@@ -1,6 +1,6 @@
 <table class="container dashboard-table" role="presentation">
 <!--
-    Copyright (c) 2016 IBM Corporation and others.
+    Copyright (c) 2016, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -11,13 +11,13 @@
  	-->
 	<tr>
 		<td class="dashboard-row-header" tabindex="0">
-  			<div class="resource-icon" id="${dashboardIconId}" data-dojo-attach-point="iconTypeNode"></div>
-   			<p> ${dashboardResourceLabel} </p>
+			<div class="resource-icon" id="${dashboardIconId}" data-dojo-attach-point="iconTypeNode"></div>
+			<p id="${dashboardIconLabelId}"> ${dashboardResourceLabel} </p>
 		</td>
 	</tr>										
 	<tr> 			
 		<td class="dashboard-row-detail detail-total"> 
-			<button title="${viewAllLabel}" aria-label="${viewAllLabel}" class="button-total" id="${dashboardResourceId}" type="button" data-dojo-attach-event="ondijitclick:_onClick, onkeydown:_onKey">				
+			<button title="${viewAllLabel}" class="button-total" id="${dashboardResourceId}" type="button" data-dojo-attach-event="ondijitclick:_onClick, onkeydown:_onKey">
 			   	<div class="detail-graph" id="${dashboardGraphPaneId}" data-dojo-attach-point="graphNode">
    			   	</div>
 				<div class="total-detail">
@@ -32,17 +32,17 @@
 			<div role="button" tabindex="0" data-dojo-attach-point="unknownNode"
  				 class="list-count unknown" data-dojo-attach-event="ondijitclick: onUnknown">
 				<div data-dojo-attach-point="unknownIcon" class="status-icon"></div>
-				<div class="status-info" title="${unknownLabel}">${unknownLabel}</div>
+				<div id=${dashboardResourceUnknownLabelId} class="status-info" title="${unknownLabel}">${unknownLabel}</div>
 				<div id=${dashboardResourceUnknownButtonNumberId} class="list-number"></div>
 			</div>	
 			<div role="button" tabindex="0" class="list-count running" data-dojo-attach-event="ondijitclick: onRunning">
 				<div data-dojo-attach-point="runIcon" class="status-icon"></div>
-				<div class="status-info" title="${runningLabel}">${runningLabel}</div>
+				<div id=${dashboardResourceRunningLabelId} class="status-info" title="${runningLabel}">${runningLabel}</div>
  				<div id=${dashboardResourceRunningButtonNumberId} class="list-number"></div>
 			</div>
 			<div role="button" tabindex="0" class="list-count stopped" data-dojo-attach-event="ondijitclick: onStopped">
 				<div data-dojo-attach-point="stopIcon" class="status-icon"></div>				
-				<div class="status-info" title="${stoppedLabel}">${stoppedLabel}</div>
+				<div id=${dashboardResourceStoppedLabelId} class="status-info" title="${stoppedLabel}">${stoppedLabel}</div>
  				<div id=${dashboardResourceStoppedButtonNumberId} class="list-number"></div>
 			</div>
 		</td>

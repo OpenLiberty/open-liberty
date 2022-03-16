@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Uso: java [opciones JVM] -jar {0} [opciones] archivoSalida  
+briefUsageScript=Uso: ./{0} [options] outputFile
+
 
 use.options=Opciones:
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,7 +33,14 @@ option-desc.locale=El entorno local a utilizar para la salida
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=El esquema de salida no incluir\u00e1 espacios de indentaci\u00f3n, nuevos saltos de l\u00ednea ni comentarios XML
 option-key.productExtension=--productExtension
-option-desc.productExtension=El nombre de extensi\u00f3n del producto que se van a procesar.                            \n\
-Si la extensi\u00f3n del producto est\u00e1 instalada en la ubicaci\u00f3n de usuario por omisi\u00f3n,\n\
-utilice la palabra clave: usr.                                                  \n\
-Si no se especifica esta opci\u00f3n, la acci\u00f3n se realiza en el n\u00facleo de Liberty.
+option-desc.productExtension=El nombre de extensi\u00f3n del producto que se van a procesar.                            \nSi la extensi\u00f3n del producto est\u00e1 instalada en la ubicaci\u00f3n de usuario por omisi\u00f3n,\nutilice la palabra clave: usr.                                                  \nSi no se especifica esta opci\u00f3n, la acci\u00f3n se realiza en el n\u00facleo de Liberty.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Si se especifica schemaVersion=1.1, tanto los elementos hijo nombrados expl\u00edcitamente como el elemento xsd:any se escriben en el archivo de salida.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Si se especifica outputVersion=2.0, solo se utiliza el elemento xsd:any en el archivo de salida, de modo que los elementos desconocidos pasan la validaci\u00f3n de XSD a expensas de perder la validaci\u00f3n de los elementos conocidos.

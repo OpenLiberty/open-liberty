@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.CertificateAuthenticator;
 import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
+import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.jaas.common.JAASConfigurationFactory;
@@ -69,8 +70,8 @@ public class ServerCommonLoginModuleTest {
     private final CallbackHandler callbackHandler = mock.mock(CallbackHandler.class);
     private final ServiceReference<JAASConfigurationFactory> jaasConfigurationFactoryRef = mock.mock(ServiceReference.class, "Test" + JAASServiceImpl.KEY_JAAS_CONFIG_FACTORY
                                                                                                                              + "Ref");
-    protected final ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators =
-                    new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(JAASServiceImpl.KEY_CERT_AUTHENTICATOR + "s");
+    protected final ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certificateAuthenticators = new ConcurrentServiceReferenceMap<String, CertificateAuthenticator>(JAASServiceImpl.KEY_CERT_AUTHENTICATOR
+                                                                                                                                                                                    + "s");
 
     class TestCredentialsService implements CredentialsService {
 
@@ -85,7 +86,8 @@ public class ServerCommonLoginModuleTest {
 
         /** {@inheritDoc} */
         @Override
-        public void setUnauthenticatedUserid(String unauthenticatedUser) {}
+        public void setUnauthenticatedUserid(String unauthenticatedUser) {
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -101,7 +103,7 @@ public class ServerCommonLoginModuleTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.security.credentials.CredentialsService#setBasicAuthCredential(java.lang.String, java.lang.String, java.lang.String)
          */
         @Override
@@ -146,6 +148,8 @@ public class ServerCommonLoginModuleTest {
     @SuppressWarnings("static-access")
     @Before
     public void setUp() throws Exception {
+        LoginModuleHelper.setTestJaasService(jaasServiceCollab); // No OSGi component to lookup in the runtime, so override
+
         mock.checking(new Expectations() {
             {
                 // This expectation is to allow the JAAS stuff to activate
@@ -171,7 +175,7 @@ public class ServerCommonLoginModuleTest {
         jaasServiceCollab.setCredentialsService(credentialsServiceRef);
         jaasServiceCollab.setTokenManager(tokenManagerRef);
         jaasServiceCollab.setAuthenticationService(authenticationService);
-        JAASServiceImpl.certificateAuthenticators = certificateAuthenticators;
+        jaasServiceCollab.certificateAuthenticators = certificateAuthenticators;
         jaasServiceCollab.activate(cc, null);
     }
 
@@ -179,7 +183,7 @@ public class ServerCommonLoginModuleTest {
      * The cleanup of the JAASServiceImpl is necessary as the
      * references it holds are static, and if not cleaned up, will spill
      * over into the next test.
-     * 
+     *
      * @throws Exception
      */
     @After

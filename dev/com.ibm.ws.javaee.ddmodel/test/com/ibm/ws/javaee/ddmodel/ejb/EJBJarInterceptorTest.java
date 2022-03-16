@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.Interceptor;
 import com.ibm.ws.javaee.dd.ejb.Interceptors;
+import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
 
 @RunWith(Parameterized.class)
 public class EJBJarInterceptorTest extends EJBJarTestBase {
@@ -47,7 +48,7 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
 
     protected EJBJar getInterceptorsEjbJar() throws Exception {
         if ( interceptorsEJBJar == null ) {
-            interceptorsEJBJar = parseEJBJar( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
+            interceptorsEJBJar = parseEJBJarMax( ejbJar30("", interceptorsXML) );
         }
         return interceptorsEJBJar;
     }
@@ -159,6 +160,19 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
             "</interceptor>" +
         "</interceptors>";
     
+    //
+    
+    protected static final String interceptorsEE10XML =
+            "<interceptors>" +
+                "<interceptor>" +
+                    "<interceptor-class>interceptor0</interceptor-class>" +
+                    DDJakarta10Elements.CONTEXT_SERVICE_XML +
+                    DDJakarta10Elements.MANAGED_EXECUTOR_XML +
+                    DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML +
+                    DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML +                
+                "</interceptor>" +
+            "</interceptors>";
+
     //
 
     @Test
@@ -315,14 +329,17 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
         Assert.assertEquals("injectionTargetName0", injTargList.get(0).getInjectionTargetName());
     }
 
+    // 'around-construct' should supported using a 3.2 schema.
+
     @Test
     public void testAroundConstruct() throws Exception {
-        List<Interceptor> interceptors = parseEJBJar(
-            ejbJar32("", interceptorsAroundConstructXML), EJBJar.VERSION_4_0)
-                .getInterceptors().getInterceptorList();
+        List<Interceptor> interceptors = parseEJBJarMax( ejbJar32("", interceptorsAroundConstructXML) )
+            .getInterceptors().getInterceptorList();
 
         Interceptor interceptor0 = interceptors.get(0);
-        Assert.assertEquals(interceptor0.getAroundConstruct().toString(), 0, interceptor0.getAroundConstruct().size());
+        Assert.assertEquals(
+                interceptor0.getAroundConstruct().toString(),
+                0, interceptor0.getAroundConstruct().size() );
 
         Interceptor interceptor1 = interceptors.get(1);
         List<LifecycleCallback> aroundConstruct1 = interceptor1.getAroundConstruct();
@@ -342,10 +359,54 @@ public class EJBJarInterceptorTest extends EJBJarTestBase {
         Assert.assertEquals("aroundConstructMethod21", callback21.getMethodName());
     }
 
+    // 'around-construct' requires the 3.2 schema.
+
     @Test
-    public void testAroundConstructEJB31() throws Exception {
+    public void testAroundConstructEJB31At31() throws Exception {
         parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
-                     EJBJar.VERSION_4_0,
+                     EJBJar.VERSION_3_1,
                      "unexpected.child.element", "CWWKC2259E"); 
     }
+
+    // 'around-construct' support is keyed to the schema version,
+    // not the provisioned version.
+    
+    @Test
+    public void testAroundConstructEJB31At32() throws Exception {
+        parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
+                     EJBJar.VERSION_3_2,
+                     "unexpected.child.element", "CWWKC2259E"); 
+    }
+    
+    //
+
+    @Test
+    public void testEE10InterceptorsEJB32() throws Exception {
+        parseEJBJar( ejbJar32(interceptorsEE10XML), EJBJar.VERSION_3_2,
+                "unexpected.child.element",
+                "CWWKC2259E", "context-service", "ejb-jar.xml" );
+    }
+            
+    @Test
+    public void testEE10InterceptorsEJB40() throws Exception {
+        parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_4_0,
+                "unexpected.child.element",
+                "CWWKC2259E", "context-service", "ejb-jar.xml" );
+    }
+
+// Issue 20386: There is no EJB 5.0 for Jakarta EE 10.
+//   
+//    @Test
+//    public void testEE10InterceptorsEJB50() throws Exception {
+//        EJBJar ejbJar = parseEJBJar( ejbJar40(interceptorsEE10XML), EJBJar.VERSION_5_0);
+//
+//        List<String> names = DDJakarta10Elements.names("EJBJar", "interceptors");
+//
+//        List<Interceptor> interceptors = ejbJar.getInterceptors().getInterceptorList();
+//        DDJakarta10Elements.verifySize(names, 1, interceptors);
+//
+//        Interceptor interceptor = interceptors.get(0);
+//        DDJakarta10Elements.withName(names, "[0]",
+//                (useNames) -> DDJakarta10Elements.verifyEE10(useNames, interceptor) );
+//    }
 }

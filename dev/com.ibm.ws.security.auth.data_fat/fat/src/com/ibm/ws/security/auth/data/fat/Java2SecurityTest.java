@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -29,6 +30,7 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@MaximumJavaLevel(javaLevel = 17)
 public class Java2SecurityTest extends FATServletClient {
 
     private final Class<Java2SecurityTest> thisClass = Java2SecurityTest.class;

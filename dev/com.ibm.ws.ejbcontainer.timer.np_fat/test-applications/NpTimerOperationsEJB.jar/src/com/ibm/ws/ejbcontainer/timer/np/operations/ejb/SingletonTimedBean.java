@@ -440,6 +440,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         // Wait up to MAX_TIMER_WAIT for all of the timers to expire
         // -------------------------------------------------------------------
         waitForTimers(timerLatch, MAX_TIMER_WAIT);
+        FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
         // -------------------------------------------------------------------
         // 17 - Verify ejbTimeout is executed for valid Timers
@@ -524,6 +525,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
         timerIntervalWaitLatch = new CountDownLatch(1);
         timerIntervalLatch = new CountDownLatch(2);
+        FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
         // -------------------------------------------------------------------
         // 20 - Verify Timer.getNextTimeout() on repeating Timer works
@@ -539,6 +541,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         // -------------------------------------------------------------------
         timerIntervalWaitLatch.countDown(); // allow 3rd interval to run
         waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
+        FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
         // -------------------------------------------------------------------
         // 21 - Verify ejbTimeout is executed multiple times for repeating Timers
@@ -717,6 +720,8 @@ public class SingletonTimedBean implements SingletonTimedLocal {
 
         if (timerIndex >= 0) {
 
+            timeoutCounts[timerIndex]++;
+            
             if (timeoutCounts[timerIndex] > 1) {
                 // Don't run the 2nd & 3rd interval until test is ready
                 try {
@@ -725,8 +730,6 @@ public class SingletonTimedBean implements SingletonTimedLocal {
                     e.printStackTrace(System.out);
                 }
             }
-
-            timeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " +
                                timeoutCounts[timerIndex] + " time(s)");
@@ -1047,7 +1050,6 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             logger.info("Waiting up to " + maxWaitTime + "ms for timers to fire...");
             if (latch.await(maxWaitTime, TimeUnit.MILLISECONDS)) {
                 logger.info("Timers fired; waiting for timeout postInvoke to complete");
-                FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
             }
         } catch (InterruptedException e) {
             e.printStackTrace(System.out);

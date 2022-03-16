@@ -21,14 +21,17 @@ Bundle-SymbolicName: io.openliberty.cdi.4.0.internal.weld
 
 Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
 
--dsannotations: io.openliberty.cdi40.internal.weld.CDI40BeanParserImpl,\
-                io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService
+-dsannotations: io.openliberty.cdi40.internal.weld.CDI40BeansXmlParserImpl,\
+                io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService,\
+                io.openliberty.cdi40.internal.weld.LiteExtensionProvider,\
+                io.openliberty.cdi40.internal.weld.CDI40AggregatedConfigurationImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
                 com.ibm.ws.cdi.proxy
 
-Import-Package: *
+Import-Package: com.ibm.ws.cdi.internal.resources, \
+                *
 
 Private-Package: \
                 io.openliberty.cdi40.internal.weld
@@ -48,4 +51,5 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.cdi.internal,\
 	com.ibm.ws.cdi.interfaces,\
 	com.ibm.ws.context,\
-	com.ibm.websphere.appserver.spi.kernel.service
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.injection.core

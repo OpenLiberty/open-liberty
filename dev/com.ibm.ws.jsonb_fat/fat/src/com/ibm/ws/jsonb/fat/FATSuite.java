@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,6 +85,17 @@ public class FATSuite {
                 Log.info(c, "beforeSuite", "Transformed bundle " + bundleFile + " to " + newBundleFile);
                 server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + bundle + ".jakarta.jar");
             }
+            // Transform Johnzon to use Jakarta APIs
+            Path johnzonCoreFile = Paths.get("publish/shared/resources/johnzon/1.1.5/johnzon-core-1.1.5.jar");
+            Path newjohnzonCoreFile = Paths.get("publish/shared/resources/johnzon/1.1.5/ee9-johnzon-core-1.1.5.jar");
+            Path johnzonJsonbFile = Paths.get("publish/shared/resources/johnzon/1.1.5/johnzon-jsonb-1.1.5.jar");
+            Path newjohnzonJsonbFile = Paths.get("publish/shared/resources/johnzon/1.1.5/ee9-johnzon-jsonb-1.1.5.jar");
+            Path johnzonMapperFile = Paths.get("publish/shared/resources/johnzon/1.1.5/johnzon-mapper-1.1.5.jar");
+            Path newjohnzonMapperFile = Paths.get("publish/shared/resources/johnzon/1.1.5/ee9-johnzon-mapper-1.1.5.jar");
+            JakartaEE9Action.transformApp(johnzonCoreFile, newjohnzonCoreFile);
+            JakartaEE9Action.transformApp(johnzonJsonbFile, newjohnzonJsonbFile);
+            JakartaEE9Action.transformApp(johnzonMapperFile, newjohnzonMapperFile);
+
             // Install jakartaee user features
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonp-2.0.mf");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/testFeatureUsingJsonb-2.0.mf");

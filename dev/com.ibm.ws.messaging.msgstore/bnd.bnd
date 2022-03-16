@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ bVersion=1.0
 Bundle-Name: Messaging Msgstore
 Bundle-SymbolicName: com.ibm.ws.messaging.msgstore
 Bundle-Description: Messaging Msgstore ; version=${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-  
+Include-Resource: OSGI-INF=resources/OSGI-INF
+
 Private-Package: \
  com.ibm.ws.sib.msgstore.persistence.objectManager,\
  com.ibm.ws.objectManager,\
@@ -37,14 +39,7 @@ Private-Package: \
  com.ibm.ws.sib.msgstore.transactions.impl,\
  com.ibm.ws.sib.msgstore.util
 
-Service-Component: \
- com.ibm.ws.messaging.msgstore;\
-   implementation:=com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;\
-   provide:=com.ibm.ws.sib.msgstore.MessageStore;\
-   alarmManager=com.ibm.ejs.util.am.AlarmManager; \
-   itemInterface=com.ibm.ws.sib.processor.ItemInterface;\
-   configuration-policy:=ignore;\
-   properties:="service.vendor=IBM"
+-dsannotations: com.ibm.ws.sib.msgstore.impl.MessageStoreImpl
 
 instrument.disabled: true
 
@@ -58,9 +53,8 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
-#  <property name="haltOnFailure" value="no"/>
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

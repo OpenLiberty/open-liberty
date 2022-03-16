@@ -359,7 +359,11 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         int threadCount = Runtime.getRuntime().availableProcessors() - 1;
         if (threadCount > 4) {
             threadCount = 4;
+        } else if (threadCount == 1) {
+            // default to 2 threads so that we don't go over 3 hours in a slow build machine with only two CPUs
+            threadCount = 2;
         }
+        // leaving <= instead of < in case we change back to only one thread in a two CPU environment.
         if (threadCount <= 1) {
             checkFeatures(featureName, new ArrayDeque<String>(featureSet), specialConflicts, errors);
         } else {

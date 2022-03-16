@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Quelques applications en cours d'exécution",
     SOME_SERVERS_RUNNING : "Quelques serveurs en cours d'exécution",
     SOME_CLUSTERS_RUNNING : "Quelques cluster en cours d'exécution",
-    NO_APPS_RUNNING : "Aucune application en cours d'exécution",
     NO_SERVERS_RUNNING : "Aucun serveur en cours d'exécution",
     NO_CLUSTERS_RUNNING : "Aucun cluster en cours d'exécution",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0} : instance d'applications non en cours d'exécution", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0} : certaines applications ne sont pas en cours d'exécution", // serverName[]
-    NO_APPS_RUNNING : "{0} : aucune application n'est en cours d'exécution", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} serveurs avec certaines applications en cours d'exécution", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} serveurs avec aucune applications en cours d'exécution", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Note {0}",  // note value
     SET_ATTRIBUTES: "Etiquettes et métadonnées",
     SETATTR_RUNTIME_NAME: "{0} sur {1}",  // runtime, host
-    SAVE: "Sauvegarder",
     TAGINVALIDCHARS: "Les caractères '/', '<', et '>' ne sont pas valides.",
     ERROR_GET_TAGS_METADATA: "Le produit ne peut pas utiliser les balises et les métadonnées en cours pour la ressource.",
     ERROR_SET_TAGS_METADATA: "Le produit ne peut pas paramétrer les balises et les métadonnées à cause d'une erreur.",

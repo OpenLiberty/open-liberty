@@ -72,10 +72,16 @@ public class HibernateSearchTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //To prevent errors on Windows because of file locks, we create a seperate set of transformed jakarta jars rather than transform the existing ones.
+        //This must happen before LibertyServerFactory.getLibertyServer as that method is what copies the publish directory into the server.
         if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
-            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernate")).collect(Collectors.toList());
+            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernatejavax")).collect(Collectors.toList());
             for (Path file : files) {
-                JakartaEE9Action.transformApp(file);
+                File dir = new File("publish/shared/resources/hibernatejakarta/");
+                dir.mkdir();
+                String newPathString = "publish/shared/resources/hibernatejakarta/" + file.getFileName();
+                Path newPath = Paths.get(newPathString);
+                JakartaEE9Action.transformApp(file, newPath);
             }
         }
 
@@ -88,6 +94,11 @@ public class HibernateSearchTest extends FATServletClient {
 
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest);
+
+        //Update the server.xml file to point to the new jakarta jars. This must be done after LibertyServerFactory.getLibertyServer() as the xml files in publish are unchanged.
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
+            server.swapInServerXMLFromPublish("jakarta.xml");
+        }
 
         server.startServer();
     }

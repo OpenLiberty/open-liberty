@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/jaxrs-prototype/src,\
+  test-applications/jaxws-peopleservice/src
+
+fat.project: true
+
+-buildpath: \
+  io.openliberty.com.fasterxml.jackson,\
+  com.ibm.websphere.javaee.servlet.3.1,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.jaxrs.2.0,\
+  fattest.simplicity
+	

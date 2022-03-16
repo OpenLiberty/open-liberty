@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.SIDestinationAddress;
+import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SINotSupportedException;
@@ -265,7 +266,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     private final CustomProperties _customProperties = new CustomProperties();
 
-    //Venu mock mock 
+    //Venu mock mock
     //In twas locality Set is localization MEs for Queuepoint
     // in this version of Liberty profile, it just containts current ME uuid
     HashSet _localistySet = new HashSet();
@@ -323,7 +324,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Connection locks are obtained on the connection lock manager.
-     * 
+     *
      * @return
      */
     protected SICoreConnection createConnection() throws SIResourceException {
@@ -357,7 +358,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Removes a connection from the list of connections
-     * 
+     *
      * @param connection
      *            The connection to remove.
      */
@@ -443,7 +444,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Adds a consumer to the message procoessor's list of consumers.
-     * 
+     *
      * @param consumer
      */
     void addConsumer(ConsumerSessionImpl consumer) {
@@ -460,7 +461,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Gets a consumer from the list of consumers on this messaging engine
-     * 
+     *
      * @param id
      *            The id to find from the list.
      */
@@ -481,7 +482,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Removes a consumer from the list of all consumers on this messaging
      * engine.
-     * 
+     *
      * @param consumer
      */
     void removeConsumer(ConsumerSessionImpl consumer) {
@@ -517,7 +518,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Gets the bus the messaging engine belongs to.
-     * 
+     *
      * @return
      */
     public String getMessagingEngineBus() {
@@ -534,7 +535,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Gets a reference to the actual bus which this messaging engine belongs
      * to.
-     * 
+     *
      * @return
      */
     public JsBus getBus() {
@@ -550,7 +551,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Gets the UUID of the bus the messaging engine belongs to.
-     * 
+     *
      * @return
      */
     public SIBUuid8 getMessagingEngineBusUuid() {
@@ -582,9 +583,9 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * getProxyHandler returns the reference to the MultiMEProxyHandler for
      * handling with proxy requests
-     * 
+     *
      * @return MultiMEProxyHandler The ProxyHandler instance
-     * 
+     *
      */
     public MultiMEProxyHandler getProxyHandler() {
         if (TraceComponent.isAnyTracingEnabled()
@@ -598,11 +599,11 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.ibm.wsspi.sib.core.SICoreConnectionFactory#createConnection(java.
      * lang.String, java.lang.String, java.util.Map)
-     * 
+     *
      * 174695 The null username check should occur in the sib.security package,
      * so we just pass through
      */
@@ -759,7 +760,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Create Connection using the certificate (used for SSL)
-     * 
+     *
      * @param certificate
      * @return Connection
      * @throws SIAuthenticationException
@@ -793,10 +794,10 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Checks that the ME is started
-     * 
+     *
      * @throws SINotSupportedException
      *             if the ME isn't started
-     * 
+     *
      *             180489
      */
     private void checkStarted() throws SIResourceException {
@@ -826,7 +827,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * <p>
      * Creates a destination definition.
      * </p>
-     * 
+     *
      * @return The destination definition
      */
     public DestinationDefinition createDestinationDefinition(
@@ -852,7 +853,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * <p>
      * Creates a localization definition.
      * </p>
-     * 
+     *
      * @return The localization definition
      */
     public LocalizationDefinition createLocalizationDefinition(
@@ -884,7 +885,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * <p>
      * Creates an MQLink definition.
      * </p>
-     * 
+     *
      * @return The MQLink definition
      */
     public MQLinkDefinition createMQLinkDefinition(String mqLinkUuid) {
@@ -908,7 +909,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * return a new reference to an implementation of
      * ExceptionDestinationHandler. Accepts a name of a destination that could
      * not be delivered to OR null if there is no destination.
-     * 
+     *
      * @param name
      *            - The name of the destination that could not be delivered to.
      * @return ExceptionDestinationHandlerImpl
@@ -934,7 +935,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * return a new reference to an implementation of
      * ExceptionDestinationHandler. Accepts a name of a destination that could
      * not be delivered to OR null if there is no destination.
-     * 
+     *
      * @param name
      *            - The name of the destination that could not be delivered to.
      * @return ExceptionDestinationHandlerImpl
@@ -964,7 +965,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Get an singleton factory from the list of stored factories created at
      * initialise time.
-     * 
+     *
      * @param className
      *            - The class for which factory instance we want
      * @return The singleton instance
@@ -977,7 +978,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Get an factory per ME from the list of stored factories created at
      * initialise time.
-     * 
+     *
      * @param className
      *            - The class for which factory instance we want
      * @return The instance fopr this ME
@@ -989,7 +990,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Initialises the MessageProcessor class. Called by the
      * JsEngineComponent.initialize
-     * 
+     *
      * @param engine
      *            The JsMessagingEngine for this MessageProcessor.
      */
@@ -1048,9 +1049,9 @@ public final class MessageProcessor implements JsEngineComponent,
             _factories = new HashMap<String, Object>();
             try {
                 _factories.put(SIMPConstants.JS_DESTINATION_ADDRESS_FACTORY,
-                               JsMainAdminComponentImpl.getSIDestinationAddressFactory());
+                               SIDestinationAddressFactory.getInstance());
                 _factories.put(SIMPConstants.SI_DESTINATION_ADDRESS_FACTORY,
-                               JsMainAdminComponentImpl.getSIDestinationAddressFactory());
+                               SIDestinationAddressFactory.getInstance());
                 _factories.put(SIMPConstants.CONTROL_MESSAGE_FACTORY,
                                ControlMessageFactory.getInstance());
                 _factories.put(SIMPConstants.JS_ADMIN_FACTORY, JsAdminFactory
@@ -1135,27 +1136,27 @@ public final class MessageProcessor implements JsEngineComponent,
             //lohith liberty change
             /*
              * _meControlListener = registerMEControlListener();
-             * 
+             *
              * // If we have a listener, notify it that the ME has started
              * if (_meControlListener != null) {
              * // Instantiate a new control object that XD can call
              * _messagingEngineControl = new MessagingEngineControlImpl(this);
-             * 
+             *
              * // Get reference to the MessageController object
              * if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
              * SibTr.debug(tc, "Calling registerMEController ",
              * new Object[] { _messagingEngineControl,
              * getMessagingEngineBus(),
              * getMessagingEngineName() });
-             * 
+             *
              * _messageController = _meControlListener.registerMEController(
              * _messagingEngineControl, getMessagingEngineBus(),
              * getMessagingEngineName());
-             * 
+             *
              * if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
              * SibTr.debug(tc, "Returned from registerMEController with",
              * _messageController);
-             * 
+             *
              * // If XD returned a MessageController object, then drive
              * // notifyMEStarting against it.
              * if (_messageController != null) {
@@ -1163,9 +1164,9 @@ public final class MessageProcessor implements JsEngineComponent,
              * if (TraceComponent.isAnyTracingEnabled()
              * && tc.isDebugEnabled())
              * SibTr.debug(tc, "Calling notifyMEStarting ");
-             * 
+             *
              * _messageController.notifyMEStarting();
-             * 
+             *
              * if (TraceComponent.isAnyTracingEnabled()
              * && tc.isDebugEnabled())
              * SibTr.debug(tc, "Returned from notifyMEStarting");
@@ -1187,12 +1188,12 @@ public final class MessageProcessor implements JsEngineComponent,
              * enough to signal HA that the ME should be shutdown and not
              * restarted elsewhere without manual intervention to fix the
              * problem. In HA parlance, it is a global failure.
-             * 
+             *
              * However, it is possible that in some future time some failures
              * could be considered local (ones which could be fixed by restart
              * the ME on another WAS). At which point there can be another catch
              * block in this try block.
-             * 
+             *
              * We catch both ordinary and runtime exceptions. A runtime
              * exception such as an NPE should cause the ME to fail without
              * failover (which could stop other application servers in the
@@ -1257,7 +1258,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * This is where start things actually happen.
-     * 
+     *
      * @throws MessageStoreException
      */
     private void startInternal(int startMode) throws MessageStoreException {
@@ -1280,12 +1281,12 @@ public final class MessageProcessor implements JsEngineComponent,
          * try {
          * Class lookupClass = Class
          * .forName("com.ibm.ws.pmi.preprocess.sib_processor_impl_StatsTemplateLookup");
-         * 
-         * 
-         * 
+         *
+         *
+         *
          * StatsFactory .registerStatsTemplateLookup((StatsTemplateLookup)
          * lookupClass .newInstance());
-         * 
+         *
          * } catch (Exception e) {
          * // FFDC
          * FFDCFilter
@@ -1293,7 +1294,7 @@ public final class MessageProcessor implements JsEngineComponent,
          * e,
          * "com.ibm.ws.sib.processor.impl.MessageProcessor.startInternal",
          * "1:1470:1.445", this);
-         * 
+         *
          * SIErrorException finalE = new SIErrorException(
          * nls
          * .getFormattedMessage(
@@ -1301,16 +1302,16 @@ public final class MessageProcessor implements JsEngineComponent,
          * new Object[] {
          * "com.ibm.ws.sib.processor.impl.MessageProcessor",
          * "1:1477:1.445", e }, null), e);
-         * 
+         *
          * SibTr.exception(tc, finalE);
          * SibTr.error(tc, "INTERNAL_MESSAGING_ERROR_CWSIP0002", new Object[] {
          * "com.ibm.ws.sib.processor.impl.MessageProcessor",
          * "1:1483:1.445", SIMPUtils.getStackTrace(e) });
-         * 
+         *
          * if (TraceComponent.isAnyTracingEnabled()
          * && tc.isEntryEnabled())
          * SibTr.exit(tc, "startInternal", finalE);
-         * 
+         *
          * throw finalE;
          * }
          */
@@ -1418,15 +1419,15 @@ public final class MessageProcessor implements JsEngineComponent,
 
         /*
          * Tick generator has to be initialised after
-         * 
+         *
          * 1. Any previously persistently stored tick is available. 2 An
          * initially cold started persistent store is added to the msgstore.
          * This is because the tick generator immediately persists its tick
          * value when it is created.
-         * 
+         *
          * Outside of these restrictions, we can initialise independently of
          * other objects in the start sequence.
-         * 
+         *
          * Feature 174199.2.11
          */
         initializeTickGenerator();
@@ -1490,22 +1491,22 @@ public final class MessageProcessor implements JsEngineComponent,
             /*
              * // Reconcile WCCM and MP.reconstituted data for mqlinks
              * _destinationManager.reconcileMQLinks();
-             * 
+             *
              * // Reconcile WCCM and MP.reconstituted data for local links
              * _destinationManager.reconcileLocalLinks();
-             * 
+             *
              * // Reconcile any system destinations and topicspaces no longer
              * // required by
              * // the MQ pubsub bridge
              * _destinationManager.reconcileMQLinkPubSubBridgeQs();
-             * 
+             *
              * // Reconcile WCCM and MP.reconstituted data for remote destinations
              * _destinationManager.reconcileRemote();
-             * 
+             *
              * // Reconcile WCCM and MP.reconstituted data for remote temporary
              * // destinations
              * _destinationManager.reconcileRemoteTemporary();
-             * 
+             *
              * // Reconcile WCCM and MP.reconstituted data for remote links
              * _destinationManager.reconcileRemoteLinks();
              */
@@ -1603,7 +1604,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Allows the mediations to ask whether WAS has announced that it is open
      * for e-business or not yet.
-     * 
+     *
      * @return
      */
     public boolean isWASOpenForEBusiness() {
@@ -1639,12 +1640,12 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Stops the message processor
-     * 
+     *
      * Implements the stop method in the JsEngineComponent
-     * 
+     *
      * @param mode
      *            The mode that stop has been issued
-     * 
+     *
      * @see com.ibm.ws.sib.admin.JsEngineComponent.stop
      */
     @Override
@@ -1778,7 +1779,7 @@ public final class MessageProcessor implements JsEngineComponent,
      ** if MP_INPROCESS_CONNECTION : closes all ConnectionImpl </br>
      ** if MP_VIACOMMS_CONNECTION : closes ConnectionImpl which are connected via comms </br>
      ** if MP_VIACOMMSSSL_CONNECTION : closes ConnectionImpl which are connection vias comms SSL. </br>
-     * 
+     *
      ** No harm in case if the same connections are closed by multiple components...
      */
     private void closeConnections(int mode, int connectionType) {
@@ -1821,7 +1822,7 @@ public final class MessageProcessor implements JsEngineComponent,
                                             .removeConnectionListener(listeners[listenIndex]);
                         }
                         //now stop this connection
-                        //PM72328.dev: Close connection after ME terminated set on connection listeners 
+                        //PM72328.dev: Close connection after ME terminated set on connection listeners
                         currentConnection._close(false);
                     }
 
@@ -1922,7 +1923,7 @@ public final class MessageProcessor implements JsEngineComponent,
         _destinationChangeListener = new DestinationChangeListener(this);
         _linkChangeListener = new LinkChangeListener(this);
 
-        //Venu Liberty change. No _destinationLocationManager 
+        //Venu Liberty change. No _destinationLocationManager
         //_destinationLocationManager.setChangeListener(_destinationChangeListener);
 
         createControlAdapter();
@@ -1967,29 +1968,29 @@ public final class MessageProcessor implements JsEngineComponent,
 
         // Venu Liberty change
         //making all TRM related objects to NULL
-        // These objects all togehter can have been removed, however as the decission had been take to 
+        // These objects all togehter can have been removed, however as the decission had been take to
         // keep ME-ME communication, retaining them so that ME-ME related artifacts would get built
         /*
          * // 175358 Locate TRM class using JsConstants
          * TrmMeMain trm = (TrmMeMain) _engine
          * .getEngineComponent(JsConstants.SIB_CLASS_TO_ENGINE);
-         * 
+         *
          * if (trm == null) {
          * if (TraceComponent.isAnyTracingEnabled()
          * && tc.isEntryEnabled())
          * SibTr.exit(tc, "initializeNonPersistent", "WsRuntimeException");
-         * 
+         *
          * // Log error to console
          * SibTr.error(tc, "INTERNAL_MESSAGING_ERROR_CWSIP0001", new Object[] {
          * "com.ibm.ws.sib.processor.impl.MessageProcessor",
          * "1:2117:1.445" });
-         * 
+         *
          * throw new SIErrorException(nls.getFormattedMessage(
          * "INTERNAL_MESSAGING_ERROR_CWSIP0001", new Object[] {
          * "com.ibm.ws.sib.processor.impl.MessageProcessor",
          * "1:2122:1.445" }, null));
          * }
-         * 
+         *
          * _destinationLocationManager = trm.getDestinationLocationManager();
          * _linkManager = trm.getLinkManager();
          * _mqLinkManager = trm.getMQLinkManager();
@@ -2037,7 +2038,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Loads the Neighbours from Admin
-     * 
+     *
      * @return
      */
     private void configureNeighbours() {
@@ -2124,18 +2125,18 @@ public final class MessageProcessor implements JsEngineComponent,
      * (warm restart).
      * <p>
      * This involves,
-     * 
+     *
      * 1. Reconstituting MessageProcessor's persisted state information.
-     * 
+     *
      * 2. Initializing non-persistent MessageProcessor fields and objects.
-     * 
+     *
      * 3. Travelling down the tree structure of ItemStreams, retrieving and
      * reconstituting objects as appropriate (Destination Manager, Destination
      * Handlers, etc.)
      * <p>
      * Feature 174199.2.4
      * <p>
-     * 
+     *
      * @return true if reconstitution successful, false if nothing existed to
      *         reconstitute or there was a fatal error while reconstituting.
      */
@@ -2148,11 +2149,11 @@ public final class MessageProcessor implements JsEngineComponent,
 
         /*
          * 174199.2
-         * 
+         *
          * If you want to force the Message Processor to ignore existing
          * database information on restart for debugging purposes, comment out
          * this line.
-         * 
+         *
          * Commenting out this line will not delete previous database
          * information, but will rather store a second persistent data
          * structure.
@@ -2217,7 +2218,7 @@ public final class MessageProcessor implements JsEngineComponent,
             // engines localizing destinations
             _destinationChangeListener = new DestinationChangeListener(this);
             _linkChangeListener = new LinkChangeListener(this);
-            // Venu mock mock 
+            // Venu mock mock
             // For now no _destinationLocationManager
             /*
              * _destinationLocationManager
@@ -2239,7 +2240,7 @@ public final class MessageProcessor implements JsEngineComponent,
              * _multiMEProxyHandler = (MultiMEProxyHandler) _persistentStore
              * .findFirstMatchingItemStream(new ClassEqualsFilter(
              * MultiMEProxyHandler.class));
-             * 
+             *
              * // Sanity - A PersistentStore should not be in the MessageStore
              * // without
              * // a multiMEProxyHandler!
@@ -2251,13 +2252,13 @@ public final class MessageProcessor implements JsEngineComponent,
              * new Object[] {
              * "com.ibm.ws.sib.processor.impl.MessageProcessor",
              * "1:2363:1.445" }, null));
-             * 
+             *
              * FFDCFilter
              * .processException(
              * e,
              * "com.ibm.ws.sib.processor.impl.MessageProcessor.reconstitute",
              * "1:2369:1.445", this);
-             * 
+             *
              * SibTr.exception(tc, e);
              * SibTr
              * .error(
@@ -2271,21 +2272,21 @@ public final class MessageProcessor implements JsEngineComponent,
              * SibTr.exit(tc, "reconstitute", SIMPUtils.getStackTrace(e));
              * throw e;
              * }
-             * 
+             *
              * _multiMEProxyHandler.initialiseNonPersistent(this, _txManager);
              */
 
             // Venu mock mock ...  no SystemConnection no recoverNeighbours and no  ConfigureNeighbours
 
             /*
-             * 
+             *
              * // Connection creation requires a DestinationManager
              * createSystemConnection();
-             * 
+             *
              * _proxyHandlerDestAddr = SIMPUtils.createJsSystemDestinationAddress(
              * SIMPConstants.PROXY_SYSTEM_DESTINATION_PREFIX,
              * getMessagingEngineUuid());
-             * 
+             *
              * // Recover the Neighbours for the ProxyHandler
              * try {
              * _multiMEProxyHandler.recoverNeighbours();
@@ -2296,13 +2297,13 @@ public final class MessageProcessor implements JsEngineComponent,
              * e,
              * "com.ibm.ws.sib.processor.impl.MessageProcessor.reconstitute",
              * "1:2402:1.445", this);
-             * 
+             *
              * if (TraceComponent.isAnyTracingEnabled()
              * && tc.isEntryEnabled())
              * SibTr.exit(tc, "reconstitute", "SIErrorException");
              * throw new SIErrorException(e);
              * }
-             * 
+             *
              * // Read the Neighbour configuration
              * configureNeighbours();
              */
@@ -2489,10 +2490,10 @@ public final class MessageProcessor implements JsEngineComponent,
      * This method creates the System destinations required for MP. Primarily,
      * this is the Queue that is used for receiving Proxy subscription update
      * messages (SYSTEM.MENAME.PROXY.QUEUE)
-     * 
+     *
      * <P>
      * It is also used to create the SYSTEM.DEFAULT.EXCEPTION.DESTINATION queue
-     * 
+     *
      * <p>
      * This is designed for a cold start of the ME. It may be that on a warm
      * start, the destinations already exist, so this routine is not required.
@@ -2586,7 +2587,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Starts a new thread from the MP Consumers Thread Pool Only consumer
      * threads should use this thread pool.
-     * 
+     *
      * @param runnable
      * @throws InterruptedException
      */
@@ -2642,7 +2643,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Starts a new thread from the MP System Thread Pool Only system threads
      * should start call start using this method.
-     * 
+     *
      * @param runnable
      * @throws InterruptedException
      */
@@ -2703,10 +2704,10 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * setConfig is implemented from the interface JsEngineComponent and is used
      * to set properties on the MP
-     * 
+     *
      * @param config
      *            the JsEObject config of the messaging engine
-     * 
+     *
      * @see com.ibm.ws.sib.admin.JsEngineComponent.setConfig
      */
     @Override
@@ -2725,12 +2726,12 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * setCustomProperty is implemented from the interface JsEngineComponent and
      * is used to set properties on the MP
-     * 
+     *
      * @param propertyName
      *            The name of the Attribute
      * @param propertyValue
      *            The value of the Attribute
-     * 
+     *
      * @see com.ibm.ws.sib.admin.JsEngineComponent.setCustomProperty
      */
     @Override
@@ -2749,7 +2750,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the messageProcessorMatching.
-     * 
+     *
      * @return MessageProcessorMatching
      */
     public MessageProcessorMatching getMessageProcessorMatching() {
@@ -2758,7 +2759,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the accessChecker.
-     * 
+     *
      * @return accessChecker
      */
     public AccessChecker getAccessChecker() {
@@ -2767,7 +2768,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the Authorization Utils.
-     * 
+     *
      * @return authorisationUtils
      */
     public AuthUtils getAuthorisationUtils() {
@@ -2776,7 +2777,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the discriminatorAccessChecker.
-     * 
+     *
      * @return topicAuthorization
      */
     public TopicAuthorization getDiscriminatorAccessChecker() {
@@ -2786,7 +2787,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Method to return the name of the Subscription Proxy Queue used to receive
      * the proxy updates
-     * 
+     *
      * @return String, the proxy Q name.
      */
     public JsDestinationAddress getProxyHandlerDestAddr() {
@@ -2800,7 +2801,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Gets the SearchResultsObjectPool instance
-     * 
+     *
      * @return the object pool
      */
     public SearchResultsObjectPool getSearchResultsObjectPool() {
@@ -2816,7 +2817,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * Method to return the connection that the SYSTEM queue was created on.
      * This connection is used wherever an internal producerSession or
      * consumerSession is required.
-     * 
+     *
      * @return SICoreConnection The connection made for registering internal
      *         consumers/producers.
      */
@@ -2850,7 +2851,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the messagingEngineUuid
-     * 
+     *
      * @return String
      */
     public SIBUuid8 getMessagingEngineUuid() {
@@ -2866,7 +2867,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the next tick for the message.
-     * 
+     *
      * @return
      */
     public long nextTick() throws SIResourceException {
@@ -2900,7 +2901,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.SIMPFactory#getMEConnectionListener()
      */
     @Override
@@ -2915,7 +2916,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.processor.SIMPFactory#getTopologyListener()
      */
     @Override
@@ -2925,7 +2926,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Creates the control message factory single instance
-     * 
+     *
      * @return the single instance of the control message factory.
      */
     public static ControlMessageFactory getControlMessageFactory() {
@@ -2944,7 +2945,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Creates the message handle factory single instance
-     * 
+     *
      * @return the single instance of the message handle factory.
      */
     public static JsMessageHandleFactory getJsMessageHandleFactory() {
@@ -2963,9 +2964,9 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Add an item to the Message Processor ItemStream.
-     * 
+     *
      * @throws SIResourceException
-     * 
+     *
      * @see com.ibm.ws.sib.msgstore.AbstractItem#add(Item, Transaction)
      */
     public void add(Item item, TransactionCommon transaction)
@@ -3077,7 +3078,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the destinationLocationManager.
-     * 
+     *
      * @return DestinationLocationManager
      */
     public DestinationLocationManager getDestinationLocationManager() {
@@ -3092,7 +3093,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the LinkManager.
-     * 
+     *
      * @return LinkManager
      */
     public LinkManager getLinkManager() {
@@ -3106,7 +3107,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns the MQLinkManager.
-     * 
+     *
      * @return MQLinkManager
      */
     MQLinkManager getMQLinkManager() {
@@ -3121,7 +3122,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Return a set of UUIDs for the Messaging Engines which localize a
      * specified destination
-     * 
+     *
      * @param busName
      * @param uuid
      * @param newSet
@@ -3141,10 +3142,10 @@ public final class MessageProcessor implements JsEngineComponent,
          * if (TraceComponent.isAnyTracingEnabled() &&
          * tc.isEntryEnabled()) SibTr.entry(tc, "getSIBDestinationLocalitySet",
          * new Object[] { busName, uuid, new Boolean(newSet) });
-         * 
+         *
          * Set results = _engine.getSIBDestinationLocalitySet(busName, uuid,
          * newSet);
-         * 
+         *
          * if (TraceComponent.isAnyTracingEnabled() &&
          * tc.isEntryEnabled()) SibTr.exit(tc, "getSIBDestinationLocalitySet",
          * results);
@@ -3170,7 +3171,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * Should messages on deleted destinations be discarded or put to the
      * exception destination?
      * </p>
-     * 
+     *
      * @return boolean
      */
     public boolean discardMsgsAfterQueueDeletion() {
@@ -3228,7 +3229,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * Get the destination change listener that is registered with TRM for
      * changes to the WLM destination groups
      * </p>
-     * 
+     *
      * @return DestinationChangeListener
      */
     public DestinationChangeListener getDestinationChangeListener() {
@@ -3245,7 +3246,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * <p>
      * Get the definition for the named foreign bus
      * </p>
-     * 
+     *
      * @param busName
      * @return
      */
@@ -3267,7 +3268,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Map the name of an ME to its Uuid.
-     * 
+     *
      * @param name
      *            The name of the ME to map.
      * @return The SIBUuid8 for the ME.
@@ -3297,7 +3298,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seecom.ibm.ws.sib.processor.impl.interfaces.ControllableResource#
      * getControlAdapter()
      */
@@ -3308,7 +3309,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seecom.ibm.ws.sib.processor.impl.interfaces.ControllableResource#
      * createControlAdapter()
      */
@@ -3325,7 +3326,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seecom.ibm.ws.sib.processor.impl.interfaces.ControllableResource#
      * registerControlAdapterAsMBean()
      */
@@ -3334,7 +3335,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seecom.ibm.ws.sib.processor.impl.interfaces.ControllableResource#
      * deregisterControlAdapterMBean()
      */
@@ -3343,7 +3344,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Allows the unit test framework to be called from the shipped MP code.
-     * 
+     *
      * @param newHandler
      *            The handler to which calls from MP code to unit test code can
      *            pass through.
@@ -3367,7 +3368,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * <p>
      * Also used by MP to report unit test failures which won't get reported in
      * the field... as it will be re-tried at a later point.
-     * 
+     *
      * @return null if the MP code is running in a production environment.
      */
     public static MPCallsToUnitTestHandler getMPCallsToUnitTestHandler() {
@@ -3448,7 +3449,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seecom.ibm.ws.sib.processor.impl.interfaces.ControllableResource#
      * dereferenceControlAdapter()
      */
@@ -3501,7 +3502,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.admin.JsEngineComponent#busReloaded(ConfigObject,
      * boolean, boolean, boolean)
      */
@@ -3515,7 +3516,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.ibm.ws.sib.admin.JsEngineComponent#engineReloaded(com.ibm.ws.sib.
      * admin.JsMessagingEngine)
@@ -3557,7 +3558,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Returns whether the ME is running as part of a stand alone server.
-     * 
+     *
      * @return
      */
     final public boolean isSingleServer() {
@@ -3585,7 +3586,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Method to allow the ME to be set as though it is running as part of a
      * standalone server or in an ND environment. Provided for unit-tests.
-     * 
+     *
      * @param ss
      */
     public void setSingleServer(boolean ss) {
@@ -3602,7 +3603,7 @@ public final class MessageProcessor implements JsEngineComponent,
      * Get the link change listener that is registered with TRM for changes to
      * the WLM link groups
      * </p>
-     * 
+     *
      * @return LinkChangeListener
      */
     public LinkChangeListener getLinkChangeListener() {
@@ -3616,7 +3617,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Set MessageProcessor's RuntimeEventListener.
-     * 
+     *
      * @param listener
      *            A RuntimeEventListener
      */
@@ -3645,7 +3646,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Fire an event notification of type TYPE_SIB_SECURITY_NOT_AUTHENTICATED
      * with reason SECURITY_REASON_NOT_AUTHENTICATED.
-     * 
+     *
      * @param newState
      */
     private void fireNotAuthenticatedEvent(String userName) {
@@ -3688,7 +3689,7 @@ public final class MessageProcessor implements JsEngineComponent,
     /**
      * Fire an event notification of type TYPE_SIB_SECURITY_NOT_AUTHENTICATED,
      * with reason SECURITY_REASON_NO_USERID.
-     * 
+     *
      * @param newState
      */
     private void fireNullUserEvent() {
@@ -3753,7 +3754,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * @parm key
-     * 
+     *
      * @parm command handler
      */
     public void registerCommandHandler(String key, CommandHandler handler) {
@@ -3777,9 +3778,9 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /*
      * Gets handler from table. Returns null if not in table
-     * 
+     *
      * @parm key
-     * 
+     *
      * @return command handler or null if not in table
      */
     public CommandHandler getRegisteredCommandHandler(String key) {
@@ -3828,7 +3829,7 @@ public final class MessageProcessor implements JsEngineComponent,
     // Security Changes for Liberty Messaging: Sharath Start
     /**
      * Get the Authentication proxy instance
-     * 
+     *
      * @return the authentication
      */
     public Authentication getAuthentication() {
@@ -3837,7 +3838,7 @@ public final class MessageProcessor implements JsEngineComponent,
 
     /**
      * Get the Authorization proxy instance
-     * 
+     *
      * @return the authorization
      */
     public Authorization getAuthorization() {

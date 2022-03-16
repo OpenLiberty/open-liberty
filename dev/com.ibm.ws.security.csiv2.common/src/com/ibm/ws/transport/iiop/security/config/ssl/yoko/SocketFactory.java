@@ -18,14 +18,12 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
@@ -46,6 +44,7 @@ import org.omg.IOP.TaggedComponent;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.csiv2.config.CompatibleMechanisms;
@@ -364,7 +363,11 @@ public class SocketFactory extends SocketFactoryHelper {
      */
     private void configureServerSocket(SSLServerSocket serverSocket, SSLServerSocketFactory serverSocketFactory, String sslConfigName, OptionsKey options) throws IOException {
         try {
-            String[] cipherSuites = sslConfig.getCipherSuites(sslConfigName, serverSocketFactory.getSupportedCipherSuites());
+
+            // Get the ssl properties, need information form the properties to set socket information
+            Properties sslProps = sslConfig.getSSLCfgProperties(sslConfigName);
+
+            String[] cipherSuites = sslConfig.getCipherSuites(sslConfigName, serverSocketFactory.getSupportedCipherSuites(), sslProps);
 
             SSLParameters sslParameters = serverSocket.getSSLParameters();
 
@@ -372,13 +375,13 @@ public class SocketFactory extends SocketFactoryHelper {
             sslParameters.setCipherSuites(cipherSuites);
 
             // set use cipher order on the ssl parameters
-            boolean enforceCipherOrder = sslConfig.getEnforceCipherOrder(sslConfigName);
+            boolean enforceCipherOrder = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_ENFORCE_CIPHER_ORDER, "false"));
             sslParameters.setUseCipherSuitesOrder(enforceCipherOrder);
 
             // set the SSL protocol on the server socket
-            String protocol = sslConfig.getSSLProtocol(sslConfigName);
-            if (protocol != null) {
-                sslParameters.setProtocols(new String[] { protocol });
+            String[] protocols = sslConfig.getSSLProtocol(sslProps);
+            if (protocols != null) {
+                sslParameters.setProtocols(protocols);
             }
 
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
@@ -425,28 +428,39 @@ public class SocketFactory extends SocketFactoryHelper {
 
         socket.setSoTimeout(60 * 1000);
 
+        // Get the ssl properties, need information form the properties to set socket information
+        Properties sslProps = sslConfig.getSSLCfgProperties(clientSSLConfigName);
+
         // get a set of cipher suites appropriate for this connections requirements.
         // We request this for each connection, since the outgoing IOR's requirements may be different from
         // our server listener requirements.
         String[] iorSuites;
         try {
-            iorSuites = (String[]) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    return sslConfig.getCipherSuites(clientSSLConfigName, factory.getSupportedCipherSuites());
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            throw new IOException("Could not configure client socket", pae.getCause());
+            iorSuites = sslConfig.getCipherSuites(clientSSLConfigName, factory.getSupportedCipherSuites(), sslProps);
+        } catch (SSLException e) {
+            throw new IOException("Could not set ciphers on socket:", e);
         }
+
         SSLParameters params = socket.getSSLParameters();
 
         // Check to see if hostname verification needs to be enabled
-        if (sslConfig.enableVerifyHostname(clientSSLConfigName)) {
+        boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+        if (verifyHostname) {
             params.setEndpointIdentificationAlgorithm("HTTPS");
         }
 
         params.setCipherSuites(iorSuites);
+
+        try {
+            // set the SSL protocol on the server socket
+            String[] protocols = sslConfig.getSSLProtocol(sslProps);
+            if (protocols != null) {
+                params.setProtocols(protocols);
+            }
+        } catch (SSLException e) {
+            throw new IOException("Could not set protocols on socket:", e);
+        }
+
         socket.setSSLParameters(params);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.debug(tc, "Created SSL socket to " + host + ":" + port);

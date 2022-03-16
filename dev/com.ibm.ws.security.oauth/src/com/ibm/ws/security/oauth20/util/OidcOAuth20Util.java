@@ -201,7 +201,8 @@ public class OidcOAuth20Util extends OAuth20Util {
         return (new JsonParser()).parse(GSON_RAW.toJson(object)).getAsJsonObject();
     }
 
-    public static List<JsonObject> getListOfJsonObjects(JsonArray values) {
+    @Sensitive
+    public static List<JsonObject> getListOfJsonObjects(@Sensitive JsonArray values) {
         List<JsonObject> list = new ArrayList<JsonObject>();
         if (!OidcOAuth20Util.isNullEmpty(values)) {
             for (JsonElement jsonEle : values) {

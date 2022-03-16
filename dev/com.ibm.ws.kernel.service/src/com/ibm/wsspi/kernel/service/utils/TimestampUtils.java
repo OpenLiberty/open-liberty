@@ -39,6 +39,7 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
  *
  */
 public class TimestampUtils {
+    static final TraceComponent tc = Tr.register(TimestampUtils.class);
     @Deprecated
     protected final static long startTime;
     @Deprecated
@@ -69,12 +70,13 @@ public class TimestampUtils {
                         try {
                             WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("checkpoint/restoreTime");
                             List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
-                            System.out.println("restore time: " + restoreStartTimeEnv);
                             if (!restoreStartTimeEnv.isEmpty()) {
                                 long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
                                 long currentTime = System.currentTimeMillis();
-                                System.out.println("current time: " + currentTime);
                                 restoreTime = currentTime - startTimeInMillis;
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Time to restore process: " + restoreTime);
+                                }
                             }
                         } catch (NumberFormatException e) {
                         } catch (IOException e) {

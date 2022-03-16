@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -39,8 +39,7 @@ SEC_AUTHZ_FAILED.explanation=Der Benutzer hat nicht die erforderlichen Berechtig
 SEC_AUTHZ_FAILED.useraction=Wenden Sie sich an den Sicherheitsadministrator, wenn dieser Fehler unerwartet ist. Der Benutzer muss einer der Rollen zugeordnet werden, die die Ressource sch\u00fctzen, wenn ein Zugriff auf die gesch\u00fctzte Ressource erforderlich ist.
 
 SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Der SSL-Port f\u00fcr automatische Umleitung konnte nicht bestimmt werden. \u00dcberpr\u00fcfen Sie die Protokolle, um sicherzustellen, dass der HTTPS-(SSL-)Port gestartet ist, oder suchen Sie nach m\u00f6glichen Fehlern, die sich auf die SSL-Konfiguration beziehen, wie z. B. ein fehlendes oder falsches keyStore-Element.
-SSL_CAN_NOT_DETERMINE_PORT.explanation=Interner Fehler. \
-Der SSL-Port konnte nicht bestimmt werden.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=Interner Fehler. Der SSL-Port konnte nicht bestimmt werden.
 SSL_CAN_NOT_DETERMINE_PORT.useraction=Es kann keine Aktion ausgef\u00fchrt werden.
 
 SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: SSO-Konfigurationsfehler. FormLogin ist f\u00fcr die Webanwendung {0} konfiguriert, aber SSO ist nicht in den Sicherheitseinstellungen aktiviert. F\u00fcr die Verwendung von FormLogin muss SSO aktiviert werden.
@@ -52,23 +51,16 @@ SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Die post-Parameter sind null oder gr
 SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Wenn die post-Parameter zu gro\u00df sind, erh\u00f6hen Sie die Gr\u00f6\u00dfe f\u00fcr die Option postParamCookieSize.
 
 SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Bei der Initialisierung der Trust-Association konnte die Trust-Association-Klasse {0} nicht geladen werden.
-SEC_TAI_VALIDATE_FAILED.explanation=Wenn der entsprechende Interceptor f\u00fcr eine bestimmte Anforderung gefunden wird, validiert dieser Interceptor die Vertrauensstellung mit dem Reverse-Proxy-Server.\
-Diese Fehlernachricht zeigt an, dass die Validierung fehlgeschlagen ist und der Reverse-Proxy-Server deshalb nicht anerkannt werden kann. \
-Es ist beispielsweise m\u00f6glich, dass ein ung\u00fcltiges oder abgelaufenes Kennwort angegeben wurde.
-SEC_TAI_VALIDATE_FAILED.useraction=In einer Produktionsumgebung kann der Benutzer \u00fcber einen potenziellen Eindringlich im System benachrichtigt werden. \
-In einer Entwicklungsumgebung, in der Tests durchgef\u00fchrt werden, pr\u00fcfen Sie, ob die erwarteten Eingaben vom Reverse-Proxy-Server ordnungsgem\u00e4\u00df an den Interceptor \u00fcbergeben werden. \
-Die Spezifik dieser Eingaben richtet sich danach, wie die Trust-Association hergestellt wird. \
-Die einfachste Methode ist beispielsweise die \u00dcbergabe eines Benutzernamens und eines Kennworts im Basisauthentifizierungsheader. 
+SEC_TAI_VALIDATE_FAILED.explanation=Wenn der entsprechende Interceptor f\u00fcr eine bestimmte Anforderung gefunden wird, validiert dieser Interceptor die Vertrauensstellung mit dem Reverse-Proxy-Server.Diese Fehlernachricht zeigt an, dass die Validierung fehlgeschlagen ist und der Reverse-Proxy-Server deshalb nicht anerkannt werden kann. Es ist beispielsweise m\u00f6glich, dass ein ung\u00fcltiges oder abgelaufenes Kennwort angegeben wurde.
+SEC_TAI_VALIDATE_FAILED.useraction=In einer Produktionsumgebung kann der Benutzer \u00fcber einen potenziellen Eindringlich im System benachrichtigt werden. In einer Entwicklungsumgebung, in der Tests durchgef\u00fchrt werden, pr\u00fcfen Sie, ob die erwarteten Eingaben vom Reverse-Proxy-Server ordnungsgem\u00e4\u00df an den Interceptor \u00fcbergeben werden. Die Spezifik dieser Eingaben richtet sich danach, wie die Trust-Association hergestellt wird. Die einfachste Methode ist beispielsweise die \u00dcbergabe eines Benutzernamens und eines Kennworts im Basisauthentifizierungsheader. 
 
 SEC_TAI_USER_EXCEPTION=CWWKS9108E: Es wurde kein g\u00fcltiger Benutzer f\u00fcr die Trust-Association gefunden.
-SEC_TAI_USER_EXCEPTION.explanation=Ein Interceptor gibt den authentifizierten Benutzernamen zur\u00fcck. \
-Ein solcher Benutzername wurde nicht zur\u00fcckgegeben.
+SEC_TAI_USER_EXCEPTION.explanation=Ein Interceptor gibt den authentifizierten Benutzernamen zur\u00fcck. Ein solcher Benutzername wurde nicht zur\u00fcckgegeben.
 SEC_TAI_USER_EXCEPTION.useraction=Vergewissern Sie sich, dass der Reverse-Proxy-Server den richtigen Benutzernamen in die HTTP-Anforderung einf\u00fcgt, bevor er die Anforderung an den Anwendungsserver sendet.
 
 SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: W\u00e4hrend der Trust-Association ist eine unerwartete Ausnahme eingetreten. Ausnahme: {0}
 SEC_TAI_GENERAL_EXCEPTION.explanation=Diese Ausnahme verweist auf alle anderen Ausnahmen, die von einem Interceptor erstellt werden k\u00f6nnen, wenn die Vertrauensstellung mit dem Reverse-Proxy-Server validiert wird und wenn der authentifizierte Benutzer abgerufen wird. Dies gilt nicht f\u00fcr WebTrustAssociationFailedException und WebTrustAssociationUserException.
-SEC_TAI_GENERAL_EXCEPTION.useraction=Beheben Sie das Problem mithilfe des Stack-Trace, der zusammen mit dieser Fehlernachricht ausgegeben wird.\
-Au\u00dferdem k\u00f6nnen Sie die Erstellung des Debug-Trace aktivieren, um weitere Informationen zur Spezifik der Ausnahme abzurufen.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Beheben Sie das Problem mithilfe des Stack-Trace, der zusammen mit dieser Fehlernachricht ausgegeben wird.Au\u00dferdem k\u00f6nnen Sie die Erstellung des Debug-Trace aktivieren, um weitere Informationen zur Spezifik der Ausnahme abzurufen.
 
 AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Es sind mehrere Anwendungen mit dem Namen {0} vorhanden. Die Richtlinien f\u00fcr Sicherheitsberechtigung erfordern eindeutige Namen.
 AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Anwendungsnamen m\u00fcssen eindeutig sein, damit die Richtlinien f\u00fcr Sicherheitsberechtigung durchgesetzt werden k\u00f6nnen.
@@ -118,11 +110,11 @@ OSGI_SERVICE_ERROR=CWWKS9121E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
 OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
 OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
 
-UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die zug\u00e4nglich sind: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I: \ F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die zug\u00e4nglich sind: {2}
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=Das Element deny-uncovered-http-methods ist in der Datei web.xml f\u00fcr das Servlet nicht angegeben, und es sind HTTP-Methoden f\u00fcr ein URL-Muster vorhanden, die nicht gesch\u00fctzt sind. Diese nicht gesch\u00fctzten Methoden sind zug\u00e4nglich.
 UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Stellen Sie sicher, dass alle HTTP-Methoden in allen beschr\u00e4nkten URL-Mustern den gew\u00fcnschten Sicherheitsschutz haben.
 
-UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die nicht zug\u00e4nglich sind: {2}
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I: \ F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die nicht zug\u00e4nglich sind: {2}
 UNCOVERED_HTTP_METHODS_FOUND.explanation=Das Element deny-uncovered-http-methods ist in der Datei web.xml f\u00fcr das Servlet angegeben, und es sind HTTP-Methoden f\u00fcr ein URL-Muster vorhanden, die nicht gesch\u00fctzt sind. Diese nicht gesch\u00fctzten Methoden sind nicht zug\u00e4nglich.
 UNCOVERED_HTTP_METHODS_FOUND.useraction=Stellen Sie sicher, dass alle HTTP-Methoden in allen beschr\u00e4nkten URL-Mustern den gew\u00fcnschten Sicherheitsschutz haben.
 
@@ -146,3 +138,11 @@ JWT_COOKIE_SECURITY_MISMATCH.useraction=Verwenden Sie das HTTPS-Protokoll oder s
 #TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both set on a response, with differing expiration times of {0} and {1} minutes. Change the ltpa or jwtBuilder configuration elements so that both types of tokens have the same expiration time.
 #TOKEN_EXPIRATION_MISMATCH.explanation=JSON Web Token (JWT) and Lightweight Third Party Authentication (LTPA) tokens are both enabled in the server configuration, but they have different expiration times. Tokens with differing expiration times might cause subsequent requests to fail unexpectedly.
 #TOKEN_EXPIRATION_MISMATCH.useraction=Configure JWT and LTPA tokens to have the same expiration time. For LTPA, change the configuration of the ltpa element. For JWT, change the configuration of the jwtBuilderRef element that is referenced in your jwtSso configuration.  
+
+JCACHE_PUT_FAILURE=CWWKS9130E: Vom Cache f\u00fcr abgemeldete Cookies konnte das abgemeldete Cookie nicht in den JCache-Cache gestellt werden. Der Fehler: {0}
+JCACHE_PUT_FAILURE.explanation=Im Cache f\u00fcr abgemeldete Cookies ist ein Fehler aufgetreten, als versucht wurde, das abgemeldete Cookie in den JCache-Cache zu stellen.
+JCACHE_PUT_FAILURE.useraction=Beheben Sie die Fehlerursache.
+
+JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Vom Cache f\u00fcr abgemeldete Cookies konnte der JCache-Cache nicht auf das Cookie \u00fcberpr\u00fcft werden. Der Fehler: {0}
+JCACHE_CONTAINSKEY_FAILURE.explanation=Im Cache f\u00fcr abgemeldete Cookies ist ein Fehler aufgetreten, als versucht wurde, den JCache-Cache auf das Cookie zu \u00fcberpr\u00fcfen. 
+JCACHE_CONTAINSKEY_FAILURE.useraction=Beheben Sie die Fehlerursache.

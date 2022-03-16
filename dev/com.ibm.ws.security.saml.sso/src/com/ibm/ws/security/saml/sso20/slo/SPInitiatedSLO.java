@@ -358,7 +358,13 @@ public class SPInitiatedSLO {
 //        } catch (ServletException e1) {
 //            //throw new SamlException(e1); //TODO
 //        }
-        resp.setStatus(javax.servlet.http.HttpServletResponse.SC_OK);
+        //@AV999-092821 
+        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+            resp.setStatus(javax.servlet.http.HttpServletResponse.SC_ACCEPTED);
+        } else {
+            resp.setStatus(javax.servlet.http.HttpServletResponse.SC_OK);
+        }
+        
 
         ForwardRequestInfo requestInfo = new ForwardRequestInfo(idpUrl);
         requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.hadb_fat.derby.1"),
+               project(":com.ibm.ws.transaction.hadb_fat.sqlserver.1"),
                project(":com.ibm.ws.transaction.fat.util"),
                project(':io.openliberty.org.apache.commons.logging')
 }
@@ -24,9 +25,13 @@ task copyFAT {
       from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('fat/src/com/ibm/ws/transaction/test/tests')
       into new File('fat/src/com/ibm/ws/transaction/test/tests')
     }
-	copy {
+    copy {
       from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('test-bundles/ifxlib/src/com/informix/jdbcx')
       into new File('test-bundles/ifxlib/src/com/informix/jdbcx')
+    }
+    copy {
+      from project(':com.ibm.ws.transaction.hadb_fat.sqlserver.1').file('test-bundles/ifxlib/src/com/informix/database')
+      into new File('test-bundles/ifxlib/src/com/informix/database')
     }
 }
 
@@ -78,8 +83,8 @@ clean.doLast {
   if (file('test-applications').exists()){
     file('test-applications').deleteDir()
   }
-  if (file('test-bundles/ifxlib/src/com/informix/jdbcx').exists()){
-    file('test-bundles/ifxlib/src/com/informix/jdbcx').deleteDir()
+  if (file('test-bundles').exists()){
+    file('test-bundles').deleteDir()
   }
   if (file('publish').exists()){
     file('publish').deleteDir()

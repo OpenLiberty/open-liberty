@@ -28,6 +28,9 @@ Import-Package: \
     javax.xml.bind.annotation;version=!,\
     *
 
+Export-Package: \
+    com.ibm.ws.microprofile.openapi.servlet.filter
+
 Private-Package: \
     io.openliberty.microprofile.openapi20.internal.*
 

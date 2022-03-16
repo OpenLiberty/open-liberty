@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.mongo.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -37,7 +38,12 @@ public class MongoSSLInvalidTrustTest extends FATServletClient {
         MongoServerSelector.assignMongoServers(server);
         FATSuite.createApp(server);
         server.startServer();
-        FATSuite.waitForMongoSSL(server);
+        if (!FATSuite.waitForMongoSSL(server)) {
+            // Call afterClass to stop the server; then restart
+            afterClass();
+            server.startServer();
+            assertTrue("Did not find message(s) indicating MongoDBService(s) had activated", FATSuite.waitForMongoSSL(server));
+        }
     }
 
     @AfterClass

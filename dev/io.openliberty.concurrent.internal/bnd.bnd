@@ -1,0 +1,63 @@
+#*******************************************************************************
+# Copyright (c) 2021, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-Name: Jakarta Concurrency 3.0+ implementation
+Bundle-SymbolicName: io.openliberty.concurrent.internal
+Bundle-Description: Jakarta Concurrency 3.0+ implementation; version=${bVersion}
+
+WS-TraceGroup: concurrent
+
+Private-Package: \
+  io.openliberty.concurrent.internal.context,\
+  io.openliberty.concurrent.internal.processor,\
+  io.openliberty.concurrent.internal.resources
+
+instrument.classesExcludes: io/openliberty/concurrent/internal/resources/*.class
+
+-dsannotations: \
+  io.openliberty.concurrent.internal.context.ThirdPartyContextCoordinator,\
+  io.openliberty.concurrent.internal.processor.ContextServiceDefinitionProvider,\
+  io.openliberty.concurrent.internal.processor.ContextServiceResourceFactoryBuilder,\
+  io.openliberty.concurrent.internal.processor.ManagedExecutorDefinitionProvider,\
+  io.openliberty.concurrent.internal.processor.ManagedExecutorResourceFactoryBuilder,\
+  io.openliberty.concurrent.internal.processor.ManagedScheduledExecutorDefinitionProvider,\
+  io.openliberty.concurrent.internal.processor.ManagedScheduledExecutorResourceFactoryBuilder,\
+  io.openliberty.concurrent.internal.processor.ManagedThreadFactoryDefinitionProvider,\
+  io.openliberty.concurrent.internal.processor.ManagedThreadFactoryResourceFactoryBuilder
+
+-buildpath: \
+  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+  com.ibm.websphere.appserver.spi.logging;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.cm;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.cm;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.wsspi.org.osgi.service.metatype;version=latest,\
+  com.ibm.ws.concurrency.policy;version=latest,\
+  com.ibm.ws.concurrent;version=latest,\
+  com.ibm.ws.config;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.context;version=latest,\
+  com.ibm.ws.injection;version=latest,\
+  com.ibm.ws.javaee.dd.common;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  io.openliberty.jakarta.concurrency.3.0;version=latest

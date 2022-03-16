@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2021, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jcache.internal/resources/io/openliberty/jcache/internal/resources/JCacheMessages.nlsprops
+#COMPONENTPREFIX CWLJC SESN
+#COMPONENTNAMEFOR Open Liberty JCache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: HTTP \uc138\uc158 \uc9c0\uc18d\uc131\uc744 \uc704\ud574 \uc0dd\uc131\ub41c Infinispan \uad6c\uc131: {0}. \ub300\uccb4\ud558\ub824\uba74 httpSessionCache \uad6c\uc131 \uc694\uc18c \ub610\ub294 cacheManager \uad6c\uc131 \uc694\uc18c\uc758 URI \uc18d\uc131\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=HTTP \uc138\uc158 \uc9c0\uc18d\uc131\uc5d0 \uc0ac\uc6a9\ub418\ub294 Infinispan \uce90\uc2dc\uc5d0\uc11c\ub294 \uc11c\ubc84 \uc0ac\uc774\uc5d0\uc11c \uc138\uc158\uc744 \uc720\uc9c0\ud558\uae30 \uc704\ud574 \ucd94\uac00 \uad6c\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. Liberty\ub294 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud558\uc9c0 \uc54a\ub294 \uacbd\uc6b0 \uc774 \uad6c\uc131\uc744 \uc0dd\uc131\ud569\ub2c8\ub2e4.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=\uc0dd\uc131\ub41c \uad6c\uc131\uc5d0 \ub9cc\uc871\ud558\uba74 \ucd94\uac00 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub9cc\uc871\ud558\uc9c0 \uc54a\uc73c\uba74 \uc0dd\uc131\ub41c \uad6c\uc131\uc744 \uc2dc\uc791\uc810\uc73c\ub85c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: {0} JCache\uac00 {1}ms \ub0b4\uc5d0 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWLJC0001_CACHE_CREATED.explanation=\uc774\ub984 \uc9c0\uc815\ub41c JCache\uac00 \uc5c6\uc5b4 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWLJC0001_CACHE_CREATED.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: \uae30\uc874 {0} JCache\uac00 {1}\ubc00\ub9ac\ucd08 \uc548\uc5d0 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWLJC0002_CACHE_FOUND.explanation=\uc774\ub984 \uc9c0\uc815\ub41c JCache\ub97c \ucc3e\uc544\uc11c \uc791\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWLJC0002_CACHE_FOUND.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: {0} JCache\ub294 {1} \uce90\uc2f1 \uc81c\uacf5\uc790\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+CWLJC0003_USING_PROVIDER.explanation=\uc774\ub984 \uc9c0\uc815\ub41c JCache\uac00 \uc9c0\uc815\ub41c \uc81c\uacf5\uc790\ub97c \uc0ac\uc6a9\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+CWLJC0003_USING_PROVIDER.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: {0} \uce90\uc2f1 \uc81c\uacf5\uc790\ub97c \ub85c\ub4dc\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=cachingProvider \uad6c\uc131\uc744 \ub85c\ub4dc\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+CWLJC0004_GET_PROVIDER_FAILED.useraction=\uba54\uc2dc\uc9c0\uc5d0 \ud3ec\ud568\ub41c \uc624\ub958\ub97c \ud574\uacb0\ud558\uace0 \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: {0} JCache CacheManager\ub97c \ub85c\ub4dc\ud558\ub294 \ub370 {1}ms\uac00 \uac78\ub838\uc2b5\ub2c8\ub2e4. 
+CWLJC0005_MANAGER_LOADED.explanation=JCache CacheManager\uac00 \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWLJC0005_MANAGER_LOADED.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: cacheManager URI\uc5d0 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uad6c\ubb38\uc774 \uc788\uc2b5\ub2c8\ub2e4.  \uc6d0\uc778\uc740 {0}\uc785\ub2c8\ub2e4.
+CWLJC0007_URI_INVALID_SYNTAX.explanation=\uc9c0\uc815\ub41c JCache \uad6c\uc131 URI\uc758 \uad6c\ubb38\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWLJC0007_URI_INVALID_SYNTAX.useraction=\uc9c0\uc815\ub41c \uad6c\uc131 URI\uc758 \uad6c\ubb38\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: {0} JCache: {1}\uc5d0\uc11c \uc624\ube0c\uc81d\ud2b8\uc758 \uc9c1\ub82c\ud654\ub97c \ud574\uc81c\ud558\ub294 \uc911 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWLJC0008_DESERIALIZE_ERR.explanation=\uc774\ub984 \uc9c0\uc815\ub41c JCache\uc5d0\uc11c \uac80\uc0c9\ub41c \uc624\ube0c\uc81d\ud2b8\uc758 \uc9c1\ub82c\ud654\ub97c \ud574\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWLJC0008_DESERIALIZE_ERR.useraction=\ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 JCache \uad6c\uc131\uc5d0 \ud3ec\ud568\ub41c \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0\uc11c \uc0ac\uc6a9 \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: {0} JCache: {1}\uc5d0 \ub300\ud574 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud558\ub294 \uc911 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWLJC0009_SERIALIZE_ERR.explanation=\uc774\ub984 \uc9c0\uc815\ub41c JCache\uc5d0 \uc800\uc7a5\ud560 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWLJC0009_SERIALIZE_ERR.useraction=\uc9c1\ub82c\ud654\ud560 \ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 \uc9c1\ub82c\ud654 \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: JCache CacheManager\ub97c \uad6c\uc131\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=\uc9c0\uc815\ub41c \uc624\ub958\ub85c \uc778\ud574 JCache CacheManager\ub97c \uad6c\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=\uba54\uc2dc\uc9c0\uc5d0 \ud3ec\ud568\ub41c \uc624\ub958\ub97c \ud574\uacb0\ud558\uace0 \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: {0} JCache: {1}\uc744(\ub97c) \uac80\uc0c9\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWLJC0011_GET_CACHE_ERR.explanation=\uc9c0\uc815\ub41c \uc624\ub958\ub85c \uc778\ud574 \uce90\uc2dc\ub97c \uac80\uc0c9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWLJC0011_GET_CACHE_ERR.useraction=\uba54\uc2dc\uc9c0\uc5d0 \ud3ec\ud568\ub41c \uc624\ub958\ub97c \ud574\uacb0\ud558\uace0 \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.

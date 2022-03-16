@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import javax.transaction.xa.XAResource;
 
@@ -41,7 +40,6 @@ import com.ibm.ws.wsat.service.impl.RegistrationImpl;
 @Component(property = { Constants.WS_FACTORY_PART, "service.vendor=IBM" })
 public class ParticipantFactoryService implements XAResourceFactory {
 
-    private static final String CLASS_NAME = ParticipantFactoryService.class.getName();
     private static final TraceComponent TC = Tr.register(ParticipantFactoryService.class);
 
     private final RegistrationImpl registrationService = RegistrationImpl.getInstance();
@@ -49,13 +47,10 @@ public class ParticipantFactoryService implements XAResourceFactory {
     /*
      * The xaResInfo objects we pass to and from the transaction manager cannot contain
      * serialized references to classes from our bundle, as the tran mgr will not have
-     * access to them. So we have to perform a 'pre-serialization' to a simple list of
-     * bytes, as a hokey work-around. We use a List<Byte> here, rathter than byte[] to
-     * ensure that if two WSATParticipant instances compare equal, the serialized form
-     * also compares equal.
+     * access to them.
      */
     public static <T extends WSATEndpoint> Serializable serialize(T endpoint) {
-        ArrayList<Byte> data = null;
+        byte[] bb = null;
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(bout);
@@ -63,31 +58,21 @@ public class ParticipantFactoryService implements XAResourceFactory {
             out.flush();
             out.close();
 
-            byte[] bb = bout.toByteArray();
-            data = new ArrayList<Byte>(bb.length);
-            for (byte b : bb) {
-                data.add(b);
-            }
+            bb = bout.toByteArray();
         } catch (Exception e) {
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Serialization problem: {0}", e);
             }
         }
 
-        return data;
+        return bb;
     }
 
     public static <T extends WSATEndpoint> T deserialize(Serializable key) {
         T endpoint = null;
-        if (key instanceof ArrayList<?>) {
+        if (key instanceof byte[]) {
             try {
-                ArrayList<Byte> data = (ArrayList<Byte>) key;
-                byte[] bb = new byte[data.size()];
-                for (int i = 0; i < data.size(); i++) {
-                    bb[i] = data.get(i);
-                }
-
-                ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bb));
+                ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream((byte[]) key));
                 endpoint = (T) in.readObject();
             } catch (Exception e) {
                 if (TC.isDebugEnabled()) {
@@ -105,7 +90,7 @@ public class ParticipantFactoryService implements XAResourceFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.jta.XAResourceFactory#getXAResource(java.io.Serializable)
      */
     @Override
@@ -125,7 +110,7 @@ public class ParticipantFactoryService implements XAResourceFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.jta.XAResourceFactory#destroyXAResource(javax.transaction.xa.XAResource)
      */
     @Override

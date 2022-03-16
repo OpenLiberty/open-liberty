@@ -95,10 +95,12 @@ public class FATSuite extends ApacheKDCforSPNEGO {
             InitClass.KDC_HOSTNAME = ldapServerHostName;
             IBM_HYBRID_JDK = isHybridJDK(javaInfo);
 
+            boolean isIbmJdk8 = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() == 8;
+
             Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor());
-            if (!IBM_JDK_V8_LOWER && !OTHER_SUPPORT_JDKS && !SUN_ORACLE_JDK_V8_HIGHER) {
+            if (!IBM_JDK_V8_LOWER && !OTHER_SUPPORT_JDKS && !SUN_ORACLE_JDK_V8_HIGHER || isIbmJdk8) {
                 Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor() +
-                                        ". Because only IBM JDK version 8 or less, Oracle and Open JDK version 8 and higher and JDK version 11 are currently supported, no tests will be run.");
+                                        ". Because only IBM JDK version 7 or less, Oracle and Open JDK version 8 and higher and JDK version 11 are currently supported, no tests will be run.");
                 runTests = false;
             }
             if (IBM_HYBRID_JDK) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                 }
 
                 String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud0021'" +
+                                      " SET LEASE_OWNER = 'cloud0011'" +
                                       " WHERE SERVER_IDENTITY='cloud0011'";
                 System.out.println("testLeaseTableAccess: " + updateString);
                 stmt.executeUpdate(updateString);

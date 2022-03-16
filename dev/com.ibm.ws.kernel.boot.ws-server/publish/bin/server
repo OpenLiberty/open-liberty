@@ -348,7 +348,7 @@ backupIfNeededOrRemove()
 {
   if [ -f "$2" ]; then
     # backup already exists remove file
-    rm "$1"
+    rm -f "$1"
   fi
   if [ -f "$1" ]; then
     mv "$1" "$2"
@@ -929,7 +929,7 @@ javaCmd()
       CHECKPOINT_AT="features"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport"
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -Dosgi.bundlefile.limit=0"
   fi
   
 
@@ -940,11 +940,10 @@ javaCmd()
 
   if [ $ACTION = "checkpoint" ]; then
     if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then
-      rm -r ${SERVER_OUTPUT_DIR}/workarea/checkpoint
+      rm -rf ${SERVER_OUTPUT_DIR}/workarea/checkpoint
       rc=$? 
       if [ $rc -ne 0 ]; then
-         #TODO issue localized error
-         echo "error deleting checkpoint"
+         issueMessage --message:error.checkpoint.delete "${SERVER_OUTPUT_DIR}/workarea/checkpoint"
          return $rc
       fi   
     fi
@@ -981,12 +980,10 @@ javaCmd()
       backupWorkarea
       #Reset rc. If backupWorkarea returns 0 then overall checkpoint action is successful.
       rc=$?
+      if [ $rc -ne 0 ]; then
+         issueMessage --message:error.checkpoint.workarea.backup "${SERVER_OUTPUT_DIR}/workarea"
+      fi
       rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
-    else
-      #The CRIU dump likely failed. 
-      #TODO localize error message
-      echo ERROR The criu dump did not return the expected return code. Instead it returned: $rc. \
-      Please consult the logs for more information.
     fi
     return $rc
   else
@@ -1220,22 +1217,36 @@ backupWorkarea()
   then
     return 0
   fi
-  if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea" ]; then
-    rm -rf "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea"
-  fi
-  #  ${SERVER_OUTPUT_DIR}/workarea/checkpoint contains the new criu image dump. Temporarily move it while copying rest of workarea.
-  mv "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
+
+  # first remove the temporary destination to ensure we get errors if it exists and cannot be deleted
+  rm -fr "${SERVER_OUTPUT_DIR}/checkpoint"
   rc=$?
   if [ $rc -ne 0 ]; then
-    return 3
+    return 1
   fi
+
+  #  ${SERVER_OUTPUT_DIR}/workarea/checkpoint contains the new criu image dump. Temporarily move it while copying rest of workarea.
+  mv -f "${SERVER_OUTPUT_DIR}/workarea/checkpoint" "${SERVER_OUTPUT_DIR}"
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    return 2
+  fi
+
+  # copy the workarea to the checkpoint folder so it can be restored later
   cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
   rc=$?
-  # mv checkpoint directory back
-  mv "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
   if [ $rc -ne 0 ]; then
     return 3
   fi
+
+  # mv checkpoint directory back to the original location (now with a copy of the workarea inside)
+  mv -f "${SERVER_OUTPUT_DIR}/checkpoint" "${SERVER_OUTPUT_DIR}/workarea/"
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    return 4
+  fi
+
+  return $rc
 }
 
 restoreWorkarea()
@@ -1276,8 +1287,7 @@ criuRestore()
   restoreWorkarea
   rc=$?
   if [ $rc -ne 0 ]; then
-    #TODO localize error message
-    echo "Failed to restore workarea for restore."
+    issueMessage --message:error.checkpoint.workarea.restore "${SERVER_OUTPUT_DIR}/workarea/checkpoint/workarea"
     return $rc
   fi 
 
@@ -1290,7 +1300,7 @@ criuRestore()
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
-    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    criu restore --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log --pidfile ${X_PID_FILE} \
       --restore-detached 
     rc=$?
@@ -1318,7 +1328,7 @@ criuRestore()
     trap "exit" INT TERM
     trap "killIfRunning $TAIL_PID" EXIT
 
-    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    criu restore --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log
     rc=$?
 
@@ -1328,11 +1338,6 @@ criuRestore()
   return $rc
 }         
 
-serverHasCheckpoint()
-{
-  [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]
-}
-
 ## restoreServer: restore a server from a checkpoint image if it exists
 ##
 
@@ -1340,7 +1345,7 @@ restoreServer()
 {
   BACKGROUND_RESTORE=$1
 
-  if [ "${ACTION}" = "checkpoint" ] || ! serverHasCheckpoint ; then
+  if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
     return 1
   fi
 
@@ -1353,9 +1358,6 @@ restoreServer()
       fi
     fi
   done
-
-  # TODO we cannot localize this without invoking java; probably need to get rid of it
-  echo "Launch server from image."
 
   # restore artifacts and environment prior to checkpoint here
     
@@ -1385,8 +1387,7 @@ restoreServer()
   criuRestore $BACKGROUND_RESTORE
   rc=$?
   if [ $rc -ne 0 ]; then
-    # TODO localize message
-    echo "The criu restore command exited with error code $rc"
+    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
   fi
   return $rc
 }
@@ -1408,7 +1409,7 @@ case "$ACTION" in
       exit $?
     fi
 
-    if serverHasCheckpoint && [ ${ACTION} != "checkpoint" ]; then
+    if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
       # If there is no checkpoint, then maintain legacy behavior of 
       # allowing server launch to check for already running instance.

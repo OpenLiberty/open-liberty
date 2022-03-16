@@ -11,6 +11,9 @@
 package com.ibm.ws.security.audit;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.audit.AuditConstants;
+import com.ibm.ws.security.utils.SecurityUtils;
+import com.ibm.wsspi.security.audit.AuditService;
 
 /**
  * This class provides an audit probe point method and constants.
@@ -19,33 +22,55 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class Audit {
     @Trivial
     public static enum EventID {
-        SECURITY_AUTHN_01,
-        SECURITY_AUTHZ_01, // web
-        SECURITY_AUTHZ_02, // jacc web
-        SECURITY_AUTHZ_03, // jacc ejb
-        SECURITY_AUTHZ_04, // ejb
-        SECURITY_AUDIT_MGMT_01,
-        SECURITY_AUDIT_MGMT_02,
-        SECURITY_AUTHN_DELEGATION_01,
-        SECURITY_AUTHZ_DELEGATION_01,
-        SECURITY_API_AUTHN_01,
-        SECURITY_API_AUTHN_TERMINATE_01,
-        SECURITY_AUTHN_TERMINATE_01,
-        SECURITY_AUTHN_FAILOVER_01,
-        SECURITY_MEMBER_MGMT_01,
-        SECURITY_JMS_AUTHN_01,
-        SECURITY_JMS_AUTHZ_01,
-        SECURITY_JMS_AUTHN_TERMINATE_01,
-        SECURITY_JMS_CLOSED_CONNECTION_01,
-        SECURITY_REST_HANDLER_AUTHZ,
-        SECURITY_SAF_AUTHZ,
-        SECURITY_SAF_AUTHZ_DETAILS,
-        JMX_NOTIFICATION_01,
-        JMX_MBEAN_01,
-        JMX_MBEAN_ATTRIBUTES_01,
-        JMX_MBEAN_REGISTER_01,
-        APPLICATION_PASSWORD_TOKEN_01
+        SECURITY_AUTHN_01(AuditConstants.SECURITY_AUTHN),
+        SECURITY_AUTHZ_01(AuditConstants.SECURITY_AUTHZ), // web
+        SECURITY_AUTHZ_02(AuditConstants.SECURITY_AUTHZ), // jacc web
+        SECURITY_AUTHZ_03(AuditConstants.SECURITY_AUTHZ), // jacc ejb
+        SECURITY_AUTHZ_04(AuditConstants.SECURITY_AUTHZ), // ejb
+        SECURITY_AUDIT_MGMT_01(AuditConstants.SECURITY_AUDIT_MGMT),
+        SECURITY_AUDIT_MGMT_02(AuditConstants.SECURITY_AUDIT_MGMT),
+        SECURITY_AUTHN_DELEGATION_01(AuditConstants.SECURITY_AUTHN_DELEGATION),
+        SECURITY_AUTHZ_DELEGATION_01(AuditConstants.SECURITY_AUTHZ_DELEGATION),
+        SECURITY_API_AUTHN_01(AuditConstants.SECURITY_API_AUTHN),
+        SECURITY_API_AUTHN_TERMINATE_01(AuditConstants.SECURITY_API_AUTHN_TERMINATE),
+        SECURITY_AUTHN_TERMINATE_01(AuditConstants.SECURITY_AUTHN_TERMINATE),
+        SECURITY_AUTHN_FAILOVER_01(AuditConstants.SECURITY_AUTHN_FAILOVER),
+        SECURITY_MEMBER_MGMT_01(AuditConstants.SECURITY_MEMBER_MGMT),
+        SECURITY_JMS_AUTHN_01(AuditConstants.SECURITY_JMS_AUTHN),
+        SECURITY_JMS_AUTHZ_01(AuditConstants.SECURITY_JMS_AUTHZ),
+        SECURITY_JMS_AUTHN_TERMINATE_01(AuditConstants.SECURITY_JMS_AUTHN_TERMINATE),
+        SECURITY_JMS_CLOSED_CONNECTION_01(AuditConstants.SECURITY_JMS_CLOSED_CONNECTION),
+        SECURITY_REST_HANDLER_AUTHZ(AuditConstants.SECURITY_REST_HANDLER_AUTHZ),
+        SECURITY_SAF_AUTHZ(AuditConstants.SECURITY_SAF_AUTHZ),
+        SECURITY_SAF_AUTHZ_DETAILS(AuditConstants.SECURITY_SAF_AUTHZ_DETAILS),
+        JMX_NOTIFICATION_01(AuditConstants.JMX_NOTIFICATION),
+        JMX_MBEAN_01(AuditConstants.JMX_MBEAN),
+        JMX_MBEAN_ATTRIBUTES_01(AuditConstants.JMX_MBEAN_ATTRIBUTES),
+        JMX_MBEAN_REGISTER_01(AuditConstants.JMX_MBEAN_REGISTER),
+        APPLICATION_PASSWORD_TOKEN_01(AuditConstants.APPLICATION_TOKEN_MANAGEMENT);
 
+        final String eventType;
+
+        EventID(String eventType) {
+            this.eventType = eventType;
+        }
+
+        public String getEventType() {
+            return eventType;
+        }
+
+    }
+
+    public static boolean isAuditServiceEnabled() {
+        return SecurityUtils.getAuditService() != null;
+    }
+
+    public static boolean isAuditRequired(EventID eventID, String outcome) {
+        AuditService auditService = SecurityUtils.getAuditService();
+        if (auditService == null) {
+            return false;
+        }
+        return auditService.isAuditRequired(eventID.getEventType(), outcome);
     }
 
     /**

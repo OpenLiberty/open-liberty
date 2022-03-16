@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "일부 애플리케이션이 실행 중",
     SOME_SERVERS_RUNNING : "일부 서버가 실행 중",
     SOME_CLUSTERS_RUNNING : "일부 클러스터가 실행 중",
-    NO_APPS_RUNNING : "실행 중인 애플리케이션이 없음",
     NO_SERVERS_RUNNING : "실행 중인 서버가 없음",
     NO_CLUSTERS_RUNNING : "실행 중인 클러스터가 없음",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: 애플리케이션 인스턴스가 실행 중이 아님", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: 일부 애플리케이션이 실행 중이지 않음", // serverName[]
-    NO_APPS_RUNNING : "{0}: 실행 중인 애플리케이션이 없음", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "일부 애플리케이션이 실행 중이지 않은 {0}개 서버", // quantity
     NO_APPS_RUNNING_SERVERS : "실행 중인 애플리케이션이 없는 {0}개 서버", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "참고 {0}",  // note value
     SET_ATTRIBUTES: "태그 및 메타데이터",
     SETATTR_RUNTIME_NAME: "{1}의 {0}",  // runtime, host
-    SAVE: "저장",
     TAGINVALIDCHARS: "'/', '<' 및 '>' 문자는 올바르지 않습니다.",
     ERROR_GET_TAGS_METADATA: "제품이 자원에 대한 현재 태그 및 메타데이터를 가져올 수 없습니다.",
     ERROR_SET_TAGS_METADATA: "오류로 인해 제품이 태그 및 메타데이터를 설정하지 못했습니다.",

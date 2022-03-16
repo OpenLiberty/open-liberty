@@ -102,7 +102,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
      * access the resource again since the user logged out.
      */
     @Test
-    public void test_reuseCookiesAfterLogout_logoutEndpointRP() throws Exception {
+    public void test_reuseCookiesAfterLogout_rpLogoutEndpointRedirectsToOpEndSessionEndpoint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
 
@@ -115,6 +115,37 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         List<validationData> expectations = vData.addExpectation(null, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, Constants.SUCCESSFUL_LOGOUT_MSG);
         expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not end up at expected post-logout URL.", null, "/oidc/end_session");
+
+        logInAndLogOut(webClient, updatedTestSettings, expectations);
+
+        // Both the OP's and RP's SSO cookies should have been removed
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID"));
+
+        // Invoke the protected resource again with the leftover cookies
+        expectations = vData.addSuccessStatusCodesForActions(Constants.GET_LOGIN_PAGE_ONLY);
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get to the authorization endpoint redirect page.", null, "Redirect To OP");
+        genericRP(_testName, webClient, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectations);
+    }
+
+    /**
+     * Go through the golden path OIDC login flow and then invoke the RP's /logout endpoint. That endpoint should invoke
+     * request.logout() and then redirect to the OP's /logout endpoint to finish logging out at the OP. We then re-invoke the
+     * protected resource using the same WebClient, and therefore with any of the cookies leftover. We should not be able to
+     * access the resource again since the user logged out.
+     */
+    @Test
+    public void test_reuseCookiesAfterLogout_rpLogoutEndpointRedirectsToOpLogoutEndpoint() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient(true);
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updatedTestSettings.setPostLogoutRedirect(updatedTestSettings.getAuthorizeEndpt().replaceAll("/authorize", "/logout"));
+        updatedTestSettings.setEndSession(updatedTestSettings.getTestURL().replaceAll("/SimpleServlet", "/logout"));
+        updatedTestSettings.setLogoutHttpMethod(HttpMethod.GET);
+
+        List<validationData> expectations = vData.addExpectation(null, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, "Logout successful");
+        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not end up at expected post-logout URL.", null, "/oidc/[^/]+/[^/]+/logout");
 
         logInAndLogOut(webClient, updatedTestSettings, expectations);
 
@@ -190,7 +221,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
      * - Invokes the protected resource with the second WebClient object again, this time expecting to be denied access
      */
     @Test
-    public void test_reuseCookiesAfterLogout_differentSession_logoutEndpointRP() throws Exception {
+    public void test_reuseCookiesAfterLogout_differentSession_rpLogoutEndpoint() throws Exception {
 
         Object currentPage = null;
         WebClient webClient = getAndSaveWebClient(true);
@@ -198,7 +229,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         String endSession = updatedTestSettings.getEndSession();
-        updatedTestSettings.setPostLogoutRedirect(endSession);
+        updatedTestSettings.setPostLogoutRedirect(endSession.replaceAll("/end_session", "/logout"));
         updatedTestSettings.setEndSession(updatedTestSettings.getTestURL().replaceAll("/SimpleServlet", "/logout"));
         updatedTestSettings.setLogoutHttpMethod(HttpMethod.GET);
 
@@ -223,8 +254,8 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         // Log out using the original WebClient
         Log.info(thisClass, _testName, "Log out using the original WebClient");
-        expectations = vData.addExpectation(null, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, Constants.SUCCESSFUL_LOGOUT_MSG);
-        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not end up at expected post-logout URL.", null, "/oidc/end_session");
+        expectations = vData.addExpectation(null, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not successfully logout.", null, "Logout successful");
+        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not end up at expected post-logout URL.", null, "/oidc/[^/]+/[^/]+/logout");
 
         genericRP(_testName, webClient, updatedTestSettings, currentPage, Constants.GOOD_OIDC_LOGOUT_ONLY_ACTIONS, expectations);
 

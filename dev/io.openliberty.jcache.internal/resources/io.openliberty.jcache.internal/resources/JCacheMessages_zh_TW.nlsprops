@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2021, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jcache.internal/resources/io/openliberty/jcache/internal/resources/JCacheMessages.nlsprops
+#COMPONENTPREFIX CWLJC SESN
+#COMPONENTNAMEFOR Open Liberty JCache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#
+# JCache is a specification. Do not translate.
+#
+
+#
+# This was moved from com.ibm.ws.session.cache
+#
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: \u5df2\u7522\u751f HTTP \u968e\u6bb5\u4f5c\u696d\u6301\u7e8c\u6027\u7684 Infinispan \u914d\u7f6e\uff1a{0}\u3002 \u5982\u679c\u8981\u7f6e\u63db\uff0c\u8acb\u914d\u7f6e httpSessionCache \u914d\u7f6e\u5143\u7d20\u6216 cacheManager \u914d\u7f6e\u5143\u7d20\u7684 uri \u5c6c\u6027\u3002
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=\u7528\u65bc HTTP \u968e\u6bb5\u4f5c\u696d\u6301\u7e8c\u6027\u7684 Infinispan \u5feb\u53d6\u9700\u8981\u5176\u4ed6\u914d\u7f6e\u4f86\u8de8\u4f3a\u670d\u5668\u6301\u7e8c\u4fdd\u5b58\u968e\u6bb5\u4f5c\u696d\u3002 \u7576\u4f7f\u7528\u8005\u672a\u63d0\u4f9b\u6b64\u914d\u7f6e\u6642\uff0cLiberty \u6703\u7522\u751f\u6b64\u914d\u7f6e\u3002
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=\u5982\u679c\u60a8\u5c0d\u7522\u751f\u7684\u914d\u7f6e\u611f\u5230\u6eff\u8db3\uff0c\u5c31\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002 \u5426\u5247\uff0c\u53ef\u4ee5\u5c07\u7522\u751f\u7684\u914d\u7f6e\u7528\u4f5c\u8d77\u59cb\u9ede\u3002
+
+CWLJC0001_CACHE_CREATED=CWLJC0001I: {0} JCache \u5df2\u5728 {1} \u6beb\u79d2\u5167\u5efa\u7acb\u3002
+CWLJC0001_CACHE_CREATED.explanation=\u56e0\u70ba\u627e\u4e0d\u5230\u540d\u70ba JCache \u7684\u6587\u4ef6\uff0c\u56e0\u6b64\u5efa\u7acb\u4e86\u5b83\u3002
+CWLJC0001_CACHE_CREATED.useraction=\u4e0d\u9700\u8981\u4efb\u4f55\u4f7f\u7528\u8005\u52d5\u4f5c\u3002
+
+CWLJC0002_CACHE_FOUND=CWLJC0002I: \u5728 {1} \u6beb\u79d2\u5167\u627e\u5230\u73fe\u6709\u7684 {0} JCache\u3002
+CWLJC0002_CACHE_FOUND.explanation=\u627e\u5230\u6307\u540d\u7684 JCache\uff0c\u56e0\u6b64\u672a\u5efa\u7acb\u5b83\u3002
+CWLJC0002_CACHE_FOUND.useraction=\u4e0d\u9700\u8981\u4efb\u4f55\u4f7f\u7528\u8005\u52d5\u4f5c\u3002
+
+CWLJC0003_USING_PROVIDER=CWLJC0003I: {0} JCache \u6b63\u5728\u4f7f\u7528 {1} \u5feb\u53d6\u63d0\u4f9b\u8005\u3002
+CWLJC0003_USING_PROVIDER.explanation=\u6307\u5b9a\u7684 JCache \u6b63\u5728\u4f7f\u7528\u6307\u5b9a\u7684\u63d0\u4f9b\u8005\u3002
+CWLJC0003_USING_PROVIDER.useraction=\u4e0d\u9700\u8981\u4efb\u4f55\u4f7f\u7528\u8005\u52d5\u4f5c\u3002 
+
+CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: \u7121\u6cd5\u8f09\u5165 {0} \u5feb\u53d6\u63d0\u4f9b\u8005\u3002 {1}
+CWLJC0004_GET_PROVIDER_FAILED.explanation=cachingProvider \u914d\u7f6e\u7121\u6cd5\u8f09\u5165\u3002
+CWLJC0004_GET_PROVIDER_FAILED.useraction=\u8acb\u89e3\u6c7a\u8a0a\u606f\u4e2d\u6240\u5305\u542b\u7684\u932f\u8aa4\uff0c\u7136\u5f8c\u91cd\u8a66\u3002
+
+CWLJC0005_MANAGER_LOADED=CWLJC0005I: {0} JCache CacheManager \u82b1\u8cbb {1} \u6beb\u79d2\u4f86\u8f09\u5165\u3002 
+CWLJC0005_MANAGER_LOADED.explanation=\u5df2\u9806\u5229\u8f09\u5165 JCache CacheManager\u3002
+CWLJC0005_MANAGER_LOADED.useraction=\u4e0d\u9700\u8981\u4efb\u4f55\u4f7f\u7528\u8005\u52d5\u4f5c\u3002
+
+#
+# CWLJC0006 IS AVAILABLE.
+#
+
+CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: cacheManager URI \u4e2d\u7684\u8a9e\u6cd5\u7121\u6548\u3002  \u539f\u56e0\u662f {0}\u3002
+CWLJC0007_URI_INVALID_SYNTAX.explanation=\u6307\u5b9a JCache \u914d\u7f6e URI \u7684\u8a9e\u6cd5\u7121\u6548\u3002
+CWLJC0007_URI_INVALID_SYNTAX.useraction=\u8acb\u66f4\u6b63\u6307\u5b9a\u914d\u7f6e URI \u7684\u8a9e\u6cd5\u3002
+
+CWLJC0008_DESERIALIZE_ERR=CWLJC0008E: \u5f9e {0} JCache {1} \u5c07\u7269\u4ef6\u89e3\u9664\u5e8f\u5217\u5316\u6642\u767c\u751f\u932f\u8aa4\u3002
+CWLJC0008_DESERIALIZE_ERR.explanation=\u7121\u6cd5\u89e3\u9664\u5e8f\u5217\u5316\u5f9e\u6307\u540d JCache \u64f7\u53d6\u7684\u7269\u4ef6\u3002
+CWLJC0008_DESERIALIZE_ERR.useraction=\u8acb\u78ba\u5b9a JCache \u914d\u7f6e\u6240\u5305\u542b\u4e4b\u7a0b\u5f0f\u5eab\u4e2d\u7684\u6240\u6709\u985e\u5225\u90fd\u53ef\u4f9b\u4f7f\u7528\u3002
+
+CWLJC0009_SERIALIZE_ERR=CWLJC0009E: \u5c07\u7269\u4ef6\u5e8f\u5217\u5316\u81f3 {0} JCache \u6642\u767c\u751f\u932f\u8aa4\uff1a{1}\u3002
+CWLJC0009_SERIALIZE_ERR.explanation=\u7121\u6cd5\u5e8f\u5217\u5316\u8981\u5132\u5b58\u81f3\u547d\u540d\u70ba JCache \u7684\u7269\u4ef6\u3002
+CWLJC0009_SERIALIZE_ERR.useraction=\u8acb\u78ba\u5b9a\u8981\u5e8f\u5217\u5316\u7684\u6240\u6709\u985e\u5225\u90fd\u662f\u53ef\u5e8f\u5217\u5316\u7684\u3002
+
+CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: \u914d\u7f6e JCache CacheManager \u6642\u767c\u751f\u932f\u8aa4\uff1a{0}\u3002
+CWLJC0010_MANAGER_CONFIG_ERR.explanation=\u7531\u65bc\u6307\u5b9a\u7684\u932f\u8aa4\uff0c\u7121\u6cd5\u914d\u7f6e JCache CacheManager\u3002
+CWLJC0010_MANAGER_CONFIG_ERR.useraction=\u8acb\u89e3\u6c7a\u8a0a\u606f\u4e2d\u6240\u5305\u542b\u7684\u932f\u8aa4\uff0c\u7136\u5f8c\u91cd\u8a66\u3002
+
+CWLJC0011_GET_CACHE_ERR=CWLJC0011E: \u64f7\u53d6 {0} JCache \u6642\u767c\u751f\u932f\u8aa4\uff1a{1}\u3002
+CWLJC0011_GET_CACHE_ERR.explanation=\u7531\u65bc\u6307\u5b9a\u7684\u932f\u8aa4\uff0c\u7121\u6cd5\u64f7\u53d6\u5feb\u53d6\u3002
+CWLJC0011_GET_CACHE_ERR.useraction=\u8acb\u89e3\u6c7a\u8a0a\u606f\u4e2d\u6240\u5305\u542b\u7684\u932f\u8aa4\uff0c\u7136\u5f8c\u91cd\u8a66\u3002

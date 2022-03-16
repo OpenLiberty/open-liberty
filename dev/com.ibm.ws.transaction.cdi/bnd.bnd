@@ -16,8 +16,6 @@ Bundle-Name: Transactions CDI Integration
 Bundle-SymbolicName: com.ibm.ws.transaction.cdi
 Bundle-Description: Transactions CDI Integration, version ${bVersion}
 
-Include-Resource: META-INF=resources/META-INF
-
 WS-TraceGroup: Transaction
 
 Import-Package: \
@@ -35,10 +33,6 @@ Export-Package: \
  com.ibm.tx.jta.cdi.interceptors;thread-context=true;mandatory:="thread-context"
 
 -cdiannotations:
-
--dsannotations-inherit: true
--dsannotations: \
-  com.ibm.tx.jta.cdi.TransactionContextExtension
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
@@ -61,4 +55,6 @@ Export-Package: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.logging;version=latest
 
-jakartaeeMe: true
+# This bundle is not shipped itself. Instead, the classes are included in one of two other bundles, depending on the
+# cdi version being used: io.openliberty.transaction.internal.cdi12 or io.openliberty.transaction.internal.cdi20
+publish.wlp.jar.disabled: true

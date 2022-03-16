@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
@@ -50,6 +51,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
            name = "com.ibm.ws.security.context.provider",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
+@SuppressWarnings("deprecation")
 public class SecurityContextProviderImpl implements ThreadContextProvider {
 
     static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
@@ -157,6 +159,7 @@ public class SecurityContextProviderImpl implements ThreadContextProvider {
      * @see com.ibm.wsspi.threadcontext.ThreadContextProvider#getPrerequisites()
      */
     @Override
+    @Trivial
     public List<ThreadContextProvider> getPrerequisites() {
         return null;
     }

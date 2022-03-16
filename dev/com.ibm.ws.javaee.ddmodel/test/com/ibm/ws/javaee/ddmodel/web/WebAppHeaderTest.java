@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 /**
  * Tests of web application descriptors which have partial headers.
@@ -123,6 +122,11 @@ public class WebAppHeaderTest extends WebAppTestBase {
             "<web-app version=\"5.0\">" + "\n" +
                 webAppBody() + "\n" +
             webAppTail();
+
+    protected static String webAppVersionOnly60 =
+            "<web-app version=\"6.0\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
     
     protected static String webAppVersionOnlyUnknown =
             "<web-app version=\"9.9\">" + "\n" +
@@ -206,7 +210,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
         public VersionTestData(String xmlText, int version) {
             this.xmlText = xmlText;
             this.version = version;
-            this.versionText = DDParser.getDottedVersionText(version);
+            this.versionText = getDottedVersionText(version);
         }
     }
 
@@ -220,6 +224,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
         new VersionTestData(webAppVersionOnly31, WebApp.VERSION_3_1),
         new VersionTestData(webAppVersionOnly40, WebApp.VERSION_4_0),
         new VersionTestData(webAppVersionOnly50, WebApp.VERSION_5_0),
+        new VersionTestData(webAppVersionOnly60, WebApp.VERSION_6_0),
     };
     
     @Test
@@ -268,7 +273,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
             this.xmlText = xmlText;
             this.maxVersion = maxVersion;
             this.expectedVersion = expectedVersion;
-            this.expectedVersionText = DDParser.getDottedVersionText(expectedVersion);
+            this.expectedVersionText = getDottedVersionText(expectedVersion);
         }
     }
     
@@ -286,13 +291,14 @@ public class WebAppHeaderTest extends WebAppTestBase {
         new SchemaTestData(WebApp.VERSION_2_5, webAppSchemaOnly25, WebApp.VERSION_4_0, WebApp.VERSION_3_0),            
 
         // The 3.1 schema is for 3.1 and for 4.0.
-        // The assigned version can be 3.1 or 4.0, depending on the provisioning.
         new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_3_1, WebApp.VERSION_3_1),                        
         new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_4_0, WebApp.VERSION_4_0),                                    
         new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_5_0, WebApp.VERSION_4_0),                                    
+        new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_6_0, WebApp.VERSION_4_0),                                            
 
-        // The 5.0 schema is for 5.0, only.
-        new SchemaTestData(WebApp.VERSION_5_0, webAppSchemaOnly50, WebApp.VERSION_5_0, WebApp.VERSION_5_0)                                                
+        // The 5.0 schema is for 5.0 and for 6.0.
+        new SchemaTestData(WebApp.VERSION_5_0, webAppSchemaOnly50, WebApp.VERSION_5_0, WebApp.VERSION_5_0),                                                
+        new SchemaTestData(WebApp.VERSION_5_0, webAppSchemaOnly50, WebApp.VERSION_6_0, WebApp.VERSION_6_0),
     };
     
     @Test
@@ -320,6 +326,5 @@ public class WebAppHeaderTest extends WebAppTestBase {
         parseWebApp(webAppSchemaOnly50, WebApp.VERSION_3_1,
                     UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE,
                     UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES);
-
     }    
 }

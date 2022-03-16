@@ -145,5 +145,5 @@ public abstract class DDParserSpec extends DDParser {
         eePlatformVersion = versionData.platformVersion;
 
         return createRootElement();
-    }  
+    }
 }

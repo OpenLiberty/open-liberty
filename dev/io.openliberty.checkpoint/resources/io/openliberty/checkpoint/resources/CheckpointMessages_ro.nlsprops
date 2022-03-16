@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.checkpoint/resources/io/openliberty/checkpoint/resources/CheckpointMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0451-550 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A fost solicitat un punct de control server. C\u00e2nd punctul de control finalizeaz\u0103, serverul se opre\u0219te.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=S-a cerut un punct de control. Serverul este oprit \u0219i starea sa actual\u0103 este scris\u0103 pe disc.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Verifica\u021bi documenta\u021bia pentru detaliile punctului de control \u0219i restaura\u021bi opera\u021biile.
+
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Serverul Liberty reia opera\u0163ia de la un punct de control.
+CHECKPOINT_RESTORE_CWWKC0452I.explanation=O opera\u021bie de restaurare a fost executat\u0103 pe o imagine de punct de control a serverului Liberty.
+CHECKPOINT_RESTORE_CWWKC0452I.useraction=Verifica\u021bi documenta\u021bia pentru detaliile punctului de control \u0219i restaura\u021bi opera\u021biile.
+
+CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: Cererea de punct de control server a e\u0219uat cu urm\u0103torul mesaj: {0}
+CHECKPOINT_FAILED_CWWKC0453E.explanation=O cerere de punct de control server a e\u0219uat.  Nu a fost creat\u0103 o imagine valid\u0103 a procesului de punct de control server.
+CHECKPOINT_FAILED_CWWKC0453E.useraction=Inspecta\u021bi \u00een directorul checkpoint situat \u00een directorul istoricelor de server fi\u0219ierele istoric suplimentare pentru a determina de ce punctul de control a e\u0219uat.
+
+RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Serverul a e\u0219uat s\u0103 restaureze de la un punct de control cu urm\u0103torul mesaj: {0}
+RESTORE_FAILED_CWWKC0454E.explanation=O \u00eencercare de a restaura serverul de la un punct de control a e\u0219uat.  Serverul nu ruleaz\u0103.
+RESTORE_FAILED_CWWKC0454E.useraction=Inspecta\u021bi fi\u0219ierele istoric suplimentare din directorul punctului de control, situat \u00een directorul istoricelor de server, pentru a determina de ce nu a putut fi restaurat serverul.
+

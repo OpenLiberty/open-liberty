@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,47 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.app;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.osgi.framework.Version;
+import java.util.List;
 
-import com.ibm.ws.javaee.version.JavaEEVersion;
+import org.junit.Test;
+import com.ibm.ws.javaee.dd.app.Application;
+import com.ibm.ws.javaee.dd.common.ContextService;
+import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
+import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
+import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
 
 public class AppTest extends AppTestBase {
     @Test
-    public void testCompareVersions() throws Exception {
-        for ( int v1No = 0; v1No < JavaEEVersion.VERSIONS.length; v1No++ ) {
-            Version v1 = JavaEEVersion.VERSIONS[v1No];
-            for ( int v2No = 0; v2No < JavaEEVersion.VERSIONS.length; v2No++ ) {
-                Version v2 = JavaEEVersion.VERSIONS[v2No];
-
-                int expectedCmp = v2No - v1No;
-                int actualCmp = v2.compareTo(v1);
-
-                boolean matchCmp = 
-                    ( ((expectedCmp  < 0) && (actualCmp  < 0)) ||
-                      ((expectedCmp == 0) && (actualCmp == 0)) ||
-                      ((expectedCmp  > 0) && (actualCmp  > 0)) );
-
-                if ( !matchCmp ) {
-                    Assert.assertEquals( "Version [ " + v1 + " ] compared with [ " + v2 + " ]." +
-                                        " Expected [ " + expectedCmp + " ]; " +
-                                        " received [ " + actualCmp + " ]",
-                                        expectedCmp, actualCmp);
-                }
-            }
-        }
-    }
-
-    @Test
     public void testApp() throws Exception {
-        for ( int schemaVersion : JavaEEVersion.VERSION_INTS ) {
-            for ( int maxSchemaVersion : JavaEEVersion.VERSION_INTS ) {
+        for ( int schemaVersion : Application.VERSIONS ) {
+            for ( int maxSchemaVersion : Application.VERSIONS ) {
                 // Open liberty will always parse JavaEE6 and earlier
                 // schema versions.
                 int effectiveMax;
-                if ( maxSchemaVersion < JavaEEVersion.VERSION_6_0_INT ) {
-                    effectiveMax = JavaEEVersion.VERSION_6_0_INT;
+                if ( maxSchemaVersion < VERSION_6_0_INT ) {
+                    effectiveMax = VERSION_6_0_INT;
                 } else {
                     effectiveMax = maxSchemaVersion;
                 }
@@ -68,5 +47,93 @@ public class AppTest extends AppTestBase {
                 parseApp( app(schemaVersion, appBody), maxSchemaVersion, altMessage, messages );
             }
         }
+    }
+
+    //
+    
+    @Test
+    public void testEE10ContextServiceApp90() throws Exception {
+        parseApp( app(Application.VERSION_9, DDJakarta10Elements.CONTEXT_SERVICE_XML),
+                  Application.VERSION_9,
+                  "unexpected.child.element",
+                  "CWWKC2259E", "context-service", "myEAR.ear : META-INF/application.xml" );                
     }    
+    
+    @Test
+    public void testEE10ManagedExecutorApp90() throws Exception {
+        parseApp( app(Application.VERSION_9, DDJakarta10Elements.MANAGED_EXECUTOR_XML),
+                  Application.VERSION_9,
+                  "unexpected.child.element",
+                  "CWWKC2259E", "managed-executor", "myEAR.ear : META-INF/application.xml" );                
+    }    
+
+    @Test
+    public void testEE10ManagedScheduledExecutorApp90() throws Exception {
+        parseApp( app(Application.VERSION_9, DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                  Application.VERSION_9,
+                  "unexpected.child.element",
+                  "CWWKC2259E", "managed-scheduled-executor", "myEAR.ear : META-INF/application.xml" );                
+    }
+
+    @Test
+    public void testEE10ManagedThreadFactoryApp90() throws Exception {
+        parseApp( app(Application.VERSION_9, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
+                  Application.VERSION_9,
+                  "unexpected.child.element",
+                  "CWWKC2259E", "managed-thread-factory", "myEAR.ear : META-INF/application.xml" );                
+    }      
+
+    //
+
+    @Test
+    public void testEE10ContextServiceApp100() throws Exception {
+        Application app = parseApp(
+                app(Application.VERSION_10, DDJakarta10Elements.CONTEXT_SERVICE_XML),
+                Application.VERSION_10);
+
+        List<String> names = DDJakarta10Elements.names("Application", "contextServices");
+
+        List<ContextService> services = app.getContextServices();
+        DDJakarta10Elements.verifySize(names, 1, services);
+        DDJakarta10Elements.verify(names, services.get(0));        
+    }    
+    
+    @Test
+    public void testEE10ManagedExecutorApp100() throws Exception {
+        Application app = parseApp(
+                app(Application.VERSION_10, DDJakarta10Elements.MANAGED_EXECUTOR_XML),
+                Application.VERSION_10);
+
+        List<String> names = DDJakarta10Elements.names("Application", "managedExecutors");
+
+        List<ManagedExecutor> executors = app.getManagedExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));        
+    }    
+
+    @Test
+    public void testEE10ManagedScheduledExecutorApp100() throws Exception {
+        Application app = parseApp(
+                app(Application.VERSION_10, DDJakarta10Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                Application.VERSION_10);
+
+        List<String> names = DDJakarta10Elements.names("Application", "managedScheduledExecutors");
+        
+        List<ManagedScheduledExecutor> executors = app.getManagedScheduledExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));        
+    }
+
+    @Test
+    public void testEE10ManagedThreadFactoryApp100() throws Exception {
+        Application app = parseApp(
+                app(Application.VERSION_10, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
+                Application.VERSION_10);
+
+        List<String> names = DDJakarta10Elements.names("Application", "managedThreadFactories");
+
+        List<ManagedThreadFactory> factories = app.getManagedThreadFactories();
+        DDJakarta10Elements.verifySize(names, 1, factories);
+        DDJakarta10Elements.verify(names, factories.get(0));
+    }      
 }

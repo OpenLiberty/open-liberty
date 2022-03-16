@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,9 @@ define([
                 this.resourceStateUnknownNumber = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Unknown-Count" + "-StateNumber";
                 this.resourceStateRunningNumber = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Running-Count" + "-StateNumber";
                 this.resourceStateStoppedNumber = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Stopped-Count" + "-StateNumber";
+                this.resourceStateUnknownLabel = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Unknown-Label";
+                this.resourceStateRunningLabel = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Running-Label";
+                this.resourceStateStoppedLabel = this.view + this.resourceName + "-" + this.resourceType + this.paneType + "-Stopped-Label";
                 
                 this.resourceNumber = this.collection.up + (this.collection.partial ? this.collection.partial : 0 ) + this.collection.down + (this.collection.unknown ? this.collection.unknown : 0);
            
@@ -112,15 +115,18 @@ define([
              resourceStateUnknownNumber : '',
              resourceStateRunningNumber : '',
              resourceStateStoppedNumber : '',
+             resourceStateUnknownLabel: '',
+             resourceStateRunningLabel: '',
+             resourceStateStoppedLabel: '',
              sideTabPane : null,
              
              postCreate : function() {
                this.inherited(arguments);
                
-               this.iconNode.innerHTML = imgUtils.getSVG(this.paneType);
-               this.runIcon.innerHTML = imgUtils.getSVG("status-running");
-               this.stopIcon.innerHTML = imgUtils.getSVG("status-stopped");
-               this.unknownIcon.innerHTML = imgUtils.getSVG("unknown");
+               this.iconNode.innerHTML = imgUtils.getSVGWithAriaLabelledBy(this.paneType, '', this.resourceId);
+               this.runIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("status-running", '', this.resourceStateRunningLabel); // , null, i18n.RUNNING, true);
+               this.stopIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("status-stopped", '', this.resourceStateStoppedLabel) // , null, i18n.STOPPED, true);
+               this.unknownIcon.innerHTML = imgUtils.getSVGWithAriaLabelledBy("unknown", '', this.resourceStateUnknownLabel);
                
                this._buildStates();
              },

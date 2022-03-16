@@ -16,7 +16,7 @@ configurations {
 dependencies {
     binaries "com.ibm.ws.componenttest:mantis-collections:2.5.0"
     binaries "com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0"
-    binaries "com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0"
+    binaries "com.ibm.ws.componenttest:infra.buildtasks-core:6.0.6"
     binaries "com.fasterxml.jackson.core:jackson-annotations:2.11.2"
     binaries "com.fasterxml.jackson.core:jackson-core:2.11.2"
     binaries "com.fasterxml.jackson.core:jackson-databind:2.11.2"
@@ -35,6 +35,7 @@ dependencies {
     binaries "org.glassfish:javax.json:1.1.2"
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.10.10"
+    binaries "com.jcraft:jsch:0.1.54"
 }
 
 //TODO: move this function somewhere common

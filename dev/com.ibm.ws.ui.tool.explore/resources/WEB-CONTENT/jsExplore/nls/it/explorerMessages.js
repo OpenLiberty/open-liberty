@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Alcune applicazioni in esecuzione",
     SOME_SERVERS_RUNNING : "Alcuni server in esecuzione",
     SOME_CLUSTERS_RUNNING : "Alcuni cluster in esecuzione",
-    NO_APPS_RUNNING : "Nessuna applicazione in esecuzione",
     NO_SERVERS_RUNNING : "Nessun server in esecuzione",
     NO_CLUSTERS_RUNNING : "Nessun cluster in esecuzione",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: istanza applicazione non in esecuzione", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: non tutte le applicazioni sono in esecuzione", // serverName[]
-    NO_APPS_RUNNING : "{0}: nessuna applicazione in esecuzione", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "Su {0} server non tutte le applicazioni sono in esecuzione", // quantity
     NO_APPS_RUNNING_SERVERS : "Su {0} server non ci sono applicazioni in esecuzione", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "Nota {0}",  // note value
     SET_ATTRIBUTES: "Tag e metadati",
     SETATTR_RUNTIME_NAME: "{0} su {1}",  // runtime, host
-    SAVE: "Salva",
     TAGINVALIDCHARS: "I caratteri '/', '<' e '>' non sono validi.",
     ERROR_GET_TAGS_METADATA: "Il prodotto non può richiamare le tag e i metadati correnti per la risorsa.",
     ERROR_SET_TAGS_METADATA: "Un errore ha impedito al prodotto di impostare le tag e i metadati.",

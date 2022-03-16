@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,10 @@ public class IfxConnection implements Connection {
     private static int _failingRetryCounter = 0;
 
     private static int simSQLCode = 0;
+    private static boolean _testingLeaselogUpdateFlag = false;
+    private static boolean _testingLeaselogDeleteFlag = false;
+    private static boolean _testingLeaselogClaimFlag = false;
+    private static boolean _testingLeaselogGetFlag = false;
 
     IfxConnection(Connection realConn) {
         System.out.println("SIMHADB: construct wrapped connection using - " + realConn);
@@ -323,6 +327,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -341,6 +353,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -359,6 +379,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -377,6 +405,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -398,6 +434,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -417,6 +461,14 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+            if (sql.contains("cloudstale")) {
+                System.out.println("SIMHADB: This is a leaselog claim statement");
+                utps.setLeaselogClaimFlag();
+            } else {
+                System.out.println("SIMHADB: This is a leaselog update statement");
+                utps.setLeaselogUpdateFlag();
+            }
         }
         return utps;
     }
@@ -881,6 +933,42 @@ public class IfxConnection implements Connection {
 
     public static void incrementFailingRetryCounter() {
         IfxConnection._failingRetryCounter++;
+    }
+
+    public static void setTestingLeaselogUpdateFlag(boolean newFlag) {
+        System.out.println("SIMHADB: setTestingLeaselogUpdateFlag - " + newFlag);
+        _testingLeaselogUpdateFlag = newFlag;
+    }
+
+    public static boolean getTestingLeaselogUpdateFlag() {
+        return _testingLeaselogUpdateFlag;
+    }
+
+    public static void setTestingLeaselogDeleteFlag(boolean newFlag) {
+        System.out.println("SIMHADB: setTestingLeaselogDeleteFlag - " + newFlag);
+        _testingLeaselogDeleteFlag = newFlag;
+    }
+
+    public static boolean getTestingLeaselogDeleteFlag() {
+        return _testingLeaselogDeleteFlag;
+    }
+
+    public static void setTestingLeaselogClaimFlag(boolean newFlag) {
+        System.out.println("SIMHADB: setTestingLeaselogClaimFlag - " + newFlag);
+        _testingLeaselogClaimFlag = newFlag;
+    }
+
+    public static boolean getTestingLeaselogClaimFlag() {
+        return _testingLeaselogClaimFlag;
+    }
+
+    public static void setTestingLeaselogGetFlag(boolean newFlag) {
+        System.out.println("SIMHADB: setTestingLeaselogGetFlag - " + newFlag);
+        _testingLeaselogGetFlag = newFlag;
+    }
+
+    public static boolean getTestingLeaselogGetFlag() {
+        return _testingLeaselogGetFlag;
     }
 
     /*

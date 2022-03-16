@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,8 @@ public class OpentracingJaxRsEMCallbackImpl implements DefaultExceptionMapperCal
 
     @Override
     public Map<String,Object> onDefaultMappedException(Throwable t, int statusCode, ResourceInfo resourceInfo ) {
-        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", t);
+        if (statusCode != 404)
+	        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", t);
         return Collections.singletonMap(EXCEPTION_KEY, t);
     }
 

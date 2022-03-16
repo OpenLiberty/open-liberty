@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.web;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -36,7 +38,7 @@ import componenttest.app.FATServlet;
 public class FailoverServlet extends FATServlet {
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE
     };
 
     /**
@@ -105,6 +107,30 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: setupForHalt complete");
     }
 
+    public void setupForLeaseUpdate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseUpdate");
+        setupTestParameters(request, response, TestType.LEASE, 0, 770, 1); // 770 interpreted as lease update
+        System.out.println("FAILOVERSERVLET: setupForLeaseUpdate complete");
+    }
+
+    public void setupForLeaseDelete(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseDelete");
+        setupTestParameters(request, response, TestType.LEASE, 0, 771, 1); // 771 interpreted as lease delete
+        System.out.println("FAILOVERSERVLET: setupForLeaseDelete complete");
+    }
+
+    public void setupForLeaseClaim(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseClaim");
+        setupTestParameters(request, response, TestType.LEASE, 0, 772, 1); // 772 interpreted as lease claim
+        System.out.println("FAILOVERSERVLET: setupForLeaseClaim complete");
+    }
+
+    public void setupForLeaseGet(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForLeaseGet");
+        setupTestParameters(request, response, TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
+        System.out.println("FAILOVERSERVLET: setupForLeaseGet complete");
+    }
+
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
                                      int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupTestParameters");
@@ -136,6 +162,7 @@ public class FailoverServlet extends FATServlet {
             con.commit();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+            throw ex;
         }
     }
 
@@ -164,9 +191,8 @@ public class FailoverServlet extends FATServlet {
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
-            throw new Exception();
+            throw e;
         }
-
     }
 
     public void driveSixTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -184,7 +210,7 @@ public class FailoverServlet extends FATServlet {
 
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: EXCEPTION: " + e);
-            throw new Exception();
+            throw e;
         }
 
     }
@@ -208,6 +234,7 @@ public class FailoverServlet extends FATServlet {
             System.out.println("FAILOVERSERVLET: caught SYSTEMEXCEPTION as expected: " + sysex);
         } catch (Exception e) {
             System.out.println("FAILOVERSERVLET: unexpected EXCEPTION: " + e);
+            throw e;
         }
     }
 
@@ -249,8 +276,8 @@ public class FailoverServlet extends FATServlet {
 
     public void checkForDuplicates(HttpServletRequest request,
                                    HttpServletResponse response) throws Exception {
-        Set<List> resultSet;
-        List row;
+        Set<List<Number>> resultSet;
+        List<Number> row;
         Statement recoveryStmt = null;
         ResultSet recoveryRS = null;
 
@@ -266,7 +293,7 @@ public class FailoverServlet extends FATServlet {
 
             recoveryRS = recoveryStmt.executeQuery(queryString);
 
-            resultSet = new HashSet<List>();
+            resultSet = new HashSet<List<Number>>();
 
             while (recoveryRS.next()) {
                 final long ruId = recoveryRS.getLong(1);
@@ -275,7 +302,7 @@ public class FailoverServlet extends FATServlet {
                 final byte[] data = recoveryRS.getBytes(4);
                 String theBytesString = toHexString(data, 32);
                 System.out.println("SQL TRANLOG: ruId: " + ruId + " sectionId: " + sectId + " item: " + index + " data: " + theBytesString);
-                row = new ArrayList();
+                row = new ArrayList<Number>();
                 row.add(ruId);
                 row.add(sectId);
                 row.add(index);
@@ -293,6 +320,7 @@ public class FailoverServlet extends FATServlet {
             conn.commit();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+            throw ex;
         } finally {
             if (recoveryRS != null && !recoveryRS.isClosed())
                 recoveryRS.close();
@@ -300,6 +328,93 @@ public class FailoverServlet extends FATServlet {
                 recoveryStmt.close();
         }
 
+    }
+
+    public void insertStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+
+        // Access the Database
+        boolean rowNotFound = false;
+        boolean isPostgreSQL = false;;
+        if (dbName.toLowerCase().contains("postgresql")) {
+            // we are PostgreSQL
+            isPostgreSQL = true;
+            System.out.println("insertStaleLease: This is a PostgreSQL Database");
+        }
+        Statement claimPeerlockingStmt = con.createStatement();
+        ResultSet claimPeerLockingRS = null;
+
+        try {
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 " WHERE SERVER_IDENTITY='cloudstale'" +
+                                 (isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
+            System.out.println("insertStaleLease: Attempt to select the row for UPDATE using - " + queryString);
+            claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString);
+        } catch (Exception e) {
+            System.out.println("insertStaleLease: Query failed with exception: " + e);
+            rowNotFound = true;
+        } // eof Exception e block
+
+        // see if we acquired the row
+        if (!rowNotFound && claimPeerLockingRS.next()) {
+            // We found an existing lease row
+            long storedLease = claimPeerLockingRS.getLong(1);
+            System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
+
+            // Construct the UPDATE string
+            String updateString = "UPDATE WAS_LEASES_LOG" +
+                                  " SET LEASE_TIME = ?, LEASE_OWNER = ?" +
+                                  " WHERE SERVER_IDENTITY='cloudstale'";
+
+            System.out.println("insertStaleLease: update lease for cloudstale");
+
+            PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString);
+
+            // Set the Lease_time
+            long fir1 = System.currentTimeMillis() - (1000 * 300);
+            claimPeerUpdateStmt.setLong(1, fir1);
+            claimPeerUpdateStmt.setString(2, "cloudstale");
+            System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+
+            int ret = claimPeerUpdateStmt.executeUpdate();
+
+            System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+        } else {
+            // We didn't find the row in the table
+            System.out.println("insertStaleLease: Could not find row");
+
+            PreparedStatement specStatement = null;
+            try {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+
+                System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + fir1);
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, "cloudstale");
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, "cloudstale");
+                specStatement.setLong(4, fir1);
+
+                int ret = specStatement.executeUpdate();
+
+                System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+            } finally {
+                if (specStatement != null && !specStatement.isClosed())
+                    specStatement.close();
+            }
+        }
     }
 
     public static String toHexString(byte[] byteSource, int bytes) {
@@ -336,7 +451,7 @@ public class FailoverServlet extends FATServlet {
         return (result.toString());
     }
 
-    private Connection getConnection() throws SQLException {
+    private Connection getConnection() throws Exception {
         Connection conn = null;
         try {
             InitialContext context = new InitialContext();
@@ -346,6 +461,7 @@ public class FailoverServlet extends FATServlet {
             conn = ds.getConnection();
         } catch (Exception ex) {
             System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
+            throw ex;
         }
 
         System.out.println("FAILOVERSERVLET: getConnection returned connection - " + conn);

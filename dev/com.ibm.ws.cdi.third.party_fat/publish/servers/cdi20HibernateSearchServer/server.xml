@@ -19,7 +19,7 @@
   </library>
 
   <library id="JbossLib">
-      <fileset dir="${shared.resource.dir}/hibernate" includes="*.jar"/>
+      <fileset dir="${shared.resource.dir}/hibernatejavax" includes="*.jar"/>
   </library>
 
   <application location="hibernateSearchTest.war">
@@ -33,7 +33,7 @@
 
     <SSLDefault/>
     <javaPermission codebase="${server.config.dir}/apps/hibernateSearchTest.war" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernate/jboss-logging.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/hibernatejavax/jboss-logging.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernate/hibernate-core.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/hibernatejavax/hibernate-core.jar" className="java.security.AllPermission"/>
 </server>

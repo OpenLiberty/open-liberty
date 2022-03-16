@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.beansxml.implicit.fat.implicitBeanArchivesDisabled;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -17,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
@@ -82,12 +88,21 @@ public class ImplicitBeanArchivesDisabledTest extends FATServletClient {
         server.startServer();
     }
 
+    @Test
+    public void testWarningMessage() throws Exception {
+        List<String> msgs = server.findStringsInLogs("CWOWB1009W: Implicit bean archives are disabled.");
+        assertTrue("Message not found in logs: CWOWB1009W: Implicit bean archives are disabled.", msgs.size() > 0);
+        assertEquals("Message CWOWB1009W was found more than once", 1, msgs.size());
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         /*
-         * Ignore following warning as it is expected: CWOWB1009W: Implicit bean archives are disabled.
+         * Ignore following warnings as they are expected:
+         * CWOWB1009W: Implicit bean archives are disabled.
+         * CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.
          */
-        server.stopServer("CWOWB1009W");
+        server.stopServer("CWOWB1009W", "CWOWB1015W");
     }
 
 }

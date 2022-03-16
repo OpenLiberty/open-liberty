@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,11 @@ import java.util.Dictionary;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
@@ -32,6 +34,7 @@ import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.library.Library;
 
 /**
  * A RuntimeUpdateListener that detects invalid configuration for the sessionCache feature.
@@ -39,21 +42,40 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 @Component(service = RuntimeUpdateListener.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true)
-public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
+public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
     private static final TraceComponent tc = Tr.register(RuntimeUpdateListenerImpl.class);
-    
+
     volatile boolean configChecked = false;
     private ConfigurationAdmin configAdmin = null;
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
     final static String EOL = System.lineSeparator();
-    final static String sampleConfig = EOL + EOL + "    <httpSessionCache libraryRef=\"JCacheLib\"/>" + EOL +  EOL + "   <library id=\"JCacheLib\">" + EOL + "        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>" + EOL + "    </library>" + EOL;
+    final static String sampleConfig = EOL + EOL + "    <httpSessionCache cacheManagerRef=\"CacheManager\"/>" +
+                                       EOL + EOL + "    <cacheManager id=\"CacheManager\">" +
+                                       EOL + "        <cachingProvider libraryRef=\"JCacheLib\"/>" +
+                                       EOL + "    </cacheManager>" +
+                                       EOL + EOL + "    <library id=\"JCacheLib\">" +
+                                       EOL + "        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>" +
+                                       EOL + "    </library>" + EOL;
 
-    
+
+    private ComponentContext componentContext;
+    private ServiceRegistration<Library> libraryRegistration;
+
+    @Activate
+    protected void activate(ComponentContext context) {
+        componentContext = context;
+    }
+
     @Deactivate
     protected void deactivate(ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(this, tc, "deactivate", context);
         configChecked = false;
+
+        componentContext = null;
+        if (libraryRegistration != null) {
+            libraryRegistration.unregister();
+        }
     }
 
     @Reference
@@ -68,13 +90,13 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
     /**
      * Perform validation checking on the sessionCache feature's configuration.
      */
-    @Trivial  //trace is manually added.
+    @Trivial //trace is manually added.
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "notificationCreated", notification.getName());
-            
+
         if (configChecked) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "notificationCreated: early return.", notification.getName());
@@ -83,18 +105,18 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
 
         if (!configChecked && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
             configChecked = true;
-            
+
             try {
                 String sessionCacheConfigFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, "com.ibm.ws.session.cache");
 
                 Configuration[] sessionCacheConfigurations = configAdmin.listConfigurations(sessionCacheConfigFilter);
-                
+
                 if (sessionCacheConfigurations.length != 1) {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "There should always be one exactly one sessionCacheConfiguration. "
-                                        + "Number of sessionCacheConfigurations found = " + sessionCacheConfigurations.length);
+                                           + "Number of sessionCacheConfigurations found = " + sessionCacheConfigurations.length);
                 }
-                
+
                 if (sessionCacheConfigurations != null) {
                     for (Configuration configuration : sessionCacheConfigurations) {
                         if (configuration == null) {
@@ -103,40 +125,54 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
 
                         Dictionary<String, Object> props = configuration.getProperties();
                         String[] libraryRefs = (String[]) props.get("libraryRef");
+                        String[] cacheManagerRefs = (String[]) props.get("cacheManagerRef");
 
-                        if (libraryRefs == null) {               
-                            if (!isSessionCacheBellConfigured()) {
-                                Tr.error(tc, "ERROR_CONFIG_INVALID_HTTPSESSIONCACHE", Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", sampleConfig));
-                            }
-                        } else if (libraryRefs.length == 0) {
-                            Tr.debug(tc, "The libraryRef attribute of the httpSessionCache in the server configuration could not be resolved. "
-                                            + "Check for possible CWWKG0033W messages.");
-                        } else {
-                            //verify that the libraryRef points to a valid library configuration object.
-                            Configuration libraryConfiguration = configAdmin.getConfiguration(libraryRefs[0]);
-                            if(libraryConfiguration != null) {
-                                //We found nothing wrong with the configuration.
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "A httpSessionCache configuration with a valid libraryRef was found.");
+                        if (cacheManagerRefs == null) {
+                            if (libraryRefs == null) {
+                                if (!isSessionCacheBellConfigured()) {
+                                    Tr.error(tc, "ERROR_CONFIG_INVALID_HTTPSESSIONCACHE", Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", sampleConfig));
+                                }
+                            } else if (libraryRefs.length == 0) {
+                                Tr.debug(tc, "The libraryRef attribute of the httpSessionCache in the server configuration could not be resolved. "
+                                             + "Check for possible CWWKG0033W messages.");
                             } else {
-                                //This case should not be possible. 
-                                //If the libraryRef is missing then libraryRefs is null.
-                                //If the libraryRef points to an invalid library, libraryRefs length is 0.
-                                //If there is more than one libraryRef, a CWWKG0014E error will have already been thrown.
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "A httpSessionCache configuration with a valid libraryRef was found, "
-                                                    + "but the configuration the libraryRef points to is null. "
-                                                    + "This should never happen.");
+                                //verify that the libraryRef points to a valid library configuration object.
+                                Configuration libraryConfiguration = configAdmin.getConfiguration(libraryRefs[0]);
+                                if (libraryConfiguration != null) {
+                                    //We found nothing wrong with the configuration.
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "A httpSessionCache configuration with a valid libraryRef was found.");
+                                } else {
+                                    //This case should not be possible. 
+                                    //If the libraryRef is missing then libraryRefs is null.
+                                    //If the libraryRef points to an invalid library, libraryRefs length is 0.
+                                    //If there is more than one libraryRef, a CWWKG0014E error will have already been thrown.
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "A httpSessionCache configuration with a valid libraryRef was found, "
+                                                           + "but the configuration the libraryRef points to is null. "
+                                                           + "This should never happen.");
+                                }
                             }
+                        } else if (cacheManagerRefs.length == 0) {
+                            Tr.debug(tc, "The cacheManagerRef attribute of the httpSessionCache in the server configuration could not be resolved. "
+                                         + "Check for possible CWWKG0033W messages.");
+                        } else {
+                            /*
+                             * If we are using cacheManagerRef, we still need a library so that the we can fulfill the library dependency
+                             * of CacheStoreService. We will just register the global library since it doesn't matter as it will not be
+                             * used and it would be much more difficult to pull a library from the CachingProviderService.
+                             */
+                            libraryRegistration = DefaultCachingProviderSupport.registerLibrary(componentContext.getBundleContext(), "global");
+                            Tr.debug(tc, "Registered the global library under service registration: " + libraryRegistration);
                         }
                     }
                 }
-            } catch ( InvalidSyntaxException | IOException ex) {
+            } catch (InvalidSyntaxException | IOException ex) {
                 //Something unexpected happened, log the exception as an error.
                 Tr.error(tc, "ERROR_SESSION_INIT", ex);
             }
         }
-        
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "notificationCreated", notification.getName());
     }
@@ -154,27 +190,27 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
         String bellConfigFilter = FilterUtils.createPropertyFilter("service.factoryPid", "com.ibm.ws.classloading.bell");
         Configuration[] bellConfigurations = configAdmin.listConfigurations(bellConfigFilter);
 
-        if(bellConfigurations != null) {
-            for(Configuration bellConfig : bellConfigurations) {
-                if(bellConfig == null) {
+        if (bellConfigurations != null) {
+            for (Configuration bellConfig : bellConfigurations) {
+                if (bellConfig == null) {
                     continue;
                 }
 
                 //Check if this BELL defines javax.cache.spi.CachingProvider as a service.
                 Dictionary<String, Object> bellProps = bellConfig.getProperties();
-                String[] bellServices = (String[]) bellProps.get("service"); 
+                String[] bellServices = (String[]) bellProps.get("service");
                 for (String service : bellServices) {
-                    if("javax.cache.spi.CachingProvider".equals(service)) {
+                    if ("javax.cache.spi.CachingProvider".equals(service)) {
                         sessionCacheBellFound = true;
-                        
+
                         //Check that the bell has a libraryRef that points to an existing library.
                         String bellLibraryRef = (String) bellProps.get("libraryRef");
-                        if(bellLibraryRef != null) {
-                            
+                        if (bellLibraryRef != null) {
+
                             //verify that the BELL libraryRef points to a valid library configuration object.
                             Configuration libraryConfiguration = configAdmin.getConfiguration(bellLibraryRef);
-                            if(libraryConfiguration != null) {
-                                
+                            if (libraryConfiguration != null) {
+
                                 //We found nothing wrong with the configuration.
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(this, tc, "A javax.cache.spi.CachingProvider BELL with a valid libraryRef was found.");
@@ -185,12 +221,12 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
                                 //If there is more than one libraryRef, a CWWKG0014E error will have already been thrown.
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(this, tc, "A javax.cache.spi.CachingProvider BELL with a valid libraryRef was found, "
-                                                    + "but the configuration the libraryRef points to is null. "
-                                                    + "This should never happen.");
+                                                       + "but the configuration the libraryRef points to is null. "
+                                                       + "This should never happen.");
                             }
                         } else {
                             Tr.debug(tc, "A BELL with a javax.cache.spi.CachingProvider service was found, "
-                                            + "but the libraryRef is invalid. Check for possible CWWKG0033W messages.");
+                                         + "but the libraryRef is invalid. Check for possible CWWKG0033W messages.");
                         }
                     }
                 }

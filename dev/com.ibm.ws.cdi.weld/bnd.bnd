@@ -23,6 +23,7 @@ Bundle-Description:CDI Common Weld Integration, version ${bVersion}
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
   com.ibm.ws.cdi.impl.inject.InjectProcessorProvider,\
   com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig,\
+  com.ibm.ws.cdi.config.liberty.CDIContainerConfig,\
   com.ibm.ws.cdi.liberty.CDIDeferredMetaDataFactoryImpl
 
 Service-Component: \

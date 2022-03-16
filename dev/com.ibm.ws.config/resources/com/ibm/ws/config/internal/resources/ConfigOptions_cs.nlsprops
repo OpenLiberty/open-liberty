@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Pou\u017eit\u00ed: java [volby JVM] -jar {0} [volby] outputFile  
+briefUsageScript=Pou\u017eit\u00ed: ./{0} [options] outputFile
+
 
 use.options=Volby:
 # -------- OPTIONS ----------------------------------------------------#
@@ -31,7 +33,14 @@ option-desc.locale=N\u00e1rodn\u00ed prost\u0159ed\u00ed, kter\u00e9 se m\u00e1 
 option-key.compactoutput=--compactOutput
 option-desc.compactoutput=V\u00fdstupn\u00ed sch\u00e9ma nebude obsahovat odsazen\u00ed, od\u0159\u00e1dkov\u00e1n\u00ed ani koment\u00e1\u0159e XML
 option-key.productExtension=--productExtension
-option-desc.productExtension=N\u00e1zev roz\u0161\u00ed\u0159en\u00ed produktu, kter\u00e9 m\u00e1 b\u00fdt zpracov\u00e1no.                            \n\
-Je-li roz\u0161\u00ed\u0159en\u00ed produktu nainstalov\u00e1no ve v\u00fdchoz\u00edm um\u00edst\u011bn\u00ed u\u017eivatele, \n\
-pou\u017eijte kl\u00ed\u010dov\u00e9 slovo: usr.                                                  \n\
-Pokud tato volba nen\u00ed zad\u00e1na, bude akce provedena na j\u00e1dru profilu Liberty.
+option-desc.productExtension=N\u00e1zev roz\u0161\u00ed\u0159en\u00ed produktu, kter\u00e9 m\u00e1 b\u00fdt zpracov\u00e1no.                            \nJe-li roz\u0161\u00ed\u0159en\u00ed produktu nainstalov\u00e1no ve v\u00fdchoz\u00edm um\u00edst\u011bn\u00ed u\u017eivatele, \npou\u017eijte kl\u00ed\u010dov\u00e9 slovo: usr.                                                  \nPokud tato volba nen\u00ed zad\u00e1na, bude akce provedena na j\u00e1dru profilu Liberty.
+
+option-key.schemaVersion=--schemaVersion
+
+# "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
+option-desc.schemaVersion=Je-li zad\u00e1n parametr schemaVersion=1.1, pak se do v\u00fdstupn\u00edho souboru zapisuj\u00ed jak explicitn\u011b pojmenovan\u00e9 pod\u0159\u00edzen\u00e9 prvky, tak i prvek xsd:any.
+
+option-key.outputVersion=--outputVersion
+
+# "outputVersion=2.0" is not translated.  "xsd:any" is not translated
+option-desc.outputVersion=Je-li zad\u00e1n parametr outputVersion=2.0, pou\u017eije se ve v\u00fdstupn\u00edm souboru pouze prvek xsd: any, aby nezn\u00e1m\u00e9 prvky pro\u0161ly ov\u011b\u0159en\u00edm XSD na \u00fakor ztr\u00e1ty ov\u011b\u0159en\u00ed platnosti pro zn\u00e1m\u00e9 prvky.

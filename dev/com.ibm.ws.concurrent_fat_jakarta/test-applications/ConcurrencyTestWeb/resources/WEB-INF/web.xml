@@ -9,8 +9,8 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<web-app version="5.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"> 
-<!-- TODO enable when ready
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+
   <context-service>
     <name>java:comp/concurrent/dd/web/TZContextService</name>
     <propagated>Timestamp</propagated>
@@ -36,7 +36,6 @@
     <context-service-ref>java:comp/concurrent/dd/web/TZContextService</context-service-ref>
     <priority>10</priority>
   </managed-thread-factory>
--->
 
 <!-- TODO enable to test merging
   <context-service>

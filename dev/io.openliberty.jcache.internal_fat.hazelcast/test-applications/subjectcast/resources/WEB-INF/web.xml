@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="WebApp_ID" version="2.5"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml
+/ns/javaee/web-app_2_5.xsd">
+
+	<display-name>Security distributed caching servlets</display-name>
+	<description>This is for servlets to test distributed security caching.
+	</description>
+
+	<servlet>
+		<description>SubjectCastServlet</description>
+		<display-name>SubjectCastServlet</display-name>
+		<servlet-name>SubjectCastServlet</servlet-name>
+		<servlet-class>web.subjectcast.SubjectCastServlet</servlet-class>
+	</servlet>
+
+    <!-- SERVLET MAPPINGS -->
+	<servlet-mapping id="ServletMapping_1">
+		<servlet-name>SubjectCastServlet</servlet-name>
+		<url-pattern>/SubjectCastServlet</url-pattern>
+	</servlet-mapping>
+
+    <!-- SECURITY CONSTRAINTS -->
+	<security-constraint id="SecurityConstraint_1">
+		<web-resource-collection
+			id="WebResourceCollection_1">
+			<web-resource-name>Protected with AllAuthenticated role
+			</web-resource-name>
+			<url-pattern>/SubjectCastServlet</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint id="AuthConstraint_1">
+			<role-name>AllAuthenticated</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<!-- CHALLENGE TYPE -->
+	<login-config id="LoginConfig_1">
+		<auth-method>BASIC</auth-method>
+		<realm-name>Basic Authentication</realm-name>
+	</login-config>  
+  
+    <!-- ROLES DEFINITION -->
+	<security-role id="SecurityRole_1">
+		<description>AllAuthenticated role</description>
+		<role-name>AllAuthenticated</role-name>
+	</security-role>
+</web-app>

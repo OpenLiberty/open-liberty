@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.cdi.internal.core;
+
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+
+import componenttest.custom.junit.runner.RepeatTestFilter;
+
+/**
+ * Repeats a test in a given set of configurations
+ * <p>
+ * Example:
+ *
+ * <pre>
+ * {@code @ClassRule}
+ * public RepeatRule{@code <Config>} r = new RepeatRule{@code <>}(Config.A, Config.B);
+ *
+ * {@code @Test}
+ * public void test() {
+ *    Config c = r.getRepeat(); // Will return Config.A on the first run and Config.B on the second run
+ *    // ...
+ * }
+ * </pre>
+ *
+ * @param <T> the type of the object that describes the configuration
+ */
+public class RepeatRule<T> implements TestRule {
+
+    private T[] repeats;
+
+    private T currentRepeat;
+
+    @SafeVarargs
+    public RepeatRule(T... repeats) {
+        this.repeats = repeats;
+    }
+
+    public T getRepeat() {
+        return currentRepeat;
+    }
+
+    @Override
+    public Statement apply(Statement statement, Description description) {
+        return new Statement() {
+
+            @Override
+            public void evaluate() throws Throwable {
+                for (T repeat : repeats) {
+                    currentRepeat = repeat;
+                    RepeatTestFilter.activateRepeatAction(repeat.toString());
+                    try {
+                        statement.evaluate();
+                    } finally {
+                        RepeatTestFilter.deactivateRepeatAction();
+                        currentRepeat = null;
+                    }
+                }
+            }
+        };
+    }
+
+}

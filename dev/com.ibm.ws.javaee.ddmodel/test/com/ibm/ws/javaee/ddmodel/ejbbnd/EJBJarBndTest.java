@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ import org.junit.runners.Parameterized.Parameters;
 import com.ibm.ws.javaee.dd.commonbnd.Interceptor;
 import com.ibm.ws.javaee.dd.commonbnd.MessageDestination;
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
-import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
-
 
 @RunWith(Parameterized.class)
 public class EJBJarBndTest extends EJBJarBndTestBase {

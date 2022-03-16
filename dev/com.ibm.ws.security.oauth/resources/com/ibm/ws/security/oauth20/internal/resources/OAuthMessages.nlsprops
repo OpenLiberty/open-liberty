@@ -458,17 +458,17 @@ WRONG_TOKEN_GRANTTYPE=CWWKS1497E: The token with grant type [{0}] is not allowed
 WRONG_TOKEN_GRANTTYPE.explanation=The token is not valid because its grant type is not allowed.
 WRONG_TOKEN_GRANTTYPE.useraction=Use a token with a grant type that is allowed.
 
-OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: The URI [{0}] for the client registration metadata field {1} is not valid because it contains a fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: The [{0}] URI for the {1} client registration metadata field is not valid because it contains a fragment.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=The request cannot be completed because the URI must not contain a fragment.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Review the property value in the request and remove the URI fragment.
 
-OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: The URI [{0}] for the client registration metadata field {1} is not valid because it does not use the HTTP or HTTPS scheme.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: The [{0}] URI for the {1} client registration metadata field is not valid because it does not use the HTTP or HTTPS scheme.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=The URI value must use the HTTP or HTTPS scheme.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Review the property value in the request and update it to use the HTTP or HTTPS scheme.
 
 # NOTE: Start of new message prefix CWWKS2300 - 2349
 
-OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: The URI [{0}] for the client registration metadata field {1} is not valid because it uses the HTTP scheme but the OAuth client [{2}] is not a confidential client.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: The [{0}] URI for the {1} client registration metadata field is not valid because it uses the HTTP scheme but the [{2}] OAuth client is not a confidential client.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=The URI value for the metadata field that is specified in the message may use the HTTP scheme only if the OAuth client is a confidential client. Otherwise, the HTTPS scheme must be used.
 OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Update the URI to use the HTTPS scheme, or update the OAuth client to be a confidential client.
 

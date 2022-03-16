@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.cdi.impl.weld;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.jboss.weld.probe.ProbeExtension;
 
@@ -177,8 +178,8 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
 
     /** {@inheritDoc} */
     @Override
-    public Set<String> getSPIExtensionClasses() {
-        return Collections.<String>emptySet();
+    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+        return Collections.emptySet();
     }
 
 }

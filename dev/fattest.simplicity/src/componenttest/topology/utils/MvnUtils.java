@@ -112,6 +112,7 @@ public class MvnUtils {
     private final String suiteFileName;
     private final Set<String> versionedJars;
     private final Map<String, String> additionalMvnProps;
+    private final boolean isTestNG;
 
     /**
      * runs "mvn clean test" in the tck folder
@@ -172,6 +173,8 @@ public class MvnUtils {
         this.testName = testName;
         this.versionedJars = versionedJars;
         this.additionalMvnProps = additionalMvnProps;
+        this.isTestNG = suiteFileName != null;
+
     }
 
     /**
@@ -190,7 +193,8 @@ public class MvnUtils {
         });
 
         if (resultsFiles == null || resultsFiles.length == 0) {
-            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run\n"
+            Assert.fail("No TCK test JUnit result files were found in the results directory (" + surefileResultsDir.toString() +
+                        ") which suggests the TCK tests did not run\n"
                         + "Errors found in mvnOutput were:\n" +
                         getErrorsFromMvnOutput());
         }
@@ -333,7 +337,8 @@ public class MvnUtils {
         // It is possible to use other Testng control xml files (and even generate them
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
-        stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+        if (isTestNG)
+            stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
 
         // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
@@ -377,7 +382,8 @@ public class MvnUtils {
         // It is possible to use other Testng control xml files (and even generate them
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
-        stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+        if (isTestNG)
+            stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
 
         // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
@@ -464,7 +470,10 @@ public class MvnUtils {
      * @return the name of the suite xml file
      */
     private String getSuiteFileName() {
-        return this.suiteFileName;
+        if (isTestNG)
+            return this.suiteFileName;
+        else
+            throw new UnsupportedOperationException("Suite XML file was never set, therefore we assume this is a Junit test.");
     }
 
     /**
@@ -473,7 +482,10 @@ public class MvnUtils {
      * @return the name of the suite
      */
     private String getSuiteName() {
-        return getSuiteFileName().replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
+        if (isTestNG)
+            return getSuiteFileName().replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
+        else //When using junit just use the server name
+            return getServerName() + RepeatTestFilter.getRepeatActionsAsString();
     }
 
     /**
@@ -1286,6 +1298,33 @@ public class MvnUtils {
             e.printStackTrace();
         }
         return returnArray;
+    }
+
+    public static Map<String, String> getResultInfo(LibertyServer server){
+        Map<String, String> resultInfo = new HashMap<>();
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        String productVersion = "";
+        resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+        resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
+        resultInfo.put("os_name",System.getProperty("os.name"));
+        try{
+            List<String> matches = server.findStringsInLogs("product =");
+            if(!matches.isEmpty()){
+                Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
+                Pattern wasVersionPattern = Pattern.compile("WebSphere Application Server (.*?) \\(", Pattern.DOTALL);
+                Matcher olNameMatcher = olVersionPattern.matcher(matches.get(0));
+                Matcher wasNameMatcher = wasVersionPattern.matcher(matches.get(0));
+                if (olNameMatcher.find()) {
+                    productVersion = olNameMatcher.group(1);
+                }
+                else if(wasNameMatcher.find()){
+                    productVersion = wasNameMatcher.group(1);
+                }
+                resultInfo.put("product_version", productVersion);
+            }
+        }finally{
+            return resultInfo;
+        }
     }
 
     public static String capitalise(String spec) {

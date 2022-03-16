@@ -1,0 +1,32 @@
+<!--
+    Copyright (c) 2017, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<include location="${server.config.dir}/imports/socialLoginRunableFeatures.xml" />
+
+	<include location="${server.config.dir}/imports/misc.xml" />
+	<include location="${server.config.dir}/imports/helloworldApplication.xml" />
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+	<include location="${server.config.dir}/imports/socialSSLSettings.xml" />
+	
+	<include location="${server.config.dir}/imports/facebook_basic_SocialConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/facebook_basic_FacebookConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/linkedin_basic_SocialConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/linkedin_basic_LinkedinConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/GitHub_basic_SocialConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/GitHub_basic_GitHubConfig_withDisplayName.xml" />
+	<!-- Omit Twitter generic configs as we don't have a generic oauth1login -->
+	<include location="${server.config.dir}/imports/twitter_basic_TwitterConfig_withDisplayName.xml" />
+	<!-- Omit oauth and oidc provider specific configs as they do NOT exist  -->
+	<include location="${server.config.dir}/imports/LibertyOP_basic_oauth_SocialConfig_withDisplayName.xml" />
+	<include location="${server.config.dir}/imports/LibertyOP_basic_oidc_SocialConfig_withDisplayName.xml" />
+
+</server>

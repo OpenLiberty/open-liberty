@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,26 +34,15 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.dd.PlatformVersion;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
-public abstract class DDParser {
+public abstract class DDParser implements PlatformVersion {
     protected static final TraceComponent tc = Tr.register(DDParser.class);
-
-    // TODO:
-    //
-    // This could be wired into either of:
-    //   onError=FAIL in bootstrap.properties
-    //   <config onError="FAIL"/> in server.xml
-    //
-    // See open liberty issue 19207:
-    // https://github.com/OpenLiberty/open-liberty/issues/19207
-
-    protected static final boolean FAIL_ON_ERROR = false;
 
     /**
      * Display a warning message.  Do not fail parsing.
@@ -65,24 +54,16 @@ public abstract class DDParser {
     }
 
     /**
-     * Display an error message.  If "fail-on-error" is set,
-     * throw an exception.
+     * Display an error message.
      *
      * @param message The error message which is to be displayed.
-     * 
-     * @throws ParseException Thrown if "fail-on-error" is set.
      */
-    protected void error(String message) throws ParseException {
+    protected void error(String message) {
         Tr.error(tc, message);
-
-        if ( FAIL_ON_ERROR ) {
-            throw new ParseException(message);
-        }
     }
 
     /**
-     * Display an error message.  Throw an exception,
-     * even if "fail-on-error" is not set.
+     * Display an error message.
      *
      * @param message The error message which is to be displayed.
      * 
@@ -90,49 +71,7 @@ public abstract class DDParser {
      */
     protected void fatal(String message) throws ParseException {
         Tr.error(tc, message);
-
         throw new ParseException(message);
-    }    
-    
-    //
-    
-    public static final String NAMESPACE_SUN_J2EE =
-        "http://java.sun.com/xml/ns/j2ee";
-    public static final String NAMESPACE_SUN_JAVAEE =
-        "http://java.sun.com/xml/ns/javaee";
-    public static final String NAMESPACE_JCP_JAVAEE =
-        "http://xmlns.jcp.org/xml/ns/javaee";
-    public static final String NAMESPACE_JAKARTA =
-        "https://jakarta.ee/xml/ns/jakartaee";    
-
-    //
-
-    public static String getDottedVersionText(int version) {
-        if ( version == 0 ) {
-            return null;
-
-        } else {
-            byte[] versionBytes = {
-                (byte) ('0' + (version / 10)),
-                '.',
-                (byte) ('0' + (version % 10)) };
-            return new String(versionBytes);
-        }
-    }
-
-    public static String getVersionText(int version) {
-        switch ( version ) {
-            case 0: return null;
-            case 12: return "1.2";
-            case 13: return "1.3";
-            case 14: return "1.4";
-            case 50: return "5";
-            case 60: return "6";
-            case 70: return "7";
-            case 80: return "8";
-            case 90: return "9";
-            default: throw new IllegalArgumentException("Unknown schema version");
-        }
     }
     
     //
@@ -558,8 +497,9 @@ public abstract class DDParser {
 
     protected final Container rootContainer;
 
+    private static final Object adaptNull = new Object();
     private final Map<Class<?>, Object> adaptCache =
-        new HashMap<Class<?>, Object>();
+        new HashMap<Class<?>, Object>(1);
 
     @Trivial
     public Entry getAdaptableEntry() {
@@ -606,23 +546,31 @@ public abstract class DDParser {
     public <T> T adaptRootContainer(Class<T> targetClass) throws ParseException {
         Object target = adaptCache.get(targetClass);
         if ( target != null ) {
-            return targetClass.cast(target);
+            if ( target == adaptNull ) {
+                return null;
+            } else  if ( target instanceof ParseException ) {
+                throw (ParseException) target;
+            } else {
+                return targetClass.cast(target);
+            }
         }
 
         try {
             T result = rootContainer.adapt(targetClass);
-            // TODO: Need to handle null adapt results better.
-            adaptCache.put(targetClass, result);
+            adaptCache.put( targetClass, ((result == null) ? adaptNull : result ) );
             return result;
 
         } catch ( UnableToAdaptException e ) {
-            // TODO: Store adapt failures, too.
-
+            ParseException pe;
             Throwable cause = e.getCause();
             if ( cause instanceof ParseException ) {
-                throw (ParseException) cause;
+                pe = (ParseException) cause;
             }
-            throw new ParseException(xmlError(e), e);
+            pe = new ParseException(xmlError(e), e);
+
+            adaptCache.put(targetClass, pe);
+
+            throw pe;
         }
     }
 
@@ -667,20 +615,22 @@ public abstract class DDParser {
     
     // XML header values ...
 
-    public int version; // Schema version
-    public int eePlatformVersion; // Schema version turned into a platform version.
-
+    // Schema version    
+    public int version;
+    // Schema version turned into a platform version.    
+    public int eePlatformVersion;
+    
     public String dtdPublicId;
     public String namespace;
     public String namespaceOriginal;
     public String idNamespace;
 
     public String getDottedVersionText() {
-        return getDottedVersionText(version);
+        return PlatformVersion.getDottedVersionText(version);
     }
 
     public String getVersionText() {
-        return getVersionText(version);
+        return PlatformVersion.getVersionText(version);
     }
 
     /**

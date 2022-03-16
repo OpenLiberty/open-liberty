@@ -44,6 +44,7 @@ import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
@@ -102,6 +103,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              * bin/server checkpoint <server name> --at=<phase> -Dio.openliberty.checkpoint.stub.criu=true
              */
             this.criu = new ExecuteCRIU() {
+                @Override
+                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+                    prepare.run();
+                    restore.run();
+                }
             };
         } else {
             this.criu = (criu == null) ? J9CRIUSupport.create() : criu;
@@ -197,9 +203,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
         Collections.reverse(singleThreadRestoreHooks);
 
-        if (tc.isInfoEnabled()) {
-            Tr.info(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
-        }
+        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
 
         prepare(multiThreadPrepareHooks);
         try {
@@ -227,9 +231,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         restore(multiThreadRestoreHooks);
 
-        if (tc.isInfoEnabled()) {
-            Tr.info(tc, "CHECKPOINT_RESTORE_CWWKC0452I");
-        }
+        Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
+
         createRestoreMarker();
     }
 

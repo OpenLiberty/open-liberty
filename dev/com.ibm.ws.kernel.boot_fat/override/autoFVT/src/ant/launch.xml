@@ -53,6 +53,7 @@
 		<path id="test-buildtasks-autowas">
 			<fileset dir="./build/lib/" includes="infra.buildtasks*.jar" />
 			<fileset dir="./build/lib/" includes="asm*.jar" />
+			<fileset dir="./build/lib/" includes="jsch*.jar" />
 		</path>
 		<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 		<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />

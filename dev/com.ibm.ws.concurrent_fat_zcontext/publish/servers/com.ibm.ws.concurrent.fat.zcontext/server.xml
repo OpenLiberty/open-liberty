@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>appSecurity-5.0</feature>
+    <feature>componenttest-2.0</feature>
+    <feature>concurrent-3.0</feature>
+    <feature>contextProviderSPI-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-6.0</feature>
+    <feature>simulatedZOSContextProviders-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="SimZOSContextWeb.war"/>
+  
+  <basicRegistry id="basic" realm="customRealm">
+    <user name="concurrency" password="password" />
+    <group name="manager">
+      <member name="concurrency" />
+    </group>
+  </basicRegistry>
+
+  <!-- allows application to shut down a pool of unmanaged threads -->
+  <javaPermission codebase="${server.config.dir}/apps/SimZOSContextWeb.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+
+</server>

@@ -49,6 +49,7 @@ public class MockServletRequest implements HttpServletRequest {
     HashMap<String, ArrayList<String>> _params = new HashMap<String, ArrayList<String>>();
     Cookie[] _cookies = null;
     Principal _principal = null;
+    String attribute = null;
 
     @Override
     public String getAuthType() {
@@ -207,6 +208,9 @@ public class MockServletRequest implements HttpServletRequest {
 
     @Override
     public Object getAttribute(String arg0) {
+        if ("OIDC_END_SESSION_REDIRECT".equals(arg0)) {
+            return attribute;
+        }
         return null;
     }
 
@@ -360,10 +364,16 @@ public class MockServletRequest implements HttpServletRequest {
 
     @Override
     public void removeAttribute(String arg0) {
+        if ("OIDC_END_SESSION_REDIRECT".equals(arg0)) {
+            attribute = null;
+        }
     }
 
     @Override
     public void setAttribute(String arg0, Object arg1) {
+        if ("OIDC_END_SESSION_REDIRECT".equals(arg0)) {
+            attribute = (String)arg1;
+        }
     }
 
     @Override

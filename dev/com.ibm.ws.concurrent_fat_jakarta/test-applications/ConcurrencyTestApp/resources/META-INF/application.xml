@@ -9,10 +9,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<!-- TODO
 <application version="10" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_10.xsd">
--->
-<application version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
   <display-name>Concurrency Test Application</display-name>
 
   <module>
@@ -26,7 +23,6 @@
     <ejb>ConcurrencyTestEJB.jar</ejb>
   </module>
 
-<!-- TODO enable these
   <context-service>
     <name>java:app/concurrent/dd/ZPContextService</name>
     <cleared>List</cleared>
@@ -54,5 +50,5 @@
     <context-service-ref>java:app/concurrent/appContextSvc</context-service-ref>
     <priority>4</priority>
   </managed-thread-factory>
--->
+
 </application>

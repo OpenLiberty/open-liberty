@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "Néhány alkalmazás fut",
     SOME_SERVERS_RUNNING : "Néhány kiszolgáló fut",
     SOME_CLUSTERS_RUNNING : "Néhány fürt fut",
-    NO_APPS_RUNNING : "Nincs futó alkalmazás",
     NO_SERVERS_RUNNING : "Nincs futó kiszolgáló",
     NO_CLUSTERS_RUNNING : "Nincs futó fürt",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}: alkalmazáspéldány nem fut", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}: nem minden alkalmazás fut", // serverName[]
-    NO_APPS_RUNNING : "{0}: nincs futó alkalmazás", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} kiszolgáló, ahol nem minden alkalmazás fut", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} kiszolgáló futó alkalmazás nélkül", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "{0} megjegyzés",  // note value
     SET_ATTRIBUTES: "Címkék és metaadatok",
     SETATTR_RUNTIME_NAME: "{0} a következőn: {1}",  // runtime, host
-    SAVE: "Mentés",
     TAGINVALIDCHARS: "A '/', '<' és '>' karakterek nem érvényesek.",
     ERROR_GET_TAGS_METADATA: "A termék nem tudja beolvasni az erőforrás aktuális címkéit és metaadatait.",
     ERROR_SET_TAGS_METADATA: "A termék egy hiba miatt nem tudta beállítani a címkéket és metaadatokat.",

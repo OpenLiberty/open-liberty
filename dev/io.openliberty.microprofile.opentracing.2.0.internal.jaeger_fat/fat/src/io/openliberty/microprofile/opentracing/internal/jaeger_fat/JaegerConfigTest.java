@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,9 @@ public class JaegerConfigTest {
     
     @Server("jaegerServerLibInWar")
     private static LibertyServer server3;
+
+    @Server("jaegerServerIncompatible")
+    private static LibertyServer server4;
     
     private static LibertyServer currentServer;
     
@@ -66,6 +69,7 @@ public class JaegerConfigTest {
         server1 = LibertyServerFactory.getLibertyServer("jaegerServer1");
         server2 = LibertyServerFactory.getLibertyServer("jaegerServer2");
         server3 = LibertyServerFactory.getLibertyServer("jaegerServer3");
+        server4 = LibertyServerFactory.getLibertyServer("jaegerServer4");
         WebArchive serviceWar = ShrinkWrap.create(WebArchive.class, "mpOpenTracing.war");
         serviceWar.addPackages(true, "io.openliberty.microprofile.opentracing.internal.testing.mpOpenTracing");
         serviceWar.addAsWebInfResource(
@@ -78,6 +82,7 @@ public class JaegerConfigTest {
         File[] libs = libsDir.listFiles();
         for (File file : libs) {
             server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+            server4.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
             // We are not copying the library to server2 for improper config test
             // Adding library jars to war file for testLibraryInWar
             serviceWarWithLib.addAsLibrary(file);
@@ -85,6 +90,7 @@ public class JaegerConfigTest {
         ShrinkHelper.exportAppToServer(server1, serviceWar);
         ShrinkHelper.exportAppToServer(server2, serviceWar);
         ShrinkHelper.exportAppToServer(server3, serviceWarWithLib);
+        ShrinkHelper.exportAppToServer(server4, serviceWar);
     }
     
     /**
@@ -145,6 +151,26 @@ public class JaegerConfigTest {
         Assert.assertNotNull(logMsg);
     }
 
+     /**
+     * Create traces with an incorrect Jaeger configuration.
+     *
+     * @throws Exception Errors executing the service.
+     */
+    @Test
+    public void testIncompatibleJaeger() throws Exception {
+        server4.startServer();
+        currentServer = server4;
+        String methodName = "testIncompatibleJaeger";
+        List<String> actualResponseLines = executeWebService(server4, "helloWorldNoTrace");
+
+        FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
+
+        String logMsg = server4.waitForStringInLog("CWMOT0011W");
+        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
+        Assert.assertNotNull(logMsg);
+
+    }
+
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() + ":" +
@@ -157,16 +183,16 @@ public class JaegerConfigTest {
     @After
     public void tearDown() throws Exception {
     	if (currentServer != null && currentServer.isStarted()) {
-        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
+        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W", "CWMOT0011W");
         }
     }
     
     @AfterClass
     public static void shutdown() throws Exception {
-    	LibertyServer[] serversToShutDown = {server1, server2, server3};
+    	LibertyServer[] serversToShutDown = {server1, server2, server3, server4};
     	for (LibertyServer server : serversToShutDown) {
         	if (server != null && server.isStarted()) {
-        		server.stopServer("CWMOT0009W", "CWMOT0010W");
+        		server.stopServer("CWMOT0009W", "CWMOT0010W", "CWMOT0011W");
             }
     	}
     }

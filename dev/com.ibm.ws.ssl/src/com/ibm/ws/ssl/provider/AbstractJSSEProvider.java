@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,6 +212,11 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             return sslContext;
         }
 
+        String direction = Constants.DIRECTION_OUTBOUND;
+        if (connectionInfo != null) {
+            direction = (String) connectionInfo.get(Constants.CONNECTION_INFO_DIRECTION);
+        }
+
         // Create the SSL context needed by the JSSE.
         sslContext = getSSLContextInstance(sslConfig);
 
@@ -227,12 +232,18 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             TrustManager[] trustManagers = trustMgrs.toArray(new TrustManager[trustMgrs.size()]);
             // use default SecureRandom
             sslContext.init(keyManagers, trustManagers, null);
+        } else if (keyMgrs.isEmpty() && (direction != null && direction.equals(Constants.DIRECTION_INBOUND))) {
+            String message = TraceNLSHelper.getInstance().getString("ssl.config.error.CWPKI0835E",
+                                                                    "An SSL/TLS configuration cannot be created for inbound connection due to no key manager being created.");
+            throw new SSLException(message);
         } else if (keyMgrs.isEmpty() && !trustMgrs.isEmpty()) {
             TrustManager[] trustManagers = trustMgrs.toArray(new TrustManager[trustMgrs.size()]);
             // use default SecureRandom
             sslContext.init(null, trustManagers, null);
         } else {
-            throw new SSLException("Null trust and key managers.");
+            String message = TraceNLSHelper.getInstance().getString("ssl.config.error.CWPKI0836E",
+                                                                    "An SSL/TLS configuration cannot created due to no key and trust managers being created.");
+            throw new SSLException(message);
         }
 
         // this may need to be made configurable at some point.
@@ -609,15 +620,20 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         // now generate a new SSLContext
         final String ctxtProvider = config.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
-        final String protocol = config.getProperty(Constants.SSLPROP_PROTOCOL);
         final String alias = config.getProperty(Constants.SSLPROP_ALIAS);
         final String configURL = config.getProperty(Constants.SSLPROP_CONFIGURL_LOADED_FROM);
+        String protocolVal = config.getProperty(Constants.SSLPROP_PROTOCOL);
 
         SSLContext sslContext = null;
 
-        if (protocol == null) {
+        if (protocolVal == null) {
             throw new IllegalArgumentException("Protocol is not specified.");
+        } else {
+            String[] protocols = protocolVal.split(",");
+            if (protocols.length > 1)
+                protocolVal = protocols[0];
         }
+        final String protocol = protocolVal;
 
         try {
             sslContext = AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {
@@ -663,6 +679,11 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             } else {
                 throw new SSLException(ex);
             }
+        } catch (Throwable t) {
+            Throwable cause = t.getCause();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Throwable occurred getting SSL context.", new Object[] { cause });
+            throw new SSLException(cause.getMessage());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

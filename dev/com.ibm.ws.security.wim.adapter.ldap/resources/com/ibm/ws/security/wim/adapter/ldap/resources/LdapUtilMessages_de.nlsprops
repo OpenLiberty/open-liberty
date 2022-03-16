@@ -27,14 +27,6 @@ ENTITY_NOT_FOUND=CWIML4001E: Die Benutzerregistry-Operation konnte nicht ausgef\
 ENTITY_NOT_FOUND.explanation=Der angegebene Entit\u00e4tsname, der ein uniqueName oder eine uniqueId sein kann, wurde nicht im zugrunde liegenden Repository gefunden. Die Benutzerregistry-Operation kann ohne diese Entit\u00e4t nicht fortgesetzt werden.
 ENTITY_NOT_FOUND.useraction=Stellen Sie sicher, dass die Entit\u00e4t im zugrunde liegenden Repository vorhanden ist. Wenn die Entit\u00e4t vorhanden ist, stellen Sie sicher, dass die Leseberechtigung f\u00fcr die Entit\u00e4t definiert wurde, und wiederholen Sie den Vorgang.
 
-INVALID_LEVEL_IN_CONTROL=CWIML4514E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es wurde ein falscher Wert f\u00fcr die Eigenschaftsebene {0} in {1} angegeben. Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen.
-INVALID_LEVEL_IN_CONTROL.explanation=Der Wert der Eigenschaftsebene wurde als negative Zahl angegeben.
-INVALID_LEVEL_IN_CONTROL.useraction=Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen. \u00c4ndern Sie den Wert f\u00fcr die Eigenschaftsebene und wiederholen Sie dann die Operation.
-
-NAMING_EXCEPTION=CWIML4520E: Die LDAP-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung ist die folgende Ausnahme bei der LDAP-Benennung {0} eingetreten.
-NAMING_EXCEPTION.explanation=Die Nachricht zeigt an, dass w\u00e4hrend einer LDAP-Operation eine allgemeine Benennungsausnahme eingetreten ist. Suchen Sie in der Ausnahme nach weiteren Einzelheiten. 
-NAMING_EXCEPTION.useraction=Stellen Sie sicher, dass das zugeh\u00f6rige Repository (z. B. eine Datenbank oder ein LDAP-Server) gestartet und ordnungsgem\u00e4\u00df konfiguriert ist.
-
 SYSTEM_EXCEPTION=CWIML1998E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung der Benutzerregistry-Operation ist die folgende Systemausnahme eingetreten: {0} 
 SYSTEM_EXCEPTION.explanation=W\u00e4hrend der Ausf\u00fchrung der Benutzerregistry-Operation hat das Programm eine Systemausnahme festgestellt.
 SYSTEM_EXCEPTION.useraction= \u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zur Problembehebung zu ergreifen. 
@@ -51,10 +43,6 @@ MISSING_MANDATORY_PROPERTY=CWIML1028E: Die Benutzerregistry-Operation konnte nic
 MISSING_MANDATORY_PROPERTY.explanation=Die Operation kann nicht ausgef\u00fchrt werden, weil die verbindliche Eigenschaft fehlt. Beispiel: Die RDN-Eigenschaft wurde bei der Erstellung der Entit\u00e4t nicht angegeben oder propertyName oder entityTypeName fehlt in PropertyDefinitionControl oder ExtensionPropertyDefinitionControl, oder entityName fehlt im entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Geben Sie einen Wert f\u00fcr die verbindliche Eigenschaft an.
 
-ENTITY_IS_NOT_A_GROUP=CWIML4525E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der angegebene Entit\u00e4tstyp {0} hat nicht den Typ Group. Diese Operation wird nur f\u00fcr Entit\u00e4ten vom Typ Group unterst\u00fctzt.
-ENTITY_IS_NOT_A_GROUP.explanation=Die gruppenbezogenen Operationen (Mitglieder einer Gruppe zuweisen, Mitglieder einer Gruppe abrufen) sind nur g\u00fcltig, wenn der Entit\u00e4tstyp Group ist. Eine Ausnahme wird ausgel\u00f6st, wenn die Entit\u00e4t nicht den Typ Group hat.
-ENTITY_IS_NOT_A_GROUP.useraction=Stellen Sie sicher, dass der Entit\u00e4tstyp "Group" ist. Stellen Sie f\u00fcr den LDAP-Adapter sicher, dass die Objektklasse, die f\u00fcr den Entit\u00e4tstyp Group definiert ist, mit der tats\u00e4chlichen Objektklasse der Gruppe \u00fcbereinstimmt.
-
 CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W: \ Der Benutzer {2} hat das Cachesteuerelement \u00fcbergeben, das den Cachebereinigungsmodus {1} f\u00fcr das Repository {0} angibt. Der gesamte LDAP-Repository-Cache wird gel\u00f6scht.
 CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Der angegebene Benutzer versucht, den gesamten Cache des angegeben Repositorys mit dem Modus clearAll zu bereinigen.
 CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Diese Nachricht wird zu Pr\u00fcfzwecken protokolliert.
@@ -66,10 +54,6 @@ UNKNOWN_CLEAR_CACHE_MODE.useraction=Geben Sie einen Cachebereinigungsmodus an, d
 INVALID_PROPERTY_DATA_TYPE=CWIML4522E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der Datentyp der Eigenschaft {0} ist nicht g\u00fcltig. Die konfigurierte Benutzerregistry und das Back-End-Repository m\u00fcssen denselben Datentyp f\u00fcr die Eigenschaft haben. 
 INVALID_PROPERTY_DATA_TYPE.explanation=Der angegebene Datentyp stimmt nicht mit dem Datentyp \u00fcberein, der f\u00fcr die Eigenschaft definiert ist. In der konfigurierten Benutzerregistry wurde beispielsweise der Datentyp binary (bin\u00e4r) definiert, aber im Back-End-Repository der Datentyp string (Zeichenfolge).
 INVALID_PROPERTY_DATA_TYPE.useraction=Stellen Sie sicher, dass der Datentyp der Eigenschaft in der konfigurierten Benutzerregistry und der Datentyp der Eigenschaft im Back-End-Repository identisch sind. 
-
-LDAP_ENTRY_NOT_FOUND=CWIML4527E: Die LDAP-Operation konnte nicht ausgef\u00fchrt werden. Der LDAP-Eintrag {0} wurde nicht gefunden: {1}. Geben Sie den richtigen eindeutigen Namen der Entit\u00e4t an, und definieren Sie die richtige Knotenzuordnung f\u00fcr das LDAP-Repository.
-LDAP_ENTRY_NOT_FOUND.explanation=Der LDAP-Eintrag f\u00fcr die angegebene Entit\u00e4t wurde nicht im LDAP-Server gefunden.
-LDAP_ENTRY_NOT_FOUND.useraction=Stellen Sie sicher, dass der eindeutige Name der Entit\u00e4t korrekt angegeben ist. Stellen Sie sicher, dass die Knotenzuordnung des LDAP-Repositorys ordnungsgem\u00e4\u00df definiert ist.
 
 PROPERTY_NOT_DEFINED=CWIML0514W: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Eigenschaft {0} ist nicht definiert. Definieren Sie die Eigenschaft, oder verwenden Sie den richtigen Eigenschaftsnamen.
 PROPERTY_NOT_DEFINED.explanation=Die angegebene Eigenschaft ist nicht definiert.
@@ -86,10 +70,6 @@ NULL_CHECKPOINT_VALUE.useraction=Wiederholen Sie die Suche mit einem g\u00fcltig
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden, weil das Kennwort fehlt oder leer ist.
 MISSING_OR_EMPTY_PASSWORD.explanation=Wenn der Name des Principals bei der Anmeldung angegeben wird, darf das Kennwort nicht null oder leer sein.
 MISSING_OR_EMPTY_PASSWORD.useraction=Geben Sie das Kennwort an.
-
-PASSWORD_CHECKED_FAILED=CWIML4529E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Fehler bei der Kennwort\u00fcberpr\u00fcfung f\u00fcr den Principalnamen {0}. Eigentliche Fehlerursache: {1}. Geben Sie den Namen und das Kennwort des Principals ordnungsgem\u00e4\u00df ein, und stellen Sie sicher, dass der Account aktiviert und nicht gesperrt ist.
-PASSWORD_CHECKED_FAILED.explanation=Der angegebene Principalname kann nicht authentifiziert werden, weil die Kennwort\u00fcberpr\u00fcfung fehlgeschlagen ist.
-PASSWORD_CHECKED_FAILED.useraction=Stellen Sie sicher, dass der Principalname und das Kennwort ordnungsgem\u00e4\u00df angegeben sind. Stellen Sie sicher, dass der Account nicht gesperrt ist und dass er aktiviert ist.
 
 UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Die Cachebereinigungsoperation f\u00fcr das LDAP-Repository konnte nicht ausgef\u00fchrt werden. Der im Cachesteuerelement \u00fcbergebene Cachebereinigungsmodus {1} wird vom angegebenen Repository {0} f\u00fcr diese Operation nicht unterst\u00fctzt. Geben Sie einen unterst\u00fctzten Modus f\u00fcr die Bereinigung des Caches an.
 UNSUPPORTED_CLEAR_CACHE_MODE.explanation=Der angegebene Cachebereinigungsmodus ist f\u00fcr dieses Repository ung\u00fcltig.
@@ -108,11 +88,11 @@ INVALID_CERTIFICATE_FILTER.explanation=Die Syntax oder Struktur dieses Filters i
 INVALID_CERTIFICATE_FILTER.useraction=Stellen Sie sicher, dass der Zertifikatsfilter der dokumentierten Syntax entspricht.
 
 TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Die Operation getTBSCertificate() wird im Filterausdruck nicht unterst\u00fctzt. Geben Sie den richtigen Zertifikatsfilter an.
-TBS_CERTIFICATE_UNSUPPORTED.explanation=Das Zertifikatsattribut TBSCertificate kann in der Filterspezifikation nicht verwendet werden. Sie k\u00f6nnen die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Die Gro\u00df-/Kleinschreibung der Zeichenfolgen muss beachtet werden: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=Das Zertifikatsattribut TBSCertificate kann in der Filterspezifikation nicht verwendet werden. Sie k\u00f6nnen die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Bei den Zeichenfolgen muss die Gro\u00df-/Kleinschreibung beachtet werden: $'{UniqueKey}', $"{PublicKey}', $"{Issuer}', $'{NotAfter}', $"{NotBefore}", $'{SerialNumber}', $"{SigAlgName}", $'{SigAlgOID}', $"{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Stellen Sie sicher, dass der Zertifikatsfilter korrekt ist.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Es wurde ein unbekanntes Zertifikatsattribut {0} in der Filterspezifikation verwendet. Geben Sie einen unterst\u00fctzten Zertifikatsfilter an.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Sie k\u00f6nnen nur die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Die Gro\u00df-/Kleinschreibung der Zeichenfolgen muss beachtet werden: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Sie k\u00f6nnen nur die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Bei den Zeichenfolgen muss die Gro\u00df-/Kleinschreibung beachtet werden: $'{UniqueKey}', $"{PublicKey}', $"{Issuer}', $'{NotAfter}', $"{NotBefore}", $'{SerialNumber}', $"{SigAlgName}", $'{SigAlgOID}', $"{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Stellen Sie sicher, dass, dass der Zertifikatsfilter korrekt ist.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der im DN-Feld konfigurierte Wert {0} ist nicht g\u00fcltig. Geben Sie einen g\u00fcltigen Wert f\u00fcr das DN-Feld an.
@@ -123,33 +103,13 @@ EXT_ID_VALUE_IS_NULL=CWIML4548E: Die Anmeldeoperation konnte nicht ausgef\u00fch
 EXT_ID_VALUE_IS_NULL.explanation=Das LDAP-Attribut, das als externe Kennung verwendet wird, muss einen Wert f\u00fcr jede Entit\u00e4t enthalten.
 EXT_ID_VALUE_IS_NULL.useraction=Stellen Sie sicher, dass das richtige Attribut als externe Kennung ausgew\u00e4hlt ist. Wenn kein entsprechendes Attribut vorhanden ist, kann der definierte Name als externe Kennung verwendet werden.
 
-EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Die Suchoperation konnte nicht ausgef\u00fchrt werden. Das LDAP-Attribut, das als externe Kennung verwendet wird, enth\u00e4lt mehrere Werte: {0}. W\u00e4hlen Sie das richtige LDAP-Attribut als externe ID an.
-EXT_ID_HAS_MULTIPLE_VALUES.explanation=Das LDAP-Attribut, das als externe Kennung verwendet wird, muss eindeutig sein und darf nur einen einzigen Wert enthalten.
-EXT_ID_HAS_MULTIPLE_VALUES.useraction=Stellen Sie sicher, dass das richtige Attribut als externe Kennung ausgew\u00e4hlt ist. Wenn kein entsprechendes Attribut vorhanden ist, kann der definierte Name als externe Kennung verwendet werden.
-
 INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Der Vorgang der Benutzerregistrierung konnte nicht abgeschlossen werden. Die Basiseintragsdefinition {0} ist nicht g\u00fcltig.  Korrigieren Sie die Basiseintragsdefinition in der Datei server.xml.
 INVALID_BASE_ENTRY_DEFINITION.explanation=Die angegebene Basiseintragsdefinition ist ung\u00fcltig.
 INVALID_BASE_ENTRY_DEFINITION.useraction=Geben Sie eine g\u00fcltige Basiseintragsdefinition in der Datei server.xml an.
 
-INVALID_DN_SYNTAX=CWIML4517E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der definierte Name {0} ist nicht g\u00fcltig. Geben Sie den definierten Namen in der richtigen Syntax an.
-INVALID_DN_SYNTAX.explanation=Der angegebene definierte Name ist nicht g\u00fcltig. Die Benutzerregistry-Operation kann ohne einen g\u00fcltigen definierten Namen nicht fortgesetzt werden.
-INVALID_DN_SYNTAX.useraction=Stellen Sie sicher, dass die Syntax des definierten Namens korrekt ist. Suchen Sie beispielsweise nach Escapezeichen.
-
-INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Die Anfangsgr\u00f6\u00dfe des Kontextpools, {0}, ist h\u00f6her als die maximal zul\u00e4ssige Gr\u00f6\u00dfe des Kontextpools, {1}. Deshalb wurde der Kontextpool inaktiviert.
-INIT_POOL_SIZE_TOO_BIG.explanation=Der Anfangswert f\u00fcr die Kontextpoolgr\u00f6\u00dfe muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe sein.
-INIT_POOL_SIZE_TOO_BIG.useraction=Stellen Sie sicher, dass der Anfangswert f\u00fcr die Kontextpoolgr\u00f6\u00dfe kleiner ist als die maximale Kontextpoolgr\u00f6\u00dfe, oder setzen Sie die maximale Kontextpoolgr\u00f6\u00dfe auf 0.
-
-PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Die bevorzugte Kontextpoolgr\u00f6\u00dfe, {0}, muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe, {1}, sein. Deshalb wurde der Kontextpool inaktiviert.
-PREF_POOL_SIZE_TOO_BIG.explanation=Die bevorzugte Kontextpoolgr\u00f6\u00dfe muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe sein.
-PREF_POOL_SIZE_TOO_BIG.useraction=Stellen Sie sicher, dass die bevorzugte Kontextpoolgr\u00f6\u00dfe kleiner ist als die maximale Kontextpoolgr\u00f6\u00dfe, oder setzen Sie die maximale Kontextpoolgr\u00f6\u00dfe auf 0.
-
 MISSING_INI_PROPERTY=CWIML0004E: W\u00e4hrend der Initialisierung der Benutzerregistry ist ein Fehler aufgetreten. Die Initialisierungseigenschaft {0} fehlt in der Datei server.xml. Geben Sie in der Datei server.xml eine Initialisierungseigenschaft an.
 MISSING_INI_PROPERTY.explanation=Die angegebene Initialisierungseigenschaft ist verbindlich. Die Benutzerregistry-Operation kann ohne diese Eigenschaft nicht gestartet werden.
 MISSING_INI_PROPERTY.useraction=Stellen Sie sicher, dass diese Eigenschaft in der Datei server.xml angegeben ist. Stellen Sie sicher, dass die Eigenschaft nicht leer oder null ist.
-
-DUPLICATE_ENTITY_TYPE=CWIML4531E: Der Entit\u00e4tstyp {0} ist in der Datei server.xml doppelt definiert.
-DUPLICATE_ENTITY_TYPE.explanation=Der in der Datei server.xml definierte Entit\u00e4tstyp muss eindeutig sein.
-DUPLICATE_ENTITY_TYPE.useraction=Bearbeiten Sie die Datei server.xml und entfernen Sie den doppelten Entit\u00e4tstyp.
 
 LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Es ist eine Konfigurationsausnahme eingetreten. Das Attribut {0} muss definiert werden.
 LDAP_CONFIG_INCOMPLETE.explanation=Das angegebene Attribut muss definiert werden.
@@ -182,10 +142,6 @@ LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Die Authentifizierung bei {0} m
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=Die Werte f\u00fcr bindDN und bindPassword sind ung\u00fcltig oder der Port ist falsch.
 LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Vergewissern Sie sich, dass die Werte f\u00fcr bindDN und bindPassword f\u00fcr den konfigurierten LDAP-Server korrekt sind.
 
-ENTITY_HAS_DESCENDENTS=CWIML4519E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t {0} hat untergeordnete Elemente. Sie kann nicht gel\u00f6scht oder umbenannt werden. L\u00f6schen Sie alle untergeordneten Elemente der Entit\u00e4t, bevor Sie versuchen, die Entit\u00e4t selbst zu l\u00f6schen oder umzubenennen.
-ENTITY_HAS_DESCENDENTS.explanation=Die L\u00f6sch- oder Umbenennungsfunktion kann nur f\u00fcr eine Blattentit\u00e4t ausgef\u00fchrt werden, das hei\u00dft f\u00fcr eine Entit\u00e4t ohne untergeordnete Elemente. Die angegebene Entit\u00e4t weist untergeordnete Elemente auf.
-ENTITY_HAS_DESCENDENTS.useraction=L\u00f6schen Sie zuerst alle untergeordneten Elemente der Entit\u00e4t und l\u00f6schen bzw. benennen Sie dann die Entit\u00e4t selbst um.
-
 ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Der angegebene Entit\u00e4tstyp {0} ist f\u00fcr diese Operation nicht g\u00fcltig.
 ENTITY_TYPE_NOT_SUPPORTED.explanation=Es wurde eine Operation f\u00fcr eine Entit\u00e4t angefordert, aber diese Operation unterst\u00fctzt den angegebenen Entit\u00e4tstyp nicht.
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass die in der Eingabe angegebenen Entit\u00e4ten unterst\u00fctzte Entit\u00e4tstypen haben, und entfernen Sie alle unterst\u00fctzten Entit\u00e4tstypen aus der Eingabe.
@@ -193,10 +149,6 @@ ENTITY_TYPE_NOT_SUPPORTED.useraction=Stellen Sie sicher, dass die in der Eingabe
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Eigenschaft {0} kann nicht im Repository {1} erstellt oder aktualisiert werden.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=Bei der Erstellungs- oder Aktualisierungsoperation konnte ein f\u00fcr eine Eigenschaft angegebener Wert nicht in das Repository geschrieben werden. F\u00fcr eine Erstellungsoperation (CREATE) darf beispielsweise kein principalName-Wert angegeben werden.
 CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Entfernen Sie die fehlerhafte Eigenschaft aus der Eingabe und wiederholen Sie dann die Operation mit g\u00fcltigen Eigenschaften und Werten.
-
-PARENT_NOT_FOUND=CWIML4526E: Die Erstellungsoperation f\u00fcr die Benutzerregistry konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t wurde nicht erstellt, weil die \u00fcbergeordnete Entit\u00e4t der Entit\u00e4t nicht gefunden wurde. Die zugrunde liegende JDNI-Ausnahme ist {0}.
-PARENT_NOT_FOUND.explanation=Es wird eine Ausnahme ausgel\u00f6st, wenn die \u00fcbergeordnete Entit\u00e4t der Entit\u00e4t, die Sie erstellen m\u00f6chten, bei der Erstellung nicht gefunden wird.
-PARENT_NOT_FOUND.useraction=Stellen Sie sicher, dass die \u00fcbergeordnete Standardentit\u00e4t f\u00fcr die Entit\u00e4t vorhanden ist. Falls die \u00fcbergeordnete Entit\u00e4t nicht vorhanden ist, m\u00fcssen Sie sie erstellen und die Operation anschlie\u00dfend wiederholen.
 
 ENTITY_ALREADY_EXIST=CWIML4501E: Die Erstellungsoperation f\u00fcr die Benutzerregistry konnte nicht ausgef\u00fchrt werden. Es ist bereits eine Entit\u00e4t mit demselben eindeutigen Namen ({0}) oder demselben RDN-Wert vorhanden.
 ENTITY_ALREADY_EXIST.explanation=Der angegebene eindeutige Name oder eine Entit\u00e4t mit dem angegebenen RDN-Wert ist bereits im Repository vorhanden. Es ist nicht m\u00f6glich, eine weitere Entit\u00e4t mit demselben eindeutigen Namen oder demselben relativ definierten Namen (RDN) zum Repository hinzuzuf\u00fcgen.
@@ -242,7 +194,7 @@ KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Die Kerberos-Anmeldung mit dem Kerbe
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Standardberechtigungsnachweis-Cache (ccache) ist ung\u00fcltig oder abgelaufen.
 KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wird und der Kerberos-Standardberechtigungsnachweis-Cache (ccache) nicht abgelaufen ist.
 
-# CWIML4510 already used
+# CWIML4510 already used (WimUtilMessages.nlsprops)
 
 KRB5_TICKETCACHE_USED=CWIML4511E: Die LDAP-Registry {0} wurde mit dem {1}-Kerberos-Ticket-Cache-Dateinamen (ccache) und dem {2}-Chiffrierschl\u00fcsseldateinamen konfiguriert. Der Kerberos-Berechtigungsnachweis-Cache (ccache) wird f\u00fcr die Kerberos-Bindungsauthentifizierung beim LDAP-Server verwendet.
 KRB5_TICKETCACHE_USED.explanation=Um die Chiffrierschl\u00fcsseldatei verwenden zu k\u00f6nnen, muss der Name der Chiffrierschl\u00fcsseldatei angegeben werden, der Name der Kerberos-Berechtigungsnachweis-Cache-Datei (ccache) darf jedoch nicht angegeben werden.
@@ -256,21 +208,31 @@ CANNOT_READ_KRB5_FILE=CWIML4513E: Die LDAP-Registry {0} kann die Kerberos-Datei 
 CANNOT_READ_KRB5_FILE.explanation=Die Kerberos-Datei kann nicht ge\u00f6ffnet werden. Entweder sind die Dateiberechtigungen falsch oder die Datei ist nicht vorhanden.
 CANNOT_READ_KRB5_FILE.useraction=Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Leseberechtigung hat. 
 
-# CWIML4514 already used
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es wurde ein falscher Wert f\u00fcr die Eigenschaftsebene {0} in {1} angegeben. Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen.
+INVALID_LEVEL_IN_CONTROL.explanation=Der Wert der Eigenschaftsebene wurde als negative Zahl angegeben.
+INVALID_LEVEL_IN_CONTROL.useraction=Die g\u00fcltigen Werte f\u00fcr die Eigenschaftsebene sind 0 und positive ganze Zahlen. \u00c4ndern Sie den Wert f\u00fcr die Eigenschaftsebene und wiederholen Sie dann die Operation.
 
 KRB5_FILE_NOT_FOUND=CWIML4515E: Das Attribut {0} aus dem Element {1} ist f\u00fcr eine Datei konfiguriert, die an der folgenden Position nicht vorhanden ist: {2}
 KRB5_FILE_NOT_FOUND.explanation=Die Konfiguration bezieht sich auf eine Datei, die entweder nicht gelesen werden kann oder nicht vorhanden ist.
 KRB5_FILE_NOT_FOUND.useraction=Stellen Sie sicher, dass die Konfiguration auf eine Datei verweist, die vorhanden ist, und die vom Anwendungsprozess gelesen werden kann.
 
-# CWIML4516 already used
-# CWIML4517 already used
+# CWIML4516 already used (WimUtilMessages.nlsprops)
 
-IDMAP_INVALID_FORMAT=CWIML4518W: Der Wert {0} {1} hat ein ung\u00fcltiges Format. Der Wert muss als eine durch Semikola getrennte Liste der Paare ''objectclass:attribute'' bzw. ''*:attribute'' angegeben werden.
+INVALID_DN_SYNTAX=CWIML4517E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der definierte Name {0} ist nicht g\u00fcltig. Geben Sie den definierten Namen in der richtigen Syntax an.
+INVALID_DN_SYNTAX.explanation=Der angegebene definierte Name ist nicht g\u00fcltig. Die Benutzerregistry-Operation kann ohne einen g\u00fcltigen definierten Namen nicht fortgesetzt werden.
+INVALID_DN_SYNTAX.useraction=Stellen Sie sicher, dass die Syntax des definierten Namens korrekt ist. Suchen Sie beispielsweise nach Escapezeichen.
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Der Wert {0} {1} hat ein ung\u00fcltiges Format. Der Wert muss als eine durch Semikolons getrennte Liste der Paare ''objectclass:attribute'' bzw. ''*:attribute'' angegeben werden.
 IDMAP_INVALID_FORMAT.explanation=Der userIdMap-Wert muss ein g\u00fcltiges Format haben, damit Objektklassen und Attribute geparst werden k\u00f6nnen.
 IDMAP_INVALID_FORMAT.useraction=Aktualisieren Sie den userIdMap-Wert so, dass er dem angegebenen Format entspricht.
 
-# CWIML4519 already used
-# CWIML4520 already used
+ENTITY_HAS_DESCENDENTS=CWIML4519E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t {0} hat untergeordnete Elemente. Sie kann nicht gel\u00f6scht oder umbenannt werden. L\u00f6schen Sie alle untergeordneten Elemente der Entit\u00e4t, bevor Sie versuchen, die Entit\u00e4t selbst zu l\u00f6schen oder umzubenennen.
+ENTITY_HAS_DESCENDENTS.explanation=Die L\u00f6sch- oder Umbenennungsfunktion kann nur f\u00fcr eine Blattentit\u00e4t ausgef\u00fchrt werden, das hei\u00dft f\u00fcr eine Entit\u00e4t ohne untergeordnete Elemente. Die angegebene Entit\u00e4t weist untergeordnete Elemente auf.
+ENTITY_HAS_DESCENDENTS.useraction=L\u00f6schen Sie zuerst alle untergeordneten Elemente der Entit\u00e4t und l\u00f6schen bzw. benennen Sie dann die Entit\u00e4t selbst um.
+
+NAMING_EXCEPTION=CWIML4520E: Die LDAP-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung ist die folgende Ausnahme bei der LDAP-Benennung {0} eingetreten.
+NAMING_EXCEPTION.explanation=Die Nachricht zeigt an, dass w\u00e4hrend einer LDAP-Operation eine allgemeine Benennungsausnahme eingetreten ist. Suchen Sie in der Ausnahme nach weiteren Einzelheiten. 
+NAMING_EXCEPTION.useraction=Stellen Sie sicher, dass das zugeh\u00f6rige Repository (z. B. eine Datenbank oder ein LDAP-Server) gestartet und ordnungsgem\u00e4\u00df konfiguriert ist.
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Die LDAP-Registry {0} hat versucht, mithilfe von Kerberos-Berechtigungsnachweisen f\u00fcr den {1}-Principalnamen eine Bindung zu einem LDAP-Server herzustellen, aber der Kerberos-Service, der diese Berechtigungsnachweise bereitstellt, ist nicht verf\u00fcgbar. Das Authentifizierungsverfahren f\u00fcr die Bindung ist: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Der Kerberos-Service war nicht verf\u00fcgbar, als die LDAP-Registry versucht hat, eine Bindung zum LDAP-Server herzustellen. Der Kerberos-Service muss verf\u00fcgbar sein, damit sich Benutzer authentifizieren k\u00f6nnen.
@@ -284,3 +246,40 @@ KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4524E: Die Kerberos-Anmeldung mit dem Kerb
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Standardchiffrierschl\u00fcssel ist ung\u00fcltig.
 KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wurde und der Kerberos-Standardchiffrierschl\u00fcssel g\u00fcltig ist.
 
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Der angegebene Entit\u00e4tstyp {0} hat nicht den Typ Group. Diese Operation wird nur f\u00fcr Entit\u00e4ten vom Typ Group unterst\u00fctzt.
+ENTITY_IS_NOT_A_GROUP.explanation=Die gruppenbezogenen Operationen (Mitglieder einer Gruppe zuweisen, Mitglieder einer Gruppe abrufen) sind nur g\u00fcltig, wenn der Entit\u00e4tstyp Group ist. Eine Ausnahme wird ausgel\u00f6st, wenn die Entit\u00e4t nicht den Typ Group hat.
+ENTITY_IS_NOT_A_GROUP.useraction=Stellen Sie sicher, dass der Entit\u00e4tstyp "Group" ist. Stellen Sie f\u00fcr den LDAP-Adapter sicher, dass die Objektklasse, die f\u00fcr den Entit\u00e4tstyp Group definiert ist, mit der tats\u00e4chlichen Objektklasse der Gruppe \u00fcbereinstimmt.
+
+PARENT_NOT_FOUND=CWIML4526E: Die Erstellungsoperation f\u00fcr die Benutzerregistry konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t wurde nicht erstellt, weil die \u00fcbergeordnete Entit\u00e4t der Entit\u00e4t nicht gefunden wurde. Die zugrunde liegende JDNI-Ausnahme ist {0}.
+PARENT_NOT_FOUND.explanation=Es wird eine Ausnahme ausgel\u00f6st, wenn die \u00fcbergeordnete Entit\u00e4t der Entit\u00e4t, die Sie erstellen m\u00f6chten, bei der Erstellung nicht gefunden wird.
+PARENT_NOT_FOUND.useraction=Stellen Sie sicher, dass die \u00fcbergeordnete Standardentit\u00e4t f\u00fcr die Entit\u00e4t vorhanden ist. Falls die \u00fcbergeordnete Entit\u00e4t nicht vorhanden ist, m\u00fcssen Sie sie erstellen und die Operation anschlie\u00dfend wiederholen.
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Die LDAP-Operation konnte nicht ausgef\u00fchrt werden. Der LDAP-Eintrag {0} wurde nicht gefunden: {1}. Geben Sie den richtigen eindeutigen Namen der Entit\u00e4t an, und definieren Sie die richtige Knotenzuordnung f\u00fcr das LDAP-Repository.
+LDAP_ENTRY_NOT_FOUND.explanation=Der LDAP-Eintrag f\u00fcr die angegebene Entit\u00e4t wurde nicht im LDAP-Server gefunden.
+LDAP_ENTRY_NOT_FOUND.useraction=Stellen Sie sicher, dass der eindeutige Name der Entit\u00e4t korrekt angegeben ist. Stellen Sie sicher, dass die Knotenzuordnung des LDAP-Repositorys ordnungsgem\u00e4\u00df definiert ist.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Die Suchoperation konnte nicht ausgef\u00fchrt werden. Das LDAP-Attribut, das als externe Kennung verwendet wird, enth\u00e4lt mehrere Werte: {0}. W\u00e4hlen Sie das richtige LDAP-Attribut als externe ID an.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=Das LDAP-Attribut, das als externe Kennung verwendet wird, muss eindeutig sein und darf nur einen einzigen Wert enthalten.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Stellen Sie sicher, dass das richtige Attribut als externe Kennung ausgew\u00e4hlt ist. Wenn kein entsprechendes Attribut vorhanden ist, kann der definierte Name als externe Kennung verwendet werden.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Fehler bei der Kennwort\u00fcberpr\u00fcfung f\u00fcr den Principalnamen {0}. Eigentliche Fehlerursache: {1}. Geben Sie den Namen und das Kennwort des Principals ordnungsgem\u00e4\u00df ein, und stellen Sie sicher, dass der Account aktiviert und nicht gesperrt ist.
+PASSWORD_CHECKED_FAILED.explanation=Der angegebene Principalname kann nicht authentifiziert werden, weil die Kennwort\u00fcberpr\u00fcfung fehlgeschlagen ist.
+PASSWORD_CHECKED_FAILED.useraction=Stellen Sie sicher, dass der Principalname und das Kennwort ordnungsgem\u00e4\u00df angegeben sind. Stellen Sie sicher, dass der Account nicht gesperrt ist und dass er aktiviert ist.
+
+# CWIML4530 already used (WimUtilMessages.nlsprops)
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: Der Entit\u00e4tstyp {0} ist in der Datei server.xml doppelt definiert.
+DUPLICATE_ENTITY_TYPE.explanation=Der in der Datei server.xml definierte Entit\u00e4tstyp muss eindeutig sein.
+DUPLICATE_ENTITY_TYPE.useraction=Bearbeiten Sie die Datei server.xml und entfernen Sie den doppelten Entit\u00e4tstyp.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Die Anfangsgr\u00f6\u00dfe des Kontextpools, {0}, ist h\u00f6her als die maximal zul\u00e4ssige Gr\u00f6\u00dfe des Kontextpools, {1}. Deshalb wurde der Kontextpool inaktiviert.
+INIT_POOL_SIZE_TOO_BIG.explanation=Der Anfangswert f\u00fcr die Kontextpoolgr\u00f6\u00dfe muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe sein.
+INIT_POOL_SIZE_TOO_BIG.useraction=Stellen Sie sicher, dass der Anfangswert f\u00fcr die Kontextpoolgr\u00f6\u00dfe kleiner ist als die maximale Kontextpoolgr\u00f6\u00dfe, oder setzen Sie die maximale Kontextpoolgr\u00f6\u00dfe auf 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Die bevorzugte Kontextpoolgr\u00f6\u00dfe, {0}, muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe, {1}, sein. Deshalb wurde der Kontextpool inaktiviert.
+PREF_POOL_SIZE_TOO_BIG.explanation=Die bevorzugte Kontextpoolgr\u00f6\u00dfe muss kleiner als die maximale Kontextpoolgr\u00f6\u00dfe sein.
+PREF_POOL_SIZE_TOO_BIG.useraction=Stellen Sie sicher, dass die bevorzugte Kontextpoolgr\u00f6\u00dfe kleiner ist als die maximale Kontextpoolgr\u00f6\u00dfe, oder setzen Sie die maximale Kontextpoolgr\u00f6\u00dfe auf 0.
+
+LDAP_WIM_CONFIG_UPDATED_FAILED=CWIML4534E: Vom LDAP-Repository {0} konnten die Konfigurationsaktualisierungen aus den eingebundenen Repositorys nicht verarbeitet werden. Eigentliche Fehlerursache: {1}
+LDAP_WIM_CONFIG_UPDATED_FAILED.explanation=Durch Konfigurations\u00e4nderungen an eingebundenen Repositorys wurde eine Aktualisierung des LDAP-Repositorys ausgel\u00f6st, w\u00e4hrend der Verarbeitung dieser \u00c4nderungen ist jedoch ein Fehler aufgetreten. 
+LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zur Problembehebung zu ergreifen.

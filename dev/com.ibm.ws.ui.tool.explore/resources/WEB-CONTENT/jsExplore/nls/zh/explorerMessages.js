@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,6 @@ define({
     SOME_APPS_RUNNING : "一些应用程序正在运行",
     SOME_SERVERS_RUNNING : "一些服务器正在运行",
     SOME_CLUSTERS_RUNNING : "一些集群正在运行",
-    NO_APPS_RUNNING : "没有应用程序正在运行",
     NO_SERVERS_RUNNING : "没有服务器正在运行",
     NO_CLUSTERS_RUNNING : "没有集群正在运行",
 
@@ -448,7 +447,6 @@ define({
     INSTANCE_STOPPED_ON_SERVERS : "{0}：应用程序实例未在运行", // serverNames
 
     NOT_ALL_APPS_RUNNING : "{0}：并非所有应用程序都在运行", // serverName[]
-    NO_APPS_RUNNING : "{0}：没有应用程序正在运行", // serverName[]
     NOT_ALL_APPS_RUNNING_SERVERS : "{0} 个服务器上并非所有应用程序都在运行", // quantity
     NO_APPS_RUNNING_SERVERS : "{0} 个服务器上没有应用程序在运行", // quantity
 
@@ -528,7 +526,6 @@ define({
     NOTE_LABEL : "注释 {0}",  // note value
     SET_ATTRIBUTES: "标签和元数据",
     SETATTR_RUNTIME_NAME: "{1} 上的 {0}",  // runtime, host
-    SAVE: "保存",
     TAGINVALIDCHARS: "字符“/”、“<”和“>”无效。",
     ERROR_GET_TAGS_METADATA: "该产品无法获取资源的当前标签和元数据。",
     ERROR_SET_TAGS_METADATA: "错误导致该产品不能设置标签和元数据。",
