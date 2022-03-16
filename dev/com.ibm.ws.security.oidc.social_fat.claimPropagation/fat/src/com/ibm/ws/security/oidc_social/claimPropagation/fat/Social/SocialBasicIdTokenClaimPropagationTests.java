@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC;
+package com.ibm.ws.security.oidc_social.claimPropagation.fat.Social;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,18 +34,15 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPropagationTests {
+public class SocialBasicIdTokenClaimPropagationTests extends BasicIdTokenClaimPropagationTests {
 
-    private static final Class<?> thisClass = OIDCBasicIdTokenClaimPropagationTestss.class;
+    private static final Class<?> thisClass = SocialBasicIdTokenClaimPropagationTests.class;
     static HashMap<String, String> bootstrapProps = new HashMap<String, String>();
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser + "_rp"))
-            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser + "_rp"))
-            .andWith(new SecurityTestRepeatAction(WithoutRegistry + "_rp"))
-            .andWith(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_rp"))
-            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_rp"))
-            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_rp"));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(WithRegistry_withUser_implicit + "_socialClient"))
+            .andWith(new SecurityTestRepeatAction(WithRegistry_withoutUser_implicit + "_socialClient"))
+            .andWith(new SecurityTestRepeatAction(WithoutRegistry_implicit + "_socialClient"));
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
@@ -61,9 +58,11 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
         Log.info(thisClass, "setupBeforeTest", "actions: " + RepeatTestFilter.getRepeatActionsAsString());
         repeatAction = RepeatTestFilter.getRepeatActionsAsString(); // only really returns the current action
         if (repeatAction.contains(Constants.IMPLICIT_GRANT_TYPE)) {
-            bootstrapProps.put("testGrantType", Constants.IMPLICIT_GRANT_TYPE);
+            bootstrapProps.put("testGrantType", Constants.IMPLICIT_GRANT_TYPE); // RP client in OP setting
+            bootstrapProps.put("responseType", "id_token token"); // Social client setting
         } else {
-            bootstrapProps.put("testGrantType", Constants.AUTH_CODE_GRANT_TYPE);
+            bootstrapProps.put("testGrantType", Constants.AUTH_CODE_GRANT_TYPE); // RP client in OP setting
+            bootstrapProps.put("responseType", "code"); // Social client setting
         }
         setMiscBootstrapParms(bootstrapProps);
 
@@ -77,7 +76,7 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
             Log.info(thisClass, "setupBeforeTest", "Starting Intermediate OP without a registry");
             testOPServer = commonSetUp(OPServerName, "server_withoutRegistry.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, null, Constants.OIDC_OP, true, true);
         } else {
-            if (repeatAction.contains(WithRegistry_withUser) || RepeatTestFilter.isRepeatActionActive(WithRegistry_withUser_implicit)) {
+            if (repeatAction.contains(WithRegistry_withUser)) {
                 Log.info(thisClass, "setupBeforeTest", "Starting Intermediate OP with a registry that does have testuser");
                 testOPServer = commonSetUp(OPServerName, "server_withRegistry_withTestUser.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, extraMsgs, null, Constants.OIDC_OP, true, true);
             } else {
@@ -86,9 +85,9 @@ public class OIDCBasicIdTokenClaimPropagationTestss extends BasicIdTokenClaimPro
             }
         }
 
-        testRPServer = commonSetUp(RPServerName, "server_orig.xml", Constants.OIDC_RP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
+        testRPServer = commonSetUp(SocialServerName, "server_orig.xml", Constants.OIDC_RP, extraApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true);
 
-        testSettings.setFlowType(Constants.RP_FLOW);
+        testSettings.setFlowType(socialFlow);
 
         testSettings.setUserName("LDAPUser1");
         testSettings.setUserPassword("security");
