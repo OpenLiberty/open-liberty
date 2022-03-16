@@ -2584,12 +2584,9 @@ public class ConcurrencyTestServlet extends FATServlet {
                 assertEquals("[68]", ListContext.asString()); // unchanged
                 assertEquals(6, Thread.currentThread().getPriority()); // unchanged
                 try {
-                    // TODO need to determine how the absence of context-service.cleared in web.xml is distinguished from
-                    // clearing no context types. ContextServiceDefinition defaults cleared to Transaction, and this test
-                    // case assumed that context-service in web.xml would do the same, but currently it does not,
-                    //assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus()); // cleared
+                    assertEquals(Status.STATUS_NO_TRANSACTION, tran.getStatus()); // cleared
                     assertNotNull(InitialContext.doLookup("java:comp/concurrent/dd/web/TZContextService")); // unchanged
-                } catch (NamingException /* | SystemException */ x) {
+                } catch (NamingException | SystemException x) {
                     throw new CompletionException(x);
                 }
             });
