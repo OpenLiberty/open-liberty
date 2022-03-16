@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: The OpenID Connect provider {0} configuration has been successfully processed.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=The OpenID Connect provider configuration has been successfully processed.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=None
@@ -204,4 +204,20 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1646E: The ID token is not valid because i
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=The OpenID Connect specification requires that the claim or claims that are listed in the error message must be present in the ID token.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Ensure that the ID token contains all of the required claims.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1647E: A back-channel logout request sent by the {0} OpenID Connect provider to {1} with a logout token with claims {2} did not succeed. The response status code is {3} and the response body is [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=The OpenID Connect client did not return a successful status code for the back-channel logout request. If the status code is 400, the logout request was not valid. If the status code is 501, logout at the OpenID Connect client failed. If the status code is 504, local logout at the OpenID Connect client succeeded but some downstream logout attempts failed.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1648E: A back-channel logout request sent by the {0} OpenID Connect provider to {1} with a logout token with claims {2} encountered an error: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=The back-channel logout request either timed out, threw an exception, was cancelled, or was interrupted.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=See the exception that is included in the message. Ensure that the back-channel logout URI is responsive. Update the backchannelLogoutRequestTimeout configuration attribute in the OpenID Connect provider if the back-channel logout request needs more time.
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1649E: The {0} OpenID Connect provider encountered an error while submitting back-channel logout requests: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Sending requests to the back-channel logout URIs was interrupted, or another error occurred while scheduling the requests for execution.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=See the exception that is included in the message. Send another logout request to retry the back-channel logout.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#

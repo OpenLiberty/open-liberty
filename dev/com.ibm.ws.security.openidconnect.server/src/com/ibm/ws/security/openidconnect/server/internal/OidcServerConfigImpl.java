@@ -90,6 +90,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_CHECK_SESSION_IFRAME_ENDPOINT_URL = "checkSessionIframeEndpointUrl";
     public static final String CFG_KEY_PROTECTED_ENDPOINTS = "protectedEndpoints";
     public static final String CFG_KEY_CACHE_IDTOKEN = "idTokenCacheEnabled";
+    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_REQUEST_TIMEOUT = "backchannelLogoutRequestTimeout";
     // OIDC Discovery Configuration Metadata
     public static final String CFG_KEY_RESPONSE_TYPES_SUPPORTED = "responseTypesSupported";
     public static final String CFG_KEY_SUBJECT_TYPES_SUPPORTED = "subjectTypesSupported";
@@ -185,6 +186,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     private boolean requireOpenidScopeForUserInfo = true;
     // End of OIDC Discovery Configuration Metadata
     private OidcEndpointSettings oidcEndpointSettings;
+    private long backchannelLogoutRequestTimeout = 180L;
 
     // Use locks instead of synchronize blocks to ensure concurrent access while reading and lock during modification only
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();;
@@ -360,6 +362,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         buildJwk();
 
         oidcEndpointSettings = populateOidcEndpointSettings(props, CFG_KEY_OIDC_ENDPOINT);
+        backchannelLogoutRequestTimeout = commonConfigUtils.getLongConfigAttribute(props, CFG_KEY_BACKCHANNEL_LOGOUT_REQUEST_TIMEOUT, backchannelLogoutRequestTimeout);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "providerId: " + providerId);
@@ -390,6 +393,7 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             Tr.debug(tc, "jwkEnabled: " + jwkEnabled);
             Tr.debug(tc, "allowLtpaToken2Name: " + this.allowLtpaToken2Name);
             Tr.debug(tc, "cacheIDToken: " + cacheIDToken);
+            Tr.debug(tc, "backchannelLogoutRequestTimeout: " + backchannelLogoutRequestTimeout);
 
             //TODO: Joe Add debug statements for Discovery Properties
         }
@@ -1297,6 +1301,10 @@ public class OidcServerConfigImpl implements OidcServerConfig {
 
     public OidcEndpointSettings getOidcEndpointSettings() {
         return oidcEndpointSettings;
+    }
+
+    public long getBackchannelLogoutRequestTimeout() {
+        return backchannelLogoutRequestTimeout;
     }
 
 }
