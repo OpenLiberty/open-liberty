@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.43.2
-nettyVersion=4.1.72.Final
+nettyVersion=4.1.75.Final
 
 Bundle-Name: gRPC Client
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
