@@ -518,7 +518,6 @@ public abstract class SAMLLogoutCommonTest extends SAMLCommonTest {
             logoutStep = SAMLConstants.PERFORM_SP_LOGOUT;
             settings.setSpLogoutURL(setIBMSecurityLogoutURL(testSAMLServer));
         }
-        
 
         Log.info(thisClass, thisMethod, "loginPart: " + StringUtils.join(loginPart, ", "));
         Log.info(thisClass, thisMethod, "logoutFlow: " + StringUtils.join(logoutFlow, ", "));
@@ -779,6 +778,10 @@ public abstract class SAMLLogoutCommonTest extends SAMLCommonTest {
             break;
         case IBMSECURITYREMOTE:
         case HTTPSERVLETREMOTE:
+            // overwrite the expectations to remove the 200 status code on the last step - sometimes the call to example.com returns the valid page, but with a 404 status code - looks like it may take too long - allow the other checks to validate we got where we expect
+            if (postLogoutPage.equals(PostLogoutPage.EXTERNALPOSTLOGOUTPAGE)) {
+                expectations = vData.addSuccessStatusCodes(null, lastStep);
+            }
             //        case SPINITIATED:
             expectations = vData.addExpectation(expectations, logoutStep, SAMLConstants.RESPONSE_URL, SAMLConstants.STRING_CONTAINS, "Did not get to the Logout submit page", null, settings.getSpLogoutURL());
             //                        expectations = vData.addExpectation(expectations, SAMLConstants.PROCESS_LOGOUT_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Successful Logout page", null, SAMLConstants.SAML_SHIBBOLETH_LOGIN_HEADER);
