@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -13,11 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.restfulWS30.jsonb20provider
 
-# Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.restfulWS30.jsonb20provider.jakarta.jar
-
 app-resources= \
-  META-INF/services/javax.ws.rs.ext.Providers
+  META-INF/services/jakarta.ws.rs.ext.Providers
 
 Service-Component: \
   io.openliberty.restfulWS30.jsonb20provider.ResourceProvider; \
@@ -25,6 +22,11 @@ Service-Component: \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
     properties:="resources=${app-resources}"
+
+Import-Package: \
+    jakarta.json.bind;version="[2.0,4)", \
+    jakarta.json.bind.spi;version="[2.0,4)", \
+    *
 
 Export-Package: \
 	io.openliberty.restfulWS30.jsonb20provider;thread-context=true
@@ -34,11 +36,9 @@ Include-Resource:\
   META-INF=resources/META-INF
 
 -buildpath: \
-  com.ibm.websphere.javaee.jaxrs.2.1, \
-  com.ibm.websphere.javaee.jsonb.1.0, \
+  io.openliberty.jakarta.restfulWS.3.0; version=latest, \
+  io.openliberty.jakarta.jsonb.2.0; version=latest, \
   com.ibm.websphere.org.osgi.core;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.ws.logging.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-
-jakartaeeMe: true
