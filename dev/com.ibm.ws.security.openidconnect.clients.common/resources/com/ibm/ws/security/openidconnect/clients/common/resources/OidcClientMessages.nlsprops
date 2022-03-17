@@ -293,8 +293,8 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: The value for the "{0}" me
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The corresponding member value must be a JSON object. The expected value is "{}", an empty JSON object.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ensure that the "events" claim in the logout token is formatted correctly.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: The logout token is missing the "sid" claim but the OpenID Connect client {0} requires it.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=The OpenID Connect client requires that the logout token must contain a session ID to identify the OpenID Connect client session with the OpenID Connect provider.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: The logout token is missing the "sid" claim but the {0} OpenID Connect client requires it.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=The OpenID Connect client requires that the logout token contains a session ID to identify the OpenID Connect client session with the OpenID Connect provider.
 LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Set the backchannelLogoutSessionRequired OpenID Connect client configuration attribute to false, or ensure that the logout token contains a "sid" claim.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
