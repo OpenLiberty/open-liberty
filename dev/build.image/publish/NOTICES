@@ -4,92 +4,23 @@ This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-THIS NON-IBM-LICENSE FILE CONSISTS OF THE FOLLOWING SECTIONS:
+TABLE OF CONTENTS
 
-APACHE V1.1
 APACHE V2
-BSD-2-CLAUSE  
-BSD-3-CLAUSE  
+BSD-2-CLAUSE 
+BSD-3-CLAUSE 
 CDDL V1  
-EPL 
-EPL V2  
+CPL  
+EPL  
+EPL V2 
 ICU
-ISC  
-LGPL V2.1  
+ISC 
+JDOM
 MIT  
-MIT-EQUIVALENT  
-MPL V1  
-MPL V1.1  
 MPL V2.0  
-UNICODE  
-OTHER KNOWN LICENSE 
+PYTHON
 W3C
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-APACHE SOFTWARE LICENSE 1.1
-
-The Program includes some or all of the following that IBM obtained
-under the Apache License Version 1.1:
-
-COMMONS-EL
-
-
-Apache Software License
-Version 1.1
-
-Copyright (c) 2000 The Apache Software Foundation.  All rights reserved.
- 
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met:
- 
-1. Redistributions of source code must retain the above copyright 
-notice, this list of conditions and the following disclaimer.
- 
-2. Redistributions in binary form must reproduce the above copyright 
-notice, this list of conditions and the following disclaimer in the 
-documentation and/or other materials provided with the distribution.
-
-3. The end-user documentation included with the redistribution,
-if any, must include the following acknowledgment:
-"This product includes software developed by the
-Apache Software Foundation (http://www.apache.org/)."
-Alternately, this acknowledgment may appear in the software itself,
-if and wherever such third-party acknowledgments normally appear.
-
-4. The names "Apache" and "Apache Software Foundation" must 
-not be used to endorse or promote products derived from this
-software without prior written permission. For written
-permission, please contact apache@apache.org.
-
-5. Products derived from this software may not be called "Apache",
-nor may "Apache" appear in their name, without prior written
-permission of the Apache Software Foundation.
-
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-=================================================================
-
-This software consists of voluntary contributions made by many
-individuals on behalf of the Apache Software Foundation.  For more
-information on the Apache Software Foundation, please see
-<http://www.apache.org/>.
-
-Portions of this software are based upon public domain software
-originally written at the National Center for Supercomputing 
-Applications, University of Illinois, Urbana-Champaign.
-
-END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 APACHE SOFTWARE LICENSE 2.0
@@ -97,41 +28,87 @@ APACHE SOFTWARE LICENSE 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License Version 2.0:
 
-REQUEST
-APACHE ARIES BLUEPRINT PARSER
-TUNNEL-AGENT
-BTOA
-BUILDSCRIPTS - CLOSURECOMILER [Dojo Toolkit]
-LIBERTY-ARQUILLIAN
-AWS-SIGN2
-REVALIDATOR
-SWAGGER-CLIENT
-CASELESS
-FOREVER-AGENT
-OAUTH-SIGN
-SIZEOF-AGENT 
-CDI-API
+JAKARTA.VALIDATION:JAKARTA.VALIDATION-API, 
+TOMCAT, 
+BCEL, 
+SERVLET, 
+APACHE CXF, 
+BTOA [swagger-ui], 
+COMMONS-IO, 
+COMMONS-LANG, 
+JSONTOKEN, 
+J4FRY [Apache MyFaces], 
+APACHE BVAL, 
+MIME4J, 
+ARRAYELRESOLVER.JAVA [javax.el],
+COMMONS-LOGGING, 
+JAVAEE_5.XSD [Apache CXF], 
+CRYPTACULAR,
+OPENTRACING-UTIL, 
+ORG.APACHE.GERONIMO.SPECS:GERONIMO-JAVAMAIL_1.4_SPEC,
+JAVA-SUPPORT, 
+XMLSEC, 
+JDBC-TOOL [Tomcat], 
+WOODSTOX-CORE, 
+JODA-TIME,
+COMMONS-COLLECTIONS, 
+OPENSAML-CORE, 
+WOODSTOX-CORE-ASL, 
+XML-RESOLVER,
+GRAILS [Apache MyFaces], 
+COMMON-LOGGING [SLF4J], 
+COMMONS-WEAVER, SPRING
+FRAMEWORK [Apache CXF], 
+FACELETS [Apache MyFaces], 
+NIMBUS JOSE + JWT
+PROJECT [Apache CXF], 
+COMMONS-DIGESTER, 
+DOMPURIFY [swagger-ui],
+XERCES-IMPL, 
+SPRING-BOOT, 
+OPENID4JAVA, 
+THREADCONTEXT.JAVA [weld], 
+YOKO,
+ORG.APACHE.ARIES.BLUEPRINT:ORG.APACHE.ARIES.BLUEPRINT.CORE, 
+XMLTOOLING,
+BOOTSTRAP.MIN.CSS [Spring-boot], 
+SERIALIZER, 
+JBOSS-LOGGING, 
+JANDEX,
+OMNIFACES [Apache MyFaces], 
+OPENSAML, JASYPT, WSS4J,
+MICROPROFILE-REST-CLIENT-API, 
+COMMONS-DISCOVERY,
+ORG.APACHE.ARIES.JMX:ORG.APACHE.ARIES.JMX.CORE, 
+EHCACHE, 
+WELD-PROBE [weld], 
+COMMONS-CODEC, 
+NEETHI, 
+SWAGGER-CLIENT [swagger-ui],
+ORG.APACHE.GERONIMO.SPECS:GERONIMO-ANNOTATION_1.0_SPEC, 
+SIZEOF-AGENT,
+APACHE MYFACES, 
+BASE64CODER [snakeyaml], 
+LOG4J [SLF4J],
+ORG.APACHE.GERONIMO.SPECS:GERONIMO-JPA_3.0_SPEC,
+ORG.APACHE.ARIES.JPA.API,
+ORG.APACHE.GERONIMO.SPECS:GERONIMO-EJB_3.0_SPEC, 
+FAILSAFE, 
+APACHE RAT [Tomcat], 
+OPENWS, 
+ANT [Apache CXF], 
+COMMONS-BEANUTILS, 
+CDI11 [weld],
+APACHE WSS4J, 
+WELD, 
+EQUINOX-PARTS [Eclipse Equinox coordinator],
+XMLBEANS [Apache CXF], 
+JSON-SIMPLE, 
+XMLSCHEMA-CORE, 
+NEKOHTML, 
+CDI-API,
+SNAKEYAML, 
 SWAGGER-UI
-XMLSEC [SAAJ-impl]
-FASTERXML/WOODSTOX [SAAJ-impl]
-ANT-LAUNCHER [SAAJ-impl]
-MAVEN-PLUGIN-ANNOTATIONS [SAAJ-impl]
-MAVEN-RESOLVER-API [SAAJ-impl]
-JBOSS RESTEASY
-ORG.OSGI.SERVICE.JPA; [javax.persistence],
-WOODSTOX-CORE-ASL [SAAJ-impl] 
-MAVEN-RESOLVER-UTIL [SAAJ-impl]
-MAVEN-SETTINGS [SAAJ-impl]
-MAVEN-CORE [SAAJ-impl]
-MAVEN-PLUGIN-API [SAAJ-impl]
-COMMONS-CODEC
-JACKSON
-HIBERNATE-VALIDATOR
-COMMONS-LOGGING
-PLEXUS-UTILS [SAAJ-impl]
-CDI-API
-OPENTRACING-UTIL
-TAGLIBS
 
 Apache License
 Version 2.0, January 2004
@@ -318,29 +295,11 @@ BSD-2-CLAUSE LICENSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-2-Clause License:
 
-SERVICES_JSON [Dojo Toolkit] (Copyright 2005 Michal Migurski), DIJIT
-(Copyright (c) 2005-2013; The Dojo Foundation), QS (Copyright (c) 2014
-Nathan LaFreniere and other contributors.), TOUGH-COOKIE (Copyright (c)
-2015 Salesforce.com Inc.), SPRINTF-JS (Copyright (c) 2007-2014 Alexandru
-Marasteanu <hello [at) alexei (dot] ro>), BOOM (Copyright (c) 2012-2014
-Walmart and other contributors.), GLOB (Copyright (c) Isaac Z. Schlueter
-("Author")), YUI [Dojo Toolkit] (Copyright (c) 2007, Yahoo! Inc.),
-JSON-SCHEMA (Required), _FIREBUG [Dojo Toolkit] (Copyright (c)
-2006-2007, Joe Hewitt, All rights reserved.), UGLIFY-JS (Copyright
-2012-2013 (c) Mihai Bazon <mihai.bazon@gmail.com>), SEMVER (Copyright
-(c) Isaac Z. Schlueter ("Author")), ESTRAVERSE (Copyright (C) 2012-2013
-[Yusuke Suzuki](http://github.com/Constellation)), IDX (Copyright (c)
-2013-present; Facebook; Inc. All rights reserved),
-SWAGGER-UI/HIGHLIGHT.JS (Copyright Not Found), HOEK (Copyright (c)
-2011-2014 Walmart and other contributors. Copyright (c) 2011 Yahoo
-Inc.), ESCODEGEN (Copyright (c) 2009-2011 Mozilla Foundation and
-contributors), ESPRIMA (Copyright (C) 2012 2011 [Ariya
-Hidayat](http://ariya.ofilabs.com/about)),
-RELAXNG-DATATYPE [SAAJ-impl] (No Copyright Found), JAKARTA.ACTIVATION
-(Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.),
-STAX2-API [SAAJ-impl] (Copyright (c) 2008 FasterXML LLC
-info@fasterxml.com), SAAJ-IMPL (Copyright (c) 2018 Oracle and/or its
-affiliates. All rights reserved.)
+WEBIDL-CONVERSIONS [swagger-ui] (Copyright (c) 2014, Domenic Denicola),
+OWASP ENTERPRISE SECURITY API (ESAPI) [java-support] (Copyright (c) 2007
+- The OWASP Foundation), JAXEN [Apache CXF] (Copyright 2003-2006 The
+Werken Company.), STAX2-API (Copyright (c) 2006- Tatu Saloranta,
+tatu.saloranta@iki.fi)
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -373,22 +332,22 @@ BSD-3-Clause LICENSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-3-Clause License:
 
-QS (Copyright (c) 2014 Nathan LaFreniere and other
-[contributors](https://github.com/ljharb/qs/graphs/contributors)), SNTP
-(Copyright (c) 2012-2013 Eran Hammer.), TAR (Copyright (c) Isaac Z.
-Schlueter), UNDERSCORE.STRING/VENDOR/QUNIT (Copyright (c) 2008 Ariel
-Flesler - aflesler(at)gmail(dot)com), NORMALIZE-PACKAGE-DATA (Copyright
-(c) Meryn Stol ("Author")), NPMLOG (Copyright (c) Isaac Z. Schlueter
-("Author")), TAFFYDB (Copyright Not Found), SHA (Copyright (c) 2013
-Forbes Lindesay), PROMZARD/INIT-INPUT (Copyright Not Found), RUNFORCOVER
-(Copyright Not Found), NPM-USER-VALIDATE (Copyright (c) Robert
-Kowalski), DOJO TOOLKIT (Copyright (c) 2005-2013, The Dojo Foundation),
-ESUTILS (Copyright (C) 2013 [Yusuke
-Suzuki](http://github.com/Constellation)), HAWK (Copyright (c) 2012-2013
-Eran Hammer.), NPM-INSTALL-CHECKS (Copyright (c) Robert Kowalski and
-Isaac Z. Schlueter ("Authors")), MD5 [Dojo Toolkit] (Copyright (C) Paul
-Johnston 1999 - 2002.), PUREJAVACRC32C [Commons-Codec] (Copyright (c) 2004-2006 Intel
-Corportation)
+HOIST-NON-REACT-STATICS [swagger-ui] (Copyright (c) 2015, Yahoo! Inc.),
+QS [swagger-ui] (Copyright (c) 2014, Nathan LaFreniere and other
+[contributors](https://github.com/ljharb/qs/graphs/contributors)),
+SPRINTF-JS [swagger-ui] (Copyright (c) 2007-2014, Alexandru Marasteanu
+<hello [at) alexei (dot] ro>), PUREJAVACRC32C [Commons-Codec] (Copyright
+(c) 2004-2006 Intel Corportation), REDUX-IMMUTABLE [swagger-ui]
+(Copyright (c) 2016, Gajus Kuizinas (http://gajus.com/)), ESAPI
+(Copyright (c) 2007 - The OWASP Foundation), XMLSCHEMA-CORE PORTIONS
+[XMLSchema-core] (Copyright (C) World Wide Web Consortium 2006, 2007),
+D3 [weld] (Copyright (c) 2010-2014, Michael Bostock All rights
+reserved.), STYLE.CSS [weld] (Copyright (c) 2007, Yahoo! Inc. All rights
+reserved.), HIGHLIGHT [weld] (Copyright (c) 2006, Ivan Sagalaev All
+rights reserved.), HIGHLIGHT.JS [swagger-ui] (Copyright (c) 2006, Ivan
+Sagalaev.), ASM (Copyright (c) 2000-2011 INRIA, France Telecom  All
+rights reserved.), DOJO [Apache MyFaces] (Copyright (c) 2005, The Dojo
+Foundation All rights reserved.)
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -419,16 +378,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF BSD 3-CLAUSE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-COMMON DEVELOPMENT AND DISTRIBUTION LICENSE
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 
 The Program includes some or all of the following that IBM obtained
-under the Common Development and Distribution License
+under the Common Development and Distribution License V1
 (source code available via the indicated URL):
 
-JAVAX.INJECT
-(https://repo1.maven.org/maven2/org/glassfish/hk2/external/javax.inject/2.0.3/)
+JAXB-RUNTIME
+(https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime/2.3.4),
+GLASSFISH [Apache MyFaces]
+(https://github.com/apache/myfaces/tree/myfaces-core-module-3.0.0-RC1),
+ARRAYELRESOLVER.JAVA [weld]
+(/Source-0/artifacts/weld/weld-se-sources.jar/javax/el/ArrayELResolver.java),
+STAX-EX
+(http://central.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar),
+JAVAX-SERVLET [Tomcat] (http://xmlns.jcp.org/xml/ns/javaee), JAVAEE XML
+SCHEMAS [Tomcat] (http://xmlns.jcp.org/xml/ns/javaee), JAVAMAIL
+(https://github.com/javaee/javamail/tree/JAVAMAIL-1_6_0), SERIALIZER
+[Eclipse yasson]
+(https://github.com/eclipse-ee4j/yasson/tree/1.0.4-RELEASE),
+ANNOTATEDIMPL.JAVA [weld]
+(src/test/java/org/jboss/weld/tests/extensions/supertypes/beans/CDIExtension.java;),
+JAVAEE_5.XSD [Apache MyFaces] (https://facelets.dev.java.net/),
+JBOSS-JDEPARSER
+(http://mvnrepository.com/artifact/org.jboss.jdeparser/jdeparser/1.0.0.Final),
+JAVAX.EL
+(https://mvnrepository.com/artifact/org.glassfish/javax.el/3.0.0)
 
-END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE NOTICES AND INFORMATION
+END OF COMMON DEVELOPMENT AND DISTRIBUTION V1 LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+COMMON PUBLIC LICENSE
+
+The Program includes some or all of the following that IBM obtained
+under the Common Public License (source code available via the indicated
+URL):
+
+WSDL4J [Apache CXF] (https://github.com/apache/cxf/tree/cxf-3.2.0)
+
+END OF COMMON PUBLIC LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ECLIPSE PUBLIC LICENSE, VERSION 1
@@ -437,8 +425,12 @@ The Program includes some or all of the following that IBM obtained
 under the Eclipse Public License (source code available via the
 indicated URL):
 
-JAVAX.PERSISTENCE
-(https://repo1.maven.org/maven2/org/eclipse/persistence/javax.persistence/2.1.0/)
+ECLIPSE EQUINOX COORDINATOR
+(https://repo1.maven.org/maven2/org/eclipse/equinox/org.eclipse.equinox.coordinator/1.1.0.v20120522-1841/org.eclipse.equinox.coordinator-1.1.0.v20120522-1841-sources.jar),
+ECLIPSELINK (http://www.eclipse.org/eclipselink), ECLIPSE EQUINOX
+(https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.equinox.util/1.1.0/),
+SPRING-BOOT (http://projects.spring.io/spring-boot/), ECLIPSE YASSON
+(https://repo.maven.apache.org/maven2/org/eclipse/yasson/2.0.1/)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -449,8 +441,16 @@ The Program includes some or all of the following that IBM obtained
 under the Eclipse Public License (source code available via the
 indicated URL):
 
-JAKARTA.MAIL
-(https://repo.maven.apache.org/maven2/com/sun/mail/jakarta.mail/2.0.0/)
+JAKARTA.JSON
+(https://repo.maven.apache.org/maven2/org/glassfish/jakarta.json/2.0.0-RC3/),
+JAKARTA.SERVLET:JAKARTA.SERVLET-API
+(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar),
+JAKARTA.TRANSACTION:JAKARTA.TRANSACTION-API
+(https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0-RC1/jakarta.transaction-api-2.0.0-RC1-sources.jar),
+JAKARTA.EJB:JAKARTA.EJB-API
+(https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.0-RC2/jakarta.ejb-api-4.0.0-RC2-sources.jar),
+JAKARTA.PERSISTENCE:JAKARTA.PERSISTENCE-API
+(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0-RC2/jakarta.persistence-api-3.0.0-RC2-sources.jar)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -460,7 +460,7 @@ INTERNATIONAL COMPONENTS FOR UNICODE LICENSE
 The Program includes some or all of the following that IBM obtained under
 the INTERNATIONAL COMPONENTS FOR UNICODE LICENSE.
 
-COLLATION [Dojo Toolkit]
+ICU4J [Jasypt]
 
 ICU License - ICU 1.8.1 and later 
 
@@ -846,25 +846,17 @@ ISC LICENSE
 The Program includes some or all of the following that IBM obtained
 under the ISC License.
 
-WHICH (Copyright (c) Isaac Z. Schlueter and Contributors), READ
-(Copyright (c) Isaac Z. Schlueter and Contributors), CHAR-SPINNER
-(Copyright (c) Isaac Z. Schlueter), GLOB (Copyright (c) Isaac Z.
-Schlueter and Contributors), JSON-STRINGIFY-SAFE (Copyright (c) Isaac Z.
-Schlueter and Contributors), LRU-CACHE (Copyright (c) Isaac Z. Schlueter
-and Contributors), INFLIGHT (Copyright (c) Isaac Z. Schlueter),
-FS.REALPATH (Copyright (c) Isaac Z. Schlueter and Contributors), NPMCONF
-(Copyright (c) Isaac Z. Schlueter and Contributors), ONCE (Copyright (c)
-Isaac Z. Schlueter and Contributors), PROMZARD (Copyright (c) Isaac Z.
-Schlueter), NOPT (Copyright (c) Isaac Z. Schlueter and Contributors),
-SLIDE (Copyright (c) Isaac Z. Schlueter), PSEUDOMAP (Copyright (c) Isaac
-Z. Schlueter and Contributors), WRAPPY (Copyright (c) Isaac Z. Schlueter
-and Contributors), NPM-REGISTRY-CLIENT (Copyright (c) Isaac Z. Schlueter
-and Contributors), ABBREV (Copyright (c) Isaac Z. Schlueter and
-Contributors), NPM-CACHE-FILENAME (Copyright (c) npm Inc. and
-Contributors), READ-PACKAGE-JSON (Copyright (c) Isaac Z. Schlueter),
-READ-INSTALLED (Copyright (c) Isaac Z. Schlueter), YAMLISH (Copyright
-(c) Isaac Z. Schlueter and Contributors), YALLIST (Copyright (c) Isaac
-Z. Schlueter and Contributors)
+EXT [swagger-ui] (Copyright (c) 2011-2019, Mariusz Nowak, @medikoo,
+medikoo.com), TIMERS-EXT [swagger-ui] (Copyright (c) 2013-2018, Mariusz
+Nowak, @medikoo, medikoo.com), D [swagger-ui] (Copyright (c) 2013-2019,
+Mariusz Nowak, @medikoo, medikoo.com), ES6-SYMBOL [swagger-ui]
+(Copyright (c) 2013-2019, Mariusz Nowak, @medikoo, medikoo.com),
+ES6-WEAK-MAP [swagger-ui] (Copyright (c) 2013-2018, Mariusz Nowak,
+@medikoo, medikoo.com), MEMOIZEE [swagger-ui] (Copyright (c) 2012-2018,
+Mariusz Nowak, @medikoo, medikoo.com), NEXT-TICK [swagger-ui] (Copyright
+(c) 2012-2020, Mariusz Nowak, @medikoo, medikoo.com), TYPE [swagger-ui]
+(Copyright (c) 2019-2022, Mariusz Nowak, @medikoo, medikoo.com),
+INHERITS [swagger-ui] (Copyright (c) Isaac Z. Schlueter)
 
 ISC License
 
@@ -883,462 +875,67 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 END OF ISC LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-MODIFIABLE THIRD PARTY CODE
-
-This Program includes some or all of the following Modifiable Third 
-Party Code that IBM obtained under the GNU Lesser General Public 
-License. For copies of the source code for this software, send an email 
-to <emailaddress> identifying the IBM Program and the Modifiable Third 
-Party Code for which you are requesting the source code. 
-
-RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy] 
-(https://repo1.maven.org/maven2/org/jboss/resteasy/resteasy-core/4.5.8.Final/)
-
-                  GNU LESSER GENERAL PUBLIC LICENSE
-                       Version 2.1, February 1999
-
-Copyright (C) 1991, 1999 Free Software Foundation, Inc.
-51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
-
-[This is the first released version of the Lesser GPL.  It also counts
- as the successor of the GNU Library Public License, version 2, hence
- the version number 2.1.]
-
-Preamble
-
-The licenses for most software are designed to take away your freedom to 
-share and change it. By contrast, the GNU General Public Licenses are 
-intended to guarantee your freedom to share and change free software--to 
-make sure the software is free for all its users. 
-
-This license, the Lesser General Public License, applies to some 
-specially designated software packages--typically libraries--of the Free 
-Software Foundation and other authors who decide to use it. You can use 
-it too, but we suggest you first think carefully about whether this 
-license or the ordinary General Public License is the better strategy to 
-use in any particular case, based on the explanations below. 
-
-When we speak of free software, we are referring to freedom of use, not 
-price. Our General Public Licenses are designed to make sure that you 
-have the freedom to distribute copies of free software (and charge for 
-this service if you wish); that you receive source code or can get it if 
-you want it; that you can change the software and use pieces of it in 
-new free programs; and that you are informed that you can do these 
-things. 
-
-To protect your rights, we need to make restrictions that forbid 
-distributors to deny you these rights or to ask you to surrender these 
-rights. These restrictions translate to certain responsibilities for you 
-if you distribute copies of the library or if you modify it. 
-
-For example, if you distribute copies of the library, whether gratis or 
-for a fee, you must give the recipients all the rights that we gave you. 
-You must make sure that they, too, receive or can get the source code. 
-If you link other code with the library, you must provide complete 
-object files to the recipients, so that they can relink them with the 
-library after making changes to the library and recompiling it. And you 
-must show them these terms so they know their rights. 
-
-We protect your rights with a two-step method: (1) we copyright the 
-library, and (2) we offer you this license, which gives you legal 
-permission to copy, distribute and/or modify the library. 
-
-To protect each distributor, we want to make it very clear that there is 
-no warranty for the free library. Also, if the library is modified by 
-someone else and passed on, the recipients should know that what they 
-have is not the original version, so that the original author's 
-reputation will not be affected by problems that might be introduced by 
-others. 
-
-Finally, software patents pose a constant threat to the existence of any 
-free program. We wish to make sure that a company cannot effectively 
-restrict the users of a free program by obtaining a restrictive license 
-from a patent holder. Therefore, we insist that any patent license 
-obtained for a version of the library must be consistent with the full 
-freedom of use specified in this license. 
-
-Most GNU software, including some libraries, is covered by the ordinary 
-GNU General Public License. This license, the GNU Lesser General Public 
-License, applies to certain designated libraries, and is quite different 
-from the ordinary General Public License. We use this license for 
-certain libraries in order to permit linking those libraries into 
-non-free programs. 
-
-When a program is linked with a library, whether statically or using a 
-shared library, the combination of the two is legally speaking a 
-combined work, a derivative of the original library. The ordinary 
-General Public License therefore permits such linking only if the entire 
-combination fits its criteria of freedom. The Lesser General Public 
-License permits more lax criteria for linking other code with the 
-library. 
-
-We call this license the "Lesser" General Public License because it does 
-Less to protect the user's freedom than the ordinary General Public 
-License. It also provides other free software developers Less of an 
-advantage over competing non-free programs. These disadvantages are the 
-reason we use the ordinary General Public License for many libraries. 
-However, the Lesser license provides advantages in certain special 
-circumstances. 
-
-For example, on rare occasions, there may be a special need to 
-encourage the widest possible use of a certain library, so that it 
-becomes a de-facto standard. To achieve this, non-free programs must be 
-allowed to use the library. A more frequent case is that a free library 
-does the same job as widely used non-free libraries. In this case, there 
-is little to gain by limiting the free library to free software only, so 
-we use the Lesser General Public License. 
-
-In other cases, permission to use a particular library in non-free 
-programs enables a greater number of people to use a large body of free 
-software. For example, permission to use the GNU C Library in non-free 
-programs enables many more people to use the whole GNU operating system, 
-as well as its variant, the GNU/Linux operating system. 
-
-Although the Lesser General Public License is Less protective of the 
-users' freedom, it does ensure that the user of a program that is linked 
-with the Library has the freedom and the wherewithal to run that program 
-using a modified version of the Library. 
-
-The precise terms and conditions for copying, distribution and 
-modification follow. Pay close attention to the difference between a 
-"work based on the library" and a "work that uses the library". The 
-former contains code derived from the library, whereas the latter must 
-be combined with the library in order to run. TERMS AND CONDITIONS FOR 
-COPYING, DISTRIBUTION AND MODIFICATION 
-
-0. This License Agreement applies to any software library or other 
-program which contains a notice placed by the copyright holder or other 
-authorized party saying it may be distributed under the terms of this 
-Lesser General Public License (also called "this License"). Each 
-licensee is addressed as "you". 
-
-A "library" means a collection of software functions and/or data 
-prepared so as to be conveniently linked with application programs 
-(which use some of those functions and data) to form executables. 
-
-The "Library", below, refers to any such software library or work which 
-has been distributed under these terms. A "work based on the Library" 
-means either the Library or any derivative work under copyright law: 
-that is to say, a work containing the Library or a portion of it, either 
-verbatim or with modifications and/or translated straightforwardly into 
-another language. (Hereinafter, translation is included without 
-limitation in the term "modification".) 
-
-"Source code" for a work means the preferred form of the work for making 
-modifications to it. For a library, complete source code means all the 
-source code for all modules it contains, plus any associated interface 
-definition files, plus the scripts used to control compilation and 
-installation of the library. 
-
-Activities other than copying, distribution and modification are not 
-covered by this License; they are outside its scope. The act of running 
-a program using the Library is not restricted, and output from such a 
-program is covered only if its contents constitute a work based on the 
-Library (independent of the use of the Library in a tool for writing 
-it). Whether that is true depends on what the Library does and what the 
-program that uses the Library does. 
-
-1. You may copy and distribute verbatim copies of the Library's complete 
-source code as you receive it, in any medium, provided that you 
-conspicuously and appropriately publish on each copy an appropriate 
-copyright notice and disclaimer of warranty; keep intact all the notices 
-that refer to this License and to the absence of any warranty; and 
-distribute a copy of this License along with the Library. 
-
-You may charge a fee for the physical act of transferring a copy, and 
-you may at your option offer warranty protection in exchange for a fee. 
-
-
-2. You may modify your copy or copies of the Library or any portion of 
-it, thus forming a work based on the Library, and copy and distribute 
-such modifications or work under the terms of Section 1 above, provided 
-that you also meet all of these conditions: 
-
-    a) The modified work must itself be a software library.
-    b) You must cause the files modified to carry prominent notices 
-       stating that you changed the files and the date of any change.
-    c) You must cause the whole of the work to be licensed at no charge 
-       to all third parties under the terms of this License.
-    d) If a facility in the modified Library refers to a function or a 
-       table of data to be supplied by an application program that uses 
-       the facility, other than as an argument passed when the facility 
-       is invoked, then you must make a good faith effort to ensure 
-       that, in the event an application does not supply such function 
-       or table, the facility still operates, and performs whatever part 
-       of its purpose remains meaningful.
-
-      (For example, a function in a library to compute square roots has 
-      a purpose that is entirely well-defined independent of the 
-      application. Therefore, Subsection 2d requires that any 
-      application-supplied function or table used by this function must 
-      be optional: if the application does not supply it, the square 
-      root function must still compute square roots.)
-
-These requirements apply to the modified work as a whole. If 
-identifiable sections of that work are not derived from the Library, and 
-can be reasonably considered independent and separate works in 
-themselves, then this License, and its terms, do not apply to those 
-sections when you distribute them as separate works. But when you 
-distribute the same sections as part of a whole which is a work based on 
-the Library, the distribution of the whole must be on the terms of this 
-License, whose permissions for other licensees extend to the entire 
-whole, and thus to each and every part regardless of who wrote it. 
-
-Thus, it is not the intent of this section to claim rights or contest 
-your rights to work written entirely by you; rather, the intent is to 
-exercise the right to control the distribution of derivative or 
-collective works based on the Library. 
-
-In addition, mere aggregation of another work not based on the Library 
-with the Library (or with a work based on the Library) on a volume of a 
-storage or distribution medium does not bring the other work under the 
-scope of this License. 
-
-3. You may opt to apply the terms of the ordinary GNU General Public 
-License instead of this License to a given copy of the Library. To do 
-this, you must alter all the notices that refer to this License, so that 
-they refer to the ordinary GNU General Public License, version 2, 
-instead of to this License. (If a newer version than version 2 of the 
-ordinary GNU General Public License has appeared, then you can specify 
-that version instead if you wish.) Do not make any other change in these 
-notices. 
-
-Once this change is made in a given copy, it is irreversible for that 
-copy, so the ordinary GNU General Public License applies to all 
-subsequent copies and derivative works made from that copy. 
-
-This option is useful when you wish to copy part of the code of the 
-Library into a program that is not a library. 
-
-4. You may copy and distribute the Library (or a portion or derivative 
-of it, under Section 2) in object code or executable form under the 
-terms of Sections 1 and 2 above provided that you accompany it with the 
-complete corresponding machine-readable source code, which must be 
-distributed under the terms of Sections 1 and 2 above on a medium 
-customarily used for software interchange. 
-
-If distribution of object code is made by offering access to copy from a 
-designated place, then offering equivalent access to copy the source 
-code from the same place satisfies the requirement to distribute the 
-source code, even though third parties are not compelled to copy the 
-source along with the object code. 
-
-5. A program that contains no derivative of any portion of the Library, 
-but is designed to work with the Library by being compiled or linked 
-with it, is called a "work that uses the Library". Such a work, in 
-isolation, is not a derivative work of the Library, and therefore falls 
-outside the scope of this License. 
-
-However, linking a "work that uses the Library" with the Library creates 
-an executable that is a derivative of the Library (because it contains 
-portions of the Library), rather than a "work that uses the library". 
-The executable is therefore covered by this License. Section 6 states 
-terms for distribution of such executables. 
-
-When a "work that uses the Library" uses material from a header file 
-that is part of the Library, the object code for the work may be a 
-derivative work of the Library even though the source code is not. 
-Whether this is true is especially significant if the work can be linked 
-without the Library, or if the work is itself a library. The threshold 
-for this to be true is not precisely defined by law. 
-
-If such an object file uses only numerical parameters, data structure 
-layouts and accessors, and small macros and small inline functions (ten 
-lines or less in length), then the use of the object file is 
-unrestricted, regardless of whether it is legally a derivative work. 
-(Executables containing this object code plus portions of the Library 
-will still fall under Section 6.) 
-
-Otherwise, if the work is a derivative of the Library, you may 
-distribute the object code for the work under the terms of Section 6. 
-Any executables containing that work also fall under Section 6, whether 
-or not they are linked directly with the Library itself. 
-
-6. As an exception to the Sections above, you may also combine or link a 
-"work that uses the Library" with the Library to produce a work 
-containing portions of the Library, and distribute that work under terms 
-of your choice, provided that the terms permit modification of the work 
-for the customer's own use and reverse engineering for debugging such 
-modifications. 
-
-You must give prominent notice with each copy of the work that the 
-Library is used in it and that the Library and its use are covered by 
-this License. You must supply a copy of this License. If the work during 
-execution displays copyright notices, you must include the copyright 
-notice for the Library among them, as well as a reference directing the 
-user to the copy of this License. Also, you must do one of these things: 
-
-
-    a) Accompany the work with the complete corresponding 
-       machine-readable source code for the Library including whatever 
-       changes were used in the work (which must be distributed under 
-       Sections 1 and 2 above); and, if the work is an executable linked 
-       with the Library, with the complete machine-readable "work that 
-       uses the Library", as object code and/or source code, so that the 
-       user can modify the Library and then relink to produce a modified 
-       executable containing the modified Library. (It is understood 
-       that the user who changes the contents of definitions files in 
-       the Library will not necessarily be able to recompile the 
-       application to use the modified definitions.)
-    b) Use a suitable shared library mechanism for linking with the 
-       Library. A suitable mechanism is one that (1) uses at run time a 
-       copy of the library already present on the user's computer 
-       system, rather than copying library functions into the 
-       executable, and (2) will operate properly with a modified version 
-       of the library, if the user installs one, as long as the modified 
-       version is interface-compatible with the version that the work 
-       was made with.
-    c) Accompany the work with a written offer, valid for at least three 
-       years, to give the same user the materials specified in 
-       Subsection 6a, above, for a charge no more than the cost of 
-       performing this distribution.
-    d) If distribution of the work is made by offering access to copy 
-       from a designated place, offer equivalent access to copy the 
-       above specified materials from the same place.
-    e) Verify that the user has already received a copy of these 
-       materials or that you have already sent this user a copy.
-
-For an executable, the required form of the "work that uses the Library" 
-must include any data and utility programs needed for reproducing the 
-executable from it. However, as a special exception, the materials to be 
-distributed need not include anything that is normally distributed (in 
-either source or binary form) with the major components (compiler, 
-kernel, and so on) of the operating system on which the executable runs, 
-unless that component itself accompanies the executable. 
-
-It may happen that this requirement contradicts the license restrictions 
-of other proprietary libraries that do not normally accompany the 
-operating system. Such a contradiction means you cannot use both them 
-and the Library together in an executable that you distribute. 
-
-7. You may place library facilities that are a work based on the Library 
-side-by-side in a single library together with other library facilities 
-not covered by this License, and distribute such a combined library, 
-provided that the separate distribution of the work based on the Library 
-and of the other library facilities is otherwise permitted, and provided 
-that you do these two things: 
-
-    a) Accompany the combined library with a copy of the same work based 
-       on the Library, uncombined with any other library facilities. 
-       This must be distributed under the terms of the Sections above.
-    b) Give prominent notice with the combined library of the fact that 
-       part of it is a work based on the Library, and explaining where 
-       to find the accompanying uncombined form of the same work.
-
-8. You may not copy, modify, sublicense, link with, or distribute the 
-Library except as expressly provided under this License. Any attempt 
-otherwise to copy, modify, sublicense, link with, or distribute the 
-Library is void, and will automatically terminate your rights under this 
-License. However, parties who have received copies, or rights, from you 
-under this License will not have their licenses terminated so long as 
-such parties remain in full compliance. 
-
-9. You are not required to accept this License, since you have not 
-signed it. However, nothing else grants you permission to modify or 
-distribute the Library or its derivative works. These actions are 
-prohibited by law if you do not accept this License. Therefore, by 
-modifying or distributing the Library (or any work based on the 
-Library), you indicate your acceptance of this License to do so, and all 
-its terms and conditions for copying, distributing or modifying the 
-Library or works based on it. 
-
-10. Each time you redistribute the Library (or any work based on the 
-Library), the recipient automatically receives a license from the 
-original licensor to copy, distribute, link with or modify the Library 
-subject to these terms and conditions. You may not impose any further 
-restrictions on the recipients' exercise of the rights granted herein. 
-You are not responsible for enforcing compliance by third parties with 
-this License. 
-
-11. If, as a consequence of a court judgment or allegation of patent 
-infringement or for any other reason (not limited to patent issues), 
-conditions are imposed on you (whether by court order, agreement or 
-otherwise) that contradict the conditions of this License, they do not 
-excuse you from the conditions of this License. If you cannot distribute 
-so as to satisfy simultaneously your obligations under this License and 
-any other pertinent obligations, then as a consequence you may not 
-distribute the Library at all. For example, if a patent license would 
-not permit royalty-free redistribution of the Library by all those who 
-receive copies directly or indirectly through you, then the only way you 
-could satisfy both it and this License would be to refrain entirely from 
-distribution of the Library. 
-
-If any portion of this section is held invalid or unenforceable under 
-any particular circumstance, the balance of the section is intended to 
-apply, and the section as a whole is intended to apply in other 
-circumstances. 
-
-It is not the purpose of this section to induce you to infringe any 
-patents or other property right claims or to contest validity of any 
-such claims; this section has the sole purpose of protecting the 
-integrity of the free software distribution system which is implemented 
-by public license practices. Many people have made generous 
-contributions to the wide range of software distributed through that 
-system in reliance on consistent application of that system; it is up to 
-the author/donor to decide if he or she is willing to distribute 
-software through any other system and a licensee cannot impose that 
-choice. 
-
-This section is intended to make thoroughly clear what is believed to be 
-a consequence of the rest of this License. 
-
-12. If the distribution and/or use of the Library is restricted in 
-certain countries either by patents or by copyrighted interfaces, the 
-original copyright holder who places the Library under this License may 
-add an explicit geographical distribution limitation excluding those 
-countries, so that distribution is permitted only in or among countries 
-not thus excluded. In such case, this License incorporates the 
-limitation as if written in the body of this License. 
-
-13. The Free Software Foundation may publish revised and/or new versions 
-of the Lesser General Public License from time to time. Such new 
-versions will be similar in spirit to the present version, but may 
-differ in detail to address new problems or concerns. 
-
-Each version is given a distinguishing version number. If the Library 
-specifies a version number of this License which applies to it and "any 
-later version", you have the option of following the terms and 
-conditions either of that version or of any later version published by 
-the Free Software Foundation. If the Library does not specify a license 
-version number, you may choose any version ever published by the Free 
-Software Foundation. 
-
-14. If you wish to incorporate parts of the Library into other free 
-programs whose distribution conditions are incompatible with these, 
-write to the author to ask for permission. For software which is 
-copyrighted by the Free Software Foundation, write to the Free Software 
-Foundation; we sometimes make exceptions for this. Our decision will be 
-guided by the two goals of preserving the free status of all derivatives 
-of our free software and of promoting the sharing and reuse of software 
-generally. 
-
-NO WARRANTY
-
-15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO 
-WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
-EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR 
-OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY OF ANY KIND, 
-EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE 
-ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE LIBRARY IS WITH 
-YOU. SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
-NECESSARY SERVICING, REPAIR OR CORRECTION. 
-
-16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN 
-WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY 
-AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU FOR 
-DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL 
-DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE LIBRARY 
-(INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED 
-INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF 
-THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR 
-OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
-
-END OF TERMS AND CONDITIONS 
-
-END OF GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 NOTICES AND INFORMATION
+JDOM LICENSE
+
+The Program includes some or all of the following that IBM obtained
+under the JDOM License:
+
+STAXBUILDER.JAVA [Apache CXF], AEGIS [Apache CXF]
+
+JDOM license
+
+Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are 
+met: 
+
+1. Redistributions of source code must retain the above copyright 
+   notice, this list of conditions, and the following disclaimer. 
+
+2. Redistributions in binary form must reproduce the above copyright 
+   notice, this list of conditions, and the disclaimer that follows these 
+   conditions in the documentation and/or other materials provided with the 
+   distribution. 
+
+3. The name "JDOM" must not be used to endorse or promote products 
+   derived from this software without prior written permission. For written 
+   permission, please contact <request_AT_jdom_DOT_org>. 
+
+4. Products derived from this software may not be called "JDOM", nor may 
+   "JDOM" appear in their name, without prior written permission from the 
+   JDOM Project Management <request_AT_jdom_DOT_org>. 
+
+In addition, we request (but do not require) that you include in the 
+end-user documentation provided with the redistribution and/or in the 
+software itself an acknowledgement equivalent to the following: 
+
+"This product includes software developed by the JDOM Project 
+(http://www.jdom.org/)." 
+
+Alternatively, the acknowledgment may be graphical using the logos 
+available at http://www.jdom.org/images/logos . 
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED 
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN 
+NO EVENT SHALL THE JDOM AUTHORS OR THE PROJECT CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+THE POSSIBILITY OF SUCH DAMAGE. 
+
+This software consists of voluntary contributions made by many 
+individuals on behalf of the JDOM Project and was originally created by 
+Jason Hunter <jhunter_AT_jdom_DOT_org> and Brett McLaughlin 
+<brett_AT_jdom_DOT_org>. For more information on the JDOM Project, 
+please see http://www.jdom.org/. 
+
+END OF JDOM LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 MIT LICENSE
@@ -1346,163 +943,152 @@ MIT LICENSE
 The Program includes some or all of the following that IBM obtained
 under the MIT License:
 
-DUPLEXER (Copyright (c) 2012 Raynos.), LODASH (Copyright 2012-2013 The
-Dojo Foundation <http://dojofoundation.org/>), UTILE (Copyright (c) 2010
-Nodejitsu Inc.), JSPRIM (Copyright (c) 2012 Joyent Inc. All rights
-reserved.), VARY (Copyright (c) 2014-2015 Douglas Christopher Wilson),
-TYPEDARRAY (Copyright (c) 2010 Linden Research Inc. Copyright (c) 2012
-Joshua Bell), EE-FIRST (Copyright (c) 2014 Jonathan Ong
-me@jongleberry.com), MIME (Copyright (c) 2010 Benjamin Thomas Robert
-Kieffer), MINIMATCH (Copyright 2009 2010 2011 Isaac Z. Schlueter.),
-NEGOTIATOR (Copyright (c) 2012-2014 Federico Romero Copyright (c)
-2012-2014 Isaac Z. Schlueter Copyright (c) 2014-2015 Douglas Christopher
-Wilson), ANSI-STYLES (Copyright (c) Sindre Sorhus
-<sindresorhus@gmail.com> (sindresorhus.com)), HAS-ANSI (Copyright (c)
-Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), VOW-QUEUE
-(Copyright (c) 2013 Dmitry Filatov and other contributors), PATHVAL
-(Copyright (c) 2011-2013 Jake Luer jake@alogicalparadox.com),
-UNDERSCORE.STRING/VENDOR/QUNITJS (Copyright 2012 jQuery Foundation and
-other contributors), XML-ESCAPE (Copyright (c) 2014 Michael Hernandez),
-REVALIDATOR/WEBSERVICE ((C) 2011, Nodejitsu Inc.), SWAGGER-UI/NODE.JS
-(Copyright Not Found), GRACEFUL-READLINK (Copyright (c) 2015 Zhiye Li),
-ASN1 (Copyright (c) 2011 Mark Cavage; All rights reserved.),
-GENERATE-OBJECT-PROPERTY (Copyright (c) 2014 Mathias Buus), DEPD
-(Copyright (c) 2014-2015 Douglas Christopher Wilson), COMPONENT-EMITTER
-(Copyright (c) 2014 Component contributors <dev@component.io>), DESTROY
-(Copyright (c) 2014 Jonathan Ong me@jongleberry.com), ANSI-REGEX
+BLOB-TO-BUFFER [swagger-ui] (Jimmy Wärting
+<https://jimmy.warting.se/opensource>), CSS [weld] (No Copyright Found),
+NORMALIZE.CSS [weld] (Copyright 2011-2014 Twitter, Inc.), LODASH
+[swagger-ui] (Copyright OpenJS Foundation and other contributors
+<https://openjsf.org/>), TYPE [swagger-ui] (Copyright (c) 2019, Mariusz
+Nowak, @medikoo, medikoo.com), REFRACTOR [swagger-ui] (Copyright (c)
+2017 Titus Wormer <tituswormer@gmail.com>), UNICODENORMALIZER
+[swagger-ui] (Copyright (c) 2008 Matsuza), CROSS-FETCH [swagger-ui]
+(Copyright (c) 2017 Leonardo QuixadÃ¡), XML [swagger-ui] (Copyright (c)
+2011-2016 Dylan Greene <dylang@gmail.com>), NIGHT-OWL [swagger-ui]
+(Copyright (c) 2018 Sarah Drasner), URL-PARSE [swagger-ui] (Copyright
+(c) 2015 Unshift.io, Arnout Kazemier, the Contributors.),
+REACT-INSPECTOR [swagger-ui] (Copyright (c) 2017 Xiaoyi Chen), SHCORE.JS
+[weld] ((c) 2007-2008 Steven Levithan), SLF4J ((c) 2004-2013 QOS.ch  All
+rights reserved. ), COOKIE [swagger-ui] (Copyright (c) 2012-2014 Roman
+Shtylman <shtylman@gmail.com> Copyright (c) 2015 Douglas Christopher
+Wilson <doug@somethingdoug.com>), EMBER [weld] (Copyright (c) 2018
+Yehuda Katz, Tom Dale and Ember.js contributors), INVARIANT [swagger-ui]
+(Copyright (c) 2013-present, Facebook, Inc.), CORE-JS-BUFFER
+[swagger-ui] (Copyright (c) 2014-2022 Denis Pushkarev), INFLECTIONS.RB
+[Apache CXF] (No copyright), PUNYCODE [swagger-ui] (Copyright Mathias
+Bynens <https://mathiasbynens.be/>), @BABEL/RUNTIMECOREJS3 [swagger-ui]
+(Copyright (c) 2014-present Sebastian McKenzie and other contributors),
+REPEAT-STRING [swagger-ui] (Copyright (c) 2014-2016, Jon Schlinkert.),
+TSLIB [swagger-ui] (Copyright (c) Microsoft Corporation.), TYPE-FEST
+[swagger-ui] (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
+(https:/sindresorhus.com)), @TYPES/HOIST-NON-REACT-STATICS [swagger-ui]
+(Copyright (c) Microsoft Corporation),
+ORG.CODEHAUS.MOJO:ANIMAL-SNIFFER-ANNOTATIONS (Copyright (c) 2008 Kohsuke
+Kawaguchi and codehaus.org.), FORM-DATA-ENCODER [swagger-ui] (Copyright
+(c) 2021-present Nick K.), OBJECT-INSPECT [swagger-ui] (Copyright (c)
+2013 James Halliday), PROBE.JS [weld] (Copyright 2011-2014 Twitter,
+Inc.), REACT-REDUX [swagger-ui] (Copyright (c) 2015-present Dan
+Abramov), LOWLIGHT [swagger-ui] (© [Titus Wormer][author]),
+REACT-DEBOUNCE-INPUT [swagger-ui] (Copyright (c) 2016 Nik Butenko),
+ORG.EASYMOCK:EASYMOCK (Copyright (c) 2001-2008 OFFIS Tammo Freese.),
+BOOTSTRAP.MIN.CSS [Spring-boot] (Copyright 2011-2018 The Bootstrap
+Authors Copyright 2011-2018 Twitter, Inc.), CSS.ESCAPE [swagger-ui]
+(Copyright Mathias Bynens <https://mathiasbynens.be/>), BOOTSTRAP [weld]
+(Copyright 2011-2014 Twitter, Inc.), PROPERTY-INFORMATION [swagger-ui]
+(Copyright (c) 2015 Titus Wormer <mailto:tituswormer@gmail.com>),
+REQUIRES-PORT [swagger-ui] (Copyright (c) 2015 Unshift.io, Arnout
+Kazemier, the Contributors.), GET-INTRINSIC [swagger-ui] (Copyright (c)
+2020 Jordan Harband), IS-WINDOW [swagger-ui] (Copyright (c) 2016 W.Y.),
+VAPOR.JS [swagger-ui] (Copyright (c) 2010 Thomas Fuchs
+(http://script.aculo.us/thomas)), IEEE754 [swagger-ui] (Copyright 2008
+Fair Oaks Labs, Inc.), LOOSE-ENVIFY [swagger-ui] (Copyright (c) 2015
+Andres Suarez <zertosh@gmail.com>), XML-BUT-PRETTIER [swagger-ui]
+(Copyright (c) 2015 Jonathan Persson), REACT-IMMUTABLE-PURE-COMPONENT
+[swagger-ui] (Copyright (c) 2017 Piotr Tomasz Monarski), SIDE-CHANNEL
+[swagger-ui] (Copyright (c) 2019 Jordan Harband), MODERNIZR [swagger-ui]
+(No Copyright), JQUERY.VALIDATE.JS [Spring-boot] (Copyright (c) 2012
+JÃ¶rn Zaefferer), CSSTYPE [swagger-ui] (Copyright (c) 2017-2018 Fredrik
+Nicol), DEEP-EXTEND [swagger-ui] (Copyright (c) 2013-2018, Viacheslav
+Lotsmanov), URL [swagger-ui] (Copyright Joyent, Inc. and other Node
+contributors.), CHARACTER-ENTITIES-LEGACY [swagger-ui] (Copyright (c)
+2015 Titus Wormer <tituswormer@gmail.com>), SERIALIZE-ERROR [swagger-ui]
 (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(sindresorhus.com)), FAST-LEVENSHTEIN (Copyright (c) 2013 [Ramesh
-Nair](http://www.hiddentao.com/)), PROCESS-NEXTICK-ARGS (Copyright (c)
-2015 Calvin Metcalf), UNPIPE (Copyright (c) 2015 Douglas Christopher
-Wilson <doug@somethingdoug.com>), EXIT (Copyright (c) 2013 "Cowboy" Ben
-Alman), MKDIRP (Copyright 2010 James Halliday (mail@substack.net)),
-STREAM-COMBINER (Copyright (c) 2012 'Dominic Tarr'), JSHINT (Copyright
-(c) 2002 Douglas Crockford (www.JSLint.com)), HAWK 1.1.1/PARSEURI ((c)
-Steven Levithan <stevenlevithan.com>), ON-FINISHED (Copyright (c) 2013
-Jonathan Ong <me@jongleberry.com> Copyright (c) 2014 Douglas Christopher
-Wilson <doug@somethingdoug.com>), ETAG (Copyright (c) 2014-2015 Douglas
-Christopher Wilson), MERGE-DESCRIPTORS (Copyright (c) 2013 Jonathan Ong
-<me@jongleberry.com> Copyright (c) 2015 Douglas Christopher Wilson
-<doug@somethingdoug.com>), ETRAVERSE/LLVM (Copyright Not Found),
-OBJECT-INSPECT (Copyright (c) 2013 James Halliday),
-SWAGGER-UI/HANDLEBARS (Copyright (C) 2011-2015 by Yehuda Katz),
-FUNCTIONAL [Dojo Toolkit] (Copyright (c) 2007 Oliver Steele),
-TOUGH-COOKIE (Copyright GoInstant Inc. and other contributors. All
-rights reserved.), METHODS (Copyright (c) 2013-2014 TJ Holowaychuk
-<tj@vision-media.ca>Copyright (c) 2015-2016 Douglas Christopher Wilson
-<doug@somethingdoug.com>), FINALHANDLER (Copyright (c) 2014-2015 Douglas
-Christopher Wilson <doug@somethingdoug.com>), UTIL-DEPRECATE (Copyright
-(c) 2014 Nathan Rajlich <nathan@tootallnate.net>), BL (Copyright (c)
-2014 bl contributors), ANSISTYLES (Copyright 2013 Thorsten Lorenz.),
-COOKIEJAR (Copyright (c) 2013 Bradley Meck), EYES (Copyright (c) 2009
-cloudhead), COLORS (Copyright (c) Marak Squires Copyright (c) Sindre
+(https://sindresorhus.com)), PRISMJS [swagger-ui] (Copyright (c) 2012
+Lea Verou), JQUERY V1.9.0 [Apache CXF] ((c) 2005, 2012 jQuery
+Foundation, Inc), DEEPMERGE [swagger-ui] (Copyright (c) 2012 James
+Halliday, Josh Duff, and other contributors), IS-PROMISE [swagger-ui]
+(Copyright (c) 2014 Forbes Lindesay), REACT-COPY-TO-CLIPBOARD
+[swagger-ui] (Copyright (c) 2016 Nik Butenko), SAFE-BUFFER [swagger-ui]
+(Copyright (c) Feross Aboukhadijeh), ES6-ITERATOR [swagger-ui]
+(Copyright (C) 2013-2017 Mariusz Nowak (www.medikoo.com)), WEBAPP
+[Apache CXF] (Copyright 2010, John Resig), REDUX [swagger-ui] (Copyright
+(c) 2015-present Dan Abramov), WEB-STREAMS-POLYFILL [swagger-ui]
+(Copyright (c) 2021 Mattias Buelens Copyright (c) 2016 Diwank Singh
+Tomer), ES5-EXT [swagger-ui] (Copyright (c) 2011-2022, Mariusz Nowak,
+@medikoo, medikoo.com), IS-DOM [swagger-ui] (Copyright (c) 2014),
+UUID.JS [Apache CXF] (Copyright (c) 2010 Robert Kieffer), IS-HEXADECIMAL
+[swagger-ui] (© [Titus Wormer][author]), HAS-SYMBOLS [swagger-ui]
+(Copyright (c) 2016 Jordan Harband), FUNCTION-BIND [swagger-ui]
+(Copyright (c) 2013 Raynos.), XTEND [swagger-ui] (Copyright (c)
+2012-2014 Raynos.), CALL-BIND [swagger-ui] (Copyright (c) 2020 Jordan
+Harband), MONOKAI SUBLIME STYLE [swagger-ui] (No copyright), HANDLEBARS
+[weld] (Copyright (C) 2011-2014 by Yehuda Katz), HAS [swagger-ui]
+(Copyright (c) 2013 Thiago de Arruda), REGENRATOR-RUNTIME [swagger-ui]
+(Copyright (c) 2014-present, Facebook, Inc.), IS-PLAIN-OBJECT
+[swagger-ui] (Copyright (c) 2014-2017, Jon Schlinkert.), MOMENT.JS
+[weld] (Copyright (c) JS Foundation and other contributors),
+CHARACTER-ENTITIES [swagger-ui] (Copyright (c) 2015 Titus Wormer
+<tituswormer@gmail.com>), PARSE-ENTITIES [swagger-ui] (Copyright (c)
+2015 Titus Wormer <mailto:tituswormer@gmail.com>), JQUERY-1.9.0.JS
+[Spring-boot] (Copyright 2005, 2012 jQuery Foundation, Inc. and other
+contributors), FETCH-BLOB [swagger-ui] (Jimmy Wärting
+<https://jimmy.warting.se/opensource> & David Frank */),
+NODE-DOMEXCEPTION [swagger-ui] (Copyright (c) 2021 Jimmy WÃ¤rting),
+@BABEL/RUNTIMEC [swagger-ui] (Copyright (c) 2014-present Sebastian
+McKenzie and other contributors), QUERYSTRINGIFY [swagger-ui] (Copyright
+(c) 2015 Unshift.io, Arnout Kazemier, the Contributors.), JS-TOKENS
+[swagger-ui] (Copyright (c) 2014, 2015, 2016, 2017, 2018 Simon Lydell),
+REACT-SYNTAX-HIGHLIGHTER [swagger-ui] (Copyright (c) 2019 Conor
+Hastings), SIZZLE.JS [Apache CXF] (Copyright 2010, The Dojo Foundation),
+QUERYSTRING [swagger-ui] (Copyright 2012 Irakli Gozalishvili.), DRACULA
+THEME [swagger-ui] (Copyright 2015, @author Éverton Ribeiro
+<nuxlli@gmail.com> @author Zeno Rocha <hi@zenorocha.com>), AUTOLINKER
+[swagger-ui] (Copyright (c) 2014 Gregory Jacobs
+(http://greg-jacobs.com)), CLASSNAMES [swagger-ui] (Copyright (c) 2018
+Jed Watson), LODASH-DEBOUNCE [swagger-ui] (Copyright jQuery Foundation
+and other contributors <https://jquery.org/>), JS-FILE-DOWNLOAD
+[swagger-ui] (Copyright 2017 Kenneth Jiang), REMARKABLE [swagger-ui]
+(Copyright (c) 2014-2016, Jon Schlinkert Copyright (c) 2014 Jon
+Schlinkert, Vitaly Puzrin), TRAVERSE [swagger-ui] (Copyright 2010 James
+Halliday (mail@substack.net)), XREGEXP [weld] (Copyright (c) 2007-2008
+Steven Levithan), IMMUTABLE [swagger-ui] (Copyright (c) 2014-present,
+Facebook, Inc.), NODE-FETCH [swagger-ui] (Copyright (c) 2016 David
+Frank), IS-ALPHABETICAL [swagger-ui] (© [Titus Wormer][author]),
+JQUERY.COOKIES  [SLF4J] (Copyright (c) 2005 - 2010, James Auldridge, All
+rights reserved.), OBJECT-ASSIGN [swagger-ui] (Copyright (c) Sindre
 Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
-SWAGGER-CLIENT/NODE.JS (Copyright Not Found), EXTSPRINTF (Copyright (c)
-2012 Joyent Inc. All rights reserved.), LODASH.KEYS (Copyright 2012-2015
-The Dojo Foundation <http://dojofoundation.org/>), HTTP-ERRORS
-(Copyright (c) 2014 Jonathan Ong me@jongleberry.com), GET-STDIN (?
-[Sindre Sorhus](http://sindresorhus.com)), ISARRAY (Copyright (c) 2013
-Julian Gruber &lt;julian@juliangruber.com&gt;), PKGINFO (Copyright (c)
-2010 Charlie Robbins.), UTIL/LESS [Dojo Toolkit] (Copyright (C)
-2009-2010), LODASH._CREATEASSIGNER (Copyright 2012-2015 The Dojo
-Foundation <http://dojofoundation.org/>), IS-TYPEDARRAY (Required), NCP
-(Copyright (C) 2011 by Charlie McConnell), SUPPORTS-COLOR (Copyright (c)
-Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), MEDIA-TYPER
-(Copyright (c) 2014 Douglas Christopher Wilson), HTTP-SIGNATURE
-(Copyright Joyent Inc. All rights reserved.), ESCAPE-STRING-REGEXP
-(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(sindresorhus.com)), TEMPFILE (? [Sindre
-Sorhus](http://sindresorhus.com)), JSONPOINTER ((c) 2011 Jan Lehnardt
-<jan@apache.org>), VERROR (Copyright (c) 2012 Joyent Inc. All rights
-reserved.), UNDERSCORE (Copyright (c) 2009-2014 Jeremy Ashkenas
-DocumentCloud and Investigative), GENERATE-FUNCTION (Required),
-RANGE-PARSER (Copyright (c) 2012-2014 TJ Holowaychuk <vision-media.ca>),
-ANSICOLORS (Copyright 2013 Thorsten Lorenz.), ES6-SET (Copyright (C)
-2013 Mariusz Nowak (www.medikoo.com)), SWAGGER-UI/RAW (Copyright
-2009-2012 Kris Kowal), ARRAY-FLATTEN (Copyright (c) 2014 Blake Embrey
-(hello@blakeembrey.com)), ES6-ITERATOR (Copyright (C) 2013-2015 Mariusz
-Nowak (www.medikoo.com)), RESOLVE (Copyright Not Found), SERVE-STATIC
-(Copyright (c) 2010 Sencha Inc. Copyright (c) 2011 LearnBoost Copyright
-(c) 2011 TJ Holowaychuk Copyright (c) 2014-2015 Douglas Christopher
-Wilson), EXPRESS (Copyright (c) 2009-2014 TJ Holowaychuk
-<tj@vision-media.ca> Copyright (c) 2013-2014 Roman Shtylman
-<shtylman+expressjs@gmail.com> Copyright (c) 2014-2015 Douglas
-Christopher Wilson <doug@somethingdoug.com>), FUNCTION-BIND (Copyright
-(c) 2013 Raynos.), PRELUDE-LS (Copyright (c) George Zahariev), XTEND
-(Copyright (c) 2012-2014 Raynos.), COMMANDER (Copyright (c) 2011 TJ
-Holowaychuk <tj@vision-media.ca>), NPM-INIT (No copyright found.),
-STRING_DECODER (Copyright Node.js contributors. All rights reserved.
-Copyright Joyent Inc. and other Node contributors. All rights
-reserved.), SWAGGER-CLIENT/REF_SEND.JS (Copyright 2007-2009 Tyler
-Close), PINKIE-PROMISE (Copyright (c) Vsevolod Strukchinsky
-<floatdrop@gmail.com> (github.com/floatdrop)), TYPE-DETECT (Copyright
-(c) 2013 Jake Luer <jake@alogicalparadox.com>
-(http://alogicalparadox.com)), LODASH._GETNATIVE (Copyright 2012-2015
-The Dojo Foundation <http://dojofoundation.org/>), ASSERT-PLUS
-(Copyright (c) 2012 Mark Cavage), DEEP-IS (Copyright (c) 2012 2013
-Thorsten Lorenz <thlorenz@gmx.de>Copyright (c) 2012 James Halliday
-<mail@substack.net>Copyright (c) 2009 Thomas Robinson <280north.com>),
-LODASH._BASECOPY (Copyright 2012-2015 The Dojo Foundation
-<http://dojofoundation.org/>), TAP (Copyright 2009 2010 2011 Isaac Z.
-Schlueter.), STRIP-ANSI (Copyright (c) Sindre Sorhus
-<sindresorhus@gmail.com> (sindresorhus.com)), NODE-UUID (Copyright (c)
-2010-2012 Robert Kieffer), MS (Copyright (c) 2014 Guillermo Rauch
-<rauchg@gmail.com>), DELAYED-STREAM (Copyright (c) 2011 Debuggable
-Limited <felix@debuggable.com>), OPTIONATOR (Copyright (c) George
-Zahariev), PATH-IS-ABSOLUTE (Copyright (c) Sindre Sorhus
-<sindresorhus@gmail.com> (sindresorhus.com)), TEXT-TABLE (Required),
-WRENCH (Copyright (c) 2010 Ryan McGrath), LODASH._BINDCALLBACK
-(Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>),
-TRAVERSE (Copyright 2010 James Halliday (mail@substack.net)), VOW-FS
-(Copyright Not Found), NOPT (Copyright 2009 2010 2011 Isaac Z.
-Schlueter.), IS-MY-JSON-VALID (Copyright (c) 2014 Mathias Buus),
-ISSTREAM (Copyright (c) 2015 Rod Vagg), CHALK (Copyright (c) Sindre
-Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), IS-PROPERTY
-(Copyright (c) 2013 Mikola Lysenko), OBJECT-ASSIGN (Copyright (c) Sindre
-Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), STATUSES (Copyright
-(c) 2014 Jonathan Ong me@jongleberry.com), STRIP-JSON-COMMENTS
-(Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(sindresorhus.com)), ABBREV (Copyright 2009 2010 2011 Isaac Z.
-Schlueter.), PROXY-ADDR (Copyright (c) 2014 Douglas Christopher Wilson),
-UNDERSCORE.STRING (Copyright (c) 2011 Esa-Matti Suuronen
-esa-matti@suuronen.org), STRINGSTREAM (Copyright (c) 2012 Michael Hart
-(michael.hart.au@gmail.com)), RIMRAF (Copyright 2009 2010 2011 Isaac Z.
-Schlueter.), SWAGGER-UI/REF_SEND.JS (Copyright 2007-2009 Tyler Close),
-LEVN (Copyright (c) George Zahariev), LODASH.RESTPARAM (Copyright
-2012-2015 The Dojo Foundation <http://dojofoundation.org/>), UTIL-EXTEND
-(Copyright Joyent; Inc. and other Node contributors), SUPERAGENT
-(Copyright (c) 2014-2016 TJ Holowaychuk <tj@vision-media.ca>),
-ESCAPE-HTML (Copyright (c) 2012-2013 TJ Holowaychuk Copyright (c) 2015
-Andreas Lubbe Copyright (c) 2015 Tiancheng "Timothy" Gu),
-LODASH._ISITERATEECALL (Copyright 2012-2015 The Dojo Foundation
-<http://dojofoundation.org/>), LODASH._BASEASSIGN (Copyright 2012-2015
-The Dojo Foundation <http://dojofoundation.org/>), WCWIDTH (Copyright
-(C) 2012 by Jun Woong.), TYPE-CHECK (Copyright (c) George Zahariev),
-MIME-DB (Copyright (c) 2014 Jonathan Ong me@jongleberry.com), JODID25519
-(Copyright (c) 2012 Ron Garret Copyright (c) 2007 2013 2014 Michele Bini
-Copyright (c) 2014 Mega Limited), USER-HOME (Copyright (c) Sindre Sorhus
-<sindresorhus@gmail.com> (sindresorhus.com)), DEEP-EQUAL (Required),
-LODASH-COMPAT (Copyright 2012-2016 The Dojo Foundation
-<http://dojofoundation.org/>), RETRY (Copyright (c) 2011: Tim Kosch?tzki
-(tim@debuggable.com) Felix Geisend?rfer (felix@debuggable.com)),
-CLI-TABLE (Copyright (c) 2010 LearnBoost &lt;dev@learnboost.com&gt;),
-VOW (Copyright (c) 2012 Dmitry Filatov), DEBUG (Copyright (c) 2014 TJ
-Holowaychuk &lt;tj@vision-media.ca&gt;), ECC-JSBN (Copyright (c) 2014
-Jeremie Miller * Copyright (c) 2003-2005 Tom Wu), SWAGGER-CLIENT/RAW
-(Copyright 2009-2012 Kris Kowal), CORE-UTIL-IS (Copyright Node.js
-contributors. All rights reserved.), JSON-SCHEMA/SITEPEN (Copyright (c)
-2007 Kris Zyp SitePen (www.sitepen.com)), ARGPARSE (Copyright (C) 2012
-by Vitaly Puzrin), YAMLISH/YAML (Copyright (C) 2012 Red Hat, Inc.),
-LODASH.ISARRAY (Copyright 2012-2015 The Dojo Foundation
-<http://dojofoundation.org/>), ASYNC (Copyright (c) 2010-2014 Caolan
-McMahon), XMLBUILDER (Copyright (c) 2013 Ozgur Ozcitak), CLONE
-(Copyright © 2011-2014 Paul Vorbach <paul@vorba.ch>), CONCAT-MAP
-(Required), COOKIE-SIGNATURE (Copyright (c) 2012 LearnBoost
-&lt;tj@learnboost.com&gt;), AWS4 (Copyright 2013 Michael Hart
-(michael.hart.au@gmail.com)), EVENT-EMITTER (Copyright (C) 2012-2015
-Mariusz Nowak (www.medikoo.com)), FRESH (Copyright (c) 2012 TJ
-Holowaychuk <tj@vision-media.ca>), PROMPT (Copyright (c) 2010 Nodejitsu
-Inc.)
+CHARACTER-REFERENCE-INVALID [swagger-ui] (Copyright (c) 2015 Titus
+Wormer <tituswormer@gmail.com>), REACT-IMMUTABLE-PROPTYPES [swagger-ui]
+(Copyright (c) 2015 James Burnett), NORD-HIGHLIGHT [swagger-ui]
+(Copyright (c) 2017-present Arctic Ice Studio
+<development@arcticicestudio.com> * Copyright (c) 2017-present Sven Greb
+<development@svengreb.de> *), MEMOIZEE [swagger-ui] (No copyright),
+PARSE-INSIGHT [swagger-ui] (© [Titus Wormer][author]), JQUERY [SLF4J]
+(Copyright (c) 2005, 2014 jQuery Foundation, Inc.), CORE-JS [swagger-ui]
+(copyright:"Â© 2014-2022 Denis Pushkarev), SLF4J-API (Copyright (c)
+2004-2011 QOS.ch), WHATWG-URL [swagger-ui] (Copyright (c) 2015â€“2016
+Sebastian Mayr), PROP-TYPES [swagger-ui] (Copyright (c) 2013-present,
+Facebook, Inc.), BASE64-JS [swagger-ui] (Copyright (c) 2014 Jameson
+Little), @BRAINTREE/SANITIZE-URL [swagger-ui] (Copyright (c) 2017
+Braintree), COPY-TO-CLIPBOARD [swagger-ui] (Copyright (c) 2017 sudodoki
+<smd.deluzion@gmail.com>), LRU-QUEUE [swagger-ui] (Copyright (C) 2014
+Mariusz Nowak (www.medikoo.com)), SHA.JS [swagger-ui] (Copyright (c)
+2013-2018 sha.js contributors), FAST-JSON-PATCH [swagger-ui] (Copyright
+(c) 2013, 2014, 2020 Joachim Wester), FAULT [swagger-ui] (Copyright (c)
+2015 Titus Wormer <tituswormer@gmail.com>), FORMDATA-NODE [swagger-ui]
+(Copyright (c) 2017-present Nick K.), ARGPARSE [swagger-ui] (Copyright
+(C) 2012 by Vitaly Puzrin), JS-YAML [swagger-ui] (Copyright (C)
+2011-2015 by Vitaly Puzrin), RUBY [Apache CXF] (Copyright (c) 2005-2006
+David Heinemeier Hansson), IS-DECIMAL [swagger-ui] (© [Titus
+Wormer][author]), UNDERSCORE.JS [swagger-ui] (copyright Jeremy Ashkenas,
+DocumentCloud and Investigative Reporters & Editors
+<http://underscorejs.org/>), RANDOMBYTES [swagger-ui] (Copyright (c)
+2017 crypto-browserify), IS-OBJECT [swagger-ui] (Copyright (c) 2013
+Colingo.), TEST/HTTP/URL.JS [swagger-ui] (Copyright (c) 2002-2008 Kris
+Kowal <http://cixar.com/~kris.kowal>), SHBRUSHJAVA.JS [Jandex]
+(Copyright (C) 2004-2010 Alex Gorbatchev), RESELECT [swagger-ui]
+(Copyright (c) 2015-2018 Reselect Contributors), HANDLEBARS-V2.0.0.JS
+[weld] (Copyright (C) 2011-2014 by Yehuda Katz), SL4J [Apache CXF]
+(Copyright (c) 2004-2007 QOS.ch), EVENT-EMITTER [swagger-ui] (Copyright
+(C) 2012-2015 Mariusz Nowak (www.medikoo.com))
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -1526,313 +1112,801 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF MIT LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-MIT-EQUIVALENT
-
-The Program includes some or all of the following that IBM obtained
-under a MIT-EQUIVALENT license:
-
-ecc-jsbn/jsbn (Copyright (c) 2003-2005 Tom Wu)
-jsbn (Copyright (c) 2003-2005 Tom Wu)
-
-Licensing
----------
-
-This software is covered under the following copyright:
-
-/*
- * Copyright (c) 2003-2005  Tom Wu
- * All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
- *
- * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-* INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES
-WHATSOEVER
-* RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER OR NOT ADVISED OF
-* THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF LIABILITY, ARISING OUT
- * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *
- * In addition, the following condition applies:
- *
-* All redistributions must retain an intact copy of this copyright
-notice
- * and disclaimer.
- */
-
-Address all questions regarding this license to:
-
-  Tom Wu
-  tjw@cs.Stanford.EDU
-
-
-optimist (Copyright 2010 James Halliday (mail@substack.net))
-
-Copyright 2010 James Halliday (mail@substack.net)
-
-This project is free software released under the MIT/X11 license:
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy
-of this software and associated documentation files (the "Software"), to
-deal
-in the Software without restriction, including without limitation the
-rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN
-THE SOFTWARE.
-
-
-traverse (Copyright 2010 James Halliday (mail@substack.net))
-
-Copyright 2010 James Halliday (mail@substack.net)
-
-This project is free software released under the MIT/X11 license:
-http://www.opensource.org/licenses/mit-license.php
-
-Copyright 2010 James Halliday (mail@substack.net)
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy
-of this software and associated documentation files (the "Software"), to
-deal
-in the Software without restriction, including without limitation the
-rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN
-THE SOFTWARE.
-
-
-wordwrap -  (No Copyright)
-yamlish/TAP (Copyright (C) 2007, Andy Armstrong)
-
-Copyright (C) 1996 X Consortium
-
-Permission is hereby granted, free of charge, to any person obtaining 
-a copy of this software and associated documentation files (the "Software"), 
-to deal in the Software without restriction, including without limitation the 
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
-sell copies of the Software, and to permit persons to whom the Software is 
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in 
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN 
-AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of the X Consortium shall not be 
-used in advertising or otherwise to promote the sale, use or other dealings in 
-this Software without prior written authorization from the X Consortium.
-
-wsat [SAAJ-impl] ((c) 2001-2005 Arjuna Technologies Ltd., BEA Systems, 
-Hitachi Ltd., International Business Machines Corporation, IONA Technologies, 
-Microsoft Corporation, Inc. All rights reserved.)
-
-Permission to copy and display the “Web Services Atomic Transaction” Specification
-(the “Specification”, which includes WSDL and schema documents), in any medium
-without fee or royalty is hereby granted, provided that you include the following on
-ALL copies of the “Web Services Atomic Transaction” Specification that you make:
-1. A link or URL to the “Web Services Atomic Transaction” Specification at
-one of the Authors’ websites
-2. The copyright notice as shown in the “Web Services Atomic Transaction”
-Specification.
-Arjuna, BEA, Hitachi, IBM, IONA and Microsoft (collectively, the “Authors”) each
-agree to grant you a license, under royalty-free and otherwise reasonable, non-
-discriminatory terms and conditions, to their respective essential patent claims that
-they deem necessary to implement the “Web Services Atomic Transaction”
-Specification.
-THE “WEB SERVICES ATOMIC TRANSACTION” SPECIFICATION IS PROVIDED "AS IS,"
-AND THE AUTHORS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE
-CONTENTS OF THE “WEB SERVICES ATOMIC TRANSACTION” SPECIFICATION ARE
-SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH
-CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS,
-TRADEMARKS OR OTHER RIGHTS.
-THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL,
-INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY
-USE OR DISTRIBUTION OF THE “WEB SERVICES ATOMIC TRANSACTION”
-SPECIFICATION.
-The name and trademarks of the Authors may NOT be used in any manner, including
-advertising or publicity pertaining to the “Web Services Atomic Transaction”
-Specification or its contents without specific, written prior permission. Title to
-copyright in the “Web Services Atomic Transaction” Specification will at all times
-remain with the Authors.
-No other rights are granted by implication, estoppel or otherwise
-
-
-wsrm [SAAJ-impl] ((c) 2002-2005 BEA Systems, IBM, Microsoft Corporation, 
-Inc, and TIBCO Software Inc.. All rights reserved.)
-
-Permission to copy and display the Web Services Reliable Messaging
-Protocol
-Specification (the 'Specification', which includes WSDL and schema
-documents),
-in any medium without fee or royalty is hereby granted, provided that
-you
-include the following on ALL copies of the Specification that you make:
-
-1. A link or URL to the Specification at one of the Authors' websites
-2. The copyright notice as shown in the Specification.
-
-BEA Systems, IBM, Microsoft and TIBCO Software (collectively, the
-'Authors')
-each agree to grant you a license, under royalty-free and otherwise
-reasonable,
-non-discriminatory terms and conditions, to their respective essential
-patent
-claims that they deem necessary to implement the Specification.
-
-THE SPECIFICATION IS PROVIDED "AS IS," AND THE AUTHORS MAKE NO
-REPRESENTATIONS
-OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
-WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT,
-OR
-TITLE; THAT THE CONTENTS OF THE SPECIFICATION ARE SUITABLE FOR ANY
-PURPOSE;
-NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD
-PARTY
-PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
-
-THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL,
-INCIDENTAL OR
-CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR
-DISTRIBUTION OF
-THE SPECIFICATION.
-
-The name and trademarks of the Authors may NOT be used in any manner,
-including
-advertising or publicity pertaining to the Specification or its contents
-without specific, written prior permission. Title to copyright in the
-Specification will at all times remain with the Authors.
-
-No other rights are granted by implication, estoppel or otherwise.
-
-
-END OF MIT-EQUIVALENT NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-MOZILLA PUBLIC LICENSE, VERSION 1.0
-
-The Program includes some or all of the following that IBM obtained 
-under the Mozilla Public License, Version 1.0 (source code available via 
-the indicated URL): 
-
-CLDR/LIB/MPL [Dojo Toolkit] (http://www.mozilla.org/MPL/)
-
-END OF MOZILLA PUBLIC LICENSE, VERSION 1.0 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-MOZILLA PUBLIC LICENSE, VERSION 1.1
-
-The Program includes some or all of the following that IBM obtained 
-under the Mozilla Public License, Version 1.1 (source code available via 
-the indicated URL): 
-
-TOUGH-COOKIE/PUBLIC-SUFFIX.TXT (http://www.mozilla.org/MPL/), MOZILLA
-RHINO [Dojo Toolkit] (http://www.mozilla.org/MPL)
-
-END OF MOZILLA PUBLIC LICENSE, VERSION 1.1 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 MOZILLA PUBLIC LICENSE, VERSION 2.0
 
 The Program includes some or all of the following that IBM obtained 
 under the Mozilla Public License, Version 2.0 (source code available via 
 the indicated URL): 
 
-RHINO/HEAD [Dojo Toolkit] (http://mozilla.org/MPL/2.0/.),
-TOUGH-COOKIE/PUBLIC_SUFFIX_LIST.DAT (http://mozilla.org/MPL/2.0/)
+PUBLIC SUFFIX LIST [Apache CXF]
+(https://publicsuffix.org/list/effective_tld_names.dat), TRANSPORT
+[Apache CXF] (https://github.com/apache/cxf/tree/cxf-3.2.0)
 
 END OF MOZILLA PUBLIC LICENSE, VERSION 2.0 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-UNICODE
+PYTHON SOFTWARE FOUNDATION LICENSE
 
-The Program includes some or all of the following works licensed under
-the UNICODE
+The Program includes some or all of the following that IBM
+obtained under the Python Software Foundation License:
 
-UNICODE-LICENSE DFS-2015 [Dojo Toolkit] (Not Required)
+ARGPARSE [swagger-ui]
 
-END OF UNICODE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+A. HISTORY OF THE SOFTWARE
+==========================
 
-OTHER KNOWN LICENSE
+Python was created in the early 1990s by Guido van Rossum at Stichting
+Mathematisch Centrum (CWI, see http://www.cwi.nl) in the Netherlands
+as a successor of a language called ABC.  Guido remains Python's
+principal author, although it includes many contributions from others.
 
-The Program includes some or all of the following that IBM obtained
-under a OTHER KNOWN LICENSE license:
+In 1995, Guido continued his work on Python at the Corporation for
+National Research Initiatives (CNRI, see http://www.cnri.reston.va.us)
+in Reston, Virginia where he released several versions of the
+software.
+
+In May 2000, Guido and the Python core development team moved to
+BeOpen.com to form the BeOpen PythonLabs team.  In October of the same
+year, the PythonLabs team moved to Digital Creations (now Zope
+Corporation, see http://www.zope.com).  In 2001, the Python Software
+Foundation (PSF, see http://www.python.org/psf/) was formed, a
+non-profit organization created specifically to own Python-related
+Intellectual Property.  Zope Corporation is a sponsoring member of
+the PSF.
+
+All Python releases are Open Source (see http://www.opensource.org for
+the Open Source Definition).  Historically, most, but not all, Python
+releases have also been GPL-compatible; the table below summarizes
+the various releases.
+
+    Release         Derived     Year        Owner       GPL-
+                    from                                compatible? (1)
+
+    0.9.0 thru 1.2              1991-1995   CWI         yes
+    1.3 thru 1.5.2  1.2         1995-1999   CNRI        yes
+    1.6             1.5.2       2000        CNRI        no
+    2.0             1.6         2000        BeOpen.com  no
+    1.6.1           1.6         2001        CNRI        yes (2)
+    2.1             2.0+1.6.1   2001        PSF         no
+    2.0.1           2.0+1.6.1   2001        PSF         yes
+    2.1.1           2.1+2.0.1   2001        PSF         yes
+    2.2             2.1.1       2001        PSF         yes
+    2.1.2           2.1.1       2002        PSF         yes
+    2.1.3           2.1.2       2002        PSF         yes
+    2.2.1           2.2         2002        PSF         yes
+    2.2.2           2.2.1       2002        PSF         yes
+    2.2.3           2.2.2       2003        PSF         yes
+    2.3             2.2.2       2002-2003   PSF         yes
+    2.3.1           2.3         2002-2003   PSF         yes
+    2.3.2           2.3.1       2002-2003   PSF         yes
+    2.3.3           2.3.2       2002-2003   PSF         yes
+    2.3.4           2.3.3       2004        PSF         yes
+    2.3.5           2.3.4       2005        PSF         yes
+    2.4             2.3         2004        PSF         yes
+    2.4.1           2.4         2005        PSF         yes
+    2.4.2           2.4.1       2005        PSF         yes
+    2.4.3           2.4.2       2006        PSF         yes
+    2.4.4           2.4.3       2006        PSF         yes
+    2.5             2.4         2006        PSF         yes
+    2.5.1           2.5         2007        PSF         yes
+    2.5.2           2.5.1       2008        PSF         yes
+    2.5.3           2.5.2       2008        PSF         yes
+    2.6             2.5         2008        PSF         yes
+    2.6.1           2.6         2008        PSF         yes
+    2.6.2           2.6.1       2009        PSF         yes
+    2.6.3           2.6.2       2009        PSF         yes
+    2.6.4           2.6.3       2009        PSF         yes
+    2.6.5           2.6.4       2010        PSF         yes
+    2.7             2.6         2010        PSF         yes
+
+Footnotes:
+
+(1) GPL-compatible doesn't mean that we're distributing Python under
+    the GPL.  All Python licenses, unlike the GPL, let you distribute
+    a modified version without making your changes open source.  The
+    GPL-compatible licenses make it possible to combine Python with
+    other software that is released under the GPL; the others don't.
+
+(2) According to Richard Stallman, 1.6.1 is not GPL-compatible,
+    because its license has a choice of law clause.  According to
+    CNRI, however, Stallman's lawyer has told CNRI's lawyer that 1.6.1
+    is "not incompatible" with the GPL.
+
+Thanks to the many outside volunteers who have worked under Guido's
+direction to make these releases possible.
 
 
-opener
-sorted-object
+B. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING PYTHON
+===============================================================
 
-  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                    Version 2, December 2004
+PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+--------------------------------------------
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+1. This LICENSE AGREEMENT is between the Python Software Foundation
+("PSF"), and the Individual or Organization ("Licensee") accessing and
+otherwise using this software ("Python") in source or binary form and
+its associated documentation.
 
- Everyone is permitted to copy and distribute verbatim or modified
- copies of this license document, and changing it is allowed as long
- as the name is changed.
+2. Subject to the terms and conditions of this License Agreement, PSF hereby
+grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
+analyze, test, perform and/or display publicly, prepare derivative works,
+distribute, and otherwise use Python alone or in any derivative version,
+provided, however, that PSF's License Agreement and PSF's notice of copyright,
+i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+2011, 2012 Python Software Foundation; All Rights Reserved" are retained in Python
+alone or in any derivative version prepared by Licensee.
 
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+3. In the event Licensee prepares a derivative work that is based on
+or incorporates Python or any part thereof, and wants to make
+the derivative work available to others as provided herein, then
+Licensee hereby agrees to include in any such work a brief summary of
+the changes made to Python.
 
-  0. You just DO WHAT THE FUCK YOU WANT TO.
+4. PSF is making Python available to Licensee on an "AS IS"
+basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
 
-END OF OTHER KNOWN LICENSE NOTICES AND INFORMATION
+5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON,
+OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+7. Nothing in this License Agreement shall be deemed to create any
+relationship of agency, partnership, or joint venture between PSF and
+Licensee.  This License Agreement does not grant permission to use PSF
+trademarks or trade name in a trademark sense to endorse or promote
+products or services of Licensee, or any third party.
+
+8. By copying, installing or otherwise using Python, Licensee
+agrees to be bound by the terms and conditions of this License
+Agreement.
+
+
+BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0
+-------------------------------------------
+
+BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
+
+1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
+office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
+Individual or Organization ("Licensee") accessing and otherwise using
+this software in source or binary form and its associated
+documentation ("the Software").
+
+2. Subject to the terms and conditions of this BeOpen Python License
+Agreement, BeOpen hereby grants Licensee a non-exclusive,
+royalty-free, world-wide license to reproduce, analyze, test, perform
+and/or display publicly, prepare derivative works, distribute, and
+otherwise use the Software alone or in any derivative version,
+provided, however, that the BeOpen Python License is retained in the
+Software, alone or in any derivative version prepared by Licensee.
+
+3. BeOpen is making the Software available to Licensee on an "AS IS"
+basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
+
+4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
+SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
+AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY
+DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+5. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+6. This License Agreement shall be governed by and interpreted in all
+respects by the law of the State of California, excluding conflict of
+law provisions.  Nothing in this License Agreement shall be deemed to
+create any relationship of agency, partnership, or joint venture
+between BeOpen and Licensee.  This License Agreement does not grant
+permission to use BeOpen trademarks or trade names in a trademark
+sense to endorse or promote products or services of Licensee, or any
+third party.  As an exception, the "BeOpen Python" logos available at
+http://www.pythonlabs.com/logos.html may be used according to the
+permissions granted on that web page.
+
+7. By copying, installing or otherwise using the software, Licensee
+agrees to be bound by the terms and conditions of this License
+Agreement.
+
+
+CNRI LICENSE AGREEMENT FOR PYTHON 1.6.1
+---------------------------------------
+
+1. This LICENSE AGREEMENT is between the Corporation for National
+Research Initiatives, having an office at 1895 Preston White Drive,
+Reston, VA 20191 ("CNRI"), and the Individual or Organization
+("Licensee") accessing and otherwise using Python 1.6.1 software in
+source or binary form and its associated documentation.
+
+2. Subject to the terms and conditions of this License Agreement, CNRI
+hereby grants Licensee a nonexclusive, royalty-free, world-wide
+license to reproduce, analyze, test, perform and/or display publicly,
+prepare derivative works, distribute, and otherwise use Python 1.6.1
+alone or in any derivative version, provided, however, that CNRI's
+License Agreement and CNRI's notice of copyright, i.e., "Copyright (c)
+1995-2001 Corporation for National Research Initiatives; All Rights
+Reserved" are retained in Python 1.6.1 alone or in any derivative
+version prepared by Licensee.  Alternately, in lieu of CNRI's License
+Agreement, Licensee may substitute the following text (omitting the
+quotes): "Python 1.6.1 is made available subject to the terms and
+conditions in CNRI's License Agreement.  This Agreement together with
+Python 1.6.1 may be located on the Internet using the following
+unique, persistent identifier (known as a handle): 1895.22/1013.  This
+Agreement may also be obtained from a proxy server on the Internet
+using the following URL: http://hdl.handle.net/1895.22/1013".
+
+3. In the event Licensee prepares a derivative work that is based on
+or incorporates Python 1.6.1 or any part thereof, and wants to make
+the derivative work available to others as provided herein, then
+Licensee hereby agrees to include in any such work a brief summary of
+the changes made to Python 1.6.1.
+
+4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
+basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1 WILL NOT
+INFRINGE ANY THIRD PARTY RIGHTS.
+
+5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 1.6.1,
+OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+7. This License Agreement shall be governed by the federal
+intellectual property law of the United States, including without
+limitation the federal copyright law, and, to the extent such
+U.S. federal law does not apply, by the law of the Commonwealth of
+Virginia, excluding Virginia's conflict of law provisions.
+Notwithstanding the foregoing, with regard to derivative works based
+on Python 1.6.1 that incorporate non-separable material that was
+previously distributed under the GNU General Public License (GPL), the
+law of the Commonwealth of Virginia shall govern this License
+Agreement only as to issues arising under or with respect to
+Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in this
+License Agreement shall be deemed to create any relationship of
+agency, partnership, or joint venture between CNRI and Licensee.  This
+License Agreement does not grant permission to use CNRI trademarks or
+trade name in a trademark sense to endorse or promote products or
+services of Licensee, or any third party.
+
+8. By clicking on the "ACCEPT" button where indicated, or by copying,
+installing or otherwise using Python 1.6.1, Licensee agrees to be
+bound by the terms and conditions of this License Agreement.
+
+        ACCEPT
+
+
+CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2
+--------------------------------------------------
+
+Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
+The Netherlands.  All rights reserved.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the name of Stichting Mathematisch
+Centrum or CWI not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+Additional Conditions for this Windows binary build
+---------------------------------------------------
+
+This program is linked with and uses Microsoft Distributable Code,
+copyrighted by Microsoft Corporation. The Microsoft Distributable Code
+includes the following files:
+
+msvcr90.dll
+msvcp90.dll
+msvcm90.dll
+
+If you further distribute programs that include the Microsoft
+Distributable Code, you must comply with the restrictions on
+distribution specified by Microsoft. In particular, you must require
+distributors and external end users to agree to terms that protect the
+Microsoft Distributable Code at least as much as Microsoft's own
+requirements for the Distributable Code. See Microsoft's documentation
+(included in its developer tools and on its website at microsoft.com)
+for specific details.
+
+Redistribution of the Windows binary build of the Python interpreter
+complies with this agreement, provided that you do not:
+
+- alter any copyright, trademark or patent notice in Microsoft's
+Distributable Code;
+
+- use Microsoft's trademarks in your programs' names or in a way that
+suggests your programs come from or are endorsed by Microsoft;
+
+- distribute Microsoft's Distributable Code to run on a platform other
+than Microsoft operating systems, run-time technologies or application
+platforms; or
+
+- include Microsoft Distributable Code in malicious, deceptive or
+unlawful programs.
+
+These restrictions apply only to the Microsoft Distributable Code as
+defined above, not to Python itself or any programs running on the
+Python interpreter. The redistribution of the Python interpreter and
+libraries is governed by the Python Software License included with this
+file, or by other licenses as marked.
+
+
+This copy of Python includes a copy of bzip2, which is licensed under the following terms:
+
+
+--------------------------------------------------------------------------
+
+This program, "bzip2", the associated library "libbzip2", and all
+documentation, are copyright (C) 1996-2007 Julian R Seward.  All
+rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. The origin of this software must not be misrepresented; you must 
+   not claim that you wrote the original software.  If you use this 
+   software in a product, an acknowledgment in the product 
+   documentation would be appreciated but is not required.
+
+3. Altered source versions must be plainly marked as such, and must
+   not be misrepresented as being the original software.
+
+4. The name of the author may not be used to endorse or promote 
+   products derived from this software without specific prior written 
+   permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Julian Seward, jseward@bzip.org
+bzip2/libbzip2 version 1.0.5 of 10 December 2007
+
+--------------------------------------------------------------------------
+
+This copy of Python includes a copy of Berkeley DB, which is licensed under the following terms:
+
+/*-
+ * $Id: LICENSE,v 12.9 2008/02/07 17:12:17 mark Exp $
+ */
+
+The following is the license that applies to this copy of the Berkeley DB
+software.  For a license to use the Berkeley DB software under conditions
+other than those described here, or to purchase support for this software,
+please contact Oracle at berkeleydb-info_us@oracle.com.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+/*
+ * Copyright (c) 1990,2008 Oracle.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Redistributions in any form must be accompanied by information on
+ *    how to obtain complete source code for the DB software and any
+ *    accompanying software that uses the DB software.  The source code
+ *    must either be included in the distribution or be available for no
+ *    more than the cost of distribution plus a nominal fee, and must be
+ *    freely redistributable under reasonable conditions.  For an
+ *    executable file, complete source code means the source code for all
+ *    modules it contains.  It does not include source code for modules or
+ *    files that typically accompany the major components of the operating
+ *    system on which the executable file runs.
+ *
+ * THIS SOFTWARE IS PROVIDED BY ORACLE ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+ * NON-INFRINGEMENT, ARE DISCLAIMED.  IN NO EVENT SHALL ORACLE BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+ * Copyright (c) 1990, 1993, 1994, 1995
+ * The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+/*
+ * Copyright (c) 1995, 1996
+ * The President and Fellows of Harvard University.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY HARVARD AND ITS CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL HARVARD OR ITS CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+/***
+ * ASM: a very small and fast Java bytecode manipulation framework
+ * Copyright (c) 2000-2005 INRIA, France Telecom
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+This copy of Python includes a copy of openssl, which is licensed under the following terms:
+
+
+  LICENSE ISSUES
+  ==============
+
+  The OpenSSL toolkit stays under a dual license, i.e. both the conditions of
+  the OpenSSL License and the original SSLeay license apply to the toolkit.
+  See below for the actual license texts. Actually both licenses are BSD-style
+  Open Source licenses. In case of any license issues related to OpenSSL
+  please contact openssl-core@openssl.org.
+
+  OpenSSL License
+  ---------------
+
+/* ====================================================================
+ * Copyright (c) 1998-2008 The OpenSSL Project.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit. (http://www.openssl.org/)"
+ *
+ * 4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    openssl-core@openssl.org.
+ *
+ * 5. Products derived from this software may not be called "OpenSSL"
+ *    nor may "OpenSSL" appear in their names without prior written
+ *    permission of the OpenSSL Project.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit (http://www.openssl.org/)"
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This product includes cryptographic software written by Eric Young
+ * (eay@cryptsoft.com).  This product includes software written by Tim
+ * Hudson (tjh@cryptsoft.com).
+ *
+ */
+
+ Original SSLeay License
+ -----------------------
+
+/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
+ * All rights reserved.
+ *
+ * This package is an SSL implementation written
+ * by Eric Young (eay@cryptsoft.com).
+ * The implementation was written so as to conform with Netscapes SSL.
+ * 
+ * This library is free for commercial and non-commercial use as long as
+ * the following conditions are aheared to.  The following conditions
+ * apply to all code found in this distribution, be it the RC4, RSA,
+ * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
+ * included with this distribution is covered by the same copyright terms
+ * except that the holder is Tim Hudson (tjh@cryptsoft.com).
+ * 
+ * Copyright remains Eric Young's, and as such any Copyright notices in
+ * the code are not to be removed.
+ * If this package is used in a product, Eric Young should be given attribution
+ * as the author of the parts of the library used.
+ * This can be in the form of a textual message at program startup or
+ * in documentation (online or textual) provided with the package.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    "This product includes cryptographic software written by
+ *     Eric Young (eay@cryptsoft.com)"
+ *    The word 'cryptographic' can be left out if the rouines from the library
+ *    being used are not cryptographic related :-).
+ * 4. If you include any Windows specific code (or a derivative thereof) from 
+ *    the apps directory (application code) you must include an acknowledgement:
+ *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
+ * 
+ * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * 
+ * The licence and distribution terms for any publically available version or
+ * derivative of this code cannot be changed.  i.e. this code cannot simply be
+ * copied and put under another distribution licence
+ * [including the GNU Public Licence.]
+ */
+
+
+This copy of Python includes a copy of Tcl, which is licensed under the following terms:
+
+This software is copyrighted by the Regents of the University of
+California, Sun Microsystems, Inc., Scriptics Corporation, ActiveState
+Corporation and other parties.  The following terms apply to all files
+associated with the software unless explicitly disclaimed in
+individual files.
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
+DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
+IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+MODIFICATIONS.
+
+GOVERNMENT USE: If you are acquiring this software on behalf of the
+U.S. government, the Government shall have only "Restricted Rights"
+in the software and related documentation as defined in the Federal 
+Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
+are acquiring the software on behalf of the Department of Defense, the
+software shall be classified as "Commercial Computer Software" and the
+Government shall have only "Restricted Rights" as defined in Clause
+252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
+authors grant the U.S. Government and others acting in its behalf
+permission to use and distribute the software in accordance with the
+terms specified in this license. 
+
+This copy of Python includes a copy of Tk, which is licensed under the following terms:
+
+This software is copyrighted by the Regents of the University of
+California, Sun Microsystems, Inc., and other parties.  The following
+terms apply to all files associated with the software unless explicitly
+disclaimed in individual files.
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
+DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
+IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+MODIFICATIONS.
+
+GOVERNMENT USE: If you are acquiring this software on behalf of the
+U.S. government, the Government shall have only "Restricted Rights"
+in the software and related documentation as defined in the Federal 
+Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
+are acquiring the software on behalf of the Department of Defense, the
+software shall be classified as "Commercial Computer Software" and the
+Government shall have only "Restricted Rights" as defined in Clause
+252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
+authors grant the U.S. Government and others acting in its behalf
+permission to use and distribute the software in accordance with the
+terms specified in this license.
+
+This copy of Python includes a copy of Tix, which is licensed under the following terms:
+
+Copyright (c) 1993-1999 Ioi Kim Lam.
+Copyright (c) 2000-2001 Tix Project Group.
+Copyright (c) 2004 ActiveState
+
+This software is copyrighted by the above entities
+and other parties.  The following terms apply to all files associated
+with the software unless explicitly disclaimed in individual files.
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
+DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
+IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+MODIFICATIONS.
+
+GOVERNMENT USE: If you are acquiring this software on behalf of the
+U.S. government, the Government shall have only "Restricted Rights"
+in the software and related documentation as defined in the Federal 
+Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
+are acquiring the software on behalf of the Department of Defense, the
+software shall be classified as "Commercial Computer Software" and the
+Government shall have only "Restricted Rights" as defined in Clause
+252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
+authors grant the U.S. Government and others acting in its behalf
+permission to use and distribute the software in accordance with the
+terms specified in this license. 
+
+----------------------------------------------------------------------
+
+Parts of this software are based on the Tcl/Tk software copyrighted by
+the Regents of the University of California, Sun Microsystems, Inc.,
+and other parties. The original license terms of the Tcl/Tk software
+distribution is included in the file docs/license.tcltk.
+
+Parts of this software are based on the HTML Library software
+copyrighted by Sun Microsystems, Inc. The original license terms of
+the HTML Library software distribution is included in the file
+docs/license.html_lib.
+
+END OF PYTHON LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 W3C SOFTWARE LICENSE
@@ -1840,7 +1914,11 @@ W3C SOFTWARE LICENSE
 The Program includes some or all of the following that IBM obtained
 under the W3C Software Notice and License:
 
-WS-ADDR.WSD [SAAJ-impl], ADDRESSING.XML [SAAJ-impl]
+XPATH [serializer], WS-ADDR-WSDL.XSD [Apache CXF], W3C XML SCHEMA
+[OpenWS], SOAP-ENVELOPE [OpenWS], XML SCHEMA [xmlsec], SOAP ENVELOPE
+[OpenWS], XMLSCHEMA [Apache CXF], DOM3 [Xerces-impl], WSSECURITY
+[OpenWS], XPATHSTYLESHEETDOM3EXCEPTION. [serializer], XENC-SCHEMA
+[Apache CXF]
 
 W3C® SOFTWARE NOTICE AND LICENSE
 
@@ -1901,5 +1979,84 @@ END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 END OF NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF NOTICES AND INFORMATION FILE
+THE REMAINDER OF THIS OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES FILE CONSISTS OF THE FOLLOWING 
+SECTIONS:
+
+TABLE OF CONTENTS
+CC-BY-SA-4.0  
+SIL OPEN FONT LICENSE 1.1  
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+NNFX [swagger-ui] (No copyright)
+(http://registry.npmjs.org/swagger-ui/-/swagger-ui-4.3.0.tgz),
+KIMBIE-HIGHTLIGHT.JS [swagger-ui] (No Copyright)
+(https://github.com/idleberg/Kimbie-highlight.js)
+
+END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NON-IBM-LICENSE INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SIL OPEN FONT LICENSE 1.1
+
+The Program includes some or all of the following works licensed under
+the SIL OPEN FONT LICENSE 1.1
+
+FONT AWESOME [weld], FONT-AWESOME [weld]
+
+
+
+SIL OPEN FONT LICENSE
+
+Version 1.1 - 26 February 2007
+
+PREAMBLE
+
+The goals of the Open Font License (OFL) are to stimulate worldwide development of collaborative font projects, to support the font creation efforts of academic and linguistic communities, and to provide a free and open framework in which fonts may be shared and improved in partnership with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves. The fonts, including any derivative works, can be bundled, embedded, redistributed and/or sold with any software provided that any reserved names are not used by derivative works. The fonts and derivatives, however, cannot be released under any other type of license. The requirement for fonts to remain under this license does not apply to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+
+"Font Software" refers to the set of files released by the Copyright Holder(s) under this license and clearly marked as such. This may include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting, or substituting — in part or in whole — any of the components of the Original Version, by changing formats or by porting the Font Software to a new environment.
+
+"Author" refers to any designer, engineer, programmer, technical writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of the Font Software, to use, study, copy, merge, embed, modify, redistribute, and sell modified and unmodified copies of the Font Software, subject to the following conditions:
+
+    1) Neither the Font Software nor any of its individual components, in Original or Modified Versions, may be sold by itself.
+    2) Original or Modified Versions of the Font Software may be bundled, redistributed and/or sold with any software, provided that each copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
+    3) No Modified Version of the Font Software may use the Reserved Font Name(s) unless explicit written permission is granted by the corresponding Copyright Holder. This restriction only applies to the primary font name as presented to the users.
+    4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font Software shall not be used to promote, endorse or advertise any Modified Version, except to acknowledge the contribution(s) of the Copyright Holder(s) and the Author(s) or with their explicit written permission.
+    5) The Font Software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
+
+TERMINATION
+
+This license becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
+
+
+END OF SIL OPEN FONT LICENSE 1.1 NON-IBM-LICENSE INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+END OF OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES AND INFORMATION 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+END OF NOTICE FILE
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

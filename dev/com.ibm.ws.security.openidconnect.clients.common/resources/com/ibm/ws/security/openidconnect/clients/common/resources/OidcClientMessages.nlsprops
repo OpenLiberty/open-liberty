@@ -272,25 +272,25 @@ LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Ensure that the OpenID Connect provider i
 
 # Do not translate "sub" or "sid"
 LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: The logout token is not valid because it does not contain a "sub" or "sid" claim. The token must have at least one of those claims.
-LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=The sub and sid claims identify the user and session that is associated with a token. At least one of those claims must be present to determine the user or session to log out.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=The "sub" and "sid" claims identify the user and session that is associated with a token. At least one of those claims must be present to determine the user or session to log out.
 LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Ensure that the OpenID Connect provider includes the missing claims in the logout token.
 
 # Do not translate "events"
 LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: The logout token is not valid because the "events" claim is not a JSON object: {0}
-LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=The events claim in the logout token must be a JSON object.
-LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Ensure that the OpenID Connect provider uses the correct data type for the events claim.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=The "events" claim in the logout token must be a JSON object.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Ensure that the OpenID Connect provider uses the correct data type for the "events" claim.
 
 # Do not translate "events"
 LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: The logout token is not valid because the "events" claim does not contain "{0}" as a member. The "events" claim value is {1}.
-LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=The events claim must be a JSON object that contains a member with the name that is specified in the message.
-LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Ensure that the events claim includes the required member.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=The "events" claim must be a JSON object that contains a member with the name that is specified in the message.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Ensure that the "events" claim includes the required member.
 
 LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: The logout token is not valid because it contains a "nonce" claim.
 LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=A logout token must not contain a "nonce" claim so that the token cannot be used in a forged authentication response in place of an ID token.
 LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Ensure that the logout token does not contain a "nonce" claim.
 
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: The value for the "{0}" member in the "events" claim is not a JSON object.
-LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The value of the member that is specified in the message must be a JSON object. The value should be the empty JSON object.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The corresponding member value must be a JSON object. The expected value is "{}", an empty JSON object.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ensure that the "events" claim in the logout token is formatted correctly.
 
 LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: The logout token is missing the "sid" claim but the [{0}] OpenID Connect client requires it.
@@ -298,3 +298,4 @@ LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=The OpenID Connect client requ
 LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Set the backchannelLogoutSessionRequired OpenID Connect client configuration attribute to false, or ensure that the logout token contains a "sid" claim.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

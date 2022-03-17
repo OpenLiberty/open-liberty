@@ -61,7 +61,7 @@ Subsystem-Category: JakartaEE10Application
  com.ibm.ws.http.plugin.merge, \
  com.ibm.ws.webserver.plugin.runtime.jakarta, \
  com.ibm.ws.webserver.plugin.runtime.interfaces,\
- io.openliberty.servlet.internal.6.0.factories.jakarta
+ io.openliberty.servlet.6.0.internal.factories.jakarta
 -jars=com.ibm.ws.webserver.plugin.utility, \
  io.openliberty.servlet; location:=dev/api/ibm/
 -files=bin/tools/ws-webserverPluginutil.jar, \

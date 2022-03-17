@@ -12,9 +12,13 @@ package com.ibm.ws.install.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallProgressEvent;
@@ -38,18 +43,20 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
 import com.ibm.ws.product.utility.extension.ifix.xml.Problem;
 
-class UninstallDirector extends AbstractDirector {
+public class UninstallDirector extends AbstractDirector {
 
     private final Engine engine;
 
     private FeatureDependencyChecker dependencyChecker;
     private FixDependencyChecker fixDependencyChecker;
-
+    private static String[] excludePathSuffix = new String[] { "bin", "bin/", "installUtility.bat", "ws-installUtility.jar", "featureUtility.bat", "ws-featureUtility.jar",
+                                                         "featureManager.bat",
+                                                         "ws-featureManager.jar", };
     private List<UninstallAsset> uninstallAssets;
 
     private boolean setScriptsPermission = false;
 
-    UninstallDirector(Product product, Engine engine, EventManager eventManager, Logger logger) {
+    public UninstallDirector(Product product, Engine engine, EventManager eventManager, Logger logger) {
         super(product, eventManager, logger);
         this.engine = engine;
     }
@@ -62,8 +69,8 @@ class UninstallDirector extends AbstractDirector {
      * Creates array and calls method below
      *
      * @param checkDependency if uninstall should check for dependencies
-     * @param productId product id to uninstall
-     * @param toBeDeleted Collection of files to uninstall
+     * @param productId       product id to uninstall
+     * @param toBeDeleted     Collection of files to uninstall
      * @throws InstallException
      */
     void uninstall(boolean checkDependency, String productId, Collection<File> toBeDeleted) throws InstallException {
@@ -88,27 +95,33 @@ class UninstallDirector extends AbstractDirector {
      * Uninstalls product depending on dependencies
      *
      * @param checkDependency if uninstall should check for dependencies
-     * @param productIds product ids to uninstall
-     * @param toBeDeleted Collection of files to uninstall
+     * @param productIds      product ids to uninstall
+     * @param toBeDeleted     Collection of files to uninstall
      * @throws InstallException
      */
     void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
         if (uninstallAssets.isEmpty())
             return;
 
-        // Run file checking only on Windows
+        // On Windows specifically, we need to do a file lock check before attempting to uninstall assets.
         if (InstallUtils.isWindows) {
             // check any file is locked
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
+            Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                retrieveUninstallFileList(uninstallAsset, checkDependency);
-                engine.preCheck(uninstallAsset);
+                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             }
-            if (toBeDeleted != null) {
-                for (File f : toBeDeleted) {
-                    for (String productId : productIds) {
-                        InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+
+            // For each uninstall asset's base directory, validate no files are locked recursively.
+            for (File baseDir : baseDirs) {
+                try {
+                    List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
+                    allPathsFromBaseDir = removePathExceptions(allPathsFromBaseDir);
+                    for (Path path : allPathsFromBaseDir) {
+                        InstallUtils.isFileLocked("ERROR_UNINSTALL_FEATURE_FILE_LOCKED", path.toString(), path.toFile());
                     }
+                } catch (IOException e) {
+                    throw ExceptionUtils.create(e);
                 }
             }
         }
@@ -144,6 +157,89 @@ class UninstallDirector extends AbstractDirector {
         }
     }
 
+    /**
+     * @param allPathsFromBaseDir
+     * @return
+     */
+    public List<Path> removePathExceptions(List<Path> allPathsFromBaseDir) {
+        List<Path> exceptionsRemoved = new ArrayList<Path>();
+        List<String> excludes = Arrays.asList(excludePathSuffix);
+        for (Path path : allPathsFromBaseDir) {
+            if (!excludes.stream().anyMatch(p -> path.toString().endsWith(p))) {
+                exceptionsRemoved.add(path);
+            }
+        }
+        return exceptionsRemoved;
+    }
+
+    /**
+     *
+     * @param uninstallAsset the uninstall asset to derive a base directory from
+     * @return the uninstallAsset's base directories derived from uninstallAsset. For example, if the uninstallAsset location is dev/spi/ibm and baseDir is
+     *         /opt/IBM/WebSphere/AppServer, this will return 'Set[/opt/IBM/WebSphere/AppServer/dev]' iff the path exists, an empty Set otherwise.
+     * @throws InstallException
+     */
+    protected Set<File> getAssetBaseDirectories(UninstallAsset uninstallAsset, File baseDir) throws InstallException {
+
+        Set<File> baseDirs = new HashSet<>();
+        Set<String> assetLocations = getAssetLocations(uninstallAsset);
+
+        // For each asset location, construct a list of locations containing the first child directory appended
+        // to the base directory iff that directory exists.
+        for (String assetLocation : assetLocations) {
+            List<String> subDirs = getFirstChildSubdirectoryFromLocations(assetLocation);
+            for (String subDir : subDirs) {
+                File base = new File(baseDir + File.separator + subDir);
+                if (base.exists()) {
+                    baseDirs.add(base);
+                }
+            }
+        }
+        return baseDirs;
+    }
+
+    /**
+     * @param uninstallAsset the asset to process for relevant location data
+     * @return a set of strings that are the location data derived from uninstallAsset. This set my be empty if the asset is not BUNDLE_TYPE, JAR_TYPE, BOOT_JAR_TYPE or FILE_TYPE.
+     *         It could also be empty if the getLocation() call returns null or an empty string.
+     */
+    public Set<String> getAssetLocations(UninstallAsset uninstallAsset) {
+        // Only process BUNDLE, JAR, BOOT and FILE subsystem types.
+        final List<SubsystemContentType> resourceFilter = Arrays.asList(SubsystemContentType.BUNDLE_TYPE, SubsystemContentType.JAR_TYPE, SubsystemContentType.BOOT_JAR_TYPE,
+                                                                        SubsystemContentType.FILE_TYPE);
+        // From the collection of FeatureResources, filter out types we don't wish to process and then collect all location strings from them.
+        return uninstallAsset.getProvisioningFeatureDefinition().getConstituents(null).stream().filter(s -> resourceFilter.contains(s.getType())
+                                                                                                            && s.getLocation() != null).map(s -> s.getLocation()).collect(Collectors.toSet());
+    }
+
+    /**
+     *
+     * @param locString the location string to parse, may be null and may contain more than one location separated by `,`.
+     * @return A list of the parent directories specified in the locString. For example, if the locString is "bin/tools/tools.zip", this method will return ["bin"].
+     *         if locString contains "bin/tools/tools.zip,etc/files/files.zip" this method would return ["bin","etc"]
+     *
+     */
+    public List<String> getFirstChildSubdirectoryFromLocations(String locString) {
+        List<String> subdirectories = new ArrayList<>();
+        if (locString != null && !locString.isEmpty()) {
+            String[] locs = locString.contains(",") ? locString.split(",") : new String[] { locString };
+            for (String loc : locs) {
+                File fle = new File(loc);
+                String fileStr = fle.toString();
+                // skip a leading separator
+                if (fileStr.charAt(0) == File.separatorChar) {
+                    fileStr = fileStr.substring(1);
+                }
+                int index = fileStr.indexOf(File.separator);
+                if (index > 0) {
+                    fileStr = fileStr.substring(0, fileStr.indexOf(File.separator));
+                }
+                subdirectories.add(fileStr);
+            }
+        }
+        return subdirectories;
+    }
+
     void uninstall(Collection<String> ids, boolean force) throws InstallException {
         Collection<ProvisioningFeatureDefinition> installedFeatureDefinitions = product.getAllFeatureDefinitions().values();
         Collection<String> featureNames = new ArrayList<String>();
@@ -172,7 +268,7 @@ class UninstallDirector extends AbstractDirector {
      *
      * @param featureNames a list of the feature names and feature symbolic names to uninstall
      * @throws InstallException if there is a feature not installed or
-     *             there is another feature still requires the uninstalling features.
+     *                              there is another feature still requires the uninstalling features.
      */
     void uninstallFeatures(Collection<String> featureNames, Collection<String> uninstallInstallFeatures, boolean force) {
         product.refresh();
@@ -209,7 +305,7 @@ class UninstallDirector extends AbstractDirector {
     /**
      * Creates array and calls method below
      *
-     * @param productId product id to uninstall
+     * @param productId              product id to uninstall
      * @param exceptPlatfromFeatuers If platform features should be ignored
      * @throws InstallException
      */
@@ -222,7 +318,7 @@ class UninstallDirector extends AbstractDirector {
     /**
      * Uninstalls features by product id
      *
-     * @param productIds product ids to uninstall
+     * @param productIds             product ids to uninstall
      * @param exceptPlatfromFeatuers If platform features should be ignored
      * @throws InstallException
      */

@@ -167,7 +167,7 @@ public class UserEnumerationTest {
 
         FederatedRepository federatedRepository = clone.getFederatedRepository();
         federatedRepository.setFailedLoginDelayMax("7s");
-        federatedRepository.setFailedLoginDelayMin("2s");
+        federatedRepository.setFailedLoginDelayMin("2ms");
 
         LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
 
@@ -175,7 +175,7 @@ public class UserEnumerationTest {
          * This message appears in trace only and depends on what you provide in the setFailedLoginDelayMax/Min above.
          */
         assertFalse("Should have logged custom config",
-                    libertyServer.findStringsInLogsAndTrace("2000 and 7000").isEmpty());
+                    libertyServer.findStringsInLogsAndTrace("2 and 7000").isEmpty());
 
         runLoginTestCommon(true);
     }

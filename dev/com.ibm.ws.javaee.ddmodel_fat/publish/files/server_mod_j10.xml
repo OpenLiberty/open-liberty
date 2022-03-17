@@ -21,7 +21,7 @@
     <featureManager>
         <feature>osgiConsole-1.0</feature>
 
-        <feature>servlet-5.0</feature>
+        <feature>servlet-6.0</feature>
         <feature>enterpriseBeans-4.0</feature>
 
         <feature>libertyinternals-1.0</feature>
