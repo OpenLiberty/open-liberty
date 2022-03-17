@@ -217,7 +217,6 @@ public class genericWebClientAuthCertTest extends CommonTest {
 
         try {
             genericOP(_testName, wc, testSettings, Constants.SUBMIT_ACTIONS, expectations);
-            fail("Request should have failed with a handshake or connection refused exception");
         } catch (Exception e) {
             Log.info(thisClass, _testName, "Test using it's own more complex exception validation instead of using the common validation");
             Log.info(thisClass, _testName, "#########################################################################################");
@@ -235,7 +234,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
                 }
             }
             if (!found) {
-                fail("Request should have failed with a handshake or connection refused exception");
+                fail("Request should have failed with a handshake or connection refused exception, but instead received: " + e);
             }
         }
 
