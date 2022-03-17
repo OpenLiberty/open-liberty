@@ -60,31 +60,75 @@ public class WSSec {
 
     static {
         WSProviderConfig.init();
+        ClassLoader cl = null; //Liberty code change
         try {
             Init.init(ClassLoaderUtils.getResource("wss/wss-config.xml", WSSec.class).toURI(), WSSec.class);
 
             WSSConstants.setJaxbContext(
-                    JAXBContext.newInstance(
-                            org.apache.wss4j.binding.wss10.ObjectFactory.class,
-                            org.apache.wss4j.binding.wss11.ObjectFactory.class,
-                            org.apache.wss4j.binding.wsu10.ObjectFactory.class,
-                            org.apache.wss4j.binding.wssc13.ObjectFactory.class,
-                            org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
-                            org.apache.xml.security.binding.excc14n.ObjectFactory.class,
-                            org.apache.xml.security.binding.xop.ObjectFactory.class
-                    )
-            );
-
+                                        JAXBContext.newInstance(
+                                                                org.apache.wss4j.binding.wss10.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wss11.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wsu10.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wssc13.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.excc14n.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xop.ObjectFactory.class));
             Schema schema = loadWSSecuritySchemas();
             WSSConstants.setJaxbSchemas(schema);
         } catch (XMLSecurityException | JAXBException
-            | SAXException | URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
+                        | SAXException | URISyntaxException e) {
+
+            //Liberty code change start
+            //TODO: investigate why we are not finding this provider
+            ClassLoader jaxbimplcl = null;
+            try {
+                jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
+            } catch (Throwable t) {
+                //ncdfe
+            }
+            if (jaxbimplcl != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("setting up the glassfish classes loader!");
+                }
+                cl = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(jaxbimplcl);
+                try {
+                    Init.init(ClassLoaderUtils.getResource("wss/wss-config.xml", WSSec.class).toURI(), WSSec.class);
+
+                    WSSConstants.setJaxbContext(
+                                                JAXBContext.newInstance(
+                                                                        org.apache.wss4j.binding.wss10.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wss11.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wsu10.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wssc13.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.excc14n.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xop.ObjectFactory.class));
+                    Schema schema = loadWSSecuritySchemas();
+                    WSSConstants.setJaxbSchemas(schema);
+                } catch (XMLSecurityException | JAXBException
+                                | SAXException | URISyntaxException e2) {
+                    throw new RuntimeException(e2.getMessage(), e2);
+                } finally { //Liberty code change start
+                    if (cl != null) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("setting back the original class loader!");
+                        }
+                        Thread.currentThread().setContextClassLoader(cl);
+                    }
+                } //Liberty code change end
+            }
+
         }
+
     }
 
     public static void init() {
