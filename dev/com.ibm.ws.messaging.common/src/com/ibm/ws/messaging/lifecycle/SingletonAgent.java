@@ -6,7 +6,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(service = SingletonAgent.class, configurationPolicy = ConfigurationPolicy.REQUIRE)
-final class SingletonAgent {
+public final class SingletonAgent {
     private final static int PREFIX_LENGTH = SingletonAgent.class.getPackage().getName().length() + 1;
     private final Singleton singleton;
 
