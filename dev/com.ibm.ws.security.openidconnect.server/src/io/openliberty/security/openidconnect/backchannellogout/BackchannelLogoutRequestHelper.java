@@ -10,11 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jose4j.jwt.consumer.JwtContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -24,7 +25,7 @@ public class BackchannelLogoutRequestHelper {
 
     private static SSLSupport SSL_SUPPORT = null;
 
-    private OAuth20Provider oauth20provider;
+    private HttpServletRequest request;
     private OidcServerConfig oidcServerConfig;
 
     private Jose4jUtil jose4jUtil = null;
@@ -44,8 +45,8 @@ public class BackchannelLogoutRequestHelper {
     public BackchannelLogoutRequestHelper() {
     }
 
-    public BackchannelLogoutRequestHelper(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) {
-        this.oauth20provider = oauth20provider;
+    public BackchannelLogoutRequestHelper(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
+        this.request = request;
         this.oidcServerConfig = oidcServerConfig;
         jose4jUtil = new Jose4jUtil(SSL_SUPPORT);
     }

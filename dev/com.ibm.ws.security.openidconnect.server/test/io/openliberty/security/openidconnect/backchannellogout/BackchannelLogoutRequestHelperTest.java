@@ -12,24 +12,24 @@ package io.openliberty.security.openidconnect.backchannellogout;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
-import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestHelper;
 import test.common.SharedOutputManager;
 
 public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.openidconnect.*=all:com.ibm.ws.security.openidconnect*=all");
 
-    private final OAuth20Provider oauth20provider = mockery.mock(OAuth20Provider.class);
+    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
 
     private BackchannelLogoutRequestHelper helper;
@@ -42,7 +42,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        helper = new BackchannelLogoutRequestHelper(oauth20provider, oidcServerConfig);
+        helper = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
     }
 
     @After
