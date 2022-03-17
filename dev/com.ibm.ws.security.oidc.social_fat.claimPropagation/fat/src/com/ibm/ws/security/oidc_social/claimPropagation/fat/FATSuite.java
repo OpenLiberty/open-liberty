@@ -19,8 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
-import com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC.OIDCBasicIdTokenClaimPropagationTestss;
-import com.ibm.ws.security.oidc_social.claimPropagation.fat.Social.SocialBasicIdTokenClaimPropagationTestss;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.OIDC.OIDCBasicIdTokenClaimPropagationTests;
+import com.ibm.ws.security.oidc_social.claimPropagation.fat.Social.SocialBasicIdTokenClaimPropagationTests;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -31,10 +31,10 @@ import componenttest.rules.repeater.RepeatTests;
         // No OAuth tests - doesn't use ID token
 
         // specify OIDC tests
-        OIDCBasicIdTokenClaimPropagationTestss.class,
+        OIDCBasicIdTokenClaimPropagationTests.class,
 
         // specify Social client tests
-        SocialBasicIdTokenClaimPropagationTestss.class,
+        SocialBasicIdTokenClaimPropagationTests.class,
 
 // specify OIDC with SAML tests - N/A as SAML doesn't have an ID Token
 
