@@ -34,8 +34,6 @@ import java.util.stream.Stream;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -113,7 +111,7 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Singleton added: %s%nConfigured: %s%n:  Realized: %s", agent, declaredSingletons, realizedSingletons));
     }
 
-    synchronized void removeSingleton(Singleton agent, Map<String, Object> props) {
+    synchronized void removeSingleton(SingletonAgent agent, Map<String, Object> props) {
         realizedSingletons.remove(getSingletonType(props));
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Singleton removed: %s%nConfigured: %s%n  Realized: %s", agent, declaredSingletons, realizedSingletons));
     }

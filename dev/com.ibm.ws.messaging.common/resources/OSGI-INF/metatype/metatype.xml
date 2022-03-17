@@ -44,10 +44,11 @@
             default="${servicePidOrFilter(singletonDeclarations)}" />
     </OCD>
     <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonMonitor"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonMonitor"/></Designate>
-
+    
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonAgent" name="internal" description="internal use only" ibm:alias="messaging-singleton">
         <AD id="type" name="internal" description="internal use only" type="String" required="true" ibm:unique="type" />
         <AD id="singleton.target" ibm:final="true" name="internal" description="internal use only" type="String" default="(type=${type})" />
     </OCD>
-    <Designate factoryPid="com.ibm.ws.messaging.lifecycle.SingletonAgent"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonAgent" /></Designate>
+    <Designate factoryPid="com.ibm.ws.messaging.lifecycle.SingletonAgent"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonAgent" /></Designate> 
+
 </metatype:MetaData>

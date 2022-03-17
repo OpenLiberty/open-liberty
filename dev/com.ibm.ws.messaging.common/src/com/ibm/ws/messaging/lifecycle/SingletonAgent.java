@@ -11,7 +11,7 @@ final class SingletonAgent {
     private final Singleton singleton;
 
     @Activate
-    SingletonAgent(@Reference(name="singleton", target="unbound") Singleton singleton) {
+    public SingletonAgent(@Reference(name="singleton", target="(id=unbound)") Singleton singleton) {
         this.singleton = singleton;
     }
     
