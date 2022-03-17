@@ -290,7 +290,7 @@ LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=A logout token must not contain a 
 LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Ensure that the logout token does not contain a "nonce" claim.
 
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: The value for the "{0}" member in the "events" claim is not a JSON object.
-LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The value of the member that is specified in the message must be a JSON object. The value should be the empty JSON object.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The corresponding member value must be a JSON object. The expected value is "{}", an empty JSON object.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ensure that the "events" claim in the logout token is formatted correctly.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
