@@ -37,7 +37,6 @@
     <priority>10</priority>
   </managed-thread-factory>
 
-<!-- TODO enable to test merging
   <context-service>
     <name>java:app/concurrent/merged/web/LTContextService</name>
     <cleared></cleared>
@@ -50,6 +49,13 @@
     <propagated>Timestamp</propagated>
   </context-service>
 
+  <context-service>
+    <name>java:module/concurrent/merged/web/ZContextService</name>
+    <cleared>Transaction</cleared>
+    <propagated>ZipCode</propagated>
+  </context-service>
+
+<!-- TODO enable to test merging
   <managed-executor>
      <name>java:module/concurrent/merged/web/ZLExecutor</name>
      <max-async>3</max-async>

@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -128,17 +129,22 @@ import test.context.timing.Timestamp;
                            maxAsync = 3)
 
 // Merged with web.xml
-// TODO enable in web.xml and update the following,
 @ContextServiceDefinition(name = "java:app/concurrent/merged/web/LTContextService",
-                          cleared = {}, // TODO "Priority", // web.xml replaces with {}
+                          cleared = "Priority", // web.xml replaces with {}
                           propagated = { ListContext.CONTEXT_NAME, Timestamp.CONTEXT_NAME },
-                          unchanged = ALL_REMAINING) // TODO ZipCode.CONTEXT_NAME) // web.xml replaces with Remaining
+                          unchanged = ZipCode.CONTEXT_NAME) // web.xml replaces with Remaining
 
 @ContextServiceDefinition(name = "java:comp/concurrent/merged/web/PTContextService",
                           cleared = ListContext.CONTEXT_NAME,
-                          propagated = { "Priority", Timestamp.CONTEXT_NAME }, // TODO ALL_REMAINING, // web.xml replaces with Priority, Timestamp
-                          unchanged = APPLICATION)
+                          propagated = ALL_REMAINING, // web.xml replaces with Priority, Timestamp
+                          unchanged = { APPLICATION, ALL_REMAINING })
 
+@ContextServiceDefinition(name = "java:module/concurrent/merged/web/ZContextService",
+                          cleared = "Priority", // web.xml replaces with Transaction
+                          propagated = { ListContext.CONTEXT_NAME, Timestamp.CONTEXT_NAME }, // web.xml replaces with ZipCode
+                          unchanged = ALL_REMAINING)
+
+//TODO enable in web.xml and update the following,
 @ManagedExecutorDefinition(name = "java:module/concurrent/merged/web/ZLExecutor",
                            context = "java:module/concurrent/ZLContextSvc",
                            maxAsync = 3, // TODO 6, // web.xml replaces with 3
@@ -2805,6 +2811,75 @@ public class ConcurrencyTestServlet extends FATServlet {
     /**
      * Use a ContextService that is defined by the merging of a ContextServiceDefinition
      * and a context-service in a web module deployment descriptor, which replaces the
+     * cleared and propagated context types.
+     */
+    @Test
+    public void testWebMergedContextServiceDefinitionClearedAndPropagated() throws Exception {
+        ContextService contextSvc = InitialContext.doLookup("java:module/concurrent/merged/web/ZContextService");
+
+        // Put some fake context onto the thread:
+        Timestamp.set();
+        ZipCode.set(55901);
+        ListContext.newList();
+        ListContext.add(109);
+        Thread.currentThread().setPriority(9);
+        Long ts0 = Timestamp.get();
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+        tran.begin();
+        try {
+            // Contextualize a BiConsumer with the above context:
+            BiConsumer<Number[], String[]> task = contextSvc.contextualConsumer((n, s) -> {
+                s[0] = ListContext.asString();
+                n[0] = Thread.currentThread().getPriority();
+                n[1] = Timestamp.get();
+                n[2] = ZipCode.get();
+                try {
+                    n[3] = tran.getStatus();
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            // Alter some of the context on the current thread
+            ZipCode.set(55902);
+            ListContext.newList();
+            ListContext.add(209);
+            Thread.currentThread().setPriority(2);
+            Long ts1 = Timestamp.get();
+
+            // Run with the captured context:
+            Number[] numericResults = new Number[4];
+            String[] stringResults = new String[1];
+            task.accept(numericResults, stringResults);
+
+            assertEquals("[209]", stringResults[0]); // unchanged
+            assertEquals(2, numericResults[0]); // unchanged
+            assertEquals(ts1, numericResults[1]); // unchanged
+            assertEquals(Integer.valueOf(55901), numericResults[2]); // propagated
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), numericResults[3]); // cleared
+
+            // Verify that context is restored on the current thread:
+            assertEquals("[209]", ListContext.asString());
+            assertEquals(2, Thread.currentThread().getPriority());
+            assertEquals(ts1, Timestamp.get());
+            assertEquals(55902, ZipCode.get());
+            assertEquals(Status.STATUS_ACTIVE, tran.getStatus());
+        } finally {
+            // Remove fake context
+            Timestamp.clear();
+            ZipCode.clear();
+            ListContext.clear();
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+            tran.rollback();
+        }
+    }
+
+    /**
+     * Use a ContextService that is defined by the merging of a ContextServiceDefinition
+     * and a context-service in a web module deployment descriptor, which replaces the
      * cleared and unchanged context types.
      */
     @Test
@@ -2823,7 +2898,7 @@ public class ConcurrencyTestServlet extends FATServlet {
         UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
         tran.begin();
         try {
-            // Contextualize a Runnable with the above context:
+            // Contextualize a Consumer with the above context:
             Consumer<Map<String, Object>> task = contextSvc.contextualConsumer(results -> {
                 results.put(ListContext.CONTEXT_NAME, ListContext.asString());
                 results.put("Priority", Thread.currentThread().getPriority());
@@ -2893,7 +2968,7 @@ public class ConcurrencyTestServlet extends FATServlet {
             Long ts0 = Timestamp.get();
             TimeUnit.MILLISECONDS.sleep(100);
 
-            // Contextualize a Runnable with the above context:
+            // Contextualize a Function with the above context:
             Function<String, Map<String, Object>> task = contextSvc.contextualFunction(jndiName -> {
                 Map<String, Object> results = new TreeMap<String, Object>();
                 results.put(ListContext.CONTEXT_NAME, ListContext.asString());
@@ -2922,11 +2997,11 @@ public class ConcurrencyTestServlet extends FATServlet {
             Map<String, Object> results = task.apply("java:comp/concurrent/merged/web/PTContextService");
 
             assertEquals("[]", results.get(ListContext.CONTEXT_NAME)); // cleared
-            assertEquals(Integer.valueOf(9), results.get("Priority")); // unchanged
+            assertEquals(Integer.valueOf(9), results.get("Priority")); // propagated
             assertEquals(ts0, results.get(Timestamp.CONTEXT_NAME)); // propagated
-            assertEquals(Integer.valueOf(0), results.get(ZipCode.CONTEXT_NAME)); // cleared
+            assertEquals(Integer.valueOf(55905), results.get(ZipCode.CONTEXT_NAME)); // unchanged
             assertNotNull(results.get(APPLICATION)); // unchanged
-            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results.get(TRANSACTION)); // cleared
+            assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), results.get(TRANSACTION)); // unchanged
 
             // Verify that context is restored on the current thread:
             assertEquals(55905, ZipCode.get());

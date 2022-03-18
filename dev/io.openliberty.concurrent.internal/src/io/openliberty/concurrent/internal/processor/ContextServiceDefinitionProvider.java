@@ -63,6 +63,7 @@ public class ContextServiceDefinitionProvider extends InjectionProcessorProvider
     }
 
     class Processor extends InjectionProcessor<ContextServiceDefinition, ContextServiceDefinition.List> {
+        @Trivial
         public Processor() {
             super(ContextServiceDefinition.class, ContextServiceDefinition.List.class);
         }
