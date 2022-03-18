@@ -270,7 +270,7 @@ public class MDBTimedCMTBean implements MessageListener {
                                 }
                             }
 
-                            assertTrue("18 --> ejbTimeout executed on 5 Timers", successful);
+                            assertTrue("18 --> ejbTimeout not executed on 5 Timers", successful);
                         }
 
                         // -----------------------------------------------------------------------
@@ -300,7 +300,7 @@ public class MDBTimedCMTBean implements MessageListener {
                                 System.out.println("  returned : " + timersArray[i]);
                             }
 
-                            assertEquals("20 --> getTimers returned 2 Timers", 2, timers.size());
+                            assertEquals("20 --> getTimers did not return just 2 Timers", 2, timers.size());
 
                             // Make sure they are the correct timers...
                             for (int i = 0; i < timer.length; i++) {
@@ -338,7 +338,19 @@ public class MDBTimedCMTBean implements MessageListener {
                             System.out.println("21 ---> testTimerService: Calling Timer.getNextTimeout()");
                             Date nextTime = timer[4].getNextTimeout();
                             long remaining = nextTime.getTime() - System.currentTimeMillis();
-                            assertTrue("21 --> Timer.getNextTimeout() worked: " + remaining, remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
+
+                            int retryCount = 0;
+
+                            // If remaining is negative it is possible the postInvoke hasn't completed
+                            while (remaining < 0 && retryCount < 4) {
+                                Thread.sleep(POST_INVOKE_DELAY);
+                                retryCount++;
+                                nextTime = timer[4].getNextTimeout();
+                                remaining = nextTime.getTime() - System.currentTimeMillis();
+                            }
+
+                            assertTrue("21 --> Timer.getNextTimeout() unexpected remaining time: " + remaining,
+                                       remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
                         }
 
                         // -----------------------------------------------------------------------
@@ -416,7 +428,7 @@ public class MDBTimedCMTBean implements MessageListener {
                                 System.out.println("  returned : " + timersArray[i]);
                             }
 
-                            assertEquals("24 --> getTimers returned 0 Timers", 0, timers.size());
+                            assertEquals("24 --> getTimers did not return 0 Timers", 0, timers.size());
                         }
                     } catch (Throwable th) {
                         System.out.println("test failure: " + th);
@@ -462,7 +474,7 @@ public class MDBTimedCMTBean implements MessageListener {
                 try {
                     System.out.println("EJB Constructor: Calling getTimerService()");
                     ts = myMessageDrivenCtx.getTimerService();
-                    assertNotNull("1 ---> Got TimerService", ts);
+                    assertNotNull("1 ---> Did not get TimerService", ts);
                     r = true;
                 } catch (Throwable th) {
                     System.out.println("test failure: " + th);
@@ -1025,9 +1037,7 @@ public class MDBTimedCMTBean implements MessageListener {
 
         if (timerIndex >= 0) {
 
-            svTimeoutCounts[timerIndex]++;
-
-            if (svTimeoutCounts[timerIndex] > 1) {
+            if (svTimeoutCounts[timerIndex] > 0) {
                 // Don't run the 2nd & 3rd interval until test is ready
                 try {
                     svTimerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
@@ -1035,6 +1045,8 @@ public class MDBTimedCMTBean implements MessageListener {
                     e.printStackTrace(System.out);
                 }
             }
+
+            svTimeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " + svTimeoutCounts[timerIndex] + " time(s)");
 

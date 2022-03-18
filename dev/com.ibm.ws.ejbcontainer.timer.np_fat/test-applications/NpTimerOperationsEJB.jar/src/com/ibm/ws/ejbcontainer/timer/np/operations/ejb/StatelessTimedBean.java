@@ -594,7 +594,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
             }
         }
 
-        Assert.assertTrue("17 --> ejbTimeout executed on 5 Timers",
+        Assert.assertTrue("17 --> ejbTimeout not executed on 5 Timers",
                           successful);
 
         // -------------------------------------------------------------------
@@ -659,7 +659,17 @@ public class StatelessTimedBean implements StatelessTimedLocal {
         logger.info("testTimerService: Calling Timer.getNextTimeout()");
         Date nextTime = timer[2].getNextTimeout();
         long remaining = nextTime.getTime() - System.currentTimeMillis();
-        Assert.assertTrue("20 --> Timer.getNextTimeout() worked: " + remaining,
+
+        int retryCount = 0;
+        // If remaining is negative it is possible the postInvoke hasn't completed
+        while (remaining < 0 && retryCount < 4) {
+            FATHelper.sleep(POST_INVOKE_DELAY);
+            retryCount++;
+            nextTime = timer[4].getNextTimeout();
+            remaining = nextTime.getTime() - System.currentTimeMillis();
+        }
+
+        Assert.assertTrue("20 --> Timer.getNextTimeout() unexpected remaining time: " + remaining,
                           remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
 
         // -------------------------------------------------------------------
@@ -705,7 +715,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
             }
         }
 
-        Assert.assertTrue("21 --> ejbTimeout executed on 2 Timers",
+        Assert.assertTrue("21 --> ejbTimeout not executed on 2 Timers",
                           successful);
 
         // -------------------------------------------------------------------
@@ -737,7 +747,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
             logger.info("  returned : " + timersArray[i]);
         }
 
-        Assert.assertEquals("23 --> getTimers returned 0 Timers", 0, timers.size());
+        Assert.assertEquals("23 --> getTimers did not return 0 Timers", 0, timers.size());
     }
 
     /**
@@ -846,9 +856,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
 
         if (timerIndex >= 0) {
 
-            timeoutCounts[timerIndex]++;
-            
-            if (timeoutCounts[timerIndex] > 1) {
+            if (timeoutCounts[timerIndex] > 0) {
                 // Don't run the 2nd & 3rd interval until test is ready
                 try {
                     timerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
@@ -856,6 +864,8 @@ public class StatelessTimedBean implements StatelessTimedLocal {
                     e.printStackTrace(System.out);
                 }
             }
+
+            timeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " +
                                timeoutCounts[timerIndex] + " time(s)");

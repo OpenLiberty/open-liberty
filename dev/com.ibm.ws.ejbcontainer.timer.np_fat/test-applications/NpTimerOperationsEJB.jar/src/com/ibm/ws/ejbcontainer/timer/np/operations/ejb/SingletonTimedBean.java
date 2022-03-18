@@ -468,7 +468,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             }
         }
 
-        Assert.assertTrue("17 --> ejbTimeout executed on 5 Timers",
+        Assert.assertTrue("17 --> ejbTimeout not executed on 5 Timers",
                           successful);
 
         // -------------------------------------------------------------------
@@ -498,7 +498,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             logger.info("  returned : " + timersArray[i]);
         }
 
-        Assert.assertEquals("19 --> getTimers returned 2 Timers", 2, timers.size());
+        Assert.assertEquals("19 --> getTimers did not return 2 Timers", 2, timers.size());
 
         // Make sure they are the correct timers...
         for (int i = 0; i < timer.length; i++) {
@@ -533,7 +533,17 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         logger.info("testTimerService: Calling Timer.getNextTimeout()");
         Date nextTime = timer[2].getNextTimeout();
         long remaining = nextTime.getTime() - System.currentTimeMillis();
-        Assert.assertTrue("20 --> Timer.getNextTimeout() worked: " + remaining,
+
+        int retryCount = 0;
+        // If remaining is negative it is possible the postInvoke hasn't completed
+        while (remaining < 0 && retryCount < 4) {
+            FATHelper.sleep(POST_INVOKE_DELAY);
+            retryCount++;
+            nextTime = timer[4].getNextTimeout();
+            remaining = nextTime.getTime() - System.currentTimeMillis();
+        }
+
+        Assert.assertTrue("20 --> Timer.getNextTimeout() unexpected remaining time: " + remaining,
                           remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
 
         // -------------------------------------------------------------------
@@ -579,7 +589,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             }
         }
 
-        Assert.assertTrue("21 --> ejbTimeout executed on 2 Timers",
+        Assert.assertTrue("21 --> ejbTimeout not executed on 2 Timers",
                           successful);
 
         // -------------------------------------------------------------------
@@ -611,7 +621,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             logger.info("  returned : " + timersArray[i]);
         }
 
-        Assert.assertEquals("23 --> getTimers returned 0 Timers", 0, timers.size());
+        Assert.assertEquals("23 --> getTimers did not return 0 Timers", 0, timers.size());
     }
 
     /**
@@ -720,9 +730,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
 
         if (timerIndex >= 0) {
 
-            timeoutCounts[timerIndex]++;
-            
-            if (timeoutCounts[timerIndex] > 1) {
+            if (timeoutCounts[timerIndex] > 0) {
                 // Don't run the 2nd & 3rd interval until test is ready
                 try {
                     timerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
@@ -730,6 +738,8 @@ public class SingletonTimedBean implements SingletonTimedLocal {
                     e.printStackTrace(System.out);
                 }
             }
+
+            timeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " +
                                timeoutCounts[timerIndex] + " time(s)");
