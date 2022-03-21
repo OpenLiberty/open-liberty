@@ -18,7 +18,7 @@ Bundle-Description: WebService AtomicTransaction Utils for CXF 2.6.2; version=${
 WS-TraceGroup: WSAT
 
 Import-Package: \
-  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.*;version="[2.6.2,4)", \
   *
 
 Export-Package: \
@@ -26,8 +26,6 @@ Export-Package: \
  
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
