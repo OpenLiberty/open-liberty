@@ -23,6 +23,8 @@ src: \
   test-applications/helloServer/src,\
   test-applications/POJOServiceSecurity/src,\
   test-applications/POJOServiceSecurityClient/src,\
+  test-applications/policyAttachmentsClient1/src,\
+  test-applications/policyAttachmentsService1/src,\
   test-applications/sharedLib/src,\
   test-applications/testHandlerClient/src,\
   test-applications/testHandlerClientWithoutXML/src,\
@@ -31,6 +33,7 @@ src: \
   test-applications/testPortComponentRefEJBinWeb/src,\
   test-applications/testPortComponentRefWeb/src,\
   test-applications/wsBndServiceRefOverride/src
+  
   
 
 fat.project: true

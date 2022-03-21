@@ -27,11 +27,12 @@ import componenttest.rules.repeater.RepeatTests;
                 EJBServiceRefBndTest.class,
                 HandlerChainTest.class,
                 HandlerChainWithWebServiceClientTest.class,
-                POJOServiceSecurityTest.class,
+                //POJOServiceSecurityTest.class,
                 PortComponentRefTest.class,
                 WebServiceInWebXMLTest.class,
                 WsBndEndpointOverrideTest.class,
-                WsBndServiceRefOverrideTest.class
+                WsBndServiceRefOverrideTest.class,
+                ColocatedDynamicPolicyAttachmentsTest.class
 })
 public class FATSuite {
 
