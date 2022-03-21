@@ -175,6 +175,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
 
+    private long abortLongRunningInuseConnections;
+
     public PoolManager(
                        AbstractConnectionFactoryService cfSvc,
                        Properties dsProps,
@@ -3559,6 +3561,38 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 } // end sync
             }
         } // end for (int j
+
+        // Look for long running in use connections to abort
+        if (abortLongRunningInuseConnections > 0) {
+            // Get a lock on master list.
+            long currentTime = System.currentTimeMillis();
+            boolean needToAbortConnections = false;
+            // create new array for this abort path
+            ArrayList<MCWrapper> mcWrappersToAbort = new ArrayList<MCWrapper>();
+            mcToMCWMapWrite.lock();
+            try {
+                MCWrapper[] mcwIt = (MCWrapper[]) mcToMCWMap.values().toArray();
+                for (MCWrapper mcw : mcwIt) {
+                    long holdTime = currentTime - ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
+                    long timeInUseInSeconds = holdTime / 1000;
+                    if (timeInUseInSeconds > abortLongRunningInuseConnections) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Abort long running in use connection " + mcw);
+                        }
+                        mcWrappersToAbort.add(mcw);
+                        needToAbortConnections = true;
+                    }
+                }
+            } finally {
+                mcToMCWMapWrite.unlock();
+            }
+            if (needToAbortConnections) {
+                for (MCWrapper mcw : mcWrappersToAbort) {
+                    ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC();
+                }
+            }
+        }
+
         if (tc.isEntryEnabled()) {
             if (tc.isDebugEnabled()) {
                 // This information should only be printed if tc.isEntryEnabled()

@@ -22,6 +22,7 @@
 
  <OCD id="com.ibm.ws.jca.connectionManager" name="%connectionManager" description="%connectionManager.desc" ibm:alias="connectionManager" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="agedTimeout"                        name="%agedTimeout"  description="%agedTimeout.desc"  default="-1"     type="String"  ibm:type="duration(s)" min="-1"/>
+  <AD id="abortLongRunningInuseConnections"   name="abortLongRunningInuseConnections"  description="%abortLongRunningInuseConnections.desc"  default="-1"     type="String"  ibm:type="duration(s)" min="-1"/>
   <AD id="connectionTimeout"                  name="%connTimeout"  description="%connTimeout.desc"  default="30s"    type="String"  ibm:type="duration(s)" min="-1"/>
   <AD id="maxIdleTime"                        name="%maxIdleTime"  description="%maxIdleTime.desc"  default="30m"    type="String"  ibm:type="duration(s)" min="-1"/>
   <AD id="maxPoolSize"                        name="%maxPoolSize"  description="%maxPoolSize.desc"  default="50"     type="Integer" min="0"/>

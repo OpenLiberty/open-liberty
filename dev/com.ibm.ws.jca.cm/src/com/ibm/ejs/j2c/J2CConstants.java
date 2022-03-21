@@ -118,6 +118,7 @@ public interface J2CConstants {
 
     public final static String POOL_ReapTime = "reapTime";
     public final static String POOL_AgedTimeout = "agedTimeout";
+    public final static String POOL_AbortLongRunningInuseConnections = "abortLongRunningInuseConnections";
 
     public final static String POOL_PurgePolicy = "purgePolicy";
 
