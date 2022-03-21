@@ -85,6 +85,9 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Resource(name = "jdbc/ds2", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds2;
 
+    @Resource(name = "jdbc/ds2abort", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds2abort;
+
     @Resource(name = "jdbc/ds3", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds3;
 
@@ -906,6 +909,47 @@ public class BasicTestServlet extends FATDatabaseServlet {
      */
     public void getSingleConnectionAfterAbort() throws Exception {
         int size = getPoolSize("jdbc/ds2");
+        if (size != 0)
+            throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbort was called, but it wasn't");
+
+        // Aborted connection should have been destroyed, so we should be able to get
+        // and close a new connection no problem.
+        Connection c = ds2.getConnection();
+        c.close();
+    }
+
+    /**
+     * Function to get and abort a connection.
+     *
+     * After running this function, the connection should be immediately removed
+     * from the connection pool, and a call to getSingleConnectionAfterAbort
+     * should succeed.
+     *
+     * Uses datasource 2 for shareable connections.
+     */
+    public void testAbortedConnectionDestroyedAuto() throws Exception {
+        Connection c = ds2abort.getConnection();
+        Executor testExecutor = new Executor() {
+            @Override
+            public void execute(Runnable arg0) {
+                arg0.run();
+            }
+        };
+        try {
+            Thread.sleep(15000);
+        } finally {
+            c.close();
+        }
+    }
+
+    /**
+     * Function to just get and close a connection
+     *
+     * This function should be called right after testAbortedConnectionDestroyed to
+     * ensure that the aborted connection was immediately removed from the pool.
+     */
+    public void getSingleConnectionAfterAbortAuto() throws Exception {
+        int size = getPoolSize("jdbc/ds2abort");
         if (size != 0)
             throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbort was called, but it wasn't");
 

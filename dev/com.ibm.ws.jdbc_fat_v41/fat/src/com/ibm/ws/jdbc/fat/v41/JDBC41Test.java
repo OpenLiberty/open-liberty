@@ -68,6 +68,12 @@ public class JDBC41Test extends FATServletClient {
     }
 
     @Test
+    public void testAbortedConnectionDestroyedAuto() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyedAuto");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbortAuto");
+    }
+
+    @Test
     public void testJDBCVersionLimiting() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testJDBCVersionLimiting&expectedVersion=4.1");
     }
