@@ -31,3 +31,5 @@ Import-Package:  \
   javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
   javax.servlet.http;version="[0,3.0.0)",\
   *
+
+jakartaeeMe: true
