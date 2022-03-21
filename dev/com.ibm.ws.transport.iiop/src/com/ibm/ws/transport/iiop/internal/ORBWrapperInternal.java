@@ -86,7 +86,7 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
         map.activate(cc);
         super.activate(properties, cc.getBundleContext());
         try {
-        	if (checkpointPhase == CheckpointPhase.APPLICATIONS) {
+        	if (checkpointPhase != null) {
         		Util.createValueHandler().getRunTimeCodeBase();
         	}
         } catch (Exception e) {
