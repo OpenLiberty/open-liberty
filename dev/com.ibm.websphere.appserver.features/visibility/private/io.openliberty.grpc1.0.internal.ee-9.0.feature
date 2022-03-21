@@ -6,7 +6,6 @@ Subsystem-Name: Jakarta gRPC internal 1.0
   com.ibm.websphere.appserver.servlet-5.0; ibm.tolerates:="6.0"
 -bundles=\
   io.openliberty.grpc.1.0.internal.common.jakarta, \
-  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.43.2", \
   io.openliberty.grpc.1.0.internal.jakarta, \
   com.ibm.ws.security.authorization.util.jakarta
 kind=ga
