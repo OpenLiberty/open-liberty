@@ -48,7 +48,6 @@ Import-Package:  \
   !com.ctc.wstx.*,\
   !org.codehaus.stax2.*,\
   !net.sf.ehcache.*,\
-  org.apache.cxf.*, \
   org.apache.neethi, \
   org.apache.neethi.builders, \
   org.apache.wss4j.*, \
@@ -56,9 +55,11 @@ Import-Package:  \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
+  javax.servlet.*;version="[0.0.0,3.0.0)", \
   *
 
 DynamicImport-Package: \
-  com.ctc.wstx.*
+ org.apache.cxf.*, \
+ com.ctc.wstx.*
 
 jakartaeeMe: true
