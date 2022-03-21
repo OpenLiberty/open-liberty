@@ -79,6 +79,22 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
     private Boolean ignoreUnknownAssertions;
     private boolean addedBusInterceptors;
     private AlternativeSelector alternativeSelector;
+    
+    private static boolean ignoreUnsupportedPolicy;
+    
+    static {
+
+        String skipPolicyCheck = System.getProperty("cxf.ignore.unsupported.policy");
+        LOG.log(Level.FINE, "cxf.ignore.unsupported.policy property is set to " + skipPolicyCheck);
+
+        if (skipPolicyCheck != null 
+            && skipPolicyCheck.trim().length() > 0
+            && skipPolicyCheck.trim().equalsIgnoreCase("true")) {
+            ignoreUnsupportedPolicy = true;
+        } else {
+            ignoreUnsupportedPolicy = false;
+        }
+    }
 
 
     public PolicyEngineImpl() {
@@ -645,10 +661,18 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                     if (null != assertor && assertor.canAssert(a.getName())) {
                         continue;
                     }
+
                     Set<PolicyInterceptorProvider> s = pipr.get(a.getName());
                     if (s.isEmpty()) {
                         if (doLog) {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
+                            if (ignoreUnsupportedPolicy) {
+                                LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
+                                    + "property cxf.ignore.unsupported.policy is set to true.");
+                                return true;
+                            } else {
+                                return false;
+                            }
                         }
                         return false;
                     }

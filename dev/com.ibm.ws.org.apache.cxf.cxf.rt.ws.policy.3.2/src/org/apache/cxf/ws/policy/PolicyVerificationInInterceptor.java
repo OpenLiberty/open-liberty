@@ -45,6 +45,20 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(PolicyVerificationInInterceptor.class);
 
+    private static boolean ignoreUnsupportedPolicy;
+    
+    static {
+
+        String skipPolicyCheck = System.getProperty("cxf.ignore.unsupported.policy");
+        LOG.log(Level.FINE, "cxf.ignore.unsupported.policy property is set to " + skipPolicyCheck);
+
+        if (skipPolicyCheck != null 
+            && skipPolicyCheck.trim().length() > 0
+            && skipPolicyCheck.trim().equalsIgnoreCase("true")) {
+            ignoreUnsupportedPolicy = true;
+        }
+    }
+    
     public PolicyVerificationInInterceptor() {
         super(Phase.PRE_INVOKE);
     }
@@ -99,7 +113,15 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             }
         }
         try {
-            List<List<Assertion>> usedAlternatives = aim.checkEffectivePolicy(effectivePolicy.getPolicy());
+            List<List<Assertion>> usedAlternatives = null;
+            
+            if (ignoreUnsupportedPolicy) {
+                LOG.fine("WARNING: checkEffectivePolicy will not be called because "
+                    + "property cxf.ignore.unsupported.policy is set to true.");
+            } else {
+                usedAlternatives = aim.checkEffectivePolicy(effectivePolicy.getPolicy());
+            }
+            
             if (usedAlternatives != null && !usedAlternatives.isEmpty() && message.getExchange() != null) {
                 message.getExchange().put("ws-policy.validated.alternatives", usedAlternatives);
             }

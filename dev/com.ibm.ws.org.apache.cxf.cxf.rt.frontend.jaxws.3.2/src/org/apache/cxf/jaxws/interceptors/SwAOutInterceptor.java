@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -68,6 +69,7 @@ import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.BindingMessageInfo;
@@ -83,6 +85,24 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
     private static final Set<String> SWA_REF_NO_METHOD
         = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>(4, 0.75f, 2));
 
+//  Begin copied over from CXF 2.6.2
+    private static boolean skipHasSwaRef;
+    
+    static {
+
+        String skipSwaRef = System.getProperty("cxf.multipart.attachment");
+        LOG.log(Level.FINE, "cxf.multipart.attachment property is set to " + skipSwaRef);
+
+        if (skipSwaRef != null 
+            && skipSwaRef.trim().length() > 0
+            && skipSwaRef.trim().equalsIgnoreCase("false")) {
+            skipHasSwaRef = true;
+        } else {
+            skipHasSwaRef = false;
+        }
+
+    }// End copied over from CXF 2.6.2
+    
     AttachmentOutInterceptor attachOut = new AttachmentOutInterceptor();
 
     public SwAOutInterceptor() {
@@ -142,7 +162,14 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         if (bmi == null) {
             return;
         }
-
+//      Begin copied over from CXF 2.6.2
+        Boolean newAttachment = false;
+        Message exOutMsg = ex.getOutMessage();
+        if (exOutMsg != null) {
+            newAttachment = MessageUtils.isTrue(exOutMsg.getContextualProperty("cxf.add.attachments"));
+            LOG.log(Level.FINE, "Request context attachment property: cxf.add.attachments is set to: " + newAttachment);
+        } //      End copied over from CXF 2.6.2
+        
         SoapBodyInfo sbi = bmi.getExtensor(SoapBodyInfo.class);
 
         if (sbi == null || sbi.getAttachments() == null || sbi.getAttachments().isEmpty()) {
@@ -150,7 +177,18 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             DataBinding db = s.getDataBinding();
             if (db instanceof JAXBDataBinding
                 && hasSwaRef((JAXBDataBinding) db)) {
-                setupAttachmentOutput(message);
+                Boolean includeAttachs = false;
+                Message exInpMsg = ex.getInMessage();
+                LOG.log(Level.FINE, "Exchange Input message: " + exInpMsg);
+                if (exInpMsg != null) {
+                    includeAttachs = MessageUtils.isTrue(exInpMsg.getContextualProperty("cxf.add.attachments"));
+                }   
+                LOG.log(Level.FINE, "Add attachments message property: cxf.add.attachments value is " + includeAttachs);
+                if (!skipHasSwaRef || includeAttachs || newAttachment) {
+                    setupAttachmentOutput(message);
+                } else {
+                    skipAttachmentOutput(message);
+                }  
             }
             return;
         }
@@ -327,4 +365,24 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         }
         return atts;
     }
+    
+//  Begin copied over from CXF 2.6.2
+    private Collection<Attachment> skipAttachmentOutput(SoapMessage message) {
+
+        Collection<Attachment> atts = message.getAttachments();
+        
+        LOG.log(Level.FINE, "skipAttachmentOutput: getAttachments returned  " + atts);
+        
+        if (atts != null) {
+            // We have attachments, so add the interceptor
+            message.getInterceptorChain().add(attachOut);
+            // We should probably come up with another property for this
+            message.put(AttachmentOutInterceptor.WRITE_ATTACHMENTS, Boolean.TRUE);
+        } else {    
+            atts = new ArrayList<Attachment>();
+            message.setAttachments(atts);
+        }               
+        
+        return atts;
+    }// End copied over from CXF 2.6.2
 }
