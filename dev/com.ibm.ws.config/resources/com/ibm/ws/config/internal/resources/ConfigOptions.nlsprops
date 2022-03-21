@@ -14,11 +14,16 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+purpose=\
+The {0} command generates the XML schema for the                       \n\
+Liberty core configuration and other installed products                \n\
+extensions in a single output file.
+
 briefUsage=\
-Usage: java [JVM options] -jar {0} [options] outputFile  
+Usage: java [JVM options] -jar {0} [options] outputFile
+  
 briefUsageScript=\
 Usage: ./{0} [options] outputFile
-
 
 use.options=Options:
 # -------- OPTIONS ----------------------------------------------------#
@@ -27,13 +32,18 @@ use.options=Options:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=A file name containing a list of pids to ignore
+option-desc.ignorePids=A file name containing a list of pids to ignore.
 option-key.encoding=--encoding
-option-desc.encoding=The character encoding to use for the output
+option-desc.encoding=The character encoding to use for the output.
 option-key.locale=--locale
-option-desc.locale=The locale to use for the output
+option-desc.locale=The language to use when you are creating the output\n\
+file. This string consists of the ISO-639 two-letter lowercase language\n\
+code, optionally followed by and underscores and the ISO-3166 uppercase\n\
+two-letter country code.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=The output schema will not contain indenting spaces, new line feeds, or XML comments
+option-desc.compactoutput=The output schema will not contain indenting \n\
+spaces, new line feeds, or XML comments.
 option-key.productExtension=--productExtension
 option-desc.productExtension=\
 The product extension name to be processed.                            \n\
@@ -45,13 +55,13 @@ option-key.schemaVersion=--schemaVersion
 
 # "schemaVersion=1.1" is not translated.  "xsd:any" is not translated
 option-desc.schemaVersion=\
-If schemaVersion=1.1 is specified, then both explicitly named child \n\
+If schemaVersion=1.1 is specified, then both explicitly named child    \n\
 elements and the xsd:any element are written to the output file.
 
 option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=\
-If outputVersion=2.0 is specified, only the xsd:any element is used \n\
-in the output file, so that unknown elements pass XSD validation at \n\
+If outputVersion=2.0 is specified, only the xsd:any element is used    \n\
+in the output file, so that unknown elements pass XSD validation at    \n\
 the expense of losing validation for known elements.
