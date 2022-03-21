@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,10 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -42,6 +39,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCConfigurator;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.logging.internal.osgi.stackjoiner.StackJoinerManager;
 
 /**
  * This class is instantiated during RAS bundle activation. It registers itself
@@ -67,7 +66,8 @@ public class LoggingConfigurationService implements ManagedService {
     private final LoggerAdmin loggerAdmin;
 
     private final Map<String, Map<String, LogLevel>> contextLogLevels = Collections.synchronizedMap(new HashMap<String, Map<String, LogLevel>>());
-
+    
+    private static final StackJoinerManager STACK_JOINER_MGR= StackJoinerManager.getInstance();
     /**
      * Constructor.
      * 
@@ -86,6 +86,7 @@ public class LoggingConfigurationService implements ManagedService {
 
         loggerAdmin = getService(LoggerAdmin.class, context);
         configureLoggerAdmin();
+        
     }
 
     <T> T getService(Class<T> type, BundleContext context) {
@@ -113,30 +114,35 @@ public class LoggingConfigurationService implements ManagedService {
     @Override
     @SuppressWarnings({ "unchecked" })
     public synchronized void updated(Dictionary properties) throws ConfigurationException {
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(tc, "properties updated " + properties);
 
-        if (properties == null) {
-            return;
-        }
-
         Map<String, Object> newMap = null;
-        if (properties instanceof Map) {
-            newMap = (Map<String, Object>) properties;
-        } else {
-            newMap = new HashMap<String, Object>();
-            Enumeration<String> keys = properties.keys();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
-                newMap.put(key, properties.get(key));
-            }
-        }
+        if (properties != null) {
 
-        // Update Tr and/or FFDC configurations.
-        // --> of concern is changing the log directory.
-        TrConfigurator.update(newMap);
-        FFDCConfigurator.update(newMap);
-        configureLoggerAdmin();
+            if (properties instanceof Map) {
+                newMap = (Map<String, Object>) properties;
+            } else {
+                newMap = new HashMap<String, Object>();
+                Enumeration<String> keys = properties.keys();
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
+                    newMap.put(key, properties.get(key));
+                }
+            }
+
+            // Update Tr and/or FFDC configurations.
+            // --> of concern is changing the log directory.
+            TrConfigurator.update(newMap);
+            FFDCConfigurator.update(newMap);
+            configureLoggerAdmin();
+
+        }
+        
+        if (ProductInfo.getBetaEdition()) {
+            STACK_JOINER_MGR.resolveStackJoinFeature(newMap);
+        }
     }
 
     private void configureLoggerAdmin() {
@@ -265,5 +271,6 @@ public class LoggingConfigurationService implements ManagedService {
         Hashtable<String, String> ht = new Hashtable<String, String>();
         ht.put(org.osgi.framework.Constants.SERVICE_PID, RAS_TR_CFG_PID);
         return ht;
-    }
+    }    
+    
 }
