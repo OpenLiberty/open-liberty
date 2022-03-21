@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class HttpRequestInfo implements Serializable {
     DateTime birthTime = new DateTime();
     @SuppressWarnings("rawtypes")
     Map savedPostParams = null;
+    String redirectAfterSPLogout = null;
 
     // same package can access to it
     HttpRequestInfo() {};
@@ -98,6 +99,13 @@ public class HttpRequestInfo implements Serializable {
                 throw new SamlException(e);
             }
         }
+        //@AV999-092821
+        if(request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+            redirectAfterSPLogout = (String)request.getAttribute("OIDC_END_SESSION_REDIRECT");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, save OIDC_END_SESSION_REDIRECT uri : " + redirectAfterSPLogout);
+            }        
+        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
         }
@@ -124,6 +132,10 @@ public class HttpRequestInfo implements Serializable {
 
     public String getInResponseToId() {
         return this.strInResponseToId;
+    }
+    
+    public String getRedirectAfterSPLogout() {
+        return this.redirectAfterSPLogout;
     }
 
     /**

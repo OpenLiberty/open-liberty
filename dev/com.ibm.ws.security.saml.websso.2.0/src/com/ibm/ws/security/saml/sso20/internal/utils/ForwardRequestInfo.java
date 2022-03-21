@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.error.SamlException;
 
-
 /**
  * To store the request info in the cache
  * the request information will be recalled in order to process after the idp provide a samlResponse
@@ -43,14 +42,14 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     boolean bNeedFragment = true;
 
     /**
-     * 
+     *
      * constructor for Unsolicited (get only):
      * 1) relayState which does not have previous stored requestInfo (idpInit)
      * ** This will be called later at redirectCachedRequestNoFragment
      * ** Since this is GET Method, no need to save parameters for POST
      * 2) redirect idpUrl which is defined in the server.xml (not the idpUrl from idpMetadata)
      * ** This will be called later at redirectGetRequest
-     * 
+     *
      * @param requestUrl
      * @param queryString
      */
@@ -71,7 +70,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
      * Constructor for post to redirect to idpUrl (Solicited)
      * For post only
      * Later call redirectPostRequest
-     * 
+     *
      * @param requestUri
      */
     public ForwardRequestInfo(String requestUri) {
@@ -83,7 +82,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     /**
      * Set parameters for Solicited
-     * 
+     *
      * @param key
      * @param values
      */
@@ -120,12 +119,19 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                                          cookieName,
                                          cookieValue);
             }
+            //@AV999-092821 TODO: save this in another form also
+            if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_END_SESSION_REDIRECT attribute");
+                }
+                req.removeAttribute("OIDC_END_SESSION_REDIRECT");
+            }
 
             // HTTP 1.1.
             resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");
-            // HTTP 1.0. 
+            // HTTP 1.0.
             resp.setHeader("Pragma", "no-cache");
-            // Proxies. 
+            // Proxies.
             resp.setDateHeader("Expires", 0);
             resp.setContentType("text/html");
 
@@ -180,8 +186,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                 PrintWriter out = resp.getWriter();
                 out.println(sb.toString());
                 out.flush();
-            }
-            else {
+            } else {
                 String urlGet = this.reqUrl;
                 if (fragement != null && !fragement.isEmpty()) {
                     urlGet += ("#" + fragement);
@@ -233,7 +238,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     }
 
-    // This is called when the unsolicited is calling the loginPageUrl 
+    // This is called when the unsolicited is calling the loginPageUrl
     // the bNeedFragment by default is true
     public void redirectGetRequest(HttpServletRequest req,
                                    HttpServletResponse response,
@@ -253,7 +258,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     /**
      * Parse the requeslURL and querySTring into parameters
-     * 
+     *
      * @throws SamlException
      */
     void queryStringToParameters() throws SamlException {
@@ -300,8 +305,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
      * @param value
      * @throws UnsupportedEncodingException
      */
-    void handleParameter(String encodedKey, String encodedValue)
-                    throws UnsupportedEncodingException {
+    void handleParameter(String encodedKey, String encodedValue) throws UnsupportedEncodingException {
         String key = URLDecoder.decode(encodedKey, Constants.UTF8);
         String value = URLDecoder.decode(encodedValue, Constants.UTF8);
         String[] values = getStringArray(key, value);
