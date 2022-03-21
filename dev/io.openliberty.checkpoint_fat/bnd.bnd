@@ -15,7 +15,8 @@ src: \
 	fat/src,\
 	test-applications/app1/src,\
 	test-applications/app2/src,\
-	test-applications/mpapp1/src
+	test-applications/mpapp1/src,\
+	test-applications/ejbapp1/src
 
 
 fat.project: true
