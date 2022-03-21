@@ -14,9 +14,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.BeforeClass;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -36,9 +38,21 @@ import componenttest.topology.utils.MvnUtils;
 @MinimumJavaLevel(javaLevel = 11)
 public class JsonbTckLauncher {
 
+    final static Map<String, String> additionalProps = new HashMap<>();
+
     //This is a standalone test no server needed
     @Server
     public static LibertyServer DONOTSTART;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+        //To work around the issue described in issue:
+        //https://github.com/eclipse-ee4j/jsonb-api/issues/272
+        if(javaSpecVersion >= 13) {
+            additionalProps.put("java.locale.providers", "COMPAT");
+        }
+    }
 
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
@@ -58,7 +72,7 @@ public class JsonbTckLauncher {
                                            "io.openliberty.jakarta.jsonb.3.0_fat_tck", //bucket name
                                            this.getClass() + ":launchJsonbTCK", //launching method
                                            null, //suite file to run
-                                           Collections.emptyMap(), //additional props
+                                           additionalProps, //additional props
                                            Collections.emptySet() //additional jars
         );
 
