@@ -111,8 +111,10 @@ public class UninstallDirector extends AbstractDirector {
             for (UninstallAsset uninstallAsset : uninstallAssets) {
                 baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             }
-
+            logger.log(Level.INFO, "BaseDirs before removeFileExceptions: {0}", Arrays.toString(baseDirs.toArray()));
             baseDirs = removeFileExceptions(baseDirs);
+            logger.log(Level.INFO, "BaseDirs after removeFileExceptions: {0}", Arrays.toString(baseDirs.toArray()));
+
             // For each uninstall asset's base directory, validate no files are locked recursively.
             for (File baseDir : baseDirs) {
                 try {
