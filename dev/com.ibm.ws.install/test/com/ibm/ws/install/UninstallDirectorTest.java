@@ -180,14 +180,13 @@ public class UninstallDirectorTest {
                                             "bin/tools/whatever/ws-featureUtility.jar", "bin/", "bin" };
         Set<File> files = new HashSet<>();
         for (String test : testPaths) {
-            File path = new File(test);
-            files.add(path);
+            files.add(new File(test));
         }
         files = ud.removeFileExceptions(files);
         List<File> expectedPaths = new ArrayList<>();
-        expectedPaths.add(new File("/test/script.sh"));
-        expectedPaths.add(new File("etc/files/files.zip"));
-        expectedPaths.add(new File("bin/installUtility.sh"));
+        expectedPaths.add(new File(testPaths[0]));
+        expectedPaths.add(new File(testPaths[1]));
+        expectedPaths.add(new File(testPaths[2]));
         assertEquals(expectedPaths.size(), files.size());
         assertTrue(expectedPaths.containsAll(files));
 
