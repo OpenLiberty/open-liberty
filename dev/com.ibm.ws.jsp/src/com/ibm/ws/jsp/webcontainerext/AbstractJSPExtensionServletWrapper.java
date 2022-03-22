@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,8 +111,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         this.tlc = tlc;
         this.tcontext = context;
         this.codeSource = codeSource;
-        if (options.isTrackDependencies())
-            dependentsList = new ArrayList();
+        this.dependentsList = new ArrayList();
     }
 
     public void initialize(IServletConfig config, String loadedPagesVersion) throws Exception {
