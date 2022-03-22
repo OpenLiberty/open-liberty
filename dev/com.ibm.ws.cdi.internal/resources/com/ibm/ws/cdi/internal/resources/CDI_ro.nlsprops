@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=Rezolva\u0163i eroarea c
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: O clas\u0103 {0} \u00eenregistrat\u0103 prin SPI de extensie CDI Extension este \u00eentr-un bundle diferit de implementarea CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=Clasa este ignorat\u0103 deoarece este \u00eenregistrat\u0103 cu metoda getExtensions() sau getBeanClasses() a unei implement\u0103ri CDIExtensionMetadata \u015fi este \u00eentr-un bundle diferit fa\u0163\u0103 de implementarea CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Muta\u0163i clasa afectat\u0103 sau crea\u0163i o nou\u0103 implementare CDIExtensionMetadata \u00een bundle-ul corect.
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: CDI a \u00eent\u00e2lnit o excep\u021bie atunci c\u00e2nd a creat extensii pentru arhiva {0}. Eroarea a fost: {1}
+exception.creating.extensions.CWOWB1012E.explanation=CDI nu a reu\u0219it s\u0103 \u00eencarce sau s\u0103 invoce construc\u021bia unei clase de extensii.
+exception.creating.extensions.CWOWB1012E.useraction=Remedia\u021bi eroarea care \u00eempiedic\u0103 crearea extensiei.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: Clasa {0} BuildCompatibleExtension nu poate fi \u00eenc\u0103rcat\u0103.
+bce.not.loadable.CWOWB1013E.explanation=Aplica\u021bia include un fi\u0219ier META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension care include clasa, dar CDI nu a putut \u00eenc\u0103rca clasa.
+bce.not.loadable.CWOWB1013E.useraction=Asigura\u021bi-v\u0103 c\u0103 respectiva clas\u0103 este prezent\u0103 \u00een aplica\u021bie \u0219i poate fi \u00eenc\u0103rcat\u0103. Dac\u0103 clasa este prezent\u0103 \u00een aplica\u021bie, un fi\u0219ier FFDC ar putea avea mai multe informa\u021bii despre motivul pentru care clasa nu a putut fi \u00eenc\u0103rcat\u0103.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: Clasa {0} nu implementeaz\u0103 interfa\u021ba BuildCompatibleExtension.
+bce.does.not.implement.bce.CWOWB1014E.explanation=Aplica\u021bia include un fi\u0219ier META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension care include clasa, dar clasa nu implementeaz\u0103 jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
+bce.does.not.implement.bce.CWOWB1014E.useraction=Schimba\u021bi clasa, astfel \u00eenc\u00e2t aceasta s\u0103 implementeze jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Elementul de configurare cdi12 este \u00eenlocuit de elementul de configurare cdi.
+cdi12.element.type.superceded.CWOWB1015W.explanation=Elementul de configurare cdi \u00eenlocuie\u0219te elementul de configurare cdi12 \u0219i con\u021bine toate op\u021biunile pe care le oferea acesta, plus op\u021biuni noi.
+cdi12.element.type.superceded.CWOWB1015W.useraction=Modifica\u021bi configura\u021bia server.xml pentru a utiliza elementul de configurare cdi \u00een locul elementului de configurare cdi12.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: Atributul emptyBeansXMLExplicitArchive al elementului de configurare cdi este acceptat numai pe CDI 4.0 sau o versiune mai recent\u0103. Acest atribut este ignorat.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=Atributul emptyBeansXMLExplicitArchive nu are niciun efect atunci c\u00e2nd este utilizat cu o versiune CDI inferioar\u0103 versiunii 4.0.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Actualiza\u021bi configura\u021bia server.xml, fie pentru a elimina atributul, fie pentru a folosi versiunea CDI 4.0 sau o versiune mai recent\u0103.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Atributul enableImplicitBeanArchives a fost setat at\u00e2t pentru elemente de configurare cdi12, c\u00e2t \u0219i pentru elemente cdi. Se folose\u0219te valoarea din elementul cdi \u0219i se ignor\u0103 valoarea din cdi12
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=De\u0219i pute\u021bi seta atributul enableImplicitBeanArchives pe ambele elemente de configurare a elementelor de configurare cdi12 \u0219i cdi, nu este necesar s\u0103 seta\u021bi acest atribut cu valori diferite \u00een aceea\u0219i configura\u021bie a serverului.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Actualiza\u021bi server.xml pentru a remedia contradic\u021bia. Ac\u021biunea recomandat\u0103 este eliminarea elementului de configurare pentru cdi12 deoarece acesta este \u00eenlocuit cu elementul de configurare cdi.
+

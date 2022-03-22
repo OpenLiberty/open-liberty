@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Ein Serverpr\u00fcfpunkt wurde a
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Es wurde ein Pr\u00fcfpunkt angefordert. Der Server wird angehalten und sein aktueller Status wird auf Platte geschrieben.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Der Liberty-Server nimmt die Operation an einem Pr\u00fcfpunkt wieder auf.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Der Liberty-Serverprozess hat die Operation an einem Pr\u00fcfpunkt in {0} Sekunden wiederaufgenommen.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=Eine Wiederherstellungsoperation wurde f\u00fcr ein Pr\u00fcfpunktimage des Liberty-Servers ausgef\u00fchrt.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
 

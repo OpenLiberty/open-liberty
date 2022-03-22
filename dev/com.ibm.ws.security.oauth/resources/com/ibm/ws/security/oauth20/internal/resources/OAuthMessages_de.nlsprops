@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,12 +16,12 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Die Konfiguration des OAuth-Providers {0} ist nicht g\u00fcltig.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Die angegebene Oauth-Provider-Konfiguration kann nicht abgerufen werden.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Geben Sie eine g\u00fcltige Oauth-Provider-Konfiguration an.
 
-OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: F\u00fcr den OAuth-Provider {0} ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben oder die Bibliothek ist nicht aktiviert.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: F\u00fcr den OAuth-Provider {0} ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben, oder die Bibliothek ist nicht aktiviert.
 OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=F\u00fcr den OAuth-Provider ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben oder die Bibliothek ist nicht aktiviert. Dies kann ein Konfigurationsfehler sein oder die Bibliothek wurde nach der Aktivierung des Providers aktiviert.
 OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Stellen Sie sicher, dass libraryRef f\u00fcr den OAuth-Provider ordnungsgem\u00e4\u00df definiert ist.
 
@@ -221,11 +221,11 @@ OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: Im OAuth-Provider {0}
 OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=Im OAuth-Provider ist ein Element databaseStore angegeben, aber das Attribut ist entweder nicht angegeben oder ung\u00fcltig. Dies kann auf einen Konfigurationsfehler zur\u00fcckzuf\u00fchren sein.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Stellen Sie sicher, dass das Attribut des Elements databaseStore im OAuth-Provider ordnungsgem\u00e4\u00df definiert ist.
 
-OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Ein Konfigurationsfehler ist aufgetreten. Die OpenID Connect-Provider {0} und {1} haben denselben OAuth-Provider {2}. Beide OpenID Connect-Provider wurden inaktiviert.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Ein Konfigurationsfehler ist aufgetreten. Der OpenID Connect-Provider {0} und {1} haben denselben OAuth-Provider {2}. Beide OpenID Connect-Provider werden inaktiviert.
 OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=F\u00fcr jeden OpenID Connect-Provider muss ein eindeutiger OAuth-Provider in der Datei server.xml angegeben sein. Andernfalls werden die doppelten OpenID Connect-Provider inaktiviert. 
 OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Stellen Sie sicher, dass f\u00fcr jeden OpenID Connect-Provider ein eindeutiger OAuth-Provider in der Datei server.xml angegeben ist.
 
-OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Im OAuth-Provider {0} ist ein Element databaseStore angegeben, aber das Attribut dataSourceFactory f\u00fcr die angegebene Datenquelle ist nicht aktiviert.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Im OAuth-Provider {0} ist ein Element databaseStore angegeben, aber die dataSourceFactory f\u00fcr die angegebene dataSource ist nicht aktiviert.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=Im OAuth-Provider ist ein Element databaseStore angegeben, aber das Attribut dataSourceFactory f\u00fcr die angegebene Datenquelle ist nicht aktiviert. Dies kann auf einen Konfigurationsfehler mit der Datenquelle zur\u00fcckzuf\u00fchren sein.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Stellen Sie sicher, dass das Attribut dataSourceRef des Elements databaseStore im OAuth-Provider ordnungsgem\u00e4\u00df mit einer g\u00fcltigen Datenquelle definiert ist.
 
@@ -236,6 +236,7 @@ OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.useraction=Stellen Sie sic
 OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED=CWWKS1453I: Es sind mehrere TokenIntrospectProvider konfiguriert.
 OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.explanation=In der Datei server.xml sind mehrere TokenIntrospectProvider konfiguriert.
 OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: Die Anforderung ist fehlgeschlagen, weil das Zugriffstoken nicht g\u00fcltig oder abgelaufen ist.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Die Anforderung konnte nicht verarbeitet werden, weil das Zugriffstoken nicht g\u00fcltig ist.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Stellen Sie sicher, dass das Zugriffstoken g\u00fcltig und nicht abgelaufen ist.
@@ -457,12 +458,26 @@ WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Das Token mit dem Granttyp [{0}] ist nicht zul
 WRONG_TOKEN_GRANTTYPE.explanation=Das Token ist nicht g\u00fcltig, weil der zugeh\u00f6rige Granttyp nicht zul\u00e4ssig ist.
 WRONG_TOKEN_GRANTTYPE.useraction=Verwenden Sie ein Token mit einem zul\u00e4ssigen Granttypen.
 
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: Der URI [{0}] f\u00fcr das Metadatenfeld f\u00fcr die Clientregistrierung {1} ist ung\u00fcltig, da es ein Fragment enth\u00e4lt.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=Die Anforderung kann nicht ausgef\u00fchrt werden, denn der URI darf kein Fragment enthalten.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=\u00dcberpr\u00fcfen Sie den Eigenschaftswert in der Anfrage und entfernen Sie das URI-Fragment.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: Der URI [{0}] f\u00fcr das Metadatenfeld f\u00fcr die Clientregistrierung {1} ist ung\u00fcltig, da er das HTTP-oder HTTPS-Schema nicht verwendet.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=Der URI-Wert muss das HTTP-bzw. HTTPS-Schema verwenden.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=\u00dcberpr\u00fcfen Sie den Eigenschaftswert in der Anforderung und aktualisieren Sie ihn f\u00fcr die Verwendung des HTTP-oder HTTPS-Schemas.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: Der URI [{0}] f\u00fcr das Metadatenfeld f\u00fcr die Clientregistrierung {1} ist ung\u00fcltig, da er das HTTP-Schema verwendet, der OAuth-Client [{2}] jedoch kein vertraulicher Client ist.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=Der URI-Wert f\u00fcr das Metadatenfeld, das in der Nachricht angegeben ist, kann das HTTP-Schema nur verwenden, wenn der OAuth-Client ein vertraulicher Client ist. Andernfalls muss das HTTPS-Schema verwendet werden.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Aktualisieren Sie den URI f\u00fcr die Verwendung des HTTPS-Schemas oder aktualisieren Sie den OAuth-Client als vertraulichen Client.
+
 # html title of logout page
-LOGOUT_PAGE_TITLE=Abmelden
+LOGOUT_PAGE_TITLE=Anmelden
 # html body of logout page
 LOGOUT_PAGE_BODY=Die Abmeldung war erfolgreich.
 
 # html title of logout error page
-LOGOUT_ERROR_PAGE_TITLE=Abmelden
+LOGOUT_ERROR_PAGE_TITLE=Anmelden
 # html body of logout error page
 LOGOUT_ERROR_PAGE_BODY=W\u00e4hrend der Abmeldung ist eine Ausnahme eingetreten. Es wird empfohlen, den Web-Browser zu schlie\u00dfen, um die Abmeldung abzuschlie\u00dfen.

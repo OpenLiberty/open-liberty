@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: La configuraci\u00f3n del proveedor de OAuth {0} no es v\u00e1lida.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=No se puede obtener la configuraci\u00f3n del proveedor de oauth especificado.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Especifique una configuraci\u00f3n de proveedor de oauth v\u00e1lida.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instale Java versi\u00f3n 8 o superior 
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: La se\u00f1al con el tipo de otorgamiento [{0}] no est\u00e1 permitida. Los tipos de otorgamiento permitidos son {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=La se\u00f1al no es v\u00e1lida porque su tipo de otorgamiento no est\u00e1 permitido.
 WRONG_TOKEN_GRANTTYPE.useraction=Utilice una se\u00f1al con un tipo de otorgamiento que est\u00e9 permitido.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: El URI [{0}] para el campo de metadatos de registro del cliente {1} no es v\u00e1lido porque contiene un fragmento.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=La solicitud no se puede completar porque el URI no debe contener un fragmento.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Revise el valor de la propiedad en la solicitud y elimine el fragmento de URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: El URI [{0}] para el campo de metadatos de registro de cliente de {1} no es v\u00e1lido porque no utiliza el esquema HTTP o HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=El valor de URI debe utilizar el esquema HTTP o HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Revise el valor de la propiedad en la solicitud y actual\u00edcelo para que utilice el esquema HTTP o HTTPS.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: El URI [{0}] para el campo de metadatos de registro del cliente {1} no es v\u00e1lido porque utiliza el esquema HTTP, pero el cliente de OAuth [{2}] no es un cliente confidencial.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=El valor de URI para el campo de metadatos que se ha especificado en el mensaje solo puede utilizar el esquema HTTP si el cliente de OAuth es un cliente confidencial. De lo contrario, se debe utilizar el esquema HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Actualice el URI para que utilice el esquema HTTPS o actualice el cliente de OAuth para que sea un cliente confidencial.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Cierre de sesi\u00f3n

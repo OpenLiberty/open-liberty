@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Tylko do u\u017cytku wewn\u0119trznego.
 ADD_ID.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Brak wymaganego parametru konfiguracyjnego {0} 
 INVALID_CONFIG_PARAM.explanation=Kod \u015brodowiska wykonawczego logowania spo\u0142eczno\u015bciowego nie znalaz\u0142 wymaganego parametru podczas przetwarzania \u017c\u0105dania klienta.
 INVALID_CONFIG_PARAM.useraction=Sprawd\u017a brakuj\u0105cy parametr w konfiguracji i upewnij si\u0119, \u017ce zosta\u0142 on podany i jest poprawny.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Klient logowania spo\u0142eczno\u015bciowego [{0}] nie m\u00f3g\u0142 uzyska\u0107 informacji o punkcie ko\u0144cowym dostawcy OpenID Connect za po\u015brednictwem adresu URL punktu ko\u0144cowego wykrywania [{1}]. Zaktualizuj konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego (konfiguracj\u0119 oidcLogin) przy u\u017cyciu poprawnego adresu URL punktu ko\u0144cowego wykrywania HTTPS. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Klient logowania\nspo\u0142eczno\u015bciowego [{0}] nie m\u00f3g\u0142 uzyska\u0107 informacji o punkcie ko\u0144cowym dostawcy OpenID\nConnect za po\u015brednictwem adresu URL punktu ko\u0144cowego wykrywania [{1}]. Zaktualizuj konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego (konfiguracj\u0119 oidcLogin) przy u\u017cyciu poprawnego adresu URL punktu ko\u0144cowego wykrywania HTTPS.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=W konfiguracji oidcLogin ustawiono wykrywanie punkt\u00f3w ko\u0144cowych dostawcy OpenID Connect za po\u015brednictwem adresu URL wykrywania, ale proces wykrywania nie powi\u00f3d\u0142 si\u0119. Klient nie mo\u017ce przetworzy\u0107 \u017c\u0105da\u0144 uwierzytelniania, dop\u00f3ki konfiguracja punktu ko\u0144cowego wykrywania nie zostanie poprawiona lub wykrywanie nie powiedzie si\u0119.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Popraw konfiguracj\u0119 oidcLogin, aby upewni\u0107 si\u0119, \u017ce 1) adres URL punktu ko\u0144cowego wykrywania odwo\u0142uje si\u0119 do poprawnego dostawcy OpenID Connect, 2) adres URL punktu ko\u0144cowego wykrywania jest adresem HTTPS i 3) sk\u0142adniki protoko\u0142u SSL oraz elementy magazynu kluczy s\u0105 poprawnie skonfigurowane i ufaj\u0105 dostawcy OpenID Connect. 4) Upewnij si\u0119, \u017ce punkt ko\u0144cowy wykrywania dostawcy OpenID Connect dzia\u0142a poprawnie.
 
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Sprawd\u017a, czy konfiguracja JWT
 REQUEST_URL_NOT_VALID=CWWKS5499E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce przekierowa\u0107 \u017c\u0105dania z powrotem na adres URL oryginalnego \u017c\u0105dania [{0}], poniewa\u017c ten adres URL jest niepoprawny. {1}
 REQUEST_URL_NOT_VALID.explanation=Adres URL oryginalnego \u017c\u0105dania jest niepoprawny. Adres URL mo\u017ce zawiera\u0107 znaki, kt\u00f3re nie s\u0105 poprawne, lub mo\u017ce by\u0107 on zniekszta\u0142cony.
 REQUEST_URL_NOT_VALID.useraction=Sprawd\u017a, czy podany w komunikacie adres URL \u017c\u0105dania jest zgodny z adresem URL oryginalnego \u017c\u0105dania chronionego zasobu. Sprawd\u017a, czy ten adres URL zosta\u0142 poprawnie zbudowany i czy zawiera tylko poprawne znaki identyfikatora URI.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: \u017b\u0105danie wylogowania z kana\u0142u zwrotnego wys\u0142ane do [{0}] nie jest obs\u0142ugiwane przez konfiguracj\u0119 logowania do medi\u00f3w spo\u0142eczno\u015bciowych [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=Konfiguracja logowania do medi\u00f3w spo\u0142eczno\u015bciowych nie jest klientem OpenID Connect, wi\u0119c nie obs\u0142uguje wylogowania przez kana\u0142 zwrotny.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Nale\u017cy u\u017cy\u0107 punktu ko\u0144cowego wylogowania, kt\u00f3ry jest odpowiedni dla konfiguracji logowania do medi\u00f3w spo\u0142eczno\u015bciowych.
+

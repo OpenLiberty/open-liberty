@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=L'attributo del certificato TBSCertifica
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Assicurarsi che il filtro del certificato sia corretto.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Impossibile completare l''operazione di login. Un attributo del certificato sconosciuto {0} \u00e8 stato utilizzato nella specifica del filtro. Specificare un filtro del certificato supportato.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=\u00c8 possibile utilizzare solo i seguenti valori di attributo del certificato sul lato destra della specifica del filtro. Le stringhe sono sensibili al maiuscolo/minuscolo: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=\u00c8 possibile utilizzare solo i seguenti valori di attributo del certificato sul lato destra della specifica del filtro. Le stringhe sono sensibili al maiuscolo/minuscolo: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Assicurarsi che il filtro del certificato sia corretto.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Impossibile completare l''operazione di login. Il campo Distinguished Name configurato {0} non \u00e8 valido. Specificare un campo Distinguished Name valido.

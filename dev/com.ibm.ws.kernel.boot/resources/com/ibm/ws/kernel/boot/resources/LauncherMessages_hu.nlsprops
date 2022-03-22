@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: A megadott "{0}" ellen\u0151rz\u00e9si pont f
 error.invalidPhaseName.explanation=Az ellen\u0151rz\u00e9si pont param\u00e9ter \u00e9rt\u00e9kek\u00e9nt ismeretlen f\u00e1zis lett megadva.
 error.invalidPhaseName.useraction=Az \u00e9rv\u00e9nyes f\u00e1zisnevek meghat\u00e1roz\u00e1s\u00e1hoz tekintse \u00e1t a dokument\u00e1ci\u00f3t. Adja ki \u00fajra a parancsot \u00e9rv\u00e9nyes ellen\u0151rz\u00e9si pont f\u00e1zis haszn\u00e1lat\u00e1val.
 
+error.set.securitymanager.jdk18=CWWKE0955E: A websphere.java.security tulajdons\u00e1g be van \u00e1ll\u00edtva a bootstrap.properties f\u00e1jlban, de a Java v\u00e1ltozat: {0}.  Ez a tulajdons\u00e1g enged\u00e9lyezi a Java biztons\u00e1gkezel\u0151t, \u00e9s a Java 18 \u00e9s \u00fajabb v\u00e1ltozatain\u00e1l \u00e9rv\u00e9nytelen.
+error.set.securitymanager.jdk18.explanation= A Java biztons\u00e1gkezel\u0151 avultat\u00e1s\u00e1nak r\u00e9szek\u00e9nt, a JEP 411 \u00e1ltal megadott m\u00f3don, a Liberty nem t\u00e1mogatja a Java biztons\u00e1gkezel\u0151t Java 18 vagy \u00fajabb v\u00e1ltozatokn\u00e1l.
+error.set.securitymanager.jdk18.useraction=T\u00e1vol\u00edtsa el a websphere.java.security tulajdons\u00e1got a bootstrap.properties f\u00e1jlb\u00f3l, vagy haszn\u00e1ljon Java 18-n\u00e1l kor\u00e1bbi Java v\u00e1ltozatot.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: A Java biztons\u00e1gkezel\u0151 be\u00e1ll\u00edt\u00e1sa egy kiv\u00e9tel miatt meghi\u00fasult: {0}.  Ez akkor t\u00f6rt\u00e9nik, ha a kiszolg\u00e1l\u00f3 Java 18 vagy \u00fajabb v\u00e1ltozatot haszn\u00e1l, \u00e9s a "java.security.manager" Java rendszertulajdons\u00e1g nem "allow" \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+error.cannotset.securitymanager.jdk18.explanation=A Java biztons\u00e1gkezel\u0151 nem enged\u00e9lyezhet\u0151, mert a rendszer Java 18-at haszn\u00e1l, ami alap\u00e9rtelmez\u00e9sben nem teszi lehet\u0151v\u00e9 a Java biztons\u00e1gkezel\u0151 haszn\u00e1lat\u00e1t.
+error.cannotset.securitymanager.jdk18.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t a -Djava.security.manager=allow JVM argumentummal.
+
+error.checkpoint.delete=CWWKE0955E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9s meghi\u00fasult, mert a megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151 a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
+error.checkpoint.delete.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert egy megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151.
+error.checkpoint.delete.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 jogosult a megl\u00e9v\u0151 k\u00f6nyvt\u00e1r t\u00f6rl\u00e9s\u00e9re. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
+
+error.checkpoint.workarea.backup=CWWKE0956E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert a(z) {0} k\u00f6nyvt\u00e1rr\u00f3l nem k\u00e9sz\u00edthet\u0151 biztons\u00e1gi ment\u00e9s.
+error.checkpoint.workarea.backup.explanation=Hiba t\u00f6rt\u00e9nt az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 workarea k\u00f6nyvt\u00e1r\u00e1nak ment\u00e9sekor.
+error.checkpoint.workarea.backup.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak biztons\u00e1gi ment\u00e9s\u00e9hez. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
+
+error.checkpoint.workarea.restore=CWWKE0957E: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 workarea k\u00f6nyvt\u00e1r\u00e1t nem lehet vissza\u00e1ll\u00edtani a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
+error.checkpoint.workarea.restore.explanation=Hiba t\u00f6rt\u00e9nt az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak vissza\u00e1ll\u00edt\u00e1sakor.
+error.checkpoint.workarea.restore.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak vissza\u00e1ll\u00edt\u00e1s\u00e1hoz. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
+
+info.checkpoint.restore.failed=CWWKE0957I: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl.
+info.checkpoint.restore.failed.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor.  A kiszolg\u00e1l\u00f3 az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl indult el.
+info.checkpoint.restore.failed.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

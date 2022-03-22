@@ -29,7 +29,7 @@ OIDC_CLIENT_CONFIG_PROCESSED.useraction=Nenhum
 #used_by_client_project
 OIDC_CLIENT_CONFIG_MODIFIED=CWWKS1701I: A altera\u00e7\u00e3o da configura\u00e7\u00e3o do cliente OpenID Connect {0} foi processada com sucesso.
 OIDC_CLIENT_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do cliente OpenID Connect (parte dependente ou servidor de recurso) foi modificada com sucesso.
-OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nenhuma.
+OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nenhum.
 
 #1702 is used by clients.common bundle, do not use.
 
@@ -42,17 +42,17 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Execute um destes procedimentos: p
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: O estado atual [{0}] do cliente OpenID Connect [{2}] e o par\u00e2metro de estado [{1}] na resposta do provedor OpenID Connect n\u00e3o correspondem.  Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (parte dependente ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Assegure-se de que a URL do OP esteja correta. Verifique os logs no OP para assegurar-se de que ele tenha recebido a solicita\u00e7\u00e3o.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: O cliente OpenID Connect [{0}] falhou ao autenticar o token de ID porque um assunto identificador n\u00e3o foi inclu\u00eddo no token. 
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Para autenticar um token de ID, o cliente OpenID Connect (relying party ou RP) deve ter um assunto identificador. O token de ID recebido na resposta do provedor OpenID Connect (OP) n\u00e3o continha um assunto identificador, portanto, a autentica\u00e7\u00e3o falhou. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Para autenticar um token de ID, o cliente OpenID Connect (parte dependente ou RP) deve ter um assunto identificador. O token de ID recebido na resposta do provedor OpenID Connect (OP) n\u00e3o continha um assunto identificador, portanto, a autentica\u00e7\u00e3o falhou. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Assegure-se de que o provedor OpenID Connect (OP) retorne um token de ID que inclua um assunto identificador.
 
 #used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: O cliente OpenID Connect [{1}] falhou ao validar o token de ID devido a [{0}].
-OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) n\u00e3o pode validar o token de ID com \u00eaxito. Isso pode ter sido causado por uma falha no processo de valida\u00e7\u00e3o de solicita\u00e7\u00f5es necess\u00e1rias. Algumas das solicita\u00e7\u00f5es necess\u00e1rias do token de ID incluem emissor, p\u00fablico, hor\u00e1rio de emiss\u00e3o. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=O cliente OpenID Connect (parte dependente ou RP) n\u00e3o pode validar o token de ID com \u00eaxito. Isso pode ter sido causado por uma falha no processo de valida\u00e7\u00e3o de solicita\u00e7\u00f5es necess\u00e1rias. Algumas das solicita\u00e7\u00f5es necess\u00e1rias do token de ID incluem emissor, p\u00fablico, hor\u00e1rio de emiss\u00e3o. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Assegure-se de que o rel\u00f3gio do sistema do cliente OpenID Connect (RP) esteja em sincroniza\u00e7\u00e3o com o rel\u00f3gio do sistema do provedor OpenID Connect (OP) (no caso de estarem em dois sistemas diferentes). Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece depois desse erro.
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
@@ -214,7 +214,7 @@ OIDC_CLIENT_NONE_ALG.useraction=Se n\u00e3o for esperado que os tokens de entrad
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
 OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: O cookie WASOidcCode [{0}] na solicita\u00e7\u00e3o para o cliente OpenID Connect [{1}] n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
-OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=O cliente OpenID Connect (relying party ou RP) recebeu um cookie WASOidcCode que n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
+OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=O cliente OpenID Connect (parte dependente ou RP) recebeu um cookie WASOidcCode que n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
 OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Verifique se o cookie n\u00e3o foi modificado e se o conte\u00fado decodificado do cookie come\u00e7a com um objeto JSON formatado corretamente.
 
 #1746, 1747  used in clients.common, do not use here. 
@@ -228,7 +228,7 @@ OIDC_CLIENT_BAD_GET_REQUEST.useraction=Verifique a configura\u00e7\u00e3o do pro
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Uma solicita\u00e7\u00e3o para [{0}] n\u00e3o \u00e9 v\u00e1lida. O par\u00e2metro de estado necess\u00e1rio est\u00e1 ausente. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=Foi recebida uma solicita\u00e7\u00e3o que n\u00e3o incluiu um par\u00e2metro de estado necess\u00e1rio.
-OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifique a configura\u00e7\u00e3o do provedor OpenID Connect. Esta mensagem tamb\u00e9m pode ser causada pela espionagem com um navegador. 
+OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifique a configura\u00e7\u00e3o do provedor OpenID Connect. Esta mensagem tamb\u00e9m pode ser causada pela espionagem com um navegador.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
@@ -239,36 +239,36 @@ OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Foi recebida uma solicita\u00e7\u0
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. A aus\u00eancia do cookie pode ser causada por acessar o cliente com um nome de host que difere do nome do host do redirecionamento que est\u00e1 registrado com o provedor. Se o atributo sameSiteCookie no elemento webAppSecurity na configura\u00e7\u00e3o do servidor estiver configurado como Strict, tente configurar o valor como Lax ou None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: A configura\u00e7\u00e3o [{2}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica a URL do endpoint de descoberta [{0}] e os outros terminais. O RP usar\u00e1 as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorar\u00e1 os outros terminais configurados [{1}].
-OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=O cliente do OpenId Connect usa o terminal de descoberta para entrar em contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta para entrar em contato com os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo.
-OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure o terminal de descoberta ou os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo, mas n\u00e3o configure ambos.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=O cliente do OpenId Connect usa o endpoint de descoberta para entrar em contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta para entrar em contato com os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure o endpoint de descoberta ou os outros endpoints, como autoriza\u00e7\u00e3o, token e userinfo, mas n\u00e3o configure ambos.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: A configura\u00e7\u00e3o [{2}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica a URL do endpoint de descoberta [{0}] e o identificador do emissor [{1}]. O RP usar\u00e1 as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorar\u00e1 o identificador do emissor configurado.
-OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=O cliente do OpenId Connect usa o terminal de descoberta para entrar com contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta.
-OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure o terminal de descoberta ou o identificador de emissor, mas n\u00e3o configure ambos.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=O cliente do OpenId Connect usa o endpoint de descoberta para entrar com contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure o endpoint de descoberta ou o identificador de emissor, mas n\u00e3o configure ambos.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: A configura\u00e7\u00e3o [{3}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica [{0}], um valor padr\u00e3o para [{1}], que \u00e9 alterado para [{2}] como resultado da descoberta.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Se o provedor OpenID Connect n\u00e3o suportar os padr\u00f5es RP, dependendo da capacidade do RP, os padr\u00f5es podem ser ajustados ao que o OP suporta.
-OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: O cliente [{0}] do OpenID Connect falhou ao obter informa\u00e7\u00f5es do terminal do provedor OpenID Connect por meio da URL [{1}] do endpoint de descoberta. Atualize a configura\u00e7\u00e3o do cliente do OpenID Connect com a URL correta do endpoint de descoberta HTTPS. 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=O cliente do OpenID Connect est\u00e1 configurado para descobrir os terminais do provedor OpenID Connect por meio da URL de descoberta, mas o processo de descoberta falhou. O cliente do OpenID Connect n\u00e3o poder\u00e1 processar as solicita\u00e7\u00f5es de autentica\u00e7\u00e3o at\u00e9 que a configura\u00e7\u00e3o do discoveryEndpointURL seja corrigida ou a descoberta seja bem-sucedida.
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija a configura\u00e7\u00e3o do cliente do OpenID Connect para garantir que 1) a URL do terminal de descoberta se refira ao provedor correto do OpenID Connect; 2) a URL do terminal de descoberta seja HTTPS e 3) os elementos SSL de recurso e de keystore estejam configurados corretamente com confian\u00e7a para o provedor OpenID Connect. Certifique-se de que o terminal de descoberta do provedor OpenID Connect esteja funcionando.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija a configura\u00e7\u00e3o do cliente do OpenID Connect para garantir que 1) a URL do endpoint de descoberta se refira ao provedor correto do OpenID Connect; 2) a URL do endpoint de descoberta seja HTTPS e 3) os elementos SSL de recurso e de keystore estejam configurados corretamente com confian\u00e7a para o provedor OpenID Connect. Certifique-se de que o endpoint de descoberta do provedor OpenID Connect esteja funcionando.
 
 OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Uma resposta bem-sucedida n\u00e3o foi retornada da URL [{0}]. Esse \u00e9 o status da resposta [{1}] e o erro [{2}] da solicita\u00e7\u00e3o de descoberta.
-OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=O cliente do OpenID Connect falhou ao acessar o terminal de descoberta do provedor OpenID Connect e a mensagem pode conter mais informa\u00e7\u00f5es sobre o erro.
-OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Certifique-se de que o provedor OpenID Connect esteja dispon\u00edvel e de que o terminal de descoberta especificado esteja correto.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=O cliente do OpenID Connect falhou ao acessar o endpoint de descoberta do provedor OpenID Connect e a mensagem pode conter mais informa\u00e7\u00f5es sobre o erro.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Certifique-se de que o provedor OpenID Connect esteja dispon\u00edvel e de que o endpoint de descoberta especificado esteja correto.
 
 OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] foi estabelecida com as informa\u00e7\u00f5es da URL do endpoint de descoberta [{1}]. Essas informa\u00e7\u00f5es permitem que o cliente interaja com o provedor OpenID Connect para processar as solicita\u00e7\u00f5es como autoriza\u00e7\u00e3o e token.
 OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=O cliente do OpenID Connect entra em contato com o endpoint de descoberta do provedor OpenID Connect para obter as informa\u00e7\u00f5es, como authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl e jwkEndpointUrl. Essas informa\u00e7\u00f5es permitem que o cliente OpenID Connect interaja com o provedor do OpenID Connect para enviar solicita\u00e7\u00f5es de autoriza\u00e7\u00e3o, token, jwk, informa\u00e7\u00f5es do usu\u00e1rio.
-OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] foi atualizada com as novas informa\u00e7\u00f5es recebidas da URL do endpoint de descoberta [{1}].
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=O cliente do OpenID Connect entra em contato com o terminal de descoberta do provedor OpenID Connect, 1) se houver um problema ao entrar em contato com os terminais de autoriza\u00e7\u00e3o ou de token do provedor OpenID Connect 2) se o hor\u00e1rio atual for posterior ao pr\u00f3ximo hor\u00e1rio de descoberta. O pr\u00f3ximo tempo de descoberta \u00e9 calculado incluindo o valor discoveryPollingRate no hor\u00e1rio atual ap\u00f3s cada chamada de descoberta.
-OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: A configura\u00e7\u00e3o do cliente OpenID Connect [{0}] \u00e9 consistente com as informa\u00e7\u00f5es da URL do endpoint de descoberta [{1}], portanto, nenhuma atualiza\u00e7\u00e3o de configura\u00e7\u00e3o \u00e9 necess\u00e1ria.
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=O cliente do OpenID Connect entra em contato com o terminal de descoberta do provedor OpenID Connect, 1) se houver um problema ao entrar em contato com os terminais de autoriza\u00e7\u00e3o ou de token do provedor OpenID Connect 2) se o hor\u00e1rio atual for posterior ao pr\u00f3ximo hor\u00e1rio de descoberta. O pr\u00f3ximo tempo de descoberta \u00e9 calculado incluindo o valor discoveryPollingRate no hor\u00e1rio atual ap\u00f3s cada chamada de descoberta. Se as informa\u00e7\u00f5es de descoberta mais recentes corresponderem \u00e0s anteriores, nenhuma atualiza\u00e7\u00e3o de configura\u00e7\u00e3o ocorrer\u00e1.
-OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: O atributo de configura\u00e7\u00e3o [{0}] necess\u00e1rio est\u00e1 ausente ou vazio e um valor padr\u00e3o n\u00e3o foi fornecido. Verifique se o atributo est\u00e1 configurado ou descoberto a partir do provedor, se ele n\u00e3o est\u00e1 vazio e se ele n\u00e3o consiste somente em caracteres de espa\u00e7o em branco.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=O atributo de configura\u00e7\u00e3o especificado pode estar ausente da configura\u00e7\u00e3o do servidor. Se um valor for especificado, o espa\u00e7o em branco no in\u00edcio e no t\u00e9rmino do valor ser\u00e1 removido quando o valor for processado, portanto o valor na configura\u00e7\u00e3o poder\u00e1 estar vazio ou consistir somente em caracteres de espa\u00e7o em branco. Se o endpoint de descoberta for especificado para obter esse valor de atributo a partir do provedor, a descoberta poder\u00e1 ter um problema.
@@ -288,11 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Uma solicita\u00e7\u
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Foi recebida uma solicita\u00e7\u00e3o que inclui um cookie malformado.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. O cookie malformado pode ser causado pela modifica\u00e7\u00e3o do cookie no agente do usu\u00e1rio com um nome de host diferente do nome de host do redirecionamento que est\u00e1 registrado com o provedor. Se o nome do host for esperado, inclua-o no atributo wasReqURLRedirectDomainNames do elemento webAppSecurity em server.xml.
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: O cliente OpenID Connect {0} n\u00e3o pode extrair as reclama\u00e7\u00f5es JSON Web Token (JWT) da resposta da web. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A resposta da web deve ser um JWT no formato JSON Web Encryption (JWE) ou JSON Web Signature (JWS). A resposta pode estar malformada ou o cliente OpenID Connect encontrou outro erro ao processar a resposta.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es. Verifique se a resposta est\u00e1 no formato JWT.
-
-#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
+# 1533-1544 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

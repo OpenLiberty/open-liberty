@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Konfiguracja dostawcy OAuth {0} jest niepoprawna.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nie mo\u017cna uzyska\u0107 okre\u015blonej konfiguracji dostawcy OAuth.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Podaj poprawn\u0105 konfiguracj\u0119 dostawcy OAuth.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersj
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Znacznik o typie nadania [{0}] nie jest dozwolony. Dozwolone typy nadania: {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=Znacznik nie jest poprawny, poniewa\u017c jego typ nadania nie jest dozwolony.
 WRONG_TOKEN_GRANTTYPE.useraction=U\u017cyj znacznika z dozwolonym typem nadania.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: Identyfikator URI [{0}] dla pola metadanych rejestracji klienta {1} nie jest poprawny, poniewa\u017c zawiera fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=\u017b\u0105danie nie mo\u017ce zosta\u0107 wykonane, poniewa\u017c identyfikator URI nie mo\u017ce zawiera\u0107 fragmentu.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Przejrzyj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci w \u017c\u0105daniu i usu\u0144 fragment identyfikatora URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: Identyfikator URI [{0}] dla pola metadanych rejestracji klienta {1} nie jest poprawny, poniewa\u017c nie u\u017cywa schematu HTTP lub HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=Warto\u015b\u0107 identyfikatora URI musi korzysta\u0107 ze schematu HTTP lub HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Przejrzyj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci w \u017c\u0105daniu i zaktualizuj j\u0105 tak, aby korzysta\u0142a ze schematu HTTP lub HTTPS.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: Identyfikator URI [{0}] dla pola metadanych rejestracji klienta {1} jest niepoprawny, poniewa\u017c u\u017cywa schematu HTTP, ale klient OAuth [{2}] nie jest klientem poufnym.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=Warto\u015b\u0107 identyfikatora URI dla pola metadanych, kt\u00f3re jest okre\u015blone w komunikacie, mo\u017ce korzysta\u0107 ze schematu HTTP tylko wtedy, gdy klient OAuth jest klientem poufnym. W przeciwnym razie nale\u017cy u\u017cy\u0107 schematu HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Zaktualizuj identyfikator URI w taki spos\u00f3b, aby u\u017cywany by\u0142 schemat HTTPS, lub zaktualizuj klient OAuth tak, aby by\u0142 on klientem poufnym.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Wylogowanie

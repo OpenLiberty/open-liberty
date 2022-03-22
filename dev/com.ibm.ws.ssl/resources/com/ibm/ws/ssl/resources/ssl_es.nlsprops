@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: Se ha producido un error durante la inicializaci\u00f3n SSL. Excepci\u00f3n: {0}
 ssl.init.error.CWPKI0008E.explanation=Se ha producido un error inesperado durante la inicializaci\u00f3n de seguridad.
-ssl.init.error.CWPKI0008E.useraction=Es un error de tipo general. \
-Busque mensajes anteriores relacionados con la inicializaci\u00f3n SSL o con un problema de configuraci\u00f3n.  \
-Si se habilita el rastreo de depuraci\u00f3n SSL=all=enabled obtendr\u00e1 m\u00e1s informaci\u00f3n.
+ssl.init.error.CWPKI0008E.useraction=Es un error de tipo general. Busque mensajes anteriores relacionados con la inicializaci\u00f3n SSL o con un problema de configuraci\u00f3n.  Si se habilita el rastreo de depuraci\u00f3n SSL=all=enabled obtendr\u00e1 m\u00e1s informaci\u00f3n.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: El sistema no puede crear el objeto de seguridad durante la inicializaci\u00f3n.
 ssl.init.nullsecobject.CWPKI0009E.explanation=No se puede crear el objeto de seguridad a partir del repositorio. Se trata de un error interno. Es posible que falte el archivo security.xml o que est\u00e9 da\u00f1ado. 
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: Se ha producido un error al detener el componente SSL. Excepci\u00f3n: {0}
 ssl.stop.error.CWPKI0015E.explanation=Se ha producido un error inesperado al detener el componente SSL.
-ssl.stop.error.CWPKI0015E.useraction=Es un error de tipo general. \
-Busque mensajes anteriores relacionados con el error o con un problema de configuraci\u00f3n.  \
-Si se habilita el rastreo de depuraci\u00f3n SSL=all=enabled obtendr\u00e1 m\u00e1s informaci\u00f3n.
+ssl.stop.error.CWPKI0015E.useraction=Es un error de tipo general. Busque mensajes anteriores relacionados con el error o con un problema de configuraci\u00f3n.  Si se habilita el rastreo de depuraci\u00f3n SSL=all=enabled obtendr\u00e1 m\u00e1s informaci\u00f3n.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: El certificado con alias {0} del almac\u00e9n de claves {1} caducar\u00e1 dentro de {2} d\u00edas.
 ssl.expiration.warning.CWPKI0016W.explanation=Va a caducar un certificado del almac\u00e9n de claves.
@@ -187,7 +183,7 @@ ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: No se pueden encontrar
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=El nombre de host se debe especificar en la lista de hosts en el mismo formato can\u00f3nico en que aparece en el archivo serverindex.xml.
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Edite la lista de hosts para convertirla en el formato can\u00f3nico necesario.
 # -------------------------------------------------------------------------------------------------
-ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Se ha producido un error de reconocimiento SSL desde un cliente seguro.  El firmante SSL del servidor debe a\u00f1adirse al almac\u00e9n de confianza del cliente.  Se proporciona un programa de utilidad retrieveSigners para descargar firmantes del servidor aunque requiere derechos de acceso de administrador.  Disponga con el administrador que ejecute este programa de utilidad y configure el entorno seguro antes de ejecutar el cliente.  Tambi\u00e9n puede habilitar com.ibm.ssl.enableSignerExchangePrompt en ssl.client.props para \"DefaultSSLSettings\" para permitir la aceptaci\u00f3n del firmante durante el intento de conexi\u00f3n.
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Se ha producido un error de reconocimiento SSL desde un cliente seguro.  El firmante SSL del servidor debe a\u00f1adirse al almac\u00e9n de confianza del cliente.  Se proporciona un programa de utilidad retrieveSigners para descargar firmantes del servidor aunque requiere derechos de acceso de administrador.  Disponga con el administrador que ejecute este programa de utilidad y configure el entorno seguro antes de ejecutar el cliente.  Tambi\u00e9n puede habilitar com.ibm.ssl.enableSignerExchangePrompt en ssl.client.props para "DefaultSSLSettings" para permitir la aceptaci\u00f3n del firmante durante el intento de conexi\u00f3n.
 ssl.handshake.failure.info.CWPKI0040I.explanation=El firmante SSL del servidor debe a\u00f1adirse al almac\u00e9n de confianza del cliente. Los firmantes se pueden descargar autom\u00e1ticamente del servidor o se pueden proporcionar manualmente durante el intento de conexi\u00f3n.
 ssl.handshake.failure.info.CWPKI0040I.useraction=Ejecute el programa de utilidad retrieveSigners o habilite el indicador de intercambio de firmantes.
 # -------------------------------------------------------------------------------------------------
@@ -234,14 +230,12 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=Para garantizar el uso de algori
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** INDICADOR DE INTERCAMBIO DE FIRMANTE SSL ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=No se ha encontrado el firmante SSL del host de destino en el almac\u00e9n de confianza {0}.\n\
-\n\
-A continuaci\u00f3n se muestra la informaci\u00f3n del firmante (verifique que el valor de conversi\u00f3n coincida con el que aparece en el servidor): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  Nombre de dominio de sujeto:    
-ssl.trustmanager.signer.prompt.CWPKI0103I=  Nombre de dominio de emisor:     
-ssl.trustmanager.signer.prompt.CWPKI0104I=  N\u00famero de serie: 
-ssl.trustmanager.signer.prompt.CWPKI0105I=  Conversi\u00f3n SHA-1:  
-ssl.trustmanager.signer.prompt.CWPKI0106I=  Conversi\u00f3n MD5:    
+ssl.trustmanager.signer.prompt.CWPKI0101I=No se ha encontrado el firmante SSL del host de destino en el almac\u00e9n de confianza {0}.\n\nA continuaci\u00f3n se muestra la informaci\u00f3n del firmante (verifique que el valor de conversi\u00f3n coincida con el que aparece en el servidor): 
+ssl.trustmanager.signer.prompt.CWPKI0102I= Nombre de dominio de sujeto:    
+ssl.trustmanager.signer.prompt.CWPKI0103I= Nombre de dominio de emisor:     
+ssl.trustmanager.signer.prompt.CWPKI0104I= N\u00famero de serie: 
+ssl.trustmanager.signer.prompt.CWPKI0105I= Conversi\u00f3n SHA-1:  
+ssl.trustmanager.signer.prompt.CWPKI0106I= Conversi\u00f3n MD5:    
 ssl.trustmanager.signer.prompt.CWPKI0107I=\u00bfDesea a\u00f1adir firmante al almac\u00e9n de confianza ahora? (s/n) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
@@ -251,7 +245,7 @@ ssl.trustmanager.signer.prompt.answer.yes=s
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=s\u00ed
 ssl.trustmanager.signer.prompt.CWPKI0108I=Puede que sea necesario volver a realizar la solicitud si el socket excede el tiempo de espera mientras espera una respuesta para la solicitud.  Si es necesario volver a realizar la petici\u00f3n, tenga en cuenta que la petici\u00f3n no se volver\u00e1 a visualizar si se especifica (s), que indica que el firmante ya se ha a\u00f1adido al almac\u00e9n de confianza.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Caduca: 
+ssl.trustmanager.signer.prompt.CWPKI0109I= Caduca: 
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -281,11 +275,7 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=Determine la causa bas\u00e
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilice las opciones -listRemoteKeyStoreNames y -listLocalKeyStoreNames para obtener una lista de nombres para <nombreAlmac\u00e9nClavesRemoto> y <nombreAlmac\u00e9nClavesLocal> respectivamente.\n\
-\n\
-Uso: retrieveSigners <nombreAlmac\u00e9nClavesRemoto> <nombreAlmac\u00e9nClavesLocal> [options]\n\
-\ \
-options: [-profileName <nombrePerfil>] [-remoteAlias <aliasDeAlm\u00e1c\u00e9nRemoto>] [-localAlias <almacenarComoAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <puerto>] [-conntype <RMI|SOAP>] [-user <usuario>] [-password <contrase\u00f1a>] [-trace] [-logfile <nombre_archivo>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilice las opciones -listRemoteKeyStoreNames y -listLocalKeyStoreNames para obtener una lista de nombres para <nombreAlmac\u00e9nClavesRemoto> y <nombreAlmac\u00e9nClavesLocal> respectivamente.\n\nUso: retrieveSigners <nombreAlmac\u00e9nClavesRemoto> <nombreAlmac\u00e9nClavesLocal> [options]\n options: [-profileName <nombrePerfil>] [-remoteAlias <aliasDeAlm\u00e1c\u00e9nRemoto>] [-localAlias <almacenarComoAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <puerto>] [-conntype <RMI|SOAP>] [-user <usuario>] [-password <contrase\u00f1a>] [-trace] [-logfile <nombre_archivo>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Este mensaje es meramente informativo.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
@@ -346,8 +336,8 @@ ssl.signer.general.error.CWPKI0314E.explanation=Compruebe la l\u00ednea de manda
 ssl.signer.general.error.CWPKI0314E.useraction=Compruebe la ayuda del uso y vuelva a intentarlo despu\u00e9s de corregir la opci\u00f3n.
 # -------------------------------------------------------------------------------------------------
 ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Las propiedades de configuraci\u00f3n SSL son nulas. Puede haber un problema al analizar la configuraci\u00f3n de cliente SSL.
-ssl.no.properties.error.CWPKI0315E.explanation=No hay conjunto de propiedades de configuraci\u00f3n SSL.  Es posible que la propiedad \'com.ibm.SSL.ConfigURL\' no est\u00e9 establecida correctamente o que se haya producido un error al analizar la configuraci\u00f3n de cliente SSL.
-ssl.no.properties.error.CWPKI0315E.useraction=Busque errores en el archivo ssl.client.props y aseg\u00farese de que la propiedad \'com.ibm.SSL.ConfigURL\' est\u00e1 establecida.
+ssl.no.properties.error.CWPKI0315E.explanation=No hay conjunto de propiedades de configuraci\u00f3n SSL.  Es posible que la propiedad 'com.ibm.SSL.ConfigURL' no est\u00e9 establecida correctamente o que se haya producido un error al analizar la configuraci\u00f3n de cliente SSL.
+ssl.no.properties.error.CWPKI0315E.useraction=Busque errores en el archivo ssl.client.props y aseg\u00farese de que la propiedad 'com.ibm.SSL.ConfigURL' est\u00e1 establecida.
 
 ################################################################################
 # Range 400-599 reserved for CA Pure Client Util and Impls
@@ -469,7 +459,7 @@ ssl.ca.client.invalid.custom.attrs.useraction=Compruebe la ayuda del uso y vuelv
 
 
 #  CA CMP Client Impl
-ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  Falta el atributo {0} o no es del tipo correcto.  El tipo correcto es {1}.
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E: \ Falta el atributo {0} o no es del tipo correcto.  El tipo correcto es {1}.
 ssl.ca.cmp.impl.invalid.attribute.explanation=El atributo pasado a la implementaci\u00f3n es nulo o no es del tipo correcto.
 ssl.ca.cmp.impl.invalid.attribute.useraction=Aseg\u00farese de que se pasa el atributo necesario a la implementaci\u00f3n.
 # -------------------------------------------------------------------------------------------------
@@ -477,11 +467,11 @@ ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: La petici\u00f3n de cert
 ssl.ca.cmp.impl.invalid.certificate.request.explanation=La matriz byte de la solicitud de certificado es nula.
 ssl.ca.cmp.impl.invalid.certificate.request.useraction=Compruebe que se pasa a la implementaci\u00f3n una matriz byte de solicitud de certificado v\u00e1lida.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  La contrase\u00f1a de revocaci\u00f3n para esta solicitud es nula.
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E: \ La contrase\u00f1a de revocaci\u00f3n para esta solicitud es nula.
 ssl.ca.cmp.impl.invalid.revocation.reason.explanation=La matriz byte de la contrase\u00f1a de revocaci\u00f3n para esta solicitud es nula.
 ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Compruebe que se pasa a la implementaci\u00f3n una matriz byte de contrase\u00f1a de revocaci\u00f3n v\u00e1lida.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.general.error=CWPKI0453E:  Se ha producido la siguiente excepci\u00f3n inesperada: {0}
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \ Se ha producido la siguiente excepci\u00f3n inesperada: {0}
 ssl.ca.cmp.impl.general.error.explanation=CMSG0001
 ssl.ca.cmp.impl.general.error.useraction=CMSG0002
 # -------------------------------------------------------------------------------------------------
@@ -669,3 +659,26 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: Se est\u00e1 a\u00f1adiendo un certif
 ssl.certificate.add.CWPKI0830I.explanation=Se ha recuperado un certificado de una variable de entorno de la configuraci\u00f3n y se est\u00e1 a\u00f1adiendo al archivo de almac\u00e9n de claves.
 ssl.certificate.add.CWPKI0830I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: No se puede utilizar el protocolo SSL/TLS de {0}. El error ampliado es: {1} 
+ssl.protocol.error.CWPKI0831E.explanation=No se puede utilizar el protocolo que se ha proporcionado. Se produce un error al intentar obtener una instancia de SSLContext con el valor de protocolo. 
+ssl.protocol.error.CWPKI0831E.useraction=Aseg\u00farese de que la configuraci\u00f3n utiliza valores de protocolo SSL/TLS v\u00e1lidos para esta JVM.
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: El valor de protocolo SSL/TLS de {0} que se ha proporcionado no se puede utilizar para configurar una lista de valores de protocolos SSL.
+ssl.protocol.error.CWPKI0832E.explanation=El valor de protocolo no es v\u00e1lido en una agrupaci\u00f3n de listas de protocolos.
+ssl.protocol.error.CWPKI0832E.useraction=Aseg\u00farese de que la lista de protocolos SSL/TLS solo incluye valores adecuados para una lista de protocolos.
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: La configuraci\u00f3n de {0} SSL/TLS tiene un error que impide la creaci\u00f3n de la configuraci\u00f3n SSL/TLS. 
+ssl.protocol.error.CWPKI0833E.explanation=Los atributos de configuraci\u00f3n de SSL tienen un error que impide la creaci\u00f3n de SSLContext. 
+ssl.protocol.error.CWPKI0833E.useraction=Aseg\u00farese de que los atributos de configuraci\u00f3n de SSL son correctos. Revise los registros para ver si hay otros errores asociados con los atributos de configuraci\u00f3n de SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: La configuraci\u00f3n de SSL/TLS {0} no se puede establecer como la configuraci\u00f3n de SSL predeterminada del proceso debido a un error.
+ssl.config.error.CWPKI0834E.explanation=La configuraci\u00f3n de SSL/TLS especificada contiene un error que ha impedido que se establezca como la configuraci\u00f3n de SSL predeterminada del proceso. 
+ssl.config.error.CWPKI0834E.useraction=Aseg\u00farese de que los atributos de configuraci\u00f3n de SSL son correctos. Revise los registros para ver si hay errores asociados con los atributos de configuraci\u00f3n de SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ No se puede crear una configuraci\u00f3n de SSL/TLS para la conexi\u00f3n de entrada porque no se ha creado un gestor de claves.
+ssl.config.error.CWPKI0835E.explanation=Un error en la configuraci\u00f3n ha impedido que se creara el gestor de claves.
+ssl.config.error.CWPKI0835E.useraction=Aseg\u00farese de que los atributos de configuraci\u00f3n de SSL son correctos. Revise los registros para ver si hay errores asociados con los atributos de configuraci\u00f3n de SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: No se puede crear una configuraci\u00f3n de SSL/TLS porque no se han creado los gestores de claves y de confianza.
+ssl.config.error.CWPKI0836E.explanation=Un error en la configuraci\u00f3n ha impedido la creaci\u00f3n de los gestores de claves y de confianza.
+ssl.config.error.CWPKI0836E.useraction=Aseg\u00farese de que los atributos de configuraci\u00f3n de SSL son correctos. Revise los registros para ver si hay errores asociados con los atributos de configuraci\u00f3n de SSL.

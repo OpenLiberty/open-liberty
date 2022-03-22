@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=Corrija o erro que est\u
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: Uma classe {0} Uma classe {0} registrada por meio do CDI Extension SPI est\u00e1 em um pacote configur\u00e1vel diferente da implementa\u00e7\u00e3o CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=A classe \u00e9 ignorada porque foi registrada com o m\u00e9todo getExtensions() ou getBeanClasses() de uma implementa\u00e7\u00e3o CDIExtensionMetadata e est\u00e1 em um pacote configur\u00e1vel diferente da implementa\u00e7\u00e3o CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Mova a classe afetada ou crie uma nova implementa\u00e7\u00e3o CDIExtensionMetadata no pacote configur\u00e1vel correto.
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: O CDI encontrou uma exce\u00e7\u00e3o quando criou extens\u00f5es para o arquivo {0}. O erro era: {1}
+exception.creating.extensions.CWOWB1012E.explanation=CDI falhou ao carregar ou invocar a constru\u00e7\u00e3o de uma classe de extens\u00e3o.
+exception.creating.extensions.CWOWB1012E.useraction=Corrija o erro que est\u00e1 impedindo a cria\u00e7\u00e3o da extens\u00e3o.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: A classe {0} BuildCompatibleExtension n\u00e3o pode ser carregada.
+bce.not.loadable.CWOWB1013E.explanation=O aplicativo inclui um arquivo META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension que inclui a classe, mas o CDI n\u00e3o p\u00f4de carregar a classe.
+bce.not.loadable.CWOWB1013E.useraction=Certifique-se que a classe est\u00e1 presente no aplicativo e pode ser carregada. Se a classe estiver presente no aplicativo, um arquivo FFDC pode ter mais informa\u00e7\u00f5es sobre por que a classe n\u00e3o p\u00f4de ser carregada.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: A classe {0} n\u00e3o implementa a interface BuildCompatibleExtension.
+bce.does.not.implement.bce.CWOWB1014E.explanation=O aplicativo inclui um arquivo META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension que inclui a classe, mas a classe n\u00e3o implementa jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
+bce.does.not.implement.bce.CWOWB1014E.useraction=Mude a classe para que ela implemente jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: O elemento de configura\u00e7\u00e3o cdi12 \u00e9 substitu\u00eddo pelo elemento de configura\u00e7\u00e3o cdi.
+cdi12.element.type.superceded.CWOWB1015W.explanation=O elemento de configura\u00e7\u00e3o cdi substitui o elemento de configura\u00e7\u00e3o cdi12 e cont\u00e9m todas as mesmas op\u00e7\u00f5es, al\u00e9m de novas op\u00e7\u00f5es.
+cdi12.element.type.superceded.CWOWB1015W.useraction=Mude sua configura\u00e7\u00e3o do server.xml para usar o elemento de configura\u00e7\u00e3o cdi em vez do elemento de configura\u00e7\u00e3o cdi12.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: O atributo emptyBeansXMLExplicitArchive do elemento de configura\u00e7\u00e3o cdi \u00e9 suportado apenas no CDI 4.0 ou mais recente. Esse atributo ser\u00e1 ignorado.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=O atributo emptyBeansXMLExplicitArchive n\u00e3o tem efeito quando \u00e9 usado com uma vers\u00e3o CDI inferior a 4.0.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Atualize sua configura\u00e7\u00e3o server.xml para remover o atributo ou usar o CDI vers\u00e3o 4.0 ou mais recente.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: O atributo enableImplicitBeanArchives foi configurado em ambos os elementos de configura\u00e7\u00e3o cdi12 e cdi. O valor a partir do elemento cdi \u00e9 usado e o valor no elemento cdi12 \u00e9 ignorado.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Embora voc\u00ea defina o atributo enableImplicitBeanArchives nos elementos de configura\u00e7\u00e3o do elemento de configura\u00e7\u00e3o  cdi12 e cdi, voc\u00ea n\u00e3o deve definir esse atributo com valores diferentes na mesma configura\u00e7\u00e3o do servidor.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Atualize seu server.xml para corrigir o conflito. A a\u00e7\u00e3o recomendada \u00e9 remover o elemento de configura\u00e7\u00e3o cdi12 porque ele \u00e9 substitu\u00eddo pelo elemento de configura\u00e7\u00e3o cdi.
+

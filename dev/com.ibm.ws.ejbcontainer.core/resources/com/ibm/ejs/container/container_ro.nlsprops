@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,20 +47,17 @@ CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.explanation=Containerul nu a putut pasi
 CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.useraction=Verifica\u0163i c\u0103 directorul pasivizare exist\u0103, c\u0103 procesul are permisiuni de scriere \u00een acel director \u015fi c\u0103 exist\u0103 suficient spa\u0163iu pe disc.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: S-a e\u015fuat ob\u0163inerea wrapper-ului pentru o baz\u0103. \n\
-\ Home: {0}
+FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: S-a e\u015fuat ob\u0163inerea wrapper-ului pentru o baz\u0103. \n Home: {0}
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.useraction=CMSG0002
 
 # --------------------------------
-CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Un Stateful SessionBean nu a putut fi activat: {0} {1} \n\
-\ {2}
+CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Un Stateful SessionBean nu a putut fi activat: {0} {1} \n {2}
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.explanation=Containerul a e\u015fuat activarea unui stateful session bean din spa\u0163iul de stocare.
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.useraction=Ac\u0163iona\u0163i \u00een func\u0163ie de mesajul de excep\u0163ie din mesajul CNTR0003W.
 
 # --------------------------------
-ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: O \u00eencercare de ob\u0163inere a unei bloc\u0103ri a fost \u00eentrerupt\u0103. \n\
-\ Blocare : {0}
+ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: O \u00eencercare de ob\u0163inere a unei bloc\u0103ri a fost \u00eentrerupt\u0103. \n Blocare : {0}
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.explanation=Un fir de execu\u0163ie care \u00eencerca s\u0103 ob\u0163in\u0103 o blocare exclusiv\u0103 \u00een container a fost \u00eentrerupt la a\u015fteptarea pentru blocare.
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.useraction=CMSG0002
 
@@ -95,29 +92,22 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=Containerul a \u00eent\u00e2
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul intr\u0103rii de mediu este unul din: String, Integer, Boolean, Double, Byte, Short, Long sau Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Colaborator {0} a aruncat excep\u0163ie nea\u015fteptat\u0103 - continuare cu colaboratorii r\u0103ma\u015fi.\n\
-\ Date excep\u0163ie:{1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Colaborator {0} a aruncat excep\u0163ie nea\u015fteptat\u0103 - continuare cu colaboratorii r\u0103ma\u015fi.\n Date excep\u0163ie:{1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
 # --------------------------------
-UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Nu poate s\u0103 mapeze excep\u0163ia. \n\
-\ {0} \n\
-\ {1}
+UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Nu poate s\u0103 mapeze excep\u0163ia. \n {0} \n {1}
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.explanation=Containerul nu a putut mapa excep\u0163ia  pe o excep\u0163ie CORBA valid\u0103.
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.useraction=CMSG0002
 
 # --------------------------------
-STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Firul de execu\u0163ie StatefulBeanReaper a fost \u00eentrerupt; oprire. \n\
-\ {0}
+STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Firul de execu\u0163ie StatefulBeanReaper a fost \u00eentrerupt; oprire. \n {0}
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul cur\u0103\u0163\u0103rii stateful bean-ului. \n\
-\ Date excep\u0163ie: \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul cur\u0103\u0163\u0103rii stateful bean-ului. \n Date excep\u0163ie: \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -127,8 +117,7 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=Containerul nu a putu
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Ac\u0163iona\u0163i \u00een func\u0163ie de mesajul de excep\u0163ie din mesajul CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Colaboratorul de securitate a aruncat excep\u0163ia nea\u015fteptat\u0103. \n\
-\ Date excep\u0163ie:{0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Colaboratorul de securitate a aruncat excep\u0163ia nea\u015fteptat\u0103. \n Date excep\u0163ie:{0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
@@ -153,8 +142,7 @@ NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.explanation=O excep\u0163ie, care nu
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Examina\u0163i stiva de apeluri pentru a determina originea excep\u0163iei.  Dac\u0103 excep\u0163ia \u00ee\u015fi are originea \u00een codul scris de c\u0103tre client, corecta\u0163i cauza excep\u0163iei. Dac\u0103 nu, vizita\u0163i situl web suport IBM pentru informa\u0163ii despre determinarea problemei.
 
 # --------------------------------
-TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Coordonatorul de tranzac\u0163ie nu este disponibil. \n\
-\ {0}
+TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Coordonatorul de tranzac\u0163ie nu este disponibil. \n {0}
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.explanation=CMSG0001
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.useraction=CMSG0002
 
@@ -179,12 +167,12 @@ DATASOURCE_NAME_NULL_CNTR0026W.explanation=Nu a fost specificat niciun Datasourc
 DATASOURCE_NAME_NULL_CNTR0026W.useraction=Specifica\u0163i un Datasource pentru bean-ul de entitate sau specifica\u0163i un Datasource implicit pentru modul.
 
 # --------------------------------
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: S-a e\u015fuat comiterea unei conexiuni: \n \ {0}
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: S-a e\u015fuat comiterea unei conexiuni: \n  {0}
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.explanation=A ap\u0103rut o SQLException la \u00eencercarea de a comite o conexiune Datasource.
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Consulta\u0163i documenta\u0163ia specific\u0103 v\u00e2nz\u0103torului pentru produsul baz\u0103 de date pe care \u00eel folosi\u0163i.  \u00cen mod normal va fi afi\u015fat un cod de excep\u0163ie specific v\u00e2nz\u0103torului ca parte a SQLException.  Acest cod de excep\u0163ie poate fi folosit, \u00een combina\u0163ie cu documenta\u0163ia specific\u0103 v\u00e2nz\u0103torului,pentru a determina cauza excep\u0163iei.
 
 # --------------------------------
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: S-a e\u015fuat \u00eenchiderea conexiunii: \n \ {0}
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: S-a e\u015fuat \u00eenchiderea conexiunii: \n  {0}
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.explanation=A ap\u0103rut o SQLException la \u00eencercarea de a \u00eenchide o conexiune Datasource.
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consulta\u0163i documenta\u0163ia specific\u0103 v\u00e2nz\u0103torului pentru produsul baz\u0103 de date pe care \u00eel folosi\u0163i.  \u00cen mod normal va fi afi\u015fat un cod de excep\u0163ie specific v\u00e2nz\u0103torului ca parte a SQLException.  Acest cod de excep\u0163ie poate fi folosit, \u00een combina\u0163ie cu documenta\u0163ia specific\u0103 v\u00e2nz\u0103torului,pentru a determina cauza excep\u0163iei.
 
@@ -201,7 +189,7 @@ FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consulta\u0163i documenta\u0163i
 # Cannot.obtain.the.transaction.coordinator.{0}.useraction=CMSG0002
 
 # --------------------------------
-ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Eroare pornire bean CMP {0}: \n \ {1}
+ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Eroare pornire bean CMP {0}: \n  {1}
 ERROR_STARTING_CMP_BEAN_CNTR0031W.explanation=Un entity bean se poate s\u0103 fi fost legat de un Datasource folosind un nume de Datasource care nu este valid sau nu este corect. Dac\u0103 numele de Datasource este corect, Datasource se poate s\u0103 nu fie configurat corect.
 ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=Dac\u0103 mesajul CNTR0026W precede acest mesaj, trebuie s\u0103 furniza\u0163i numelepentru Datasource. Dac\u0103 CNTR0026W nu precede acest mesaj, verifica\u0163i numele de datasource care apare \u00een mesajulCNTR0032W care urmeaz\u0103 dup\u0103 acest mesaj. Dac\u0103 a ap\u0103rut o excep\u0163ie 'nume neg\u0103sit', numele de Datasource este cel mai probabil gre\u015fit.  Dac\u0103 numele de Datasource corect este furnizat, atunci verifica\u0163i configura\u0163ia pentru Datasource. De exemplu, se poate s\u0103 fi specificat un nume de baz\u0103 de date, un ID utilizator sau o parol\u0103 \u00een configura\u0163ia pentru datasource care nu sunt corecte.
 
@@ -283,12 +271,8 @@ CONNECTION_FACTORY_BINDING_NOT_SPECIFIED_CNTR0046E.useraction=Specifica\u0163i o
 
 # --------------------------------
 METHOD_NOT_ALLOWED_CNTR0047E=CNTR0047E: Bean-ul \u00eencearc\u0103 s\u0103 utilizeze interfa\u0163a sau metoda "{0}" \u00eentr-o situa\u0163ie interzis\u0103 de c\u0103tre specifica\u0163ia EJB.
-METHOD_NOT_ALLOWED_CNTR0047E.explanation=Specifica\u0163ia EJB (Enterprise Java Bean) nu permite metoda din unul dintre motivele urm\u0103toare: - Metodele getRollbackOnly \u015fi setRollbackOnly ale interfe\u0163ei MessageDriven-Context ar trebui utilizate doar \u00een metodele bean-ului message-driven care ruleaz\u0103 \u00een contextul unei tranzac\u0163ii. \
-# - Invocarea metodelor getCallerPrincipal \u015fi isCallerInRole nu este permis\u0103 \u00een metodele bean-ului message-driven deoarece containerul nu are un context de securitate client. \
-# - Invocarea metodelor getRollbackOnly \u015fi setRollbackOnly nu este permis\u0103 \u00een metodele bean-ului message-driven pentru care containerul nu are un context de tranzac\u0163ii \u015fi pentru toate bean-urile message-driven cu demarcarea tranzac\u0163iilor gestionate de c\u0103tre bean. \
-# - Interfa\u0163a UserTransaction nu este disponibil\u0103 bean-urilor message-driven cu demarcare de tranzac\u0163ii gestionate de c\u0103tre container. \
-# - Invocarea getEJBHome sau getEJBLocalHome nu este permis\u0103 \u00een metode de bean-uri message-driven deoarece nu exist\u0103obiecte EJBHome sau EJBLocalHome pentru bean-uri message-driven. \
-#
+METHOD_NOT_ALLOWED_CNTR0047E.explanation=Specifica\u0163ia EJB (Enterprise Java Bean) nu permite metoda din unul dintre motivele urm\u0103toare: - Metodele getRollbackOnly \u015fi setRollbackOnly ale interfe\u0163ei MessageDriven-Context ar trebui utilizate doar \u00een metodele bean-ului message-driven care ruleaz\u0103 \u00een contextul unei tranzac\u0163ii. # - Invocarea metodelor getCallerPrincipal \u015fi isCallerInRole nu este permis\u0103 \u00een metodele bean-ului message-driven deoarece containerul nu are un context de securitate client. # - Invocarea metodelor getRollbackOnly \u015fi setRollbackOnly nu este permis\u0103 \u00een metodele bean-ului message-driven pentru care containerul nu are un context de tranzac\u0163ii \u015fi pentru toate bean-urile message-driven cu demarcarea tranzac\u0163iilor gestionate de c\u0103tre bean. # - Interfa\u0163a UserTransaction nu este disponibil\u0103 bean-urilor message-driven cu demarcare de tranzac\u0163ii gestionate de c\u0103tre con\
+    tainer. # - Invocarea getEJBHome sau getEJBLocalHome nu este permis\u0103 \u00een metode de bean-uri message-driven deoarece nu exist\u0103obiecte EJBHome sau EJBLocalHome pentru bean-uri message-driven. #
 METHOD_NOT_ALLOWED_CNTR0047E.useraction=Nu invoca\u0163i metoda \u00een acest mediu.
 
 # --------------------------------
@@ -327,13 +311,12 @@ EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.explanation=CMSG0001
 EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.useraction=CMSG0002
 
 # --------------------------------
-THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: A fost prins\u0103 o excep\u0163ie Throwable \u00een timpul \u00eencerc\u0103rii de construire <env-entry-name> {0} <env-entry-value> {1} \n \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: A fost prins\u0103 o excep\u0163ie Throwable \u00een timpul \u00eencerc\u0103rii de construire <env-entry-name> {0} <env-entry-value> {1} \n  {2}
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.explanation=Containerul a prins o Throwable c\u00e2nd containerul a \u00eencercat s\u0103 creeze o intrare java:comp/env.
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.useraction=Ac\u0163iona\u0163i \u00een func\u0163ie de mesajul de excep\u0163ie din mesajul CNTR0055W.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: S-a e\u015fuat ob\u0163inerea wrapper-ului pentru un bean. Bean: \n\
-\ {0}
+FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: S-a e\u015fuat ob\u0163inerea wrapper-ului pentru un bean. Bean: \n {0}
 FAILED_TO_GET_WRAPPER_CNTR0056W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_CNTR0056W.useraction=CMSG0002
 
@@ -463,7 +446,7 @@ ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.explanation=CMSG0001
 ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.useraction=CMSG0002
 
 #---------------------------------
-CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Crearea unui punct final mesaj a e\u015fuat: \n \ {0}
+CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Crearea unui punct final mesaj a e\u015fuat: \n  {0}
 CREATE_ENDPOINT_FAILED_CNTR0083E.explanation=CMSG0001
 CREATE_ENDPOINT_FAILED_CNTR0083E.useraction=CMSG0002
 
@@ -645,10 +628,7 @@ LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Nu este necesar\u0103 nicio ac\u021biun
 
 #-------------------------------------------------------------------------------
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: Clasa furnizat\u0103 de utilizator "{0}" nu poate implementa interfa\u0163a  com.ibm.websphere.ejbcontainer.LightweightLocal.  Cod motiv = {1}.
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Doar bean-uri entitate EJB V2.x sau mai recent cu o interfa\u0163\u0103 local\u0103 pot implementa interfa\u0163a com.ibm.websphere.ejbcontainer.LightweightLocal. Codul motiv identific\u0103 violarea specific\u0103 dup\u0103 cum urmeaz\u0103: \n\
-\ 1 - EJB-ul nu este un bean entitate. \n\
-\ 2 - Bean-ul este un bean entitate EJB V1.x sau CMP V1.x. \n\
-\ 3 - EJB-ul nu are o interfa\u0163\u0103 local\u0103 definit\u0103.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Doar bean-uri entitate EJB V2.x sau mai recent cu o interfa\u0163\u0103 local\u0103 pot implementa interfa\u0163a com.ibm.websphere.ejbcontainer.LightweightLocal. Codul motiv identific\u0103 violarea specific\u0103 dup\u0103 cum urmeaz\u0103: \n 1 - EJB-ul nu este un bean entitate. \n 2 - Bean-ul este un bean entitate EJB V1.x sau CMP V1.x. \n 3 - EJB-ul nu are o interfa\u0163\u0103 local\u0103 definit\u0103.
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.useraction=Modifica\u0163i EJB-ul s\u0103 fie de tip "entitate", modifica\u0163i implementarea EJB la versiunea 2.0 sau mai nou\u0103, modifica\u0163i implementarea EJB s\u0103 specifice o interfa\u0163\u0103 local\u0103 sau modifica\u0163i implementareas\u0103 nu implementeze interfa\u0163a com.ibm.websphere.ejbcontainer.LightweightLocal.
 
 #-------------------------------------------------------------------------------
@@ -1139,8 +1119,7 @@ AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E=CNTR0217E: Bean-ul enterp
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.explanation=Metoda specificat\u0103 are metadate de cronometru automat \u00een descriptorul de implementare sau \u00eentr-o adnotare @Schedule sau @Schedules, dar c\u00e2mpul specificat \u00een metadate are un cuv\u00e2nt cheie ordinal f\u0103r\u0103 o zi a s\u0103pt\u0103m\u00e2nii.  Cuvintele cheie 1, 2, 3, 4 \u015fi 5 trebuie s\u0103 fie urmate de un cuv\u00e2nt cheie pentru ziua s\u0103pt\u0103m\u00e2nii.
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.useraction=Modifica\u0163i c\u00e2mpul din metadatele cronometru automat sau \u00eenl\u0103tura\u0163i metadatele cronometru automat.
 
-AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: A ap\u0103rut o eroare \u00een timpul cre\u0103rii cronometrelor automate persistente pentru modulul {0}:\n\
-{1}
+AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: A ap\u0103rut o eroare \u00een timpul cre\u0103rii cronometrelor automate persistente pentru modulul {0}:\n{1}
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.explanation=Fie modulul are metadate care nu sunt valide, fie planificatorul pentru serviciul de cronometru EJB nu a putu s\u0103 creeze cronometrele automate.
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.useraction=Verifica\u0163i metadatele modulului \u015fi configura\u0163ia planificatorului.
 
@@ -1343,15 +1322,9 @@ DUPLICATE_STYLE_4_INTERCEPTOR_BINDING_CNTR0248E.useraction=Corecta\u0163i descri
 
 #-------------------------------------------------------------------------------
 
-INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E=CNTR0249E: Bean-ul \
-enterprise {0} din modulul {1} din aplica\u0163ia {2} specific\u0103 \
-adnotarea @AroundConstruct pe metoda {3}, dar aceast\u0103 adnotare poate \
-fi folosit\u0103 numai de clase interceptor.
-INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E.explanation=Adnotarea \
-AroundConstruct poate fi folosit\u0103 numai de c\u0103tre clase interceptor. Nu \
-poate fi folosit\u0103 de clasele bean enterprise.
-INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E.useraction=\u00cenl\u0103tura\u0163i \
-adnotarea AroundConstruct din metod\u0103 pe clasa bean enterprise.
+INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E=CNTR0249E: Bean-ul enterprise {0} din modulul {1} din aplica\u0163ia {2} specific\u0103 adnotarea @AroundConstruct pe metoda {3}, dar aceast\u0103 adnotare poate fi folosit\u0103 numai de clase interceptor.
+INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E.explanation=Adnotarea AroundConstruct poate fi folosit\u0103 numai de c\u0103tre clase interceptor. Nu poate fi folosit\u0103 de clasele bean enterprise.
+INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E.useraction=\u00cenl\u0103tura\u0163i adnotarea AroundConstruct din metod\u0103 pe clasa bean enterprise.
 
 #-------------------------------------------------------------------------------
 # end of CNTR0220 to CNTR0250 reservation
@@ -1574,6 +1547,11 @@ NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Numele leg\u0103rii l
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume care nu este valid.
 
 #-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Incapabil s\u0103 lege interfa\u021ba {0} a fi\u0219ierului bean {1} \u00een modulul {2} al aplica\u021biei {3} la loca\u021bia numelui {4}. Serverul de nume CORBA nu este disponibil.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Legarea la distan\u021b\u0103 a componentelor EJB nu poate fi creat\u0103 deoarece serverul de nume CORBA nu este disponibil.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Verifica\u021bi fi\u0219ierul jurnal pentru excep\u021bii referitoare la ini\u021bializarea serverului de nume ORB sau CORBA.
+
+#-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
 #
@@ -1788,8 +1766,7 @@ JIT_MISSING_REMOTE_EX_CNTR5104E.useraction=Ad\u0103uga\u0163i excep\u0163ia Remo
 
 #-------------------------------------------------------------------------------
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E=CNTR5105E: Interfa\u0163a {0} nu este o interfa\u0163\u0103 la distan\u0163\u0103 valid\u0103. Numele IDL pentru metoda {1} este \u00een conflict cu metoda {2}.
-JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pentru interfe\u0163e la distan\u0163\u0103, specifica\u0163ia Mapare limbaj Java pe IDL specific\u0103 urm\u0103toarele informa\u0163ii:\n\
-\ Metodele care respect\u0103 tiparele de proiectare JavaBeans pentru propriet\u0103\u0163i simple citire-scriere sau propriet\u0103\u0163i simple numai citire sunt mapate pe atribute de interfa\u0163\u0103 OMG IDL. Ambele metode specificate se mapeaz\u0103 pe acela\u015fi atribut de interfa\u0163\u0103 OMG IDL. Interfa\u0163a nu este un tip valid RMI/IIOP.
+JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pentru interfe\u0163e la distan\u0163\u0103, specifica\u0163ia Mapare limbaj Java pe IDL specific\u0103 urm\u0103toarele informa\u0163ii:\n Metodele care respect\u0103 tiparele de proiectare JavaBeans pentru propriet\u0103\u0163i simple citire-scriere sau propriet\u0103\u0163i simple numai citire sunt mapate pe atribute de interfa\u0163\u0103 OMG IDL. Ambele metode specificate se mapeaz\u0103 pe acela\u015fi atribut de interfa\u0163\u0103 OMG IDL. Interfa\u0163a nu este un tip valid RMI/IIOP.
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.useraction=Modifica\u0163i aplica\u0163ia redenumind sau \u00eenl\u0103tur\u00e2nd una din urm\u0103toarele metode conflictuale.
 
 #-------------------------------------------------------------------------------
@@ -1829,14 +1806,14 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Consulta\u0163i mesajul pentru d
 # Do NOT translate any word beginning with a "-"
 CNTR9000I=Utilizare: {0} <server> <filter> [options]
 CNTR9001I=\tfilter : <-all> | <-timer> | <-app [-mod [-bean]]>
-CNTR9002I=\t         -all
-CNTR9003I=\t         -timer <id timer>
-CNTR9004I=\t         -app <nume aplica\u0163ie>
-CNTR9005I=\t         -mod <nume modul>
-CNTR9006I=\t         -bean <nume bean>\n
+CNTR9002I=\t\ \ \ \ \ \ \ \ \ -all
+CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <id timer>
+CNTR9004I=\t\ \ \ \ \ \ \ \ \ -app <nume aplica\u0163ie>
+CNTR9005I=\t\ \ \ \ \ \ \ \ \ -mod <nume modul>
+CNTR9006I=\t\ \ \ \ \ \ \ \ \ -bean <nume bean>\n
 CNTR9007I=\toptions: -host <nume gazd\u0103>
-CNTR9008I=\t         -user <userid>
-CNTR9009I=\t         -node <node name>
+CNTR9008I=\t\ \ \ \ \ \ \ \ \ -user <userid>
+CNTR9009I=\t\ \ \ \ \ \ \ \ \ -node <node name>
 
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Expiration", "Single", "Repeating", "Calendar", "expression" "Automatic timer with timeout method", "Programmatic timer", "timer"
@@ -1902,8 +1879,7 @@ CNTR9106E.useraction=Examina\u0163i declara\u0163ia de utilizare \u015fi specifi
 NEWLINE_CNTR9200I=\n
 CNTR9201I=\n\
 Utilizare: createEJBStubs <numele complet calificat al clasei, fi\u015fierului jar sau fi\u015fierului ear> [op\u0163iuni]
-CNTR9202I=\n\
-op\u0163iuni:
+CNTR9202I=\nop\u0163iuni:
 CNTR9203I=\t-help
 CNTR9204I=\t-newfile [fi\u015fier nou]
 CNTR9205I=\t-updatefile [fi\u015fier jar, war sau ear]
@@ -1914,35 +1890,17 @@ CNTR9209I=\t-appendlog
 CNTR9210I=\t-cp <cale de clase>
 CNTR9239I=\t-rmic {0}
 CNTR9211I=\t-trace
-CNTR9212I=\n\
-exemple:
+CNTR9212I=\nexemple:
 CNTR9213I=\tcreateEJBStubs com.ibm.myRemoteInterface -cp myPath
-CNTR9214I=\t   Genera\u0163i clasa coit pentru o clas\u0103 interfa\u0163\u0103 la distan\u0163\u0103 \u015fi plasa\u0163i-o \u00een structura de directoare definit\u0103 de pachet\n\
-\t   \u00eencep\u00e2nd cu directorul curent.  Directorul myPath va fi folosit ca \u015fi cale de clase.\n\
-\t   Dac\u0103 clasa interfa\u0163\u0103 este un fi\u015fier JAR, sintaxa myPath/myInterfaces.jar\n\
-\t   poate fi folosit\u0103 pentru calea de clase.
+CNTR9214I=\t\ \ \ Genera\u0163i clasa coit pentru o clas\u0103 interfa\u0163\u0103 la distan\u0163\u0103 \u015fi plasa\u0163i-o \u00een structura de directoare definit\u0103 de pachet\n\t   \u00eencep\u00e2nd cu directorul curent.  Directorul myPath va fi folosit ca \u015fi cale de clase.\n\t   Dac\u0103 clasa interfa\u0163\u0103 este un fi\u015fier JAR, sintaxa myPath/myInterfaces.jar\n\t   poate fi folosit\u0103 pentru calea de clase.
 CNTR9215I=\tcreateEJBStubs myPath/myBeans.jar -newfile -quiet
-CNTR9216I=\t   Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere \u00een fi\u015fierul myBeans.jar\n\
-\t   care au interfe\u0163e la distan\u0163\u0103.\n\
-\t   Fragmentele generate \u015fi con\u0163inutul fi\u015fierului JAR original vor fi plasate \u00eentr-un nou fi\u015fier JAR\n\
-\t   myBeans_withStubs.jar deoarece un nou nume de fi\u015fier nu este specificat.\n\
-\t   Suprima\u0163i mesajele de ie\u015fire cu excep\u0163ia notific\u0103rilor de eroare.
+CNTR9216I=\t\ \ \ Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere \u00een fi\u015fierul myBeans.jar\n\t   care au interfe\u0163e la distan\u0163\u0103.\n\t   Fragmentele generate \u015fi con\u0163inutul fi\u015fierului JAR original vor fi plasate \u00eentr-un nou fi\u015fier JAR\n\t   myBeans_withStubs.jar deoarece un nou nume de fi\u015fier nu este specificat.\n\t   Suprima\u0163i mesajele de ie\u015fire cu excep\u0163ia notific\u0103rilor de eroare.
 CNTR9217I=\tcreateEJBStubs myPath/myServerApp.ear -logfile myLog.out
-CNTR9218I=\t   Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\
-\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\
-\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original.\n\
-\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele bean.\n\
-\t   Mesajele vor fi scrise \u00een fi\u015fierul istoric myLog.out \u015fi \u00een fereastra de comenzi.
+CNTR9218I=\t\ \ \ Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original.\n\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele bean.\n\t   Mesajele vor fi scrise \u00een fi\u015fierul istoric myLog.out \u015fi \u00een fereastra de comenzi.
 CNTR9219I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile myPath/myClientInterfaces.jar
-CNTR9229I=\t   Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\
-\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\
-\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original \u015fi \u00een fi\u015fierul myClientInterfaces.jar.\n\
-\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele interfa\u0163\u0103 la distan\u0163\u0103.
+CNTR9229I=\t\ \ \ Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original \u015fi \u00een fi\u015fierul myClientInterfaces.jar.\n\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele interfa\u0163\u0103 la distan\u0163\u0103.
 CNTR9230I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile
-CNTR9232I=\t   Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\
-\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\
-\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original.\n\
-\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele interfa\u0163\u0103 la distan\u0163\u0103.
+CNTR9232I=\t\ \ \ Genera\u0163i clasele de fragmente pentru toate bean-urile de \u00eentreprindere care sunt g\u0103site \u00een fi\u015fierul myServerApp.ear\n\t   \u015fi care au interfe\u0163e la distan\u0163\u0103.\n\t   Fragmentele generate vor fi plasate \u00een fi\u015fierul EAR original.\n\t   Clasele de fragmente vor fi localizate \u00een acela\u015fi modul sau module ca \u015fi clasele interfa\u0163\u0103 la distan\u0163\u0103.
 
 #-------------------------------------------------------------------------------
 # Do Not translate "jar", "Jar", "ear", "Ear", "EJB", "rc", "\n", or "\t"
@@ -2058,8 +2016,7 @@ CLASS_LOAD_ERROR_CNTR9262E.useraction=Verifica\u0163i erori de ortografie \u015f
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: Clasa interfa\u0163\u0103 {0} nu a putut fi procesat\u0103.  \n\
-Clasa parametru metod\u0103 {1} nu a fost g\u0103sit\u0103.
+CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: Clasa interfa\u0163\u0103 {0} nu a putut fi procesat\u0103.  \nClasa parametru metod\u0103 {1} nu a fost g\u0103sit\u0103.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.explanation=Un parametru de metod\u0103 sau o clas\u0103 valoare retur metod\u0103a clasei listate nu a putut fi \u00eenc\u0103rcat\u0103.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Verifica\u0163i c\u0103 toate clasele pasate de parametrii de metod\u0103 sau folosite ca valori de retur de metod\u0103, \u00een metodele clasei listate sunt incluse \u00een fi\u015fierul JAR de intrare sau \u00een fi\u015fierul EAR sau sunt f\u0103cute disponibile folosind op\u0163iunea -cp.
 

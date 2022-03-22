@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, que \u00e9 definido pelo aplicativo {1}, n\u00e3o estava dispon\u00edvel em tempo h\u00e1bil.
+CWWKC1200.resource.unavailable.explanation=Muita carga no sistema para processar anota\u00e7\u00f5es de defini\u00e7\u00e3o de recurso e entradas do descritor de implementa\u00e7\u00e3o antes que o aplicativo tente us\u00e1-las.
+CWWKC1200.resource.unavailable.useraction=Visualize o arquivo messages.log para identificar a ocorr\u00eancia de um erro. Caso contr\u00e1rio, reduza a carga no sistema.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, que \u00e9 definido pelo aplicativo {1}, requer um ContextService {2} mas o ContextService ficou inacess\u00edvel ou n\u00e3o dispon\u00edvel em tempo h\u00e1bil.
+CWWKC1201.contextsvc.inaccessible.explanation=O recurso especificado que implementa a interface ContextService era inacess\u00edvel ou n\u00e3o dispon\u00edvel por causa de qualquer uma das raz\u00f5es a seguir. 1.) Uma anota\u00e7\u00e3o de defini\u00e7\u00e3o de recurso ou uma defini\u00e7\u00e3o de recurso em um descritor de implementa\u00e7\u00e3o do aplicativo especifica um nome JNDI incorreto no qual localizar o recurso que implementa a interface ContextService. 2.) O recurso que implementa a interface ContextService \u00e9 definido em um escopo que n\u00e3o \u00e9 acess\u00edvel ao recurso que requer o recurso que implementa a interface ContextService. 3.) O sistema est\u00e1 sob muita carga para registrar um recurso que implementa a interface ContextService em tempo h\u00e1bil.
+CWWKC1201.contextsvc.inaccessible.useraction=Corrija o aplicativo para referir-se ao nome de JNDI do ContextService que \u00e9 acess\u00edvel. Se o nome de JNDI especificado estiver correto, reduza a carga no sistema.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: A configura\u00e7\u00e3o conflitante do contexto de encadeamento {0} \u00e9 encontrada em ContextServiceDefinition {1}. O contexto esclarecido \u00e9 {2}, o contexto propagado \u00e9 {3} e o contexto inalterado \u00e9 {4}.
+CWWKC1202.context.lists.overlap.explanation=Um tipo de contexto de encadeamento pode ser configurado em qualquer uma das categorias de tipo de contexto liberadas, propagadas ou inalteradas. O tipo de contexto n\u00e3o pode ser configurado em diversas categorias de tipo de contexto.
+CWWKC1202.context.lists.overlap.useraction=Corrija a configura\u00e7\u00e3o para especificar o tipo de contexto de encadeamento em no m\u00e1ximo uma categoria.
+
+CWWKC1203.duplicate.context=CWWKC1203E: O mesmo tipo de contexto de encadeamento, {0}, \u00e9 fornecido por v\u00e1rios provedores de contexto de encadeamento que est\u00e3o dispon\u00edveis para o aplicativo. Os provedores de contexto de encadeamento s\u00e3o: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=S\u00f3 pode haver um provedor de contexto de encadeamento para cada tipo de contexto.
+CWWKC1203.duplicate.context.useraction=Atualize o aplicativo, as bibliotecas ou ambos para que n\u00e3o mais de um provedor de contexto de encadeamento do tipo de contexto especificado seja acess\u00edvel ao aplicativo.
+
+CWWKC1204.not.serializable=CWWKC1204E: N\u00e3o \u00e9 poss\u00edvel criar um proxy contextual serializ\u00e1vel que propaga o contexto do encadeamento {0} que n\u00e3o \u00e9 serializ\u00e1vel.
+CWWKC1204.not.serializable.explanation=Os tipos de contexto de encadeamento de terceiros n\u00e3o s\u00e3o compat\u00edveis com a serializa\u00e7\u00e3o e n\u00e3o podem ser configurados para serem propagados para proxies contextuais serializ\u00e1veis.
+CWWKC1204.not.serializable.useraction=Atualize o aplicativo para solicitar um proxy contextual n\u00e3o serializ\u00e1vel ou certifique-se de que nenhum tipo de contexto de terceiros esteja configurado para ser propagado.

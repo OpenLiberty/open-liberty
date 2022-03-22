@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,4 +28,5 @@ DUPLICATE_PROPERTY_ENTITY.useraction=V\u00e9rifiez le sch\u00e9ma de l'entit\u00
 
 GENERIC=CWIML1999E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur d''ex\u00e9cution s''est produite lors du traitement : {0}
 GENERIC.explanation=Le programme a d\u00e9tect\u00e9 l'erreur sp\u00e9cifi\u00e9e lors de l'op\u00e9ration.
-GENERIC.useraction= Recherchez la cause de cette erreur dans les journaux et ex\u00e9cutez les actions appropri\u00e9es.
+GENERIC.useraction= Recherchez la cause de cette erreur dans les journaux et ex\u00e9cutez les actions correctives appropri\u00e9es.
+

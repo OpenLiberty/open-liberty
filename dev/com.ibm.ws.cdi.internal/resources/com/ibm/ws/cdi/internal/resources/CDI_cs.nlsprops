@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=Opravte chybu, kter\u00e
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: T\u0159\u00edda {0} zaregistrovan\u00e1 prost\u0159ednictv\u00edm rozhran\u00ed SPI roz\u0161\u00ed\u0159en\u00ed CDI se nach\u00e1z\u00ed v jin\u00e9m bal\u00edku, ne\u017e je implementace CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=T\u0159\u00edda je ignorov\u00e1na, proto\u017ee byla registrov\u00e1na s metodou getExtensions() nebo getBeanClasses() implementace CDIExtensionMetadata a nach\u00e1z\u00ed se v jin\u00e9m bal\u00edku ne\u017e implementace CDIExtensionMetadata.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=P\u0159esu\u0148te ovlivn\u011bnou t\u0159\u00eddu nebo vytvo\u0159te novou implementaci CDIExtensionMetadata ve spr\u00e1vn\u00e9m bal\u00edku.
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: R\u00e1mec CDI narazil na v\u00fdjimku, kdy\u017e vytvo\u0159il roz\u0161\u00ed\u0159en\u00ed pro archiv {0}. Chyba: {1}
+exception.creating.extensions.CWOWB1012E.explanation=R\u00e1mci CDI se nezda\u0159ilo na\u010d\u00edst nebo vyvolat konstrukci t\u0159\u00eddy roz\u0161\u00ed\u0159en\u00ed.
+exception.creating.extensions.CWOWB1012E.useraction=Opravte chybu, kter\u00e1 br\u00e1n\u00ed vytvo\u0159en\u00ed roz\u0161\u00ed\u0159en\u00ed.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: T\u0159\u00eddu {0} BuildCompatibleExtension nelze na\u010d\u00edst.
+bce.not.loadable.CWOWB1013E.explanation=Aplikace zahrnuje soubor META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension, kter\u00fd obsahuje t\u0159\u00eddu, ale r\u00e1mec CDI nem\u016f\u017ee na\u010d\u00edst t\u0159\u00eddu.
+bce.not.loadable.CWOWB1013E.useraction=Ujist\u011bte se, \u017ee t\u0159\u00edda je p\u0159\u00edtomna v aplikaci a \u017ee ji lze na\u010d\u00edst. Je-li t\u0159\u00edda obsa\u017eena v aplikaci, m\u016f\u017ee m\u00edt soubor FFDC dal\u0161\u00ed informace o tom, pro\u010d t\u0159\u00eddu nebylo mo\u017en\u00e9 na\u010d\u00edst.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: T\u0159\u00edda {0} neimplementuje rozhran\u00ed BuildCompatibleExtension.
+bce.does.not.implement.bce.CWOWB1014E.explanation=Aplikace zahrnuje soubor META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension, kter\u00fd zahrnuje t\u0159\u00eddu, ale t\u0159\u00edda neimplementuje jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
+bce.does.not.implement.bce.CWOWB1014E.useraction=Zm\u011b\u0148te t\u0159\u00eddu tak, aby implementovala soubor jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Prvek konfigurace cdi12 je nahrazen prvkem konfigurace cdi.
+cdi12.element.type.superceded.CWOWB1015W.explanation=Prvek konfigurace cdi nahrad\u00ed prvek konfigurace cdi12 a obsahuje v\u0161echny stejn\u00e9 volby plus nov\u00e9 volby.
+cdi12.element.type.superceded.CWOWB1015W.useraction=Upravte konfiguraci server.xml tak, aby m\u00edsto prvku konfigurace cdi12 pou\u017e\u00edvala prvek konfigurace cdi.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: Atribut emptyBeansXMLExplicitArchive prvku konfigurace cdi je podporov\u00e1n pouze v r\u00e1mci CDI 4.0 nebo nov\u011bj\u0161\u00ed. Tento atribut je ignorov\u00e1n.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=Atribut emptyBeansXMLExplicitArchive nem\u00e1 \u017e\u00e1dn\u00fd vliv, je-li pou\u017eit s verz\u00ed CDI ni\u017e\u0161\u00ed ne\u017e 4.0.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Aktualizujte konfiguraci server.xml tak, \u017ee bu\u010f odeberte atribut, nebo pou\u017eijte CDI verze 4.0 nebo nov\u011bj\u0161\u00ed.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Atribut enableImplicatBeanArchives byl nastaven na prvc\u00edch konfigurace cdi12 i cdi. Pou\u017e\u00edv\u00e1 se hodnota z prvku cdi a hodnota v prvku cdi12 se ignoruje.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=A\u010dkoli m\u016f\u017eete nastavit atribut enableImplicitBeanArchives na obou prvc\u00edch konfigurace cdi12 i cdi, nem\u011bli byste tento atribut nastavovat v r\u016fzn\u00fdch hodnot\u00e1ch ve stejn\u00e9 konfiguraci serveru.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Aktualizujte soubor server.xml tak, abyste konflikt opravili. Doporu\u010den\u00e1 akce je odebr\u00e1n\u00ed prvku konfigurace cdi12, proto\u017ee je nahrazen prvkem konfigurace cdi.
+

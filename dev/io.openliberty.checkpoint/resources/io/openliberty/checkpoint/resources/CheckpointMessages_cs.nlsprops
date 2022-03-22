@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Byl po\u017eadov\u00e1n kontroln
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Byl po\u017eadov\u00e1n kontroln\u00ed bod. Server je zastaven a jeho aktu\u00e1ln\u00ed stav je zaps\u00e1n na disk.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Podrobnosti o operac\u00edch kontroln\u00edho bodu a obnovy naleznete v dokumentaci.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Server Liberty obnovuje operaci z kontroln\u00edho bodu.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Proces serveru Liberty obnovil operaci z kontroln\u00edho bodu za {0} sekund.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=Byla spu\u0161t\u011bna operace obnovy na obrazu kontroln\u00edho bodu serveru Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Podrobnosti o operac\u00edch kontroln\u00edho bodu a obnovy naleznete v dokumentaci.
 

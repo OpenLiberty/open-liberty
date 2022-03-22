@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=Atributul de certificat TBSCertificate n
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat este corect.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. Un atribut de certificat {0} necunoscut a fost utilizat \u00een specifica\u0163ia filtrului. Specifica\u0163i un filtru de certificat suportat.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Pute\u0163i folosi numai urm\u0103toarele valori de atribute de certificat \u00een partea dreapt\u0103 a specifica\u0163iei de filtru. \u0218irurile sunt sensibile la majuscule: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Pute\u0163i folosi numai urm\u0103toarele valori de atribute de certificat \u00een partea dreapt\u0103 a specifica\u0163iei de filtru. \u0218irurile sunt sensibile la majuscule: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Asigura\u0163i-v\u0103 c\u0103 filtrul de certificat este corect.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Opera\u0163ia de logare nu a putut fi finalizat\u0103. C\u00e2mpul Nume distinctiv {0} configurat nu este valid. Specifica\u0163i un c\u00e2mp Nume distinctiv valid.

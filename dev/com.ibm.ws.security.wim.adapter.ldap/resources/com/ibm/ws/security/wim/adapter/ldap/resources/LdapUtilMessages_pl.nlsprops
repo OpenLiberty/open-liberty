@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=Nie mo\u017cna u\u017cy\u0107 atrybutu c
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Sprawd\u017a, czy filtr certyfikatu jest poprawny.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. W specyfikacji filtru u\u017cyto nieznanego atrybutu certyfikatu {0}. Okre\u015bl obs\u0142ugiwany filtr certyfikatu.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Po prawej stronie specyfikacji filtru mo\u017cna u\u017cywa\u0107 tylko nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w certyfikatu. W nast\u0119puj\u0105cych \u0142a\u0144cuchach rozr\u00f3\u017cniana jest wielko\u015b\u0107 liter: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Po prawej stronie specyfikacji filtru mo\u017cna u\u017cywa\u0107 tylko nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w certyfikatu. W nast\u0119puj\u0105cych \u0142a\u0144cuchach rozr\u00f3\u017cniana jest wielko\u015b\u0107 liter: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Sprawd\u017a, czy filtr certyfikatu jest poprawny.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Skonfigurowana nazwa wyr\u00f3\u017cniaj\u0105ca pola {0} nie jest poprawna. Okre\u015bl poprawne pole nazwy wyr\u00f3\u017cniaj\u0105cej.

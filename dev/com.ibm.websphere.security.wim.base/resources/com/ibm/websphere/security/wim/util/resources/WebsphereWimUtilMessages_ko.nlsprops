@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,4 +28,5 @@ DUPLICATE_PROPERTY_ENTITY.useraction=\uc5d4\ud2f0\ud2f0\uc758 \uc2a4\ud0a4\ub9c8
 
 GENERIC=CWIML1999E: \uc0ac\uc6a9\uc790 \ub808\uc9c0\uc2a4\ud2b8\ub9ac \uc870\uc791\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ucc98\ub9ac \uc911\uc5d0 \ub2e4\uc74c \ub7f0\ud0c0\uc784 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}
 GENERIC.explanation=\uc870\uc791 \uc911\uc5d0 \ud504\ub85c\uadf8\ub7a8\uc5d0 \uc9c0\uc815\ub41c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
-GENERIC.useraction= \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \uc774 \uc624\ub958\uc758 \uc6d0\uc778\uc744 \ucc3e\uace0 \uc801\uc808\ud55c \uc870\uce58\ub97c \ucde8\ud558\uc2ed\uc2dc\uc624.
+GENERIC.useraction= \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \uc774 \uc624\ub958\uc758 \uc6d0\uc778\uc744 \ucc3e\uace0 \uc801\uc808\ud55c \uc815\uc815 \uc870\uce58\ub97c \uc218\ud589\ud558\uc2ed\uc2dc\uc624.
+

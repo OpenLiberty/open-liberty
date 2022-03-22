@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Pouze pro vnit\u0159n\u00ed pou\u017eit\u00ed.
 ADD_ID.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Povinn\u00fd konfigura\u010dn\u00ed parametr {0
 INVALID_CONFIG_PARAM.explanation=B\u011bhov\u00fd k\u00f3d p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nena\u0161el p\u0159i zpracov\u00e1n\u00ed po\u017eadavku klienta povinn\u00fd parametr.
 INVALID_CONFIG_PARAM.useraction=Zkontrolujte chyb\u011bj\u00edc\u00ed parametr v konfiguraci a ujist\u011bte se, \u017ee je zad\u00e1n a je spr\u00e1vn\u00fd.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Klientovi pro soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed [{0}] se nezda\u0159ilo z\u00edskat informace o koncov\u00e9m bodu poskytovatele OpenID Connect prost\u0159ednictv\u00edm adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed [{1}]. Aktualizujte konfiguraci klienta pro soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed (konfigurace oidcLogin) pomoc\u00ed spr\u00e1vn\u00e9 adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed HTTPS. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Klientovi pro soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed [{0}] se nezda\u0159ilo z\u00edskat informace o koncov\u00e9m bodu poskytovatele OpenID Connect prost\u0159ednictv\u00edm adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed [{1}]. Aktualizujte konfiguraci klienta pro soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed (konfigurace oidcLogin) pomoc\u00ed spr\u00e1vn\u00e9 adresy URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed HTTPS.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Konfigurace oidcLogin je nakonfigurov\u00e1na tak, aby zji\u0161\u0165ovala koncov\u00e9 body poskytovatele OpenID Connect prost\u0159ednictv\u00edm adresy URL pro zji\u0161\u0165ov\u00e1n\u00ed, ale zji\u0161\u0165ovac\u00ed proces se nezda\u0159il. Klient nebude moci zpracovat \u017e\u00e1dosti o ov\u011b\u0159en\u00ed, dokud nebude opravena konfigurace discoveryEndpoint nebo dokud nebude zji\u0161\u0165ov\u00e1n\u00ed \u00fasp\u011b\u0161n\u00e9.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Opravte konfiguraci oidcLogin a ujist\u011bte se, \u017ee 1) adresa URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed odkazuje na spr\u00e1vn\u00e9ho poskytovatele OpenID Connect, 2) adresa URL koncov\u00e9ho bodu zji\u0161\u0165ov\u00e1n\u00ed je HTTPS, 3) funkce SSL a prvky \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny s d\u016fv\u011bryhodnost\u00ed pro poskytovatele OpenID Connect a 4) ujist\u011bte se, \u017ee koncov\u00fd bod zji\u0161\u0165ov\u00e1n\u00ed poskytovatele OpenID Connect je funk\u010dn\u00ed.
 
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Ov\u011b\u0159te, \u017ee konfigur
 REQUEST_URL_NOT_VALID=CWWKS5499E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee p\u0159esm\u011brovat po\u017eadavek zp\u011bt na p\u016fvodn\u00ed adresu URL po\u017eadavku [{0}], proto\u017ee  adresa URL nen\u00ed platn\u00e1. {1}
 REQUEST_URL_NOT_VALID.explanation=P\u016fvodn\u00ed adresa URL po\u017eadavku nen\u00ed platnou adresou URL. Adresa URL m\u016f\u017ee obsahovat znaky, kter\u00e9 nejsou platn\u00e9, nebo adresa URL m\u016f\u017ee b\u00fdt chybn\u00e1.
 REQUEST_URL_NOT_VALID.useraction=Ov\u011b\u0159te, \u017ee adresa URL po\u017eadavku, kter\u00fd je uvedena ve zpr\u00e1v\u011b, odpov\u00edd\u00e1 p\u016fvodn\u00ed adrese URL po\u017eadavku na chr\u00e1n\u011bn\u00fd prost\u0159edek. Ov\u011b\u0159te, \u017ee adresa URL je dob\u0159e formovan\u00e1 a obsahuje pouze platn\u00e9 znaky identifik\u00e1toru URI.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu odeslan\u00fd do [{0}] nen\u00ed podporov\u00e1n konfigurac\u00ed p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch m\u00e9di\u00ed [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=Konfigurace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch m\u00e9di\u00ed nen\u00ed klientem OpenID Connect, tak\u017ee nepodporuje odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Pou\u017eijte koncov\u00fd bod odhl\u00e1\u0161en\u00ed, kter\u00fd odpov\u00edd\u00e1 konfiguraci p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch m\u00e9di\u00ed.
+
