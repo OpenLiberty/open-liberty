@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -362,24 +362,17 @@ public class IRequestImpl implements IRequestExtended
 
       if (str.indexOf("BEGIN") != -1) {
           if (str.indexOf("%") != -1) {
-              //Not running beta edition, return as-is instead of throw exception. Invalid peer cert exception will be thrown eventually
-              if (!ProductInfo.getBetaEdition()) {
-                  Tr.debug(tc, "armor", "Not beta edition. Return as-is");
-                  buffer = str;
+              try {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                      Tr.debug(tc, "armor", "Armored certificate is encoded. Returning a decoded armor");
+
+                  buffer = java.net.URLDecoder.decode(str, "UTF-8");
               }
-              else {
-                  try {
-                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                          Tr.debug(tc, "armor", "Armored certificate is encoded. Returning a decoded armor");
+              catch (Exception e) {
+                  //Return as-is; if the armor cert is invalid, it will be rejected later.
+                  Tr.debug(tc, "armor", "Can not decode armored certificate. Return as-is");
 
-                      buffer = java.net.URLDecoder.decode(str, "UTF-8");
-                  }
-                  catch (Exception e) {
-                      //Return as-is; if the armor cert is invalid, it will be rejected later.
-                      Tr.debug(tc, "armor", "Can not decode armored certificate. Return as-is");
-
-                      buffer = str;
-                  }
+                  buffer = str;
               }
           }
           else {
