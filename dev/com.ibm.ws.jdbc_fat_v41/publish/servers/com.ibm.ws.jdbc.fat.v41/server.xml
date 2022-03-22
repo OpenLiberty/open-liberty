@@ -45,7 +45,7 @@
     <dataSource id="ds2abort" jndiName="jdbc/${id}" fat.modify="true">
         <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-        <connectionManager abortLongRunningInuseConnections="5" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
+        <connectionManager maxInUseTime="1" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
     </dataSource>
 
     <dataSource id="ds3" jndiName="jdbc/${id}" fat.modify="true">

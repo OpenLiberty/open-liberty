@@ -344,7 +344,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      * the rules above. (Which are wrong)
      *
      */
-    private int abortLongRunningInuseConnections = 0;
+    private int maxInUseTime = -1;
     /**
      * Comment for <code>agedTimeoutMillis</code>
      */
@@ -412,7 +412,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                      int reapTime,
                                      int unusedTimeout,
                                      int agedTimeout,
-                                     int abortLongRunningInuseConnections,
+                                     int maxInUseTime,
                                      int holdTimeLimit,
                                      int commitPriority,
                                      boolean autoCloseConnections,
@@ -454,7 +454,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         this.reapTime = reapTime;
         this.unusedTimeout = unusedTimeout;
         this.agedTimeout = agedTimeout;
-        this.abortLongRunningInuseConnections = abortLongRunningInuseConnections;
+        this.maxInUseTime = maxInUseTime;
         this.agedTimeoutMillis = (long) agedTimeout * 1000;
         this.holdTimeLimit = holdTimeLimit;
         this.commitPriority = commitPriority;
@@ -1031,15 +1031,15 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     /**
      * @return
      */
-    public int getAbortLongRunningInuseConnections() {
-        return abortLongRunningInuseConnections;
+    public int getMaxInUseTime() {
+        return maxInUseTime;
     }
 
     /**
-     * @param abortLongRunningInuseConnections
+     * @param maxInUseTime
      */
-    public void setAbortLongRunningInuseConnections(int _abortLongRunningInuseConnections) {
-        changeSupport.firePropertyChange("agedTimeout", this.abortLongRunningInuseConnections, _abortLongRunningInuseConnections);
-        this.abortLongRunningInuseConnections = _abortLongRunningInuseConnections;
+    public void setMaxInUseTime(int _maxInUseTime) {
+        changeSupport.firePropertyChange("agedTimeout", this.maxInUseTime, _maxInUseTime);
+        this.maxInUseTime = _maxInUseTime;
     }
 }

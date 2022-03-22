@@ -921,22 +921,26 @@ public class BasicTestServlet extends FATDatabaseServlet {
     /**
      * Function to get and abort a connection.
      *
-     * After running this function, the connection should be immediately removed
+     * After running this function, the connection should be removed by the reaper thread
      * from the connection pool, and a call to getSingleConnectionAfterAbort
      * should succeed.
      *
-     * Uses datasource 2 for shareable connections.
+     * Uses datasource 2abort for shareable connections.
      */
     public void testAbortedConnectionDestroyedAuto() throws Exception {
         Connection c = ds2abort.getConnection();
-        Executor testExecutor = new Executor() {
-            @Override
-            public void execute(Runnable arg0) {
-                arg0.run();
-            }
-        };
         try {
-            Thread.sleep(15000);
+            int i = 0;
+            int size = getPoolSize("jdbc/ds2abort");
+            while (size != 0) {
+                ++i;
+                Thread.sleep(1000);
+                size = getPoolSize("jdbc/ds2abort");
+                if (i > 120) {
+                    // if size is not 0 in 2 minutes, break and allow the next test to fail.
+                    break;
+                }
+            }
         } finally {
             c.close();
         }
@@ -945,13 +949,13 @@ public class BasicTestServlet extends FATDatabaseServlet {
     /**
      * Function to just get and close a connection
      *
-     * This function should be called right after testAbortedConnectionDestroyed to
+     * This function should be called right after testAbortedConnectionDestroyedAuto to
      * ensure that the aborted connection was immediately removed from the pool.
      */
     public void getSingleConnectionAfterAbortAuto() throws Exception {
         int size = getPoolSize("jdbc/ds2abort");
         if (size != 0)
-            throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbort was called, but it wasn't");
+            throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbortAuto was called, but it wasn't");
 
         // Aborted connection should have been destroyed, so we should be able to get
         // and close a new connection no problem.

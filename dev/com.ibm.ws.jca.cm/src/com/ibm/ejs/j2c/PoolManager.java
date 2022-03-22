@@ -175,7 +175,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
 
-    private long abortLongRunningInuseConnections;
+    private long maxInUseTime = -1;
 
     public PoolManager(
                        AbstractConnectionFactoryService cfSvc,
@@ -206,7 +206,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         this.reapTime = gConfigProps.getReapTime();
         this.unusedTimeout = gConfigProps.getUnusedTimeout();
         this.agedTimeout = gConfigProps.getAgedTimeout();
-        this.abortLongRunningInuseConnections = gConfigProps.getAbortLongRunningInuseConnections();
+        this.maxInUseTime = gConfigProps.getMaxInUseTime();
         this.agedTimeoutMillis = (long) this.agedTimeout * 1000;
         this.maxFreePoolHashSize = gConfigProps.getMaxFreePoolHashSize();
         this.maxSharedBuckets = gConfigProps.getMaxSharedBuckets();
@@ -297,7 +297,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.debug(this, tc, "Reclaim Connection Thread Time Interval = " + reapTime + " (seconds)");
             Tr.debug(this, tc, "Unused Timeout                          = " + unusedTimeout + " (seconds)");
             Tr.debug(this, tc, "Aged Timeout                            = " + agedTimeout + " (seconds)");
-            Tr.debug(this, tc, "Abort Long Running Inuse Connections    = " + abortLongRunningInuseConnections + " (seconds)");
+            Tr.debug(this, tc, "Abort Long Running Inuse Connections    = " + maxInUseTime + " (minutes)");
             Tr.debug(this, tc, "Free Pool Distribution Table Size       = " + maxFreePoolHashSize);
             Tr.debug(this, tc, "Number Of Shared Pool Partitions        = " + maxSharedBuckets);
         }
@@ -3565,7 +3565,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         } // end for (int j
 
         // Look for long running in use connections to abort
-        if (abortLongRunningInuseConnections > 0) {
+        if (maxInUseTime > 0) {
             // Get a lock on master list.
             long currentTime = System.currentTimeMillis();
             boolean needToAbortConnections = false;
@@ -3578,7 +3578,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                     MCWrapper mcw = mcwIt.next();
                     long holdTime = currentTime - ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
                     long timeInUseInSeconds = holdTime / 1000;
-                    if (timeInUseInSeconds > abortLongRunningInuseConnections) {
+                    long maxInUseTimeSeconds = maxInUseTime * 60;
+                    if (timeInUseInSeconds > maxInUseTimeSeconds) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "Abort long running in use connection " + mcw);
                         }
@@ -3989,7 +3990,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.debug(this, tc, "reaperThreadStarted: ", reaperThreadStarted);
         }
 
-        if (needToReclaimConnections() || needToReclaimTLSConnections() || (abortLongRunningInuseConnections > 0 && totalConnectionCount.get() > 0)) {
+        if (needToReclaimConnections() || needToReclaimTLSConnections() || (maxInUseTime > 0 && totalConnectionCount.get() > 0)) {
             // Create thread to reclaim connections
             startReclaimConnectionThread();
         }
