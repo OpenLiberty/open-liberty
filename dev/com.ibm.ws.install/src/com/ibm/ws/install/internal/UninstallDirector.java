@@ -50,8 +50,8 @@ public class UninstallDirector extends AbstractDirector {
     private FeatureDependencyChecker dependencyChecker;
     private FixDependencyChecker fixDependencyChecker;
     private static String[] excludePathSuffix = new String[] { "bin", "bin/", "installUtility.bat", "ws-installUtility.jar", "featureUtility.bat", "ws-featureUtility.jar",
-                                                         "featureManager.bat",
-                                                         "ws-featureManager.jar", };
+                                                               "featureManager.bat",
+                                                               "ws-featureManager.jar", };
     private List<UninstallAsset> uninstallAssets;
 
     private boolean setScriptsPermission = false;
@@ -112,11 +112,11 @@ public class UninstallDirector extends AbstractDirector {
                 baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             }
 
+            baseDirs = removeFileExceptions(baseDirs);
             // For each uninstall asset's base directory, validate no files are locked recursively.
             for (File baseDir : baseDirs) {
                 try {
                     List<Path> allPathsFromBaseDir = Files.walk(baseDir.toPath()).collect(Collectors.toList());
-                    allPathsFromBaseDir = removePathExceptions(allPathsFromBaseDir);
                     for (Path path : allPathsFromBaseDir) {
                         InstallUtils.isFileLocked("ERROR_UNINSTALL_FEATURE_FILE_LOCKED", path.toString(), path.toFile());
                     }
@@ -158,15 +158,15 @@ public class UninstallDirector extends AbstractDirector {
     }
 
     /**
-     * @param allPathsFromBaseDir
-     * @return
+     * @param baseDirs
+     * @return A Set<File> containing only files that don't end with any matches in excludePathSuffix
      */
-    public List<Path> removePathExceptions(List<Path> allPathsFromBaseDir) {
-        List<Path> exceptionsRemoved = new ArrayList<Path>();
+    public Set<File> removeFileExceptions(Set<File> baseDirs) {
+        Set<File> exceptionsRemoved = new HashSet<>();
         List<String> excludes = Arrays.asList(excludePathSuffix);
-        for (Path path : allPathsFromBaseDir) {
-            if (!excludes.stream().anyMatch(p -> path.toString().endsWith(p))) {
-                exceptionsRemoved.add(path);
+        for (File file : baseDirs) {
+            if (excludes.stream().noneMatch(p -> file.toString().endsWith(p))) {
+                exceptionsRemoved.add(file);
             }
         }
         return exceptionsRemoved;

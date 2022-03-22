@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -179,19 +178,18 @@ public class UninstallDirectorTest {
         String[] testPaths = new String[] { "/test/script.sh", "etc/files/files.zip", "bin/installUtility.sh", "bin/installUtility.bat", "bin", "bin/featureUtility.bat",
                                             "bin/featureManager.bat", "bin/tools/ws-featureManager.jar", "bin/tools/ws-featureUtility.jar",
                                             "bin/tools/whatever/ws-featureUtility.jar", "bin/", "bin" };
-        List<Path> paths = new ArrayList<>();
+        Set<File> files = new HashSet<>();
         for (String test : testPaths) {
-            Path path = FileSystems.getDefault().getPath(test);
-            System.out.println("testPath: " + path.toString());
-            paths.add(path);
+            File path = new File(test);
+            files.add(path);
         }
-        paths = ud.removePathExceptions(paths);
-        List<Path> expectedPaths = new ArrayList<Path>();
-        expectedPaths.add(FileSystems.getDefault().getPath("/test/script.sh"));
-        expectedPaths.add(FileSystems.getDefault().getPath("etc/files/files.zip"));
-        expectedPaths.add(FileSystems.getDefault().getPath("bin/installUtility.sh"));
-        assertEquals(expectedPaths.size(), paths.size());
-        assertTrue(expectedPaths.containsAll(paths));
+        files = ud.removeFileExceptions(files);
+        List<File> expectedPaths = new ArrayList<>();
+        expectedPaths.add(new File("/test/script.sh"));
+        expectedPaths.add(new File("etc/files/files.zip"));
+        expectedPaths.add(new File("bin/installUtility.sh"));
+        assertEquals(expectedPaths.size(), files.size());
+        assertTrue(expectedPaths.containsAll(files));
 
     }
 
