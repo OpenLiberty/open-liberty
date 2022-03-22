@@ -54,7 +54,7 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     
     @Override
     public String getContextServiceRef() {
-        return contextServiceRef.getValue();
+        return contextServiceRef == null ? null : contextServiceRef.getValue();
     }
 
     @Override

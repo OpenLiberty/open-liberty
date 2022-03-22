@@ -146,32 +146,31 @@ import test.jakarta.concurrency.ejb.MTFDBean;
                           propagated = { ListContext.CONTEXT_NAME, Timestamp.CONTEXT_NAME }, // web.xml replaces with ZipCode
                           unchanged = ALL_REMAINING)
 
-//TODO enable in web.xml and update the following,
 @ManagedExecutorDefinition(name = "java:module/concurrent/merged/web/ZLExecutor",
                            context = "java:module/concurrent/ZLContextSvc",
-                           maxAsync = 3, // TODO 6, // web.xml replaces with 3
+                           maxAsync = 6, // web.xml replaces with 3
                            hungTaskThreshold = 360000)
 
 @ManagedExecutorDefinition(name = "java:comp/concurrent/merged/web/ZPExecutor",
-                           context = "java:app/concurrent/dd/ZPContextService", // TODO "java:comp/concurrent/dd/web/TZContextService", // web.xml replaces with ZPContextService
+                           context = "java:comp/concurrent/dd/web/TZContextService", // web.xml replaces with ZPContextService
                            maxAsync = 2)
 
 @ManagedScheduledExecutorDefinition(name = "java:module/concurrent/merged/web/ZLScheduledExecutor",
                                     context = "java:module/concurrent/ZLContextSvc",
-                                    maxAsync = 1, // TODO 7, // web.xml replaces with 1
+                                    maxAsync = 7, // web.xml replaces with 1
                                     hungTaskThreshold = 170000)
 
 @ManagedScheduledExecutorDefinition(name = "java:app/concurrent/merged/web/LPScheduledExecutor",
-                                    context = "java:global/concurrent/anno/ejb/LPContextService", // TODO "java:app/concurrent/dd/ZPContextService", // web.xml replaces with LPContextService
+                                    context = "java:app/concurrent/dd/ZPContextService", // web.xml replaces with LPContextService
                                     maxAsync = 4)
 
 @ManagedThreadFactoryDefinition(name = "java:comp/concurrent/merged/web/TZThreadFactory",
-                                context = "java:comp/concurrent/dd/web/TZContextService", // TODO "java:module/concurrent/ZLContextSvc", // web.xml replaces with TZContextService
+                                context = "java:module/concurrent/ZLContextSvc", // web.xml replaces with TZContextService
                                 priority = 3)
 
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/merged/web/LTThreadFactory",
                                 context = "java:app/concurrent/merged/web/LTContextService",
-                                priority = 8) // TODO priority = 4) // web.xml replaces with 8
+                                priority = 4) // web.xml replaces with 8
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
