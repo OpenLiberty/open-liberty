@@ -151,10 +151,10 @@
          </dependency>
          <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.restfulWS30.jsonb20provider.jakarta</artifactId>
+            <artifactId>io.openliberty.restfulWS30.jsonb20provider</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.restfulWS30.jsonb20provider.jakarta_}</systemPath>
+            <systemPath>${io.openliberty.restfulWS30.jsonb20provider_}</systemPath>
          </dependency>
          <dependency>
             <groupId>org.glassfish</groupId>
