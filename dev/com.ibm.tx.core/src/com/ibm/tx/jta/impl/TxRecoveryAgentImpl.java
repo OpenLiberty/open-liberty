@@ -90,7 +90,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      */
     volatile private boolean _serverStopping;
 
-    protected TxRecoveryAgentImpl() {}
+    protected TxRecoveryAgentImpl() {
+    }
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -134,7 +135,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -709,6 +711,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
+
         // Additionally, if we have a lease log for peer recovery, alert it that the server is stopping (the alarm may already have popped)
         if (_leaseLog != null) {
             _leaseLog.serverStopping();
@@ -1211,12 +1214,4 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.debug(tc, "terminateServer");
         ConfigurationProviderManager.getConfigurationProvider().shutDownFramework();
     }
-
-    @Override
-    public boolean isServerStopping() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "isServerStopping", _serverStopping);
-        return _serverStopping;
-    }
-
 }

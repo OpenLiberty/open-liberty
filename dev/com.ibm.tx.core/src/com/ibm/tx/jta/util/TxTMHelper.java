@@ -41,6 +41,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
 import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.tx.UOWEventListener;
 
@@ -487,6 +488,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             }
 
             // ConfigurationProviderManager.stop(true);
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "About to stop recovery agent. FrameworkState.isStopping() = {0}", FrameworkState.isStopping());
 
             _recoveryAgent.stop(false);
 

@@ -306,10 +306,10 @@ public class FailureScopeController {
      * This method is called to register the creation of a new transaction associated
      * with the managed failure scope.
      *
-     * @param tran The transaction identity object
+     * @param tran      The transaction identity object
      * @param recovered Flag to indicate if the new transaction was created as part
-     *            of a recovery process for this failure scope (true) or
-     *            normal running (false)
+     *                      of a recovery process for this failure scope (true) or
+     *                      normal running (false)
      */
     public void registerTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())

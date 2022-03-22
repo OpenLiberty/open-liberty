@@ -13,7 +13,6 @@ package com.ibm.tx.jta.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.WorkCompletedException;
@@ -416,9 +415,7 @@ public class TxExecutionContextHandler {
                 final ArrayList<Xid> xidList = new ArrayList<Xid>(); // @LI3187-29.2C
 
                 // Single process - we can check our own in-process list of JCA txns
-                for (Iterator i = txnTable.values().iterator(); i.hasNext();) {
-                    final JCATranWrapper txWrapper = (JCATranWrapper) i.next();
-
+                for (JCATranWrapper txWrapper : txnTable.values()) {
                     final TransactionImpl txn = txWrapper.getTransaction();
 
                     switch (txn.getTransactionState().getState()) {

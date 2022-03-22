@@ -31,8 +31,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -115,8 +113,8 @@ import componenttest.topology.utils.FATServletClient;
  * 7/ The handling of duplicate rows in recovery is signalled by the presence of "NMTEST: Replacing item" strings in the server trace. This string is
  * written by SQLRecoverableUnitSectionImpl.addData() when a duplicate log entry is encountered.
  */
-@Mode
 @RunWith(FATRunner.class)
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
 public class FailoverTestLease extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
@@ -169,9 +167,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseUpdateFailover() throws Exception {
         final String method = "testHADBLeaseUpdateFailover";
         StringBuilder sb = null;
@@ -206,9 +202,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseDeleteFailover() throws Exception {
         final String method = "testHADBLeaseDeleteFailover";
         StringBuilder sb = null;
@@ -245,9 +239,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseClaimFailover() throws Exception {
         final String method = "testHADBLeaseClaimFailover";
         StringBuilder sb = null;
@@ -284,9 +276,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseGetFailover() throws Exception {
         final String method = "testHADBLeaseGetFailover";
         StringBuilder sb = null;

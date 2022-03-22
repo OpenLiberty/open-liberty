@@ -856,8 +856,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -1032,14 +1032,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
     private int deleteLeaseFromTable(String recoveryIdentity, Connection conn) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteLeaseFromTable", new java.lang.Object[] { recoveryIdentity, conn, this });
+            Tr.entry(tc, "deleteLeaseFromTable", recoveryIdentity, conn, this);
 
         _deleteStmt = conn.createStatement();
 
         String deleteString = "DELETE FROM " + _leaseTableName +
                               " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
+            Tr.debug(tc, "delete server lease for {0} using string {1}", recoveryIdentity, deleteString);
 
         int ret = _deleteStmt.executeUpdate(deleteString);
 

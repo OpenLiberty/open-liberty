@@ -38,7 +38,7 @@
       <properties  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb"/>
     </dataSource>
     
-    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all"/>
     
     <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="user.dir" actions="read"/>

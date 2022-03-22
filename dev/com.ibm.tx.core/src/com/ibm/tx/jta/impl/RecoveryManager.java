@@ -15,7 +15,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.transaction.SystemException;
@@ -38,6 +37,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
+import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
@@ -49,6 +49,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryAgent;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This class manages information required for recovery, and also general
@@ -88,8 +89,8 @@ public class RecoveryManager implements Runnable {
     protected SharedServerLeaseLog _leaseLog;
     protected String _recoveryGroup;
     protected String _localRecoveryIdentity;
-    protected boolean _peerTranLogEverOpened = false;
-    protected boolean _peerXaLogEverOpened = false;
+    protected boolean _peerTranLogEverOpened;
+    protected boolean _peerXaLogEverOpened;
 
     protected PartnerLogTable _recoveryPartnerLogTable;
 
@@ -780,13 +781,14 @@ public class RecoveryManager implements Runnable {
         }
         logs.add(_xaLog);
 
-        final Iterator<RecoveryLog> logIterator = logs.iterator();
-
         boolean shuttingDown = false;
 
         try {
-            while (logIterator.hasNext() && !shuttingDown) {
-                final RecoveryLog currentLog = logIterator.next();
+            for (RecoveryLog currentLog : logs) {
+                if (shuttingDown) {
+                    break;
+                }
+
                 recoverableUnits = currentLog.recoverableUnits();
 
                 while (recoverableUnits.hasNext() && !shuttingDown) {
@@ -1323,13 +1325,22 @@ public class RecoveryManager implements Runnable {
         if (!bypass && _agent != null) {
             try {
                 RecoveryDirectorFactory.recoveryDirector().initialRecoveryComplete(_agent, _failureScopeController.failureScope());
+            } catch (InvalidFailureScopeException exc) {
+                if (!_failureScopeController.localFailureScope() && _shutdownInProgress) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Non local failure scope and shutdown in progress do not FFDC but continue");
+
+                } else {
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1546", this);
+                }
             } catch (Exception exc) {
-                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1546", this);
+                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1548", this);
             }
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "recoveryComplete");
+
     }
 
     public boolean recoveryFailed() {
@@ -1361,8 +1372,16 @@ public class RecoveryManager implements Runnable {
                 if (_agent != null) {
                     try {
                         RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
+                    } catch (InvalidFailureScopeException exc) {
+                        if (!_failureScopeController.localFailureScope() && _shutdownInProgress) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Non local failure scope and shutdown in progress do not FFDC but continue");
+
+                        } else {
+                            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                        }
                     } catch (Exception exc) {
-                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1549", this);
                     }
                 }
             } else {
@@ -1387,6 +1406,9 @@ public class RecoveryManager implements Runnable {
     // examine the boolean return value and not proceed with recovery if its true.
     public boolean shutdownInProgress() /* @LIDB3187C */
     {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "shutdownInProgress", _shutdownInProgress, _recoveryCompleted, FrameworkState.isStopping());
+
         synchronized (_recoveryMonitor) {
             if (_shutdownInProgress) {
                 // Put out a message stating the we are stopping recovery processing. Since this method can
@@ -1404,6 +1426,8 @@ public class RecoveryManager implements Runnable {
             }
         }
 
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "shutdownInProgress", _shutdownInProgress);
         return _shutdownInProgress;
     }
 
@@ -1786,7 +1810,6 @@ public class RecoveryManager implements Runnable {
 
             // Lets update our entry in the leaseLog early
             if (_leaseLog != null) {
-                // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
                     if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName)) {
@@ -1809,12 +1832,20 @@ public class RecoveryManager implements Runnable {
 
                     recoveryFailed(exc);
 
-                    if (tc.isEventEnabled())
-                        Tr.event(tc, "Exception caught opening Lease log!", exc);
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "run");
+                        Tr.exit(tc, "run", exc);
                     return;
                 }
+            }
+
+            // Check to see if shutdown has begun before proceeding. If it has, no
+            // further action can be taken.
+            if (shutdownInProgress() || FrameworkState.isStopping()) {
+                closeLogs();
+                recoveryFailed(new Exception("Server Stopping"));
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "run");
+                return;
             }
 
             // Open the transaction log. This contains details of inflight transactions.
@@ -1907,7 +1938,9 @@ public class RecoveryManager implements Runnable {
 
             // Check to see if shutdown has begun before proceeding. If it has, no
             // further action can be taken.
-            if (shutdownInProgress()) {
+            if (shutdownInProgress() || FrameworkState.isStopping()) {
+                closeLogs();
+                recoveryFailed(new Exception("Server Stopping"));
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "run");
                 return;
@@ -2012,7 +2045,9 @@ public class RecoveryManager implements Runnable {
 
             // Check to see if shutdown has begun before proceeding. If it has, no
             // further action can be taken.
-            if (shutdownInProgress()) {
+            if (shutdownInProgress() || FrameworkState.isStopping()) {
+                closeLogs();
+                recoveryFailed(new Exception("Server Stopping"));
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "run");
                 return;
@@ -2047,7 +2082,9 @@ public class RecoveryManager implements Runnable {
 
             // Determine if shutdown processing started during replayPartnerLog processing.
             // If it has, no further action can be taken.
-            if (shutdownInProgress()) {
+            if (shutdownInProgress() || FrameworkState.isStopping()) {
+                closeLogs();
+                recoveryFailed(new Exception("Server Stopping"));
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "run");
                 return;
@@ -2090,7 +2127,9 @@ public class RecoveryManager implements Runnable {
 
             // Determine if shutdown processing started during replayTranLog processing.
             // If it has, no further action can be taken.
-            if (shutdownInProgress()) {
+            if (shutdownInProgress() || FrameworkState.isStopping()) {
+                closeLogs();
+                recoveryFailed(new Exception("Server Stopping"));
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "run");
                 return;
@@ -2123,7 +2162,9 @@ public class RecoveryManager implements Runnable {
 
                     // Determine if shutdown processing started during update processing.
                     // If it has, no further action can be taken.
-                    if (shutdownInProgress()) {
+                    if (shutdownInProgress() || FrameworkState.isStopping()) {
+                        closeLogs();
+                        recoveryFailed(new Exception("Server Stopping"));
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "run");
                         return;
@@ -2135,7 +2176,9 @@ public class RecoveryManager implements Runnable {
 
                     // Determine if shutdown processing started during recoveryComplete processing.
                     // If it has, no further action can be taken.
-                    if (shutdownInProgress()) {
+                    if (shutdownInProgress() || FrameworkState.isStopping()) {
+                        closeLogs();
+                        recoveryFailed(new Exception("Server Stopping"));
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "run");
                         return;
@@ -2147,7 +2190,9 @@ public class RecoveryManager implements Runnable {
 
                     // Determine if shutdown processing started during recoveryComplete processing.
                     // If it has, no further action can be taken.
-                    if (shutdownInProgress()) {
+                    if (shutdownInProgress() || FrameworkState.isStopping()) {
+                        closeLogs();
+                        recoveryFailed(new Exception("Server Stopping"));
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "run");
                         return;
@@ -2375,12 +2420,15 @@ public class RecoveryManager implements Runnable {
             try {
                 _retainPeerLogs = AccessController.doPrivileged(
                                                                 new PrivilegedExceptionAction<Boolean>() {
+
                                                                     @Override
                                                                     public Boolean run() {
                                                                         return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
                                                                     }
                                                                 });
-            } catch (PrivilegedActionException e) {
+            } catch (
+
+            PrivilegedActionException e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2343");
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Exception disabling peer log deletion", e);
