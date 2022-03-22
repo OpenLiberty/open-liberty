@@ -11,6 +11,6 @@
 -include= jar:${fileuri;${repo;net.sf.ehcache:ehcache-core;2.5.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;net.sf.ehcache:ehcache-core;2.5.2}
+   @${repo;net.sf.ehcache:ehcache-core;2.5.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
 -buildpath: net.sf.ehcache:ehcache-core;version=2.5.2
