@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public class JSPTests {
     private static final String PI59436_APP_NAME = "PI59436";
     private static final String TestEDR_APP_NAME = "TestEDR";
     private static final String TestJDT_APP_NAME = "TestJDT";
+    private static final String OLGH20509_APP_NAME = "OLGH20509";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -82,6 +83,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, OLGH20509_APP_NAME + ".war");
 
         server.startServer(JSPTests.class.getSimpleName() + ".log");
     }
@@ -846,6 +849,20 @@ public class JSPTests {
         LOG.info("url: " + url);
 
         runEDR(url, true);
+    }
+
+    /**
+     * This test verifies no NPE occurs after 2nd attempt
+     * per issue 19197.
+     *
+     * @throws Exception
+     */
+    // @Mode(TestMode.FULL)
+    @Test
+    public void testTrackDependenciesFalse() throws Exception {
+        this.verifyStringInResponse(OLGH20509_APP_NAME, "index.jsp", "Test Passed!");
+        Thread.sleep(5100);
+        this.verifyStringInResponse(OLGH20509_APP_NAME, "index.jsp", "Test Passed!");
     }
 
     private void runEDR(String url, boolean makeConcurrentRequests) throws Exception {
