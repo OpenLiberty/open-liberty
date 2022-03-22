@@ -25,7 +25,8 @@ Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
                 io.openliberty.cdi40.internal.weld.DefaultCDI40SecurityService,\
                 io.openliberty.cdi40.internal.weld.LiteExtensionProvider,\
                 io.openliberty.cdi40.internal.weld.CDI40AggregatedConfigurationImpl, \
-                io.openliberty.cdi40.internal.weld.CDI40BceFinder
+                io.openliberty.cdi40.internal.weld.CDI40BceFinder,\
+                io.openliberty.cdi40.internal.weld.CDI40ContainerEventManagerImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \

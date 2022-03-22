@@ -19,6 +19,7 @@ import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsErrorTest;
 import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsTest;
 import io.openliberty.cdi40.internal.fat.config.BeansXMLTest;
 import io.openliberty.cdi40.internal.fat.config.LegacyConfigTest;
+import io.openliberty.cdi40.internal.fat.startupEvents.StartupEventsTest;
 
 @MinimumJavaLevel(javaLevel = 11)
 @RunWith(Suite.class)
@@ -26,6 +27,7 @@ import io.openliberty.cdi40.internal.fat.config.LegacyConfigTest;
                 BuildCompatibleExtensionsTest.class,
                 BuildCompatibleExtensionsErrorTest.class,
                 LegacyConfigTest.class,
-                BeansXMLTest.class
+                BeansXMLTest.class,
+                StartupEventsTest.class
 })
 public class FATSuite {}

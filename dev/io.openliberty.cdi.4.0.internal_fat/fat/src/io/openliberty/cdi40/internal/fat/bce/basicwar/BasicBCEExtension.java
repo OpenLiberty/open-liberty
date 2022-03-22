@@ -11,6 +11,10 @@
 package io.openliberty.cdi40.internal.fat.bce.basicwar;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Shutdown;
+import jakarta.enterprise.event.Startup;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.Discovery;
@@ -42,6 +46,18 @@ public class BasicBCEExtension implements BuildCompatibleExtension {
             return () -> "synthetic";
         }
 
+    }
+
+    public void observeStartup(@Observes Startup startupEvent) {
+        new Exception().printStackTrace();
+    }
+
+    public void observeShutdown(@Observes Shutdown shutdownEvent) {
+        new Exception().printStackTrace();
+    }
+
+    public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
+        new Exception().printStackTrace();
     }
 
 }
