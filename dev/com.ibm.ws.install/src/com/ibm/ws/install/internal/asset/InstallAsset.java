@@ -11,6 +11,8 @@
 package com.ibm.ws.install.internal.asset;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,8 +55,15 @@ public abstract class InstallAsset {
     }
 
     public void delete() {
-        if (asset != null && isTemporary() && !this.asset.delete())
-            this.asset.deleteOnExit();
+        if (asset != null && isTemporary()) {
+            try {
+                Files.delete(this.asset.toPath());
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "{0}", e.getMessage());
+                logger.log(Level.FINEST, "Failed to delete asset.", e);
+                this.asset.deleteOnExit();
+            }
+        }
     }
 
     @Override
@@ -139,11 +148,13 @@ public abstract class InstallAsset {
         }
     }
 
-    public void download(File installTempDir) throws InstallException {}
+    public void download(File installTempDir) throws InstallException {
+    }
 
     public RepositoryResource getRepositoryResource() {
         return null;
     }
 
-    public void cleanup() {}
+    public void cleanup() {
+    }
 }

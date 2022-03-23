@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 
@@ -138,7 +139,9 @@ public class ESAAssetTest {
             assertNotNull("ESAAsset.getLicense(Locale.CANADA)", esaAsset.getLicense(Locale.CANADA));
 
             esaAsset.delete();
-            assertFalse("ESAAsset should be deleted", esaFile.exists());
+            if (!InstallUtils.isWindows) {
+                assertFalse("ESAAsset should be deleted", esaFile.exists());
+            }
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
