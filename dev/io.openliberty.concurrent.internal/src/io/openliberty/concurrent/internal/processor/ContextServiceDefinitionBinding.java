@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,10 +81,10 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     public void merge(ContextServiceDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
         if (trace)
-            Tr.entry(this, tc, "merge", annotation, instanceClass, member, annotation.name(),
-                     (XMLcleared ? "(xml)" : "") + "cleared   : " + toString(cleared) + " << " + toString(annotation.cleared()),
-                     (XMLpropagated ? "(xml)" : "") + "propagated: " + toString(propagated) + " << " + toString(annotation.propagated()),
-                     (XMLunchanged ? "(xml)" : "") + "unchanged : " + toString(unchanged) + " << " + toString(annotation.unchanged()));
+            Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
+                     (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(annotation.cleared()),
+                     (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(annotation.propagated()),
+                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(annotation.unchanged()));
 
         if (member != null) {
             // ContextServiceDefinition is a class-level annotation only.
@@ -105,9 +105,9 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         if (trace)
             Tr.exit(this, tc, "merge", new String[] {
-                                                      (XMLcleared ? "(xml)" : "") + "cleared   = " + toString(cleared),
-                                                      (XMLpropagated ? "(xml)" : "") + "propagated= " + toString(propagated),
-                                                      (XMLunchanged ? "(xml)" : "") + "unchanged = " + toString(unchanged)
+                                                      (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
+                                                      (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
+                                                      (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged)
             });
     }
 
@@ -115,9 +115,9 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
         if (trace)
             Tr.entry(this, tc, "mergeXML", csd, csd.getName(),
-                     (XMLcleared ? "(xml)" : "") + "cleared   : " + toString(cleared) + " << " + toString(csd.getCleared()),
-                     (XMLpropagated ? "(xml)" : "") + "propagated: " + toString(propagated) + " << " + toString(csd.getPropagated()),
-                     (XMLunchanged ? "(xml)" : "") + "unchanged : " + toString(unchanged) + " << " + toString(csd.getUnchanged()));
+                     (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(csd.getCleared()),
+                     (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(csd.getPropagated()),
+                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(csd.getUnchanged()));
 
         List<Description> descriptionList = csd.getDescriptions();
 
@@ -155,9 +155,9 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         if (trace)
             Tr.exit(this, tc, "mergeXML", new String[] {
-                                                         (XMLcleared ? "(xml)" : "") + "cleared   = " + toString(cleared),
-                                                         (XMLpropagated ? "(xml)" : "") + "propagated= " + toString(propagated),
-                                                         (XMLunchanged ? "(xml)" : "") + "unchanged = " + toString(unchanged)
+                                                         (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
+                                                         (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
+                                                         (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged)
             });
     }
 
@@ -186,6 +186,18 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         addOrRemoveProperty(props, KEY_UNCHANGED, unchanged);
 
         setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ContextService.class.getName(), props));
+    }
+
+    @Trivial
+    static final String toString(ContextServiceDefinition anno) {
+        StringBuilder b = new StringBuilder();
+        b.append("ContextServiceDefinition@").append(Integer.toHexString(anno.hashCode())) //
+                        .append("(name=").append(anno.name()) //
+                        .append(", cleared=").append(Arrays.toString(anno.cleared())) //
+                        .append(", propagated=").append(Arrays.toString(anno.propagated())) //
+                        .append(", unchanged=").append(Arrays.toString(anno.unchanged())) //
+                        .append(")");
+        return b.toString();
     }
 
     @Trivial

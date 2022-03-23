@@ -23,6 +23,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -160,6 +161,7 @@ public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFa
      * @see com.ibm.ws.resource.ResourceFactory#createResource(com.ibm.ws.resource.ResourceRefInfo)
      */
     @Override
+    @Trivial
     public Object createResource(ResourceRefInfo ref) throws Exception {
         return createResource((ResourceInfo) ref);
     }

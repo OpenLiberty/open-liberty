@@ -55,10 +55,9 @@
     <propagated>ZipCode</propagated>
   </context-service>
 
-<!-- TODO enable to test merging
   <managed-executor>
-     <name>java:module/concurrent/merged/web/ZLExecutor</name>
-     <max-async>3</max-async>
+    <name>java:module/concurrent/merged/web/ZLExecutor</name>
+    <max-async>3</max-async>
   </managed-executor>
 
   <managed-executor>
@@ -87,6 +86,5 @@
     <name>java:app/concurrent/merged/web/LTThreadFactory</name>
     <priority>8</priority>
   </managed-thread-factory>
--->
 
 </web-app>
