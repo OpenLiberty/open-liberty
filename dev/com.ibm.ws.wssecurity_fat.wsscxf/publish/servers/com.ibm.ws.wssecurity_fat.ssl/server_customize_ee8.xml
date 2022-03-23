@@ -80,9 +80,8 @@
 	<!-- com.ibm.ws.wssecurity.example.cbh.AnotherPasswordCallback -->
 	<wsSecurityProvider
 		id="default"
-		ws-security.timestamp.timeToLive="120"
-		ws-security.usernametoken.timeToLive="60"
-		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee8.xml"
+		ws-security.usernametoken.timeToLive="120"
+		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
 		ws-security.return.security.error="true"
 	>
 	<!-- 3/2021 added ws-security.return.security.error -->
