@@ -26,6 +26,7 @@ import org.ietf.jgss.Oid;
 import com.ibm.websphere.security.auth.callback.WSCallbackHandlerImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -33,6 +34,8 @@ public class Krb5Helper {
 
     private final Class<?> thisClass = Krb5Helper.class;
 
+    public static final String COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.ibm.security.auth.module.Krb5LoginModule";
+    public static final boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isSystemClassAvailable(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
     private static final String IBM_JDK_KRB5_LOGIN = "ibmKrb5Login";
     private static final String SUN_JDK_KRB5_LOGIN = "sunKrb5Login";
     public static final String SUN_JDK_KRB5_LOGIN_REFRESH_KRB5_CONFIG = "sunKrb5LoginRefreshKrb5Config";
@@ -48,7 +51,7 @@ public class Krb5Helper {
      * @param userName
      * @param password
      * @param krb5LoginConfig - Absolute file path of the Kerberos configuration file to be used for login. This value
-     *            will be set as the value of the "java.security.krb5.conf" system property.
+     *                            will be set as the value of the "java.security.krb5.conf" system property.
      * @return
      * @throws Exception
      */
@@ -62,10 +65,10 @@ public class Krb5Helper {
      * @param server
      * @param userName
      * @param password
-     * @param realm - The Kerberos realm to be used for login. If not null, this value will be set as the value of the
-     *            "java.security.krb5.realm" system property.
-     * @param kdcHostName - The host name of the KDC to be used for login. If realm is not null and this value is not
-     *            null, this value will be set as the value of the "java.security.krb5.kdc" system property.
+     * @param realm                 - The Kerberos realm to be used for login. If not null, this value will be set as the value of the
+     *                                  "java.security.krb5.realm" system property.
+     * @param kdcHostName           - The host name of the KDC to be used for login. If realm is not null and this value is not
+     *                                  null, this value will be set as the value of the "java.security.krb5.kdc" system property.
      * @param jaasLoginContextEntry - JaasLoginContextEntry
      * @return
      * @throws Exception
@@ -80,13 +83,13 @@ public class Krb5Helper {
      * @param server
      * @param userName
      * @param password
-     * @param krb5LoginConfig - Absolute file path of the Kerberos configuration file to be used for login. This value
-     *            will be set as the value of the "java.security.krb5.conf" system property.
-     * @param realm - The Kerberos realm to be used for login. If non-null, this value will be set as the value of the
-     *            "java.security.krb5.realm" system property; the krb5LoginConfig value will not be used and the
-     *            "java.security.krb5.conf" system property will not be set.
-     * @param kdcHostName - The host name of the KDC to be used for login. If realm is not null and this value is not
-     *            null, this value will be set as the value of the "java.security.krb5.kdc" system property.
+     * @param krb5LoginConfig       - Absolute file path of the Kerberos configuration file to be used for login. This value
+     *                                  will be set as the value of the "java.security.krb5.conf" system property.
+     * @param realm                 - The Kerberos realm to be used for login. If non-null, this value will be set as the value of the
+     *                                  "java.security.krb5.realm" system property; the krb5LoginConfig value will not be used and the
+     *                                  "java.security.krb5.conf" system property will not be set.
+     * @param kdcHostName           - The host name of the KDC to be used for login. If realm is not null and this value is not
+     *                                  null, this value will be set as the value of the "java.security.krb5.kdc" system property.
      * @param jaasLoginContextEntry - JaasLoginContextEntry
      * @return
      * @throws Exception
@@ -146,7 +149,7 @@ public class Krb5Helper {
             System.setProperty("java.security.krb5.conf", krb5Config);
         }
 
-        if (InitClass.OTHER_SUPPORT_JDKS) {
+        if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             loginContextEntry = SUN_JDK_KRB5_LOGIN;
             System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
             System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
