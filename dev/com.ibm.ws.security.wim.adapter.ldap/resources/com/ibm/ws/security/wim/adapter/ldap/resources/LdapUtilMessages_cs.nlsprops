@@ -93,7 +93,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=Atribut certifik\u00e1tu TBSCertificate 
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Ujist\u011bte se, \u017ee je filtr pro certifik\u00e1ty spr\u00e1vn\u00fd.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Ve specifikaci filtru byl pou\u017eit nezn\u00e1m\u00fd atribut certifik\u00e1tu {0}. Zadejte podporovan\u00fd filtr certifik\u00e1t\u016f.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edt pouze n\u00e1sleduj\u00edc\u00ed hodnoty atributu certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Na prav\u00e9 stran\u011b specifikace filtru m\u016f\u017eete pou\u017e\u00edt pouze n\u00e1sleduj\u00edc\u00ed hodnoty atributu certifik\u00e1tu. \u0158et\u011bzce odli\u0161uj\u00ed velk\u00e1 a mal\u00e1 p\u00edsmena: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Ujist\u011bte se, \u017ee je filtr pro certifik\u00e1ty spr\u00e1vn\u00fd.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Operaci p\u0159ihl\u00e1\u0161en\u00ed nelze dokon\u010dit. Konfigurovan\u00e9 pole rozli\u0161uj\u00edc\u00edho n\u00e1zvu {0} je neplatn\u00e9. Zadejte platn\u00e9 pole rozli\u0161uj\u00edc\u00edho n\u00e1zvu.

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=Jav\u00edtsa ki a hib\u0
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: A CDI kiterjeszt\u00e9si SPI-n kereszt\u00fcl regisztr\u00e1lt {0} oszt\u00e1ly elt\u00e9r\u0151 csomagban tal\u00e1lhat\u00f3, mint a CDIExtensionMetadata megval\u00f3s\u00edt\u00e1s.
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=Az oszt\u00e1ly figyelmen k\u00edv\u00fcl marad, mert a CDIExtensionMetadata megval\u00f3s\u00edt\u00e1s getExtensions() vagy getBeanClasses() met\u00f3dus\u00e1val volt regisztr\u00e1lva \u00e9s elt\u00e9r\u0151 csomagban tal\u00e1lhat\u00f3, mint a CDIExtensionMetadata megval\u00f3s\u00edt\u00e1s.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Helyezze \u00e1t az \u00e9rintett oszt\u00e1lyt vagy hozzon l\u00e9tre \u00faj CDIExtensionMetadata megval\u00f3s\u00edt\u00e1st a helyes csomagban.
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: A CDI kiv\u00e9telt \u00e9szlelt a(z) {0} arch\u00edvum kiterjeszt\u00e9seinek l\u00e9trehoz\u00e1sakor. A hiba: {1}
+exception.creating.extensions.CWOWB1012E.explanation=A CDI nem tudta bet\u00f6lteni vagy megh\u00edvni egy kiterjeszt\u00e9si oszt\u00e1ly \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1t.
+exception.creating.extensions.CWOWB1012E.useraction=Jav\u00edtsa a hib\u00e1t, amely megakad\u00e1lyozza a kiterjeszt\u00e9s l\u00e9trehoz\u00e1s\u00e1t.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: A(z) {0} BuildCompatibleExtension oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+bce.not.loadable.CWOWB1013E.explanation=Az alkalmaz\u00e1s tartalmaz egy META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension f\u00e1jlt, amely tartalmazza az oszt\u00e1lyt, de a CDI nem tudta bet\u00f6lteni az oszt\u00e1lyt.
+bce.not.loadable.CWOWB1013E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly jelen van az alkalmaz\u00e1sban \u00e9s bet\u00f6lthet\u0151. Ha az oszt\u00e1ly jelen van az alkalmaz\u00e1sban, akkor az FFDC f\u00e1jl tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmazhat arr\u00f3l, hogy az oszt\u00e1ly mi\u00e9rt nem t\u00f6lthet\u0151 be.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: A(z) {0} oszt\u00e1ly nem val\u00f3s\u00edtja meg a BuildCompatibleExtension fel\u00fcletet.
+bce.does.not.implement.bce.CWOWB1014E.explanation=Az alkalmaz\u00e1s tartalmaz egy META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension f\u00e1jlt, amely tartalmazza az oszt\u00e1lyt, de az oszt\u00e1ly nem val\u00f3s\u00edtja meg a jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension fel\u00fcletet.
+bce.does.not.implement.bce.CWOWB1014E.useraction=M\u00f3dos\u00edtsa az oszt\u00e1lyt \u00fagy, hogy megval\u00f3s\u00edtsa a jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension fel\u00fcletet.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: A cdi12 konfigur\u00e1ci\u00f3s elemet a cdi konfigur\u00e1ci\u00f3s elem hat\u00e1lytalan\u00edtja.
+cdi12.element.type.superceded.CWOWB1015W.explanation=A cdi konfigur\u00e1ci\u00f3s elem fel\u00fcl\u00edrja a cdi12 konfigur\u00e1ci\u00f3s elemet, \u00e9s a kor\u00e1bbi be\u00e1ll\u00edt\u00e1sok mellett \u00fajakat is tartalmaz.
+cdi12.element.type.superceded.CWOWB1015W.useraction=M\u00f3dos\u00edtsa a server.xml konfigur\u00e1ci\u00f3t, hogy a cdi konfigur\u00e1ci\u00f3s elemet haszn\u00e1lja a cdi12 konfigur\u00e1ci\u00f3s elem helyett.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: A cdi konfigur\u00e1ci\u00f3s elem emptyBeansXMLExplicitArchive attrib\u00fatuma csak a CDI 4.0 vagy \u00fajabb v\u00e1ltozat\u00e1n t\u00e1mogatott. Ez az attrib\u00fatum figyelmen k\u00edv\u00fcl marad.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=Az emptyBeansXMLExplicitArchive attrib\u00fatumnak a 4.0-n\u00e1l kor\u00e1bbi CDI v\u00e1ltozatokban nincs hat\u00e1sa.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Friss\u00edtse a server.xml konfigur\u00e1ci\u00f3t, \u00e9s t\u00e1vol\u00edtsa el az attrib\u00fatumot, vagy haszn\u00e1lja a CDI 4.0 vagy \u00fajabb v\u00e1ltozat\u00e1t.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Az enableImplicitBeanArchives attrib\u00fatum a cdi12 \u00e9s a cdi konfigur\u00e1ci\u00f3s elemeken is be\u00e1ll\u00edt\u00e1sra ker\u00fclt. A cdi elem \u00e9rt\u00e9ke ker\u00fcl felhaszn\u00e1l\u00e1sra, \u00e9s a cdi12 elem \u00e9rt\u00e9ke figyelmen k\u00edv\u00fcl marad.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=B\u00e1r be\u00e1ll\u00edthatja az enableImplicitBeanArchives attrib\u00fatumot a cdi12 \u00e9s a cdi konfigur\u00e1ci\u00f3s elemekben is, az attrib\u00fatumot nem szabad k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kekre be\u00e1ll\u00edtani ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Friss\u00edtse a server.xml f\u00e1jlt a konfliktus jav\u00edt\u00e1s\u00e1hoz. Az aj\u00e1nlott m\u0171velet a cdi12 konfigur\u00e1ci\u00f3s elem elt\u00e1vol\u00edt\u00e1sa, mivel a cdi konfigur\u00e1ci\u00f3s elem hat\u00e1lytalan\u00edtja.
+

@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=Non \u00e8 richiesta alcuna azione.
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: Si \u00e8 verificato un errore durante l''inizializzazione SSL. Eccezione: {0}
 ssl.init.error.CWPKI0008E.explanation=Errore imprevisto durante l'inizializzazione della sicurezza.
-ssl.init.error.CWPKI0008E.useraction=Errore generico. \
-Ricercare i messaggi precedenti relativi all'inizializzazione SSL o ad un problema di configurazione.  \
-L'abilitazione della traccia di debug SSL=all=enabled potrebbe fornire ulteriori informazioni.
+ssl.init.error.CWPKI0008E.useraction=Errore generico. Ricercare i messaggi precedenti relativi all'inizializzazione SSL o ad un problema di configurazione.  L'abilitazione della traccia di debug SSL=all=enabled potrebbe fornire ulteriori informazioni.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Il sistema non \u00e8 in grado di creare l'oggetto di sicurezza durante l'inizializzazione.
 ssl.init.nullsecobject.CWPKI0009E.explanation=Non \u00e8 stato possibile creare l'oggetto di sicurezza dal repository. Questo \u00e8 un errore interno. Il file security.xml potrebbe essere danneggiato o mancante. 
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=Non \u00e8 richiesta alcuna azione.
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: Si \u00e8 verificato un errore durante l''arresto del componente SSL. Eccezione: {0}
 ssl.stop.error.CWPKI0015E.explanation=Si \u00e8 verificato un errore non previsto durante l'arresto del componente SSL.
-ssl.stop.error.CWPKI0015E.useraction=Errore generico. \
-Ricercare i messaggi precedenti relativi all'errore o ad un problema di configurazione.  \
-L'abilitazione della traccia di debug SSL=all=enabled potrebbe fornire ulteriori informazioni.
+ssl.stop.error.CWPKI0015E.useraction=Errore generico. Ricercare i messaggi precedenti relativi all'errore o ad un problema di configurazione.  L'abilitazione della traccia di debug SSL=all=enabled potrebbe fornire ulteriori informazioni.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Il certificato con alias {0} dal keyStore {1} scadr\u00e0 fra {2} giorni.
 ssl.expiration.warning.CWPKI0016W.explanation=Un certificato nel keystore sta per scadere.
@@ -187,7 +183,7 @@ ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Impossibile rilevare l
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=\u00c8 necessario immettere il nome host nell'elenco host nello stesso formato canonico utilizzato nel file serverindex.xml.
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Modificare l'elenco host in modo da convertirlo nel formato canonico richiesto.
 # -------------------------------------------------------------------------------------------------
-ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Si \u00e8 verificato un errore di handshake SSL da un client sicuro.  \u00c8 necessario aggiungere il firmatario SSL del server al truststore del client.  Viene fornito una utility retrieveSigners per scaricare i firmatari dal server, ma \u00e8 necessaria l'autorizzazione di gestione.  Rivolgersi all'amministratore per eseguire questa utility per impostare l'ambiente sicuro prima di eseguire il client.  In alternativa, \u00e8 possibile abilitare com.ibm.ssl.enableSignerExchangePrompt in ssl.client.props per \"DefaultSSLSettings\" in modo da consentire l'accettazione del firmatario durante il tentativo di connessione.
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Si \u00e8 verificato un errore di handshake SSL da un client sicuro.  \u00c8 necessario aggiungere il firmatario SSL del server al truststore del client.  Viene fornito una utility retrieveSigners per scaricare i firmatari dal server, ma \u00e8 necessaria l'autorizzazione di gestione.  Rivolgersi all'amministratore per eseguire questa utility per impostare l'ambiente sicuro prima di eseguire il client.  In alternativa, \u00e8 possibile abilitare com.ibm.ssl.enableSignerExchangePrompt in ssl.client.props per "DefaultSSLSettings" in modo da consentire l'accettazione del firmatario durante il tentativo di connessione.
 ssl.handshake.failure.info.CWPKI0040I.explanation=\u00c8 necessario aggiungere il firmatario SSL del server al truststore del client. I firmatari possono essere scaricati automaticamente dal server o forniti manualmente durante il tentativo di connessione.
 ssl.handshake.failure.info.CWPKI0040I.useraction=Eseguire l'utility retrieveSigners oppure abilitare la richiesta di scambio dei firmatari.
 # -------------------------------------------------------------------------------------------------
@@ -234,14 +230,12 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=Per garantire l'utilizzo degli a
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** RICHIESTA SCAMBIO FIRMATARI SSL ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=Firmatario SSL dall''host di destinazione non trovato nel truststore {0}.\n\
-\n\
-Queste sono le informazioni del firmatario (verificare che il valore digest corrisponda a quello visualizzato sul server): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  DN soggetto:    
-ssl.trustmanager.signer.prompt.CWPKI0103I=  DN emittente:     
-ssl.trustmanager.signer.prompt.CWPKI0104I=  Numero di serie: 
-ssl.trustmanager.signer.prompt.CWPKI0105I=  Digest SHA-1:  
-ssl.trustmanager.signer.prompt.CWPKI0106I=  Digest MD5:    
+ssl.trustmanager.signer.prompt.CWPKI0101I=Firmatario SSL dall''host di destinazione non trovato nel truststore {0}.\n\nQueste sono le informazioni del firmatario (verificare che il valore digest corrisponda a quello visualizzato sul server): 
+ssl.trustmanager.signer.prompt.CWPKI0102I= DN soggetto:    
+ssl.trustmanager.signer.prompt.CWPKI0103I= DN emittente:     
+ssl.trustmanager.signer.prompt.CWPKI0104I= Numero di serie: 
+ssl.trustmanager.signer.prompt.CWPKI0105I= Digest SHA-1:  
+ssl.trustmanager.signer.prompt.CWPKI0106I= Digest MD5:    
 ssl.trustmanager.signer.prompt.CWPKI0107I=Aggiungere ora il firmatario al truststore? (s/n) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
@@ -251,7 +245,7 @@ ssl.trustmanager.signer.prompt.answer.yes=y
 ssl.trustmanager.signer.prompt.answer.no=N
 ssl.trustmanager.signer.prompt.answer.full.yes=si
 ssl.trustmanager.signer.prompt.CWPKI0108I=Potrebbe essere necessario eseguire una nuova richiesta se si verifica un timeout del socket durante l'attesa di una risposta.  Se il tentativo \u00e8 richiesto, notare che la richiesta non verr\u00e0 visualizzata nuovamente se (s) viene immesso, il quale indica che il firmatario \u00e8 gi\u00e0 stato aggiunto al truststore.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Scadenza:       
+ssl.trustmanager.signer.prompt.CWPKI0109I= Scadenza:       
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -281,10 +275,7 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=Determinare la causa in bas
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilizzare le opzioni -listRemoteKeyStoreNames e -listLocalKeyStoreNames per ottenere un elenco di nomi rispettivamente per <remoteKeyStoreName> e <localKeyStoreName>.\n\
-\n\
-Utilizzo: retrieveSigners <remoteKeyStoreName> <localKeyStoreName> [opzioni]\n\
-opzioni: [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <porta>] [-conntype <RMI|SOAP>] [-user <utente>] [-password <password>] [-trace] [-logfile <nomefile>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utilizzare le opzioni -listRemoteKeyStoreNames e -listLocalKeyStoreNames per ottenere un elenco di nomi rispettivamente per <remoteKeyStoreName> e <localKeyStoreName>.\n\nUtilizzo: retrieveSigners <remoteKeyStoreName> <localKeyStoreName> [opzioni]\nopzioni: [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <porta>] [-conntype <RMI|SOAP>] [-user <utente>] [-password <password>] [-trace] [-logfile <nomefile>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Questo messaggio \u00e8 solo a scopo informativo.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=Non \u00e8 richiesta alcuna azione.
 # -------------------------------------------------------------------------------------------------
@@ -345,8 +336,8 @@ ssl.signer.general.error.CWPKI0314E.explanation=Controllare la riga comandi per 
 ssl.signer.general.error.CWPKI0314E.useraction=Controllare la guida all'utilizzo e riprovare dopo aver corretto l'opzione.
 # -------------------------------------------------------------------------------------------------
 ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Le propriet\u00e0 della configurazione SSL sono null. Potrebbe essersi verificato un problema durante l'analisi della configurazione del client SSL.
-ssl.no.properties.error.CWPKI0315E.explanation=Non vi sono propriet\u00e0 della configurazione SSL impostate.  La propriet\u00e0 \'com.ibm.SSL.ConfigURL\' potrebbe non essere impostata correttamente o potrebbe essersi verificato un errore durante l'analisi della configurazione del client SSL.
-ssl.no.properties.error.CWPKI0315E.useraction=Controllare nel file ssl.client.props gli errori e assicurarsi che la propriet\u00e0 \'com.ibm.SSL.ConfigURL\' sia correttamente impostata.
+ssl.no.properties.error.CWPKI0315E.explanation=Non vi sono propriet\u00e0 della configurazione SSL impostate.  La propriet\u00e0 'com.ibm.SSL.ConfigURL' potrebbe non essere impostata correttamente o potrebbe essersi verificato un errore durante l'analisi della configurazione del client SSL.
+ssl.no.properties.error.CWPKI0315E.useraction=Controllare nel file ssl.client.props gli errori e assicurarsi che la propriet\u00e0 'com.ibm.SSL.ConfigURL' sia correttamente impostata.
 
 ################################################################################
 # Range 400-599 reserved for CA Pure Client Util and Impls
@@ -468,7 +459,7 @@ ssl.ca.client.invalid.custom.attrs.useraction=Consultare la guida all'utilizzo, 
 
 
 #  CA CMP Client Impl
-ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  L''attributo {0} risulta mancante oppure \u00e8 di tipo non corretto.  Il tipo corretto \u00e8 {1}.
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E: \ L''attributo {0} risulta mancante oppure \u00e8 di tipo non corretto.  Il tipo corretto \u00e8 {1}.
 ssl.ca.cmp.impl.invalid.attribute.explanation=L'attributo passato all'implementazione \u00e8 null o non \u00e8 del tipo corretto.
 ssl.ca.cmp.impl.invalid.attribute.useraction=Assicurarsi che l'attributo richiesto venga inoltrato all'implementazione.
 # -------------------------------------------------------------------------------------------------
@@ -476,11 +467,11 @@ ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: La richiesta certificato
 ssl.ca.cmp.impl.invalid.certificate.request.explanation=L'array di byte della richiesta certificato \u00e8 null.
 ssl.ca.cmp.impl.invalid.certificate.request.useraction=Controllare che venga inoltrato un array valida di byte della richiesta certificato all'implementazione.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  La password di revoca per questa richiesta \u00e8 null.
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E: \ La password di revoca per questa richiesta \u00e8 null.
 ssl.ca.cmp.impl.invalid.revocation.reason.explanation=L'array di byte della password di revoca per questa richiesta \u00e8 null.
 ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Controllare che venga inoltrato un array di byte della password di revoca valido della richiesta certificato all'implementazione.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.general.error=CWPKI0453E:  Si \u00e8 verificata la seguente eccezione non prevista: {0}
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \ Si \u00e8 verificata la seguente eccezione non prevista: {0}
 ssl.ca.cmp.impl.general.error.explanation=CMSG0001
 ssl.ca.cmp.impl.general.error.useraction=CMSG0002
 # -------------------------------------------------------------------------------------------------
@@ -668,3 +659,26 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certificato con il DN soggetto {0} da
 ssl.certificate.add.CWPKI0830I.explanation=Un certificato \u00e8 stato richiamato da una variabile di ambiente nella configurazione e viene aggiunto al file keystore.
 ssl.certificate.add.CWPKI0830I.useraction=Non sono richieste azioni.
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: Impossibile utilizzare il protocollo SSL/TLS {0}. L''errore esteso \u00e8: {1} 
+ssl.protocol.error.CWPKI0831E.explanation=Impossibile utilizzare il protocollo fornito. Si \u00e8 verificato un errore durante il tentativo di ottenere un'istanza di SSLContext con il valore di protocollo. 
+ssl.protocol.error.CWPKI0831E.useraction=Assicurarsi che la configurazione utilizzi dei valori di protocollo SSL/TLS validi per questa JVM.
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: Il valore di protocollo SSL/TLS {0} fornito non pu\u00f2 essere utilizzato per la configurazione di un elenco di valori di protocollo SSL.
+ssl.protocol.error.CWPKI0832E.explanation=Il valore di protocollo non \u00e8 valido in un raggruppamento di elenchi di protocolli.
+ssl.protocol.error.CWPKI0832E.useraction=Assicurarsi che l'elenco di protocolli SSL/TLS includa solo valori appropriati per un elenco di protocolli.
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: La configurazione SSL/TLS {0} ha un errore che impedisce la creazione della configurazione SSL/TLS. 
+ssl.protocol.error.CWPKI0833E.explanation=Gli attributi di configurazione SSL presentano un errore che impedisce la creazione di SSLContext. 
+ssl.protocol.error.CWPKI0833E.useraction=Assicurarsi che gli attributi di configurazione SSL siano corretti. Esaminare i log per ulteriori errori associati agli attributi di configurazione SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: La configurazione SSL/TLS {0} non pu\u00f2 essere impostata come configurazione SSL predefinita del processo a causa di un errore.
+ssl.config.error.CWPKI0834E.explanation=La configurazione SSL/TLS specificata contiene un errore che ne ha impedito l'impostazione come configurazione SSL predefinita del processo. 
+ssl.config.error.CWPKI0834E.useraction=Assicurarsi che gli attributi di configurazione SSL siano corretti. Esaminare i log per gli errori associati agli attributi di configurazione SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ Una configurazione SSL/TLS non pu\u00f2 essere creata per la connessione in entrata perch\u00e9 non \u00e8 stato creato un gestore chiavi.
+ssl.config.error.CWPKI0835E.explanation=Un errore nella configurazione ha impedito di creare il gestore chiave.
+ssl.config.error.CWPKI0835E.useraction=Assicurarsi che gli attributi di configurazione SSL siano corretti. Esaminare i log per gli errori associati agli attributi di configurazione SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: Una configurazione SSL/TLS non pu\u00f2 essere creata perch\u00e9 non sono stati creati i gestori chiavi e i gestori trust.
+ssl.config.error.CWPKI0836E.explanation=Un errore nella configurazione ha impedito di creare i gestori chiavi e i gestori trust.
+ssl.config.error.CWPKI0836E.useraction=Assicurarsi che gli attributi di configurazione SSL siano corretti. Esaminare i log per gli errori associati agli attributi di configurazione SSL.

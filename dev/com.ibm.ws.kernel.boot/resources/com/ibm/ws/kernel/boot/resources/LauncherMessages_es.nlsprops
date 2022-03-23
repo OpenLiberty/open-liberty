@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: La fase de punto de comprobaci\u00f3n "{0}" e
 error.invalidPhaseName.explanation=Se ha especificado una fase desconocida como valor de la opci\u00f3n checkpoint.
 error.invalidPhaseName.useraction=Revise la documentaci\u00f3n para determinar los nombres de fase v\u00e1lidos. Vuelva a emitir el mandato utilizando una fase de punto de comprobaci\u00f3n v\u00e1lida.
 
+error.set.securitymanager.jdk18=CWWKE0955E: La propiedad websphere.java.security se ha establecido en el archivo bootstrap.properties, pero la versi\u00f3n de Java es {0}.  Esta propiedad habilita Java Security Manager y no es v\u00e1lida con Java 18 o posteriores.
+error.set.securitymanager.jdk18.explanation= Desde que Java Security Manager est\u00e1 en desuso, tal como especifica JEP 411, Liberty no da soporte a Java Security Manager con Java 18 o posteriores.
+error.set.securitymanager.jdk18.useraction=Elimine la propiedad websphere.java.security del archivo bootstrap.properties o utilice una versi\u00f3n Java anterior a Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: No se ha podido establecer Java Security Manager debido a la excepci\u00f3n: {0}.  Esto ocurre si el servidor utiliza Java 18 o posterior y la propiedad del sistema Java "java.security.manager" no se ha establecido en "allow".
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager no se ha podido habilitar porque el sistema est\u00e1 utilizando Java 18, que de forma predeterminada no permite el uso de un gestor de seguridad de Java.
+error.cannotset.securitymanager.jdk18.useraction=Inicie el servidor con el argumento de JVM -Djava.security.manager=allow.
+
+error.checkpoint.delete=CWWKE0955E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque la imagen de punto de comprobaci\u00f3n existente no se puede suprimir del directorio {0}.
+error.checkpoint.delete.explanation=Una solicitud de punto de comprobaci\u00f3n para el servidor ha fallado porque no se puede suprimir una imagen de punto de comprobaci\u00f3n existente.
+error.checkpoint.delete.useraction=Aseg\u00farese de que el usuario tiene permiso para suprimir el directorio existente. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
+
+error.checkpoint.workarea.backup=CWWKE0956E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque no se puede hacer copia de seguridad del directorio {0}.
+error.checkpoint.workarea.backup.explanation=Se ha producido un error al realizar una copia de seguridad del directorio de \u00e1rea de trabajo del servidor.
+error.checkpoint.workarea.backup.useraction=Aseg\u00farese de que el usuario tiene suficientes permisos para realizar una copia de seguridad del directorio de \u00e1rea de trabajo del punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
+
+error.checkpoint.workarea.restore=CWWKE0957E: El directorio del \u00e1rea de trabajo del servidor de punto de comprobaci\u00f3n no se puede restaurar desde el directorio {0}.
+error.checkpoint.workarea.restore.explanation=Se ha producido un error al restaurar el directorio de \u00e1rea de trabajo del punto de comprobaci\u00f3n.
+error.checkpoint.workarea.restore.useraction=Aseg\u00farese de que el usuario tiene suficientes permisos para restaurar el \u00e1rea de trabajo del punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
+
+info.checkpoint.restore.failed=CWWKE0957I: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Se inicia el servidor sin utilizar la imagen de punto de comprobaci\u00f3n.
+info.checkpoint.restore.failed.explanation=Se ha producido un error al restaurar un proceso de servidor de punto de comprobaci\u00f3n.  El servidor se ha iniciado sin utilizar la imagen de punto de comprobaci\u00f3n.
+info.checkpoint.restore.failed.useraction=Consulte los registros para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

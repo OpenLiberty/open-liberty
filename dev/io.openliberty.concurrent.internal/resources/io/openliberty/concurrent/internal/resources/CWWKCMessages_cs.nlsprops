@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, kter\u00e1 je definov\u00e1na aplikac\u00ed {1}, nebyla k dispozici v\u010das.
+CWWKC1200.resource.unavailable.explanation=P\u0159\u00edli\u0161 velk\u00e9 zat\u00ed\u017een\u00ed syst\u00e9mu na zpracov\u00e1n\u00ed anotac\u00ed definic prost\u0159edk\u016f a z\u00e1znam\u016f deskriptoru nasazen\u00ed p\u0159edt\u00edm, ne\u017e se je aplikace pokus\u00ed pou\u017e\u00edt.
+CWWKC1200.resource.unavailable.useraction=Zobrazte soubor messages.log a identifikujte v\u00fdskyt chyby. Jinak sni\u017ete zat\u00ed\u017een\u00ed syst\u00e9mu.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, kter\u00fd je definov\u00e1n aplikac\u00ed {1}, vy\u017eaduje slu\u017ebu ContextService {2}, ale slu\u017eba ContextService byla nedostupn\u00e1 nebo nen\u00ed k dispozici v\u010das.
+CWWKC1201.contextsvc.inaccessible.explanation=Zadan\u00fd prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ContextService, byl nep\u0159\u00edstupn\u00fd nebo nen\u00ed k dispozici z n\u00e1sleduj\u00edc\u00edch d\u016fvod\u016f. 1.) Anotace definice prost\u0159edku nebo definice prost\u0159edku v deskriptoru implementace aplikace uv\u00e1d\u00ed nespr\u00e1vn\u00fd n\u00e1zev JNDI, pod kter\u00fdm se m\u00e1 naj\u00edt prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ContextService. 2.) Prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ContextService, je definov\u00e1n v rozsahu, kter\u00fd nen\u00ed p\u0159\u00edstupn\u00fd pro prost\u0159edek, kter\u00fd vy\u017eaduje prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ContextService. 3.) Syst\u00e9m je p\u0159\u00edli\u0161 zat\u00ed\u017een na to, aby mohl v\u010das zaregistrovat prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ContextService.
+CWWKC1201.contextsvc.inaccessible.useraction=Opravte aplikaci tak, aby odkazovala na n\u00e1zev rozhran\u00ed JNDI slu\u017eby ContextService, kter\u00e1 je p\u0159\u00edstupn\u00e1. Je-li zadan\u00fd n\u00e1zev rozhran\u00ed JNDI spr\u00e1vn\u00fd, sni\u017ete zat\u00ed\u017een\u00ed syst\u00e9mu.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: V definici ContextServiceDefinition {1} byla nalezena konfliktn\u00ed konfigurace kontextu podprocesu {0}. Vy\u010di\u0161t\u011bn\u00fd kontext je {2}, \u0161\u00ed\u0159en\u00fd kontext je {3} a nezm\u011bn\u011bn\u00fd kontext je {4}.
+CWWKC1202.context.lists.overlap.explanation=Typ kontextu podprocesu lze konfigurovat v jak\u00e9koli z kategori\u00ed typ\u016f kontextu vymazan\u00fdch, \u0161\u00ed\u0159en\u00fdch nebo nezm\u011bn\u011bn\u00fdch. Typ kontextu nelze nakonfigurovat ve v\u00edce kategori\u00edch typ\u016f kontextu.
+CWWKC1202.context.lists.overlap.useraction=Opravte konfiguraci tak, aby ur\u010dovala typ kontextu podprocesu ve v\u011bt\u0161in\u011b kategori\u00ed.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Stejn\u00fd typ kontextu podprocesu, {0}, je poskytov\u00e1n v\u00edce poskytovateli kontextu podprocesu, kter\u00e9 jsou k dispozici pro aplikaci. Poskytovatel\u00e9 kontextu podprocesu jsou: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Pro ka\u017ed\u00fd typ kontextu m\u016f\u017ee existovat pouze jeden poskytovatel kontextu podprocesu.
+CWWKC1203.duplicate.context.useraction=Aktualizujte aplikaci, knihovny nebo oboj\u00ed tak, aby pro aplikaci nebyl p\u0159\u00edstupn\u00fd v\u00edce ne\u017e jeden poskytovatel kontextu podprocesu zadan\u00e9ho typu kontextu.
+
+CWWKC1204.not.serializable=CWWKC1204E: Nelze vytvo\u0159it serializovateln\u00fd kontextov\u00fd server proxy, kter\u00fd \u0161\u00ed\u0159\u00ed kontext podprocesu {0}, kter\u00fd nen\u00ed serializovateln\u00fd.
+CWWKC1204.not.serializable.explanation=Typy kontextu podprocesu t\u0159et\u00edch stran nejsou kompatibiln\u00ed se serializac\u00ed, a nelze je nakonfigurovat pro \u0161\u00ed\u0159en\u00ed pro serializovateln\u00e9 kontextov\u00e9 servery proxy.
+CWWKC1204.not.serializable.useraction=Aktualizujte aplikaci, aby po\u017eadovala kontextov\u00fd proxy server, kter\u00fd nelze serializovat, nebo zajist\u011bte, aby nebyly nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 typy kontextu t\u0159et\u00edch stran k \u0161\u00ed\u0159en\u00ed

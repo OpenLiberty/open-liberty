@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Za\u017c\u0105dano punktu kontro
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Za\u017c\u0105dano punktu kontrolnego. Serwer zosta\u0142 zatrzymany, a jego bie\u017c\u0105cy stan zapisany na dysku.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania mo\u017cna znale\u017a\u0107 w dokumentacji.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Serwer Liberty jest wznawiany z punktu kontrolnego.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Proces serwera Liberty wznowi\u0142 dzia\u0142anie z punktu kontrolnego w ci\u0105gu {0} sek.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=Operacja odtwarzania zosta\u0142a uruchomiona na obrazie punktu kontrolnego serwera Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania mo\u017cna znale\u017a\u0107 w dokumentacji.
 

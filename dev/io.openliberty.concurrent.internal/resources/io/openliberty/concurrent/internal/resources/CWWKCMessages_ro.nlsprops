@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, care este definit\u0103 prin aplica\u021bia {1}, nu a fost disponibil\u0103 \u00een timp util.
+CWWKC1200.resource.unavailable.explanation=Prea mult\u0103 sarcin\u0103 \u00een sistem pentru a procesa adnot\u0103rile de defini\u021bie a resurselor \u0219i intr\u0103rile descriptorului de implementare \u00eenainte ca aplica\u021bia s\u0103 \u00eencerce utilizarea acestora.
+CWWKC1200.resource.unavailable.useraction=Vizualiza\u021bi fi\u0219ierul messages.log pentru a identifica apari\u021bia unei erori. \u00cen caz contrar, reduce\u021bi sarcina sistemului.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, care este definit\u0103 prin aplica\u021bia {1}, necesit\u0103 un ContextService {2}, dar ContextService nu a putut fi accesat sau nu a fost disponibil \u00een timp util.
+CWWKC1201.contextsvc.inaccessible.explanation=Resursa specificat\u0103 care implementeaz\u0103 interfa\u021ba ContextService nu a putut fi accesat\u0103 sau nu a fost disponibil\u0103 din cauza unuia dintre urm\u0103toarele motive. 1.) O adnotare a defini\u021biei resurselor sau o defini\u021bie a resurselor \u00eentr-un descriptor de implementare al aplica\u021biei specific\u0103 un nume JNDI incorect la care se reg\u0103se\u0219te resursa care implementeaz\u0103 interfa\u021ba ContextService. 2.) Resursa care implementeaz\u0103 interfa\u021ba ContextService este definit\u0103 \u00eentr-un domeniu de aplicare care nu poate fi accesat de resursa care necesit\u0103 resursa care implementeaz\u0103 interfa\u021ba ContextService. 3.) Sarcina sistemului este prea mare pentru \u00eenregistrarea unei resurse care implementeaz\u0103 interfa\u021ba ContextService \u00een timp util.
+CWWKC1201.contextsvc.inaccessible.useraction=Corecta\u021bi aplica\u021bia pentru a face referire la numele JNDI al interfe\u021bei ContextService care poate fi accesat\u0103. Dac\u0103 numele JNDI specificat este corect, reduce\u021bi sarcina sistemului.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: Configurarea contradictorie a contextului firului de execu\u021bie {0} se reg\u0103se\u0219te pe ContextServiceDefinition {1}. Contextul eliminat este {2}, contextul propagat este {3}, iar contextul nemodificat este {4}.
+CWWKC1202.context.lists.overlap.explanation=Un anumit tip de context al firului de execu\u021bie poate fi configurat pentru oricare dintre categoriile de tip de context eliminate, propagate sau nemodificate. Tipul de context nu poate fi configurat \u00een categorii multiple de tip de context.
+CWWKC1202.context.lists.overlap.useraction=Corecta\u021bi configura\u021bia pentru a specifica tipul de context al firului de execu\u021bie pentru cel mult o categorie.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Acela\u0219i tip de context al firului de execu\u021bie, {0}, este asigurat de furnizori de context de fir de execu\u021bie multipli, disponibili pentru aplica\u021bie. Furnizorii de context de fir de execu\u021bie sunt: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Nu poate exista dec\u00e2t un singur furnizor de context de fir de execu\u021bie pentru fiecare tip de context.
+CWWKC1203.duplicate.context.useraction=Actualiza\u021bi aplica\u021bia, bibliotecile, sau ambele, astfel \u00eenc\u00e2t aplica\u021bia s\u0103 poat\u0103 accesa maxim un furnizor de context de fir de execu\u021bie pentru tipul de context specificat.
+
+CWWKC1204.not.serializable=CWWKC1204E: Nu se poate crea un proxy de context serializabil care s\u0103 propage contextul firului de execu\u021bie {0}, care nu este serializabil.
+CWWKC1204.not.serializable.explanation=Tipurile de context al firului de execu\u021bie ter\u021b\u0103 parte nu sunt compatibile cu serializarea \u0219i nu pot fi configurate pentru a fi propagate pentru proxy-uri de context serializabile.
+CWWKC1204.not.serializable.useraction=Actualiza\u021bi aplica\u021bia pentru a solicita un proxy de context non-serializabil sau asigura\u021bi-v\u0103 c\u0103 nu exist\u0103 tipuri de context ter\u021b\u0103 parte configurate \u00een vederea propag\u0103rii.

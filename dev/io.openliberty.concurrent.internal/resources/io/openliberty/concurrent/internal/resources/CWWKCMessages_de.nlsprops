@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, das durch die Anwendung {1} definiert wird, war nicht zeitnah verf\u00fcgbar.
+CWWKC1200.resource.unavailable.explanation=Zu viel Last auf dem System, um Ressourcendefinitionsannotationen und Implementierungsdeskriptoreintr\u00e4ge zu verarbeiten, bevor die Anwendung versucht, sie zu verwenden.
+CWWKC1200.resource.unavailable.useraction=Zeigen Sie die Datei messages.log an, um das Auftreten eines Fehlers zu ermitteln. Andernfalls reduzieren Sie die Systembelastung.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, das von der Anwendung {1} definiert wird, erfordert einen ContextService {2}, aber der ContextService war nicht zug\u00e4nglich oder nicht zeitnah verf\u00fcgbar.
+CWWKC1201.contextsvc.inaccessible.explanation=Die angegebene Ressource, die die Schnittstelle 'ContextService' implementiert, war aus einem der folgenden Gr\u00fcnde nicht zug\u00e4nglich oder nicht verf\u00fcgbar. 1.) Eine Ressourcendefinitionsannotation oder eine Ressourcendefinition in einem Implementierungsdeskriptor der Anwendung gibt einen falschen JNDI-Namen f\u00fcr die Suche nach der Ressource an, die die Schnittstelle ContextService implementiert. 2.) Die Ressource, die die Schnittstelle "ContextService" implementiert, ist in einem Bereich definiert, auf den die Ressource, die die Schnittstelle "ContextService" implementiert, nicht zugreifen kann. 3.) Das System ist zu stark ausgelastet, um eine Ressource zu registrieren, die die Schnittstelle 'ContextService' zeitnah implementiert.
+CWWKC1201.contextsvc.inaccessible.useraction=Korrigieren Sie die Anwendung so, dass sie auf den JNDI-Namen des ContextService verweist, auf den zugegriffen werden kann. Wenn der angegebene JNDI-Name korrekt ist, reduzieren Sie die Systembelastung.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: Widerspr\u00fcchliche Konfiguration des Threadkontexts {0} in ContextServiceDefinition {1} gefunden. Der gel\u00f6schte Kontext ist {2}, der weitergegebene Kontext ist {3} und der unver\u00e4nderte Kontext ist {4}.
+CWWKC1202.context.lists.overlap.explanation=Ein Threadkontexttyp kann in jeder der gel\u00f6schten, weitergegebenen oder unver\u00e4nderten Kontexttypkategorien konfiguriert werden. Der Kontexttyp kann nicht in mehreren Kontexttypkategorien konfiguriert werden.
+CWWKC1202.context.lists.overlap.useraction=Korrigieren Sie die Konfiguration, um den Threadkontexttyp in h\u00f6chstens einer Kategorie anzugeben.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Derselbe Threadkontexttyp, {0}, wird von mehreren Threadkontextprovidern bereitgestellt, die f\u00fcr die Anwendung verf\u00fcgbar sind. Die Threadkontextprovider sind {1}, {2}.
+CWWKC1203.duplicate.context.explanation=F\u00fcr jeden Kontexttyp kann nur ein Threadkontextprovider vorhanden sein.
+CWWKC1203.duplicate.context.useraction=Aktualisieren Sie die Anwendung und/oder die Bibliotheken, sodass die Anwendung nur auf einen Threadkontextprovider des angegebenen Kontexttyps zugreifen kann.
+
+CWWKC1204.not.serializable=CWWKC1204E: Es kann kein serialisierbarer Kontextproxy erstellt werden, der Threadkontext {0} weitergibt, der nicht serialisierbar ist.
+CWWKC1204.not.serializable.explanation=Threadkontexttypen anderer Anbieter sind nicht mit der Serialisierung kompatibel und k\u00f6nnen nicht f\u00fcr die Weitergabe f\u00fcr serialisierbare kontextabh\u00e4ngige Proxys konfiguriert werden.
+CWWKC1204.not.serializable.useraction=Aktualisieren Sie die Anwendung, um einen nicht serialisierbaren Kontextproxy anzufordern, oder stellen Sie sicher, dass keine Kontexttypen anderer Anbieter f\u00fcr die Weitergabe konfiguriert sind.

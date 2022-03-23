@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Usage interne uniquement.
 ADD_ID.useraction=Aucune action n'est requise.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Un param\u00e8tre de configuration requis {0} m
 INVALID_CONFIG_PARAM.explanation=Le code d'ex\u00e9cution du login social n'a pas trouv\u00e9 un param\u00e8tre obligatoire lors du traitement de la demande du client.
 INVALID_CONFIG_PARAM.useraction=V\u00e9rifiez le param\u00e8tre manquant dans la configuration et assurez-vous qu'il a \u00e9t\u00e9 sp\u00e9cifi\u00e9 et qu'il est correct.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Le client de login social [{0}] n''est pas parvenu \u00e0 obtenir d''informations sur le noeud final du fournisseur OpenID Connect via l''URL du noeud final de reconnaissance [{1}]. Mettez \u00e0 jour la configuration de login social (configuration oidcLogin) avec l''URL HTTPS correcte pour le noeud final de reconnaissance. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Le client de login social [{0}] n''est pas parvenu \u00e0 obtenir d''informations sur le noeud final du fournisseur OpenID Connect via l''URL du noeud final de reconnaissance [{1}]. Mettez\n\u00e0 jour la configuration de login social (configuration oidcLogin)\navec l''URL\nHTTPS correcte pour le noeud final de reconnaissance.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configuration oidcLogin est configur\u00e9e pour reconna\u00eetre les noeuds finaux des fournisseurs OpenID Connect par le biais de l'URL de reconnaissance, mais le processus de reconnaissance a \u00e9chou\u00e9. Le client ne pourra pas traiter les demandes d'authentification tant que la configuration du noeud final de reconnaissance n'est pas corrig\u00e9e ou que le processus de reconnaissance n'aura pas abouti.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrigez la configuration oidcLogin afin que 1) l'URL du noeud final de reconnaissance fasse r\u00e9f\u00e9rence au fournisseur OpenID Connect appropri\u00e9, 2) l'URL du noeud final de reconnaissance utilise le protocole HTTPS 3) la fonction SSL et les \u00e9l\u00e9ments de magasin de cl\u00e9s soient configur\u00e9s correctement pour faire confiance au fournisseur OpenID Connect 4) de vous assurer que le noeud final de reconnaissance des fournisseurs OpenID Connect est fonctionnel.
 
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=V\u00e9rifiez que la configuration
 REQUEST_URL_NOT_VALID=CWWKS5499E: La fonction de login social ne peut pas rediriger la demande vers l''URL de demande originelle, [{0}], car l''URL n''est pas valide. {1}
 REQUEST_URL_NOT_VALID.explanation=L'URL de demande originelle n'est pas une URL valide. Il se peut que l'URL contienne des caract\u00e8res non valides ou soit incorrectement form\u00e9e.
 REQUEST_URL_NOT_VALID.useraction=V\u00e9rifiez que l'URL de demande sp\u00e9cifi\u00e9e dans le message correspond \u00e0 l'URL originelle de demande de ressource prot\u00e9g\u00e9e. V\u00e9rifiez que l'URL est form\u00e9e correctement et ne contient que des caract\u00e8res d'URI valides.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: La demande de d\u00e9connexion de canal arri\u00e8re envoy\u00e9e \u00e0 [{0}] n''est pas prise en charge par la configuration de connexion des r\u00e9seaux sociaux [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=La configuration de connexion aux m\u00e9dias sociaux n'est pas un client OpenID Connect, donc elle ne prend pas en charge la d\u00e9connexion du canal retour.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilisez le noeud final de d\u00e9connexion appropri\u00e9 pour la configuration de connexion aux m\u00e9dias sociaux.
+

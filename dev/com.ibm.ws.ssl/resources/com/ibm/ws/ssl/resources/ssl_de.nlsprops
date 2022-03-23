@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: W\u00e4hrend der SSL-Initialisierung ist ein Fehler aufgetreten. Ausnahme: {0}
 ssl.init.error.CWPKI0008E.explanation=Es ist ein unerwarteter Fehler w\u00e4hrend der Initialisierung der Sicherheit aufgetreten.
-ssl.init.error.CWPKI0008E.useraction=Dies ist ein allgemeiner Fehler. \
-Suchen Sie nach vorangegangenen Nachrichten, die sich auf die SSL-Initialisierung oder ein Konfigurationsproblem beziehen.  \
-Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
+ssl.init.error.CWPKI0008E.useraction=Dies ist ein allgemeiner Fehler. Suchen Sie nach vorangegangenen Nachrichten, die sich auf die SSL-Initialisierung oder ein Konfigurationsproblem beziehen.  Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Das System konnte das Sicherheitsobjekt w\u00e4hrend der Initialisierung nicht erstellen.
 ssl.init.nullsecobject.CWPKI0009E.explanation=Das Sicherheitsobjekt kann nicht \u00fcber das Repository erstellt werden. Dies ist ein interner Fehler. Die Datei security.xml k\u00f6nnte besch\u00e4digt sein oder fehlen.
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: Beim Stoppen der SSL-Komponente ist ein Fehler aufgetreten. Ausnahme: {0}
 ssl.stop.error.CWPKI0015E.explanation=Beim Stoppen der SSL-Komponente ist ein unerwarteter Fehler aufgetreten.
-ssl.stop.error.CWPKI0015E.useraction=Dies ist ein allgemeiner Fehler. \
-Suchen Sie nach vorangegangenen Nachrichten, die sich m\u00f6glicherweise auf diesen Fehler oder ein Konfigurationsproblem beziehen.  \
-Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
+ssl.stop.error.CWPKI0015E.useraction=Dies ist ein allgemeiner Fehler. Suchen Sie nach vorangegangenen Nachrichten, die sich m\u00f6glicherweise auf diesen Fehler oder ein Konfigurationsproblem beziehen.  Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Das Zertifikat mit dem Alias {0} aus dem Keystore {1} verf\u00e4llt in {2} Tagen.
 ssl.expiration.warning.CWPKI0016W.explanation=Ein Zertifikat im Keystore steht kurz vor dem Ablaufdatum.
@@ -234,14 +230,12 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=Um die Verwendung FIPS-konformer
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** AUFFORDERUNG ZUM AUSTAUSCH DES SSL-UNTERZEICHNERS ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=Der SSL-Unterzeichner vom Zielhost wurde nicht im Truststore {0} gefunden.\n\
-\n\
-Es folgen die Unterzeichnerinformationen (vergewissern Sie sich, dass der Digest-Wert mit dem auf dem Server angezeigten Wert \u00fcbereinstimmt): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  Registrierter Name des Zertifikatinhabers: 
-ssl.trustmanager.signer.prompt.CWPKI0103I=  Aussteller-DN:     
-ssl.trustmanager.signer.prompt.CWPKI0104I=  Seriennummer: 
-ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1-Digest:  
-ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5-Digest:    
+ssl.trustmanager.signer.prompt.CWPKI0101I=Der SSL-Unterzeichner vom Zielhost wurde nicht im Truststore {0} gefunden.\n\nEs folgen die Unterzeichnerinformationen (vergewissern Sie sich, dass der Digest-Wert mit dem auf dem Server angezeigten Wert \u00fcbereinstimmt): 
+ssl.trustmanager.signer.prompt.CWPKI0102I= Registrierter Name des Zertifikatinhabers: 
+ssl.trustmanager.signer.prompt.CWPKI0103I= Aussteller-DN:     
+ssl.trustmanager.signer.prompt.CWPKI0104I= Seriennummer: 
+ssl.trustmanager.signer.prompt.CWPKI0105I= SHA-1-Digest:  
+ssl.trustmanager.signer.prompt.CWPKI0106I= MD5-Digest:    
 ssl.trustmanager.signer.prompt.CWPKI0107I=Unterzeichner dem Truststore sofort hinzuf\u00fcgen? (j/n) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
@@ -251,7 +245,7 @@ ssl.trustmanager.signer.prompt.answer.yes=J
 ssl.trustmanager.signer.prompt.answer.no=N
 ssl.trustmanager.signer.prompt.answer.full.yes=ja
 ssl.trustmanager.signer.prompt.CWPKI0108I=Die Anforderung muss m\u00f6glicherweise wiederholt werden, wenn der Socket beim Warten auf eine unmittelbare Antwort das zul\u00e4ssige Zeitlimit \u00fcberschreitet. Falls die Wiederholung erforderlich ist, wird die Eingabeaufforderung nicht erneut angezeigt, wenn (J) eingegeben wird. Damit wird angezeigt, dass der Unterzeichner dem Truststore bereits hinzugef\u00fcgt wurde.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Verfallsdatum:      
+ssl.trustmanager.signer.prompt.CWPKI0109I= Verfallsdatum:      
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -281,10 +275,7 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=Bestimmen Sie die Fehlerurs
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Verwenden Sie die Optionen -listRemoteKeyStoreNames und -listLocalKeyStoreNames, um eine Liste mit Namen f\u00fcr <Name_des_fernen_Keystore> bzw. <Name_des_lokalen_Keystore> abzurufen.\n\
-\n\
-Syntax: retrieveSigners <Name_des_fernen_Keystore> <Name_des_lokalen_Keystore> [Optionen]\n\
-\        Optionen: [-profileName <Profilname>] [-remoteAlias <Alias_aus_fernem_Keystore>] [-localAlias <Alias_f\u00fcr_Speichern>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <Host>] [-port <Port>] [-conntype <RMI|SOAP>] [-user <Benutzer>] [-password <Kennwort>] [-trace] [-logfile <Dateiname>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Verwenden Sie die Optionen -listRemoteKeyStoreNames und -listLocalKeyStoreNames, um eine Liste mit Namen f\u00fcr <Name_des_fernen_Keystore> bzw. <Name_des_lokalen_Keystore> abzurufen.\n\nSyntax: retrieveSigners <Name_des_fernen_Keystore> <Name_des_lokalen_Keystore> [Optionen]\n        Optionen: [-profileName <Profilname>] [-remoteAlias <Alias_aus_fernem_Keystore>] [-localAlias <Alias_f\u00fcr_Speichern>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <Host>] [-port <Port>] [-conntype <RMI|SOAP>] [-user <Benutzer>] [-password <Kennwort>] [-trace] [-logfile <Dateiname>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------
@@ -345,8 +336,8 @@ ssl.signer.general.error.CWPKI0314E.explanation=\u00dcberpr\u00fcfen Sie in der 
 ssl.signer.general.error.CWPKI0314E.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
 # -------------------------------------------------------------------------------------------------
 ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Die SSL-Konfigurationseigenschaften sind null. M\u00f6glicherweise ist bei der Syntaxanalyse der SSL-Clientkonfiguration ein Fehler aufgetreten.
-ssl.no.properties.error.CWPKI0315E.explanation=Es sind keine SSL-Konfigurationseigenschaften definiert. Die Eigenschaft \'com.ibm.SSL.ConfigURL\' ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df definiert oder beim Parsing der SSL-Clientkonfiguration ist ein Fehler aufgetreten.
-ssl.no.properties.error.CWPKI0315E.useraction=\u00dcberpr\u00fcfen Sie die Datei ssl.client.props auf Fehler und stellen Sie sicher, dass die Eigenschaft \'com.ibm.SSL.ConfigURL\' gesetzt ist.
+ssl.no.properties.error.CWPKI0315E.explanation=Es sind keine SSL-Konfigurationseigenschaften definiert. Die Eigenschaft 'com.ibm.SSL.ConfigURL' ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df definiert oder beim Parsing der SSL-Clientkonfiguration ist ein Fehler aufgetreten.
+ssl.no.properties.error.CWPKI0315E.useraction=\u00dcberpr\u00fcfen Sie die Datei ssl.client.props auf Fehler und stellen Sie sicher, dass die Eigenschaft 'com.ibm.SSL.ConfigURL' gesetzt ist.
 
 ################################################################################
 # Range 400-599 reserved for CA Pure Client Util and Impls
@@ -476,11 +467,11 @@ ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: Die Zertifikatsanforderu
 ssl.ca.cmp.impl.invalid.certificate.request.explanation=Die Bytefeldgruppe der Zertifikatsanforderung ist null.
 ssl.ca.cmp.impl.invalid.certificate.request.useraction=Stellen Sie sicher, dass eine g\u00fcltige Bytefeldgruppe f\u00fcr die Zertifikatsanforderung an die Implementierung \u00fcbergeben wird.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  Das Widerrufkennwort f\u00fcr diese Anforderung ist null.
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E: \ Das Widerrufkennwort f\u00fcr diese Anforderung ist null.
 ssl.ca.cmp.impl.invalid.revocation.reason.explanation=Die Bytefeldgruppe des Widerrufkennworts f\u00fcr diese Anforderung ist null.
 ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Stellen Sie sicher, dass eine g\u00fcltige Bytefeldgruppe des Widerrufkennworts an die Implementierung \u00fcbergeben wird.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.general.error=CWPKI0453E:  Die folgende unerwartete Ausnahme ist eingetreten: {0}
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \ Die folgende unerwartete Ausnahme ist eingetreten: {0}
 ssl.ca.cmp.impl.general.error.explanation=CMSG0001
 ssl.ca.cmp.impl.general.error.useraction=CMSG0002                                                                  
 # -------------------------------------------------------------------------------------------------
@@ -549,8 +540,7 @@ DEFAULT_OPTIONS_ERROR.explanation=Beim Erstellen der Standard-SSL-Konfiguration 
 DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.start=CWPKI0802I: Das SSL-Zertifikat wird erstellt. Dieser Vorgang kann einige Sekunden dauern.
-ssl.create.certificate.start.explanation=Das SSL-Zertifikat ist nicht vorhanden und wird automatisch generiert. Dieser Vorgang kann einige Sekunden dauern. \
-Die Services, die SSL erfordern, werden erst gestartet, wenn das SSL-Zertifikat generiert wurde und die Konfiguration bereit ist.
+ssl.create.certificate.start.explanation=Das SSL-Zertifikat ist nicht vorhanden und wird automatisch generiert. Dieser Vorgang kann einige Sekunden dauern. Die Services, die SSL erfordern, werden erst gestartet, wenn das SSL-Zertifikat generiert wurde und die Konfiguration bereit ist.
 ssl.create.certificate.start.useraction=Es ist keine Aktion erforderlich.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.end=CWPKI0803A: Das SSL-Zertifikat wurde in {0} Sekunden erstellt. SSL-Schl\u00fcsseldatei: {1}
@@ -641,8 +631,7 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: FEHLER BEIM SSL-HANDSHAKE: Es 
 ssl.client.handshake.error.CWPKI0823E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Es ist m\u00f6glicherweise ein Export/Import des Unterzeichners vom Zielhost in den Client-Truststore erforderlich.
 ssl.client.handshake.error.CWPKI0823E.useraction=Lesen Sie die erweiterte Nachricht des Trust Manager, um festzustellen, welche \u00c4nderungen zwischen SSL-Zielkonfiguration und SSL-Clientkonfiguration vorgenommen werden m\u00fcssen.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FEHLER BEIM SSL-HANDSHAKE: Fehler bei der \u00dcberpr\u00fcfung des Hostnamens bei dem Versuch, eine Verbindung zum Host [{0}] herzustellen. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein. \
-Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: [{1}].
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FEHLER BEIM SSL-HANDSHAKE: Fehler bei der \u00dcberpr\u00fcfung des Hostnamens bei dem Versuch, eine Verbindung zum Host [{0}] herzustellen. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein. Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: [{1}].
 ssl.client.handshake.error.CWPKI0824E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Die \u00dcberpr\u00fcfung des Hostnamens ist aktiviert und die die Serveridentit\u00e4t kann nicht \u00fcberpr\u00fcft werden. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein.
 ssl.client.handshake.error.CWPKI0824E.useraction=Wenn die \u00dcberpr\u00fcfung des Hostnamens aktiviert ist, muss der Server, auf den zugegriffen wird, ein Zertifikat mit den ordnungsgem\u00e4\u00dfen Informationen konfiguriert sein, die erforderlich sind, um die Identit\u00e4t des Servers \u00fcberpr\u00fcfen zu k\u00f6nnen.
 # -------------------------------------------------------------------------------------------------
@@ -670,3 +659,26 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: Das Zertifikat mit dem SubjectDN {0} 
 ssl.certificate.add.CWPKI0830I.explanation=Ein Zertifikat wurde aus einer Umgebungsvariablen in der Konfiguration abgerufen und der Keystore-Datei hinzugef\u00fcgt.
 ssl.certificate.add.CWPKI0830I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: Das SSL/TLS-Protokoll {0} kann nicht verwendet werden. Erweiterter Fehler: {1} 
+ssl.protocol.error.CWPKI0831E.explanation=Das bereitgestellte Protokoll kann nicht verwendet werden. Beim Versuch, eine SSLContext-Instanz mit dem Protokollwert abzurufen, ist ein Fehler aufgetreten. 
+ssl.protocol.error.CWPKI0831E.useraction=Stellen Sie sicher, dass die Konfiguration g\u00fcltige SSL/TLS-Protokollwerte f\u00fcr diese JVM verwendet.
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: Der bereitgestellte {0} SSL/TLS-Protokollwert kann nicht zum Konfigurieren einer Liste von SSL-Protokollwerten verwendet werden.
+ssl.protocol.error.CWPKI0832E.explanation=Der Protokollwert ist in einer Protokolllistengruppierung ung\u00fcltig.
+ssl.protocol.error.CWPKI0832E.useraction=Stellen Sie sicher, dass die Liste der SSL/TLS-Protokolle nur Werte enth\u00e4lt, die f\u00fcr eine Protokollliste geeignet sind.
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: Die SSL/TLS-Konfiguration von {0} weist einen Fehler auf, der die Erstellung der SSL/TLS-Konfiguration verhindert. 
+ssl.protocol.error.CWPKI0833E.explanation=Die SSL-Konfigurationsattribute enthalten einen Fehler, der die SSLContext-Erstellung verhindert. 
+ssl.protocol.error.CWPKI0833E.useraction=Stellen Sie sicher, dass die SSL-Konfigurationsattribute korrekt sind. Suchen Sie in den Protokollen nach weiteren Fehlern im Zusammenhang mit SSL-Konfigurationsattributen.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: Die SSL/TLS-Konfiguration von {0} kann aufgrund eines Fehlers nicht als Standard-SSL-Prozesskonfiguration festgelegt werden.
+ssl.config.error.CWPKI0834E.explanation=Die angegebene SSL/TLS-Konfiguration enth\u00e4lt einen Fehler, der verhindert hat, dass sie als Standard-SSL-Prozesskonfiguration festgelegt wurde. 
+ssl.config.error.CWPKI0834E.useraction=Stellen Sie sicher, dass die SSL-Konfigurationsattribute korrekt sind. \u00dcberpr\u00fcfen Sie die Protokolle auf Fehler, die den SSL-Konfigurationsattributen zugeordnet sind.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ F\u00fcr die eingehende Verbindung kann keine SSL/TLS-Konfiguration erstellt werden, da kein Schl\u00fcsselmanager erstellt wurde.
+ssl.config.error.CWPKI0835E.explanation=Ein Fehler in der Konfiguration hat die Erstellung des Key-Managers verhindert.
+ssl.config.error.CWPKI0835E.useraction=Stellen Sie sicher, dass die SSL-Konfigurationsattribute korrekt sind. \u00dcberpr\u00fcfen Sie die Protokolle auf Fehler, die den SSL-Konfigurationsattributen zugeordnet sind.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: Eine SSL/TLS-Konfiguration kann nicht erstellt werden, da Key-und Trust-Manager nicht erstellt wurden.
+ssl.config.error.CWPKI0836E.explanation=Ein Fehler in der Konfiguration hat verhindert, dass die Key-und Trust-Manager erstellt wurden.
+ssl.config.error.CWPKI0836E.useraction=Stellen Sie sicher, dass die SSL-Konfigurationsattribute korrekt sind. \u00dcberpr\u00fcfen Sie die Protokolle auf Fehler, die den SSL-Konfigurationsattributen zugeordnet sind.

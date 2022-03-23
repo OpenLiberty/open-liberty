@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=L'attribut de certificat TBSCertificate 
 TBS_CERTIFICATE_UNSUPPORTED.useraction=V\u00e9rifiez que le filtre de certificat est correct.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: L''op\u00e9ration de connexion n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Un attribut de certificat {0} inconnu a \u00e9t\u00e9 utilis\u00e9 dans la sp\u00e9cification de filtre. Indiquez un certificat de filtre pris en charge.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Vous pouvez utiliser uniquement les valeurs d'attribut de certificat suivantes dans la\npartie droite de la sp\u00e9cification du filtre. Les cha\u00eenes sont sensibles \u00e0 la casse : $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Vous pouvez utiliser uniquement les valeurs d'attribut de certificat suivantes dans la\npartie droite de la sp\u00e9cification du filtre. Les cha\u00eenes sont sensibles \u00e0 la casse : $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=V\u00e9rifiez que le filtre de certificat est correct.
 
 UNKNOWN_DN_FIELD=CWIML0003E: L''op\u00e9ration de connexion n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La zone du nom distinctif {0} configur\u00e9e n''est pas valide. Indiquez une zone de nom distinctif valide.

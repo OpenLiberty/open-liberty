@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,21 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Stellen Sie sicher, dass die We
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Der OpenID Connect-Client {0} kann keine Informationen zum Zugriffstoken vom UserInfo-Endpunkt abrufen: {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Die Antwort vom UserInfo-Endpunkt weist m\u00f6glicherweise nicht das Format auf, das erwartet wird. M\u00f6glicherweise wurde vom OpenID Connect-Client beim \u00dcbergeben der UserInfo-Anforderung ein Fehler festgestellt.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=\u00dcberpr\u00fcfen Sie die Fehlernachricht auf weitere Informationen. Stellen Sie sicher, dass der Inhalt der UserInfo-Antwort mit dem HTTP-Header f\u00fcr den Inhaltstyp \u00fcbereinstimmt.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: Die an [{0}] gesendete Back-Channel-Abmeldeanforderung hat einen Fehler festgestellt. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=Die Anforderung verwendet die HTTP-Methode POST nicht, in der Anforderung fehlt ein Abmeldetoken oder das Abmeldetoken kann nicht validiert werden oder die Abmeldeanforderung wurde nicht erfolgreich ausgef\u00fchrt.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Vergewissern Sie sich, dass die HTTP-Methode POST verwendet wird, um die R\u00fcckkanal-Abmeldeanforderung zu \u00fcbergeben. Andernfalls durchsuchen Sie die Benutzeraktion nach dem Fehler, der in dieser Nachricht enthalten ist.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: Die Abmeldeanforderung f\u00fcr den R\u00fcckkanal ist ung\u00fcltig, weil der Parameter logout_token fehlt oder leer ist.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=Die Back-Channel-Abmeldeanforderung muss einen Parameter logout_token enthalten, dessen Wert ein g\u00fcltiges Abmeldetoken ist.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Aktualisieren Sie die Anforderung, um ein Abmeldetoken einzuschlie\u00dfen.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: Das Abmeldetoken in der Back-Channel-Abmeldeanforderung kann nicht validiert werden: {0}.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=Das Abmeldetoken ist m\u00f6glicherweise fehlerhaft, das Token hat ein nicht erwartetes Format oder es ist ein anderer Fehler beim Validieren der Signatur oder der Claims des Tokens aufgetreten.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in dieser Nachricht enthaltenen Fehler an.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Die Back-Channel-Abmeldeanforderung ist ung\u00fcltig, weil kein OpenID Connect-Client vorhanden ist, der der Anforderung entspricht.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Das OpenID Connect-Feature erwartet, dass der Back-Channel-Anforderungs-URI eine OpenID Connect-Client-ID enth\u00e4lt, um festzustellen, welcher Client sich abmelden muss.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Vergewissern Sie sich, dass der Anforderungs-URI die OpenID Connect-Client-ID f\u00fcr die Abmeldung des Benutzers enth\u00e4lt.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

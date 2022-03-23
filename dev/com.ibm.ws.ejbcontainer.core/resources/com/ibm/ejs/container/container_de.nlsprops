@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,20 +47,17 @@ CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.explanation=Der Container konnte eine S
 CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.useraction=Vergewissern Sie sich, dass das Auslagerungsverzeichnis vorhanden ist, dass der Prozess Schreibberechtigung f\u00fcr das Verzeichnis hat und dass ausreichend Plattenspeicherplatz verf\u00fcgbar ist.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Der Wrapper f\u00fcr eine Home-Schnittstelle konnte nicht abgerufen werden.\n\
-\ Home: {0}
+FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Der Wrapper f\u00fcr eine Home-Schnittstelle konnte nicht abgerufen werden.\n Home: {0}
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.useraction=CMSG0002
 
 # --------------------------------
-CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Eine Stateful-Session-Bean konnte nicht aktiviert werden: {0} {1} \n\
-\ {2}
+CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Eine Stateful-Session-Bean konnte nicht aktiviert werden: {0} {1} \n {2}
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.explanation=Der Container konnte eine Stateful-Session-Bean aus dem Speicher nicht aktivieren.
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.useraction=Ergreifen Sie Ma\u00dfnahmen auf der Basis der Ausnahmenachricht in Nachricht CNTR0003W.
 
 # --------------------------------
-ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: CNTR0004E: Der Versuch, eine Sperre anzufordern, wurde unterbrochen.\n\
-\ Sperre: {0}
+ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: CNTR0004E: Der Versuch, eine Sperre anzufordern, wurde unterbrochen.\n Sperre: {0}
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.explanation=Ein Thread, der eine exklusive Sperre im Container angefordert hat, wurde abgebrochen, w\u00e4hrend er auf die Sperre wartete.
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.useraction=CMSG0002
 
@@ -95,29 +92,22 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=Der Container hat einen Typ 
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Vergewissern Sie sich, dass einer der folgenden Datentypen f\u00fcr den Umgebungseintrags definiert ist: String, Integer, Boolean, Double, Byte, Short, Long oder Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Der Collaborator {0} hat eine unerwartete Ausnahme ausgel\u00f6st. Die Verarbeitung wird mit den verbleibenden Collaborator fortgesetzt.\n\
-\ Ausnahmedaten: {1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Der Collaborator {0} hat eine unerwartete Ausnahme ausgel\u00f6st. Die Verarbeitung wird mit den verbleibenden Collaborator fortgesetzt.\n Ausnahmedaten: {1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
 # --------------------------------
-UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Die Ausnahme kann nicht zugeordnet werden.\n\
-\ {0} \n\
-\ {1}
+UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Die Ausnahme kann nicht zugeordnet werden.\n {0} \n {1}
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.explanation=Der Container konnte die Ausnahme keiner g\u00fcltigen CORBA-Ausnahme zuordnen.
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.useraction=CMSG0002
 
 # --------------------------------
-STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Ein StatefulBeanReaper-Thread wurde unterbrochen. Der Thread wird beendet.\n\
-\ {0}
+STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Ein StatefulBeanReaper-Thread wurde unterbrochen. Der Thread wird beendet.\n {0}
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Beim L\u00f6schen einer Stateful-Bean ist eine unerwartete Ausnahme eingetreten.\n\
-\ Ausnahmedaten: \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Beim L\u00f6schen einer Stateful-Bean ist eine unerwartete Ausnahme eingetreten.\n Ausnahmedaten: \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -127,8 +117,7 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=Der Container konnte 
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Ergreifen Sie Ma\u00dfnahmen auf der Basis der Ausnahmenachricht in Nachricht CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Der Sicherheitscollaborator hat eine unerwartete Ausnahme ausgel\u00f6st.\n\
-\ Ausnahmedaten: {0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Der Sicherheitscollaborator hat eine unerwartete Ausnahme ausgel\u00f6st.\n Ausnahmedaten: {0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
@@ -153,8 +142,7 @@ NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.explanation=Eine nicht in der EJB-Me
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Untersuchen Sie den Stack-Trace, um die Ursache f\u00fcr die Ausnahme zu bestimmen.  Falls die Ausnahme auf einen Fehler in benutzerdefiniertem Code zur\u00fcckzuf\u00fchren ist, beheben Sie den Fehler. Andernfalls suchen Sie auf der Website der IBM Unterst\u00fctzungsfunktion nach Informationen zur Fehlerbestimmung.
 
 # --------------------------------
-TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Der Transaktionskoordinator ist nicht verf\u00fcgbar.\n\
-\ {0}
+TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Der Transaktionskoordinator ist nicht verf\u00fcgbar.\n {0}
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.explanation=CMSG0001
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.useraction=CMSG0002
 
@@ -179,14 +167,12 @@ DATASOURCE_NAME_NULL_CNTR0026W.explanation=Es wurde keine Datenquelle f\u00fcr d
 DATASOURCE_NAME_NULL_CNTR0026W.useraction=Geben Sie eine Datenquelle f\u00fcr die Entity-Bean oder eine Standarddatenquelle f\u00fcr das Modul an.
 
 # --------------------------------
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Die Verbindung konnte nicht festgeschrieben werden: \n\
-\ {0}
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Die Verbindung konnte nicht festgeschrieben werden: \n {0}
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.explanation=Beim Festschreiben einer Datenquellenverbindung ist eine Ausnahme des Typs SQLException eingetreten.
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Ziehen Sie die herstellerspezifische Dokumentation zu dem von Ihnen verwendeten Datenbankprodukt zu Rate.  Gew\u00f6hnlich wird ein herstellerspezifischer Ausnahmecode in der SQLException angezeigt.  Verwenden Sie diesen Ausnahmecode zusammen mit der herstellerspezifischen Dokumentation, um die Ursache f\u00fcr die Ausnahme zu bestimmen.
 
 # --------------------------------
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Die Verbindung konnte nicht geschlossen werden: \n\
-\ {0}
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Die Verbindung konnte nicht geschlossen werden: \n {0}
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.explanation=Beim Schlie\u00dfen einer Datenquellenverbindung ist eine Ausnahme des Typs SQLException eingetreten.
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Ziehen Sie die herstellerspezifische Dokumentation zu dem von Ihnen verwendeten Datenbankprodukt zu Rate.  Gew\u00f6hnlich wird ein herstellerspezifischer Ausnahmecode in der SQLException angezeigt.  Verwenden Sie diesen Ausnahmecode zusammen mit der herstellerspezifischen Dokumentation, um die Ursache f\u00fcr die Ausnahme zu bestimmen.
 
@@ -203,8 +189,7 @@ FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Ziehen Sie die herstellerspezifi
 # Cannot.obtain.the.transaction.coordinator.{0}.useraction=CMSG0002
 
 # --------------------------------
-ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Beim Starten der CMP-Bean {0} ist ein Fehler aufgetreten: \n\
-\ {1}
+ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Beim Starten der CMP-Bean {0} ist ein Fehler aufgetreten: \n {1}
 ERROR_STARTING_CMP_BEAN_CNTR0031W.explanation=M\u00f6glicherweise wurde eine Entity-Bean \u00fcber einen Datenquellennamen, der nicht g\u00fcltig oder nicht korrekt ist, an eine Datenquelle gebunden. Wenn der Datenquellenname korrekt ist, ist die Datenquelle m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df konfiguriert.
 ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=Wenn der Nachricht der Code CNTR0026W vorangestellt ist, m\u00fcssen Sie den Namen der Datenquelle angeben. Andernfalls m\u00fcssen Sie den Datenquellennamen \u00fcberpr\u00fcfen, der in der Nachricht CNTR0032W angegeben ist, die dieser Nachricht folgt. Wenn eine Ausnahme des Typs Name nicht gefunden eingetreten ist, ist der Datenquellenname wahrscheinlich nicht korrekt.  Wenn der richtige Datenquellenname angegeben wurde, \u00fcberpr\u00fcfen Sie die Konfiguration der Datenquelle. M\u00f6glicherweise haben Sie einen Datenbanknamen, eine Benutzer-ID oder ein Kennwort in der Datenquellenkonfiguration angegeben, der bzw. das nicht g\u00fcltig ist.
 
@@ -286,12 +271,8 @@ CONNECTION_FACTORY_BINDING_NOT_SPECIFIED_CNTR0046E.useraction=Geben Sie eine Bin
 
 # --------------------------------
 METHOD_NOT_ALLOWED_CNTR0047E=CNTR0047E: Die Bean versucht, die Schnittstelle oder die Methode "{0}" in einer Situation zu verwenden, die von der EJB-Spezifikation nicht unterst\u00fctzt wird.
-METHOD_NOT_ALLOWED_CNTR0047E.explanation=Die Methode ist gem\u00e4\u00df EJB-Spezifikation aus einem der folgenden Gr\u00fcnde nicht zul\u00e4ssig: - Die Methoden getRollbackOnly und setRollbackOnly der Schnittstelle MessageDriven-Context d\u00fcrfen nur in MDB-Methoden verwendet werden, die im Kontext einer Transaktion ausgef\u00fchrt werden. \
-# - Das Aufrufen der Methoden getCallerPrincipal und isCallerInRole ist in MDB-Methoden nicht zul\u00e4ssig, weil der Container keinen Clientsicherheitskontext besitzt. \
-# - Das Aufrufen der Methoden getRollbackOnly und setRollbackOnly ist in den MDB-Methoden, f\u00fcr die der Container keinen klaren Transaktionskontext besitzt, und in MDBs mit Bean-gesteuerter Transaktionsdemarkation nicht zul\u00e4ssig. \
-# - Die Schnittstelle UserTransaction ist f\u00fcr MDBs mit containerverwalteter Transaktionsdemarkation nicht verf\u00fcgbar. \
-# - Das Aufrufen von getEJBHome und getEJBLocalHome ist in MDB-Methoden nicht zul\u00e4ssig, weil keine EJBHome- und EJBLocalHome-Objekte f\u00fcr MDBs vorhanden sind. \
-#
+METHOD_NOT_ALLOWED_CNTR0047E.explanation=Die Methode ist gem\u00e4\u00df EJB-Spezifikation aus einem der folgenden Gr\u00fcnde nicht zul\u00e4ssig: - Die Methoden getRollbackOnly und setRollbackOnly der Schnittstelle MessageDriven-Context d\u00fcrfen nur in MDB-Methoden verwendet werden, die im Kontext einer Transaktion ausgef\u00fchrt werden. # - Das Aufrufen der Methoden getCallerPrincipal und isCallerInRole ist in MDB-Methoden nicht zul\u00e4ssig, weil der Container keinen Clientsicherheitskontext besitzt. # - Das Aufrufen der Methoden getRollbackOnly und setRollbackOnly ist in den MDB-Methoden, f\u00fcr die der Container keinen klaren Transaktionskontext besitzt, und in MDBs mit Bean-gesteuerter Transaktionsdemarkation nicht zul\u00e4ssig. # - Die Schnittstelle UserTransaction ist f\u00fcr MDBs mit containerverwalteter Transaktionsdemarkation nicht verf\u00fcgbar. # - Das Aufrufen von getEJBHome und getEJBLocalHome ist in MDB-Methoden nicht zul\u00e4ssig, weil keine EJBHome- und E\
+    JBLocalHome-Objekte f\u00fcr MDBs vorhanden sind. #
 METHOD_NOT_ALLOWED_CNTR0047E.useraction=Rufen Sie die Methode in dieser Umgebung nicht auf.
 
 # --------------------------------
@@ -330,14 +311,12 @@ EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.explanation=CMSG0001
 EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.useraction=CMSG0002
 
 # --------------------------------
-THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Beim Versuch, <env-entry-name> {0}, <env-entry-value> {1} zu erstellen,\n\
-\ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Beim Versuch, <env-entry-name> {0}, <env-entry-value> {1} zu erstellen,\n {2}
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.explanation=Der Container hat ein Throwable abgefangen, als er versuchte, einen java:comp/env-Eintrag zu erstellen.
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.useraction=Ergreifen Sie Ma\u00dfnahmen auf der Basis der Ausnahmenachricht in Nachricht CNTR0055W.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Der Wrapper f\u00fcr eine Bean konnte nicht abgerufen werden. Bean: \n\
-\ {0}
+FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Der Wrapper f\u00fcr eine Bean konnte nicht abgerufen werden. Bean: \n {0}
 FAILED_TO_GET_WRAPPER_CNTR0056W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_CNTR0056W.useraction=CMSG0002
 
@@ -467,8 +446,7 @@ ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.explanation=CMSG0001
 ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.useraction=CMSG0002
 
 #---------------------------------
-CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Die Erstellung eines Nachrichtenendpunkts ist fehlgeschlagen: \n\
-\ {0}
+CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Die Erstellung eines Nachrichtenendpunkts ist fehlgeschlagen: \n {0}
 CREATE_ENDPOINT_FAILED_CNTR0083E.explanation=CMSG0001
 CREATE_ENDPOINT_FAILED_CNTR0083E.useraction=CMSG0002
 
@@ -650,10 +628,7 @@ LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Es ist keine Benutzeraktion erforderlic
 
 #-------------------------------------------------------------------------------
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: Die benutzerdefinierte Klasse "{0}" kann die Schnittstelle com.ibm.websphere.ejbcontainer.LightweightLocal nicht implementieren.  Ursachencode: {1}
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Nur Entity-Beans der EJB Version 2.x und h\u00f6her mit einer lokalen Schnittstelle k\u00f6nnen die Schnittstelle com.ibm.websphere.ejbcontainer.LightweightLocal implementieren. Der Ursachencode gibt den spezifischen Versto\u00df wie folgt an: \n\
-\ 1 - Die EJB ist keine Entity-Bean. \n\
-\ 2 - Die Bean ist eine EJB der Version 1.x oder eine CMP-Entity-Bean der Version 1.x.\n\
-\ 3 - F\u00fcr die EJB ist keine lokale Schnittstelle definiert.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Nur Entity-Beans der EJB Version 2.x und h\u00f6her mit einer lokalen Schnittstelle k\u00f6nnen die Schnittstelle com.ibm.websphere.ejbcontainer.LightweightLocal implementieren. Der Ursachencode gibt den spezifischen Versto\u00df wie folgt an: \n 1 - Die EJB ist keine Entity-Bean. \n 2 - Die Bean ist eine EJB der Version 1.x oder eine CMP-Entity-Bean der Version 1.x.\n 3 - F\u00fcr die EJB ist keine lokale Schnittstelle definiert.
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.useraction=\u00c4ndern Sie den Typ der EJB in Entity, \u00e4ndern Sie die EJB-Implementierung in Version 2.0 oder h\u00f6her, \u00e4ndern Sie die EJB-Implementierung so, dass eine lokale Schnittstelle verwendet wird, oder \u00e4ndern Sie die Implementierung so, dass die Schnittstelle com.ibm.websphere.ejbcontainer.LightweightLocal nicht implementiert wird.
 
 #-------------------------------------------------------------------------------
@@ -982,8 +957,7 @@ MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Es ist keine Aktion erforderlich.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
-TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Der vom EJB-Zeitgeberservice verwendete Zeitgebermanager konnte nicht abgerufen werden. \n\
-{0}
+TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Der vom EJB-Zeitgeberservice verwendete Zeitgebermanager konnte nicht abgerufen werden. \n{0}
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.explanation=Es wurde versucht, den Zeitgebermanager abzurufen, weil die Option zum Erstellen eines separaten Thread-Pools f\u00fcr nicht persistente Zeitgeber im EJBTimer-Konfigurationsobjekt (uniqueTimerManagerForNP) konfiguriert wurde.
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.useraction=Alternativ k\u00f6nnen Sie den Zeitgeberservice so konfigurieren, dass er einen Scheduler f\u00fcr nicht persistente Zeitgeber verwendet.
 
@@ -1020,8 +994,7 @@ STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.explanation=Nur Single
 STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.useraction=Entfernen Sie die Startup-Java-Annotation oder den XML-Implementierungsdeskriptor aus dieser EJB-Klasse oder \u00e4ndern Sie die Klasse in eine Singleton-Session-Bean.
 
 #-------------------------------------------------------------------------------
-STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: Die Initialisierung der Startup-Singleton-Session-Bean {0} im Modul {1} ist mit der folgenden Ausnahme fehlgeschlagen:\n\
-{2}
+STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: Die Initialisierung der Startup-Singleton-Session-Bean {0} im Modul {1} ist mit der folgenden Ausnahme fehlgeschlagen:\n{2}
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.explanation=Instanzen von Startup-Singleton-Session-Beans werden im Rahmen der Anwendungsstartverarbeitung erstellt.  Jeder Fehler f\u00fchrt dazu, dass die Anwendung nicht gestartet wird.
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.useraction=Beheben Sie die Ursache f\u00fcr die Ausnahme, die dieser Fehlernachricht angef\u00fcgt ist.
 
@@ -1145,8 +1118,7 @@ AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E=CNTR0217E: Die Enterprise
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.explanation=Die angegebene Methode enth\u00e4lt Metadaten f\u00fcr einen automatischen Zeitgeber im Implementierungsdeskriptor oder in einer Annotation @Schedule oder @Schedules, aber das angegebene Feld in den Metadaten enth\u00e4lt ein Ordinalschl\u00fcsselwort ohne Wochentag.  Den Schl\u00fcsselw\u00f6rtern 1st, 2nd, 3rd, 4th und 5th muss ein Schl\u00fcsselwort f\u00fcr den Wochentag folgen.
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.useraction=\u00c4ndern Sie das Feld in den Metadaten f\u00fcr den automatischen Zeitgeber oder entfernen Sie die Metadaten f\u00fcr den automatischen Zeitgeber.
 
-AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: Beim Erstellen persistenter automatischer Zeitgeber f\u00fcr das Modul {0} ist ein Fehler aufgetreten:\n\
-{1}
+AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: Beim Erstellen persistenter automatischer Zeitgeber f\u00fcr das Modul {0} ist ein Fehler aufgetreten:\n{1}
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.explanation=Entweder enth\u00e4lt das Modul ung\u00fcltige Metadaten oder der Scheduler f\u00fcr den EJB-Zeitgeberservice konnte die automatischen Zeitgeber nicht erstellen.
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.useraction=\u00dcberpr\u00fcfen Sie die Metadaten des Moduls und die Scheduler-Konfiguration.
 
@@ -1574,6 +1546,11 @@ NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Der lokale Bindungsna
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Korrigieren Sie die Bindungsdatei ibm-ejb-jar-bnd.xml, um dieser Bean einen g\u00fcltigen JNDI-Bindungsnamen zu geben, indem Sie den ung\u00fcltigen Namespace entfernen.
 
 #-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Die Schnittstelle {0} der Bean {1} im Modul {2} der Anwendung {3} kann nicht an die Namensposition {4} gebunden werden. Der CORBA-Namensserver ist nicht verf\u00fcgbar.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Die ferne Enterprise-Bean-Bindung kann nicht erstellt werden, weil der CORBA-Namensserver nicht verf\u00fcgbar ist.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=\u00dcberpr\u00fcfen Sie die Protokolldatei auf Ausnahmebedingungen, die sich auf die Initialisierung des ORB oder des CORBA-Namensservers beziehen.
+
+#-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
 #
@@ -1788,8 +1765,7 @@ JIT_MISSING_REMOTE_EX_CNTR5104E.useraction=F\u00fcgen Sie die Ausnahme RemoteExc
 
 #-------------------------------------------------------------------------------
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E=CNTR5105E: Die Schnittstelle {0} ist keine g\u00fcltige ferne Schnittstelle. Der IDL-Name f\u00fcr die Methode {1} steht in Konflikt mit der Methode {2}.
-JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=F\u00fcr ferne Schnittstellen legt die Spezifikation Java Language to IDL Mapping Folgendes fest:\n\
-\ Methoden, die dem JavaBeans-Designmuster f\u00fcr einfache Schreib-/Leseattribute oder einfache Schreibschutzattribute folgen, werden OMG-IDL-Schnittstellenattributen zugeordnet. Beide angegebene Methoden werden demselben OMG-IDL-Schnittstellenattribut zugeordnet. Die Schnittstelle ist kein g\u00fcltiger RMI/IIOP-Typ.
+JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=F\u00fcr ferne Schnittstellen legt die Spezifikation Java Language to IDL Mapping Folgendes fest:\n Methoden, die dem JavaBeans-Designmuster f\u00fcr einfache Schreib-/Leseattribute oder einfache Schreibschutzattribute folgen, werden OMG-IDL-Schnittstellenattributen zugeordnet. Beide angegebene Methoden werden demselben OMG-IDL-Schnittstellenattribut zugeordnet. Die Schnittstelle ist kein g\u00fcltiger RMI/IIOP-Typ.
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.useraction=\u00c4ndern Sie die Anwendung, indem Sie eine der Methoden, die den Konflikt verursacht, umbenennen oder entfernen.
 
 #-------------------------------------------------------------------------------
@@ -1829,14 +1805,14 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=See message for details.
 # Do NOT translate any word beginning with a "-"
 CNTR9000I=Syntax: {0} <Server> <Filter> [Optionen]
 CNTR9001I=\tFilter : <-all> | <-timer> | <-app [-mod [-bean]]>
-CNTR9002I=\t         -all
-CNTR9003I=\t         -timer <Zeitgeber-ID>
-CNTR9004I=\t         -app <Anwendungsname>
-CNTR9005I=\t         -mod <Modulname>
-CNTR9006I=\t         -bean <Bean-Name>\n
+CNTR9002I=\t\ \ \ \ \ \ \ \ \ -all
+CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <Zeitgeber-ID>
+CNTR9004I=\t\ \ \ \ \ \ \ \ \ -app <Anwendungsname>
+CNTR9005I=\t\ \ \ \ \ \ \ \ \ -mod <Modulname>
+CNTR9006I=\t\ \ \ \ \ \ \ \ \ -bean <Bean-Name>\n
 CNTR9007I=\tOptionen: -host <Hostname>
-CNTR9008I=\t         -user <Benutzer-ID>
-CNTR9009I=\t         -node <Knotenname>
+CNTR9008I=\t\ \ \ \ \ \ \ \ \ -user <Benutzer-ID>
+CNTR9009I=\t\ \ \ \ \ \ \ \ \ -node <Knotenname>
 
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Expiration", "Single", "Repeating", "Calendar", "expression" "Automatic timer with timeout method", "Programmatic timer", "timer"
@@ -1900,10 +1876,8 @@ CNTR9106E.useraction=Sehen Sie sich die Syntaxanweisung an und geben Sie einen S
 #-------------------------------------------------------------------------------
 # Do NOT translate any word beginning with a "-", "createEJBStubs", "class" "jar", "JAR", "war", "WAR",  "ear", "EAR", "\n", or "\t"
 NEWLINE_CNTR9200I=\n
-CNTR9201I=\n\
-Syntax: createEJBStubs <vollst\u00e4ndig qualifizierter Klassenname, JAR-Datei oder EAR-Datei> [Optionen]
-CNTR9202I=\n\
-Optionen:
+CNTR9201I=\nSyntax: createEJBStubs <vollst\u00e4ndig qualifizierter Klassenname, JAR-Datei oder EAR-Datei> [Optionen]
+CNTR9202I=\nOptionen:
 CNTR9203I=\t-help
 CNTR9204I=\t-newfile [neue Datei]
 CNTR9205I=\t-updatefile [JAR-, WAR- oder EAR-Datei]
@@ -1914,36 +1888,17 @@ CNTR9209I=\t-appendlog
 CNTR9210I=\t-cp <Klassenpfad>
 CNTR9239I=\t-rmic {0}
 CNTR9211I=\t-trace
-CNTR9212I=\n\
-Beispiele:
+CNTR9212I=\nBeispiele:
 CNTR9213I=\tcreateEJBStubs com.ibm.myRemoteInterface -cp myPath
-CNTR9214I=\t   Stub-Klasse f\u00fcr eine ferne Schnittstellenklasse generieren und in die paketdefinierte\n\
-\t   Verzeichnisstruktur kopieren, die beim aktuellen Verzeichnis beginnt.  Das Verzeichnis myPath2\n\
-\t   wird als Klassenpfad verwendet.\n\
-\t   Wenn die Schnittstellenklasse eine JAR-Datei (Java-Archiv) ist, kann die Syntax myPath/myInterfaces.jar\n\
-\t   als Klassenpfad verwendet werden.
+CNTR9214I=\t\ \ \ Stub-Klasse f\u00fcr eine ferne Schnittstellenklasse generieren und in die paketdefinierte\n\t   Verzeichnisstruktur kopieren, die beim aktuellen Verzeichnis beginnt.  Das Verzeichnis myPath2\n\t   wird als Klassenpfad verwendet.\n\t   Wenn die Schnittstellenklasse eine JAR-Datei (Java-Archiv) ist, kann die Syntax myPath/myInterfaces.jar\n\t   als Klassenpfad verwendet werden.
 CNTR9215I=\tcreateEJBStubs myPath/myBeans.jar -newfile -quiet
-CNTR9216I=\t   Stub-Klassen f\u00fcr alle Enterprise-Beans in der Datei myBeans.jar\n\
-\t   generieren, die ferne Schnittstellen haben.\n\
-\t   Die generierten Stubs und der Inhalt der urspr\u00fcnglichen JAR-Datei werden in eine neue\n\
-\t   JAR-Datei mit dem Namen myBeans_withStubs.jar kopiert, weil kein neuer Dateiname angegeben wurde.\n\
-\t   Ausgabenachrichten mit Ausnahme von Fehlerbenachrichtigungen unterdr\u00fccken.
+CNTR9216I=\t\ \ \ Stub-Klassen f\u00fcr alle Enterprise-Beans in der Datei myBeans.jar\n\t   generieren, die ferne Schnittstellen haben.\n\t   Die generierten Stubs und der Inhalt der urspr\u00fcnglichen JAR-Datei werden in eine neue\n\t   JAR-Datei mit dem Namen myBeans_withStubs.jar kopiert, weil kein neuer Dateiname angegeben wurde.\n\t   Ausgabenachrichten mit Ausnahme von Fehlerbenachrichtigungen unterdr\u00fccken.
 CNTR9217I=\tcreateEJBStubs myPath/myServerApp.ear -logfile myLog.out
-CNTR9218I=\t   Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\
-\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\
-\t   Die generierten Stubs werden in die urspr\u00fcngliche EAR-Datei (Unternehmensarchiv) kopiert.\n\
-\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die Bean-Klassen.\n\
-\t   Nachrichten werden in die Protokolldatei myLog.out und in das Befehlsfenster geschrieben.
+CNTR9218I=\t\ \ \ Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\t   Die generierten Stubs werden in die urspr\u00fcngliche EAR-Datei (Unternehmensarchiv) kopiert.\n\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die Bean-Klassen.\n\t   Nachrichten werden in die Protokolldatei myLog.out und in das Befehlsfenster geschrieben.
 CNTR9219I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile myPath/myClientInterfaces.jar
-CNTR9229I=\t   Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\
-\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\
-\t   Die generierten Subs werden in die urspr\u00fcngliche EAR-Datei und in die Datei myClientInterfaces.jar kopiert.\n\
-\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die fernen Schnittstellenklassen.
+CNTR9229I=\t\ \ \ Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\t   Die generierten Subs werden in die urspr\u00fcngliche EAR-Datei und in die Datei myClientInterfaces.jar kopiert.\n\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die fernen Schnittstellenklassen.
 CNTR9230I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile
-CNTR9232I=\t   Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\
-\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\
-\t   Die generierten Stubs werden in die urspr\u00fcngliche EAR-Datei kopiert.\n\
-\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die fernen Schnittstellenklassen.
+CNTR9232I=\t\ \ \ Stub-Klassen f\u00fcr alle Enterprise-Beans generieren, die in der Datei\n\t   myServerApp.ear gefunden werden und ferne Schnittstellen haben.\n\t   Die generierten Stubs werden in die urspr\u00fcngliche EAR-Datei kopiert.\n\t   Die Stub-Klassen befinden sich in demselben Modul bzw. denselben Modulen wie die fernen Schnittstellenklassen.
 
 #-------------------------------------------------------------------------------
 # Do Not translate "jar", "Jar", "ear", "Ear", "EJB", "rc", "\n", or "\t"
@@ -2059,8 +2014,7 @@ CLASS_LOAD_ERROR_CNTR9262E.useraction=Suchen Sie nach Rechtschreibfehlern und st
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: Die Schnittstellenklasse {0} konnte nicht verarbeitet werden.\n\
-Die Methodenparameterklasse {1} wurde nicht gefunden.
+CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: Die Schnittstellenklasse {0} konnte nicht verarbeitet werden.\nDie Methodenparameterklasse {1} wurde nicht gefunden.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.explanation=Eine Methodenparameter- oder eine Methodenr\u00fcckgabewertklasse der aufgelisteten Klasse konnte nicht geladen werden.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Stellen Sie sicher, dass alle Klassen, die in den Methoden der aufgelisteten Klasse als Methodenparameter \u00fcbergeben bzw. als Methodenr\u00fcckkehrwerte verwendet werden, in der angegebenen JAR-Datei bzw. EAR-Datei enthalten sind bzw. \u00fcber die Option -cp zur Verf\u00fcgung gestellt werden.
 

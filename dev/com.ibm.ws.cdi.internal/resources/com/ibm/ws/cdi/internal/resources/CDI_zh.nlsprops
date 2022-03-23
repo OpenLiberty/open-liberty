@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=\u8bf7\u4fee\u6b63\u5bfc
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: \u901a\u8fc7\u4e0e CDIExtensionMetadata \u5b9e\u73b0\u4f4d\u4e8e\u4e0d\u540c\u6346\u7ed1\u8f6f\u4ef6\u4e2d\u7684 CDI \u6269\u5c55 SPI \u6ce8\u518c\u4e86 {0} \u7c7b\u3002
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=\u5df2\u5ffd\u7565\u8be5\u7c7b\uff0c\u56e0\u4e3a\u5b83\u662f\u4f7f\u7528 CDIExtensionMetadata \u5b9e\u73b0\u7684 getExtensions() \u6216 getBeanClasses() \u65b9\u6cd5\uff08\u8fd9\u4e9b\u65b9\u6cd5\u4e0e CDIExtensionMetadata \u5b9e\u73b0\u4f4d\u4e8e\u4e0d\u540c\u7684\u6346\u7ed1\u8f6f\u4ef6\u4e2d\uff09\u6765\u6ce8\u518c\u7684\u3002
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=\u8bf7\u79fb\u52a8\u53d7\u5f71\u54cd\u7684\u7c7b\uff0c\u6216\u8005\u5728\u6b63\u786e\u7684\u6346\u7ed1\u8f6f\u4ef6\u4e2d\u521b\u5efa\u65b0\u7684 CDIExtensionMetadata \u5b9e\u73b0\u3002
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: CDI \u5728\u4e3a {0} \u5f52\u6863\u521b\u5efa\u6269\u5c55\u65f6\u9047\u5230\u4e86\u5f02\u5e38\u3002 \u9519\u8bef\u4e3a\uff1a{1}
+exception.creating.extensions.CWOWB1012E.explanation=CDI \u65e0\u6cd5\u88c5\u5165\u6216\u8c03\u7528\u6269\u5c55\u7c7b\u7684\u6784\u9020\u3002
+exception.creating.extensions.CWOWB1012E.useraction=\u8bf7\u4fee\u6b63\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u6269\u5c55\u7684\u9519\u8bef\u3002
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: \u65e0\u6cd5\u88c5\u5165 {0} BuildCompatibleExtension \u7c7b\u3002
+bce.not.loadable.CWOWB1013E.explanation=\u5e94\u7528\u7a0b\u5e8f\u5305\u542b META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension \u6587\u4ef6\uff0c\u8be5\u6587\u4ef6\u5305\u542b\u4e86\u8be5\u7c7b\uff0c\u4f46 CDI \u65e0\u6cd5\u88c5\u5165\u8be5\u7c7b\u3002
+bce.not.loadable.CWOWB1013E.useraction=\u8bf7\u786e\u4fdd\u8be5\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b58\u5728\uff0c\u5e76\u4e14\u53ef\u4ee5\u88c5\u5165\u3002 \u5982\u679c\u8be5\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b58\u5728\uff0c\u90a3\u4e48 FFDC \u6587\u4ef6\u53ef\u80fd\u5177\u6709\u66f4\u591a\u5173\u4e8e\u65e0\u6cd5\u88c5\u5165\u8be5\u7c7b\u7684\u539f\u56e0\u7684\u4fe1\u606f\u3002
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: {0} \u7c7b\u672a\u5b9e\u73b0 BuildCompatibleExtension \u63a5\u53e3\u3002
+bce.does.not.implement.bce.CWOWB1014E.explanation=\u5e94\u7528\u7a0b\u5e8f\u5305\u542b META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension \u6587\u4ef6\uff0c\u5176\u8be5\u6587\u4ef6\u5305\u542b\u8be5\u7c7b\uff0c\u4f46\u8be5\u7c7b\u672a\u5b9e\u73b0 jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
+bce.does.not.implement.bce.CWOWB1014E.useraction=\u66f4\u6539\u8be5\u7c7b\uff0c\u4f7f\u5176\u5b9e\u73b0 jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension\u3002
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: cdi12 \u914d\u7f6e\u5143\u7d20\u5df2\u7531 cdi \u914d\u7f6e\u5143\u7d20\u53d6\u4ee3\u3002
+cdi12.element.type.superceded.CWOWB1015W.explanation=cdi \u914d\u7f6e\u5143\u7d20\u4f1a\u66ff\u6362 cdi12 \u914d\u7f6e\u5143\u7d20\uff0c\u5e76\u5305\u542b\u6240\u6709\u76f8\u540c\u7684\u9009\u9879\u4ee5\u53ca\u65b0\u9009\u9879\u3002
+cdi12.element.type.superceded.CWOWB1015W.useraction=\u5c06 server.xml \u914d\u7f6e\u66f4\u6539\u4e3a\u4f7f\u7528 cdi \u914d\u7f6e\u5143\u7d20\uff0c\u800c\u4e0d\u662f cdi12 \u914d\u7f6e\u5143\u7d20\u3002
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: cdi \u914d\u7f6e\u5143\u7d20\u7684 emptyBeansXMLExplicitArchive \u5c5e\u6027\u4ec5\u5728 CDI 4.0 \u6216\u66f4\u9ad8\u7248\u672c\u4e0a\u53d7\u652f\u6301\u3002 \u5c06\u5ffd\u7565\u6b64\u5c5e\u6027\u3002
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=\u5c06 emptyBeansXMLExplicitArchive \u5c5e\u6027\u4e0e\u4f4e\u4e8e 4.0 \u7684 CDI \u7248\u672c\u914d\u5408\u4f7f\u7528\u65f6\uff0c\u6b64\u5c5e\u6027\u65e0\u6548\u3002
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=\u8bf7\u66f4\u65b0 server.xml \u914d\u7f6e\u4ee5\u79fb\u9664\u8be5\u5c5e\u6027\u6216\u4f7f\u7528 CDI V4.0 \u6216\u66f4\u9ad8\u7248\u672c\u3002
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: \u5728 cdi12 \u548c cdi \u914d\u7f6e\u5143\u7d20\u4e0a\u90fd\u8bbe\u7f6e\u4e86 enableImplicitBeanArchives \u5c5e\u6027\u3002 \u5c06\u4f7f\u7528\u6765\u81ea cdi \u5143\u7d20\u7684\u503c\uff0c\u5e76\u4e14\u5c06\u5ffd\u7565 cdi12 \u5143\u7d20\u4e2d\u7684\u503c\u3002
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=\u867d\u7136\u60a8\u53ef\u4ee5\u5728 cdi12 \u548c cdi \u914d\u7f6e\u5143\u7d20\u914d\u7f6e\u5143\u7d20\u4e0a\u90fd\u8bbe\u7f6e enableImplicitBeanArchives \u5c5e\u6027\uff0c\u4f46\u4e0d\u5e94\u5728\u540c\u4e00\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u4f7f\u7528\u4e0d\u540c\u7684\u503c\u6765\u8bbe\u7f6e\u6b64\u5c5e\u6027\u3002
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=\u8bf7\u66f4\u65b0 server.xml \u4ee5\u4fee\u590d\u51b2\u7a81\u3002 \u5efa\u8bae\u7684\u64cd\u4f5c\u662f\u79fb\u9664 cdi12 \u914d\u7f6e\u5143\u7d20\uff0c\u56e0\u4e3a\u8be5\u914d\u7f6e\u5143\u7d20\u5df2\u88ab cdi \u914d\u7f6e\u5143\u7d20\u53d6\u4ee3\u3002
+

@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: SSL \u521d\u59cb\u5316\u671f\u95f4\u53d1\u751f\u9519\u8bef\u3002\u5f02\u5e38\uff1a{0}
 ssl.init.error.CWPKI0008E.explanation=\u5b89\u5168\u6027\u521d\u59cb\u5316\u671f\u95f4\u53d1\u751f\u610f\u5916\u7684\u9519\u8bef\u3002
-ssl.init.error.CWPKI0008E.useraction=\u8fd9\u662f\u4e00\u4e2a\u5e38\u89c4\u9519\u8bef\u3002\
-\u67e5\u627e\u53ef\u80fd\u4e0e SSL \u521d\u59cb\u5316\u6216\u914d\u7f6e\u95ee\u9898\u76f8\u5173\u7684\u5148\u524d\u6d88\u606f\u3002\
-\u542f\u7528 SSL=all=enabled \u8c03\u8bd5\u8ddf\u8e2a\u53ef\u80fd\u751f\u6210\u5176\u4ed6\u4fe1\u606f\u3002
+ssl.init.error.CWPKI0008E.useraction=\u8fd9\u662f\u4e00\u4e2a\u5e38\u89c4\u9519\u8bef\u3002\u67e5\u627e\u53ef\u80fd\u4e0e SSL \u521d\u59cb\u5316\u6216\u914d\u7f6e\u95ee\u9898\u76f8\u5173\u7684\u5148\u524d\u6d88\u606f\u3002\u542f\u7528 SSL=all=enabled \u8c03\u8bd5\u8ddf\u8e2a\u53ef\u80fd\u751f\u6210\u5176\u4ed6\u4fe1\u606f\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: \u5728\u521d\u59cb\u5316\u671f\u95f4\uff0c\u7cfb\u7edf\u65e0\u6cd5\u521b\u5efa\u5b89\u5168\u6027\u5bf9\u8c61\u3002
 ssl.init.nullsecobject.CWPKI0009E.explanation=\u65e0\u6cd5\u4ece\u5b58\u50a8\u5e93\u521b\u5efa\u5b89\u5168\u6027\u5bf9\u8c61\u3002 \u8fd9\u662f\u4e00\u4e2a\u5185\u90e8\u9519\u8bef\u3002security.xml \u6587\u4ef6\u53ef\u80fd\u635f\u574f\uff0c\u6216\u7f3a\u5c11\u8be5\u6587\u4ef6\u3002
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: \u505c\u6b62 SSL \u7ec4\u4ef6\u65f6\u53d1\u751f\u9519\u8bef\u3002\u5f02\u5e38\uff1a{0}
 ssl.stop.error.CWPKI0015E.explanation=\u505c\u6b62 SSL \u7ec4\u4ef6\u65f6\u53d1\u751f\u610f\u5916\u9519\u8bef\u3002
-ssl.stop.error.CWPKI0015E.useraction=\u8fd9\u662f\u4e00\u4e2a\u5e38\u89c4\u9519\u8bef\u3002\
-\u67e5\u627e\u53ef\u80fd\u4e0e\u8be5\u9519\u8bef\u6216\u914d\u7f6e\u95ee\u9898\u76f8\u5173\u7684\u5148\u524d\u6d88\u606f\u3002\
-\u542f\u7528 SSL=all=enabled \u8c03\u8bd5\u8ddf\u8e2a\u53ef\u80fd\u751f\u6210\u5176\u4ed6\u4fe1\u606f\u3002
+ssl.stop.error.CWPKI0015E.useraction=\u8fd9\u662f\u4e00\u4e2a\u5e38\u89c4\u9519\u8bef\u3002\u67e5\u627e\u53ef\u80fd\u4e0e\u8be5\u9519\u8bef\u6216\u914d\u7f6e\u95ee\u9898\u76f8\u5173\u7684\u5148\u524d\u6d88\u606f\u3002\u542f\u7528 SSL=all=enabled \u8c03\u8bd5\u8ddf\u8e2a\u53ef\u80fd\u751f\u6210\u5176\u4ed6\u4fe1\u606f\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: \u6765\u81ea\u5bc6\u94a5\u5e93 {1} \u4e14\u522b\u540d\u4e3a {0} \u7684\u8bc1\u4e66\u5c06\u5728 {2} \u5929\u5185\u5230\u671f\u3002
 ssl.expiration.warning.CWPKI0016W.explanation=\u5bc6\u94a5\u5e93\u4e2d\u7684\u8bc1\u4e66\u5373\u5c06\u5230\u671f\u3002
@@ -121,23 +117,19 @@ ssl.client.handshake.error.CWPKI0022E.useraction=\u8bf7\u67e5\u770b\u4fe1\u4efb\
 # -------------------------------------------------------------------------------------------------
 ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: \u5728\u5bc6\u94a5\u5e93 {1} \u4e2d\u627e\u4e0d\u5230\u5c5e\u6027 clientKeyAlias \u6240\u6307\u5b9a\u7684 {0} \u8bc1\u4e66\u522b\u540d\uff0c\u6216\u8005\u8be5\u522b\u540d\u65e0\u6548\u3002
 ssl.client.alias.not.found.CWPKI0023E.explanation=\u5bf9\u6b64 SSL \u914d\u7f6e\u6307\u5b9a\u7684\u8bc1\u4e66\u522b\u540d\u672a\u5728\u6307\u5b9a\u7684\u5bc6\u94a5\u5e93\u4e2d\uff0c\u6216\u8005\u5df2\u53d1\u73b0\u8be5\u522b\u540d\u65e0\u6548\u3002\u5230\u671f\u8bc1\u4e66\u662f\u65e0\u6548\u8bc1\u4e66\u7684\u4e00\u4e2a\u793a\u4f8b\u3002
-ssl.client.alias.not.found.CWPKI0023E.useraction=\u5c06\u5177\u6709\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u7684\u8bc1\u4e66\u6dfb\u52a0\u5230\u5bc6\u94a5\u5e93\uff0c\u6216\u8005\u4f7f\u7528\u5728\u5ba2\u6237\u673a\u5bc6\u94a5\u5e93\u4e2d\u627e\u5230\u7684\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\
-\u66ff\u6362\u6216\u66f4\u65b0\u65e0\u6548\u8bc1\u4e66\u3002
+ssl.client.alias.not.found.CWPKI0023E.useraction=\u5c06\u5177\u6709\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u7684\u8bc1\u4e66\u6dfb\u52a0\u5230\u5bc6\u94a5\u5e93\uff0c\u6216\u8005\u4f7f\u7528\u5728\u5ba2\u6237\u673a\u5bc6\u94a5\u5e93\u4e2d\u627e\u5230\u7684\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u66ff\u6362\u6216\u66f4\u65b0\u65e0\u6548\u8bc1\u4e66\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: \u5728\u5bc6\u94a5\u5e93 {1} \u4e2d\u627e\u4e0d\u5230\u5c5e\u6027 serverKeyAlias \u6240\u6307\u5b9a\u7684 {0} \u8bc1\u4e66\u522b\u540d\uff0c\u6216\u8005\u8be5\u522b\u540d\u65e0\u6548\u3002
 ssl.server.alias.not.found.CWPKI0024E.explanation=\u5bf9\u6b64 SSL \u914d\u7f6e\u6307\u5b9a\u7684\u8bc1\u4e66\u522b\u540d\u672a\u5728\u6307\u5b9a\u7684\u5bc6\u94a5\u5e93\u4e2d\uff0c\u6216\u8005\u5df2\u53d1\u73b0\u8be5\u522b\u540d\u65e0\u6548\u3002\u5230\u671f\u8bc1\u4e66\u662f\u65e0\u6548\u8bc1\u4e66\u7684\u4e00\u4e2a\u793a\u4f8b\u3002
-ssl.server.alias.not.found.CWPKI0024E.useraction=\u5c06\u5177\u6709\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u7684\u8bc1\u4e66\u6dfb\u52a0\u5230\u5bc6\u94a5\u5e93\uff0c\u6216\u8005\u4f7f\u7528\u5728\u670d\u52a1\u5668\u5bc6\u94a5\u5e93\u4e2d\u627e\u5230\u7684\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\
-\u66ff\u6362\u6216\u66f4\u65b0\u65e0\u6548\u8bc1\u4e66\u3002
+ssl.server.alias.not.found.CWPKI0024E.useraction=\u5c06\u5177\u6709\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u7684\u8bc1\u4e66\u6dfb\u52a0\u5230\u5bc6\u94a5\u5e93\uff0c\u6216\u8005\u4f7f\u7528\u5728\u670d\u52a1\u5668\u5bc6\u94a5\u5e93\u4e2d\u627e\u5230\u7684\u6240\u6307\u5b9a\u8bc1\u4e66\u522b\u540d\u66ff\u6362\u6216\u66f4\u65b0\u65e0\u6548\u8bc1\u4e66\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: \u7cfb\u7edf\u672a\u80fd\u88c5\u5165 https \u5904\u7406\u7a0b\u5e8f\u7c7b {0}\u3002\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff1a{1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=\u5c1d\u8bd5\u88c5\u5165 HTTPS URLStreamHandler \u7c7b\u65f6\u5b58\u5728\u7c7b\u88c5\u5165\u9519\u8bef\u3002
-
 ssl.load.https.stream.handler.CWPKI0025E.useraction=\u68c0\u67e5 SSL \u914d\u7f6e\u4ee5\u786e\u4fdd\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u5bf9\u4e8e\u5e73\u53f0\u6b63\u786e\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.reinitialize.config.error.CWPKI0026E=CWPKI0026E: \u5728\u66f4\u6539 security.xml \u6587\u4ef6\u4e4b\u540e\u91cd\u65b0\u521d\u59cb\u5316 SSL \u914d\u7f6e\u65f6\u53d1\u751f\u9519\u8bef\u3002\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff1a{0}
 ssl.reinitialize.config.error.CWPKI0026E.explanation=\u5df2\u5bf9 security.xml \u6587\u4ef6\u8fdb\u884c\u66f4\u6539\u3002\u968f\u540e\u7cfb\u7edf\u5c1d\u8bd5\u8bfb\u53d6\u66f4\u6539\u7684\u914d\u7f6e\u65f6\u53d1\u751f\u9519\u8bef\u3002
 ssl.reinitialize.config.error.CWPKI0026E.useraction=\u67e5\u770b\u5f02\u5e38\u6d88\u606f\u6587\u672c\u5e76\u9a8c\u8bc1 SSL \u914d\u7f6e\u53c2\u6570\u662f\u5426\u6709\u6548\u3002
-
 # -------------------------------------------------------------------------------------------------
 ssl.disable.url.hostname.verification.CWPKI0027I=CWPKI0027I: \u6b63\u5728\u7981\u7528\u9488\u5bf9 HTTPS URL \u8fde\u63a5\u7684\u7f3a\u7701\u4e3b\u673a\u540d\u9a8c\u8bc1\u3002
 ssl.disable.url.hostname.verification.CWPKI0027I.explanation=JSSE URL \u4e3b\u673a\u540d\u9a8c\u8bc1\u68c0\u67e5 X509 \u8bc1\u4e66\u516c\u5171\u540d (CN) \u662f\u5426\u4e0e\u5b83\u6e90\u81ea\u7684\u4e3b\u673a\u540d\u76f8\u5339\u914d\u3002\u7f3a\u7701\u60c5\u51b5\u4e0b\uff0c\u5bf9\u4e8e URL \u8fde\u63a5\uff0c\u6b64\u4e3b\u673a\u540d\u9a8c\u8bc1\u68c0\u67e5\u8bbe\u7f6e\u4e3a\u7981\u7528\u3002
@@ -145,12 +137,10 @@ ssl.disable.url.hostname.verification.CWPKI0027I.useraction=\u8981\u542f\u7528\u
 # -------------------------------------------------------------------------------------------------
 ssl.no.such.algorithm.CWPKI0028E=CWPKI0028E: SSL \u63e1\u624b\u534f\u8bae {0} \u65e0\u6548\u3002\u6b64\u534f\u8bae\u5728\u4ece SSL \u914d\u7f6e\u6587\u4ef6 {2} \u88c5\u5165\u7684 SSL \u914d\u7f6e\u522b\u540d {1} \u4e2d\u6307\u5b9a\u3002\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff1a{3}
 ssl.no.such.algorithm.CWPKI0028E.explanation=\u6307\u5b9a\u7684\u63e1\u624b\u534f\u8bae\u672a\u8bc6\u522b\u4e3a\u6709\u6548\u7684\u63e1\u624b\u534f\u8bae\u3002
-
 ssl.no.such.algorithm.CWPKI0028E.useraction=\u68c0\u67e5 SSL \u914d\u7f6e\u4ee5\u786e\u4fdd\u6307\u5b9a\u4e86\u6b63\u786e\u7684\u63e1\u624b\u534f\u8bae\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.invalid.context.provider.CWPKI0029E=CWPKI0029E: SSL \u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f {0} \u65e0\u6548\u3002\u6b64\u63d0\u4f9b\u7a0b\u5e8f\u5728\u4ece SSL \u914d\u7f6e\u6587\u4ef6 {2} \u88c5\u5165\u7684 SSL \u914d\u7f6e\u522b\u540d {1} \u4e2d\u6307\u5b9a\u3002\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff1a{3}
 ssl.invalid.context.provider.CWPKI0029E.explanation=\u6307\u5b9a\u7684 SSL \u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u672a\u8bc6\u522b\u4e3a\u6709\u6548\u7684\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u3002
-
 ssl.invalid.context.provider.CWPKI0029E.useraction=\u68c0\u67e5 SSL \u914d\u7f6e\u4ee5\u786e\u4fdd\u6307\u5b9a\u4e86\u6b63\u786e\u7684 SSL \u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.signer.exchange.error.CWPKI0030E=CWPKI0030E: \u5728\u5355\u5143\u4e0e\u8282\u70b9\u4e4b\u95f4\u4ea4\u6362\u7b7e\u7f72\u8005\u65f6\u53d1\u751f\u9519\u8bef\u3002\u5f02\u5e38\uff1a{0}
@@ -240,22 +230,13 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=\u8981\u786e\u4fdd\u4f7f\u7528 F
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** SSL \u7b7e\u7f72\u8005\u4ea4\u6362\u63d0\u793a ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=\u5728\u4fe1\u4efb\u5e93 {0} \u4e2d\u627e\u4e0d\u5230\u6765\u81ea\u76ee\u6807\u4e3b\u673a\u7684 SSL \u7b7e\u7f72\u8005\u3002\n\
-\n\
-\u4ee5\u4e0b\u662f\u7b7e\u7f72\u8005\u4fe1\u606f\uff08\u9a8c\u8bc1\u6458\u8981\u503c\u662f\u5426\u4e0e\u670d\u52a1\u5668\u4e2d\u663e\u793a\u7684\u503c\u76f8\u5339\u914d\uff09\uff1a
-
-ssl.trustmanager.signer.prompt.CWPKI0102I=  \u4e3b\u4f53\u96c6 DN\uff1a
-
-ssl.trustmanager.signer.prompt.CWPKI0103I=  \u53d1\u5e03\u8005 DN\uff1a
-
-ssl.trustmanager.signer.prompt.CWPKI0104I=  \u5e8f\u5217\u53f7\uff1a
-
-ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 \u6458\u8981\uff1a
-
-ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5 \u6458\u8981\uff1a
-
+ssl.trustmanager.signer.prompt.CWPKI0101I=\u5728\u4fe1\u4efb\u5e93 {0} \u4e2d\u627e\u4e0d\u5230\u6765\u81ea\u76ee\u6807\u4e3b\u673a\u7684 SSL \u7b7e\u7f72\u8005\u3002\n\n\u4ee5\u4e0b\u662f\u7b7e\u7f72\u8005\u4fe1\u606f\uff08\u9a8c\u8bc1\u6458\u8981\u503c\u662f\u5426\u4e0e\u670d\u52a1\u5668\u4e2d\u663e\u793a\u7684\u503c\u76f8\u5339\u914d\uff09\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0102I= \u4e3b\u4f53\u96c6 DN\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0103I= \u53d1\u5e03\u8005 DN\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0104I= \u5e8f\u5217\u53f7\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0105I= SHA-1 \u6458\u8981\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0106I= MD5 \u6458\u8981\uff1a
 ssl.trustmanager.signer.prompt.CWPKI0107I=\u73b0\u5728\u8981\u5c06\u7b7e\u7f72\u8005\u6dfb\u52a0\u5230\u4fe1\u4efb\u5e93\u5417\uff1f(y/n)
-
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
 # "y" for "yes" in English, "o" for "oui" in French, etc.
@@ -264,7 +245,7 @@ ssl.trustmanager.signer.prompt.answer.yes=y
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=yes
 ssl.trustmanager.signer.prompt.CWPKI0108I=\u5982\u679c\u7b49\u5f85\u63d0\u793a\u54cd\u5e94\u65f6\u5957\u63a5\u5b57\u8d85\u65f6\uff0c\u90a3\u4e48\u53ef\u80fd\u9700\u8981\u91cd\u8bd5\u8bf7\u6c42\u3002\u5982\u679c\u9700\u8981\u91cd\u8bd5\uff0c\u90a3\u4e48\u8bf7\u6ce8\u610f\uff0c\u82e5\u8f93\u5165 (y)\uff0c\u5c31\u4e0d\u4f1a\u91cd\u65b0\u663e\u793a\u63d0\u793a\uff0c\u8fd9\u8868\u793a\u7b7e\u7f72\u8005\u5df2\u6dfb\u52a0\u81f3\u4fe1\u4efb\u5e93\u3002
-ssl.trustmanager.signer.prompt.CWPKI0109I=  \u5230\u671f\uff1a
+ssl.trustmanager.signer.prompt.CWPKI0109I= \u5230\u671f\uff1a
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -294,11 +275,7 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=\u8bf7\u6839\u636e\u5f02\u5
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: \u8bf7\u4f7f\u7528 -listRemoteKeyStoreNames \u548c -listLocalKeyStoreNames \u9009\u9879\u6765\u5206\u522b\u83b7\u53d6 <remoteKeyStoreName> \u548c <localKeyStoreName> \u7684\u540d\u79f0\u5217\u8868\u3002\n\
-\n\
-\u7528\u6cd5\uff1aretrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n\
-\ \
-\u9009\u9879\uff1a[-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: \u8bf7\u4f7f\u7528 -listRemoteKeyStoreNames \u548c -listLocalKeyStoreNames \u9009\u9879\u6765\u5206\u522b\u83b7\u53d6 <remoteKeyStoreName> \u548c <localKeyStoreName> \u7684\u540d\u79f0\u5217\u8868\u3002\n\n\u7528\u6cd5\uff1aretrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n \u9009\u9879\uff1a[-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 # -------------------------------------------------------------------------------------------------
@@ -400,7 +377,6 @@ ssl.ca.client.custom.class.invalid.useraction=\u8bf7\u68c0\u67e5\u8be5\u5b9a\u52
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.not.personal.cert=CWPKI0408E: \u8bc1\u4e66 {0} \u4e0d\u662f\u4e2a\u4eba\u8bc1\u4e66\u3002
 ssl.ca.client.not.personal.cert.explanation=\u6307\u5b9a\u7684\u8bc1\u4e66\u4e0d\u662f\u4e2a\u4eba\u8bc1\u4e66\u3002
-
 ssl.ca.client.not.personal.cert.useraction=\u8bf7\u91cd\u65b0\u8fd0\u884c\u8be5\u547d\u4ee4\u5e76\u6307\u5b9a\u4e2a\u4eba\u8bc1\u4e66\u522b\u540d\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.cert.does.not.exist=CWPKI0409E: \u8bc1\u4e66\u522b\u540d {0} \u5728\u5bc6\u94a5\u5e93 {1} \u4e2d\u4e0d\u5b58\u5728\u3002
@@ -409,7 +385,6 @@ ssl.ca.client.cert.does.not.exist.useraction=\u8bf7\u4f7f\u7528\u4ece\u8ba4\u8bc
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.keystore.not.found=CWPKI0410E: \u5728\u5ba2\u6237\u673a\u4e0a\u627e\u4e0d\u5230\u6307\u5b9a\u4e3a\u522b\u540d {0} \u7684\u672c\u5730\u5bc6\u94a5\u5e93\u3002
 ssl.ca.client.keystore.not.found.explanation=\u627e\u4e0d\u5230\u672c\u5730\u5bc6\u94a5\u5e93\u3002
-
 ssl.ca.client.keystore.not.found.useraction=\u8bf7\u68c0\u67e5\u8be5\u5bc6\u94a5\u5e93\u662f\u5426\u5b58\u5728\u4e8e\u5ba2\u6237\u673a\u4e0a\u5e76\u4e14\u662f\u5426\u5177\u6709 ssl.client.props \u4e2d\u6307\u5b9a\u7684\u522b\u540d\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.cert.publickey.not.found=CWPKI0411E: \u5728\u5bc6\u94a5\u5e93 {0} \u4e2d\u627e\u4e0d\u5230\u5176\u516c\u7528\u5bc6\u94a5\u4e0e\u8ba4\u8bc1\u4e2d\u5fc3 (CA) \u4e2d\u8bc1\u4e66\u5185\u7684\u516c\u7528\u5bc6\u94a5\u5339\u914d\u7684\u8bc1\u4e66\u3002
@@ -425,7 +400,6 @@ ssl.ca.client.invalid.option.type.explanation=\u63d0\u4f9b\u7684\u503c\u7c7b\u57
 ssl.ca.client.invalid.option.type.useraction=\u8bf7\u53c2\u9605\u7528\u6cd5\u5e2e\u52a9\u5e76\u5728\u66f4\u6b63\u8be5\u503c\u7684\u7c7b\u578b\u540e\u91cd\u8bd5\u3002
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option.value=CWPKI0414E: \u5fc5\u987b\u5bf9\u9009\u9879 {0} \u6307\u5b9a\u503c\u3002
-
 ssl.ca.client.invalid.option.value.explanation=\u672a\u5728\u547d\u4ee4\u884c\u4e0a\u63d0\u4f9b\u6b63\u786e\u7684\u503c\u3002
 ssl.ca.client.invalid.option.value.useraction=\u8bf7\u67e5\u770b\u7528\u6cd5\u5e2e\u52a9\uff0c\u5e76\u5728\u66f4\u6b63\u9009\u9879\u540e\u91cd\u8bd5\u3002
 # -------------------------------------------------------------------------------------------------
@@ -657,8 +631,7 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: SSL \u63e1\u624b\u6545\u969c\u
 ssl.client.handshake.error.CWPKI0823E.explanation=SSL \u63e1\u624b\u671f\u95f4\u53d1\u751f\u9519\u8bef\u3002\u5b83\u53ef\u80fd\u9700\u8981\u4ece\u76ee\u6807\u4e3b\u673a\u5c06\u7b7e\u7f72\u8005\u5bfc\u51fa/\u5bfc\u5165\u5230\u5ba2\u6237\u673a\u4fe1\u4efb\u5e93\u3002
 ssl.client.handshake.error.CWPKI0823E.useraction=\u8bf7\u67e5\u770b\u4fe1\u4efb\u7ba1\u7406\u5668\u53d1\u51fa\u7684\u6269\u5c55\u9519\u8bef\u6d88\u606f\uff0c\u4ee5\u786e\u5b9a\u9700\u8981\u66f4\u6539\u76ee\u6807 SSL \u914d\u7f6e\u4e0e\u5ba2\u6237\u673a SSL \u914d\u7f6e\u4e4b\u95f4\u7684\u54ea\u4e9b\u5185\u5bb9\u3002
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: SSL \u63e1\u624b\u6545\u969c\uff1a\u8fde\u63a5\u81f3\u4e3b\u673a [{0}] \u65f6\u53d1\u751f\u4e86\u4e3b\u673a\u540d\u9a8c\u8bc1\u9519\u8bef\u3002\u7528\u4e8e\u8bbf\u95ee\u670d\u52a1\u5668\u7684\u4e3b\u673a\u540d\u4e0e\u670d\u52a1\u5668\u8bc1\u4e66\u7684 SubjectDN \u6216\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u4fe1\u606f\u4e0d\u5339\u914d\u3002\
-\u6765\u81ea SSL \u63e1\u624b\u5f02\u5e38\u7684\u6269\u5c55\u9519\u8bef\u6d88\u606f\u4e3a\uff1a[{1}]
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: SSL \u63e1\u624b\u6545\u969c\uff1a\u8fde\u63a5\u81f3\u4e3b\u673a [{0}] \u65f6\u53d1\u751f\u4e86\u4e3b\u673a\u540d\u9a8c\u8bc1\u9519\u8bef\u3002\u7528\u4e8e\u8bbf\u95ee\u670d\u52a1\u5668\u7684\u4e3b\u673a\u540d\u4e0e\u670d\u52a1\u5668\u8bc1\u4e66\u7684 SubjectDN \u6216\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u4fe1\u606f\u4e0d\u5339\u914d\u3002\u6765\u81ea SSL \u63e1\u624b\u5f02\u5e38\u7684\u6269\u5c55\u9519\u8bef\u6d88\u606f\u4e3a\uff1a[{1}]
 ssl.client.handshake.error.CWPKI0824E.explanation=SSL \u63e1\u624b\u671f\u95f4\u53d1\u751f\u9519\u8bef\u3002\u7cfb\u7edf\u5df2\u542f\u7528\u4e3b\u673a\u540d\u9a8c\u8bc1\uff0c\u4f46\u65e0\u6cd5\u9a8c\u8bc1\u670d\u52a1\u5668\u8eab\u4efd\u3002\u7528\u4e8e\u8bbf\u95ee\u670d\u52a1\u5668\u7684\u4e3b\u673a\u540d\u4e0e\u670d\u52a1\u5668\u8bc1\u4e66\u7684 SubjectDN \u6216\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u4fe1\u606f\u4e0d\u5339\u914d\u3002
 ssl.client.handshake.error.CWPKI0824E.useraction=\u542f\u7528\u4e3b\u673a\u540d\u9a8c\u8bc1\u540e\uff0c\u60a8\u9700\u8981\u4f7f\u7528\u5305\u542b\u9a8c\u8bc1\u670d\u52a1\u5668\u8eab\u4efd\u65f6\u6240\u9700\u7684\u76f8\u5e94\u4fe1\u606f\u7684\u8bc1\u4e66\u6765\u8bbe\u7f6e\u6240\u8bbf\u95ee\u670d\u52a1\u5668\u3002
 # -------------------------------------------------------------------------------------------------
@@ -686,3 +659,26 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: \u5177\u6709\u73af\u5883\u53d8\u91cf 
 ssl.certificate.add.CWPKI0830I.explanation=\u4ece\u914d\u7f6e\u4e2d\u7684\u73af\u5883\u53d8\u91cf\u68c0\u7d22\u5230\u4e86\u8bc1\u4e66\uff0c\u5e76\u5c06\u5176\u6dfb\u52a0\u5230\u5bc6\u94a5\u5e93\u6587\u4ef6\u4e2d\u3002
 ssl.certificate.add.CWPKI0830I.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: {0} SSL/TLS \u534f\u8bae\u4e0d\u53ef\u4f7f\u7528\u3002 \u6269\u5c55\u9519\u8bef\u4e3a\uff1a{1} 
+ssl.protocol.error.CWPKI0831E.explanation=\u65e0\u6cd5\u4f7f\u7528\u6240\u63d0\u4f9b\u7684\u534f\u8bae\u3002 \u5c1d\u8bd5\u83b7\u53d6\u5177\u6709\u8be5\u534f\u8bae\u503c\u7684 SSLContext \u5b9e\u4f8b\u65f6\u53d1\u751f\u9519\u8bef\u3002 
+ssl.protocol.error.CWPKI0831E.useraction=\u8bf7\u786e\u4fdd\u914d\u7f6e\u5bf9\u6b64 JVM \u4f7f\u7528\u6709\u6548\u7684 SSL/TLS \u534f\u8bae\u503c\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: \u6240\u63d0\u4f9b\u7684 {0} SSL/TLS \u534f\u8bae\u503c\u65e0\u6cd5\u7528\u4e8e\u914d\u7f6e SSL \u534f\u8bae\u503c\u7684\u5217\u8868\u3002
+ssl.protocol.error.CWPKI0832E.explanation=\u6b64\u534f\u8bae\u503c\u5728\u534f\u8bae\u5217\u8868\u5206\u7ec4\u4e2d\u65e0\u6548\u3002
+ssl.protocol.error.CWPKI0832E.useraction=\u8bf7\u786e\u4fdd SSL/TLS \u534f\u8bae\u7684\u5217\u8868\u4ec5\u5305\u542b\u9002\u5408\u4e8e\u534f\u8bae\u5217\u8868\u7684\u503c\u3002
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: {0} SSL/TLS \u914d\u7f6e\u5b58\u5728\u4e00\u4e2a\u9519\u8bef\uff0c\u8be5\u9519\u8bef\u963b\u6b62\u521b\u5efa SSL/TLS \u914d\u7f6e\u3002 
+ssl.protocol.error.CWPKI0833E.explanation=SSL \u914d\u7f6e\u5c5e\u6027\u53d1\u751f\u9519\u8bef\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa SSLContext\u3002 
+ssl.protocol.error.CWPKI0833E.useraction=\u8bf7\u786e\u4fdd SSL \u914d\u7f6e\u5c5e\u6027\u662f\u6b63\u786e\u7684\u3002 \u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u4e86\u89e3\u4e0e SSL \u914d\u7f6e\u5c5e\u6027\u5173\u8054\u7684\u5176\u4ed6\u9519\u8bef\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: \u7531\u4e8e\u53d1\u751f\u9519\u8bef\uff0c\u65e0\u6cd5\u5c06 {0} SSL/TLS \u914d\u7f6e\u8bbe\u7f6e\u4e3a\u8fdb\u7a0b\u7f3a\u7701 SSL \u914d\u7f6e\u3002
+ssl.config.error.CWPKI0834E.explanation=\u6307\u5b9a\u7684 SSL/TLS \u914d\u7f6e\u5305\u542b\u4e00\u4e2a\u9519\u8bef\uff0c\u8be5\u9519\u8bef\u963b\u6b62\u5c06\u5176\u8bbe\u7f6e\u4e3a\u8fdb\u7a0b\u7f3a\u7701 SSL \u914d\u7f6e\u3002 
+ssl.config.error.CWPKI0834E.useraction=\u8bf7\u786e\u4fdd SSL \u914d\u7f6e\u5c5e\u6027\u662f\u6b63\u786e\u7684\u3002 \u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u4e86\u89e3\u4e0e SSL \u914d\u7f6e\u5c5e\u6027\u76f8\u5173\u8054\u7684\u9519\u8bef\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ \u7531\u4e8e\u672a\u521b\u5efa\u5bc6\u94a5\u7ba1\u7406\u5668\uff0c\u56e0\u6b64\u65e0\u6cd5\u4e3a\u5165\u7ad9\u8fde\u63a5\u521b\u5efa SSL/TLS \u914d\u7f6e\u3002
+ssl.config.error.CWPKI0835E.explanation=\u914d\u7f6e\u4e2d\u53d1\u751f\u9519\u8bef\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u5bc6\u94a5\u7ba1\u7406\u5668\u3002
+ssl.config.error.CWPKI0835E.useraction=\u8bf7\u786e\u4fdd SSL \u914d\u7f6e\u5c5e\u6027\u662f\u6b63\u786e\u7684\u3002 \u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u4e86\u89e3\u4e0e SSL \u914d\u7f6e\u5c5e\u6027\u76f8\u5173\u8054\u7684\u9519\u8bef\u3002
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: \u65e0\u6cd5\u521b\u5efa SSL/TLS \u914d\u7f6e\uff0c\u56e0\u4e3a\u672a\u521b\u5efa\u5bc6\u94a5\u548c\u4fe1\u4efb\u7ba1\u7406\u5668\u3002
+ssl.config.error.CWPKI0836E.explanation=\u914d\u7f6e\u4e2d\u53d1\u751f\u9519\u8bef\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u5bc6\u94a5\u548c\u4fe1\u4efb\u7ba1\u7406\u5668\u3002
+ssl.config.error.CWPKI0836E.useraction=\u8bf7\u786e\u4fdd SSL \u914d\u7f6e\u5c5e\u6027\u662f\u6b63\u786e\u7684\u3002 \u8bf7\u67e5\u770b\u65e5\u5fd7\u4ee5\u4e86\u89e3\u4e0e SSL \u914d\u7f6e\u5c5e\u6027\u76f8\u5173\u8054\u7684\u9519\u8bef\u3002

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,21 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Assurez-vous que la r\u00e9pons
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Le client OpenID Connect {0} ne peut pas extraire d''informations sur le jeton d''acc\u00e8s depuis le noeud final UserInfo : {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Il se peut que la r\u00e9ponse du noeud final UserInfo ne soit pas dans un format attendu. Le client OpenID Connect peut avoir rencontr\u00e9 une erreur lors de la soumission de la demande UserInfo.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Consultez le message d'erreur pour plus d'informations. V\u00e9rifiez que le contenu de la r\u00e9ponse UserInfo correspond \u00e0 l'en-t\u00eate HTTP Content-Type.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: La demande de d\u00e9connexion de canal arri\u00e8re envoy\u00e9e \u00e0 [{0}] a rencontr\u00e9 une erreur. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=La requ\u00eate n'utilise pas la m\u00e9thode HTTP POST, la demande manque un jeton de d\u00e9connexion ou le jeton de d\u00e9connexion ne peut pas \u00eatre valid\u00e9, ou la demande de d\u00e9connexion n'a pas abouti.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=V\u00e9rifiez que la m\u00e9thode HTTP POST est utilis\u00e9e pour soumettre la demande de d\u00e9connexion de canal arri\u00e8re. Sinon, consultez l'action de l'utilisateur pour l'erreur incluse dans ce message.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: La demande de d\u00e9connexion de canal arri\u00e8re n'est pas valide car le param\u00e8tre logout_token est manquant ou vide.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=La demande de d\u00e9connexion de canal arri\u00e8re doit inclure un param\u00e8tre logout_token dont la valeur est un jeton de d\u00e9connexion valide.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Mettez \u00e0 jour la demande pour inclure un jeton de d\u00e9connexion.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: Le jeton de d\u00e9connexion dans la demande de d\u00e9connexion du canal arri\u00e8re ne peut pas \u00eatre valid\u00e9: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=Le jeton de d\u00e9connexion peut \u00eatre mal form\u00e9, le jeton peut \u00eatre dans un format inattendu ou une autre erreur s'est produite lors de la validation de la signature ou des revendications du jeton.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Reportez-vous \u00e0 l'action de l'utilisateur pour l'erreur incluse dans ce message.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: La demande de d\u00e9connexion de canal arri\u00e8re n'est pas valide car il n'existe pas de client OpenID Connect correspondant \u00e0 la demande.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=La fonction OpenID Connect s'attend \u00e0 ce que l'URI de demande du canal arri\u00e8re inclut un ID client OpenID Connect pour d\u00e9terminer le client \u00e0 d\u00e9connecter.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=V\u00e9rifiez que l'URI de la demande inclut l'ID client OpenID Connect \u00e0 utiliser pour la d\u00e9connexion de l'utilisateur.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

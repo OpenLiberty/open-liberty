@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Konfigurace poskytovatele OAuth {0} je neplatn\u00e1.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nelze z\u00edskat konfiguraci poskytovatele OAuth.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Zadejte platnou konfiguraci poskytovatele OAuth.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Nainstalujte verzi Java 8 nebo vy\u0161
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Token s typem ud\u011blen\u00ed [{0}] nen\u00ed povolen. Povolen\u00e9 typy ud\u011blen\u00ed jsou {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=Token nen\u00ed platn\u00fd, proto\u017ee jeho typ ud\u011blen\u00ed nen\u00ed povolen.
 WRONG_TOKEN_GRANTTYPE.useraction=Pou\u017eijte token s typem ud\u011blen\u00ed, kter\u00fd je povolen.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: Identifik\u00e1tor URI [{0}] pro pole metadat registrace klienta {1} je neplatn\u00fd, proto\u017ee obsahuje fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee identifik\u00e1tor URI nesm\u00ed obsahovat fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Zkontrolujte hodnotu vlastnosti v po\u017eadavku a odeberte fragment identifik\u00e1toru URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: Identifik\u00e1tor URI [{0}] pro pole metadat registrace klienta {1} je neplatn\u00fd, proto\u017ee nevyu\u017e\u00edv\u00e1 sch\u00e9ma HTTP nebo HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=Hodnota URI mus\u00ed pou\u017e\u00edvat sch\u00e9ma HTTP nebo HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Zkontrolujte hodnotu vlastnosti v po\u017eadavku a aktualizujte ji tak, aby pou\u017e\u00edvala sch\u00e9ma HTTP nebo HTTPS.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: Identifik\u00e1tor URI [{0}] pro pole metadat registrace klienta {1} je neplatn\u00fd, proto\u017ee pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP, ale klient OAuth [{2}] nen\u00ed d\u016fv\u011brn\u00fdm klientem.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=Hodnota identifik\u00e1toru URI pro pole metadat uveden\u00e1 ve zpr\u00e1v\u011b m\u016f\u017ee pou\u017e\u00edt sch\u00e9ma HTTP pouze v p\u0159\u00edpad\u011b, \u017ee klient OAuth je d\u016fv\u011brn\u00fdm klientem. Jinak se mus\u00ed pou\u017e\u00edt sch\u00e9ma HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Aktualizujte identifik\u00e1tor URI tak, aby pou\u017e\u00edval sch\u00e9ma HTTPS, nebo aktualizujte klienta OAuth na d\u016fv\u011brn\u00e9ho klienta.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Odhl\u00e1sit

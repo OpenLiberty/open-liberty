@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Solo per uso interno.
 ADD_ID.useraction=Non \u00e8 richiesta alcuna azione.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Un parametro di configurazione richiesto {0} ma
 INVALID_CONFIG_PARAM.explanation=Il codice di runtime del login social non ha trovato un parametro richiesto durante l'elaborazione della richiesta client.
 INVALID_CONFIG_PARAM.useraction=Controllare il parametro mancante nella configurazione e assicurarsi che sia specificato e corretto.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configurazione oidcLogin \u00e8 configurata per rilevare gli endpoint del provider OpenID Connect attraverso l'URL di rilevamento, ma il processo di rilevamento non \u00e8 riuscito. Il client non \u00e8 in grado di elaborare le richieste di autenticazione fino a quando la configurazione di discoveryEndpoint non viene corretta o il rilevamento ha esito positivo.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correggere la configurazione oidcLogin per assicurarsi che 1) l'URL dell'endpoint di rilevamento faccia riferimento al provider OpenID Connect corretto, 2) l'URL dell'endpoint di rilevamento sia HTTPS e 3) la funzione SSL e gli elementi keystore siano configurati correttamente con l'attendibilit\u00e0 per il provider OpenID Connect 4) assicurarsi che l'endpoint di rilevamento del provider OpenID Connect sia correttamente funzionante.
 
@@ -200,7 +200,7 @@ TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Verificare che la richiesta sia stata 
 # 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
 TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: La risposta dall''endpoint Twitter [{0}] non contiene uno o pi\u00f9 dei parametri richiesti. I parametri richiesti mancanti dalla risposta sono [{1}].
 TWITTER_RESPONSE_MISSING_PARAMETER.explanation=Le risposte da ogni endpoint Twitter restituiscono le proprie serie di parametri. La risposta Twitter ricevuta non contiene i parametri richiesti elencati nel messaggio. La richiesta iniziale potrebbe essere stata indirizzata all'endpoint errato.
-TWITTER_RESPONSE_MISSING_PARAMETER.useraction= Verificare che la richiesta sia stata indirizzata all'endpoint Twitter corretto. Verificare che tutti i parametri richiesti siano stati inclusi nella richiesta iniziale e che la richiesta sia stata autorizzata includendo un'intestazione Autorizzazione valida. Un'intestazione Autorizzazione valida viene creata utilizzando la chiave consumer per l'applicazione Twitter in aggiunta a un URL di callback o a un token richiesta OAuth. Controllare la configurazione del server per assicurarsi che siano configurati la chiave consumer e l'URL di callback corretti.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Verificare che la richiesta sia stata indirizzata all'endpoint Twitter corretto. Verificare che tutti i parametri richiesti siano stati inclusi nella richiesta iniziale e che la richiesta sia stata autorizzata includendo un'intestazione Autorizzazione valida. Un'intestazione Autorizzazione valida viene creata utilizzando la chiave consumer per l'applicazione Twitter in aggiunta a un URL di callback o a un token richiesta OAuth. Controllare la configurazione del server per assicurarsi che siano configurati la chiave consumer e l'URL di callback corretti.
 
 # 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
 TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Il valore del parametro [{0}] nella risposta dall''endpoint Twitter [{1}] non corrisponde al valore previsto [{2}]. Il valore nella risposta era [{3}].
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verificare che la configurazione J
 REQUEST_URL_NOT_VALID=CWWKS5499E: La funzione di login social non \u00e8 in grado di reindirizzare la risposta all''URL della richiesta originale [{0}] perch\u00e9 l''URL non \u00e8 valido. {1}
 REQUEST_URL_NOT_VALID.explanation=L'URL della richiesta originale non \u00e8 un URL valido. L'URL potrebbe contenere caratteri non validi oppure potrebbe avere un formato non corretto.
 REQUEST_URL_NOT_VALID.useraction=Verificare che l'URL della richiesta specificato nel messaggio sia corrispondente all'URL della richiesta alla risorsa protetta originale. Verificare che l'URL abbia un formato corretto e che contenga solo caratteri URI validi.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: La richiesta di disconnessione del backchannel inviata a [{0}] non \u00e8 supportata dalla configurazione di accesso ai social media [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=La configurazione di accesso ai social media non \u00e8 un client OpenID Connect, quindi non supporta la disconnessione del backchannel.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilizzare l'endpoint di disconnessione appropriato per la configurazione dell'accesso ai social media.
+

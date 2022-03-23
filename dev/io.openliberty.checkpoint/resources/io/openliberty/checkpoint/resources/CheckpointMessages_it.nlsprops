@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: \u00c8 stato richiesto un punto 
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=\u00c8 stato richiesto un punto di controllo. Il server viene arrestato e il relativo stato corrente viene scritto su disco.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultare la documentazione per i dettagli delle operazioni del punto di controllo e del ripristino.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le operazioni del server Liberty vengono riprese da un punto di controllo.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Il processo del server Liberty ha ripreso le operazioni da un checkpoint in {0} secondi.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=\u00c8 stata eseguita un'operazione di ripristino su un'immagine del punto di controllo del server Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Consultare la documentazione per i dettagli delle operazioni del punto di controllo e del ripristino.
 
