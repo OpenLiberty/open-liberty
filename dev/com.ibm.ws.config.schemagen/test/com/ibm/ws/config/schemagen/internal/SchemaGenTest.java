@@ -27,12 +27,13 @@ import org.junit.Test;
  */
 public class SchemaGenTest {
 
-    public static String WLP_BIN_DIR = "../build.image/wlp/bin";
-    public static String OUTPUT_FILE = "schemaGenOutput.xsd";
-    public static String HELP_OPTION = "-help";
-    public static String SCHEMAGEN_BAT = "./schemaGen.bat";
-    public static String SCHEMAGEN_LINUX_SCRIPT = "./schemaGen";
-    public static long TIMEOUT = 30_000_000_000L;  // 30-second timeout
+    public static final String WLP_BIN_DIR = "../build.image/wlp/bin";
+    public static final String OUTPUT_FILE = "schemaGenOutput.xsd";
+    public static final String HELP_OPTION = "-help";
+    public static final String SCHEMAGEN_BAT = "./schemaGen.bat";
+    public static final String SCHEMAGEN_LINUX_SCRIPT = "./schemaGen";
+    public static final long TIMEOUT = 30_000_000_000L;  // 30-second timeout
+    public static final int MAX_OUTPUT_LINES = 500;      // Reasonable limit to output to standard output by schemaGen
     public static final boolean IS_WINDOWS = isWindows();
 
     public static boolean isWindows() {
@@ -86,8 +87,12 @@ public class SchemaGenTest {
                     encodingAppears = true;
                 }
 
-                if ((lineCounter++ > 500) 
-                        || (System.nanoTime() - startTime >  TIMEOUT)) {
+                // Exit loop if we are getting hung
+                if (lineCounter++ > MAX_OUTPUT_LINES) {
+                    System.out.println("schemaGen usage info exceeded [ " + MAX_OUTPUT_LINES + " ] lines");
+                    break;
+                } else if (System.nanoTime() - startTime >  TIMEOUT) {
+                    System.out.println("SchemaGen exceeded [ " + TIMEOUT + " ] ns  when displaying usage Info");
                     break;
                 }
             }
@@ -145,8 +150,12 @@ public class SchemaGenTest {
                     encodingAppears = true;
                 }
 
-                if ((lineCounter++ > 500) 
-                        || (System.nanoTime() - startTime >  TIMEOUT)) {
+                // Exit loop if we are getting hung
+                if (lineCounter++ > MAX_OUTPUT_LINES) {
+                    System.out.println("schemaGen help exceeded [ " + MAX_OUTPUT_LINES + " ] lines");
+                    break;
+                } else if (System.nanoTime() - startTime >  TIMEOUT) {
+                    System.out.println("schemaGen exceeded [ " + TIMEOUT + " ] ns when displaying help");
                     break;
                 }
             }
