@@ -369,7 +369,7 @@ public class FailoverServlet extends FATServlet {
 
             // Construct the UPDATE string
             String updateString = "UPDATE WAS_LEASES_LOG" +
-                                  " SET LEASE_TIME = ?, LEASE_OWNER = ?" +
+                                  " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
                                   " WHERE SERVER_IDENTITY='cloudstale'";
 
             System.out.println("insertStaleLease: update lease for cloudstale");
@@ -378,8 +378,9 @@ public class FailoverServlet extends FATServlet {
 
             // Set the Lease_time
             long fir1 = System.currentTimeMillis() - (1000 * 300);
-            claimPeerUpdateStmt.setLong(1, fir1);
-            claimPeerUpdateStmt.setString(2, "cloudstale");
+            claimPeerUpdateStmt.setString(1, "cloudstale");
+            claimPeerUpdateStmt.setLong(2, fir1);
+
             System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
 
             int ret = claimPeerUpdateStmt.executeUpdate();

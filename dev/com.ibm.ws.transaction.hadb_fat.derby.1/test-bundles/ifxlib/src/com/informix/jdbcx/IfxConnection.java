@@ -327,7 +327,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
@@ -353,7 +353,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
@@ -379,7 +379,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
@@ -405,7 +405,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
@@ -434,7 +434,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
@@ -461,7 +461,7 @@ public class IfxConnection implements Connection {
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
             System.out.println("SIMHADB: This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
-        } else if (sql.contains("UPDATE WAS_LEASES_LOG")) {
+        } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
                 System.out.println("SIMHADB: This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
