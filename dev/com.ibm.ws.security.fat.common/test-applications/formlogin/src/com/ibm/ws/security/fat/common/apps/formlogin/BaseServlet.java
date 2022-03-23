@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,10 +48,11 @@ public abstract class BaseServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        if ("CUSTOM".equalsIgnoreCase(req.getMethod()))
+        if ("CUSTOM".equalsIgnoreCase(req.getMethod())) {
             doCustom(req, res);
-        else
+        } else {
             super.service(req, res);
+        }
     }
 
     @Override
@@ -245,7 +246,7 @@ public abstract class BaseServlet extends HttpServlet {
      *            Message to write
      */
     protected void writeLine(StringBuffer sb, String msg) {
-        sb.append(msg + "\n");
+        sb.append(msg + System.getProperty("line.separator"));
     }
 
 }
