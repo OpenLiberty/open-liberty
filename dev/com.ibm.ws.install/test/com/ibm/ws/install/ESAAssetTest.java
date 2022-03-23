@@ -140,6 +140,11 @@ public class ESAAssetTest {
 
             esaAsset.delete();
             if (!InstallUtils.isWindows) {
+                /*
+                 * On Windows there are issues with file locks. The ESAAsset logic detects these issues and corrects them by setting the file to be deleted on JVM exit.
+                 * This file will exist on Windows after esaAsset.delete() is run. Block this check on Windows to prevent the test from failing due to a known issue with
+                 * Windows file locking.
+                 */
                 assertFalse("ESAAsset should be deleted", esaFile.exists());
             }
 
