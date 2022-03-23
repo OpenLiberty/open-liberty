@@ -22,10 +22,8 @@ import java.io.InputStreamReader;
 
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 /**
- *
+ *  Tests the schemaGen command that exists in the wlp/bin directory.
  */
 public class SchemaGenTest {
 
@@ -34,17 +32,31 @@ public class SchemaGenTest {
     public static String HELP_OPTION = "-help";
     public static String SCHEMAGEN_BAT = "./schemaGen.bat";
     public static String SCHEMAGEN_LINUX_SCRIPT = "./schemaGen";
+    public static long TIMEOUT = 30_000_000_000L;  // 30-second timeout
+    public static final boolean IS_WINDOWS = isWindows();
 
+    public static boolean isWindows() {
+        String os = System.getProperty("os.name");
+        if (os.startsWith("Win")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Test that when no parameters are passed, only basic usage info is displayed
+     * @throws IOException
+     */
     @Test
-    public void testSchemaGenNoParms() {
-        System.out.println("==================== testSchemaGenNoParms ...");
+    public void testSchemaGenNoParms() throws IOException {
+        System.out.println("==== testSchemaGenNoParms ====");
 
         ProcessBuilder pb;
         Process p = null;
         
         try {
             
-            if (isWindows()) {
+            if (IS_WINDOWS) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT);
             } else {
                 pb = new ProcessBuilder(SCHEMAGEN_LINUX_SCRIPT);
@@ -61,25 +73,21 @@ public class SchemaGenTest {
             boolean encodingAppears = false;
                     
             long startTime = System.nanoTime();
-            long currentTime;
-            long elapsedTime;
             int lineCounter = 0;
 
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
+                
                 if (line.indexOf("Usage") != -1) {
                     usageAppears = true;
                 }
+                
                 if (line.indexOf("--encoding") != -1) {
                     encodingAppears = true;
                 }
 
-                currentTime = System.nanoTime();
-                elapsedTime = currentTime - startTime;
-                if (elapsedTime >  3_000_000_000L) {   // 3 second timeout
-                    break;
-                }
-                if (lineCounter++ > 500) {
+                if ((lineCounter++ > 500) 
+                        || (System.nanoTime() - startTime >  TIMEOUT)) {
                     break;
                 }
             }
@@ -88,9 +96,6 @@ public class SchemaGenTest {
             assertFalse("'--encoding' should NOT appear in command output when no arguments passed.", encodingAppears);
             System.out.println("PASSED");
             
-        } catch (IOException ioe) {
-            System.out.println("Caught exception [" + ioe.getMessage() + "]");
-            ioe.printStackTrace();
         } finally {
             if ( p!= null) {
                 p.destroy();
@@ -98,15 +103,19 @@ public class SchemaGenTest {
         }
     }
     
+    /**
+     * Test that when -help parameter is passed that help and usage information is displayed.
+     * @throws IOException
+     */
     @Test
-    public void testSchemaGenHelp() {
-        System.out.println("==================== testSchemaGenHelp ...");
+    public void testSchemaGenHelp() throws IOException {
+        System.out.println("==== testSchemaGenHelp ====");
 
         ProcessBuilder pb;
         Process p = null;
         try {
 
-            if (isWindows()) {
+            if (IS_WINDOWS) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT, HELP_OPTION);
             } else {
                 pb = new ProcessBuilder(SCHEMAGEN_LINUX_SCRIPT, HELP_OPTION);
@@ -122,14 +131,23 @@ public class SchemaGenTest {
             boolean usageAppears = false;     
             boolean encodingAppears = false;
 
-
+            long startTime = System.nanoTime();
+            int lineCounter = 0;
+            
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
+                
                 if (line.indexOf("Usage") != -1) {
                     usageAppears = true;
                 }
+                
                 if (line.indexOf("--encoding") != -1) {
                     encodingAppears = true;
+                }
+
+                if ((lineCounter++ > 500) 
+                        || (System.nanoTime() - startTime >  TIMEOUT)) {
+                    break;
                 }
             }
             
@@ -137,9 +155,6 @@ public class SchemaGenTest {
             assertTrue("'--encoding' should appear in command output when " + HELP_OPTION + " is passed.", encodingAppears);
             System.out.println("PASSED");
                     
-        } catch (IOException ioe) {
-            System.out.println("Caught exception [" + ioe.getMessage() + "]");
-            ioe.printStackTrace();
         } finally {
             if ( p!= null) {
                 p.destroy();
@@ -147,14 +162,18 @@ public class SchemaGenTest {
         }
     }
     
+    /**
+     * Test that when an output file is specified as parameter that the output file is created.
+     * @throws IOException
+     */
     @Test
-    public void testSchemaGenOutput() {
-        System.out.println("==================== testSchemaGenOutput ...");
+    public void testSchemaGenOutput() throws IOException {
+        System.out.println("==== testSchemaGenOutput ====");
 
         ProcessBuilder pb;
         Process p = null;
         try {
-            if (isWindows()) {
+            if (IS_WINDOWS) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT,  OUTPUT_FILE);
             } else {
                 pb = new ProcessBuilder(SCHEMAGEN_LINUX_SCRIPT,  OUTPUT_FILE);
@@ -167,38 +186,18 @@ public class SchemaGenTest {
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             
             // The command should not generate any output to stdio or stderr
-
             assertNull("Stream should be null", br.readLine());
             
+            // It should, however, generate the output file.
             File outputFile = new File(WLP_BIN_DIR + "/" + OUTPUT_FILE);        
             assertTrue("File [" + outputFile.getName() + "] should exist.", outputFile.exists());
-            outputFile.delete();
+            outputFile.delete();  // clean up
             System.out.println("PASSED");
-            
-            //        // Display WLP_BIN_DIR directory listing
-            //        File f = new File(WLP_BIN_DIR);
-            //        String[] files = f.list();
-            //        Arrays.sort(files);
-            //        for (String s : files) {
-            //            System.out.println("   " + s);
-            //        }
 
-        } catch (IOException ioe) {
-            System.out.println("Caught exception [" + ioe.getMessage() + "]");
-            ioe.printStackTrace();
         } finally {
             if ( p!= null) {
                 p.destroy();
             }
         }
     }
-
-    public boolean isWindows() {
-        String os = System.getProperty("os.name");
-        if (os.startsWith("Win")) {
-            return true;
-        }
-        return false;
-    }
-
 }
