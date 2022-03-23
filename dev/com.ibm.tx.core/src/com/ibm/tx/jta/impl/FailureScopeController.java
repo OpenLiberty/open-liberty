@@ -32,7 +32,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryLog;
 public class FailureScopeController {
     private static final TraceComponent tc = Tr.register(FailureScopeController.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    protected FailureScope _failureScope;
+    volatile protected FailureScope _failureScope;
     protected String _serverName;
 
     protected RecoveryLog _tranLog;
@@ -64,8 +64,7 @@ public class FailureScopeController {
 
     protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors().get() > SMP_THRESH;
 
-    protected FailureScopeController() {
-    }
+    protected FailureScopeController() {}
 
     @SuppressWarnings("unused")
     public FailureScopeController(FailureScope fs) throws SystemException {
@@ -164,7 +163,7 @@ public class FailureScopeController {
 
     public void shutdown(boolean immediate) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutdown", new Object[] { this, Boolean.valueOf(immediate) });
+            Tr.entry(tc, "shutdown", new Object[] { this, _failureScope, Boolean.valueOf(immediate) });
 
         // As long as we are not being requested to perform an immediate shutdown and recovery
         // processing was not prevented in the first place, perform the shutdown logic.
