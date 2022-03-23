@@ -39,8 +39,11 @@ public class SchemaGenTest {
     public void testSchemaGenNoParms() {
         System.out.println("==================== testSchemaGenNoParms ...");
 
+        ProcessBuilder pb;
+        Process p = null;
+        
         try {
-            ProcessBuilder pb;
+            
             if (isWindows()) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT);
             } else {
@@ -49,7 +52,7 @@ public class SchemaGenTest {
 
             File dir = new File(WLP_BIN_DIR);
             pb.directory(dir);
-            Process p = pb.start();
+            p = pb.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
@@ -57,15 +60,27 @@ public class SchemaGenTest {
             boolean usageAppears = false;     
             boolean encodingAppears = false;
                     
-            if (p.isAlive()) {
-                while ((line = br.readLine()) != null) {
-                    System.out.println(line);
-                    if (line.indexOf("Usage") != -1) {
-                        usageAppears = true;
-                    }
-                    if (line.indexOf("--encoding") != -1) {
-                        encodingAppears = true;
-                    }
+            long startTime = System.nanoTime();
+            long currentTime;
+            long elapsedTime;
+            int lineCounter = 0;
+
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                if (line.indexOf("Usage") != -1) {
+                    usageAppears = true;
+                }
+                if (line.indexOf("--encoding") != -1) {
+                    encodingAppears = true;
+                }
+
+                currentTime = System.nanoTime();
+                elapsedTime = currentTime - startTime;
+                if (elapsedTime >  3_000_000_000L) {   // 3 second timeout
+                    break;
+                }
+                if (lineCounter++ > 500) {
+                    break;
                 }
             }
             
@@ -76,6 +91,10 @@ public class SchemaGenTest {
         } catch (IOException ioe) {
             System.out.println("Caught exception [" + ioe.getMessage() + "]");
             ioe.printStackTrace();
+        } finally {
+            if ( p!= null) {
+                p.destroy();
+            }
         }
     }
     
@@ -83,8 +102,10 @@ public class SchemaGenTest {
     public void testSchemaGenHelp() {
         System.out.println("==================== testSchemaGenHelp ...");
 
+        ProcessBuilder pb;
+        Process p = null;
         try {
-            ProcessBuilder pb;
+
             if (isWindows()) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT, HELP_OPTION);
             } else {
@@ -93,7 +114,7 @@ public class SchemaGenTest {
 
             File dir = new File(WLP_BIN_DIR);
             pb.directory(dir);
-            Process p = pb.start();
+            p = pb.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
@@ -101,15 +122,14 @@ public class SchemaGenTest {
             boolean usageAppears = false;     
             boolean encodingAppears = false;
 
-            if (p.isAlive()) {
-                while ((line = br.readLine()) != null) {
-                    System.out.println(line);
-                    if (line.indexOf("Usage") != -1) {
-                        usageAppears = true;
-                    }
-                    if (line.indexOf("--encoding") != -1) {
-                        encodingAppears = true;
-                    }
+
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                if (line.indexOf("Usage") != -1) {
+                    usageAppears = true;
+                }
+                if (line.indexOf("--encoding") != -1) {
+                    encodingAppears = true;
                 }
             }
             
@@ -120,6 +140,10 @@ public class SchemaGenTest {
         } catch (IOException ioe) {
             System.out.println("Caught exception [" + ioe.getMessage() + "]");
             ioe.printStackTrace();
+        } finally {
+            if ( p!= null) {
+                p.destroy();
+            }
         }
     }
     
@@ -127,8 +151,9 @@ public class SchemaGenTest {
     public void testSchemaGenOutput() {
         System.out.println("==================== testSchemaGenOutput ...");
 
+        ProcessBuilder pb;
+        Process p = null;
         try {
-            ProcessBuilder pb;
             if (isWindows()) {
                 pb = new ProcessBuilder("cmd", "/c", SCHEMAGEN_BAT,  OUTPUT_FILE);
             } else {
@@ -137,14 +162,13 @@ public class SchemaGenTest {
 
             File dir = new File(WLP_BIN_DIR);
             pb.directory(dir);
-            Process p = pb.start();
+            p = pb.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             
             // The command should not generate any output to stdio or stderr
-            if (p.isAlive()) {
-                assertNull("Stream should be null", br.readLine());
-            }
+
+            assertNull("Stream should be null", br.readLine());
             
             File outputFile = new File(WLP_BIN_DIR + "/" + OUTPUT_FILE);        
             assertTrue("File [" + outputFile.getName() + "] should exist.", outputFile.exists());
@@ -162,6 +186,10 @@ public class SchemaGenTest {
         } catch (IOException ioe) {
             System.out.println("Caught exception [" + ioe.getMessage() + "]");
             ioe.printStackTrace();
+        } finally {
+            if ( p!= null) {
+                p.destroy();
+            }
         }
     }
 
