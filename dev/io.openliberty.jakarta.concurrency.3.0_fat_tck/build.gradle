@@ -12,6 +12,7 @@
 configurations {
   testNG { transitive = false; }
   arquillian
+  sigtest
   wlp
 }
 
@@ -21,6 +22,8 @@ dependencies {
 	       'org.apache-extras.beanshell:bsh:2.0b6'
 
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.2'
+
+  sigtest 'org.netbeans.tools:sigtest-maven-plugin:1.6'
 
   //TODO configure WLP dependency, Examples (may not be valid):
   //wlp 'io.openliberty.beta:openliberty-jakartaee10:22.0.0.3-beta@zip'
@@ -36,9 +39,16 @@ task copyTestNG(type: Copy) {
   rename 'bsh-.*.jar', 'bsh.jar'
 }
 
+task copySigtest(type: Copy) {
+  mustRunAfter jar
+  from configurations.sigtest
+  into new File(autoFvtDir, 'publish/shared/resources/sigtest')
+  rename 'sigtest-maven-plugin-.*.jar', 'sigtest-maven-plugin.jar'
+}
+
 addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn copyTestNG
-
+addRequiredLibraries.dependsOn copySigtest
 
 // These tasks are used only for external users who do not want to build all of liberty to run TCK
 task getWLP(type: Copy) {

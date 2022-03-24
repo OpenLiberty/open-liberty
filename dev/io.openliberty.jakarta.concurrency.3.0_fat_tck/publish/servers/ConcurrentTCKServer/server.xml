@@ -52,11 +52,13 @@
     <library id="global">
                <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
                <fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/sigtest" includes="sigtest-maven-plugin.jar"/>
     </library>
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>
 
     <!-- Ensure JSP can handle lamdas -->
     <jspEngine jdkSourceLevel="18"/>
