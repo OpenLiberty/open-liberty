@@ -221,3 +221,7 @@ BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=See the exception that 
 #
 # NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
 #
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1950: The {0} OpenID Connect provider encountered an error while building or sending a back-channel logout request to {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=There was a problem with the HTTP connection, or the connection was aborted.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=See the exception that is included in the message. Send another logout request to retry the back-channel logout.

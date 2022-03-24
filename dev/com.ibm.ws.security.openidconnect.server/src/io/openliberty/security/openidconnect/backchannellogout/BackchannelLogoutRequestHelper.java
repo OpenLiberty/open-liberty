@@ -22,7 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -83,7 +84,7 @@ public class BackchannelLogoutRequestHelper {
         for (Entry<OidcBaseClient, List<String>> entry : clientsAndLogoutTokens.entrySet()) {
             OidcBaseClient client = entry.getKey();
             for (String logoutToken : entry.getValue()) {
-                BackchannelLogoutRequest request = new BackchannelLogoutRequest(client.getBackchannelLogoutUri(), logoutToken);
+                BackchannelLogoutRequest request = new BackchannelLogoutRequest(oidcServerConfig, client.getBackchannelLogoutUri(), logoutToken);
                 requests.add(request);
             }
         }
@@ -122,7 +123,13 @@ public class BackchannelLogoutRequestHelper {
         try {
             BackchannelLogoutRequest result = future.get();
             JwtClaims logoutTokenClaims = getLogoutTokenClaims(result);
-            CloseableHttpResponse response = result.getResponse();
+            HttpResponse response = result.getResponse();
+            if (response == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to obtain a response from request to " + originalRequest.getUrl());
+                }
+                return;
+            }
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 200) {
                 String responseBody = readResponseBody(response);
@@ -150,10 +157,12 @@ public class BackchannelLogoutRequestHelper {
     }
 
     @FFDCIgnore(Exception.class)
-    private String readResponseBody(CloseableHttpResponse response) {
+    private String readResponseBody(HttpResponse response) {
         String responseBody = null;
         try {
-            responseBody = EntityUtils.toString(response.getEntity());
+            HttpEntity responseEntity = response.getEntity();
+            responseBody = EntityUtils.toString(responseEntity);
+            EntityUtils.consume(responseEntity);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to read response body: " + e);
