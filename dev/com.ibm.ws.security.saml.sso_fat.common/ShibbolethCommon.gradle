@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-  
+
 task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
   doLast {
     println 'in copyShibbolethServer'
@@ -64,17 +64,16 @@ task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble
       include "*.jks", "*.arm"
     }
   }
-  
 }
 
 task copyShibKeys () {
-   doLast {
-     copy {
+  doLast {
+    copy {
       from project(':com.ibm.ws.security.saml.sso_fat.common').projectDir
       into autoFvtDir
       include 'securitykeys/**'
-     }
-   }
+    }
+  }
 }
 
 task copyApache () {
@@ -87,13 +86,11 @@ task copyApache () {
       into autoFvtDir
       include 'apacheds-2.0.0-M15/**'
     }
-  }  
+  }
 }
 
 task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyShibKeys']) {
-
   doLast {
-
     copy {
       from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
       into autoFvtDir
@@ -101,4 +98,3 @@ task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assem
     }
   }
 }
-  
