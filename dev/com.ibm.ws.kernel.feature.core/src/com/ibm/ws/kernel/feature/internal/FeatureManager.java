@@ -55,6 +55,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
 import org.osgi.framework.namespace.ExecutionEnvironmentNamespace;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleCapability;
@@ -88,6 +90,7 @@ import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.BundleList.RuntimeFeatureResource;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.subsystem.KernelFeatureDefinitionImpl;
@@ -2491,9 +2494,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         refreshFeatures();
     }
 
-    boolean missingRequiredJava(FeatureResource fr) {
-        Integer requiredJava = fr.getRequireJava();
-        return requiredJava == null ? false : JavaInfo.majorVersion() < requiredJava;
+    public boolean withinJavaRange(FeatureResource fr) {
+        VersionRange range = fr.getJavaRange();
+        return range == null ? true : range.includes(new Version(Integer.toString(JavaInfo.majorVersion())));
     }
 
 }
