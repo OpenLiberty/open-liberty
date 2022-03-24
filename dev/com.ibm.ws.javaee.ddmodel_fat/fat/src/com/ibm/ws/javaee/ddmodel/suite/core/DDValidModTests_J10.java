@@ -15,11 +15,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 @Mode(TestMode.LITE)
 public class DDValidModTests_J10 extends CommonTests_Core {
     public static final Class<?> TEST_CLASS = DDValidModTests_J10.class;
