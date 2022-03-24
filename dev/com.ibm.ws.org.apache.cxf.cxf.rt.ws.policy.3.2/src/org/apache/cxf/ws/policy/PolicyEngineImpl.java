@@ -80,6 +80,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
     private boolean addedBusInterceptors;
     private AlternativeSelector alternativeSelector;
     
+ // Liberty change begin migration of behaviour from CXF 2.6.2
     private static boolean ignoreUnsupportedPolicy;
     
     static {
@@ -94,7 +95,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         } else {
             ignoreUnsupportedPolicy = false;
         }
-    }
+    } // Liberty change end
 
 
     public PolicyEngineImpl() {
@@ -666,13 +667,14 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                     if (s.isEmpty()) {
                         if (doLog) {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
+                            // Liberty change begin migration of behaviour from CXF 2.6.2
                             if (ignoreUnsupportedPolicy) {
                                 LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
                                     + "property cxf.ignore.unsupported.policy is set to true.");
                                 return true;
                             } else {
                                 return false;
-                            }
+                            } // Liberty change end
                         }
                         return false;
                     }

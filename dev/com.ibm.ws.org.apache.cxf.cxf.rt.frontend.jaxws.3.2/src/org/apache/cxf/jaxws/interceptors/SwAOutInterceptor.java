@@ -85,7 +85,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
     private static final Set<String> SWA_REF_NO_METHOD
         = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>(4, 0.75f, 2));
 
-//  Begin copied over from CXF 2.6.2
+//  Liberty change begin migration of behaviour from CXF 2.6.2
     private static boolean skipHasSwaRef;
     
     static {
@@ -101,7 +101,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             skipHasSwaRef = false;
         }
 
-    }// End copied over from CXF 2.6.2
+    }// Liberty change end
     
     AttachmentOutInterceptor attachOut = new AttachmentOutInterceptor();
 
@@ -162,13 +162,13 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         if (bmi == null) {
             return;
         }
-//      Begin copied over from CXF 2.6.2
+//      Liberty change begin migration of behaviour from CXF 2.6.2
         Boolean newAttachment = false;
         Message exOutMsg = ex.getOutMessage();
         if (exOutMsg != null) {
             newAttachment = MessageUtils.isTrue(exOutMsg.getContextualProperty("cxf.add.attachments"));
             LOG.log(Level.FINE, "Request context attachment property: cxf.add.attachments is set to: " + newAttachment);
-        } //      End copied over from CXF 2.6.2
+        } //      Liberty change end
         
         SoapBodyInfo sbi = bmi.getExtensor(SoapBodyInfo.class);
 
@@ -177,6 +177,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
             DataBinding db = s.getDataBinding();
             if (db instanceof JAXBDataBinding
                 && hasSwaRef((JAXBDataBinding) db)) {
+            	// Liberty change begin migration of behaviour from CXF 2.6.2
                 Boolean includeAttachs = false;
                 Message exInpMsg = ex.getInMessage();
                 LOG.log(Level.FINE, "Exchange Input message: " + exInpMsg);
@@ -188,7 +189,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
                     setupAttachmentOutput(message);
                 } else {
                     skipAttachmentOutput(message);
-                }  
+                }  // Liberty change end
             }
             return;
         }
@@ -366,7 +367,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         return atts;
     }
     
-//  Begin copied over from CXF 2.6.2
+//  Liberty change begin migration of behaviour from CXF 2.6.2
     private Collection<Attachment> skipAttachmentOutput(SoapMessage message) {
 
         Collection<Attachment> atts = message.getAttachments();
@@ -384,5 +385,5 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         }               
         
         return atts;
-    }// End copied over from CXF 2.6.2
+    }// Liberty change end
 }
