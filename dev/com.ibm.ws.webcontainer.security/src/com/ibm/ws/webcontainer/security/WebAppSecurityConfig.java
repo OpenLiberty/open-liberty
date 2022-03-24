@@ -152,4 +152,9 @@ public interface WebAppSecurityConfig {
     String getBasicAuthRealmName();
 
     String getSameSiteCookie();
+
+    /**
+     * Returns the value of useContextRootAsCookiePath
+     */
+    boolean isUseContextRootAsCookiePath();
 }

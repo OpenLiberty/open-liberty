@@ -71,6 +71,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     public static final String CFG_KEY_SAME_SITE_COOKIE = "sameSiteCookie";
+    public static final String CFG_KEY_USE_CONTEXT_ROOT_AS_COOKIE_PATH = "useContextRootAsCookiePath";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -102,6 +103,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String sameSiteCookie;
+    private final Boolean useContextRootAsCookiePath;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -141,6 +143,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
+            put(CFG_KEY_USE_CONTEXT_ROOT_AS_COOKIE_PATH, "useContextRootAsCookiePath");
 
         }
     };
@@ -185,6 +188,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
+        useContextRootAsCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_AS_COOKIE_PATH);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -584,5 +588,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public String getSameSiteCookie() {
         return sameSiteCookie;
+    }
+
+    @Override
+    public boolean isUseContextRootAsCookiePath() {
+        return useContextRootAsCookiePath;
     }
 }

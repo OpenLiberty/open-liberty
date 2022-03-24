@@ -54,6 +54,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
     private final String sameSiteCookie = "Disabled";
+    private final Boolean useContextRootAsCookiePath = false;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -303,5 +304,10 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
         else
             return sameSiteCookie;
+    }
+
+    @Override
+    public boolean isUseContextRootAsCookiePath() {
+        return useContextRootAsCookiePath;
     }
 }

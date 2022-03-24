@@ -42,9 +42,11 @@ import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 /**
  * Single sign-on cookie helper class.
@@ -151,8 +153,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure) {
         Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
+        String contextRoot = getContextRoot();
         //The path has to be "/" so we will not have multiple cookies in the same domain
-        ssoCookie.setPath("/");
+        ssoCookie.setPath(contextRoot);
         ssoCookie.setSecure(isSecure);
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
 
@@ -172,6 +175,19 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         }
 
         return ssoCookie;
+    }
+
+    /**
+     * @param contextRoot
+     * @return
+     */
+    private String getContextRoot() {
+        String ctRoot = "/";
+        if (config.isUseContextRootAsCookiePath()) {
+            WebAppConfig webapp = WebConfigUtils.getWebAppConfig();
+            ctRoot = webapp.getContextRoot();
+        }
+        return ctRoot;
     }
 
     /**
@@ -334,7 +350,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                                          java.util.ArrayList<Cookie> cookieList) {
         Cookie c = new Cookie(cookieName, "");
         c.setMaxAge(0);
-        c.setPath("/");
+        String contextRoot = getContextRoot();
+        c.setPath(contextRoot);
         c.setSecure(req.isSecure());
         if (config.getHttpOnlyCookies()) {
             c.setHttpOnly(true);
@@ -654,7 +671,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void removeBrowserStateCookie(HttpServletRequest req, HttpServletResponse res) {
         Cookie c = new Cookie(OIDC_BROWSER_STATE_COOKIE, "");
         c.setMaxAge(0);
-        c.setPath("/");
+        String contextRoot = getContextRoot();
+        c.setPath(contextRoot);
         c.setSecure(req.isSecure());
         res.addCookie(c);
     }

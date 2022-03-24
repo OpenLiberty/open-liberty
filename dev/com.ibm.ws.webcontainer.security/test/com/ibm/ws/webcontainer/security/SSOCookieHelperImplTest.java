@@ -176,6 +176,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootAsCookiePath();
             }
         });
         Subject subject = new Subject();
@@ -201,6 +202,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootAsCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -227,6 +229,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootAsCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -495,6 +498,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
+                one(config).isUseContextRootAsCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
@@ -520,6 +524,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
+                one(config).isUseContextRootAsCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
