@@ -2939,7 +2939,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509AsymThumbprintMigService() throws Exception {
         String thisMethod = "testCxfX509AsymThumbprintMigService";
         methodFull = "testBadCxfX509AsymThumbprintMigService";
@@ -2970,7 +2969,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509AsymProtectTokensMigService() throws Exception {
         String thisMethod = "testCxfX509AsymProtectTokensMigService";
         methodFull = "testBadCxfX509AsymProtectTokensMigService";
@@ -3032,7 +3030,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509TransportEndrosingSP11MigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingSP11MigService";
         methodFull = "testBadCxfX509TransportEndorsingSP11MigServiceHttps";
@@ -3154,7 +3151,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509TransportSupportingSignedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSupportingSignedMigService";
         methodFull = "testBadCxfX509TransportSupportingSignedMigServiceHttps";
@@ -3184,7 +3180,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509TransportKVTMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportKVTMigService";
         methodFull = "testBadCxfX509TransportKVTMigServiceHttps";
@@ -3245,7 +3240,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509AsymmetricSignatureSP11MigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureSP11MigService";
         methodFull = "testBadCxfX509AsymmetricSignatureSP11MigService";
@@ -3276,7 +3270,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadCxfX509AsymmetricEncryptionMigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricEncryptionMigService";
         methodFull = "testBadCxfX509AsymmetricEncryptionMigService";
@@ -3324,7 +3317,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadWsComplexService() throws Exception {
         String thisMethod = "testBadWsComplexService";
         methodFull = "testBadWsComplexService";
@@ -3456,7 +3448,6 @@ public class CxfX509MigTests {
      *
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.cxf.ws.policy.PolicyException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadAsymSignatureConfirmService() throws Exception {
         String thisMethod = "testBadAsymSignatureConfirmService";
         methodFull = "testBadAsymSignatureConfirmService";
