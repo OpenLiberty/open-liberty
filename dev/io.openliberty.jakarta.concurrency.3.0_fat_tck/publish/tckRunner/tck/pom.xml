@@ -23,7 +23,7 @@
         <!-- TODO: Update this once TCK is GAed -->
         <jakarta.concurrent.tck.version>3.0.0.20220126</jakarta.concurrent.tck.version>
         
-        <arquillian.version>1.6.0.Final</arquillian.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
         
         <testng.version>6.14.3</testng.version>

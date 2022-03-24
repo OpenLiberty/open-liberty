@@ -20,7 +20,7 @@ dependencies {
 	       'com.beust:jcommander:1.78',
 	       'org.apache-extras.beanshell:bsh:2.0b6'
 
-  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.1'
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.2'
 
   //TODO configure WLP dependency, Examples (may not be valid):
   //wlp 'io.openliberty.beta:openliberty-jakartaee10:22.0.0.3-beta@zip'
