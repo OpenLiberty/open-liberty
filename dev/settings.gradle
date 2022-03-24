@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import org.apache.tools.ant.DirectoryScanner
+
 pluginManagement {
   /**
    * Load properties before initializing in order to use credentials to configure repositories.
@@ -186,6 +188,9 @@ if (!JavaVersion.current().isJava11Compatible()) {
         throw new GradleException('Current Java version is not 11 or higher.')
 
 }
+
+//DirectoryScanner.removeDefaultExclude("**/.gitignore")
+//DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 apply from: 'wlp-gradle/propertiesSettings.gradle'
 apply from: 'wlp-gradle/bndSettings.gradle'

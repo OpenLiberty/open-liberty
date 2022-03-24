@@ -12,8 +12,8 @@ sourceCompatibility = 1.8
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
 }
 
 bootJar {
