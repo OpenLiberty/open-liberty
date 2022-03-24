@@ -226,3 +226,7 @@ BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=See the error that is included i
 BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: The {0} OpenID Connect provider encountered an error while submitting back-channel logout requests: {1}
 BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Sending requests to the back-channel logout URIs was interrupted, or another error occurred while scheduling the requests for execution.
 BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=See the error that is included in the message. Send another logout request to retry the back-channel logout.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: The {0} OpenID Connect provider encountered an error while building or sending a back-channel logout request to {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=There was a problem with the HTTP connection, or the connection was aborted.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=See the error that is included in the message. Send another logout request to retry the back-channel logout.

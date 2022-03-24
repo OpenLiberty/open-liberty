@@ -10,23 +10,27 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.openidconnect.server.internal.OidcServerConfigImpl;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 public class BackchannelLogoutRequest implements Callable<BackchannelLogoutRequest> {
 
@@ -34,13 +38,15 @@ public class BackchannelLogoutRequest implements Callable<BackchannelLogoutReque
 
     public static final String LOGOUT_TOKEN_PARAM_NAME = "logout_token";
 
+    private final OidcServerConfigImpl oidcServerConfig;
     private final String url;
     private final String logoutToken;
-    private CloseableHttpResponse response;
+    private HttpResponse response = null;
 
     private final HttpUtils httpUtils = new HttpUtils();
 
-    public BackchannelLogoutRequest(String url, String logoutToken) {
+    public BackchannelLogoutRequest(OidcServerConfig oidcServerConfig, String url, String logoutToken) {
+        this.oidcServerConfig = (OidcServerConfigImpl) oidcServerConfig;
         this.url = url;
         this.logoutToken = logoutToken;
     }
@@ -53,36 +59,56 @@ public class BackchannelLogoutRequest implements Callable<BackchannelLogoutReque
         return logoutToken;
     }
 
-    public CloseableHttpResponse getResponse() {
+    public HttpResponse getResponse() {
         return response;
     }
 
     @Override
     public BackchannelLogoutRequest call() throws Exception {
-        CloseableHttpClient httpClient = null;
         try {
-            HttpPost httpPost = httpUtils.createHttpPostMethod(url, null);
-            HttpEntity entity = getHttpEntity();
-            httpPost.setEntity(entity);
-            // TODO
-            httpClient = HttpClients.createDefault();
+            HttpClient httpClient = createHttpClient();
+            if (httpClient == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to create an HttpClient for back-channel logout request to " + url + " with logout token " + logoutToken);
+                }
+                return this;
+            }
+            HttpPost httpPost = createHttpPost();
             response = httpClient.execute(httpPost);
         } catch (Exception e) {
-            // TODO
-            // ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=The OpenID Connect server encountered an error while building or sending a back-channel logout request to {0}: {1}
+            Tr.error(tc, "ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST", oidcServerConfig.getProviderId(), url, e);
             throw e;
-        } finally {
-            if (httpClient != null) {
-                httpClient.close();
-            }
         }
         return this;
     }
 
-    private HttpEntity getHttpEntity() throws UnsupportedEncodingException {
+    HttpClient createHttpClient() {
+        SSLSocketFactory sslSocketFactory = null;
+        if (url.startsWith("https:")) {
+            SSLSupport sslSupportService = oidcServerConfig.getSSLSupportService();
+            if (sslSupportService == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SSLSupport service cannot be found");
+                }
+                return null;
+            }
+            sslSocketFactory = sslSupportService.getSSLSocketFactory();
+        }
+        // TODO - host name verification?
+        return httpUtils.createHTTPClient(sslSocketFactory, url, false);
+    }
+
+    HttpPost createHttpPost() {
+        HttpPost httpPost = httpUtils.createHttpPostMethod(url, null);
+        HttpEntity entity = getHttpEntity();
+        httpPost.setEntity(entity);
+        return httpPost;
+    }
+
+    private HttpEntity getHttpEntity() {
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair(LOGOUT_TOKEN_PARAM_NAME, logoutToken));
-        return new UrlEncodedFormEntity(parameters);
+        return new UrlEncodedFormEntity(parameters, Charset.forName("UTF-8"));
     }
 
 }
