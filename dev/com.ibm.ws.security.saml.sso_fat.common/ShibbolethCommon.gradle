@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-  
+
 task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
   doLast {
     println 'in copyShibbolethServer'
@@ -41,14 +41,14 @@ task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble
 //    into new File(autoFvtDir, "publish/servers/${serverName}/policyFiles")
 //  }
     // copyShibbolethTestAppFilesToServer  (copy both 3.3.1 and 4.1.0 and let the tests decide at runtime which to use)
-   	copy {
-	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
- 	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
-	}
-	copy {
-	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
-	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
-	}
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
+      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
+      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+    }
  
     // copySecurityKeysToServer
     copy {
@@ -62,17 +62,16 @@ task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble
       include "*.jks", "*.arm"
     }
   }
-  
 }
 
 task copyShibKeys () {
-   doLast {
-     copy {
+  doLast {
+    copy {
       from project(':com.ibm.ws.security.saml.sso_fat.common').projectDir
       into autoFvtDir
       include 'securitykeys/**'
-     }
-   }
+    }
+  }
 }
 
 task copyApache () {
@@ -85,13 +84,11 @@ task copyApache () {
       into autoFvtDir
       include 'apacheds-2.0.0-M15/**'
     }
-  }  
+  }
 }
 
 task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyShibKeys']) {
-
   doLast {
-
     copy {
       from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
       into autoFvtDir
@@ -99,4 +96,3 @@ task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assem
     }
   }
 }
-  

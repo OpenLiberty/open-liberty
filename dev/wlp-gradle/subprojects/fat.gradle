@@ -48,13 +48,13 @@ configurations {
 
 dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
-  
+
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
-		'org.postgresql:postgresql:42.2.5',
-		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
-		'org.apache.derby:derbyclient:10.11.1.1',
-		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
+    'org.postgresql:postgresql:42.2.5',
+    'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
+    'org.apache.derby:derbyclient:10.11.1.1',
+    'org.apache.derby:derby:10.11.1.1',
+    'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
 
   jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
        'commons-cli:commons-cli:1.4',
@@ -62,7 +62,7 @@ dependencies {
        'org.slf4j:slf4j-api:1.7.26',
        'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
        'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
-       
+
   testcontainers project(':io.openliberty.org.testcontainers')
 
 }
@@ -159,7 +159,7 @@ task autoFVT {
       include 'com.ibm.ws.junit.extensions.jar'
       into new File(autoFvtDir, 'build/lib')
     }
-      
+
     // Copy the infra jar
     copy {
       from cnf.file('mavenlibs/infra.buildtasks-core-4.0.0.jar')
@@ -172,7 +172,7 @@ task autoFVT {
       include '*.jar'
       into new File(autoFvtDir, 'build/lib')
     }
-    
+
     // Include JSON-P processor implementation
     copy {
       from project(':com.ibm.ws.org.glassfish.json').buildDir
@@ -204,39 +204,39 @@ task autoFVT {
 
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
-    
+
     // By default, load up all properties with certain prefixes from bndWorkspace
     bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat."))
         bndProps.setProperty(k, v);
     }
-    
+
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
     bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
-    
+
     File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def bndWriter = new FileWriter(bndPropsFile)
     try {
-    	bndProps.store(bndWriter, null)
+      bndProps.store(bndWriter, null)
     } finally {
       bndWriter.close()
     }
-    
+
     // Create a fat.sys.properties file that contains metadata about the FAT
     def sysProps = new Properties()
-    
+
     // By default, load up all properties with certain prefixes from System
     System.getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat.") || k.startsWith("fattest."))
         sysProps.setProperty(k, v);
     }
-    
+
     File sysPropsFile = new File(autoFvtDir, 'fat.sys.properties')
     def sysWriter = new FileWriter(sysPropsFile)
     try {
-    	sysProps.store(sysWriter, null)
+      sysProps.store(sysWriter, null)
     } finally {
       sysWriter.close()
     }
@@ -286,7 +286,7 @@ task autoFVT {
       include 'com.ibm.ws.logging.core.jar'
       into new File(autoFvtDir, 'lib')
     }
-    
+
     // Copy all non-java app resources, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
@@ -341,7 +341,7 @@ task autoFVT {
       println "This FAT tests the following features: " + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()
       def root = fatDeps { 
-    	  "feature-deps" featureDeps
+        "feature-deps" featureDeps
       }
       new File(autoFvtDir, 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
     } else {
@@ -388,16 +388,16 @@ task trySkipFat(type: JavaExec) {
   dependsOn autoFVT
   dependsOn ':build.changeDetector:assemble'
   inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
-  
+
   main = 'com.ibm.ws.infra.depchain.ChangeDetector'
   classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
-    
+
   args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
        '--git-diff', System.getProperty('git_diff', 'UNSET'),
        '--deps', autoFvtDir.toString() + '/fat-metadata.json',
        '--fat-name', project.name,
        '--output', autoFvtDir.toString() + '/canSkipFat'
-       
+
   doLast {
     if (new File(autoFvtDir, 'canSkipFat').exists()) {
       println "Disabling FAT bucket " + project.name + " from running based on modified files"
@@ -424,7 +424,7 @@ task runfat(type: Exec) {
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
 
-  doLast {    
+  doLast {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
@@ -471,7 +471,7 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
        branch = "release"
     }
   }
-  
+
   // Default the destination folder to the project name
   if( folder == null || folder.length() == 0 ){
     folder = proj
@@ -526,15 +526,15 @@ build {
 }
 
 buildfat {
- dependsOn cleanFat
- dependsOn assemble
- dependsOn build
- dependsOn zipProjectFVT
+  dependsOn cleanFat
+  dependsOn assemble
+  dependsOn build
+  dependsOn zipProjectFVT
 }
 
 task buildandrun {
- dependsOn buildfat
- dependsOn runfat
+  dependsOn buildfat
+  dependsOn runfat
 }
 
 task buildFatAndRelease {

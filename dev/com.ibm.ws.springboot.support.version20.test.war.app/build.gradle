@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
 }
 
 
@@ -11,11 +11,11 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 dependencies {
-	compile project(':com.ibm.ws.springboot.support.version20.test.war.app:module')
-	compile 'org.springframework.boot:spring-boot-starter-web'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    providedRuntime 'javax.servlet:jstl'
-    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation project(':com.ibm.ws.springboot.support.version20.test.war.app:module')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+    providedCompile 'javax.servlet:jstl'
+    providedCompile 'org.apache.tomcat.embed:tomcat-embed-jasper'
 }
 
 bootJar {

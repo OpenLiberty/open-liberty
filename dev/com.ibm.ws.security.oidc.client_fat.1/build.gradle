@@ -33,7 +33,7 @@ dependencies {
 
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.
-                
+
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
    * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
@@ -75,7 +75,7 @@ autoFVT.doLast {
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
-  
+
   /*
    * Copy common artifacts to test servers.
    */
@@ -90,20 +90,20 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include '*.xml'
     }
-    
+
     copy { 
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
-  	/* copy shared key/trust stores from the common security fat project */
+    /* copy shared key/trust stores from the common security fat project */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include 'allAlgKeyStore.p12'
      include 'allAlgTrustStore.p12'
     }
-    
+
     copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
       into new File(autoFvtDir, 'publish/servers/' + server)
@@ -115,9 +115,9 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include 'oauthRoles_1.xml'
-    }  
+    }
   }
-  
+
   /*
    * Copy formlogin application to designated test servers.
    */
@@ -131,21 +131,19 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
-    
   }
-      
+
   /*
    * Copy some other testing artifacts to the root autofvt directory.
    */
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
-      into new File(autoFvtDir, 'securitykeys')
-      include 'commonSslClientDefault.jks'
-    }
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
-      into new File(autoFvtDir, 'testFiles')
-      include '**'
-    }
-      
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+    into new File(autoFvtDir, 'securitykeys')
+    include 'commonSslClientDefault.jks'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
+    into new File(autoFvtDir, 'testFiles')
+    include '**'
+  }
 }

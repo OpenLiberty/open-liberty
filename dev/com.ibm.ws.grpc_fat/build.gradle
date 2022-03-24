@@ -34,7 +34,7 @@ buildscript {
     }
 }
 
-plugins {	
+plugins {
     id 'war'
     id "eclipse-wtp"
 }

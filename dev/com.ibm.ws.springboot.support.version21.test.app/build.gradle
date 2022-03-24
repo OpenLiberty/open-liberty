@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.2.RELEASE'
+    id 'org.springframework.boot' version '2.1.2.RELEASE'
 }
 
 apply plugin: 'java'
@@ -10,11 +10,11 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile 'org.webjars:bootstrap:3.3.1'
-	compile 'org.webjars:webjars-locator:0.33'
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation 'org.webjars:bootstrap:3.3.1'
+    implementation 'org.webjars:webjars-locator:0.33'
 }
 
 bootJar {

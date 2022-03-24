@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
 }
 
 apply plugin: 'java'
@@ -12,21 +12,21 @@ sourceCompatibility = 1.8
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile 'org.webjars:bootstrap:3.3.1'
-	compile 'org.webjars:webjars-locator:0.33'
-	compile 'org.springframework:spring-core:5.2.6.RELEASE'
-	compile 'org.springframework:spring-context:5.2.6.RELEASE'
-	compile 'org.springframework:spring-beans:5.2.6.RELEASE'
-	compile 'org.springframework:spring-web:5.2.6.RELEASE'
-	compile 'org.springframework:spring-webmvc:5.2.6.RELEASE'
-	compile 'org.springframework.boot:spring-boot-autoconfigure:2.3.0.RELEASE'
-	compile 'org.springframework.boot:spring-boot:2.3.0.RELEASE'
-	compile 'org.springframework.security:spring-security-web:5.3.2.RELEASE'
-	compile 'org.springframework.security:spring-security-config:5.3.2.RELEASE'
-	compile 'org.springframework.security:spring-security-core:5.3.2.RELEASE'
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation 'org.webjars:bootstrap:3.3.1'
+    implementation 'org.webjars:webjars-locator:0.33'
+    implementation 'org.springframework:spring-core:5.2.6.RELEASE'
+    implementation 'org.springframework:spring-context:5.2.6.RELEASE'
+    implementation 'org.springframework:spring-beans:5.2.6.RELEASE'
+    implementation 'org.springframework:spring-web:5.2.6.RELEASE'
+    implementation 'org.springframework:spring-webmvc:5.2.6.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.0.RELEASE'
+    implementation 'org.springframework.boot:spring-boot:2.3.0.RELEASE'
+    implementation 'org.springframework.security:spring-security-web:5.3.2.RELEASE'
+    implementation 'org.springframework.security:spring-security-config:5.3.2.RELEASE'
+    implementation 'org.springframework.security:spring-security-core:5.3.2.RELEASE'
 }
 
 bootJar {
