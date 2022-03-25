@@ -10,11 +10,8 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.weld;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +26,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
-import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
@@ -50,18 +46,9 @@ public class LiteExtensionProvider implements ExtensionArchiveProvider {
         // Find all the build compatible extensions and sort them by their classloader
         Map<ClassLoader, Set<Class<? extends BuildCompatibleExtension>>> extensions = new HashMap<>();
         for (WebSphereBeanDeploymentArchive bda : deployment.getWebSphereBeanDeploymentArchives()) {
-            Enumeration<URL> urls;
-            try {
-                urls = bda.getClassLoader().getResources("META-INF/services/" + BuildCompatibleExtension.class.getName());
-            } catch (IOException e) {
-                throw new CDIException(e);
-            }
-            while (urls.hasMoreElements()) {
-                URL url = urls.nextElement();
-                for (String bceClassName : CDIUtils.parseServiceSPIExtensionFile(() -> url)) {
-                    Class<? extends BuildCompatibleExtension> bceClass = loadBuildCompatibleExtension(bceClassName, bda.getClassLoader());
-                    extensions.computeIfAbsent(bceClass.getClassLoader(), x -> new HashSet<>()).add(bceClass);
-                }
+            for (String bceClassName : bda.getBuildCompatibleExtensionClassNames()) {
+                Class<? extends BuildCompatibleExtension> bceClass = loadBuildCompatibleExtension(bceClassName, bda.getClassLoader());
+                extensions.computeIfAbsent(bceClass.getClassLoader(), x -> new HashSet<>()).add(bceClass);
             }
         }
 
