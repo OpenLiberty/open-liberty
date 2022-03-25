@@ -2341,7 +2341,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
     public void purgePoolContents(String value) throws ResourceException {
 
-        if (!"immediate".equalsIgnoreCase(value) && !"abort".equalsIgnoreCase(value)) {
+        if (!"immediate".equalsIgnoreCase(value) && !"abort".equalsIgnoreCase(value) && !"optimizedAbort".equalsIgnoreCase(value)) {
             purgePoolContents();
             return;
         }
@@ -2350,110 +2350,157 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.entry(tc, "purgePoolContents");
 
         boolean purgeWithAbort = "abort".equalsIgnoreCase(value);
+        boolean purgeWithOptimizedAbort = "optimizedAbort".equalsIgnoreCase(value);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Clearing free pool connections");
+        if (!purgeWithOptimizedAbort) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Clearing free pool connections");
 
-        for (int j = 0; j < maxFreePoolHashSize; ++j) {
-            synchronized (freePool[j].freeConnectionLockObject) {
-                /*
-                 * If a connection gets away, by setting fatalErrorNotificationTime will
-                 * guaranty when the connection is returned to the free pool, it will be
-                 */
-                freePool[j].incrementFatalErrorValue(j);
-                /*
-                 * Destroy as many connections as we can in the free pool
-                 */
-                if (freePool[j].mcWrapperList.size() > 0) {
-                    int mcWrapperListIndex = freePool[j].mcWrapperList.size() - 1;
-                    for (int k = mcWrapperListIndex; k >= 0; --k) {
-                        MCWrapper mcw = (MCWrapper) freePool[j].mcWrapperList.remove(k);
+            for (int j = 0; j < maxFreePoolHashSize; ++j) {
+                synchronized (freePool[j].freeConnectionLockObject) {
+                    /*
+                     * If a connection gets away, by setting fatalErrorNotificationTime will
+                     * guaranty when the connection is returned to the free pool, it will be
+                     */
+                    freePool[j].incrementFatalErrorValue(j);
+                    /*
+                     * Destroy as many connections as we can in the free pool
+                     */
+                    if (freePool[j].mcWrapperList.size() > 0) {
+                        int mcWrapperListIndex = freePool[j].mcWrapperList.size() - 1;
+                        for (int k = mcWrapperListIndex; k >= 0; --k) {
+                            MCWrapper mcw = (MCWrapper) freePool[j].mcWrapperList.remove(k);
 
-                        if (mcw.isMarkedForPurgeDestruction())
-                            continue;
-                        mcw.setDestroyState();
-                        mcw.markForPurgeDestruction();
-                        --freePool[j].numberOfConnectionsAssignedToThisFreePool;
+                            if (mcw.isMarkedForPurgeDestruction())
+                                continue;
+                            mcw.setDestroyState();
+                            mcw.markForPurgeDestruction();
+                            --freePool[j].numberOfConnectionsAssignedToThisFreePool;
 
-                        if (mcw.getManagedConnection() instanceof WSManagedConnection) {
-                            ((WSManagedConnection) mcw.getManagedConnection()).markStale();
-                        }
+                            if (mcw.getManagedConnection() instanceof WSManagedConnection) {
+                                ((WSManagedConnection) mcw.getManagedConnection()).markStale();
+                            }
 
-                        if (purgeWithAbort && mcw instanceof com.ibm.ejs.j2c.MCWrapper
-                            && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
-                            // The MCW aborted the connection sucessfully
-                        } else {
-                            if (purgeWithAbort && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(tc, "Unable to purge connection with abort.  Using ThreadSupportedCleanupAndDestroy.", mcw);
-                            final MCWrapper tempMCWrapper = mcw;
-                            final FreePool tempFP = freePool[j];
-                            ThreadSupportedCleanupAndDestroy tscd = new ThreadSupportedCleanupAndDestroy(tscdList, tempFP, tempMCWrapper);
-                            tscdList.add(tscd);
-                            connectorSvc.execSvcRef.getServiceWithException().submit(tscd);
-                            this.totalConnectionCount.decrementAndGet();
-                        }
-                    }
-                }
-            } // end free lock
-        } //end for j
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Marking inuse pool connections stale");
-        }
-
-        for (int i = 0; i < maxSharedBuckets; ++i) {
-            synchronized (sharedPool[i].sharedLockObject) {
-                if (sharedPool[i].getMCWrapperListSize() > 0) {
-                    MCWrapper[] mcwl = sharedPool[i].getMCWrapperList();
-                    for (int j = 0; j < sharedPool[i].getMCWrapperListSize(); ++j) {
-                        if (!mcwl[j].isDestroyState()) {
-                            mcwl[j].setDestroyState();
-
-                            if (purgeWithAbort && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
-                                && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
+                            if (purgeWithAbort && mcw instanceof com.ibm.ejs.j2c.MCWrapper
+                                && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
                                 // The MCW aborted the connection sucessfully
                             } else {
-                                if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
-                                    ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
-                                }
+                                if (purgeWithAbort && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                    Tr.debug(tc, "Unable to purge connection with abort.  Using ThreadSupportedCleanupAndDestroy.", mcw);
+                                final MCWrapper tempMCWrapper = mcw;
+                                final FreePool tempFP = freePool[j];
+                                ThreadSupportedCleanupAndDestroy tscd = new ThreadSupportedCleanupAndDestroy(tscdList, tempFP, tempMCWrapper);
+                                tscdList.add(tscd);
+                                connectorSvc.execSvcRef.getServiceWithException().submit(tscd);
                                 this.totalConnectionCount.decrementAndGet();
+                            }
+                        }
+                    }
+                } // end free lock
+            } //end for j
+
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Marking inuse pool connections stale");
+            }
+
+            for (int i = 0; i < maxSharedBuckets; ++i) {
+                synchronized (sharedPool[i].sharedLockObject) {
+                    if (sharedPool[i].getMCWrapperListSize() > 0) {
+                        MCWrapper[] mcwl = sharedPool[i].getMCWrapperList();
+                        for (int j = 0; j < sharedPool[i].getMCWrapperListSize(); ++j) {
+                            if (!mcwl[j].isDestroyState()) {
+                                mcwl[j].setDestroyState();
+
+                                if (purgeWithAbort && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
+                                    && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
+                                    // The MCW aborted the connection sucessfully
+                                } else {
+                                    if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
+                                        ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
+                                    }
+                                    this.totalConnectionCount.decrementAndGet();
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Clearing unshared pool connections");
-        }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Clearing unshared pool connections");
+            }
 
-        mcToMCWMapWrite.lock();
-        try {
-            // Expensive operation, but equivalent to doing getUnSharedPoolConnections but safer as we keep the lock.
-            int mcToMCWSize = mcToMCWMap.size();
-            Object[] tempObject = mcToMCWMap.values().toArray();
-            for (int ti = 0; ti < mcToMCWSize; ++ti) {
-                MCWrapper mcw = (MCWrapper) tempObject[ti];
-                if (mcw.getPoolState() == 3) { // unshared pool
-                    mcw.setDestroyState(); // for all connection factories and datasources
-                    if (purgeWithAbort
-                        && mcw instanceof com.ibm.ejs.j2c.MCWrapper
-                        && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
-                        // The MCW aborted the connection successfully
-                    } else {
-                        ManagedConnection mc = mcw.getManagedConnection();
-                        if (mc instanceof WSManagedConnection) {
-                            //Safe state operation since we have a write lock
-                            //This is for relational resource adapter to help with removing connections in use.
-                            ((WSManagedConnection) mc).markStale();
+            mcToMCWMapWrite.lock();
+            try {
+                // Expensive operation, but equivalent to doing getUnSharedPoolConnections but safer as we keep the lock.
+                int mcToMCWSize = mcToMCWMap.size();
+                Object[] tempObject = mcToMCWMap.values().toArray();
+                for (int ti = 0; ti < mcToMCWSize; ++ti) {
+                    MCWrapper mcw = (MCWrapper) tempObject[ti];
+                    if (mcw.getPoolState() == 3) { // unshared pool
+                        mcw.setDestroyState(); // for all connection factories and datasources
+                        if (purgeWithAbort
+                            && mcw instanceof com.ibm.ejs.j2c.MCWrapper
+                            && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
+                            // The MCW aborted the connection successfully
+                        } else {
+                            ManagedConnection mc = mcw.getManagedConnection();
+                            if (mc instanceof WSManagedConnection) {
+                                //Safe state operation since we have a write lock
+                                //This is for relational resource adapter to help with removing connections in use.
+                                ((WSManagedConnection) mc).markStale();
+                            }
+                            this.totalConnectionCount.decrementAndGet();
+                        } // end abort or mark stale
+                    } // end check if unshared
+                } // end for loop
+            } finally {
+                mcToMCWMapWrite.unlock();
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Clearing pool connections using purgePoolContents optimizedAbort");
+            boolean needToAbortConnections = false;
+            // create new array for this abort path
+            ArrayList<MCWrapper> mcWrappersToAbort = new ArrayList<MCWrapper>();
+            mcToMCWMapWrite.lock();
+            try {
+                Iterator<MCWrapper> mcwIt = mcToMCWMap.values().iterator();
+                while (mcwIt.hasNext()) {
+                    MCWrapper mcw = mcwIt.next();
+                    boolean mayAbort = false;
+                    if (mcw.isDestroyState()) {
+                        // Error has occurred, abort the connection
+                        mayAbort = true;
+                    }
+                    if (mcw.isStale()) {
+                        // Connection is stale, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mcw.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())) {
+                        // Likely a purge normal or an resource error occurred, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mayAbort) {
+                        long mcwHoldTimeStart = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
+                        if (mcwHoldTimeStart > 0) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Abort in use connection " + mcw);
+                            }
+                            mcWrappersToAbort.add(mcw);
+                            needToAbortConnections = true;
                         }
-                        this.totalConnectionCount.decrementAndGet();
-                    } // end abort or mark stale
-                } // end check if unshared
-            } // end for loop
-        } finally {
-            mcToMCWMapWrite.unlock();
+                    }
+
+                }
+            } finally {
+                mcToMCWMapWrite.unlock();
+            }
+            if (needToAbortConnections) {
+                for (MCWrapper mcw : mcWrappersToAbort) {
+                    ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC();
+                }
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

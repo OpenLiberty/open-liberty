@@ -1274,6 +1274,73 @@ public class BasicTestServlet extends FATDatabaseServlet {
     }
 
     /**
+     * Using 2 datasources, gets a configuration where there is 1 shared, 1 free, and 1 unshared connection<br>
+     * Invoke purge pool("optimizedAbort") on each of the two pool manager MBeans.<br>
+     * Verify pool size of both pools is 2 after the purgePoolContents call and the
+     * remaining good connections are closed.
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException" })
+    @SuppressWarnings("unused")
+    @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC }) // no 4.1 sybase or ifx driver
+    public void testMBeanPurgeOptimizedAbort() throws Throwable {
+
+        Connection conn1b = null;
+        Connection conn3b = null;
+        Connection conn4b = null;
+        String s1;
+        String s2;
+
+        try {
+            Connection conn1 = ds1.getConnection(); // Create an unshareable connection
+            Connection conn2 = ds1.getConnection(); // Create a free connection
+            conn2.close();
+            Connection conn3 = ds2.getConnection(); // Create a shared connection
+            Connection conn4 = ds2.getConnection(); // Create a shared connection
+
+            assertEquals(2, getPoolSize("jdbc/ds1"));
+            assertEquals(2, getPoolSize("jdbc/ds2"));
+
+            getConnectionManagerBean("jdbc/ds1").purgePoolContents("");
+            getConnectionManagerBean("jdbc/ds2").purgePoolContents("");
+
+            assertEquals(1, getPoolSize("jdbc/ds1"));
+            assertEquals(2, getPoolSize("jdbc/ds2"));
+
+            conn1b = ds1.getConnection(); // Create an unshareable connection
+            Connection conn2b = ds1.getConnection(); // Create a free connection
+            conn2b.close();
+            conn3b = ds2.getConnection(); // Create a shared connection
+            conn4b = ds2.getConnection(); // Create a shared connection
+
+            assertEquals(3, getPoolSize("jdbc/ds1"));
+            assertEquals(4, getPoolSize("jdbc/ds2"));
+
+            // Purge the connection pool for ds1 and ds2 using optimized abort
+            System.out.println("--- About to use optimizeed abort purge connection pools.");
+
+            getConnectionManagerBean("jdbc/ds1").purgePoolContents("optimizedAbort");
+            getConnectionManagerBean("jdbc/ds2").purgePoolContents("optimizedAbort");
+
+            System.out.println("--- Completed optimizeed abort purge connection pools.");
+
+            assertEquals(2, getPoolSize("jdbc/ds1"));
+            assertEquals(2, getPoolSize("jdbc/ds2"));
+
+        } finally {
+            System.out.println("--- Closing connections.");
+            conn1b.close();
+            conn3b.close();
+            conn4b.close();
+
+            assertEquals(2, getPoolSize("jdbc/ds1"));
+            assertEquals(2, getPoolSize("jdbc/ds2"));
+
+        }
+
+    }
+
+    /**
      * Setup helper method that does 3 things: <ol>
      * <li> Create User Defined Type (UDT) called MYUSER based on the <code>jdbc.fat.v41.web.MyUser</code> class
      * <li> Create table USERS with schema <code>(int id, MYUSER userObj)</code>

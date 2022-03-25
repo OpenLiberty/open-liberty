@@ -89,10 +89,12 @@ public interface ConnectionManagerMBean {
      * this Connection Manager.
      *
      * @param doImmediately The priority to be used to purge the connection pool.
-     *                          Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
-     *                          Immediate sets the total connection count to 0 and purges the pool
+     *                          <p>Priority may be <code>"immediate"</code>, <code>"optimizedAbort"</code>, <code>"abort"</code> or <code>null</code>.
+     *                          <p>Immediate sets the total connection count to 0 and purges the pool
      *                          as quickly as possible but waits for transactions to complete.
-     *                          Abort purges the pool by aborting connections without waiting for transactions to complete.
+     *                          <p>OptimizedAbort purges the pool by aborting in use connections that may be unusable
+     *                          without waiting for transactions to complete.
+     *                          <p>Abort purges the pool by aborting connections without waiting for transactions to complete.
      *                          The default behavior if no value is specified is to purge the pool with normal priority.
      * @throws MBeanException
      */
