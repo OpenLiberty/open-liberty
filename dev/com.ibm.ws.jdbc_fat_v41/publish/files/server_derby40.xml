@@ -35,6 +35,28 @@
     <dataSource id="ds2" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
+    
+    <dataSource id="ds2abort" jndiName="jdbc/${id}" fat.modify="true">
+        <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <connectionManager maxInUseTime="1" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
+    </dataSource>
+    <dataSource id="ds2abort-1" jndiName="jdbc/${id}" fat.modify="true">
+        <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <connectionManager maxInUseTime="-1" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
+    </dataSource>
+    <dataSource id="ds2abort1m" jndiName="jdbc/${id}" fat.modify="true">
+        <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <connectionManager maxInUseTime="1m" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
+    </dataSource>
+    <dataSource id="ds2abort60s" jndiName="jdbc/${id}" fat.modify="true">
+        <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <connectionManager maxInUseTime="60s" minPoolSize="0" purgePolicy="EntirePool" reapTime="3s"/>
+    </dataSource>
+    
 
     <dataSource id="ds3" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>

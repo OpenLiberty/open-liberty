@@ -495,7 +495,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             numConnectionsPerThreadLocal = 0;
         } else {
             agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
-            maxInUseTime = validateProperty(map, J2CConstants.POOL_MaxInUseTime, -1, TimeUnit.MINUTES, -1, Integer.MAX_VALUE, true,
+            maxInUseTime = validateProperty(map, J2CConstants.POOL_MaxInUseTime, -1, TimeUnit.MINUTES, -1, Integer.MAX_VALUE, false,
                                             connectorSvc);
             connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
             maxIdleTime = validateProperty(map, MAX_IDLE_TIME, ConnectionPoolProperties.DEFAULT_UNUSED_TIMEOUT, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);

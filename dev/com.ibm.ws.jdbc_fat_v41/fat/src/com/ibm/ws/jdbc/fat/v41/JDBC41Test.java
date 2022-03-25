@@ -21,6 +21,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.fat.v41.web.BasicTestServlet;
@@ -52,7 +54,9 @@ public class JDBC41Test extends FATServletClient {
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist
-                          "J2CA0079E"); // expected by testMBeanPurgeAbort
+                          "J2CA0079E", // expected by testMBeanPurgeAbort
+                          "CWWKE0701E" // expected for lookup("jdbc/ds2abort0") and lookup("jdbc/ds2abort1s"), TODO - but may be a bug in osgi config code
+        );
     }
 
     /**
@@ -68,6 +72,7 @@ public class JDBC41Test extends FATServletClient {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testAbortedConnectionDestroyedAuto() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyedAuto");
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbortAuto");

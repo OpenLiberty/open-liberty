@@ -3576,17 +3576,35 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 Iterator<MCWrapper> mcwIt = mcToMCWMap.values().iterator();
                 while (mcwIt.hasNext()) {
                     MCWrapper mcw = mcwIt.next();
-                    long holdTime = currentTime - ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
-                    long timeInUseInSeconds = holdTime / 1000;
-                    long maxInUseTimeSeconds = maxInUseTime * 60;
-                    if (timeInUseInSeconds > maxInUseTimeSeconds) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "Abort long running in use connection " + mcw);
+                    boolean mayAbort = false;
+                    if (mcw.isDestroyState()) {
+                        // Error has occurred, abort the connection
+                        mayAbort = true;
+                    }
+                    if (mcw.isStale()) {
+                        // Connection is stale, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mcw.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())) {
+                        // Likely a purge normal or an resource error occurred, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mayAbort) {
+                        long mcwHoldTimeStart = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
+                        if (mcwHoldTimeStart > 0) {
+                            long timeInUseInSeconds = (currentTime - mcwHoldTimeStart) / 1000;
+                            long maxInUseTimeSeconds = maxInUseTime * 60;
+                            if (timeInUseInSeconds > maxInUseTimeSeconds) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(this, tc, "Abort long running in use connection " + mcw + " was inuse for " + timeInUseInSeconds);
+                                }
+                                mcWrappersToAbort.add(mcw);
+                                needToAbortConnections = true;
+                            }
                         }
-                        mcWrappersToAbort.add(mcw);
-                        needToAbortConnections = true;
                     }
                 }
+
             } finally {
                 mcToMCWMapWrite.unlock();
             }
