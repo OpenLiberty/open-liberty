@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -22,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
@@ -62,19 +60,10 @@ public class CxfEndSupTokensSymTests extends CommonTests {
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            commonSetUp(serverName, "server_sym.xml", true,
-                        "/endsuptokensclient/CxfEndSupTokensSvcClient");
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            commonSetUp(serverName, "server_sym_wss4j.xml", true,
-                        "/endsuptokensclient/CxfEndSupTokensSvcClient");
-        }
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+        commonSetUp(serverName, "server_sym_wss4j.xml", true,
+                    "/endsuptokensclient/CxfEndSupTokensSvcClient");
 
     }
 
@@ -351,7 +340,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens5MissingSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSigned";
@@ -396,7 +384,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens5MissingSignedAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSignedAddEncrypted";
@@ -529,7 +516,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens6MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncrypted";
@@ -574,7 +560,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens6MissingEncryptedAddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncryptedAddSigned";
@@ -662,7 +647,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens7MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingEncrypted";
@@ -753,7 +737,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFEndSupTokens7MissingSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingSignedEncrypted";
