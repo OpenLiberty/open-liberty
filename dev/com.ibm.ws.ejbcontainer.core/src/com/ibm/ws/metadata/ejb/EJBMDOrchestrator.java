@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2019 IBM Corporation and others.
+ * Copyright (c) 2006, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -316,6 +316,10 @@ public abstract class EJBMDOrchestrator {
      * @param mmd is the Module's configuration data in the EJB Container's
      *            internal format.
      * @param container is the EJB Container in the current process.
+     * @param initAtStartup is the global default configuration for initializing beans
+     *                      at startup.
+     * @param initAtStartupSet indicates that the initAtStartup parameter was explicitly
+     *                         configured and not a default value. 
      * @return BeanMetaData the EJB Container's internal format for bean configuration
      *         data.
      * @throws EJBConfigurationException - for customer configuration errors
@@ -442,11 +446,12 @@ public abstract class EJBMDOrchestrator {
         //    globally disable deferred EJB initialization.
         // 5. The user can set a flag within the deployment descriptors "isStartEJBAtApplicationStart" to
         //    disable deferred EJB initialization for an individual EJB type.
-        //                                                                          //d203449
+        // 6. The server can be started with application start optimized to take a checkpoint, which will
+        //    disable deferred EJB initialization unless otherwise configured.
 
         boolean deferEJBInitialization = true; // The default behavior is to defer initialization
         boolean isStartupBean = false;
-        boolean isStartEJBAtApplicationStart = false; //199884
+        boolean isStartEJBAtApplicationStart = initAtStartup;
 
         // For performance reasons, only check other parameters if this home has not already
         // been determined to be for a MDB or ManagedBean.
@@ -491,20 +496,19 @@ public abstract class EJBMDOrchestrator {
                 // homes, so it is only important to check the individual flags when the global flag is not
                 // set.
                 if (!initAtStartupSet) {
-                    isStartEJBAtApplicationStart = bmd.wccm.isStartEJBAtApplicationStart(); // F743-18775
+                    isStartEJBAtApplicationStart = bmd.wccm.isStartEJBAtApplicationStart(initAtStartup);
                 } // !initAtStartupSet
             } //!isStartupBean
         } // !isMessageDriven
 
-        // By default EJB initialization is deferred, but, if they are
-        // MessageDrivenBeans, StartupBeans, or they have been configured
-        // to not be deferred then they will not be defered.  However,
-        // all EJBs except MessageDrivenBeans will be deferred in the
-        // adjunct process on z.                                           d259812
+        // By default EJB initialization is deferred, but, if they are MessageDrivenBeans, StartupBeans,
+        // or they have been configured to not be deferred then they will not be deferred. Also, starting
+        // the server for checkpoint after application start will disable deferred initialization unless
+        // explicitly configured otherwise. However, all EJBs except MessageDrivenBeans will be deferred
+        // in the adjunct process on z.
         if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN ||
             (!EJSPlatformHelper.isZOSCRA() &&
              (isStartupBean ||
-              initAtStartup ||
               isStartEJBAtApplicationStart))) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, bmd.enterpriseBeanName + " will be initialized at Application start");
