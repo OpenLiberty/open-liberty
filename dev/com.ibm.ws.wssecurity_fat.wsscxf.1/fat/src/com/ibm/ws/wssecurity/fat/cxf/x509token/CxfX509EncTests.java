@@ -66,21 +66,11 @@ public class CxfX509EncTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            //issue 18363
-            featureVersion = "EE7";
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-            //issue 18363
-            featureVersion = "EE8";
-        }
-
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        //issue 18363
+        featureVersion = "EE8";
         ShrinkHelper.defaultDropinApp(server, "x509encclient", "com.ibm.ws.wssecurity.fat.x509encclient", "test.wssecfvt.x509enc", "test.wssecfvt.x509enc.types");
         ShrinkHelper.defaultDropinApp(server, "x509enc", "com.ibm.ws.wssecurity.fat.x509enc");
 
@@ -396,8 +386,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
@@ -473,8 +462,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongDataEncAlgorithm() throws Exception {
 
         String thisMethod = "testCXFClientWrongDataEncAlgorithm";
@@ -549,8 +537,7 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncryptionKey() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncryptionKey";
