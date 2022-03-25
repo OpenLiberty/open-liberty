@@ -34,6 +34,8 @@ import io.openliberty.cdi40.internal.fat.bce.basicwar.BasicBCEExtension;
 import io.openliberty.cdi40.internal.fat.bce.basicwar.BasicBCETestServlet;
 import io.openliberty.cdi40.internal.fat.bce.enhance.BceEnhanceTestServlet;
 import io.openliberty.cdi40.internal.fat.bce.enhance.EnhanceTestExtension;
+import io.openliberty.cdi40.internal.fat.bce.extensionarchivenotscanned.ExtensionArchiveExtension;
+import io.openliberty.cdi40.internal.fat.bce.extensionarchivenotscanned.ExtensionArchiveNotScannedTestServlet;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 
 @RunWith(FATRunner.class)
@@ -43,7 +45,8 @@ public class BuildCompatibleExtensionsTest {
     @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class),
                     @TestServlet(contextRoot = "war2", servlet = EarBCETestServlet2.class),
                     @TestServlet(contextRoot = "basicWar", servlet = BasicBCETestServlet.class),
-                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class)
+                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class),
+                    @TestServlet(contextRoot = "extensionArchiveNotScanned", servlet = ExtensionArchiveNotScannedTestServlet.class)
     })
     public static LibertyServer server;
 
@@ -90,6 +93,15 @@ public class BuildCompatibleExtensionsTest {
                                           .addAsManifestResource(enhancePackage, "permissions.xml", "permissions.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, enhanceWar, DeployOptions.SERVER_ONLY);
+
+        // extensionArchiveNotScanned.war
+        // ------------------------------
+        Package archiveNotScannedPackage = ExtensionArchiveNotScannedTestServlet.class.getPackage();
+        WebArchive archiveNotScannedWar = ShrinkWrap.create(WebArchive.class, "extensionArchiveNotScanned.war")
+                                                    .addPackage(archiveNotScannedPackage)
+                                                    .addAsServiceProvider(BuildCompatibleExtension.class, ExtensionArchiveExtension.class);
+
+        ShrinkHelper.exportDropinAppToServer(server, archiveNotScannedWar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
