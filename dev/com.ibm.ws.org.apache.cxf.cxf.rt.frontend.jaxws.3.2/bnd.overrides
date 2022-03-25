@@ -35,6 +35,7 @@ Import-Package: \
   javax.xml.bind.*;version=!,\
   javax.xml.ws.*;version="[2.3,3)", \
   org.apache.cxf.*;version="[3.2.4,4)",\
+  com.ibm.ws.ffdc,\
   *
 
 DynamicImport-Package: com.ibm.ws.jaxws.client
