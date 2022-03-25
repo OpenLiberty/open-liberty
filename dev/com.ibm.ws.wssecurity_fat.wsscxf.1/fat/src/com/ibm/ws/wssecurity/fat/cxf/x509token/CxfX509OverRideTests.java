@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -32,14 +30,12 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -76,17 +72,9 @@ public class CxfX509OverRideTests {
 
         String thisMethod = "setup";
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        }
-
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         ShrinkHelper.defaultDropinApp(server, "x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
         ShrinkHelper.defaultDropinApp(server, "x509token", "basicplcy.wssecfvt.test");
 
@@ -105,14 +93,8 @@ public class CxfX509OverRideTests {
         assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
-        if (features.contains("jaxws-2.2")) {
-            x509ClientUrl = "http://localhost:" + portNumber
-                            + "/x509client/CxfX509SvcClient";
-        }
-        if (features.contains("jaxws-2.3")) {
-            x509ClientUrl = "http://localhost:" + portNumber
-                            + "/x509client/CxfX509SvcClientWss4j";
-        }
+        x509ClientUrl = "http://localhost:" + portNumber
+                        + "/x509client/CxfX509SvcClientWss4j";
 
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -153,9 +135,8 @@ public class CxfX509OverRideTests {
     //
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfX50NegativeService() throws Exception {
 
         String thisMethod = "testCxfX509Service";
