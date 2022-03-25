@@ -63,7 +63,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
 
         genericTest(
@@ -104,7 +104,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
