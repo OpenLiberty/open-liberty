@@ -12,3 +12,4 @@
 
 Bundle-Name: com.ibm.ws.org.apache.cxf.rt.security Jakarta
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.security.3.4.1.jakarta
+Bundle-Description: cxf rt security, version 3.4.1; Jakarta Enabled
