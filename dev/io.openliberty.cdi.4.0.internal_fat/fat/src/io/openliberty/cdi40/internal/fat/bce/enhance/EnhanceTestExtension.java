@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.fat.bce.enhance;
 
+import jakarta.enterprise.inject.build.compatible.spi.AnnotationBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
@@ -18,7 +19,7 @@ public class EnhanceTestExtension implements BuildCompatibleExtension {
 
     @Enhancement(types = EnhanceTestBean.class)
     public void addTestQualifier(ClassConfig classConfig) {
-        classConfig.addAnnotation(EnhanceTestQualifier.class);
+        classConfig.addAnnotation(AnnotationBuilder.of(EnhanceTestQualifier.class).build());
     }
 
 }
