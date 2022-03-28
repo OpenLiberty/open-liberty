@@ -78,7 +78,7 @@
          <AD id="protectedEndpoints" name="internal" description="internal use only" required="false" type="String" default="authorize registration app-passwords app-tokens personalTokenManagement usersTokenManagement clientManagement" /> <!-- separated by space -->
          <AD id="requireOpenidScopeForUserInfo" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
          <AD id="oidcEndpoint" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.oidc.endpoint" cardinality="20" />
-         <AD id="backchannelLogoutSupported" name="internal" description="internal use only" required="false" type="Boolean" default="false" />
+         <AD id="backchannelLogoutRequestTimeout" name="internal" description="internal use only" required="false" type="String" default="180s" ibm:type="duration(s)" ibm:beta="true" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.server.oidcServerConfig">
