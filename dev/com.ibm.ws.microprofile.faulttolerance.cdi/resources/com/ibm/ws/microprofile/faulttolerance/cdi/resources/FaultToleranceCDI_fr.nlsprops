@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Mettez \u00e0 jour l
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: La m\u00e9thode de r\u00e9tromigration {1} avec les param\u00e8tres {2} est introuvable dans la classe {0}.
-fallback.method.not.found.CWMFT5003E.explanation=Une m\u00e9thode de r\u00e9tromigration a \u00e9t\u00e9 d\u00e9clar\u00e9e pour la m\u00e9thode {1}. Toutefois, cette m\u00e9thode n'existe pas dans la classe {0}.
+fallback.method.not.found.CWMFT5003E.explanation=Une m\u00e9thode de repli a \u00e9t\u00e9 d\u00e9clar\u00e9e mais elle n'existe pas dans la classe d\u00e9clarante.
 fallback.method.not.found.CWMFT5003E.useraction=Supprimez l'annotation de r\u00e9tromigration ou ajoutez la m\u00e9thode manquante.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=M
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: La m\u00e9thode de r\u00e9tromigration {0} avec les types de param\u00e8tre et de retour correspondant \u00e0 la m\u00e9thode {1} est introuvable dans la hi\u00e9rarchie de classes {2}.
 fallback.method.not.found.CWMFT5021E.explanation=Une m\u00e9thode de r\u00e9tromigration a \u00e9t\u00e9 d\u00e9clar\u00e9e mais elle n'existe pas dans la classe d\u00e9clarante ni dans ses superclasses ou dans les interfaces qu'elle impl\u00e9mente.
 fallback.method.not.found.CWMFT5021E.useraction=Supprimez l'annotation de r\u00e9tromigration ou ajoutez la m\u00e9thode manquante. Si la m\u00e9thode de r\u00e9tromigration existe mais est introuvable, v\u00e9rifiez que les types de param\u00e8tre et le type de retour des deux m\u00e9thodes correspondent et que la m\u00e9thode de r\u00e9tromigration est visible dans la classe qui d\u00e9clare la m\u00e9thode annot\u00e9e.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: Les annotations de tol\u00e9rance de pannes de microprofil ne peuvent pas \u00eatre utilis\u00e9es en combinaison avec l'annotation {0}.
+anno.conflict.CWMFT5022E.explanation=L'interm\u00e9lange des annotations de tol\u00e9rance de pannes de microprofil avec l'annotation sp\u00e9cifi\u00e9e n'est pas pris en charge.
+anno.conflict.CWMFT5022E.useraction=Supprimez les annotations de tol\u00e9rance aux pannes de microprofil ou l'annotation en conflit.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Une erreur interne s'est produite. L'exception est {0}.
