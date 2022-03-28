@@ -73,6 +73,7 @@ com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws:nekohtml:1.9.18
 io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.0.20220120
 io.openliberty.jakarta.json.bind:jakarta.json.bind-api:3.0.0
+io.openliberty.jakarta.servlet:jakarta.servlet-api:6.0.0.20220119
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core:4.0.0.70bac7a
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:4.0.0.70bac7a
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:4.0.0.70bac7a
