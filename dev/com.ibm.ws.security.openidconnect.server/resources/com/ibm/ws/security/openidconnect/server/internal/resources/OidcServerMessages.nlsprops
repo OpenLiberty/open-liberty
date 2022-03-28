@@ -196,7 +196,7 @@ LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: The OpenID Connect pro
 LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=The provider failed to retrieve the set of clients that are registered, or the ID token claims might be malformed.
 LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=See the error that is included in the message for more information.
 
-ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1645E: The issuer claim "{0}" in the ID token does not match the expected issuer "{1}" for the OpenID Connect provider [{2}].
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1645E: The [{0}] issuer claim in the ID token does not match the [{1}] expected issuer for the {2} OpenID Connect provider.
 ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=The OpenID Connect provider did not issue the ID token, so the token should not be handled by this OpenID Connect provider.
 ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Send only ID tokens whose issuer claim matches the configuration for the OpenID Connect provider that is specified in the message.
 
