@@ -11,6 +11,7 @@
 package com.ibm.ws.transaction.web;
 
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -148,12 +149,19 @@ public class FailoverServlet extends FATServlet {
             }
             System.out.println("FAILOVERSERVLET: create hatable");
             stmt.executeUpdate(
-                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
+                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int, additionaldata varchar(128))");
             // was col2 varchar(20)
+            String procName = ManagementFactory.getRuntimeMXBean().getName();
             System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
-                               + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
-            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
-                               + thesqlcode + ")"); // was -4498
+                               + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode + ", additional data: " + procName);
+            String insertString = "insert into hatable (testtype, failingoperation, numberoffailures, simsqlcode, additionaldata) values (?,?,?,?,?)";
+            PreparedStatement insertStmt = con.prepareStatement(insertString);
+            insertStmt.setInt(1, testType.ordinal());
+            insertStmt.setInt(2, operationToFail);
+            insertStmt.setInt(3, numberOfFailures);
+            insertStmt.setInt(4, thesqlcode);
+            insertStmt.setString(5, procName);
+            insertStmt.executeUpdate();
 
             // UserTransaction Commit
             con.setAutoCommit(false);

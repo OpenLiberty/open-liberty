@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.informix.jdbcx;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -90,7 +91,7 @@ public class IfxPooledConnection implements PooledConnection {
             ResultSet rsBasic = null;
             try {
                 System.out.println("SIMHADB: Execute a query to see if we can find the table");
-                rsBasic = stmt.executeQuery("SELECT testtype, failingoperation, numberoffailures, simsqlcode" + " FROM hatable");
+                rsBasic = stmt.executeQuery("SELECT testtype, failingoperation, numberoffailures, simsqlcode, additionaldata" + " FROM hatable");
                 if (rsBasic.next()) {
                     int testTypeInt = rsBasic.getInt(1);
                     System.out.println("SIMHADB: Stored column testtype is: " + testTypeInt);
@@ -100,6 +101,8 @@ public class IfxPooledConnection implements PooledConnection {
                     System.out.println("SIMHADB: Stored column numberoffailures is: " + numberOfFailuresInt);
                     int simsqlcodeInt = rsBasic.getInt(4);
                     System.out.println("SIMHADB: Stored column simsqlcode is: " + simsqlcodeInt);
+                    String addDataString = rsBasic.getString(5);
+                    System.out.println("SIMHADB: Stored column additionaldata is: " + addDataString);
                     if (testTypeInt == 0) // Test Failover at startup
                     {
                         // We abuse the failovervalInt parameter. If it is set to
@@ -186,25 +189,34 @@ public class IfxPooledConnection implements PooledConnection {
                         IfxConnection.setSimSQLCode(simsqlcodeInt);
                     } else if (testTypeInt == 5)// Special case of failure at connection, throw an exception here
                     {
-                        // Dependent on number of connection attempts, reset _areParametersSet
-                        if (_connectAttempts < numberOfFailuresInt)
-                            _areParametersSet = false;
+                        // Additional guard to avoid resetting the hatable in the case where we have driven setup
+                        // processing through FailureServlet but a re-connection due to an unexpected ResourceAllocationException
+                        // has occurred in the same instance.
+                        String procName = ManagementFactory.getRuntimeMXBean().getName();
+                        System.out.println("SIMHADB: Connection failure test, procName is: " + procName);
+                        if (!procName.equals(addDataString)) {
+                            // Dependent on number of connection attempts, reset _areParametersSet
+                            if (_connectAttempts < numberOfFailuresInt)
+                                _areParametersSet = false;
 
-                        if (_areParametersSet) {
-                            // Last time through, need to update hatable to avoid interference with subsequent tests
-                            System.out.println("SIMHADB: update HATABLE with testtype = 99");
-                            stmt.executeUpdate("update hatable set testtype = 99 where testtype = 5");
+                            if (_areParametersSet) {
+                                // Last time through, need to update hatable to avoid interference with subsequent tests
+                                System.out.println("SIMHADB: update HATABLE with testtype = 99");
+                                stmt.executeUpdate("update hatable set testtype = 99 where testtype = 5");
+                            }
+
+                            String sqlReason = "Generated internally";
+                            String sqlState = "Generated reason";
+                            int reasonCode = -777;
+
+                            System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
+                            // if reason code is "-3" then exception is non-transient, otherwise it is transient
+                            SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
+
+                            throw sqlex;
+                        } else {
+                            System.out.println("SIMHADB: Connection failure test, but we appear to be re-connecting as stored procName is: " + addDataString);
                         }
-
-                        String sqlReason = "Generated internally";
-                        String sqlState = "Generated reason";
-                        int reasonCode = -777;
-
-                        System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
-                        // if reason code is "-3" then exception is non-transient, otherwise it is transient
-                        SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
-
-                        throw sqlex;
                     } else if (testTypeInt == 6) { // Lease Log tests
                         // We abuse the failovervalInt parameter.
                         // 770 - lease update test
