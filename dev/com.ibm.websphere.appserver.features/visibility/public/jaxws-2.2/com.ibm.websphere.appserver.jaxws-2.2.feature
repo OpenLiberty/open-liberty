@@ -43,7 +43,7 @@ Subsystem-Name: Java Web Services 2.2
   com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
   com.ibm.websphere.appserver.internal.cxf.common-3.2, \
   com.ibm.websphere.appserver.internal.optional.jaxws-2.2, \
-  com.ibm.websphere.appserver.javax.mail-1.5
+  com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:="1.6"
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.jaxws.2.3.wsat, \
