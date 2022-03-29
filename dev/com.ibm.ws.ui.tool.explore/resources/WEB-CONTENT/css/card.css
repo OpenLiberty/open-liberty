@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ @import url("cardExcludeValidator.css");
+
 /* @media only screen and (min-device-width: 767px) {  */
 .tableContainerDropDownActionButton {
     border: 0;

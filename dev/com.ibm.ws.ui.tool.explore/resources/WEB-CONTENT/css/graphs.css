@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ @import url("graphsExcludeValidator.css");
+
 .statusGraph {
     display: none;
     position: relative;
