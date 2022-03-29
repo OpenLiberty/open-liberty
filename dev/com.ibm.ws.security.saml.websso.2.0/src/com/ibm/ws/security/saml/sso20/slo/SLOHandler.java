@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.acs.WebSSOConsumer;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
+import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
 
 public class SLOHandler implements SsoHandler {
     private static TraceComponent tc = Tr.register(SLOHandler.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -152,8 +153,22 @@ public class SLOHandler implements SsoHandler {
                                                                                                     ssoService, relayState,
                                                                                                     ssoRequest);
 
-        SLOPostLogoutHandler postLogoutHandler = new SLOPostLogoutHandler(request, ssoService.getConfig(), msgCtx);
-        postLogoutHandler.sendToPostLogoutPage(response);
+        //@AV999-092821
+        HttpRequestInfo httpRequestInfo = msgCtx.getCachedRequestInfo();
+        String redirectAfterSPLogout = null;
+        if (httpRequestInfo != null) {
+            redirectAfterSPLogout = httpRequestInfo.getRedirectAfterSPLogout();
+            if (redirectAfterSPLogout != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SP Initiated SLO Request's Response, Request has OIDC END SESSION REDIRECT set : " + redirectAfterSPLogout);
+                }      
+                response.sendRedirect(redirectAfterSPLogout);
+            }
+        }
+        if (redirectAfterSPLogout == null) {
+            SLOPostLogoutHandler postLogoutHandler = new SLOPostLogoutHandler(request, ssoService.getConfig(), msgCtx);
+            postLogoutHandler.sendToPostLogoutPage(response);
+        }
     }
 
     boolean isLogoutRequestFromIdp(HttpServletRequest request) {
