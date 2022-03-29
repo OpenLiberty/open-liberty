@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -22,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
@@ -61,18 +59,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            commonSetUp(serverName, "server_asym_wss4j.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
-
-        }
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+        commonSetUp(serverName, "server_asym_wss4j.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
 
     }
 
@@ -87,7 +76,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0";
@@ -173,7 +161,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0Body() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0Body";
@@ -216,7 +203,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0BodyElement() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0BodyElement";
@@ -301,7 +287,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens1() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens1";
