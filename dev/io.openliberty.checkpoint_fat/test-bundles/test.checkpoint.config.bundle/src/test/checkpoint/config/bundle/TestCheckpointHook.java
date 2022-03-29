@@ -58,12 +58,22 @@ public class TestCheckpointHook implements CheckpointHook {
     public void prepare() {
         System.out.println("TESTING - prepare " + getConfig());
         System.out.println("TESTING - in prepare method RESTORED - " + phase.restored() + " -- " + phaseRef.getProperty(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY));
+        System.out.println("TESTING - in prepare envs - " + //
+                           System.getenv("TEST_IMMUTABLE_KEY1") + " - " + //
+                           System.getenv("TEST_IMMUTABLE_KEY2") + " - " + //
+                           System.getenv("TEST_MUTABLE_KEY3") + " - " + //
+                           System.getenv("TEST_MUTABLE_KEY4"));
     }
 
     @Override
     public void restore() {
         System.out.println("TESTING - restore " + getConfig());
         System.out.println("TESTING - in restore method RESTORED - " + phase.restored() + " -- " + phaseRef.getProperty(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY));
+        System.out.println("TESTING - in restore envs - " + //
+                           System.getenv("TEST_IMMUTABLE_KEY1") + " - " + //
+                           System.getenv("TEST_IMMUTABLE_KEY2") + " - " + //
+                           System.getenv("TEST_MUTABLE_KEY3") + " - " + //
+                           System.getenv("TEST_MUTABLE_KEY4"));
     }
 
     private String getConfig() {

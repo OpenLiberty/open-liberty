@@ -927,7 +927,7 @@ javaCmd()
     X_WLP_IMMUTABLE_VARS="-Dorg.eclipse.openj9.criu.ImmutableEnvVars=INVOKED,WLP_USER_DIR,WLP_OUTPUT_DIR,LOG_DIR,X_LOG_DIR,LOG_FILE,X_LOG_FILE,VARIABLE_SOURCE_DIRS,X_CMD"
 
     # Add any additional user specified variables
-    if [ -z "$WLP_IMMUTABLE_VARS" ]; then
+    if [ -n "$WLP_IMMUTABLE_VARS" ]; then
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
@@ -1376,7 +1376,7 @@ restoreServer()
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
   # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
-  env | grep -Ev "INVOKED=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  env | grep -Ev "^INVOKED=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?
