@@ -220,7 +220,7 @@ public class Generator {
         // Kernel feature list tools and schema tools for some reason share the same configuration options file.
         // Hard-code the ones that apply to the schema generator tool to prevent --help from displaying undesired information.
 
-        String[] optionKeys = new String[] { "option-key.compactoutput", "option-key.encoding", "option-key.ignorePids", "option-key.locale", "option-key.schemaVersion", "option-key.outputVersion" };
+        String[] optionKeys = new String[] { "option-key.encoding", "option-key.ignorePids", "option-key.locale", "option-key.schemaVersion", "option-key.outputVersion" };
 
         System.out.println(options.getString("use.options"));
         System.out.println();
