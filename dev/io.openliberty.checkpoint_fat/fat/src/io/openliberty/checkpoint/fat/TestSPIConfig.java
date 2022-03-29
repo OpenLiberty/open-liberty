@@ -61,6 +61,8 @@ public class TestSPIConfig {
         server.startServer();
         assertNotNull("No restore config",
                       server.waitForStringInLogUsingMark("TESTING - restore config: pida=test1 pidb=test1", 0));
+        assertNotNull("No RESTORED true found in restore",
+                      server.waitForStringInLogUsingMark("TESTING - in restore method RESTORED - true -- true", 500));
     }
 
     @Test
@@ -68,6 +70,9 @@ public class TestSPIConfig {
         server.startServer();
         assertNotNull("No restore config",
                       server.waitForStringInLogUsingMark("TESTING - modified config: pida=env2 pidb=env2", 0));
+        assertNotNull("No RESTORED true found in restore",
+                      server.waitForStringInLogUsingMark("TESTING - in restore method RESTORED - true -- true", 500));
+
     }
 
     @Before
@@ -78,6 +83,8 @@ public class TestSPIConfig {
                              server -> {
                                  assertNotNull("No prepare config",
                                                server.waitForStringInLogUsingMark("TESTING - prepare config: pida=test1 pidb=test1", 0));
+                                 assertNotNull("No RESTORED false found in prepare",
+                                               server.waitForStringInLogUsingMark("TESTING - in prepare method RESTORED - false -- false", 500));
                                  configureBeforeRestore(testMethod);
                              });
 
