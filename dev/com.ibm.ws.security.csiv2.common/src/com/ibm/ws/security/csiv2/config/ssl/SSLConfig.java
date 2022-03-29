@@ -256,37 +256,25 @@ public class SSLConfig {
         return result;
     }
 
-    public static String[] getCompatibleCipherSuites(String[] choices, EnumSet<Options> supports, EnumSet<Options> requires) {
-        List<String> compatible = new ArrayList<String>(choices.length);
-        for (String choice : choices) {
-            boolean matches = matches(supports, requires, choice);
-            if (matches) {
-                compatible.add(choice);
-            }
-        }
-        return compatible.toArray(new String[compatible.size()]);
-    }
-
     /**
      * @param supports
      * @param requires
      * @param choice
      * @return
      */
-    private static boolean matches(EnumSet<Options> supports, EnumSet<Options> requires, String choice) {
+    private static void matches(EnumSet<Options> supports, EnumSet<Options> requires, String choice) {
         EnumSet<Options> actual = getOptions(choice);
 
         boolean matchesRequires = actual.containsAll(requires);
         if (!matchesRequires) {
-            Tr.warning(tc, "CSIv2_COMMON_CIPHER_SUITE_MISMATCH", choice, getOptions(choice), supports, requires);
+            Tr.warning(tc, "CSIv2_COMMON_CIPHER_SUITE_MISMATCH", choice, getOptions(choice), requires);
         }
-        // We only need to check the requires above and the supports will change over time so we should issue a debug msg.
         boolean matchesSupports = supports.containsAll(actual);
-        if (!matchesSupports && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.debug(tc, "CSIv2_COMMON_CIPHER_SUITE_MISMATCH", choice, getOptions(choice), supports, requires);
+        if (!matchesSupports && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The " + choice + " requested cipher suite appears to have " + getOptions(choice) + " association options that do not match the specified " + supports
+                         + " supported options.");
         }
 
-        return matchesRequires && matchesSupports;
     }
 
     /**
