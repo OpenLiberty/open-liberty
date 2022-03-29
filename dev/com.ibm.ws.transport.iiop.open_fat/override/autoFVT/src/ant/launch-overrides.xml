@@ -9,12 +9,13 @@
         IBM Corporation - initial API and implementation
  -->
 <project>
+    <echo message="NGMR java.specification.version='${java.specification.version}'" />
     <condition property="illegal.access.permit" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED">
-        <not>
             <or>
                 <equals arg1="11"  arg2="${java.specification.version}" />
                 <equals arg1="1.8" arg2="${java.specification.version}" />
             </or>
         </not>
     </condition>
+    <echo message="NGMR illegal.access.permit='${illegal.access.permit}'" />
 </project>
