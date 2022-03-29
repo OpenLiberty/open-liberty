@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-fragment
+  xmlns="https://jakarta.ee/xml/ns/jakartaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-fragment_6_0.xsd" 
+  version="6.0">
+
+  <context-service>
+    <name>java:app/concurrent/securityClearedContextSvc</name>
+    <cleared>Security</cleared>
+  </context-service>
+
+  <context-service>
+    <name>java:module/concurrent/securityPropagatedContextSvc</name>
+    <propagated>Security</propagated>
+  </context-service>
+
+  <context-service>
+    <name>java:app/concurrent/securityUnchangedContextSvc</name>
+    <unchanged>Security</unchanged>
+  </context-service>
+
+  <managed-executor>
+    <name>java:app/concurrent/executor2</name>
+    <context-service-ref>java:app/concurrent/securityUnchangedContextSvc</context-service-ref>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:module/concurrent/scheduledExecutor1</name>
+    <context-service-ref>java:app/concurrent/securityClearedContextSvc</context-service-ref>
+    <max-async>1</max-async>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/threadFactory7</name>
+    <context-service-ref>java:module/concurrent/securityPropagatedContextSvc</context-service-ref>
+    <priority>7</priority>
+  </managed-thread-factory>
+
+</web-fragment>
