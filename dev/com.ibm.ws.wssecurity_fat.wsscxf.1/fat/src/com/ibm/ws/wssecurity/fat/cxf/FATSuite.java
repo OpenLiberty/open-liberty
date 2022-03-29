@@ -44,8 +44,8 @@ import componenttest.rules.repeater.RepeatTests;
                 CxfX509MigTests.class,
 
                 //Full TODO: 03/25/22 - once we complete the feature, runtime updates of jaxws-2.2, complete the testing updates
-                /*CxfSha2SigTests.class,
-                CxfWss11SigTests.class,
+                CxfSha2SigTests.class,
+                /*CxfWss11SigTests.class,
                 CxfWss11EncTests.class,
                 CxfX509BasicTests.class,
                 CxfX509EncTests.class,
