@@ -14,12 +14,12 @@ package com.ibm.websphere.metatype;
  *
  */
 public enum SchemaVersion {
-    v1_0("1.0"), v1_1("1.1");
+    v1_0("1"), v1_1("1.1");
 
     private String value;
 
-    private SchemaVersion(String val) {
-        value = val;
+    private SchemaVersion(String version) {
+        value = getNormalizedVersion(version);
     }
 
     @Override
@@ -27,17 +27,47 @@ public enum SchemaVersion {
         return value;
     }
 
-    public static SchemaVersion getEnum(String value) {
-        if (value == null || value.length() == 0) {
-            return v1_0; //default to v1 if not specified
-        }
+    public static SchemaVersion getEnum(String version) {
+
+        String normalizedVersion = getNormalizedVersion(version);
 
         for (SchemaVersion v : values()) {
-            if (v.value.equals(value)) {
+            if (v.value.equals(normalizedVersion)) {
                 return v;
             }
         }
 
-        throw new IllegalArgumentException(value);
+        throw new IllegalArgumentException(version);
+    }
+
+    public static boolean isValid(String version) {
+
+        try {
+            getEnum(version);
+        } catch (IllegalArgumentException iae) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Strips spaces and ".0" from version parameter.
+     * Default to version "1" if version parameter is null or "";
+     */
+    public static String getNormalizedVersion(String version) {
+
+        if (version == null) {
+            version = "1";
+        } else {
+            version = version.trim();
+            if (version.length() == 0) {
+                version = "1";
+            }
+        }
+
+        if (version.endsWith(".0")) {
+            return version.substring(0, version.length() - 2);
+        }
+        return version;
     }
 }
