@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Friss\u00edtse a vis
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: A(z) {1} visszaes\u00e9si met\u00f3dus {2} param\u00e9terekkel nem tal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban.
-fallback.method.not.found.CWMFT5003E.explanation=A(z) {1} met\u00f3dushoz deklar\u00e1lva lett egy visszaes\u00e9si met\u00f3dus. Azonban ez a met\u00f3dus nem l\u00e9tezik a(z) {0} oszt\u00e1lyban.
+fallback.method.not.found.CWMFT5003E.explanation=Deklar\u00e1lva lett egy visszal\u00e9p\u00e9si met\u00f3dus, de ez a met\u00f3dus nem l\u00e9tezik a deklar\u00e1l\u00f3 oszt\u00e1lyban.
 fallback.method.not.found.CWMFT5003E.useraction=T\u00e1vol\u00edtsa el a fallback annot\u00e1ci\u00f3t, vagy adja hozz\u00e1 a hi\u00e1nyz\u00f3 met\u00f3dust.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -125,14 +125,19 @@ retry.parameter.invalid.value.CWMFT5019W.explanation=Az ingadoz\u00e1si k\u00e9s
 retry.parameter.invalid.value.CWMFT5019W.useraction=Jav\u00edtsa legal\u00e1bb az egyik param\u00e9ter \u00e9rt\u00e9k\u00e9t, hogy az ingadoz\u00e1si k\u00e9sleltet\u00e9s id\u0151tartama kisebb legyen, mint a k\u00e9sleltet\u00e9s id\u0151tartama.
 
 # A method does not return Future or CompletionStage
-asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E:  A(z) {0} aszinkron met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem java.util.concurrent.Future vagy java.util.concurrent.CompletionStage.
-asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation= Minden olyan met\u00f3dusnak, amely meg van jel\u00f6lve az org.eclipse.microprofile.faulttolerance.Asynchronous annot\u00e1ci\u00f3val, java.util.concurrent.Future vagy java.util.concurrent.CompletionStage visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: \ A(z) {0} aszinkron met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem java.util.concurrent.Future vagy java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Minden olyan met\u00f3dusnak, amely meg van jel\u00f6lve az org.eclipse.microprofile.faulttolerance.Asynchronous annot\u00e1ci\u00f3val, java.util.concurrent.Future vagy java.util.concurrent.CompletionStage visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie.
 asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Friss\u00edtse a visszat\u00e9r\u00e9si t\u00edpust.
 
 # A fallback method could not be found
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: A(z) {0} fallback met\u00f3dus a(z) {1} met\u00f3dusnak megfelel\u0151 param\u00e9ter \u00e9s visszat\u00e9r\u00e9si t\u00edpusokkal nem tal\u00e1lhat\u00f3 a(z) {2} oszt\u00e1lyhierarchi\u00e1ban.
 fallback.method.not.found.CWMFT5021E.explanation=A fallback met\u00f3dust deklar\u00e1lt\u00e1k, de nem l\u00e9tezik a deklar\u00e1l\u00f3 oszt\u00e1lyban, sz\u00fcl\u0151oszt\u00e1lyban vagy a megval\u00f3s\u00edtott fel\u00fcleteken.
 fallback.method.not.found.CWMFT5021E.useraction=T\u00e1vol\u00edtsa el a fallback annot\u00e1ci\u00f3t, vagy adja hozz\u00e1 a hi\u00e1nyz\u00f3 met\u00f3dust.  Ha a fallback met\u00f3dus l\u00e9tezik, de m\u00e9g mindig nem tal\u00e1lhat\u00f3, akkor ellen\u0151rizze, hogy a k\u00e9t met\u00f3dus param\u00e9tert\u00edpusai \u00e9s visszat\u00e9r\u00e9si t\u00edpusai egyeznek-e, \u00e9s hogy a fallback met\u00f3dus l\u00e1that\u00f3-e a megjel\u00f6lt met\u00f3dust deklar\u00e1l\u00f3 oszt\u00e1ly sz\u00e1m\u00e1ra.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: A MicroProfile Fault Tolerance feljegyz\u00e9sek nem haszn\u00e1lhat\u00f3k a(z) {0} feljegyz\u00e9ssel kombin\u00e1lva.
+anno.conflict.CWMFT5022E.explanation=A MicroProfile Fault Tolerance feljegyz\u00e9sek kever\u00e9se a megadott feljegyz\u00e9ssel nem t\u00e1mogatott.
+anno.conflict.CWMFT5022E.useraction=T\u00e1vol\u00edtsa el a MicroProfile Fault Tolerance feljegyz\u00e9seket vagy az \u00fctk\u00f6z\u0151 feljegyz\u00e9st.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.
