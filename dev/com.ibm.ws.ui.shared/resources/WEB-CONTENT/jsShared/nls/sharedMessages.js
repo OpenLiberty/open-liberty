@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,9 @@ define({
       SEARCH_BUTTON_ADD : "Add Search Criteria",
       SEARCH_BUTTON_CLEAR : "Clear Search Field",
       SEARCH_BUTTON_SEARCH : "Search",
+      SEARCH_BUTTON_ADD_TEXT : "Add",
+      SEARCH_BUTTON_CLEAR_TEXT : "Clear",
+      SEARCH_BUTTON_SEARCH_TEXT : "Search",
       SEARCH_RESOURCE_TYPE_ALL: "All", // Search all resource types
       GRID_COLUMN_SELECTION_BUTTON_LABEL: "Column Selection",
       GRID_COLUMN_SELECTION_MENU_LABEL: "Column Selection for {0}",    // Grid Identifier 

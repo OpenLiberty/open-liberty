@@ -1,6 +1,6 @@
 <div data-dojo-type="dijit/layout/ContentPane" class="searchBox" data-dojo-attach-event="" id="search-box">
 <!--
-    Copyright (c) 2016 IBM Corporation and others.
+    Copyright (c) 2016, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -22,17 +22,17 @@
    			 data-dojo-attach-event="keypress:checkKeyCode" />
      	
 	<div id="searchBoxButtonsDiv" >
-       <button  title="${addButtonLabel}" value="${addButtonLabel}" aria-label="${addButtonLabel}" id="search-searchBoxAddPill-button"  data-dojo-type="dijit/form/Button" type="button"  tabindex="0" 
+       <button  title="${addButtonLabel}" value="${addButtonLabel}" aria-label="${addButtonLabel}" label="${addButtonLabelText}" id="search-searchBoxAddPill-button"  data-dojo-type="dijit/form/Button" type="button"  tabindex="0"
 	   			data-dojo-props="iconClass:'searchBoxAddPillButtonIcon', baseClass:'searchBoxButton'" 
 	   			data-dojo-attach-point="searchPaneAddButton" 
 	   			data-dojo-attach-event="click:addNewSearchPill">
 	   </button>
-	   <button 	title="${searchButtonLabel}" value="${searchButtonLabel}" aria-label="${searchButtonLabel}" id="search-searchBoxSearch-button"  data-dojo-type="dijit/form/Button" type="button"   tabindex="0"
+	   <button 	title="${searchButtonLabel}" value="${searchButtonLabel}" aria-label="${searchButtonLabel}" label="${searchButtonLabelText}" id="search-searchBoxSearch-button"  data-dojo-type="dijit/form/Button" type="button"   tabindex="0"
 	   			data-dojo-props="iconClass:'searchBoxSearchButtonIcon', baseClass:'searchBoxButton'" 
 	   			data-dojo-attach-point="searchPaneSearchButton" 
 	   			data-dojo-attach-event="click:performSearch">
 	   </button>
-	   <button 	title="${clearButtonLabel}" value="${clearButtonLabel}" aria-label="${clearButtonLabel}" id="search-searchBoxClear-button"  data-dojo-type="dijit/form/Button" type="button" tabindex="0"  
+	   <button 	title="${clearButtonLabel}" value="${clearButtonLabel}" aria-label="${clearButtonLabel}" label="${clearButtonLabelText}" id="search-searchBoxClear-button"  data-dojo-type="dijit/form/Button" type="button" tabindex="0"
 	   			data-dojo-props="iconClass:'searchBoxClearButtonIcon', baseClass:'searchBoxButton'" 
 	   			data-dojo-attach-point="searchPaneClearButton" 
 	   			data-dojo-attach-event="click:resetSearchBox">

@@ -126,7 +126,7 @@ noscript {
 
 #login {
     position: absolute;
-    width: 380px;
+    width: 400px; /* make it wider to remove the horizontal scrollbar */
     top: 40%;
     left: 50%;
     margin-top: -200px;

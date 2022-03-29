@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -799,6 +799,31 @@ define(["jsShared/utils/toolData",
 
         );
       }));
+
+      this.__handleHighContrastBackgroundColor();
+    },
+
+    /**
+     * Add a class to indicate that it is high contrast black on white theme.
+     * This is to change the background color of the expand/collase graph dialog button
+     * which has a white arrow png.
+     */
+    __handleHighContrastBackgroundColor: function() {
+      if (document.body.classList.contains('dj_a11y')) {
+        // determine whether it is black on white
+        const testDiv = document.createElement('div');
+        testDiv.style.color = 'rgb(50, 50, 50)';
+        document.body.appendChild(testDiv);
+        var color = document.defaultView ? document.defaultView.getComputedStyle(testDiv, null).color : testDiv.currentStyle.color;
+        color = color.replace(/ /g, '');
+        if (color === 'rgb(0,0,0)') {
+          document.body.classList.add("a11y_blackOnWhite");
+        } else {
+          document.body.classList.remove("a11y_blackOnWhite");
+        }
+      } else {
+        document.body.classList.remove("a11y_blackOnWhite");
+      }
     },
 
     /**
