@@ -220,7 +220,7 @@ public class BasicSolicitedSPInitiatedTests extends BasicSAMLTests {
         // make sure we get to the login page, make sure we get the saml response and finally get to the test app
         List<validationData> expectations = helpers.setDefaultGoodSAMLExpectationsThroughACSOnly(SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, testSettings, null);
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_DEFAULT_APP, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on default app", null, SAMLConstants.APP1_TITLE);
-        helpers.setSimpleServletExpecatations(expectations, testSettings);
+        helpers.setSimpleServletExpectations(expectations, testSettings);
 
         Object somePage = helpers.buildSolicitedSPInitiatedRequest(_testName, webClient, updatedTestSettings, expectations, method);
 

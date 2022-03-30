@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.saml.sso20.token;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
@@ -483,7 +484,7 @@ public class Saml20TokenImplTest {
      * because it creates a common object for almost others test.
      */
     @BeforeClass
-    public static void setUpClass() throws SamlException, SAXException, IOException, ParserConfigurationException {
+    public static void setUpClass() throws Exception {
         final Set<Namespace> namespaces = new HashSet<Namespace>();
         mockery.checking(new Expectations() {
             {
@@ -533,7 +534,7 @@ public class Saml20TokenImplTest {
 
         samlToken = new Saml20TokenImpl(ASSERTION_MCK, PROVIDER_ID);
 
-        samlToken.holderOfKeyBytes = EXPECTED_HOLDER_OF_KEY_BYTES;
+        assignPrivateObjectField(samlToken, "holderOfKeyBytes", EXPECTED_HOLDER_OF_KEY_BYTES);
     }
 
     /**
@@ -606,13 +607,13 @@ public class Saml20TokenImplTest {
      * when holderOfKeyBytes is null.
      */
     @Test
-    public void getHolderOfKeyBytesShouldReturnNull() {
-        byte[] tmpArray = samlToken.holderOfKeyBytes;
-        samlToken.holderOfKeyBytes = null;
+    public void getHolderOfKeyBytesShouldReturnNull() throws Exception {
+        byte[] tmpArray = samlToken.getHolderOfKeyBytes();
+        assignPrivateObjectField(samlToken, "holderOfKeyBytes", null);
 
         Assert.assertNull(samlToken.getHolderOfKeyBytes());
 
-        samlToken.holderOfKeyBytes = tmpArray;
+        assignPrivateObjectField(samlToken, "holderOfKeyBytes", tmpArray);
     }
 
     /**
@@ -924,10 +925,23 @@ public class Saml20TokenImplTest {
                           + "\n proxyRestriction:" + false + "\n proxyRestrictionCount:"
                           + PROXYRESTRICTION_PROXY_COUNT
                           + "\n proxyRestrictionAudience:[" + AUDIENCE_URI + "]"
-                          + "\n signerCertificate:[" + x509Cert.getSubjectDN().getName()
-                          + "]";
+                          + "\n signerCertificate:[" + x509Cert.getSubjectDN().getName() + "]"
+                          + "\n wasDeserialized:false";
 
         Assert.assertEquals(expected, samlToken.toString());
     }
 
+    /**
+     * Assign the value to an object private field.
+     *
+     * @param o         The object to assign the value to the field.
+     * @param fieldName The name of the field.
+     * @param value     The value to assign.
+     * @throws Exception If the operation failed for some unforeseen reason.
+     */
+    private static void assignPrivateObjectField(Object o, String fieldName, Object value) throws Exception {
+        Field f = o.getClass().getDeclaredField(fieldName);
+        f.setAccessible(true);
+        f.set(o, value);
+    }
 }

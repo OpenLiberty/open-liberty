@@ -253,7 +253,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
             // Provide information on how to manually connect to the machine if running locally
             if (FATRunner.FAT_TEST_LOCALRUN) {
-                Log.info(c, m, "If you need to connect to any currently running docker containers manaully, export the following environment variables in your terminal:\n" +
+                Log.info(c, m, "If you need to connect to any currently running docker containers manually, export the following environment variables in your terminal:\n" +
                                "export DOCKER_HOST=" + dockerHostURL + "\n" +
                                "export DOCKER_TLS_VERIFY=1\n" +
                                "export DOCKER_CERT_PATH=" + certDir.getAbsolutePath());

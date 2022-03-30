@@ -33,6 +33,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache authentication cache tests for LTPA and basic authentication.
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheAuthenticationCacheTest extends BaseTestCase {

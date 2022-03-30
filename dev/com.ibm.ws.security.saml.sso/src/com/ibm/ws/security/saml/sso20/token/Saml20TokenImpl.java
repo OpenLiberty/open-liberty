@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.security.saml.sso20.token;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -41,6 +43,7 @@ import org.opensaml.saml2.core.ProxyRestriction;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.SubjectLocality;
+import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.xml.Namespace;
 import org.opensaml.xml.NamespaceManager;
 import org.opensaml.xml.XMLObject;
@@ -60,47 +63,49 @@ import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.metadata.TraceConstants;
+import com.ibm.ws.security.saml.sso20.rs.ByteArrayDecoder;
 
+@SuppressWarnings("restriction")
 public class Saml20TokenImpl implements Saml20Token, Serializable {
-    /** */
-    private static final long serialVersionUID = -862850937499495719L;
-    private transient static TraceComponent tc = Tr.register(Saml20TokenImpl.class,
-                                                             TraceConstants.TRACE_GROUP,
-                                                             TraceConstants.MESSAGE_BUNDLE);
-    transient Element assertionDOM; // this for the convenience of wssec samlToken
-    transient XMLObject samlXMLObject = null;
 
-    String samlString = null;
-    String samlID;
-    QName assertionQName;
-    Date samlExpires;
-    Date samlCreated;
-    byte[] holderOfKeyBytes;
-    String SAMLIssuerName;
-    String issuerNameFormat = null;
-    String authenticationMethod;
-    Date authenticationInstant;
-    String sessionIndex = null;
-    String subjectDNS;
-    String subjectIPAddress;
-    boolean oneTimeUse = false;
-    boolean proxyRestriction = false;
-    long proxyRestrictionCount = 0;
-    String nameId;
-    String nameIdFormat;
-    List<String> proxyRestrictionAudience = new ArrayList<String>();
-    List<X509Certificate> signerCertificates = new ArrayList<X509Certificate>();
-    List<String> signerCertificateDN = new ArrayList<String>();
-    List<String> confirmationMethod = new ArrayList<String>();
-    List<String> audienceRestriction = new ArrayList<String>();
-    List<Saml20Attribute> attributes = new ArrayList<Saml20Attribute>();
-    String providerId;
-    long lSessionNotOnOrAfter = 0L; // Gets the milliseconds of the datetime instant from the Java epoch of 1970-01-01T00:00:00Z.
-    HashMap<String, Object> maps = new HashMap<String, Object>();
-    final static String samlElement = "samlElement";
-    final static String SINDEX = "sessionIndex";
-    final static String NAMEID = "NameID";
-    final static String dsUri = "http://www.w3.org/2000/09/xmldsig#";
+    private static final long serialVersionUID = -862850937499495719L;
+    private static final TraceComponent tc = Tr.register(Saml20TokenImpl.class,
+                                                         TraceConstants.TRACE_GROUP,
+                                                         TraceConstants.MESSAGE_BUNDLE);
+    private final static String samlElement = "samlElement";
+    private final static String SINDEX = "sessionIndex";
+    private final static String NAMEID = "NameID";
+    private final static String dsUri = "http://www.w3.org/2000/09/xmldsig#";
+
+    private String samlString = null;
+    private String providerId;
+    private transient Element assertionDOM; // this for the convenience of wssec samlToken
+    private transient String samlID;
+    private transient QName assertionQName;
+    private transient Date samlExpires;
+    private transient Date samlCreated;
+    private transient byte[] holderOfKeyBytes;
+    private transient String SAMLIssuerName;
+    private transient String issuerNameFormat = null;
+    private transient String authenticationMethod;
+    private transient Date authenticationInstant;
+    private transient String sessionIndex = null;
+    private transient String subjectDNS;
+    private transient String subjectIPAddress;
+    private transient boolean oneTimeUse = false;
+    private transient boolean proxyRestriction = false;
+    private transient long proxyRestrictionCount = 0;
+    private transient String nameId;
+    private transient String nameIdFormat;
+    private transient List<String> proxyRestrictionAudience = new ArrayList<String>();
+    private transient List<X509Certificate> signerCertificates = new ArrayList<X509Certificate>();
+    private transient List<String> signerCertificateDN = new ArrayList<String>();
+    private transient List<String> confirmationMethod = new ArrayList<String>();
+    private transient List<String> audienceRestriction = new ArrayList<String>();
+    private transient List<Saml20Attribute> attributes = new ArrayList<Saml20Attribute>();
+    private transient long lSessionNotOnOrAfter = 0L; // Gets the milliseconds of the datetime instant from the Java epoch of 1970-01-01T00:00:00Z.
+    private transient Map<String, Object> maps = new HashMap<String, Object>();
+    private transient boolean wasDeserialized = false;
 
     public Saml20TokenImpl(Assertion assertion, String providerId) throws SamlException {
         this.providerId = providerId;
@@ -111,7 +116,7 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
         init(assertion);
     }
 
-    void init(Assertion assertion) throws SamlException {
+    private void init(Assertion assertion) throws SamlException {
         this.assertionDOM = getClonedAssertionDom(assertion);
         this.maps.put(samlElement, this.assertionDOM);
         this.samlString = XMLHelper.nodeToString(this.assertionDOM);
@@ -607,7 +612,6 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
      * @param saml
      */
     private String formatSamlString(String saml) {
-        // TODO Auto-generated method stub
         String samlString = saml;
         //String line_separator = System.getProperty("line.separator");
         if (saml != null) {
@@ -653,7 +657,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
                         "\n proxyRestrictionCount:" + proxyRestrictionCount +
                         "\n proxyRestrictionAudience:" + proxyRestrictionAudience +
                         // "\n attributes: ommitted" + attributes +
-                        "\n signerCertificate:" + signerCertificateDN;
+                        "\n signerCertificate:" + signerCertificateDN +
+                        "\n wasDeserialized:" + wasDeserialized;
         return result;
     }
 
@@ -700,15 +705,36 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
         return dom;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.websphere.security.saml2.Saml20Token#getSessionIndex()
-     */
-//    @Override
-//    public String getSessionIndex() {
-//        // TODO Auto-generated method stub
-//        return this.sessionIndex;
-//    }
+    private void readObject(ObjectInputStream input) throws ClassNotFoundException, IOException {
 
+        /*
+         * Read in all non-transient fields.
+         */
+        input.defaultReadObject();
+
+        /*
+         * Transient collections need to be instantiated.
+         */
+        this.proxyRestrictionAudience = new ArrayList<String>();
+        this.signerCertificates = new ArrayList<X509Certificate>();
+        this.signerCertificateDN = new ArrayList<String>();
+        this.confirmationMethod = new ArrayList<String>();
+        this.audienceRestriction = new ArrayList<String>();
+        this.attributes = new ArrayList<Saml20Attribute>();
+        this.maps = new HashMap<String, Object>();
+        this.wasDeserialized = true;
+
+        /*
+         * Create the Assertion from the SAML assertion string and call init().
+         */
+        ByteArrayDecoder bad = new ByteArrayDecoder();
+        try {
+            Assertion assertion = (Assertion) bad.unmarshallMessage(new ByteArrayInputStream(samlString.getBytes()));
+            this.init(assertion);
+        } catch (MessageDecodingException e) {
+            throw new IOException("Error unmarshalling SAML during deserialization. " + e.getMessage(), e);
+        } catch (SamlException e) {
+            throw new IOException("Error initializing " + Saml20TokenImpl.class.getSimpleName() + " during deserialization. " + e.getMessage(), e);
+        }
+    }
 }

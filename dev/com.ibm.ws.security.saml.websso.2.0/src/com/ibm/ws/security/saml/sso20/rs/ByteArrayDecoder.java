@@ -37,7 +37,7 @@ public class ByteArrayDecoder {
     private static final TraceComponent tc = Tr.register(ByteArrayDecoder.class,
                                                          TraceConstants.TRACE_GROUP,
                                                          TraceConstants.MESSAGE_BUNDLE);
-    
+
     ParserPool parserPool = XMLObjectProviderRegistrySupport.getParserPool(); //v3
 
     /** Constructor. */
@@ -65,7 +65,7 @@ public class ByteArrayDecoder {
      *
      * @throws MessageDecodingException thrown if there is a problem deserializing and unmarshalling the message
      */
-    protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
+    public XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
 
         try {
             Document messageDoc = parserPool.parse(messageStream);

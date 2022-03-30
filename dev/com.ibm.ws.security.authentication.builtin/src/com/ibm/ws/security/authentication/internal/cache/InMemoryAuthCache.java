@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
+import com.ibm.ws.security.authentication.cache.CacheObject;
 
 /**
  * Local in-memory key-value cache containing three internal tables in order to implement a least-recently-used removal algorithm.
@@ -164,7 +165,7 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
      * Insert the value into the Cache using the specified key.
      */
     @Override
-    public synchronized void insert(Object key, Object value) {
+    public synchronized void insert(Object key, CacheObject value) {
         // evict until size < maxSize
         while (isEvictionRequired() && entryLimit > 0 && entryLimit < Integer.MAX_VALUE) {
             evictStaleEntries();
