@@ -48,7 +48,7 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
 
   private JsMainImpl _jsmain = null;
   private boolean _multipleSet = false;
-
+  
   public String quoteJmxPropertyValue(String s) {
     if (JsAdminService.isValidJmxPropertyValue(s) == true)
       return s;

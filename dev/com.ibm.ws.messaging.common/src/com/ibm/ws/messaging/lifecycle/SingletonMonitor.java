@@ -41,8 +41,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.logging.Introspector;
 
 /**
@@ -51,7 +51,14 @@ import com.ibm.wsspi.logging.Introspector;
  * 
  * @see SingletonsReady
  */
-@Component(immediate = true, configurationPolicy = REQUIRE)
+@Component(
+        immediate = true, 
+        configurationPolicy = REQUIRE,
+        property = {
+                "osgi.command.scope=sib",
+                "osgi.command.function=singletons",
+                "service.vendor=IBM"
+        })
 public class SingletonMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(SingletonMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
@@ -71,8 +78,8 @@ public class SingletonMonitor implements Introspector {
         this.configurationAdmin = configurationAdmin;
         String[] pids = (String[]) properties.get("singletonDeclarations");
         Objects.requireNonNull(pids);
-        declaredSingletons = unmodifiableSet(Stream.of(pids).collect(toSet()));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, String.format("%s%nKnown configured messaging singleton pids: %s%nids: ", this, Arrays.toString(pids), declaredSingletons));
+        declaredSingletons = unmodifiableSet(Stream.of(pids).map(this::servicePidToSingletonType).collect(toSet()));
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Known configured messaging singleton types: %s%nagent pids: %s", declaredSingletons, Arrays.toString(pids)));
     }
 
     @Deactivate
@@ -80,20 +87,18 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, this + " deactivate");
     }
 
-    @Trivial
-    private String servicePidToConfigId(String servicePid) {
-        Configuration[] configs;
+    private String servicePidToSingletonType(String servicePid) {
         try {
-            configs = this.configurationAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
-
+            Configuration[] configs = this.configurationAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
             if (configs == null) {
-                // This is not strictly an error given that we may be processing a pid from a deleted application
-                Tr.debug(tc, "No configs found matching servicePid=" + servicePid);
+                Tr.debug(tc, "No configs found matching servicePid: " + servicePid);
                 return "PID not found: " + servicePid;
             }
-            if (configs.length > 1)
-                throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
+            if (configs.length > 1) throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
 
+            String type = (String) configs[0].getProperties().get("type");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.debug(this, tc, servicePid + " -> " + type);
+            return type;
         } catch (IOException | InvalidSyntaxException | IllegalStateException e) {
             FFDCFilter.processException(e, "com.ibm.ws.messaging.lifecycle.SingletonMonitor.servicePidToConfigId", "98");
             StringWriter sw = new StringWriter();
@@ -101,8 +106,6 @@ public class SingletonMonitor implements Introspector {
             return "Error listing singletons:" + sw;
         }
 
-        String id = (String) configs[0].getProperties().get("id");
-        return id;
     }
 
     @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY, target = "(id=unbound)" /* config will supply the correct target filter */)
@@ -143,6 +146,14 @@ public class SingletonMonitor implements Introspector {
             .peek(s -> out.print(realizedSingletons.contains(s) ? 'R' : ' '))
             .peek(s -> out.print("] "))
             .forEach(out::println);
+    }
+    
+    public void singletons() throws Exception {
+        System.out.println(getIntrospectorName());
+        System.out.println(getIntrospectorDescription());
+        try (PrintWriter pw = new PrintWriter(System.out)) {
+            introspect(pw);
+        }
     }
 
     private static String getSingletonType(Map<String, Object> props) {

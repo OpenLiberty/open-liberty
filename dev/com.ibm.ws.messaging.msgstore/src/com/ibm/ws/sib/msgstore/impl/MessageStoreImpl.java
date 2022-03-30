@@ -48,6 +48,7 @@ import java.util.Hashtable;
 
 import javax.transaction.xa.Xid;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -55,6 +56,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.lifecycle.Singleton;
+import com.ibm.ws.messaging.lifecycle.SingletonAgent;
 import com.ibm.ws.objectManager.NonExistentLogFileException;
 import com.ibm.ws.sib.admin.JsEObject;
 import com.ibm.ws.sib.admin.JsHealthMonitor;

@@ -22,10 +22,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -55,8 +53,8 @@ import com.ibm.websphere.ras.TraceComponent;
         configurationPolicy = REQUIRE,
         property = {
                 "service.vendor=IBM",
-                "singleton.cardinality.minimum=100000",
-                "singleton.target=(id=unbound)"})
+                "singletons.cardinality.minimum=100000",
+                "singletons.target=(id=unbound)"})
 public class SingletonsReady {
     private static final TraceComponent tc = Tr.register(SingletonsReady.class);
 
