@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -258,12 +258,16 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
         // (True) - all EJBs will be initialized during application start.
         // (False) - all EJBs (except MDBs and Startupbeans) will have their initialization deferred.
         // (Not Set) - The property is not set and therefore deferred initialization will be determined
-        //             on a bean-by-bean basis.
+        //             on a bean-by-bean basis. If not configured for a bean, then the default is false
+        //             unless the server is creating a checkpoint after application start, then true.
         // Moved from processBean via defect 294477
         String ias = ContainerProperties.InitializeEJBsAtStartup; // 391302
         if (ias != null) {
             ivInitAtStartupSet = true;
             ivInitAtStartup = ias.equalsIgnoreCase("true");
+        } else {
+            ivInitAtStartupSet = false;
+            ivInitAtStartup = isCheckpointApplications();
         }
 
         //PK15508: make uowCrtl a global variable.  Change from: UOWControl ivUOWControl = cef.getUOWControl(tx); to:
@@ -384,7 +388,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                 ivInitAtStartup = startEjbsAtAppStart;
             } else {
                 ivInitAtStartupSet = false;
-                ivInitAtStartup = false;
+                ivInitAtStartup = isCheckpointApplications();
             }
         }
     }
@@ -727,6 +731,8 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                 }
 
                 HomeRecord hr = bmd.homeRecord;
+
+                // Unbind from java:global. Removes visibility from other application.
                 if (hr.ivJavaGlobalBindings != null) {
                     try {
                         binder.unbindJavaGlobal(hr.ivJavaGlobalBindings); // F743-26137, F69147.2
@@ -738,7 +744,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                     }
                 }
 
-                // Unbind from java:global.  If the app is stopping anyway,
+                // Unbind from java:app.  If the app is stopping anyway,
                 // then don't bother since the namespace will be destroyed.
                 if (hr.ivJavaAppBindings != null && !ejbAMD.isStopping()) {
                     try {
@@ -751,9 +757,10 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                     }
                 }
 
-                // No need to unbind from java:module since that namespace
-                // will be destroyed.
+                // No need to unbind from java:module or java:comp since those
+                // namespaces will be destroyed.
 
+                // Finally, unbind from legacy locations: server root, ejblocal:, and local:
                 try {
                     binder.unbindBindings(hr); // F69147.2
                 } catch (NamingException ex) {
