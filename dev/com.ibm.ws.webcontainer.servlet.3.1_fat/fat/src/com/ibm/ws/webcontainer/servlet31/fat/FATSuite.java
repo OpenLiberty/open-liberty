@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -51,29 +47,29 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                WCServerTest.class, 
-                AsyncReadListenerHttpUnit.class, 
-                AsyncWriteListenerHttpUnit.class, 
-                UpgradeWriteListenerHttpUnit.class, 
-                UpgradeReadListenerHttpUnit.class, 
+                WCServerTest.class,
+                AsyncReadListenerHttpUnit.class,
+                AsyncWriteListenerHttpUnit.class,
+                UpgradeWriteListenerHttpUnit.class,
+                UpgradeReadListenerHttpUnit.class,
                 UpgradeReadWriteTimeoutHttpUnit.class,
-                VHServerHttpUnit.class, 
-                WCServerHttpUnit.class, 
-                JSPServerHttpUnit.class, 
-                HttpSessionAttListenerHttpUnit.class, 
-                CDITests.class, 
-                CDIUpgradeHandlerTest.class, 
-                CDIServletInterceptorTest.class, 
-                CDIBeanInterceptorServletTest.class, 
-                CDIListenersTest.class, 
-                CDINoInjectionTest.class, 
-                CDIServletFilterListenerDynamicTest.class, 
-                CDIServletFilterListenerTest.class, 
-                FormLoginReadListenerTest.class, 
-                NBMultiReadTest.class 
+                VHServerHttpUnit.class,
+                WCServerHttpUnit.class,
+                JSPServerHttpUnit.class,
+                HttpSessionAttListenerHttpUnit.class,
+                CDITests.class,
+                CDIUpgradeHandlerTest.class,
+                CDIServletInterceptorTest.class,
+                CDIBeanInterceptorServletTest.class,
+                CDIListenersTest.class,
+                CDINoInjectionTest.class,
+                CDIServletFilterListenerDynamicTest.class,
+                CDIServletFilterListenerTest.class,
+                FormLoginReadListenerTest.class,
+                NBMultiReadTest.class
 })
 public class FATSuite {
-    
+
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */
@@ -85,8 +81,8 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                    .fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES()); 
-                    
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
+
 }
