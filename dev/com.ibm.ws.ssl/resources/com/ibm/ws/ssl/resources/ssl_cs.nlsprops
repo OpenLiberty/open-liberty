@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1d
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: P\u0159i inicializaci SSL do\u0161lo k chyb\u011b. V\u00fdjimka: {0}
 ssl.init.error.CWPKI0008E.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b b\u011bhem inicializace zabezpe\u010den\u00ed.
-ssl.init.error.CWPKI0008E.useraction=Jde o obecnou chybu. \
-Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s inicializac\u00ed SSL nebo s probl\u00e9mem konfigurace. \
-Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
+ssl.init.error.CWPKI0008E.useraction=Jde o obecnou chybu. Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s inicializac\u00ed SSL nebo s probl\u00e9mem konfigurace. Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it objekt zabezpe\u010den\u00ed b\u011bhem inicializace.
 ssl.init.nullsecobject.CWPKI0009E.explanation=Objekt zabezpe\u010den\u00ed nelze vytvo\u0159it z \u00falo\u017ei\u0161t\u011b. Jedn\u00e1 se o intern\u00ed chybu. Soubor security.xml je pravd\u011bpodobn\u011b po\u0161kozen nebo chyb\u00ed. 
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: P\u0159i zastavov\u00e1n\u00ed komponenty SSL do\u0161lo k chyb\u011b. V\u00fdjimka: {0}
 ssl.stop.error.CWPKI0015E.explanation=P\u0159i zastavov\u00e1n\u00ed komponenty SSL do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
-ssl.stop.error.CWPKI0015E.useraction=Jde o obecnou chybu. \
-Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s chybou nebo s probl\u00e9mem konfigurace. \
-Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
+ssl.stop.error.CWPKI0015E.useraction=Jde o obecnou chybu. Vyhledejte p\u0159edchoz\u00ed zpr\u00e1vy souvisej\u00edc\u00ed s chybou nebo s probl\u00e9mem konfigurace. Povolen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed prost\u0159ednictv\u00edm volby SSL=all=enabled m\u016f\u017ee v\u00e9st k z\u00edsk\u00e1n\u00ed dal\u0161\u00edch informac\u00ed.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Platnost certifik\u00e1tu s aliasem {0} z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {1} vypr\u0161\u00ed za {2} dn\u016f.
 ssl.expiration.warning.CWPKI0016W.explanation=Platnost certifik\u00e1tu v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f v nejbli\u017e\u0161\u00ed dob\u011b vypr\u0161\u00ed.
@@ -187,7 +183,8 @@ ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Nelze naj\u00edt vlast
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=N\u00e1zev hostitele je t\u0159eba zadat do seznamu hostitel\u016f ve stejn\u00e9m kanonick\u00e9m form\u00e1tu, v jak\u00e9m se zobrazuje v souboru serverindex.xml.
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Upravte seznam hostitel\u016f p\u0159eveden\u00edm na po\u017eadovan\u00fd kanonick\u00fd form\u00e1t.
 # -------------------------------------------------------------------------------------------------
-ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Do\u0161lo k chyb\u011b nav\u00e1z\u00e1n\u00ed komunikace zabezpe\u010den\u00ed SSL na stran\u011b zabezpe\u010den\u00e9ho klienta. Do \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti klienta je nutn\u00e9 p\u0159idat \u00fadaje o podepisuj\u00edc\u00edm subjektu SSL serveru. \u00dadaje o podepisuj\u00edc\u00edm subjektu lze ze serveru na\u010d\u00edst pomoc\u00ed obslu\u017en\u00e9ho programu retrieveSigners. K pou\u017eit\u00ed tohoto programu je v\u0161ak nutn\u00e9 disponovat p\u0159\u00edslu\u0161n\u00fdmi opr\u00e1vn\u011bn\u00edmi administr\u00e1tora. P\u0159ed spu\u0161t\u011bn\u00edm klienta se obra\u0165te na administr\u00e1tora s \u017e\u00e1dost\u00ed o spu\u0161t\u011bn\u00ed tohoto programu za \u00fa\u010delem konfigurace zabezpe\u010den\u00e9ho prost\u0159ed\u00ed. Jinou mo\u017enost\u00ed je povolen\u00ed slu\u017eby com.ibm.ssl.enableSignerExchangePrompt v ssl.client.props pro polo\u017eku \"DefaultSSLSettings\" s c\u00edlem povolit p\u0159\u00edjem \u00fadaj\u016f podepisuj\u00edc\u00edho subjektu p\u0159i pokusu o nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed.
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Do\u0161lo k chyb\u011b nav\u00e1z\u00e1n\u00ed komunikace zabezpe\u010den\u00ed SSL na stran\u011b zabezpe\u010den\u00e9ho klienta. Do \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti klienta je nutn\u00e9 p\u0159idat \u00fadaje o podepisuj\u00edc\u00edm subjektu SSL serveru. \u00dadaje o podepisuj\u00edc\u00edm subjektu lze ze serveru na\u010d\u00edst pomoc\u00ed obslu\u017en\u00e9ho programu retrieveSigners. K pou\u017eit\u00ed tohoto programu je v\u0161ak nutn\u00e9 disponovat p\u0159\u00edslu\u0161n\u00fdmi opr\u00e1vn\u011bn\u00edmi administr\u00e1tora. P\u0159ed spu\u0161t\u011bn\u00edm klienta se obra\u0165te na administr\u00e1tora s \u017e\u00e1dost\u00ed o spu\u0161t\u011bn\u00ed tohoto programu za \u00fa\u010delem konfigurace zabezpe\u010den\u00e9ho prost\u0159ed\u00ed. Jinou mo\u017enost\u00ed je povolen\u00ed slu\u017eby com.ibm.ssl.enableSignerExchangePrompt v ssl.client.props pro polo\u017eku "DefaultSSLSettin\
+    gs" s c\u00edlem povolit p\u0159\u00edjem \u00fadaj\u016f podepisuj\u00edc\u00edho subjektu p\u0159i pokusu o nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed.
 ssl.handshake.failure.info.CWPKI0040I.explanation=Do \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti klienta je nutn\u00e9 p\u0159idat \u00fadaje o podepisuj\u00edc\u00edm subjektu SSL serveru. Podepisuj\u00edc\u00ed subjekty lze bu\u010f st\u00e1hnout automaticky ze serveru, nebo zadat ru\u010dn\u011b p\u0159i pokusu o nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed.
 ssl.handshake.failure.info.CWPKI0040I.useraction=Bu\u010f spus\u0165te obslu\u017en\u00fd program retrieveSigners, nebo povolte funkci v\u00fdzvy k v\u00fdm\u011bn\u011b \u00fadaj\u016f podepisuj\u00edc\u00edho subjektu.
 # -------------------------------------------------------------------------------------------------
@@ -234,14 +231,12 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=Chcete-li zajistit pou\u017eit\u
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** V\u00ddZVA K V\u00ddM\u011aN\u011a PODEPISUJ\u00cdC\u00cdCH SUBJEKT\u016e SSL ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=Podepisuj\u00edc\u00ed subjekt SSL z c\u00edlov\u00e9ho hostitele nebyl nalezen v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti {0}.\n\
-\n\
-\u00dadaje podepisuj\u00edc\u00edho subjektu jsou n\u00e1sleduj\u00edc\u00ed (ov\u011b\u0159te, zda hodnota ov\u011b\u0159ov\u00e1n\u00ed digest odpov\u00edd\u00e1 hodnot\u011b zobrazen\u00e9 na serveru): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) subjektu:    
-ssl.trustmanager.signer.prompt.CWPKI0103I=  Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) vydavatele:     
-ssl.trustmanager.signer.prompt.CWPKI0104I=  S\u00e9riov\u00e9 \u010d\u00edslo: 
-ssl.trustmanager.signer.prompt.CWPKI0105I=  Ov\u011b\u0159ov\u00e1n\u00ed typu digest, SHA-1:  
-ssl.trustmanager.signer.prompt.CWPKI0106I=  Ov\u011b\u0159ov\u00e1n\u00ed typu digest, MD5:    
+ssl.trustmanager.signer.prompt.CWPKI0101I=Podepisuj\u00edc\u00ed subjekt SSL z c\u00edlov\u00e9ho hostitele nebyl nalezen v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti {0}.\n\n\u00dadaje podepisuj\u00edc\u00edho subjektu jsou n\u00e1sleduj\u00edc\u00ed (ov\u011b\u0159te, zda hodnota ov\u011b\u0159ov\u00e1n\u00ed digest odpov\u00edd\u00e1 hodnot\u011b zobrazen\u00e9 na serveru): 
+ssl.trustmanager.signer.prompt.CWPKI0102I= Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) subjektu:    
+ssl.trustmanager.signer.prompt.CWPKI0103I= Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) vydavatele:     
+ssl.trustmanager.signer.prompt.CWPKI0104I= S\u00e9riov\u00e9 \u010d\u00edslo: 
+ssl.trustmanager.signer.prompt.CWPKI0105I= Ov\u011b\u0159ov\u00e1n\u00ed typu digest, SHA-1:  
+ssl.trustmanager.signer.prompt.CWPKI0106I= Ov\u011b\u0159ov\u00e1n\u00ed typu digest, MD5:    
 ssl.trustmanager.signer.prompt.CWPKI0107I=Chcete nyn\u00ed p\u0159idat podepisuj\u00edc\u00ed subjekt do \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti? (a/n) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
@@ -251,7 +246,7 @@ ssl.trustmanager.signer.prompt.answer.yes=a
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=ano
 ssl.trustmanager.signer.prompt.CWPKI0108I=Bude pravd\u011bpodobn\u011b nutn\u00e9 zopakovat \u017e\u00e1dost, pokud dojde k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu soketu p\u0159i \u010dek\u00e1n\u00ed na odpov\u011b\u010f na v\u00fdzvu. Pokud je vy\u017eadov\u00e1no opakov\u00e1n\u00ed operace, m\u011bjte na pam\u011bti, \u017ee v p\u0159\u00edpad\u011b zad\u00e1n\u00ed mo\u017enosti (a) ji\u017e nebude v\u00fdzva znovu zobrazena, co\u017e znamen\u00e1, \u017ee \u00fadaje podepisuj\u00edc\u00edho subjektu ji\u017e byly p\u0159id\u00e1ny do \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Vypr\u0161en\u00ed platnosti:       
+ssl.trustmanager.signer.prompt.CWPKI0109I= Vypr\u0161en\u00ed platnosti:       
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -281,10 +276,7 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=Ur\u010dete p\u0159\u00ed\u
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Seznam n\u00e1zv\u016f pro polo\u017eku <n\u00e1zev_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f>, resp. <n\u00e1zev_lok\u00e1ln\u00edho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> lze na\u010d\u00edst pomoc\u00ed voleb -listRemoteKeyStoreNames a -listLocalKeyStoreNames.\n\
-\n\
-Pou\u017eit\u00ed: retrieveSigners <n\u00e1zev_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> <n\u00e1zev_lok\u00e1ln\u00edho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> [volby]\n\
-\        volby: [-profileName <n\u00e1zev_profilu>] [-remoteAlias <alias_ze_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b>] [-localAlias ] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <hostitel>] [-port <port>] [-conntype <RMI|SOAP>] [-user <u\u017eivatel>] [-password <heslo>] [-trace] [-logfile <n\u00e1zev_souboru>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Seznam n\u00e1zv\u016f pro polo\u017eku <n\u00e1zev_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f>, resp. <n\u00e1zev_lok\u00e1ln\u00edho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> lze na\u010d\u00edst pomoc\u00ed voleb -listRemoteKeyStoreNames a -listLocalKeyStoreNames.\n\nPou\u017eit\u00ed: retrieveSigners <n\u00e1zev_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> <n\u00e1zev_lok\u00e1ln\u00edho_\u00falo\u017ei\u0161t\u011b_kl\u00ed\u010d\u016f> [volby]\n        volby: [-profileName <n\u00e1zev_profilu>] [-remoteAlias <alias_ze_vzd\u00e1len\u00e9ho_\u00falo\u017ei\u0161t\u011b>] [-localAlias ] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <hostitel>] [-port <port>] [-conntype <RMI|SOAP>] [-user <u\u017eivatel>] [-password <heslo>] [-trace] [-logfile <n\u00e1zev_souboru>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 # -------------------------------------------------------------------------------------------------
@@ -345,8 +337,8 @@ ssl.signer.general.error.CWPKI0314E.explanation=Zkontrolujte p\u0159\u00edkazov\
 ssl.signer.general.error.CWPKI0314E.useraction=P\u0159e\u010dt\u011bte si n\u00e1pov\u011bdu k pou\u017eit\u00ed, opravte volby a zopakujte spu\u0161t\u011bn\u00ed.
 # -------------------------------------------------------------------------------------------------
 ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Vlastnosti konfigurace SSL maj\u00ed hodnotu Null. M\u016f\u017ee se jednat o probl\u00e9m s anal\u00fdzou konfigurace klienta SSL.
-ssl.no.properties.error.CWPKI0315E.explanation=Nejsou nastaveny \u017e\u00e1dn\u00e9 vlastnosti konfigurace SSL. Je mo\u017en\u00e9, \u017ee vlastnost \'com.ibm.SSL.ConfigURL\' nen\u00ed nastavena spr\u00e1vn\u011b, nebo \u017ee do\u0161lo k chyb\u011b p\u0159i anal\u00fdze konfigurace klienta SSL.
-ssl.no.properties.error.CWPKI0315E.useraction=Ov\u011b\u0159te, \u017ee soubor ssl.client.props neobsahuje chyby a \u017ee je vlastnost \'com.ibm.SSL.ConfigURL\' nastavena.
+ssl.no.properties.error.CWPKI0315E.explanation=Nejsou nastaveny \u017e\u00e1dn\u00e9 vlastnosti konfigurace SSL. Je mo\u017en\u00e9, \u017ee vlastnost 'com.ibm.SSL.ConfigURL' nen\u00ed nastavena spr\u00e1vn\u011b, nebo \u017ee do\u0161lo k chyb\u011b p\u0159i anal\u00fdze konfigurace klienta SSL.
+ssl.no.properties.error.CWPKI0315E.useraction=Ov\u011b\u0159te, \u017ee soubor ssl.client.props neobsahuje chyby a \u017ee je vlastnost 'com.ibm.SSL.ConfigURL' nastavena.
 
 ################################################################################
 # Range 400-599 reserved for CA Pure Client Util and Impls
@@ -468,7 +460,7 @@ ssl.ca.client.invalid.custom.attrs.useraction=P\u0159e\u010dt\u011bte si n\u00e1
 
 
 #  CA CMP Client Impl
-ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  Atribut {0} chyb\u00ed nebo je nespr\u00e1vn\u00e9ho typu. Spr\u00e1vn\u00fd typ: {1}.
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E: \ Atribut {0} chyb\u00ed nebo je nespr\u00e1vn\u00e9ho typu. Spr\u00e1vn\u00fd typ: {1}.
 ssl.ca.cmp.impl.invalid.attribute.explanation=Atribut p\u0159edan\u00fd do implementace m\u00e1 hodnotu Null nebo nen\u00ed spr\u00e1vn\u00e9ho typu.
 ssl.ca.cmp.impl.invalid.attribute.useraction=Ov\u011b\u0159te, \u017ee je do implementace p\u0159ed\u00e1v\u00e1n vy\u017eadovan\u00fd atribut.
 # -------------------------------------------------------------------------------------------------
@@ -476,11 +468,11 @@ ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: \u017d\u00e1dost o certi
 ssl.ca.cmp.impl.invalid.certificate.request.explanation=Bajtov\u00e9 pole \u017e\u00e1dosti o certifik\u00e1t m\u00e1 hodnotu Null.
 ssl.ca.cmp.impl.invalid.certificate.request.useraction=Ov\u011b\u0159te, \u017ee je do implementace p\u0159ed\u00e1v\u00e1no platn\u00e9 bajtov\u00e9 pole \u017e\u00e1dosti o certifik\u00e1t.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  Heslo odvol\u00e1n\u00ed pro tuto \u017e\u00e1dost m\u00e1 hodnotu Null.
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E: \ Heslo odvol\u00e1n\u00ed pro tuto \u017e\u00e1dost m\u00e1 hodnotu Null.
 ssl.ca.cmp.impl.invalid.revocation.reason.explanation=Bajtov\u00e9 pole hesla odvol\u00e1n\u00ed pro tuto \u017e\u00e1dost o certifik\u00e1t m\u00e1 hodnotu Null.
 ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Ov\u011b\u0159te, \u017ee je do implementace p\u0159ed\u00e1v\u00e1no platn\u00e9 bajtov\u00e9 pole hesla odvol\u00e1n\u00ed.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.general.error=CWPKI0453E:  Do\u0161lo k n\u00e1sleduj\u00edc\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimce: {0}
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \ Do\u0161lo k n\u00e1sleduj\u00edc\u00ed neo\u010dek\u00e1van\u00e9 v\u00fdjimce: {0}
 ssl.ca.cmp.impl.general.error.explanation=CMSG0001
 ssl.ca.cmp.impl.general.error.useraction=CMSG0002
 # -------------------------------------------------------------------------------------------------
@@ -596,21 +588,16 @@ ssl.key.error.CWPKI0812E=CWPKI0812E: Chyba p\u0159i pokusu z\u00edskat kl\u00ed\
 ssl.key.error.CWPKI0812E.explanation=P\u0159i pokusu o obnovu kl\u00ed\u010de ze souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. M\u016f\u017ee j\u00edt o probl\u00e9m s kl\u00ed\u010dem, nebo m\u016f\u017ee b\u00fdt heslo ke kl\u00ed\u010di nespr\u00e1vn\u00e9. 
 ssl.key.error.CWPKI0812E.useraction=Zkontrolujte \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a ujist\u011bte se, \u017ee polo\u017eka kl\u00ed\u010de existuje. D\u00e1le se ujist\u011bte, \u017ee pro p\u0159\u00edstup k t\u00e9to polo\u017ece kl\u00ed\u010de je nakonfigurovan\u00e9 spr\u00e1vn\u00e9 heslo.
 #--------------------------------------------------------------------------------------------------
-ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Chyba p\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{0}]. Heslo soukrom\u00e9ho kl\u00ed\u010de je chybn\u00e9 nebo m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce \
-soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly. Toto \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nelze pou\u017e\u00edt pro SSL. Zpr\u00e1va v\u00fdjimky: [{1}].
-ssl.unrecoverablekey.error.CWPKI0813E.explanation=P\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. Kdy\u017e nen\u00ed spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di nebo kdy\u017e m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce \
-soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly, nelze vytvo\u0159it SSLContext. 
-ssl.unrecoverablekey.error.CWPKI0813E.useraction=Ne\u017e pou\u017eijete \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro p\u0159ipojen\u00ed SSL, je t\u0159eba zajistit, aby bylo pou\u017eito spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di a aby \
-\u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nem\u011blo v\u00edce kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly.
+ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Chyba p\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{0}]. Heslo soukrom\u00e9ho kl\u00ed\u010de je chybn\u00e9 nebo m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly. Toto \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nelze pou\u017e\u00edt pro SSL. Zpr\u00e1va v\u00fdjimky: [{1}].
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=P\u0159i pokusu o inicializaci spr\u00e1vce kl\u00ed\u010d\u016f do\u0161lo k chyb\u011b. Kdy\u017e nen\u00ed spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di nebo kdy\u017e m\u00e1 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v\u00edce soukrom\u00fdch kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly, nelze vytvo\u0159it SSLContext. 
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=Ne\u017e pou\u017eijete \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro p\u0159ipojen\u00ed SSL, je t\u0159eba zajistit, aby bylo pou\u017eito spr\u00e1vn\u00e9 heslo k soukrom\u00e9mu kl\u00ed\u010di a aby \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nem\u011blo v\u00edce kl\u00ed\u010d\u016f s r\u016fzn\u00fdmi hesly.
 #--------------------------------------------------------------------------------------------------
 ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Chyba p\u0159i inicializaci \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f hardwaru [{0}]. Zkontrolujte soubor konfigurace hardwaru {1} a ujist\u011bte se, \u017ee jsou atributy spr\u00e1vn\u011b nastaveny. Vr\u00e1cen\u00e1 v\u00fdjimka od poskytovatele je {2}.
 ssl.hwkeystore.load.error.CWPKI0814E.explanation=V konfiguraci hardwaru je n\u011bjak\u00e1 chyba br\u00e1n\u00edc\u00ed v pou\u017e\u00edv\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. Existuje-li konfigurace SSL, kter\u00e1 odkazuje na toto \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, nebude pou\u017eiteln\u00e1.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Ujist\u011bte se, \u017ee soubor konfigurace hardwaru obsahuje nezbytn\u00e9 atributy, n\u00e1zev a knihovnu. Ujist\u011bte se d\u00e1le, \u017ee i ostatn\u00ed atributy v konfigura\u010dn\u00edm souboru respektuj\u00ed specifikaci hardwarov\u00e9ho za\u0159\u00edzen\u00ed.
 #--------------------------------------------------------------------------------------------------
-ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: Hostitele [{0}] a port [{1}] uv\u00e1d\u00ed jako filtr v\u00edce prvk\u016f OutboundConnection. Bude pou\u017eit prvek OutboundConnection nakonfigurovan\u00fd v \
-prvku SSL [{2}].
-ssl.dynamicSelection.conflict.CWPKI0815W.explanation=V konfiguraci serveru jsou definov\u00e1ny konfliktn\u00ed prvky OutboundConnection. K ur\u010den\u00ed odchoz\u00ed konfigurace SSL pou\u017eije server prvn\u00ed \
-prvek OutboundConnection, kter\u00fd zpracuje.
+ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: Hostitele [{0}] a port [{1}] uv\u00e1d\u00ed jako filtr v\u00edce prvk\u016f OutboundConnection. Bude pou\u017eit prvek OutboundConnection nakonfigurovan\u00fd v prvku SSL [{2}].
+ssl.dynamicSelection.conflict.CWPKI0815W.explanation=V konfiguraci serveru jsou definov\u00e1ny konfliktn\u00ed prvky OutboundConnection. K ur\u010den\u00ed odchoz\u00ed konfigurace SSL pou\u017eije server prvn\u00ed prvek OutboundConnection, kter\u00fd zpracuje.
 ssl.dynamicSelection.conflict.CWPKI0815W.useraction=P\u0159ezkoumejte konfliktn\u00ed prvky OutboundConnection v konfiguraci serveru a prvek, kter\u00fd nepot\u0159ebujete, odeberte.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultOutbound.conflict.CWPKI0816W=CWPKI0816W: Prvek outboundConnection s hv\u011bzdi\u010dkou (*) jako hostitel a port je nastaven na konfiguraci SSL [{0}]. Toto nastaven\u00ed je v konfliktu s nastaven\u00edm atributu outboundSSLRef. Pou\u017e\u00edv\u00e1 se konfigurace SSL {1}, kter\u00e1 je ur\u010dena atributem outboundSSLRef.
@@ -673,3 +660,26 @@ ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certifik\u00e1t s n\u00e1zvem Subject
 ssl.certificate.add.CWPKI0830I.explanation=Certifik\u00e1t byl na\u010dten z prom\u011bnn\u00e9 prost\u0159ed\u00ed v konfiguraci a je p\u0159id\u00e1v\u00e1n do souboru \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
 ssl.certificate.add.CWPKI0830I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: Protokol SSL/TLS {0} nelze pou\u017e\u00edt. Roz\u0161\u00ed\u0159en\u00e1 chyba je: {1} 
+ssl.protocol.error.CWPKI0831E.explanation=Poskytnut\u00fd protokol nelze pou\u017e\u00edt. Do\u0161lo k chyb\u011b p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance SSLContext s hodnotou protokolu. 
+ssl.protocol.error.CWPKI0831E.useraction=Ujist\u011bte se, \u017ee konfigurace pou\u017e\u00edv\u00e1 platn\u00e9 hodnoty protokolu SSL/TLS pro toto prost\u0159ed\u00ed JVM.
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: Poskytnut\u00e1 hodnota protokolu SSL/TLS {0} nem\u016f\u017ee b\u00fdt pou\u017eita pro konfiguraci seznamu hodnot protokol\u016f SSL.
+ssl.protocol.error.CWPKI0832E.explanation=Hodnota protokolu nen\u00ed platn\u00e1 v seskupen\u00ed seznamu protokol\u016f.
+ssl.protocol.error.CWPKI0832E.useraction=Ujist\u011bte se, \u017ee seznam protokol\u016f SSL/TLS zahrnuje pouze hodnoty, kter\u00e9 jsou vhodn\u00e9 pro seznam protokol\u016f.
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: Konfigurace protokolu SSL/TLS {0} obsahuje chybu, kter\u00e1 br\u00e1n\u00ed vytvo\u0159en\u00ed konfigurace SSL/TLS. 
+ssl.protocol.error.CWPKI0833E.explanation=Atributy konfigurace SSL maj\u00ed chybu, kter\u00e1 br\u00e1n\u00ed vytvo\u0159en\u00ed SSLContext. 
+ssl.protocol.error.CWPKI0833E.useraction=Ujist\u011bte se, \u017ee jsou atributy konfigurace SSL spr\u00e1vn\u00e9. Zkontrolujte protokoly, abyste z\u00edskali dal\u0161\u00ed chyby p\u0159idru\u017een\u00e9 k atribut\u016fm konfigurace SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: Konfiguraci SSL/TLS {0} nelze nastavit jako v\u00fdchoz\u00ed konfiguraci SSL procesu kv\u016fli chyb\u011b.
+ssl.config.error.CWPKI0834E.explanation=Uveden\u00e1 konfigurace protokolu SSL/TLS obsahuje chybu, kter\u00e1 mu zabr\u00e1nila v nastaven\u00ed v\u00fdchoz\u00ed konfigurace SSL procesu. 
+ssl.config.error.CWPKI0834E.useraction=Ujist\u011bte se, \u017ee jsou atributy konfigurace SSL spr\u00e1vn\u00e9. Zkontrolujte protokoly t\u00fdkaj\u00edc\u00ed se chyb, kter\u00e9 jsou p\u0159idru\u017eeny k atribut\u016fm konfigurace SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ Pro p\u0159\u00edchoz\u00ed p\u0159ipojen\u00ed nelze vytvo\u0159it konfiguraci SSL/TLS, proto\u017ee nebyl vytvo\u0159en spr\u00e1vce kl\u00ed\u010d\u016f.
+ssl.config.error.CWPKI0835E.explanation=Chyba v konfiguraci zabr\u00e1nila vytvo\u0159en\u00ed spr\u00e1vce kl\u00ed\u010d\u016f.
+ssl.config.error.CWPKI0835E.useraction=Ujist\u011bte se, \u017ee jsou atributy konfigurace SSL spr\u00e1vn\u00e9. Zkontrolujte protokoly t\u00fdkaj\u00edc\u00ed se chyb, kter\u00e9 jsou p\u0159idru\u017eeny k atribut\u016fm konfigurace SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: Konfiguraci SSL/TLS nelze vytvo\u0159it, proto\u017ee nebyl vytvo\u0159en kl\u00ed\u010d a spr\u00e1vci d\u016fv\u011bryhodnosti.
+ssl.config.error.CWPKI0836E.explanation=Chyba v konfiguraci zabr\u00e1nila vytvo\u0159en\u00ed kl\u00ed\u010de a spr\u00e1vc\u016f d\u016fv\u011bryhodnosti.
+ssl.config.error.CWPKI0836E.useraction=Ujist\u011bte se, \u017ee jsou atributy konfigurace SSL spr\u00e1vn\u00e9. Zkontrolujte protokoly t\u00fdkaj\u00edc\u00ed se chyb, kter\u00e9 jsou p\u0159idru\u017eeny k atribut\u016fm konfigurace SSL.

@@ -288,6 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
 
-# 1533-1540 used in clients.common bundle, do not use here.
+# 1533-1544 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, che \u00e8 definito dall''applicazione {1}, non era disponibile in modo tempestivo.
+CWWKC1200.resource.unavailable.explanation=Troppo carico sul sistema per elaborare le annotazioni di definizione delle risorse e le voci del descrittore di distribuzione prima che l'applicazione provi a farne uso.
+CWWKC1200.resource.unavailable.useraction=Visualizzare il file messages.log per identificare il verificarsi di un errore. Altrimenti, ridurre il carico sul sistema.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, che \u00e8 definito dall''applicazione {1}, richiede un ContextService {2} ma il ContextService non era accessibile o non era disponibile in modo tempestivo.
+CWWKC1201.contextsvc.inaccessible.explanation=La risorsa specificata che implementa l'interfaccia ContextService non era accessibile o non era disponibile a causa di uno dei seguenti motivi. 1.) Un'annotazione di definizione di risorse o una definizione di risorsa in un descrittore di distribuzione dell'applicazione specifica un nome JNDI non corretto in cui trovare la risorsa che implementa l'interfaccia ContextService. 2.) La risorsa che implementa l'interfaccia ContextService \u00e8 definita in un ambito che non \u00e8 accessibile alla risorsa che richiede la risorsa che implementa l'interfaccia ContextService. 3.) Il sistema \u00e8 sottoposto a un carico eccessivo per registrare una risorsa che implementa l'interfaccia ContextService in modo tempestivo.
+CWWKC1201.contextsvc.inaccessible.useraction=Correggere l'applicazione per fare riferimento al nome JNDI del ContextService che \u00e8 accessibile. Se il nome JNDI specificato \u00e8 corretto, ridurre il carico sul sistema.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: La configurazione in conflitto del contesto di thread {0} \u00e8 stata rilevata in ContextServiceDefinition {1}. Il contesto cancellato \u00e8 {2}, il contesto propagato \u00e8 {3} e il contesto invariato \u00e8 {4}.
+CWWKC1202.context.lists.overlap.explanation=Un tipo di contesto di thread pu\u00f2 essere configurato in una qualsiasi delle categorie di tipo di contesto cancellato, propagato o invariato. Il tipo di contesto non pu\u00f2 essere configurato in pi\u00f9 categorie di tipo di contesto.
+CWWKC1202.context.lists.overlap.useraction=Correggere la configurazione per specificare il tipo di contesto di thread in un massimo di una categoria.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Lo stesso tipo di contesto di thread, {0}, \u00e8 fornito da pi\u00f9 provider di contesto di thread disponibili per l''applicazione. I provider di contesto di thread sono: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Pu\u00f2 esistere un solo provider di contesto di thread per ogni tipo di contesto.
+CWWKC1203.duplicate.context.useraction=Aggiornare l'applicazione, le librerie o entrambe in modo che non pi\u00f9 di un singolo provider di contesto di thread del tipo di contesto specificato sia accessibile all'applicazione.
+
+CWWKC1204.not.serializable=CWWKC1204E: Impossibile creare un proxy contestuale serializzabile che propaga il contesto di thread {0} che non \u00e8 serializzabile.
+CWWKC1204.not.serializable.explanation=I tipi di contesto di thread di terze parti non sono compatibili con la serializzazione e non possono essere configurati per essere propagati per i proxy contestuali serializzabili.
+CWWKC1204.not.serializable.useraction=Aggiornare l'applicazione per richiedere un proxy contestuale non serializzabile o assicurarsi che non siano configurati tipi di contesto di terze parti da propagare.

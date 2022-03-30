@@ -267,7 +267,7 @@ OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuj
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Konfiguracja klienta OpenID Connect [ {0}] jest sp\u00f3jna z informacjami pochodz\u0105cymi z adresu URL punktu ko\u0144cowego wykrywania [ {1}], wi\u0119c nie s\u0105 wymagane \u017cadne aktualizacje konfiguracji.
-OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje si\u0119 z punktem ko\u0144cowym wykrywania dostawcy OpenID Connect, 1) je\u015bli wyst\u0105pi\u0142 problem zwi\u0105zany z kontaktowaniem si\u0119 z punktami ko\u0144cowymi autoryzacji lub znacznika dostawcy OpenID Connect 2), je\u015bli bie\u017c\u0105cy czas jest p\u00f3\u017aniejszy od czasu nast\u0119pnego wykrywania. Czas nast\u0119pnego wykrywania jest obliczany przez dodanie warto\u015bci discoveryPollingRate do bie\u017c\u0105cego czasu po ka\u017cdym wywo\u0142aniu wykrywania. Je\u015bli najnowsze informacje wykrywania s\u0105 zgodne z poprzednimi, aktualizacje konfiguracji nie zostan\u0105 przeprowadzone.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Klient OpenID Connect kontaktuje si\u0119 z punktem ko\u0144cowym wykrywania dostawcy OpenID Connect, 1) je\u015bli wyst\u0105pi\u0142 problem zwi\u0105zany z kontaktowaniem si\u0119 z punktami ko\u0144cowymi autoryzacji lub znacznika dostawcy OpenID Connect, 2) je\u015bli bie\u017c\u0105cy czas jest p\u00f3\u017aniejszy od czasu nast\u0119pnego wykrywania. Czas nast\u0119pnego wykrywania jest obliczany przez dodanie warto\u015bci discoveryPollingRate do bie\u017c\u0105cego czasu po ka\u017cdym wywo\u0142aniu wykrywania. Je\u015bli najnowsze informacje wykrywania s\u0105 zgodne z poprzednimi, aktualizacje konfiguracji nie zostan\u0105 przeprowadzone.
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Komunikat informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Brakuje wymaganego atrybutu konfiguracji [{0}] lub jest on pusty, a warto\u015b\u0107 domy\u015blna nie zosta\u0142a podana. Upewnij si\u0119, \u017ce atrybut jest skonfigurowany lub zosta\u0142 wykryty przez dostawc\u0119 i pobrany od niego, nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
@@ -288,11 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u017b\u0105danie sk
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re zawiera zniekszta\u0142cone informacje cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Nieprawid\u0142owy format informacji cookie mo\u017ce wynika\u0107 z modyfikacji informacji cookie przez agenta u\u017cytkownika poprzez u\u017cycie nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy. Je\u015bli oczekiwana jest nazwa hosta, nale\u017cy doda\u0107 j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w pliku server.xml.
 
-# 0=OIDC client config ID, 1=Error/exception message
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient OpenID Connect {0} nie mo\u017ce wyodr\u0119bni\u0107 roszcze\u0144 znacznika JSON Web Token (JWT) z odpowiedzi WWW. {1}
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Odpowied\u017a WWW musi by\u0107 znacznikiem JWT w formacie JSON Web Encryption (JWE) albo w formacie JSON Web Signature (JWS). Mo\u017cliwe, \u017ce odpowied\u017a ma nieprawid\u0142owy format lub klient OpenID Connect napotka\u0142 inny b\u0142\u0105d podczas przetwarzania odpowiedzi.
-OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Upewnij si\u0119, \u017ce odpowied\u017a jest w formacie JWT.
-
-#1534, 1535, 1536, 1537 used in clients.common bundle, do not use here.
+# 1533-1544 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

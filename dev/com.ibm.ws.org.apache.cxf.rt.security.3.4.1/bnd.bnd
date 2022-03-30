@@ -20,7 +20,7 @@
 
 globalize: false
 instrument.ffdc: false
-
 -buildpath: \
-	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.4.1, \
-    com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
+	org.apache.cxf:cxf-rt-security;strategy=exact;version='3.4.1',\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.logging.core

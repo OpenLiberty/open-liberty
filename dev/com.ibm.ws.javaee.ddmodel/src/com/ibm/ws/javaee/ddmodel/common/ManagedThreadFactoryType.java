@@ -53,7 +53,7 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     
     @Override
     public String getContextServiceRef() {
-        return contextServiceRef.getValue();
+        return contextServiceRef == null ? null : contextServiceRef.getValue();
     }
 
     @Override

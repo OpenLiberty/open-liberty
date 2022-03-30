@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics30.internal.helper;
 
+import java.time.Duration;
 import java.util.Map;
 
 import org.eclipse.microprofile.metrics.ConcurrentGauge;
@@ -94,25 +95,29 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
         String lineName = name + "_elapsedTime_" + MetricUnits.SECONDS.toString();
         getPromTypeLine(builder, lineName, "gauge");
         for (MetricID mid : currentMetricMap.keySet()) {
-            getPromValueLine(builder, lineName, ((SimpleTimer) currentMetricMap.get(mid)).getElapsedTime().toNanos() * conversionFactor, resolveTagsAsStringWithGlobalTags(mid));
+            SimpleTimer simpleTimer = (SimpleTimer) currentMetricMap.get(mid);
+            getPromValueLine(builder, lineName, simpleTimer.getElapsedTime().toNanos() * conversionFactor, resolveTagsAsStringWithGlobalTags(mid));
         }
 
         lineName = name + "_maxTimeDuration_" + MetricUnits.SECONDS.toString();
         getPromTypeLine(builder, lineName, "gauge");
         for (MetricID mid : currentMetricMap.keySet()) {
-            Number value = (((SimpleTimer) currentMetricMap.get(mid)).getMaxTimeDuration() != null) ? ((SimpleTimer) currentMetricMap.get(mid)).getMaxTimeDuration().toNanos()
-                                                                                                      * conversionFactor : Double.NaN;
-            getPromValueLine(builder, lineName, value, resolveTagsAsStringWithGlobalTags(mid));
+            SimpleTimer simpleTimer = (SimpleTimer) currentMetricMap.get(mid);
+            Duration maxTime;
+            Number maxValue;
+            maxValue = ((maxTime = simpleTimer.getMaxTimeDuration()) != null) ? maxTime.toNanos() * conversionFactor : Double.NaN;
+            getPromValueLine(builder, lineName, maxValue, resolveTagsAsStringWithGlobalTags(mid));
         }
 
         lineName = name + "_minTimeDuration_" + MetricUnits.SECONDS.toString();
         getPromTypeLine(builder, lineName, "gauge");
         for (MetricID mid : currentMetricMap.keySet()) {
-            Number value = (((SimpleTimer) currentMetricMap.get(mid)).getMinTimeDuration() != null) ? ((SimpleTimer) currentMetricMap.get(mid)).getMinTimeDuration().toNanos()
-                                                                                                      * conversionFactor : Double.NaN;
-            getPromValueLine(builder, lineName, value, resolveTagsAsStringWithGlobalTags(mid));
+            SimpleTimer simpleTimer = (SimpleTimer) currentMetricMap.get(mid);
+            Duration minTime;
+            Number minValue;
+            minValue = ((minTime = simpleTimer.getMinTimeDuration()) != null) ? minTime.toNanos() * conversionFactor : Double.NaN;
+            getPromValueLine(builder, lineName, minValue, resolveTagsAsStringWithGlobalTags(mid));
         }
-
     }
 
     public static void buildGauge30(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap, Double conversionFactor,

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,21 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Asigura\u021bi-v\u0103 c\u0103 
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Clientul OpenID Connect {0} nu poate extrage informa\u021bii despre jetonul de acces de la punctul final UserInfo: {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Este posibil ca r\u0103spunsul de la punctul final UserInfo s\u0103 nu fie \u00een formatul a\u0219teptat. Este posibil ca clientul OpenID Connect s\u0103 fi \u00eent\u00e2lnit o eroare la lansarea cererii UserInfo.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Verifica\u021bi mesajul de eroare pentru mai multe informa\u021bii. Verifica\u021bi dac\u0103 con\u021binutul r\u0103spunsului UserInfo se potrive\u0219te cu antetul HTTP de tip Content-Type.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: Cererea de delogare back-channel trimis\u0103 la [{0}] a \u00eent\u00e2mpinat o eroare. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=Cererea nu utilizeaz\u0103 metoda HTTP POST, cererii \u00eei lipse\u0219te un jeton de delogare, jetonul de delogare nu poate fi validat, sau cererea de delogare nu a fost finalizat\u0103 cu succes.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Verifica\u021bi dac\u0103 metoda HTTP POST este utilizat\u0103 pentru a trimite cererea de delogare back-channel. \u00cen caz contrar, consulta\u021bi ac\u021biunea utilizatorului pentru eroarea con\u021binut\u0103 \u00een acest mesaj.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: Cererea de delogare back-channel nu este valid\u0103 deoarece parametrul logout_token lipse\u0219te sau este gol.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=Cererea de delogare back-channel trebuie s\u0103 includ\u0103 un parametru logout_token a c\u0103rui valoare este un jeton de delogare valid.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Actualiza\u021bi cererea pentru a include un jeton de delogare.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: Jetonul de delogare \u00een cererea de delogare back-channel nu poate fi validat: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=Jetonul de delogare poate avea un format incorect, poate ap\u0103rea \u00eentr-un format nea\u0219teptat, sau o alt\u0103 eroare a avut loc la validarea semn\u0103turii sau a revendic\u0103rilor jetonului.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Consulta\u021bi ac\u021biunea utilizatorului pentru eroarea care \u00eenso\u021be\u0219te acest mesaj.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Cererea de delogare back-channel nu este valid\u0103 pentru ca nu exist\u0103 niciun client OpenID Connect care s\u0103 corespund\u0103 cererii formulate.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Caracteristica OpenID Connect presupune ca secven\u021ba URI a cererii de back-channel s\u0103 includ\u0103 un ID de client OpenID Connect pentru a determina care client s\u0103 se delogheze.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verifica\u021bi dac\u0103 cererea URI include ID-ul de client OpenID Connect de utilizat pentru delogarea utilizatorului.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

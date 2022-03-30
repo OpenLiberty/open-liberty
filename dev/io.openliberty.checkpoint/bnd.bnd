@@ -18,6 +18,7 @@ Bundle-SymbolicName: io.openliberty.checkpoint
 Private-Package: io.openliberty.checkpoint.internal.*,io.openliberty.checkpoint.resources.*
 Export-Package: io.openliberty.checkpoint.internal.criu
 Import-Package: org.apache.felix.service.command; resolution:=optional, org.eclipse.openj9.criu; resolution:=optional, *
+WS-TraceGroup: checkpoint
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\

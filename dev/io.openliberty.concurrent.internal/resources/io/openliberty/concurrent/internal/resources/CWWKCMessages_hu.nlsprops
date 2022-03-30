@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: A(z) {1} alkalmaz\u00e1s \u00e1ltal meghat\u00e1rozott {0} nem \u00e9rhet\u0151 el norm\u00e1l id\u0151n bel\u00fcl.
+CWWKC1200.resource.unavailable.explanation=T\u00fal nagy a rendszer terhel\u00e9se az er\u0151forr\u00e1s-meghat\u00e1roz\u00e1si feljegyz\u00e9sek \u00e9s a telep\u00edt\u00e9sle\u00edr\u00f3 bejegyz\u00e9sek feldolgoz\u00e1sa sor\u00e1n, miel\u0151tt az alkalmaz\u00e1s megpr\u00f3b\u00e1ln\u00e1 haszn\u00e1lni azokat.
+CWWKC1200.resource.unavailable.useraction=Tekintse meg a messages.log f\u00e1jlt a hiba el\u0151fordul\u00e1s\u00e1nak azonos\u00edt\u00e1s\u00e1hoz. Ellenkez\u0151 esetben cs\u00f6kkentse a terhel\u00e9st a rendszeren.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: A(z) {1} alkalmaz\u00e1s \u00e1ltal meghat\u00e1rozott {0} a(z) {2} ContextService fel\u00fcletet ig\u00e9nyli, de a ContextService nem \u00e9rhet\u0151 el, vagy nem \u00e9rhet\u0151 el id\u0151ben.
+CWWKC1201.contextsvc.inaccessible.explanation=A ContextService fel\u00fcletet megval\u00f3s\u00edt\u00f3 er\u0151forr\u00e1s a k\u00f6vetkez\u0151 okok miatt nem volt el\u00e9rhet\u0151 vagy nem volt el\u00e9rhet\u0151 id\u0151ben. 1.) Az alkalmaz\u00e1s telep\u00edt\u00e9sle\u00edr\u00f3j\u00e1ban tal\u00e1lhat\u00f3 er\u0151forr\u00e1s-meghat\u00e1roz\u00e1s feljegyz\u00e9s vagy er\u0151forr\u00e1s-meghat\u00e1roz\u00e1s helytelen JNDI nevet ad meg, amellyel a ContextService fel\u00fcletet megval\u00f3s\u00edt\u00f3 er\u0151forr\u00e1st megkeresheti. 2.) A ContextService fel\u00fcletet megval\u00f3s\u00edt\u00f3 er\u0151forr\u00e1s olyan hat\u00f3k\u00f6rben van meghat\u00e1rozva, amely nem \u00e9rhet\u0151 el az er\u0151forr\u00e1s sz\u00e1m\u00e1ra, amely a ContextService fel\u00fcletet megval\u00f3s\u00edt\u00f3 er\u0151forr\u00e1st ig\u00e9nyli. 3.) A rendszer t\u00fal nagy terhel\u00e9s alatt \u00e1ll egy er\u0151forr\u00e1s id\u0151ben t\u00f6rt\u00e9n\u0151 regisztr\u00e1l\u00e1\
+    s\u00e1hoz, amely a ContextService fel\u00fcletet val\u00f3s\u00edtja meg.
+CWWKC1201.contextsvc.inaccessible.useraction=Jav\u00edtsa ki az alkalmaz\u00e1st, hogy az el\u00e9rhet\u0151 ContextService JNDI nev\u00e9re hivatkozzon. Ha a megadott JNDI n\u00e9v helyes, akkor cs\u00f6kkentse a terhel\u00e9st a rendszeren.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: A(z) {0} sz\u00e1lkontextus konfigur\u00e1ci\u00f3ja \u00fctk\u00f6zik a(z) {1} ContextServiceDefinition meghat\u00e1roz\u00e1sban. Az \u00fcres kontextus {2}, a tov\u00e1bb\u00edtott kontextus {3}, a v\u00e1ltozatlan kontextus pedig {4}.
+CWWKC1202.context.lists.overlap.explanation=A sz\u00e1l kontextust\u00edpus be\u00e1ll\u00edthat\u00f3 az \u00fcres, tov\u00e1bb\u00edtott vagy v\u00e1ltozatlan kontextust\u00edpus kateg\u00f3ri\u00e1k b\u00e1rmelyik\u00e9ben. A kontextust\u00edpus nem konfigur\u00e1lhat\u00f3 t\u00f6bb kontextust\u00edpus kateg\u00f3ri\u00e1ban.
+CWWKC1202.context.lists.overlap.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3t \u00fagy, hogy a sz\u00e1l kontextust\u00edpust legfeljebb egy kateg\u00f3ri\u00e1ban adja meg.
+
+CWWKC1203.duplicate.context=CWWKC1203E: A(z) {0} sz\u00e1l kontextust\u00edpust t\u00f6bb sz\u00e1lkontextus-szolg\u00e1ltat\u00f3 biztos\u00edtja, amelyek el\u00e9rhet\u0151k az alkalmaz\u00e1s sz\u00e1m\u00e1ra. A sz\u00e1lkontextus-szolg\u00e1ltat\u00f3k: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Minden egyes kontextust\u00edpushoz csak egy sz\u00e1lkontextus-szolg\u00e1ltat\u00f3 lehet.
+CWWKC1203.duplicate.context.useraction=Friss\u00edtse az alkalmaz\u00e1st, a k\u00f6nyvt\u00e1rakat vagy mindkett\u0151t, hogy a megadott kontextust\u00edpusnak csak egyetlen sz\u00e1lkontextus-szolg\u00e1ltat\u00f3ja legyen el\u00e9rhet\u0151 az alkalmaz\u00e1s sz\u00e1m\u00e1ra.
+
+CWWKC1204.not.serializable=CWWKC1204E: Nem hozhat\u00f3 l\u00e9tre soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxy, amely a(z) {0} sz\u00e1lkontextust tov\u00e1bb\u00edtja, amely nem soros\u00edthat\u00f3.
+CWWKC1204.not.serializable.explanation=A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 sz\u00e1lkontextus t\u00edpusok nem kompatibilisek a soros\u00edt\u00e1ssal, \u00e9s nem konfigur\u00e1lhat\u00f3k soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxykhoz t\u00f6rt\u00e9n\u0151 tov\u00e1bb\u00edt\u00e1sra.
+CWWKC1204.not.serializable.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy egy nem soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxyt k\u00e9rjen, vagy gondoskodjon arr\u00f3l, hogy ne legyenek tov\u00e1bb\u00edtva harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 kontextust\u00edpusok.

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -76,3 +76,28 @@ spi.extension.failed.to.construct.CWOWB1010E.useraction=\ud655\uc7a5\uc774 \uc77
 spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: CDI \ud655\uc7a5 SPI\ub97c \ud1b5\ud574 \ub4f1\ub85d\ub41c {0} \ud074\ub798\uc2a4\uac00 CDIExtensionMetadata \uad6c\ud604\uc774 \uc544\ub2cc \ub2e4\ub978 \ubc88\ub4e4\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
 spi.extension.class.in.different.bundle.CWOWB1011E.explanation=CDIExtensionMetadata \uad6c\ud604\uc758 getExtensions() \ub610\ub294 getBeanClasses() \uba54\uc18c\ub4dc\ub97c \ud1b5\ud574 \ub4f1\ub85d\ub418\uc5c8\uc73c\uba70 CDIExtensionMetadata \uad6c\ud604\uc774 \uc544\ub2cc \ub2e4\ub978 \ubc88\ub4e4\uc5d0 \uc788\uc73c\ubbc0\ub85c \ud074\ub798\uc2a4\ub294 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=\uc601\ud5a5\uc744 \ubc1b\uc740 \ud074\ub798\uc2a4\ub97c \uc774\ub3d9\ud558\uac70\ub098 \uc62c\ubc14\ub978 \ubc88\ub4e4\uc758 \uc0c8 CDIExtensionMetadata \uad6c\ud604\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
+
+exception.creating.extensions.CWOWB1012E=CWOWB1012E: {0} \uc544\uce74\uc774\ube0c\uc5d0 \ub300\ud55c \ud655\uc7a5\uc744 \uc791\uc131\ud560 \ub54c CDI\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958: {1}
+exception.creating.extensions.CWOWB1012E.explanation=CDI\uac00 \ud655\uc7a5 \ud074\ub798\uc2a4\uc758 \uad6c\uc131\uc744 \ub85c\ub4dc\ud558\uac70\ub098 \ud638\ucd9c\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+exception.creating.extensions.CWOWB1012E.useraction=\ud655\uc7a5\uc774 \uc791\uc131\ub418\uc9c0 \uc54a\ub3c4\ub85d \ud558\ub294 \uc624\ub958\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+bce.not.loadable.CWOWB1013E=CWOWB1013E: {0} BuildCompatibleExtension \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+bce.not.loadable.CWOWB1013E.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud074\ub798\uc2a4\ub97c \ud3ec\ud568\ud558\ub294 META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension \ud30c\uc77c\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0\ub9cc CDI\uc5d0\uc11c \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+bce.not.loadable.CWOWB1013E.useraction=\ud074\ub798\uc2a4\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc788\uace0 \ub85c\ub4dc\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud074\ub798\uc2a4\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc788\ub294 \uacbd\uc6b0 FFDC \ud30c\uc77c\uc5d0 \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\ub294 \uc774\uc720\uc5d0 \ub300\ud55c \uc790\uc138\ud55c \uc815\ubcf4\uac00 \uc788\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: {0} \ud074\ub798\uc2a4\uac00 BuildCompatibleExtension \uc778\ud130\ud398\uc774\uc2a4\ub97c \uad6c\ud604\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+bce.does.not.implement.bce.CWOWB1014E.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud074\ub798\uc2a4\ub97c \ud3ec\ud568\ud558\ub294 META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension \ud30c\uc77c\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0\ub9cc \ud074\ub798\uc2a4\uac00 jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension\uc744 \uad6c\ud604\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+bce.does.not.implement.bce.CWOWB1014E.useraction=jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension\uc744 \uad6c\ud604\ud558\ub3c4\ub85d \ud074\ub798\uc2a4\ub97c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: cdi12 \uad6c\uc131 \uc694\uc18c\ub294 cdi \uad6c\uc131 \uc694\uc18c\ub85c \ub300\uccb4\ub429\ub2c8\ub2e4.
+cdi12.element.type.superceded.CWOWB1015W.explanation=cdi \uad6c\uc131 \uc694\uc18c\ub294 cdi12 \uad6c\uc131 \uc694\uc18c\ub97c \ub300\uccb4\ud558\uace0 \ub3d9\uc77c\ud55c \ubaa8\ub4e0 \uc635\uc158\uacfc \uc0c8 \uc635\uc158\uc744 \ud3ec\ud568\ud569\ub2c8\ub2e4.
+cdi12.element.type.superceded.CWOWB1015W.useraction=cdi12 \uad6c\uc131 \uc694\uc18c \ub300\uc2e0 cdi \uad6c\uc131 \uc694\uc18c\ub97c \uc0ac\uc6a9\ud558\ub3c4\ub85d server.xml \uad6c\uc131\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: cdi \uad6c\uc131 \uc694\uc18c\uc758 emptyBeansXMLExplicitArchive \uc18d\uc131\uc740 CDI 4.0 \uc774\uc0c1\uc5d0\uc11c\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4. \uc774 \uc18d\uc131\uc774 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=emptyBeansXMLExplicitArchive \uc18d\uc131\uc740 4.0\ubcf4\ub2e4 \ub0ae\uc740 CDI \ubc84\uc804\uc5d0\uc11c \uc0ac\uc6a9\ub418\ub294 \uacbd\uc6b0 \uc801\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=server.xml \uad6c\uc131\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc5ec \uc774 \uc18d\uc131\uc744 \uc81c\uac70\ud558\uac70\ub098 CDI \ubc84\uc804 4.0 \uc774\uc0c1\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: enableImplicitBeanArchives \uc18d\uc131\uc774 cdi12 \ubc0f cdi \uad6c\uc131 \uc694\uc18c \ubaa8\ub450\uc5d0 \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. cdi \uc694\uc18c\uc758 \uac12\uc774 \uc0ac\uc6a9\ub418\uace0 cdi12 \uc694\uc18c\uc758 \uac12\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=cdi12 \ubc0f cdi \uad6c\uc131 \uc694\uc18c \ubaa8\ub450\uc5d0\uc11c enableImplicitBeanArchives \uc18d\uc131\uc744 \uc124\uc815\ud560 \uc218 \uc788\uc9c0\ub9cc \ub3d9\uc77c\ud55c \uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c \ub2e4\ub978 \uac12\uc73c\ub85c \uc774 \uc18d\uc131\uc744 \uc124\uc815\ud574\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=\ucda9\ub3cc\uc744 \ud574\uacb0\ud558\ub824\uba74 server.xml\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624. \uad8c\uc7a5\ub418\ub294 \uc870\uce58\ub294 cdi \uad6c\uc131 \uc694\uc18c\ub85c \ub300\uccb4\ub418\ubbc0\ub85c cdi12 \uad6c\uc131 \uc694\uc18c\ub97c \uc81c\uac70\ud558\ub294 \uac83\uc785\ub2c8\ub2e4.
+

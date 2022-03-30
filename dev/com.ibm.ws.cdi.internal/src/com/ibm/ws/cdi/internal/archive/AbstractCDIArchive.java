@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi.internal.archive;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
+import com.ibm.ws.cdi.internal.interfaces.BuildCompatibleExtensionFinder;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
@@ -53,7 +55,7 @@ public abstract class AbstractCDIArchive implements CDIArchive {
     private ReferenceContext referenceContext;
 
     /**
-     * @param name The name of the archive, if the archive represents a module then it should be the same as the module name
+     * @param name       The name of the archive, if the archive represents a module then it should be the same as the module name
      * @param cdiRuntime
      */
     public AbstractCDIArchive(String name, CDIRuntime cdiRuntime) {
@@ -70,8 +72,8 @@ public abstract class AbstractCDIArchive implements CDIArchive {
      * <p>
      * If a class name cannot be found, it is ignored.
      *
-     * @param archive the BDA
-     * @param internalClassNames classes to load only if they're loaded directly by the BDA's classloader
+     * @param archive              the BDA
+     * @param internalClassNames   classes to load only if they're loaded directly by the BDA's classloader
      * @param additionalClassNames additional classes to load, which might not actually be in the BDA but will be loaded anyway
      * @return the map of loaded Class objects
      * @throws CDIException
@@ -144,6 +146,17 @@ public abstract class AbstractCDIArchive implements CDIArchive {
         Resource metaInfServicesEntry = getResource(CDIUtils.META_INF_SERVICES_CDI_EXTENSION);
         serviceClazzes.addAll(CDIUtils.parseServiceSPIExtensionFile(metaInfServicesEntry));
         return serviceClazzes;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getBuildCompatibleExtensionClasses() {
+        BuildCompatibleExtensionFinder finder = cdiRuntime.getBuildCompatibleExtensionFinder();
+        if (finder == null) {
+            return Collections.emptySet();
+        } else {
+            return finder.findBceClassNames(this);
+        }
     }
 
     @Override

@@ -288,6 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una richiesta per [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che include un cookie con un formato non corretto.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie con il formato non corretto pu\u00f2 essere causato dalla modifica del cookie presso l'agent utente con un nome host diverso dal nome host del reindirizzamento registrato con il provider. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity in server.xml.
 
-# 1533-1540 used in clients.common bundle, do not use here.
+# 1533-1544 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

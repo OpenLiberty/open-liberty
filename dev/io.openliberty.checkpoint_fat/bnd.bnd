@@ -15,7 +15,9 @@ src: \
 	fat/src,\
 	test-applications/app1/src,\
 	test-applications/app2/src,\
-	test-applications/mpapp1/src
+	test-applications/mpapp1/src,\
+	test-applications/ejbapp1/src,\
+	test-bundles/test.checkpoint.config.bundle/src
 
 
 fat.project: true
@@ -39,5 +41,9 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest, \
 	com.ibm.websphere.javaee.transaction.1.2; version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
+-sub: *.bnd

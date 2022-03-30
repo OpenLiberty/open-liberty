@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -199,7 +199,7 @@ JWK_RETRIEVE_FAILED.explanation=No se puede devolver una clave JSON Web Key desd
 JWK_RETRIEVE_FAILED.useraction=Compruebe que el URL tenga el formato correcto y especifique una ubicaci\u00f3n capaz de devolver JSON Web Keys. Compruebe el c\u00f3digo de estado y el contenido de la respuesta para obtener m\u00e1s informaci\u00f3n.
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-USERINFO_RETREIVE_FAILED=CWWKS1748E: El URL de UserInfo [{0}] no se ha podido contactar. El estado de la respuesta es [{1}] y el contenido devuelto es [{2}].
+USERINFO_RETREIVE_FAILED=CWWKS1748E: El URL de UserInfo [{0}] no se ha podido contactar.  El estado de la respuesta es [{1}] y el contenido devuelto es [{2}].
 USERINFO_RETREIVE_FAILED.explanation=Los datos de informaci\u00f3n de usuario no se han podido obtener del URL especificado. Puede que el URL no sea v\u00e1lido, que la respuesta del URL est\u00e9 vac\u00eda o que se haya producido un error desconocido.
 USERINFO_RETREIVE_FAILED.useraction=Verifique que el formato del URL sea correcto y que especifica una ubicaci\u00f3n capaz de devolver datos de informaci\u00f3n de usuario. Compruebe el c\u00f3digo de estado y el contenido de la respuesta para obtener m\u00e1s informaci\u00f3n.
 
@@ -209,6 +209,11 @@ USERINFO_INVALID.explanation=La subreclamaci\u00f3n de los datos de informaci\u0
 USERINFO_INVALID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect genera datos de informaci\u00f3n de usuario v\u00e1lidos.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: El cliente de {0} OpenID Connect no puede extraer reclamaciones de la se\u00f1al web JSON (JWT) de la respuesta de la web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La respuesta de la web debe ser una JWT en formato JWE (JSON Web Encryption) o JWS (JSON Web Signature). Es posible que la respuesta no est\u00e9 bien formada o que el cliente de OpenID Connect haya encontrado otro error al procesar la respuesta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la respuesta est\u00e1 en formato JWT.
 
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: El cliente OpenID Connect [{0}] necesita un URL de punto final de autorizaci\u00f3n, pero no se ha establecido.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Se debe establecer un URL de punto final de autorizaci\u00f3n para obtener un c\u00f3digo de autorizaci\u00f3n o las se\u00f1ales necesarias.
@@ -228,5 +233,37 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Para aceptar se\u00f1ales 
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: La se\u00f1al no est\u00e1 en formato JWE (JSON Web Encryption) porque no contiene cinco partes, pero el cliente de OpenID Connect [{0}] s\u00f3lo acepta se\u00f1ales que est\u00e1n en formato JWE.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Es posible que la se\u00f1al est\u00e9 mal formada o que est\u00e9 en formato de firma web JSON (JWS). Las se\u00f1ales deben estar en formato JWE si se ha configurado el atributo keyManagementKeyAlias.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Para aceptar se\u00f1ales JWS en lugar de se\u00f1ales JWE, elimine el atributo keyManagementKeyAlias en la configuraci\u00f3n del cliente de OpenID Connect. De lo contrario, aseg\u00farese de que solo se env\u00eden se\u00f1ales JWE a este recurso.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: Los datos extra\u00eddos de la respuesta del punto final UserInfo no est\u00e1n en formato JSON. Los datos extra\u00eddos son [{0}]. El error es [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=El punto final UserInfo debe devolver reclamaciones como miembros de un objeto JSON o un JSON Web Token (JWT). Es posible que el formato de la respuesta no sea v\u00e1lido o que la respuesta no coincida con el formato especificado por la cabecera Content-Type.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=Compruebe el formato de la respuesta del punto final UserInfo para asegurarse de que est\u00e1 en formato JSON o JWT.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: Se espera que la respuesta web [{0}] sea un JSON Web Token (JWT), pero la respuesta no est\u00e1 en formato JSON Web Signature (JWS) o JSON Web Encryption (JWE).
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=La cabecera Content-Type de la respuesta web indica que la respuesta contiene un JWT, pero el cuerpo de la respuesta no est\u00e1 en un formato JWT v\u00e1lido.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Aseg\u00farese de que la respuesta web est\u00e9 en el formato esperado por el cliente de OpenID Connect.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: El cliente de OpenID Connect {0} no puede recuperar informaci\u00f3n sobre el token de acceso desde el punto final UserInfo: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Es posible que la respuesta del punto final UserInfo no est\u00e9 en un formato esperado. Es posible que el cliente de OpenID Connect haya tenido un error al enviar la solicitud UserInfo.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Compruebe el mensaje de error para obtener m\u00e1s informaci\u00f3n. Verifique que el contenido de la respuesta de UserInfo coincida con la cabecera HTTP Content-Type.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: La solicitud de cierre de sesi\u00f3n de canal de fondo que se ha enviado a [{0}] ha encontrado un error. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=La solicitud no utiliza el m\u00e9todo HTTP POST, falta una se\u00f1al de cierre de sesi\u00f3n o la se\u00f1al de cierre de sesi\u00f3n no se puede validar, o la solicitud de cierre de sesi\u00f3n no se ha completado correctamente.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Verifique que se utiliza el m\u00e9todo HTTP POST para enviar la solicitud de cierre de sesi\u00f3n de canal de fondo. De lo contrario, consulte la acci\u00f3n del usuario para ver el error que se incluye en este mensaje.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: La solicitud de cierre de sesi\u00f3n de canal de fondo no es v\u00e1lida porque falta el par\u00e1metro logout_token o est\u00e1 vac\u00edo.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=La solicitud de cierre de sesi\u00f3n de canal de fondo debe incluir un par\u00e1metro logout_token cuyo valor sea una se\u00f1al de cierre de sesi\u00f3n v\u00e1lida.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Actualice la solicitud para que incluya una se\u00f1al de cierre de sesi\u00f3n.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: La se\u00f1al de cierre de sesi\u00f3n en la solicitud de cierre de sesi\u00f3n de canal de fondo no se puede validar: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=La se\u00f1al de cierre de sesi\u00f3n puede estar mal formada, la se\u00f1al puede estar en un formato inesperado o se ha producido otro error al validar la firma o las reclamaciones de la se\u00f1al.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Consulte la acci\u00f3n de usuario para ver el error que se incluye en este mensaje.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: La solicitud de cierre de cierre de canal de fondo no es v\u00e1lida porque no hay ning\u00fan cliente de OpenID Connect que coincida con la solicitud.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=La caracter\u00edstica OpenID Connect espera que el URI de solicitud de canal de fondo incluya un ID de cliente de OpenID Connect para determinar el cliente que debe finalizar la sesi\u00f3n.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verifique que el URI de solicitud incluye el ID de cliente de OpenID Connect que se debe utilizar para cerrar la sesi\u00f3n del usuario.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

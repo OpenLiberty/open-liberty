@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: A fase de ponto de verifica\u00e7\u00e3o "{0}
 error.invalidPhaseName.explanation=Uma fase desconhecida foi especificada como o valor da op\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
 error.invalidPhaseName.useraction=Revise a documenta\u00e7\u00e3o para determinar nomes de fase v\u00e1lidos. Emita novamente o comando usando uma fase de ponto de verifica\u00e7\u00e3o v\u00e1lida.
 
+error.set.securitymanager.jdk18=CWWKE0955E: A propriedade websphere.java.security foi definida no arquivo bootstrap.properties mas a vers\u00e3o Java \u00e9 {0}.  Esta propriedade ativa o Java Security Manager e n\u00e3o \u00e9 v\u00e1lida com Java 18 ou mais recente.
+error.set.securitymanager.jdk18.explanation= Como parte da descontinua\u00e7\u00e3o do Java Security Manager, conforme especificado pelo JEP 411, o Liberty n\u00e3o suporta o Java Security Manager com Java 18 ou mais recente.
+error.set.securitymanager.jdk18.useraction=Remova a propriedade websphere.java.security do arquivo bootstrap.properties ou use uma vers\u00e3o do Java anterior ao Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Falha ao definir o Java Security Manager devido a exce\u00e7\u00e3o: {0}.  Isso ocorre se o servidor estiver usando Java 18 ou mais recente, e a propriedade do sistema Java "java.security.manager" n\u00e3o foi definida como "permitir".
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager n\u00e3o p\u00f4de ser ativado porque o sistema est\u00e1 usando Java 18, que por padr\u00e3o n\u00e3o permite o uso de um Java Security Manager.
+error.cannotset.securitymanager.jdk18.useraction=Inicie o servidor com o argumento JVM -Djava.security.manager=allow.
+
+error.checkpoint.delete=CWWKE0955E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque a imagem do ponto de verifica\u00e7\u00e3o existente n\u00e3o pode ser exclu\u00edda do diret\u00f3rio {0}.
+error.checkpoint.delete.explanation=Uma solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o para o servidor falhou porque uma imagem de ponto de verifica\u00e7\u00e3o existente n\u00e3o pode ser exclu\u00edda.
+error.checkpoint.delete.useraction=Garantir que o usu\u00e1rio tenha permiss\u00e3o para excluir o diret\u00f3rio existente. Emitir novamente o comando com um usu\u00e1rio que tenha permiss\u00f5es suficientes.
+
+error.checkpoint.workarea.backup=CWWKE0956E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque o diret\u00f3rio {0} n\u00e3o pode ser submetido a backup.
+error.checkpoint.workarea.backup.explanation=Ocorreu um erro ao fazer o backup do diret\u00f3rio de \u00e1rea de trabalho do servidor de ponto de verifica\u00e7\u00e3o.
+error.checkpoint.workarea.backup.useraction=Garanta que o usu\u00e1rio tenha permiss\u00f5es suficientes para fazer backup do diret\u00f3rio de \u00e1rea de trabalho do ponto de verifica\u00e7\u00e3o. Emitir novamente o comando com um usu\u00e1rio que tenha permiss\u00f5es suficientes.
+
+error.checkpoint.workarea.restore=CWWKE0957E: O diret\u00f3rio de \u00e1rea de trabalho do servidor de ponto de verifica\u00e7\u00e3o n\u00e3o pode ser restaurado a partir do diret\u00f3rio {0}.
+error.checkpoint.workarea.restore.explanation=Ocorreu um erro ao restaurar o diret\u00f3rio da \u00e1rea de trabalho do ponto de verifica\u00e7\u00e3o.
+error.checkpoint.workarea.restore.useraction=Certifique-se de que o usu\u00e1rio tenha permiss\u00f5es suficientes para restaurar a \u00e1rea de trabalho do ponto de verifica\u00e7\u00e3o. Emitir novamente o comando com um usu\u00e1rio que tenha permiss\u00f5es suficientes.
+
+info.checkpoint.restore.failed=CWWKE0957I: A restaura\u00e7\u00e3o do processo do servidor de ponto de verifica\u00e7\u00e3o falhou. Verifique o log {0} para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. Iniciando o servidor sem usar a imagem do ponto de verifica\u00e7\u00e3o.
+info.checkpoint.restore.failed.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o.  O servidor foi iniciado sem usar a imagem do ponto de verifica\u00e7\u00e3o.
+info.checkpoint.restore.failed.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi iniciado com o ID de processo {1}.

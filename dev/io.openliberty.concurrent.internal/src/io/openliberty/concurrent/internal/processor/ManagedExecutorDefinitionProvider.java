@@ -11,12 +11,13 @@
 package io.openliberty.concurrent.internal.processor;
 
 import java.lang.reflect.Member;
-import java.security.AccessController;
 import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedExecutor;
@@ -32,6 +33,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
  */
 @Component(service = InjectionProcessorProvider.class)
 public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvider<ManagedExecutorDefinition, ManagedExecutorDefinition.List> {
+
+    private static final TraceComponent tc = Tr.register(ManagedExecutorDefinitionProvider.class);
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedExecutor.class);
@@ -60,6 +63,7 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
     }
 
     class Processor extends InjectionProcessor<ManagedExecutorDefinition, ManagedExecutorDefinition.List> {
+        @Trivial
         public Processor() {
             super(ManagedExecutorDefinition.class, ManagedExecutorDefinition.List.class);
         }
@@ -68,18 +72,37 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
         public InjectionBinding<ManagedExecutorDefinition> createInjectionBinding(ManagedExecutorDefinition annotation,
                                                                                   Class<?> instanceClass, Member member,
                                                                                   String jndiName) throws InjectionException {
+            final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
+            if (trace)
+                Tr.entry(this, tc, "createInjectionBinding", ManagedExecutorDefinitionBinding.toString(annotation), instanceClass, member, jndiName);
+
             InjectionBinding<ManagedExecutorDefinition> injectionBinding = //
                             new ManagedExecutorDefinitionBinding(jndiName, ivNameSpaceConfig);
             injectionBinding.merge(annotation, instanceClass, null);
+
+            if (trace)
+                Tr.exit(this, tc, "createInjectionBinding", injectionBinding);
             return injectionBinding;
         }
 
         @Override
+        @Trivial
         public ManagedExecutorDefinition[] getAnnotations(ManagedExecutorDefinition.List pluralAnnotation) {
-            return pluralAnnotation.value();
+            ManagedExecutorDefinition[] annos = pluralAnnotation.value();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Object[] a = new String[annos.length];
+                for (int i = 0; i < annos.length; i++)
+                    a[i] = new StringBuilder().append("ManagedExecutorDefinition@").append(Integer.toHexString(annos[i].hashCode())) //
+                                    .append(' ').append(annos[i].name()) //
+                                    .toString();
+                Tr.debug(this, tc, "getAnnotations", a);
+            }
+            return annos;
         }
 
         @Override
+        @Trivial
         public String getJndiName(ManagedExecutorDefinition annotation) {
             return annotation.name();
         }

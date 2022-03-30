@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,12 @@
    <permission>
       <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
       <name>java.util.Hashtable * "*"</name>
+      <actions>read</actions>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>io.openliberty.jcache.internal.fat.loginmodule.CustomPrivateCredential * "*"</name>
       <actions>read</actions>
    </permission>
    

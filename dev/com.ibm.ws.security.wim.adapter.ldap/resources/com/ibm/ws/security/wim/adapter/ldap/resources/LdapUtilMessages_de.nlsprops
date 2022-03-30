@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=Das Zertifikatsattribut TBSCertificate k
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Stellen Sie sicher, dass der Zertifikatsfilter korrekt ist.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Es wurde ein unbekanntes Zertifikatsattribut {0} in der Filterspezifikation verwendet. Geben Sie einen unterst\u00fctzten Zertifikatsfilter an.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Sie k\u00f6nnen nur die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Bei den Zeichenfolgen muss die Gro\u00df-/Kleinschreibung beachtet werden: $'{UniqueKey}', $"{PublicKey}', $"{Issuer}', $'{NotAfter}', $"{NotBefore}", $'{SerialNumber}', $"{SigAlgName}", $'{SigAlgOID}', $"{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Sie k\u00f6nnen nur die folgenden Zertifikatsattributwerte auf der rechten Seite der Filterspezifikation verwenden. Bei den Zeichenfolgen muss die Gro\u00df-/Kleinschreibung beachtet werden: $'{UniqueKey}', $"{PublicKey}', $"{Issuer}', $'{NotAfter}', $"{NotBefore}", $'{SerialNumber}', $"{SigAlgName}", $'{SigAlgOID}', $"{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Stellen Sie sicher, dass, dass der Zertifikatsfilter korrekt ist.
 
 UNKNOWN_DN_FIELD=CWIML0003E: Die Anmeldeoperation konnte nicht ausgef\u00fchrt werden. Der im DN-Feld konfigurierte Wert {0} ist nicht g\u00fcltig. Geben Sie einen g\u00fcltigen Wert f\u00fcr das DN-Feld an.

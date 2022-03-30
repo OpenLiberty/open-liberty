@@ -25,20 +25,27 @@ configurations {
   hazelcastAll
 }
 
+
+
 dependencies {
   requiredLibs project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                project(':com.ibm.ws.security.common'),
+               project(':com.ibm.ws.security.fat.common'),
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
                project(':io.openliberty.org.apache.commons.codec'),
                project(':io.openliberty.org.apache.commons.logging'),
                'jtidy:jtidy:4aug2000r7-dev',
-               'rhino:js:1.6R5'
+               'rhino:js:1.6R5',
+               'net.sourceforge.htmlunit:htmlunit:2.59.0'
   
 
   hazelcast "com.hazelcast:hazelcast:${hazelcastVersion}" 
   hazelcastClient "com.hazelcast:hazelcast-client:${hazelcastVersion}"
   hazelcastAll "com.hazelcast:hazelcast-all:${hazelcastVersion}"
 }
+
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 task addHazelcastToSharedDir(type: Copy) {
   println configurations.hazelcast.resolve()
@@ -123,6 +130,7 @@ assemble {
 
 
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:samlclient_WAR'
 autoFVT.doLast {
   /*
    * Copy the basicauth.war into test servers.
@@ -182,4 +190,25 @@ autoFVT.doLast {
     from new File(appBuildDir, 'CustomLoginModule.jar')
     into new File(autoFvtDir, 'publish/shared/resources/libs/')
   }
+  
+  /*
+   * Copy the samlclient.war into test servers.
+   */
+  servers = [
+    'io.openliberty.jcache.internal.fat.saml.auth.cache.1',
+    'io.openliberty.jcache.internal.fat.saml.auth.cache.2',
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/samlclient.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * htmlunit-2.44.0 is packaged automatically, we need to remove it so we can use
+   # htmlunit-2.59.0 as it contains a fix for "SameSite" cookies.
+   */
+  delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
+  delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')
 }

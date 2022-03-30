@@ -54,7 +54,7 @@ public class ManagedExecutorType extends JNDIEnvironmentRefType implements Manag
     
     @Override
     public String getContextServiceRef() {
-        return contextServiceRef.getValue();
+        return contextServiceRef == null ? null : contextServiceRef.getValue();
     }
 
     @Override

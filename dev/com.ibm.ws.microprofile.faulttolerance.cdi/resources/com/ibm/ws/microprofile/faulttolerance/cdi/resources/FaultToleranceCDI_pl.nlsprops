@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,12 +40,12 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Zaktualizuj typ zwra
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: W klasie {0} nie znaleziono metody alternatywnej {1} z parametrami {2}.
-fallback.method.not.found.CWMFT5003E.explanation=Dla metody {1} zadeklarowano metod\u0119 alternatywn\u0105. Jednak ta metoda nie istnieje w klasie {0}.
+fallback.method.not.found.CWMFT5003E.explanation=Zadeklarowano metod\u0119 alternatywn\u0105, jednak nie istnieje ona w klasie deklaruj\u0105cej.
 fallback.method.not.found.CWMFT5003E.useraction=Usu\u0144 adnotacj\u0119 alternatywn\u0105 lub dodaj brakuj\u0105c\u0105 metod\u0119.
 
 #A security exception was thrown while trying to create a fallback policy.
 security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: Podczas pr\u00f3by przetworzenia adnotacji alternatywnych przez serwer aplikacji wyst\u0105pi\u0142 wyj\u0105tek zabezpiecze\u0144.
-security.exception.acquiring.fallback.method.CWMFT5004E.explanation= Aby utworzy\u0107 strategi\u0119 alternatywn\u0105, serwer aplikacji musi mie\u0107 uprawnienia do pozyskiwania i sprawdzania metod Java.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Aby utworzy\u0107 strategi\u0119 alternatywn\u0105, serwer aplikacji musi mie\u0107 uprawnienia do pozyskiwania i sprawdzania metod Java.
 security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Przejrzyj strategi\u0119 bezpiecze\u0144stwa serwera aplikacji i udost\u0119pnij odpowiednie uprawnienia.
 
 #A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
@@ -85,42 +85,42 @@ timeout.parameter.invalid.value.CWMFT5011E.explanation=Podana warto\u015b\u0107 
 timeout.parameter.invalid.value.CWMFT5011E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT CircuitBreaker parameters
-circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E:  Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
-circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation= Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru delay strategii CircuitBreaker, nie jest poprawna.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: \ Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru delay strategii CircuitBreaker, nie jest poprawna.
 circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT CircuitBreaker parameters
-circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E:  Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c musi by\u0107 liczb\u0105 z przedzia\u0142u od 0 do 1 (przedzia\u0142 domkni\u0119ty).
-circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation= Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru failureRatio strategii CircuitBreaker, nie jest poprawna.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: \ Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c musi by\u0107 liczb\u0105 z przedzia\u0142u od 0 do 1 (przedzia\u0142 domkni\u0119ty).
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru failureRatio strategii CircuitBreaker, nie jest poprawna.
 circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT CircuitBreaker parameters
-circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E:  Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c parametr nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
-circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation= Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru requestVolumeThreshold strategii CircuitBreaker, nie jest poprawna.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: \ Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c parametr nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru requestVolumeThreshold strategii CircuitBreaker, nie jest poprawna.
 circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT CircuitBreaker parameters
-circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E:  Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c parametr nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
-circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation= Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru successThreshold strategii CircuitBreaker, nie jest poprawna.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: \ Warto\u015b\u0107 {1} parametru strategii CircuitBreaker {0} dla {2} nie jest poprawna, poniewa\u017c parametr nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru successThreshold strategii CircuitBreaker, nie jest poprawna.
 circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT Bulkhead parameters
-bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E:  Warto\u015b\u0107 {1} parametru strategii Bulkhead {0} dla {2} nie jest poprawna, poniewa\u017c musi by\u0107 wi\u0119ksza lub r\u00f3wna 1.
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: \ Warto\u015b\u0107 {1} parametru strategii Bulkhead {0} dla {2} nie jest poprawna, poniewa\u017c musi by\u0107 wi\u0119ksza lub r\u00f3wna 1.
 bulkhead.parameter.invalid.value.CWMFT5016E.explanation=Podana warto\u015b\u0107 lub skonfigurowana warto\u015b\u0107, o ile jest skonfigurowana w przypadku parametru strategii Bulkhead, nie jest poprawna.
 bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
-retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E:  Maksymalny czas trwania strategii Retry {0} {1} dla celu {2} jest niepoprawny, poniewa\u017c musi by\u0107 wi\u0119kszy ni\u017c czas trwania op\u00f3\u017anienia {3} {4}.
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: \ Maksymalny czas trwania strategii Retry {0} {1} dla celu {2} jest niepoprawny, poniewa\u017c musi by\u0107 wi\u0119kszy ni\u017c czas trwania op\u00f3\u017anienia {3} {4}.
 retry.parameter.invalid.value.CWMFT5017E.explanation=Maksymalny czas trwania musi by\u0107 wi\u0119kszy od op\u00f3\u017anienia. Maksymalny czas trwania sk\u0142ada si\u0119 z parametr\u00f3w maxDuration i durationUnit.  Op\u00f3\u017anienie sk\u0142ada si\u0119 z parametr\u00f3w delay i delayUnit.
 retry.parameter.invalid.value.CWMFT5017E.useraction=Popraw warto\u015b\u0107 co najmniej jednego parametru.
 
 #Incorrect value on FT CircuitBreaker parameters
-circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E:  Parametr {0} strategii CircuitBreaker dla {1} jest niepoprawny, poniewa\u017c jego warto\u015b\u0107 jest pusta.
-circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation= Podana warto\u015b\u0107 lub warto\u015b\u0107, kt\u00f3ra jest skonfigurowana dla parametru failOn strategii CircuitBreaker, nie jest poprawna.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: \ Parametr {0} strategii CircuitBreaker dla {1} jest niepoprawny, poniewa\u017c jego warto\u015b\u0107 jest pusta.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=Podana warto\u015b\u0107 lub warto\u015b\u0107, kt\u00f3ra jest skonfigurowana dla parametru failOn strategii CircuitBreaker, nie jest poprawna.
 circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Popraw warto\u015b\u0107 podanego parametru.
 
 #Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
-retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W:  Op\u00f3\u017anienie zaburze\u0144 strategii Retry {0} {1} dla celu {2} jest niepoprawne, poniewa\u017c musi ono by\u0107 mniejsze ni\u017c czas trwania op\u00f3\u017anienia {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: \ Op\u00f3\u017anienie zaburze\u0144 strategii Retry {0} {1} dla celu {2} jest niepoprawne, poniewa\u017c musi ono by\u0107 mniejsze ni\u017c czas trwania op\u00f3\u017anienia {3} {4}.
 retry.parameter.invalid.value.CWMFT5019W.explanation=Op\u00f3\u017anienie zaburze\u0144 musi by\u0107 mniejsze ni\u017c op\u00f3\u017anienie. Op\u00f3\u017anienie zaburze\u0144 sk\u0142ada si\u0119 z parametr\u00f3w jitter i jitterDelayUnit. Op\u00f3\u017anienie sk\u0142ada si\u0119 z parametr\u00f3w delay i delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Popraw warto\u015b\u0107 co najmniej jednego parametru w taki spos\u00f3b, aby czas trwania op\u00f3\u017anienia zaburze\u0144 by\u0142 kr\u00f3tszy ni\u017c czas trwania op\u00f3\u017anienia.
 
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Z
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: W hierarchii klas {2} nie znaleziono metody alternatywnej {0} z typami parametr\u00f3w i warto\u015bci zwracanej zgodnymi z metod\u0105 {1}.
 fallback.method.not.found.CWMFT5021E.explanation=Metoda alternatywna zosta\u0142a zadeklarowana, ale nie istnieje w klasie deklaruj\u0105cej, jej nadklasach ani interfejsach, kt\u00f3re implementuje.
 fallback.method.not.found.CWMFT5021E.useraction=Usu\u0144 adnotacj\u0119 alternatywn\u0105 lub dodaj brakuj\u0105c\u0105 metod\u0119. Je\u015bli metoda alternatywna istnieje, ale wci\u0105\u017c nie mo\u017cna jej znale\u017a\u0107, sprawd\u017a, czy typy parametr\u00f3w i typ zwracany obu metod s\u0105 zgodne oraz czy metoda alternatywna jest widoczna dla klasy, kt\u00f3ra deklaruje metod\u0119 z adnotacj\u0105.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: Adnotacje specyfikacji MicroProfile Fault Tolerance nie mog\u0105 by\u0107 u\u017cywane w po\u0142\u0105czeniu z adnotacj\u0105 {0}.
+anno.conflict.CWMFT5022E.explanation=Adnotacje specyfikacji MicroProfile Fault Tolerance z okre\u015blon\u0105 adnotacj\u0105 nie s\u0105 obs\u0142ugiwane.
+anno.conflict.CWMFT5022E.useraction=Usu\u0144 adnotacje specyfikacji MicroProfile Fault Tolerance lub adnotacje powoduj\u0105ce konflikt.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek: {0}.

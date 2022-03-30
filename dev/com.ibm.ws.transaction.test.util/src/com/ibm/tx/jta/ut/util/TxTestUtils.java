@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ public class TxTestUtils {
     /**  */
     private static final long serialVersionUID = 1L;
 
+    // This is an environment variable which should take the form 1,2,6
+    // That would make connections 1,2 & 6 fail.
 	public static final String CONNECTION_MANAGER_FAILS = "CONNECTION_MANAGER_FAILS";
 
     /**

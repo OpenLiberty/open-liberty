@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: Faza punctului de control "{0}" specificat es
 error.invalidPhaseName.explanation=O faz\u0103 necunoscut\u0103 a fost specificat\u0103 ca valoare a op\u021biunii de punct de control.
 error.invalidPhaseName.useraction=Revede\u021bi documenta\u021bia pentru a determina numele de faz\u0103 valide. Relansa\u021bi comanda folosind o faz\u0103 de punct de control valid\u0103.
 
+error.set.securitymanager.jdk18=CWWKE0955E: Proprietatea websphere.java.security property a fost setat\u0103 \u00een fi\u0219ierul bootstrap.properties dar versiunea Java este {0}.  Aceast\u0103 proprietate activeaz\u0103 Java Security Manager \u0219i nu este valid\u0103 cu Java 18 sau versiunile ulterioare.
+error.set.securitymanager.jdk18.explanation= Ca parte a deprecierii Java Security Manager, a\u0219a cum este specificat de JEP 411, Liberty nu suport\u0103 Java Security Manager cu Java 18 sau versiunile ulterioare.
+error.set.securitymanager.jdk18.useraction=Elimina\u021bi proprietatea websphere.java.security din fi\u0219ierul bootstrap.properties sau utiliza\u021bi o versiune Java anterioar\u0103 versiunii Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Configurarea Java Security Manager nu a reu\u0219it din cauza excep\u021biei: {0}.  Acest lucru are loc \u00een cazul \u00een care serverul folose\u0219te Java 18 sau versiunile ulterioare, iar proprietatea sistemului Java \u201ejava.security.manager\u201d nu a fost setat\u0103 pentru a acorda aceast\u0103 \u201epermisiune\u201d.
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager nu a putut fi activat, deoarece sistemul folose\u0219te Java 18, care este setat\u0103 \u00een mod implicit pentru a nu permite utilizarea Java Security Manager.
+error.cannotset.securitymanager.jdk18.useraction=Porni\u021bi serverul cu argumentul JVM -Djava.security.manager=allow.
+
+error.checkpoint.delete=CWWKE0955E: Cererea de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103 din directorul {0}.
+error.checkpoint.delete.explanation=O cerere de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103.
+error.checkpoint.delete.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiunea de a \u0219terge directorul existent. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
+
+error.checkpoint.workarea.backup=CWWKE0956E: Cererea de punct de control a serverului nu a reu\u0219it deoarece directorul {0} nu poate fi copiat.
+error.checkpoint.workarea.backup.explanation=A ap\u0103rut o eroare la copierea directorului zonei de lucru al serverului de punct de control.
+error.checkpoint.workarea.backup.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a realiza copia de rezerv\u0103 a directorului de punct de control al zonei de lucru. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
+
+error.checkpoint.workarea.restore=CWWKE0957E: Directorul zonei de lucru al serverului de punct de control nu poate fi restabilit din directorul {0}.
+error.checkpoint.workarea.restore.explanation=A ap\u0103rut o eroare la restabilirea directorului de punct de control al zonei de lucru.
+error.checkpoint.workarea.restore.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a restabili zona de lucru de punct de control. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
+
+info.checkpoint.restore.failed=CWWKE0957I: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Lansarea serverului f\u0103r\u0103 a utiliza imaginea punctului de control.
+info.checkpoint.restore.failed.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control.  Serverul a fost pornit f\u0103r\u0103 a folosi imaginea punctului de control.
+info.checkpoint.restore.failed.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

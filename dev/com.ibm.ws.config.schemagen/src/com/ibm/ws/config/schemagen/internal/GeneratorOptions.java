@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,10 @@ public class GeneratorOptions {
      */
     public ReturnCode processArgs(String[] args) {
         ReturnCode rc = ReturnCode.OK;
+        
+        if ((args.length == 0)) {
+            return ReturnCode.NO_ARGUMENT;
+        }
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -92,7 +96,7 @@ public class GeneratorOptions {
                     } catch (IOException ex) {
                         System.out.println(MessageFormat.format(messages.getString("error.fileNotFound"), args[i]));
                         System.out.println();
-                        rc = ReturnCode.BAD_ARGUMENT;
+                        return(ReturnCode.BAD_ARGUMENT);
                     }
                 } else if (argToLower.contains("-encoding")) {
                     setEncoding(getArgumentValue(args[i]));
@@ -107,7 +111,7 @@ public class GeneratorOptions {
                 }  else {
                     System.out.println(MessageFormat.format(messages.getString("error.unknownArgument"), arg));
                     System.out.println();
-                    rc = ReturnCode.BAD_ARGUMENT;
+                    return(ReturnCode.BAD_ARGUMENT);
                 }
             } else {
                 if (outputFile != null) {

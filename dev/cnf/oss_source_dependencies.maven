@@ -105,7 +105,7 @@ org.eclipse.platform:org.eclipse.equinox.console:1.4.300
 org.eclipse.platform:org.eclipse.equinox.coordinator:1.4.0
 org.eclipse.platform:org.eclipse.equinox.metatype:1.6.0
 org.eclipse.platform:org.eclipse.equinox.region:1.5.100
-org.eclipse.platform:org.eclipse.osgi:3.17.100
+org.eclipse.platform:org.eclipse.osgi:3.17.200
 org.eclipse:yasson:1.0.8
 org.jboss.classfilewriter:jboss-classfilewriter:1.2.5.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final

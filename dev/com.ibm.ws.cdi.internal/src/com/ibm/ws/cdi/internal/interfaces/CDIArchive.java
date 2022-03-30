@@ -178,6 +178,15 @@ public interface CDIArchive {
     Set<String> getExtensionClasses();
 
     /**
+     * Get the build compatible extension classes found in this archive
+     * <p>
+     * Always an empty set on CDI &lt; 4.0
+     *
+     * @return the BCE class names
+     */
+    Set<String> getBuildCompatibleExtensionClasses();
+
+    /**
      * Initialize an Injection Engine Reference Context using the given injection classes
      *
      * @param injectionClasses The classes to initialize the Reference Context with

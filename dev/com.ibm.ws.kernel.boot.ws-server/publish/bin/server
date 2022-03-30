@@ -63,10 +63,6 @@
 #              to y to allow remote debugging. By default, this value is not
 #              defined, which does not allow remote debugging on newer JDK/JREs.
 #
-# WLP_IN_CONTAINER - Set to true to signal that the script is being invoked from
-#              a container. If true, certain code will be optimized out where it 
-#              does not make sense to be run in container.
-#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #              to be used.
 #
@@ -571,12 +567,6 @@ serverEnvDefaults()
     X_PID_FILE=${PID_FILE}
     X_PID_DIR=`dirname "${X_PID_FILE}"`
     unset PID_FILE
-  fi
-
-  if [ -z "$WLP_IN_CONTAINER" ]; then
-    X_WLP_IN_CONTAINER=false
-  else
-    X_WLP_IN_CONTAINER=$WLP_IN_CONTAINER
   fi
 
   if [ -z "${JAVA_HOME}" ]
@@ -1213,11 +1203,6 @@ serverCmd()
 #        checkpoint/workarea contains the backup of workarea contents, less the checkpoint dir
 backupWorkarea()
 {
-  if $X_WLP_IN_CONTAINER
-  then
-    return 0
-  fi
-
   # first remove the temporary destination to ensure we get errors if it exists and cannot be deleted
   rm -fr "${SERVER_OUTPUT_DIR}/checkpoint"
   rc=$?
@@ -1233,7 +1218,7 @@ backupWorkarea()
   fi
 
   # copy the workarea to the checkpoint folder so it can be restored later
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
   rc=$?
   if [ $rc -ne 0 ]; then
     return 3
@@ -1265,7 +1250,7 @@ restoreWorkarea()
   fi
   rm -rf "${SERVER_OUTPUT_DIR}/workarea"
   # copy backup to workarea
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
   rc=$?
   # mv checkpoint directory back
   mkdirs "${SERVER_OUTPUT_DIR}/workarea/"

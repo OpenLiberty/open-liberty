@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Un point de contr\u00f4le du ser
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Un point de contr\u00f4le a \u00e9t\u00e9 demand\u00e9. Le serveur est arr\u00eat\u00e9 et son \u00e9tat en cours est \u00e9crit sur le disque.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le serveur Liberty reprend ses op\u00e9rations \u00e0 partir d'un point de contr\u00f4le.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le processus du serveur Liberty a repris l''op\u00e9ration \u00e0 partir d''un point de contr\u00f4le dans {0} secondes.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=Une op\u00e9ration de restauration a \u00e9t\u00e9 ex\u00e9cut\u00e9e sur une image de point de contr\u00f4le du serveur Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration.
 

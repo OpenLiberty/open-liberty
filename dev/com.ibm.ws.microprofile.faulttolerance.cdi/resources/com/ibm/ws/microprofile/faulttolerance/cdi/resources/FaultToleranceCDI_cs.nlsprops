@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Aktualizujte n\u00e1
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: N\u00e1hradn\u00ed metoda {1} s parametry {2} nebyla ve t\u0159\u00edd\u011b {0} nalezena.
-fallback.method.not.found.CWMFT5003E.explanation=N\u00e1hradn\u00ed metoda byla deklarov\u00e1na pro metodu {1}. Nicm\u00e9n\u011b tato metoda ve t\u0159\u00edd\u011b {0} neexistuje.
+fallback.method.not.found.CWMFT5003E.explanation=Byla deklarov\u00e1na nouzov\u00e1 metoda, ale v deklaruj\u00edc\u00ed t\u0159\u00edd\u011b neexistuje.
 fallback.method.not.found.CWMFT5003E.useraction=Bu\u010f odeberte n\u00e1hradn\u00ed anotaci, nebo p\u0159idejte chyb\u011bj\u00edc\u00ed metodu.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=A
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: N\u00e1hradn\u00ed metoda {0} s parametrem a n\u00e1vratov\u00fdmi typy odpov\u00eddaj\u00edc\u00ed metod\u011b {1} nebyla nalezena v hierarchii t\u0159\u00edd {2}.
 fallback.method.not.found.CWMFT5021E.explanation=N\u00e1hradn\u00ed metoda byla deklarov\u00e1na, ale neexistuje v deklara\u010dn\u00ed t\u0159\u00edd\u011b, jej\u00edch nad\u0159azen\u00fdch t\u0159\u00edd\u00e1ch nebo v rozhran\u00edch, kter\u00e9 implementuje.
 fallback.method.not.found.CWMFT5021E.useraction=Bu\u010f odeberte n\u00e1hradn\u00ed anotaci, nebo p\u0159idejte chyb\u011bj\u00edc\u00ed metodu. Pokud n\u00e1hradn\u00ed metoda existuje, ale dosud nebyla nalezena, zkontrolujte, zda typy parametr\u016f a n\u00e1vratov\u00fd typ t\u011bchto dvou metod se shoduj\u00ed a zda je n\u00e1hradn\u00ed metoda viditeln\u00e1 pro t\u0159\u00eddu, kter\u00e1 deklaruje anotovanou metodu.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: Anotace odolnosti proti poruch\u00e1m mikroprofilu nelze v kombinaci s anotac\u00ed {0} pou\u017e\u00edt.
+anno.conflict.CWMFT5022E.explanation=Prom\u00edch\u00e1v\u00e1n\u00ed anotac\u00ed odolnosti proti poruch\u00e1m mikrofprofilu se zadanou anotac\u00ed nen\u00ed podporov\u00e1no.
+anno.conflict.CWMFT5022E.useraction=Odeberte anotace odolnosti proti poruch\u00e1m mikroprofilu nebo konfliktn\u00ed anotaci.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}.

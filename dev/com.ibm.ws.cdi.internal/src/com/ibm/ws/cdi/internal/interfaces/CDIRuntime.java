@@ -199,4 +199,9 @@ public interface CDIRuntime extends CDIService {
      * @return all registered ExtensionArchiveProviders
      */
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders();
+
+    /**
+     * @return the BuildCompatibleExtensionFinder, or {@code null} if there is not one
+     */
+    public BuildCompatibleExtensionFinder getBuildCompatibleExtensionFinder();
 }

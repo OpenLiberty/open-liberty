@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,20 +47,17 @@ CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.explanation=Le conteneur n'est pas parv
 CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.useraction=V\u00e9rifiez que le r\u00e9pertoire de passivation existe, que le processus poss\u00e8de un droit d'\u00e9criture sur ce r\u00e9pertoire et que l'espace disque est suffisant.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Echec de l''extraction de l''encapsuleur pour une interface Home. \n\
-\ Home : {0}
+FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Echec de l''extraction de l''encapsuleur pour une interface Home. \n Home : {0}
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.useraction=CMSG0002
 
 # --------------------------------
-CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Un bean session avec \u00e9tat (Stateful) n''a pas pu \u00eatre activ\u00e9 : {0} {1} \n\
-\ {2}
+CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Un bean session avec \u00e9tat (Stateful) n''a pas pu \u00eatre activ\u00e9 : {0} {1} \n {2}
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.explanation=Le conteneur n'est pas parvenu \u00e0 activer un bean session avec \u00e9tat \u00e0 partir du stockage.
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.useraction=Prenez les mesures n\u00e9cessaires en fonction du message d'exception figurant dans le message CNTR0003W.
 
 # --------------------------------
-ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Une tentative d''acquisition de verrou a \u00e9t\u00e9 interrompue. \n\
-\ Verrou : {0}
+ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Une tentative d''acquisition de verrou a \u00e9t\u00e9 interrompue. \n Verrou : {0}
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.explanation=Une unit\u00e9 d'ex\u00e9cution tentant d'acqu\u00e9rir un verrou exclusif dans le conteneur a \u00e9t\u00e9 interrompue pendant qu'elle attendait le verrou.
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.useraction=CMSG0002
 
@@ -95,29 +92,22 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=Le conteneur a rencontr\u00e
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Assurez-vous que le type de l'entr\u00e9e d'environnement est l'un des suivants : String, Integer, Boolean, Double, Byte, Short, Long, Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Le collaborateur {0} a \u00e9mis une exception inattendue. L''op\u00e9ration se poursuit avec les autres collaborateurs.\n\
-\ Donn\u00e9es de l''exception : {1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Le collaborateur {0} a \u00e9mis une exception inattendue. L''op\u00e9ration se poursuit avec les autres collaborateurs.\n Donn\u00e9es de l''exception : {1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
 # --------------------------------
-UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Impossible de mapper l''exception. \n\
-\ {0} \n\
-\ {1}
+UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Impossible de mapper l''exception. \n {0} \n {1}
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.explanation=Le conteneur n'a pas pu mapper l'exception \u00e0 une exception CORBA valide.
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.useraction=CMSG0002
 
 # --------------------------------
-STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: L''unit\u00e9 d''ex\u00e9cution StatefulBeanReaper a \u00e9t\u00e9 interrompue. Arr\u00eat en cours. \n\
-\ {0}
+STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: L''unit\u00e9 d''ex\u00e9cution StatefulBeanReaper a \u00e9t\u00e9 interrompue. Arr\u00eat en cours. \n {0}
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Une exception inattendue s''est produite lors du nettoyage du bean avec \u00e9tat. \n\
-\ Donn\u00e9es de l''exception : \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Une exception inattendue s''est produite lors du nettoyage du bean avec \u00e9tat. \n Donn\u00e9es de l''exception : \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -127,8 +117,7 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=Le conteneur n'a pas 
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Prenez les mesures n\u00e9cessaires en fonction du message d'exception figurant dans le message CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Le collaborateur de s\u00e9curit\u00e9 a \u00e9mis une exception inattendue. \n\
-\ Donn\u00e9es de l''exception : {0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Le collaborateur de s\u00e9curit\u00e9 a \u00e9mis une exception inattendue. \n Donn\u00e9es de l''exception : {0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
@@ -153,8 +142,7 @@ NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.explanation=Une exception, non d\u00
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Examinez la trace de pile pour d\u00e9terminer l'origine de l'exception.  Si l'exception provient d'un code \u00e9crit par l'utilisateur, corrigez la cause de l'exception. Sinon, vous trouverez sur le site Web de support IBM des informations qui vous aideront \u00e0 d\u00e9terminer la cause du probl\u00e8me.
 
 # --------------------------------
-TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Le coordinateur de transaction n''est pas disponible. \n\
-\ {0}
+TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Le coordinateur de transaction n''est pas disponible. \n {0}
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.explanation=CMSG0001
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.useraction=CMSG0002
 
@@ -179,14 +167,12 @@ DATASOURCE_NAME_NULL_CNTR0026W.explanation=Aucune source de donn\u00e9es n'a \u0
 DATASOURCE_NAME_NULL_CNTR0026W.useraction=Sp\u00e9cifiez une source de donn\u00e9es pour le bean entity ou sp\u00e9cifiez une source de donn\u00e9es par d\u00e9faut pour le module.
 
 # --------------------------------
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Echec de la validation de la connexion : \n\
-\ {0}
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Echec de la validation de la connexion : \n {0}
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.explanation=Une exception SQLException s'est produite lors d'une tentative de validation d'une connexion \u00e0 une source de donn\u00e9es.
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Consultez la documentation que vous a remise le fournisseur du produit de base de donn\u00e9es que vous utilisez.  Normalement, l'exception SQL doit contenir un code d'exception propre au fournisseur.  Ce code d'exception, avec l'aide de la documentation du fournisseur, peut vous aider \u00e0 d\u00e9terminer la cause de l'exception.
 
 # --------------------------------
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Echec de la fermeture de la connexion : \n\
-\ {0}
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Echec de la fermeture de la connexion : \n {0}
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.explanation=Une exception SQLException s'est produite lors d'une tentative de fermeture d'une connexion \u00e0 une source de donn\u00e9es.
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consultez la documentation que vous a remise le fournisseur du produit de base de donn\u00e9es que vous utilisez.  Normalement, l'exception SQL doit contenir un code d'exception propre au fournisseur.  Ce code d'exception, avec l'aide de la documentation du fournisseur, peut vous aider \u00e0 d\u00e9terminer la cause de l'exception.
 
@@ -203,8 +189,7 @@ FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consultez la documentation que v
 # Cannot.obtain.the.transaction.coordinator.{0}.useraction=CMSG0002
 
 # --------------------------------
-ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Erreur lors du d\u00e9marrage du bean CMP {0} : \n\
-\ {1}
+ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Erreur lors du d\u00e9marrage du bean CMP {0} : \n {1}
 ERROR_STARTING_CMP_BEAN_CNTR0031W.explanation=Un bean entity a peut-\u00eatre \u00e9t\u00e9 li\u00e9 \u00e0 une source de donn\u00e9es au moyen d'un nom de source non valide ou erron\u00e9. Si le nom de la source de donn\u00e9es est correct, il se peut que la source de donn\u00e9es ne soit pas correctement configur\u00e9e.
 ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=S le message est pr\u00e9c\u00e9d\u00e9 de la r\u00e9f\u00e9rence CNTR0026W, vous devrez indiquer le nom de la source de donn\u00e9es. Sinon, v\u00e9rifiez le nom de la source qui figure dans le message CNTR0032W suivant le pr\u00e9sent message. S'il s'est produit une exception de nom introuvable, c'est vraisemblablement que le nom de la source de donn\u00e9es est erron\u00e9.  S'il a \u00e9t\u00e9 indiqu\u00e9 un nom correct pour la source, v\u00e9rifiez la configuration de cette derni\u00e8re. Vous avez peut \u00eatre mal sp\u00e9cifi\u00e9 dans la configuration de la source le nom de la base de donn\u00e9es, ou l'ID utilisateur, ou encore le mot de passe.
 
@@ -286,12 +271,8 @@ CONNECTION_FACTORY_BINDING_NOT_SPECIFIED_CNTR0046E.useraction=Sp\u00e9cifiez une
 
 # --------------------------------
 METHOD_NOT_ALLOWED_CNTR0047E=CNTR0047E: Le bean tente d''utiliser l''interface ou la m\u00e9thode "{0}" dans une situation interdite par la sp\u00e9cification EJB.
-METHOD_NOT_ALLOWED_CNTR0047E.explanation=La sp\u00e9cification EJB (Enterprise Java Bean) n'autorise pas la m\u00e9thode pour l'une des raisons suivantes : les m\u00e9thodes RollbackOnly et setRollbackOnly de l'interface MessageDriven-Context ne doivent \u00eatre utilis\u00e9es que dans les m\u00e9thodes de bean g\u00e9r\u00e9 par message qui s'ex\u00e9cutent dans le contexte d'une transaction. \
-# - L'appel des m\u00e9thodes getCallerPrincipal et isCallerInRole n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message car le conteneur ne poss\u00e8de pas de contexte de s\u00e9curit\u00e9 client. \
-# - L'appel des m\u00e9thodes getRollbackOnly et setRollbackOnly n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message pour lesquelles le conteneur ne poss\u00e8de pas de contexte de transaction significatif, ainsi que pour tous les beans g\u00e9r\u00e9s par message qui g\u00e8rent eux-m\u00eame la d\u00e9marcation des transactions. \
-# - L'interface UserTransaction n'est pas accessible aux beans g\u00e9r\u00e9s par message dont la d\u00e9marcation des transactions est g\u00e9r\u00e9e par le conteneur. \
-# - L'appel de la m\u00e9thode getEJBHome ou getEJBLocalHome n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message car il n'y a pas d'objets EJBHome ou EJBLocalHome pour les beans de ce type. \
-#
+METHOD_NOT_ALLOWED_CNTR0047E.explanation=La sp\u00e9cification EJB (Enterprise Java Bean) n'autorise pas la m\u00e9thode pour l'une des raisons suivantes : les m\u00e9thodes RollbackOnly et setRollbackOnly de l'interface MessageDriven-Context ne doivent \u00eatre utilis\u00e9es que dans les m\u00e9thodes de bean g\u00e9r\u00e9 par message qui s'ex\u00e9cutent dans le contexte d'une transaction. # - L'appel des m\u00e9thodes getCallerPrincipal et isCallerInRole n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message car le conteneur ne poss\u00e8de pas de contexte de s\u00e9curit\u00e9 client. # - L'appel des m\u00e9thodes getRollbackOnly et setRollbackOnly n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message pour lesquelles le conteneur ne poss\u00e8de pas de contexte de transaction significatif, ainsi que pour tous les beans g\u00e9r\u00e9s par message qui g\u00e8rent eux-m\u00eame la d\u00e9marcation des transactions. # - L'\
+    interface UserTransaction n'est pas accessible aux beans g\u00e9r\u00e9s par message dont la d\u00e9marcation des transactions est g\u00e9r\u00e9e par le conteneur. # - L'appel de la m\u00e9thode getEJBHome ou getEJBLocalHome n'est pas autoris\u00e9 dans les m\u00e9thodes de beans g\u00e9r\u00e9s par message car il n'y a pas d'objets EJBHome ou EJBLocalHome pour les beans de ce type. #
 METHOD_NOT_ALLOWED_CNTR0047E.useraction=N'appelez pas la m\u00e9thode dans cet environnement.
 
 # --------------------------------
@@ -330,14 +311,12 @@ EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.explanation=CMSG0001
 EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.useraction=CMSG0002
 
 # --------------------------------
-THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative de construction de <nom_entr\u00e9e_environnement> {0} <valeur_entr\u00e9e_environnement> {1} \n\
- \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative de construction de <nom_entr\u00e9e_environnement> {0} <valeur_entr\u00e9e_environnement> {1} \n {2}
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.explanation=Le conteneur a intercept\u00e9 une exception Throwable lors de la tentative de cr\u00e9ation d'une entr\u00e9e java:comp/env.
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.useraction=Prenez les mesures n\u00e9cessaires en fonction du message d'exception figurant dans le message CNTR0055W.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Echec lors de l''extraction de l''encapsuleur pour l''interface bean. Bean : \n\
-\ {0}
+FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Echec lors de l''extraction de l''encapsuleur pour l''interface bean. Bean : \n {0}
 FAILED_TO_GET_WRAPPER_CNTR0056W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_CNTR0056W.useraction=CMSG0002
 
@@ -467,8 +446,7 @@ ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.explanation=CMSG0001
 ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.useraction=CMSG0002
 
 #---------------------------------
-CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: La cr\u00e9ation d''un noeud final de message n''a pas abouti : \n\
-\ {0}
+CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: La cr\u00e9ation d''un noeud final de message n''a pas abouti : \n {0}
 CREATE_ENDPOINT_FAILED_CNTR0083E.explanation=CMSG0001
 CREATE_ENDPOINT_FAILED_CNTR0083E.useraction=CMSG0002
 
@@ -650,10 +628,7 @@ LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Aucune action n'est requise de l'utilis
 
 #-------------------------------------------------------------------------------
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: La classe fournie par l''utilisateur "{0}" peut ne pas impl\u00e9menter l''interface com.ibm.websphere.ejbcontainer.LightweightLocal.  Code raison = {1}.
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Seuls les beans entity EJB 2.x ou ult\u00e9rieurs avec une interface locale peuvent impl\u00e9menter l'interface com.ibm.websphere.ejbcontainer.LightweightLocal. Le code raison identifie cette violation comme suit : \n\
-\  1 - L'EJB n'est pas un bean entity. \n\
-\ 2 - Le bean est un EJB V1.x ou un bean entity de persistance g\u00e9r\u00e9e par conteneur (CMP) V1.x. \n\
-\ 3 - Aucune interface n'est d\u00e9finie pour l'EJB.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Seuls les beans entity EJB 2.x ou ult\u00e9rieurs avec une interface locale peuvent impl\u00e9menter l'interface com.ibm.websphere.ejbcontainer.LightweightLocal. Le code raison identifie cette violation comme suit : \n  1 - L'EJB n'est pas un bean entity. \n 2 - Le bean est un EJB V1.x ou un bean entity de persistance g\u00e9r\u00e9e par conteneur (CMP) V1.x. \n 3 - Aucune interface n'est d\u00e9finie pour l'EJB.
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.useraction=Modifiez l'EJB pour qu'il soit de type entity, utilisez la version 2.0 ou ult\u00e9rieure pour le d\u00e9ploiement d'EJB, modifiez le d\u00e9ploiement EJB en sp\u00e9cifiant une interface locale, ou modifiez l'impl\u00e9mentation afin qu'elle n'impl\u00e9mente pas l'interface com.ibm.websphere.ejbcontainer.LightweightLocal.
 
 #-------------------------------------------------------------------------------
@@ -982,8 +957,7 @@ MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Aucune action n'est requise.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
-TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Le gestionnaire de temporisateurs utilis\u00e9 par le service de temporisation EJB n''a pas pu \u00eatre obtenu.\n\
-{0}
+TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Le gestionnaire de temporisateurs utilis\u00e9 par le service de temporisation EJB n''a pas pu \u00eatre obtenu.\n{0}
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.explanation=Une tentative d'obtention du gestionnaire de temporisateurs a \u00e9t\u00e9 effectu\u00e9e car l'option permettant de cr\u00e9er un pool d'unit\u00e9s d'ex\u00e9cution distinct pour les temporisateurs non persistants a \u00e9t\u00e9 configur\u00e9e sur l'objet de configuration EJBTimer (uniqueTimerManagerForNP).
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.useraction=Vous pouvez aussi configurer le service de temporisation afin d'utiliser un planificateur pour les temporisateurs non persistants.
 
@@ -1020,8 +994,7 @@ STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.explanation=Des beans 
 STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.useraction=Eliminez l'annotation Java de d\u00e9marrage ou le descripteur de d\u00e9ploiement XML de cette classe d'EJB ou remplacez la classe par un bean session singleton.
 
 #-------------------------------------------------------------------------------
-STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: L''initialisation du bean session singleton de d\u00e9marrage {0} du module {1} a \u00e9chou\u00e9 avec l''exception suivante :\n\
-{2}
+STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: L''initialisation du bean session singleton de d\u00e9marrage {0} du module {1} a \u00e9chou\u00e9 avec l''exception suivante :\n{2}
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.explanation=Les instances de bean session singleton de d\u00e9marrage sont cr\u00e9\u00e9es dans le cadre du processus de d\u00e9marrage de l'application.  Toute d\u00e9faillance entra\u00eene l'\u00e9chec du d\u00e9marrage de l'application.
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.useraction=Corrigez l'exception li\u00e9e \u00e0 ce message d'erreur.
 
@@ -1308,8 +1281,7 @@ INVALID_SFSB_CALLBACK_METHOD_CNTR0242E.useraction=Corrigez le descripteur de d\u
 # Do not translate "javax.ejb.MessageDriven", "ejbCreate", "ejbPassivate", "@PostConstruct", and "@PreDestroy"
 
 INVALID_MDB_CALLBACK_METHOD_CNTR0243E=CNTR0243E: Etant donn\u00e9 que le bean enterprise {0} impl\u00e9mente l''interface javax.ejb.MessageDriven, la m\u00e9thode {1} doit \u00eatre une m\u00e9thode {2} et non une m\u00e9thode {3}.
-INVALID_MDB_CALLBACK_METHOD_CNTR0243E.explanation=Pour un bean g\u00e9r\u00e9 par message, la sp\u00e9cification Enterprise JavaBeans 3.0 requiert que les m\u00e9thodes ejbCreate et ejbPassivate soient trait\u00e9es en tant que m\u00e9thodes d'intercepteur de rappel de cycle de vie, @PostConstruct et @PreDestroy, \
-respectivement.
+INVALID_MDB_CALLBACK_METHOD_CNTR0243E.explanation=Pour un bean g\u00e9r\u00e9 par message, la sp\u00e9cification Enterprise JavaBeans 3.0 requiert que les m\u00e9thodes ejbCreate et ejbPassivate soient trait\u00e9es en tant que m\u00e9thodes d'intercepteur de rappel de cycle de vie, @PostConstruct et @PreDestroy, respectivement.
 INVALID_MDB_CALLBACK_METHOD_CNTR0243E.useraction=Corrigez le descripteur de d\u00e9ploiement ou l'annotation afin que cette m\u00e9thode ait le type correct d'intercepteur de rappel de cycle de vie.
 
 #-------------------------------------------------------------------------------
@@ -1508,31 +1480,21 @@ INVALID_SESSION_SYNCH_SIGNATURE_CNTR0327E.useraction=Corrigez la signature de la
 # Do not translate "AsyncFutureObjectCount" or "com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults".
 MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W=CNTR0328W: Il existe {0} r\u00e9sultats non r\u00e9clam\u00e9s provenant des appels de m\u00e9thode EJB asynchrones distants.  Le produit ignore les r\u00e9sultats les plus anciens lorsque le nombre de r\u00e9sultats non r\u00e9clam\u00e9s d\u00e9passe {1}.
 MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.explanation=Le nombre de r\u00e9sultats non extraits provenant des appels de m\u00e9thode EJB distants s'approche de la limite maximale ou a d\u00e9pass\u00e9 cette derni\u00e8re.  Lorsque le nombre de r\u00e9sultats non extraits d\u00e9passe la limite maximale, le produit ignore le r\u00e9sultat le plus ancien.
-MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Surveillez la statistique PMI AsyncFutureObjectCount pour d\u00e9terminer quels r\u00e9sultats EJB ont des r\u00e9sultats non r\u00e9clam\u00e9s puis mettez \u00e0 jour le code client correspondant pour r\u00e9clamer les r\u00e9sultats.  Si les r\u00e9sultats sont ignor\u00e9s plus rapidement que les clients ne les r\u00e9clament, modifiez en fonction la dur\u00e9e de l'objet futur distant pour les m\u00e9thodes asynchrones EJB et attribuez \u00e0 la propri\u00e9t\u00e9 syst\u00e8me com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults le nombre maximal souhait\u00e9 de r\u00e9sultats non r\u00e9clam\u00e9s.  Vous pouvez \u00e9galement changer l'EJB afin d'utiliser une interface locale et non une interface distante car il n'est pas n\u00e9cessaire d'effectuer un suivi des \
-r\u00e9sultats d'une m\u00e9thode asynchrone sur une interface locale par le conteneur d'EJB et le processus de r\u00e9cup\u00e9ration de place peut s'effectuer normalement pour ces r\u00e9sultats.
+MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Surveillez la statistique PMI AsyncFutureObjectCount pour d\u00e9terminer quels r\u00e9sultats EJB ont des r\u00e9sultats non r\u00e9clam\u00e9s puis mettez \u00e0 jour le code client correspondant pour r\u00e9clamer les r\u00e9sultats.  Si les r\u00e9sultats sont ignor\u00e9s plus rapidement que les clients ne les r\u00e9clament, modifiez en fonction la dur\u00e9e de l'objet futur distant pour les m\u00e9thodes asynchrones EJB et attribuez \u00e0 la propri\u00e9t\u00e9 syst\u00e8me com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults le nombre maximal souhait\u00e9 de r\u00e9sultats non r\u00e9clam\u00e9s.  Vous pouvez \u00e9galement changer l'EJB afin d'utiliser une interface locale et non une interface distante car il n'est pas n\u00e9cessaire d'effectuer un suivi des r\u00e9sultats d'une m\u00e9thode asynchrone sur une interface locale par le conteneur d'EJB et le processus de r\u00e9cup\u00e9ration de place peut s'effectuer \
+    normalement pour ces r\u00e9sultats.
 
 
 #-------------------------------------------------------------------------------
 # Do not translate "EJBContext" or "TimerService"
-EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E=CNTR0329E: Le type {0} ne peut \u00eatre inject\u00e9 que dans une instance de bean entreprise \
-ou recherch\u00e9 dans le contexte d''un bean enterprise.
-EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E.explanation=En l'absence de contexte de bean enterprise, \
-les types sp\u00e9cifiques aux EJB, tels que javax.ejb.EJBContext et javax.ejb.TimerService, ne peuvent \u00eatre ni inject\u00e9s, ni recherch\u00e9s.
-EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E.useraction=Modifiez l'application de sorte qu'elle n'injecte ou ne \
-recherche des types sp\u00e9cifiques aux EJB que dans le contexte d'un bean enterprise.
+EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E=CNTR0329E: Le type {0} ne peut \u00eatre inject\u00e9 que dans une instance de bean entreprise ou recherch\u00e9 dans le contexte d''un bean enterprise.
+EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E.explanation=En l'absence de contexte de bean enterprise, les types sp\u00e9cifiques aux EJB, tels que javax.ejb.EJBContext et javax.ejb.TimerService, ne peuvent \u00eatre ni inject\u00e9s, ni recherch\u00e9s.
+EJB_CONTEXT_DATA_NOT_AVAILABLE_CNTR0329E.useraction=Modifiez l'application de sorte qu'elle n'injecte ou ne recherche des types sp\u00e9cifiques aux EJB que dans le contexte d'un bean enterprise.
 
 #-------------------------------------------------------------------------------
 # Note: automatically created timers are defined in the EJB specification and differ
 #       from programmatically created timers in that they are defined declaratively
-AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W=CNTR0330W: Le bean enterprise {0} \
-du module {1} dans l''application {2} d\u00e9clare des temporisateurs persistants cr\u00e9\u00e9s automatiquement. Ces temporisateurs \
-seront ignor\u00e9s car ils ne sont pas pris en charge dans la configuration en cours.
-AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W.explanation=Les \
-temporisateurs persistants de bean enterprise cr\u00e9\u00e9s automatiquement d\u00e9clar\u00e9s dans un descripteur de \
-d\u00e9ploiement ou dans une annotation ne sont pas pris en charge dans la configuration en cours et \
-seront ignor\u00e9s pendant l'ex\u00e9cution. Suivant l'utilisation projet\u00e9e des temporisateurs de \
-bean enterprise par l'application, cette derni\u00e8re peut ne pas avoir le fonctionnement \
-attendu.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W=CNTR0330W: Le bean enterprise {0} du module {1} dans l''application {2} d\u00e9clare des temporisateurs persistants cr\u00e9\u00e9s automatiquement. Ces temporisateurs seront ignor\u00e9s car ils ne sont pas pris en charge dans la configuration en cours.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W.explanation=Les temporisateurs persistants de bean enterprise cr\u00e9\u00e9s automatiquement d\u00e9clar\u00e9s dans un descripteur de d\u00e9ploiement ou dans une annotation ne sont pas pris en charge dans la configuration en cours et seront ignor\u00e9s pendant l'ex\u00e9cution. Suivant l'utilisation projet\u00e9e des temporisateurs de bean enterprise par l'application, cette derni\u00e8re peut ne pas avoir le fonctionnement attendu.
 AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W.useraction=Retirez de l'application l'utilisation de temporisateurs persistants cr\u00e9\u00e9s automatiquement non pris en charge.
 
 #-------------------------------------------------------------------------------
@@ -1556,8 +1518,7 @@ DUPLICATE_REF_BINDING_WEB_CNTR0334E.explanation=Le fichier ibm-web-bnd.xmi ou ib
 DUPLICATE_REF_BINDING_WEB_CNTR0334E.useraction=Retirez toutes les liaisons sauf une pour la r\u00e9f\u00e9rence.
 
 #-------------------------------------------------------------------------------
-ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: Le bean enterprise {0} \
-du module {1} dans l''application {2} est un bean entity d\u00e9clar\u00e9 dans une application Java EE version 7 ou ult\u00e9rieure. Les beans entity ne sont pas pris en charge dans les applications Java EE version 7 ou ult\u00e9rieure. La configuration du bean entity sera ignor\u00e9e et ne sera pas li\u00e9e \u00e0 un emplacement de nommage.
+ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: Le bean enterprise {0} du module {1} dans l''application {2} est un bean entity d\u00e9clar\u00e9 dans une application Java EE version 7 ou ult\u00e9rieure. Les beans entity ne sont pas pris en charge dans les applications Java EE version 7 ou ult\u00e9rieure. La configuration du bean entity sera ignor\u00e9e et ne sera pas li\u00e9e \u00e0 un emplacement de nommage.
 ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Les beans enterprise d\u00e9clar\u00e9s dans n'importe quel module de version ne sont pas pris en charge lorsque le module est empaquet\u00e9 dans une application Java EE version 7 ou ult\u00e9rieure. Une application est consid\u00e9r\u00e9e comme \u00e9tant au niveau Java EE version 7 si le fichier application.xml est d\u00e9clar\u00e9 comme \u00e9tant au niveau version 7 ou si tout module EJB ou WAR empaquet\u00e9 dans cette application est au niveau d'une version correspondant \u00e0 Java EE version 7.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Retirez l'utilisation du bean enterprise entity non pris en charge de l'application ou empaquetez le bean dans une application version 6 ou ant\u00e9rieure.
 
@@ -1584,6 +1545,11 @@ NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corrigez le fichier de liais
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Le nom de liaison JNDI (Java Naming and Directory Interface) {2} pour le bean ou l''interface home locale {0} dans le module {1} contient un espace de nom qui n''est pas valide.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Le nom de liaison locale ne peut contenir qu'un seul espace de nom et doit commencer par ejblocal:. Les espaces de nom sont indiqu\u00e9s par le signe deux-points (:). La cha\u00eene enti\u00e8re situ\u00e9e avant le signe deux-points (:) et incluant ce signe est consid\u00e9r\u00e9e comme un espace de nom.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corrigez le fichier de liaison ibm-ejb-jar-bnd.xml pour attribuer \u00e0 ce bean un nom de liaison JNDI valide en retirant l'espace de nom qui n'est pas valide.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Impossible de lier l''interface {0} du bean {1} dans le module {2} de l''application {3} \u00e0 l''emplacement du nom {4} . Le serveur de noms CORBA n''est pas disponible.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=La liaison de bean enterprise distante ne peut pas \u00eatre cr\u00e9\u00e9e car le serveur de noms CORBA n'est pas disponible.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Consultez le fichier journal pour conna\u00eetre les exceptions li\u00e9es \u00e0 l'initialisation de l'ORB ou du serveur de noms CORBA.
 
 #-------------------------------------------------------------------------------
 #
@@ -1800,10 +1766,7 @@ JIT_MISSING_REMOTE_EX_CNTR5104E.useraction=Ajoutez l'exception RemoteException \
 
 #-------------------------------------------------------------------------------
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E=CNTR5105E: L''interface {0} n''est pas une interface distante valide. Le nom IDL de la m\u00e9thode {1} est en conflit avec la m\u00e9thode {2}.
-JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pour les interfaces distantes, la sp\u00e9cification de mappage du langage Java en langage IDL indique les informations suivantes :\n\
-\ \
- Les m\u00e9thodes qui suivent les patterns de conception JavaBeans pour les propri\u00e9t\u00e9s simples de lecture-\u00e9criture ou \
-les propri\u00e9t\u00e9s simples de lecture seule sont mapp\u00e9es vers les attributs d'interface IDL OMG. Les deux m\u00e9thodes indiqu\u00e9es mappent vers le m\u00eame attribut d'interface IDL OMG. Cette interface n'est pas un type RMI/IIOP valide.
+JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pour les interfaces distantes, la sp\u00e9cification de mappage du langage Java en langage IDL indique les informations suivantes :\n Les m\u00e9thodes qui suivent les patterns de conception JavaBeans pour les propri\u00e9t\u00e9s simples de lecture-\u00e9criture ou les propri\u00e9t\u00e9s simples de lecture seule sont mapp\u00e9es vers les attributs d'interface IDL OMG. Les deux m\u00e9thodes indiqu\u00e9es mappent vers le m\u00eame attribut d'interface IDL OMG. Cette interface n'est pas un type RMI/IIOP valide.
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.useraction=Modifiez l'application en renommant ou en supprimant l'une des m\u00e9thodes en conflit.
 
 #-------------------------------------------------------------------------------
@@ -1843,14 +1806,14 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Pour plus de d\u00e9tails, consu
 # Do NOT translate any word beginning with a "-"
 CNTR9000I=Syntaxe : {0} <serveur> <filtre> [options]
 CNTR9001I=\tfiltre : <-all> | <-timer> | <-app [-mod [-bean]]>
-CNTR9002I=\t         -all
-CNTR9003I=\t         -timer <id temporisateur>
-CNTR9004I=\t         -app <nom application>
-CNTR9005I=\t         -mod <nom module>
-CNTR9006I=\t         -bean <nom bean>\n
+CNTR9002I=\t\ \ \ \ \ \ \ \ \ -all
+CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <id temporisateur>
+CNTR9004I=\t\ \ \ \ \ \ \ \ \ -app <nom application>
+CNTR9005I=\t\ \ \ \ \ \ \ \ \ -mod <nom module>
+CNTR9006I=\t\ \ \ \ \ \ \ \ \ -bean <nom bean>\n
 CNTR9007I=\toptions : -host <nom h\u00f4te>
-CNTR9008I=\t         -user <idutilisateur>
-CNTR9009I=\t         -node <nom noeud>
+CNTR9008I=\t\ \ \ \ \ \ \ \ \ -user <idutilisateur>
+CNTR9009I=\t\ \ \ \ \ \ \ \ \ -node <nom noeud>
 
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Expiration", "Single", "Repeating", "Calendar", "expression" "Automatic timer with timeout method", "Programmatic timer", "timer"
@@ -1914,21 +1877,19 @@ CNTR9106E.useraction=Examinez la syntaxe et sp\u00e9cifiez un nom de serveur.
 #-------------------------------------------------------------------------------
 # Do NOT translate any word beginning with a "-", "createEJBStubs", "class" "jar", "JAR", "war", "WAR",  "ear", "EAR", "\n", or "\t"
 NEWLINE_CNTR9200I=\n
-CNTR9201I=\n\
-Syntaxe : createEJBStubs <nom de classe qualifi\u00e9 complet, fichier jar ou fichier ear> [options]
+CNTR9201I=\nSyntaxe : createEJBStubs <nom de classe qualifi\u00e9 complet, fichier jar ou fichier ear> [options]
 CNTR9202I=\noptions :
-CNTR9203I=\t          -help
+CNTR9203I=\t\ \ \ \ \ \ \ \ \ \ -help
 CNTR9204I=\t-newfile [new file]
 CNTR9205I=\t-updatefile [jar, war, or ear file]
-CNTR9206I=\t          -quiet
+CNTR9206I=\t\ \ \ \ \ \ \ \ \ \ -quiet
 CNTR9207I=\t-verbose
 CNTR9208I=\t-logfile <fichier journal>
 CNTR9209I=\t-appendlog
 CNTR9210I=\t-cp <chemin d'acc\u00e8s aux classes>
 CNTR9239I=\t-rmic {0}
-CNTR9211I=\t          -trace
-CNTR9212I=\n\
-exemples :
+CNTR9211I=\t\ \ \ \ \ \ \ \ \ \ -trace
+CNTR9212I=\nexemples :
 CNTR9213I=\tcreateEJBStubs com.ibm.myRemoteInterface -cp myPath
 CNTR9214I=\t   G\u00e9n\u00e8re la classe de raccord pour une classe d'interface distante et la place dans la structure de r\u00e9pertoires d\u00e9finie par le package\n\
 \t   en commen\u00e7ant \u00e0 partir du r\u00e9pertoire en cours.  Le r\u00e9pertoire myPath sera utilis\u00e9 comme chemin d'acc\u00e8s aux classes.\n\
@@ -1987,8 +1948,7 @@ CNTR9238I=R\u00e9ussite de la commande
 # Do NOT translate "jar", or "ejb-jar.xml"
 NOT_EJB_MODULE_CNTR9240I=CNTR9240I: Le fichier JAR {0} n''est pas un module bean enterprise.
 NOT_EJB_MODULE_CNTR9240I.explanation=Le fichier JAR indiqu\u00e9 n'est pas configur\u00e9 en tant que module bean enterprise.
-NOT_EJB_MODULE_CNTR9240I.useraction=Si ce module doit contenir des composants de bean enterprise, v\u00e9rifiez les annotations \
-de code source Java ou les donn\u00e9es de configuration ejb-jar.xml.
+NOT_EJB_MODULE_CNTR9240I.useraction=Si ce module doit contenir des composants de bean enterprise, v\u00e9rifiez les annotations de code source Java ou les donn\u00e9es de configuration ejb-jar.xml.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "Jar", "jar", or "ejb-jar.xml"
@@ -2071,8 +2031,7 @@ CLASS_LOAD_ERROR_CNTR9262E.useraction=V\u00e9rifiez s'il n'existe pas d'erreurs 
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: La classe d''interface {0} n''a pu \u00eatre trait\u00e9e.  \n\
-La classe de param\u00e8tre de m\u00e9thode {1} est introuvable.
+CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: La classe d''interface {0} n''a pu \u00eatre trait\u00e9e.  \nLa classe de param\u00e8tre de m\u00e9thode {1} est introuvable.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.explanation=Un param\u00e8tre de m\u00e9thode ou une classe de valeur de retour de m\u00e9thode de la classe list\u00e9e n'a pu \u00eatre charg\u00e9e.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Assurez-vous que toutes les classes envoy\u00e9es comme param\u00e8tres de m\u00e9thode, ou utilis\u00e9es comme valeurs de retour de m\u00e9thode, dans les m\u00e9thodes de la classe indiqu\u00e9e sont incluses dans le fichier d'entr\u00e9e JAR (archive Java) ou dans le fichier d'entr\u00e9e EAR (archive d'entreprise) ou qu'elles sont rendues disponibles en utilisant l'option -cp.
 

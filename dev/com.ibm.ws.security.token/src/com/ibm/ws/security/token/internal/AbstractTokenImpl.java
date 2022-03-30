@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.token.internal;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 
 import com.ibm.websphere.ras.Tr;
@@ -17,8 +18,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebSphereRuntimePermission;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
-public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.Token {
+public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.Token, Serializable {
 
+    private final static long serialVersionUID = 1101826873096291157L;
     private final static TraceComponent tc = Tr.register(AbstractTokenImpl.class);
     private final static WebSphereRuntimePermission UPDATE_TOKEN = new WebSphereRuntimePermission("updateToken");
     private final static WebSphereRuntimePermission GET_TOKEN = new WebSphereRuntimePermission("getToken");
@@ -59,9 +61,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
 
     /**
      * Validates the token including expiration, signature, etc.
-     * 
+     *
      * @return boolean
      */
+    @Override
     public boolean isValid() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Checking validity of token " + this.getClass().getName());
@@ -93,9 +96,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
 
     /**
      * Gets the expiration as a long.
-     * 
+     *
      * @return long
      */
+    @Override
     public long getExpiration() {
         if (token != null)
             return token.getExpiration();
@@ -105,9 +109,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
 
     /**
      * Returns if this token should be forwarded/propagated downstream.
-     * 
+     *
      * @return boolean
      */
+    @Override
     public boolean isForwardable() {
         return true;
     }
@@ -116,9 +121,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
      * Gets the principal that this Token belongs to. If this is an authorization token,
      * this principal string must match the authentication token principal string or the
      * message will be rejected.
-     * 
+     *
      * @return String
      */
+    @Override
     public String getPrincipal() {
         String[] accessIDArray = getAttributes("u");
 
@@ -133,14 +139,15 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
      * considers makes this a unique token. This will be used for caching purposes
      * and may be used in combination with other token unique IDs that are part of
      * the same Subject.
-     * 
+     *
      * This method should return null if you want the accessID of the user to represent
      * uniqueness. This is the typical scenario.
-     * 
+     *
      * @return String
      */
+    @Override
     public String getUniqueID() {
-        // return null so that this token does not change the uniqueness, 
+        // return null so that this token does not change the uniqueness,
         // all static attributes from the default tokens.
         String[] cacheKeyArray = getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
 
@@ -158,9 +165,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
     /**
      * Gets the bytes to be sent across the wire. The information in the byte[]
      * needs to be enough to recreate the Token object at the target server.
-     * 
+     *
      * @return byte[]
      */
+    @Override
     public byte[] getBytes() {
         if (token != null) {
             try {
@@ -176,9 +184,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
 
     /**
      * Gets the name of the token, used to identify the byte[] in the protocol message.
-     * 
+     *
      * @return String
      */
+    @Override
     public String getName() {
         return this.getClass().getName();
     }
@@ -186,9 +195,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
     /**
      * Gets the version of the token as an short. This is also used to identify the
      * byte[] in the protocol message.
-     * 
+     *
      * @return short
      */
+    @Override
     public short getVersion() {
         return version;
     }
@@ -196,7 +206,7 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
     /**
      * If the authentication token is a basic auth token (contains userid/password),
      * then the boolean should return true, otherwise return false.
-     * 
+     *
      * @return boolean
      */
     public boolean isBasicAuth() {
@@ -207,16 +217,18 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
      * When called, the token becomes irreversibly read-only. The implementation
      * needs to ensure any setter methods check that this has been set.
      */
+    @Override
     public void setReadOnly() {
         isReadOnly = true;
     }
 
     /**
      * Gets the attribute value based on the named value.
-     * 
+     *
      * @param String key
      * @return String[]
      */
+    @Override
     public String[] getAttributes(String key) {
         if (token != null)
             return token.getAttributes(key);
@@ -227,11 +239,12 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
     /**
      * Sets the attribute name/value pair. Returns the previous value set for key,
      * or null if not previously set.
-     * 
+     *
      * @param String key
      * @param String value
      * @returns String[];
      */
+    @Override
     public String[] addAttribute(String key, String value) {
         if (key.startsWith("com.ibm.wsspi.security") || key.startsWith("com.ibm.websphere.security")) {
             java.lang.SecurityManager sm = System.getSecurityManager();
@@ -256,9 +269,10 @@ public abstract class AbstractTokenImpl implements com.ibm.wsspi.security.token.
 
     /**
      * Gets the List of all attribute names present in the token.
-     * 
+     *
      * @return java.util.Enumeration
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Enumeration getAttributeNames() {
         if (token != null)

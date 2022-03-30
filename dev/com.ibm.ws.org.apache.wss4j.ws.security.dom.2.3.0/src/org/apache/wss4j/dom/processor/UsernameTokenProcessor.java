@@ -44,6 +44,7 @@ public class UsernameTokenProcessor implements Processor {
         Element elem,
         RequestData data
     ) throws WSSecurityException {
+    	LOG.debug("Found UsernameToken list element");
         // See if the token has been previously processed
         String id = elem.getAttributeNS(WSConstants.WSU_NS, "Id");
         if (!"".equals(id)) {
@@ -131,6 +132,8 @@ public class UsernameTokenProcessor implements Processor {
         boolean allowNamespaceQualifiedPasswordTypes = data.isAllowNamespaceQualifiedPasswordTypes();
         int utTTL = data.getUtTTL();
         int futureTimeToLive = data.getUtFutureTTL();
+        LOG.debug("handleUsernameToken, utTTL = " + utTTL); //Liberty Change
+        LOG.debug("handleUsernameToken, futureTimeToLive = " + futureTimeToLive); //Liberty Change
 
         //
         // Parse and validate the UsernameToken element
@@ -158,16 +161,8 @@ public class UsernameTokenProcessor implements Processor {
             // Otherwise, cache for the configured TTL of the UsernameToken Created time, as any
             // older token will just get rejected anyway
             Instant created = ut.getCreatedDate();
-            //if (created == null || utTTL <= 0) {
             if (created == null || utTTL <= 0) {
-            	// Liberty Change
-            	//replayCache.add(ut.getNonce());
-            	if (utTTL <= 0) {
-            		replayCache.add(ut.getNonce());
-            	} else { 
-            		replayCache.add(ut.getNonce(), Instant.now().plusSeconds(utTTL));
-            	}
-            	// End Liberty Change
+            	replayCache.add(ut.getNonce());
             } else {
                 replayCache.add(ut.getNonce(), Instant.now().plusSeconds(utTTL));
             }

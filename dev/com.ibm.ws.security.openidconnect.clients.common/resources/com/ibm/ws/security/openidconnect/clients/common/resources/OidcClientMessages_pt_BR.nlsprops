@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,17 +38,17 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Execute um destes procedimentos: p
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: O estado atual [{0}] do cliente OpenID Connect [{2}] e o par\u00e2metro de estado [{1}] na resposta do provedor OpenID Connect n\u00e3o correspondem.  Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (parte dependente ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Assegure-se de que a URL do OP esteja correta. Verifique os logs no OP para assegurar-se de que ele tenha recebido a solicita\u00e7\u00e3o.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: O cliente OpenID Connect [{0}] falhou ao autenticar o token de ID porque um assunto identificador n\u00e3o foi inclu\u00eddo no token. 
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Para autenticar um token de ID, o cliente OpenID Connect (relying party ou RP) deve ter um assunto identificador. O token de ID recebido na resposta do provedor OpenID Connect (OP) n\u00e3o continha um assunto identificador, portanto, a autentica\u00e7\u00e3o falhou. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Para autenticar um token de ID, o cliente OpenID Connect (parte dependente ou RP) deve ter um assunto identificador. O token de ID recebido na resposta do provedor OpenID Connect (OP) n\u00e3o continha um assunto identificador, portanto, a autentica\u00e7\u00e3o falhou. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Assegure-se de que o provedor OpenID Connect (OP) retorne um token de ID que inclua um assunto identificador.
 
 #used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: O cliente OpenID Connect [{1}] falhou ao validar o token de ID devido a [{0}].
-OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) n\u00e3o pode validar o token de ID com \u00eaxito. Isso pode ter sido causado por uma falha no processo de valida\u00e7\u00e3o de solicita\u00e7\u00f5es necess\u00e1rias. Algumas das solicita\u00e7\u00f5es necess\u00e1rias do token de ID incluem emissor, p\u00fablico, hor\u00e1rio de emiss\u00e3o. 
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=O cliente OpenID Connect (parte dependente ou RP) n\u00e3o pode validar o token de ID com \u00eaxito. Isso pode ter sido causado por uma falha no processo de valida\u00e7\u00e3o de solicita\u00e7\u00f5es necess\u00e1rias. Algumas das solicita\u00e7\u00f5es necess\u00e1rias do token de ID incluem emissor, p\u00fablico, hor\u00e1rio de emiss\u00e3o. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Assegure-se de que o rel\u00f3gio do sistema do cliente OpenID Connect (RP) esteja em sincroniza\u00e7\u00e3o com o rel\u00f3gio do sistema do provedor OpenID Connect (OP) (no caso de estarem em dois sistemas diferentes). Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece depois desse erro.
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
@@ -184,7 +184,7 @@ OIDC_CLIENT_RESPONSE_STATE_ERR.useraction=Certifique-se de que os clocks em todo
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
 OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: O cookie WASOidcCode [{0}] na solicita\u00e7\u00e3o para o cliente OpenID Connect [{1}] n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
-OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=O cliente OpenID Connect (relying party ou RP) recebeu um cookie WASOidcCode que n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
+OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=O cliente OpenID Connect (parte dependente ou RP) recebeu um cookie WASOidcCode que n\u00e3o \u00e9 v\u00e1lido. Seu valor pode ter sido modificado.
 OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Verifique se o cookie n\u00e3o foi modificado e se o conte\u00fado decodificado do cookie come\u00e7a com um objeto JSON formatado corretamente.
 
 # used by clients
@@ -199,7 +199,7 @@ JWK_RETRIEVE_FAILED.explanation=Uma chave da web JSON n\u00e3o pode ser retornad
 JWK_RETRIEVE_FAILED.useraction=Verifique se a URL est\u00e1 formatada corretamente e especifica um local que \u00e9 capaz de retornar chaves da web JSON. Verifique o c\u00f3digo de status e o conte\u00fado da resposta para obter informa\u00e7\u00f5es adicionais.
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-USERINFO_RETREIVE_FAILED=CWWKS1748E: N\u00e3o foi poss\u00edvel entrar em contato com a URL [{0}] de UserInfo. O status de resposta era [{1}] e o conte\u00fado retornado era [{2}].
+USERINFO_RETREIVE_FAILED=CWWKS1748E: N\u00e3o foi poss\u00edvel entrar em contato com a URL [{0}] de UserInfo.  O status de resposta era [{1}] e o conte\u00fado retornado era [{2}].
 USERINFO_RETREIVE_FAILED.explanation=Os dados de Informa\u00e7\u00f5es do Usu\u00e1rio n\u00e3o foram obtidos a partir da URL especificada. A URL pode n\u00e3o ser v\u00e1lida, o token de acesso fornecido pode n\u00e3o ser v\u00e1lido, a resposta da URL pode estar vazia ou ocorreu um erro desconhecido.
 USERINFO_RETREIVE_FAILED.useraction=Verifique se a URL est\u00e1 formatada corretamente e especifica um local que seja capaz de retornar dados de Informa\u00e7\u00f5es do Usu\u00e1rio. Verifique o c\u00f3digo de status e o conte\u00fado da resposta para obter informa\u00e7\u00f5es adicionais.
 
@@ -209,6 +209,11 @@ USERINFO_INVALID.explanation=\u00c9 necess\u00e1rio que a solicita\u00e7\u00e3o 
 USERINFO_INVALID.useraction=Certifique-se de que o provedor do OpenID Connect gere dados v\u00e1lidos de Informa\u00e7\u00f5es do Usu\u00e1rio.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
+
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: O cliente OpenID Connect {0} n\u00e3o pode extrair as reclama\u00e7\u00f5es JSON Web Token (JWT) da resposta da web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=A resposta da web deve ser um JWT no formato JSON Web Encryption (JWE) ou JSON Web Signature (JWS). A resposta pode estar malformada ou o cliente OpenID Connect encontrou outro erro ao processar a resposta.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es. Verifique se a resposta est\u00e1 no formato JWT.
 
 OIDC_CLIENT_NULL_AUTH_ENDPOINT=CWWKS1534E: O cliente do OpenID Connect [{0}] requer uma URL de terminal de autoriza\u00e7\u00e3o, mas ela n\u00e3o est\u00e1 configurada.
 OIDC_CLIENT_NULL_AUTH_ENDPOINT.explanation=Uma URL de terminal de autoriza\u00e7\u00e3o deve ser configurada para obter um c\u00f3digo de autoriza\u00e7\u00e3o ou os tokens necess\u00e1rios.
@@ -228,5 +233,37 @@ OIDC_CLIENT_JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Para aceitar tokens JWE, c
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS1537E: O token n\u00e3o est\u00e1 no formato JSON Web Encryption (JWE) porque ele n\u00e3o cont\u00e9m cinco partes, mas o cliente [{0}] OpenID Connect aceita apenas tokens que est\u00e3o no formato JWE.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=O token pode estar malformado ou pode estar no formato JSON Web Signature (JWS). Os tokens devem estar no formato JWE se o atributo keyManagementKeyAlias estiver configurado.
 OIDC_CLIENT_JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Para aceitar tokens JWS em vez de tokens JWE, remova o atributo keyManagementKeyAlias na configura\u00e7\u00e3o do cliente OpenID Connect. Caso contr\u00e1rio, certifique-se de que apenas tokens JWE sejam enviados para este recurso.
+
+# 0=String extracted from UserInfo endpoint response, 1=Exception message
+USERINFO_CLAIMS_FORMAT_NOT_VALID=CWWKS1538E: Os dados extra\u00eddos da resposta do terminal UserInfo n\u00e3o est\u00e3o no formato JSON. Os dados extra\u00eddos s\u00e3o [{0}]. O erro \u00e9 [{1}].
+USERINFO_CLAIMS_FORMAT_NOT_VALID.explanation=O terminal UserInfo deve retornar as solicita\u00e7\u00f5es como membros de um objeto JSON ou de um JSON Web Token (JWT). O formato da resposta pode n\u00e3o ser v\u00e1lido ou a resposta pode n\u00e3o corresponder ao formato que \u00e9 especificado pelo cabe\u00e7alho Content-Type.
+USERINFO_CLAIMS_FORMAT_NOT_VALID.useraction=Verifique o formato da resposta do terminal UserInfo para assegurar que ele esteja no formato JSON ou JWT.
+
+# 0=Remote server response string
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT=CWWKS1539E: A resposta da web [{0}] deve ser um JSON Web Token (JWT), mas a resposta n\u00e3o est\u00e1 no formato JSON Web Signature (JWS) ou JSON Web Encryption (JWE).
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.explanation=O cabe\u00e7alho Content-Type na resposta da web indica que a resposta cont\u00e9m um JWT, mas o corpo de resposta n\u00e3o est\u00e1 em um formato JWT v\u00e1lido.
+JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Assegure-se de que a resposta da web esteja no formato que \u00e9 esperado pelo cliente OpenID Connect.
+
+# Do not translate "Content-Type"
+# 0=OpenID Connect client config ID, 1=Error message
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: O cliente {0} OpenID Connect n\u00e3o pode recuperar informa\u00e7\u00f5es sobre o token de acesso a partir do terminal UserInfo: {1}
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=A resposta do terminal UserInfo pode n\u00e3o estar em um formato que seja esperado. O cliente de conex\u00e3o OpenID pode ter encontrado um erro ao enviar a solicita\u00e7\u00e3o UserInfo.
+ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Verifique a mensagem de erro para obter mais informa\u00e7\u00f5es. Verifique se o conte\u00fado da resposta UserInfo corresponde ao cabe\u00e7alho HTTP Content-Type.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: A solicita\u00e7\u00e3o de logout do back-channel enviada para [{0}] encontrou um erro. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=A solicita\u00e7\u00e3o n\u00e3o usa o m\u00e9todo HTTP POST, a solicita\u00e7\u00e3o n\u00e3o possui um token de logout ou o token de logout n\u00e3o pode ser validado ou a solicita\u00e7\u00e3o de logout n\u00e3o foi conclu\u00edda com \u00eaxito.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Verifique se o m\u00e9todo HTTP POST \u00e9 usado para enviar a solicita\u00e7\u00e3o de logout do back-channel. Caso contr\u00e1rio, consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro inclu\u00eddo nesta mensagem.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: A solicita\u00e7\u00e3o de logout do back-channel n\u00e3o \u00e9 v\u00e1lida porque o par\u00e2metro logout_token est\u00e1 ausente ou vazio.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=A solicita\u00e7\u00e3o de logout do back-channel deve incluir um par\u00e2metro logout_token cujo valor seja um token de logout v\u00e1lido.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Atualize a solicita\u00e7\u00e3o para incluir um token de logout.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: O token de logout na solicita\u00e7\u00e3o de logout do back-channel n\u00e3o pode ser validado: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=O token de logout pode estar malformado, o token pode estar em um formato inesperado ou ocorreu outro erro ao validar a assinatura ou as declara\u00e7\u00f5es do token.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro inclu\u00eddo nesta mensagem.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: A solicita\u00e7\u00e3o de logout do back-channel n\u00e3o \u00e9 v\u00e1lida porque n\u00e3o h\u00e1 cliente OpenID Connect que corresponda \u00e0 solicita\u00e7\u00e3o.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=O recurso OpenID Connect espera que o URI de solicita\u00e7\u00e3o de back-channel inclua um ID de cliente OpenID Connect para determinar qual cliente efetuar logout.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verifique se o URI de solicita\u00e7\u00e3o inclui o ID do cliente OpenID Connect a ser usado para efetuar logout do usu\u00e1rio.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

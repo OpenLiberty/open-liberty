@@ -72,7 +72,7 @@ public class ByteArrayDecoder {
      *
      * @throws MessageDecodingException thrown if there is a problem deserializing and unmarshalling the message
      */
-    protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
+    public XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
 
         try {
             Document messageDoc = parserPool.parse(messageStream);

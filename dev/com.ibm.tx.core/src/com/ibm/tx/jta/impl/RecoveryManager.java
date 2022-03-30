@@ -38,6 +38,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
+import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
@@ -1323,13 +1324,22 @@ public class RecoveryManager implements Runnable {
         if (!bypass && _agent != null) {
             try {
                 RecoveryDirectorFactory.recoveryDirector().initialRecoveryComplete(_agent, _failureScopeController.failureScope());
+            } catch (InvalidFailureScopeException exc) {
+                if (!_failureScopeController.localFailureScope() && _shutdownInProgress) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Non local failure scope and shutdown in progress do not FFDC but continue");
+
+                } else {
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1546", this);
+                }
             } catch (Exception exc) {
-                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1546", this);
+                FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1548", this);
             }
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "recoveryComplete");
+
     }
 
     public boolean recoveryFailed() {
@@ -1361,8 +1371,16 @@ public class RecoveryManager implements Runnable {
                 if (_agent != null) {
                     try {
                         RecoveryDirectorFactory.recoveryDirector().initialRecoveryFailed(_agent, _failureScopeController.failureScope());
+                    } catch (InvalidFailureScopeException exc) {
+                        if (!_failureScopeController.localFailureScope() && _shutdownInProgress) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Non local failure scope and shutdown in progress do not FFDC but continue");
+
+                        } else {
+                            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                        }
                     } catch (Exception exc) {
-                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryFailed", "1547", this);
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.recoveryComplete", "1549", this);
                     }
                 }
             } else {
@@ -2375,12 +2393,15 @@ public class RecoveryManager implements Runnable {
             try {
                 _retainPeerLogs = AccessController.doPrivileged(
                                                                 new PrivilegedExceptionAction<Boolean>() {
+
                                                                     @Override
                                                                     public Boolean run() {
                                                                         return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
                                                                     }
                                                                 });
-            } catch (PrivilegedActionException e) {
+            } catch (
+
+            PrivilegedActionException e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2343");
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Exception disabling peer log deletion", e);

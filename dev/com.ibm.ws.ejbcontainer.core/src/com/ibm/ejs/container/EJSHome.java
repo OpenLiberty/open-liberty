@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2021 IBM Corporation and others.
+ * Copyright (c) 1998, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -562,7 +562,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
     private void preLoadBeanPool() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.debug(tc, "preLoadBeanPool: " + j2eeName);
+            Tr.entry(tc, "preLoadBeanPool: " + j2eeName);
 
         synchronized (beanPool) {
             Object oldClassLoader = ThreadContextAccessor.UNCHANGED;

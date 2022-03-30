@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: La configuration du fournisseur OAuth {0} n''est pas valide.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Impossible d'obtenir la configuration du fournisseur oauth sp\u00e9cifi\u00e9.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Indiquez une configuration pour le fournisseur oauth valide.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installez la version Java 8 ou une vers
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Le jeton dont le type d''octroi est [{0}] n''est pas admis. Les types d''octroi autoris\u00e9s sont : {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=Le jeton n'est pas valide car son type d'octroi n'est pas admis.
 WRONG_TOKEN_GRANTTYPE.useraction=Utilisez un jeton dont le type d'octroi est admis.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: L''URI [{0}] de la zone de m\u00e9tadonn\u00e9es d''enregistrement du client {1} n''est pas valide car il contient un fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=La demande ne peut pas \u00eatre ex\u00e9cut\u00e9e car l'URI ne doit pas contenir de fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=V\u00e9rifiez la valeur de la propri\u00e9t\u00e9 dans la demande et supprimez le fragment d'URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: L''URI [{0}] de la zone de m\u00e9tadonn\u00e9es d''enregistrement du client {1} n''est pas valide car il n''utilise pas le sch\u00e9ma HTTP ou HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=La valeur de l'URI doit utiliser le sch\u00e9ma HTTP ou HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=V\u00e9rifiez la valeur de la propri\u00e9t\u00e9 dans la demande et met celle-ci \u00e0 jour pour utiliser le sch\u00e9ma HTTP ou HTTPS.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: L''URI [{0}] de la zone de m\u00e9tadonn\u00e9es d''enregistrement du client {1} n''est pas valide car il utilise le sch\u00e9ma HTTP mais le client [{2}] OAuth n''est pas un client confidentiel.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=La valeur d'URI de la zone de m\u00e9tadonn\u00e9es sp\u00e9cifi\u00e9e dans le message ne peut utiliser le sch\u00e9ma HTTP que si le client OAuth est un client confidentiel. Sinon, le sch\u00e9ma HTTPS doit \u00eatre utilis\u00e9.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Mettez \u00e0 jour l'URI pour utiliser le sch\u00e9ma HTTPS, ou mettez \u00e0 jour le client OAuth pour qu'il soit un client confidentiel.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=D\u00e9connexion

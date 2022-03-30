@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,4 +28,5 @@ DUPLICATE_PROPERTY_ENTITY.useraction=\u00dcberpr\u00fcfen Sie das Entit\u00e4tss
 
 GENERIC=CWIML1999E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. W\u00e4hrend der Verarbeitung ist ein Laufzeitfehler aufgetreten: {0}
 GENERIC.explanation=Das Programm hat den angegebenen Fehler w\u00e4hrend der Operation festgestellt.
-GENERIC.useraction= \u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zu ergreifen.
+GENERIC.useraction= \u00dcberpr\u00fcfen Sie die Protokolle, um die Fehlerursache zu bestimmen und Ma\u00dfnahmen zur Problembehebung zu ergreifen.
+

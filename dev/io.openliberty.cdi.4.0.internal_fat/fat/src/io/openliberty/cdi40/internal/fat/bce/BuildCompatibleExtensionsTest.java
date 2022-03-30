@@ -32,8 +32,12 @@ import io.openliberty.cdi40.internal.fat.bce.basicear.war1.EarBCETestServlet1;
 import io.openliberty.cdi40.internal.fat.bce.basicear.war2.EarBCETestServlet2;
 import io.openliberty.cdi40.internal.fat.bce.basicwar.BasicBCEExtension;
 import io.openliberty.cdi40.internal.fat.bce.basicwar.BasicBCETestServlet;
+import io.openliberty.cdi40.internal.fat.bce.beancreatorlookup.BeanCreatorLookupExtension;
+import io.openliberty.cdi40.internal.fat.bce.beancreatorlookup.BeanCreatorLookupTestServlet;
 import io.openliberty.cdi40.internal.fat.bce.enhance.BceEnhanceTestServlet;
 import io.openliberty.cdi40.internal.fat.bce.enhance.EnhanceTestExtension;
+import io.openliberty.cdi40.internal.fat.bce.extensionarchivenotscanned.ExtensionArchiveExtension;
+import io.openliberty.cdi40.internal.fat.bce.extensionarchivenotscanned.ExtensionArchiveNotScannedTestServlet;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 
 @RunWith(FATRunner.class)
@@ -43,7 +47,9 @@ public class BuildCompatibleExtensionsTest {
     @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class),
                     @TestServlet(contextRoot = "war2", servlet = EarBCETestServlet2.class),
                     @TestServlet(contextRoot = "basicWar", servlet = BasicBCETestServlet.class),
-                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class)
+                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class),
+                    @TestServlet(contextRoot = "extensionArchiveNotScanned", servlet = ExtensionArchiveNotScannedTestServlet.class),
+                    @TestServlet(contextRoot = "beanCreatorLookup", servlet = BeanCreatorLookupTestServlet.class)
     })
     public static LibertyServer server;
 
@@ -90,6 +96,25 @@ public class BuildCompatibleExtensionsTest {
                                           .addAsManifestResource(enhancePackage, "permissions.xml", "permissions.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, enhanceWar, DeployOptions.SERVER_ONLY);
+
+        // extensionArchiveNotScanned.war
+        // ------------------------------
+        Package archiveNotScannedPackage = ExtensionArchiveNotScannedTestServlet.class.getPackage();
+        WebArchive archiveNotScannedWar = ShrinkWrap.create(WebArchive.class, "extensionArchiveNotScanned.war")
+                                                    .addPackage(archiveNotScannedPackage)
+                                                    .addAsServiceProvider(BuildCompatibleExtension.class, ExtensionArchiveExtension.class);
+
+        ShrinkHelper.exportDropinAppToServer(server, archiveNotScannedWar, DeployOptions.SERVER_ONLY);
+
+        // beanCreatorLookup.war
+        // ---------------------
+        Package beanCreatorLookupPackage = BeanCreatorLookupTestServlet.class.getPackage();
+        WebArchive beanCreatorLookupWar = ShrinkWrap.create(WebArchive.class, "beanCreatorLookup.war")
+                                                    .addPackage(beanCreatorLookupPackage)
+                                                    .addAsServiceProvider(BuildCompatibleExtension.class, BeanCreatorLookupExtension.class)
+                                                    .addAsWebInfResource(beanCreatorLookupPackage, "beans.xml", "beans.xml");
+
+        ShrinkHelper.exportDropinAppToServer(server, beanCreatorLookupWar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

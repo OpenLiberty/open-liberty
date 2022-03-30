@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=El atributo de certificado TBSCertificat
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Aseg\u00farese de que el filtro de certificado sea correcto.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. Se ha utilizado un atributo de certificado desconocido {0} en la especificaci\u00f3n del filtro. Especifique un filtro de certificado soportado.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Puede utilizar s\u00f3lo los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n de filtro. Las series distinguen entre may\u00fasculas y min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Puede utilizar s\u00f3lo los siguientes valores de atributo de certificado en la parte derecha de la especificaci\u00f3n de filtro. Las series distinguen entre may\u00fasculas y min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Aseg\u00farese de que el filtro de certificado sea correcto.
 
 UNKNOWN_DN_FIELD=CWIML0003E: La operaci\u00f3n de inicio de sesi\u00f3n no se ha podido completar. El campo Nombre distinguido configurado {0} no es v\u00e1lido. Especifique un campo Nombre distinguido v\u00e1lido.

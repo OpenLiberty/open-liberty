@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, que est\u00e1 definido por la aplicaci\u00f3n {1}, no estaba disponible de forma oportuna.
+CWWKC1200.resource.unavailable.explanation=Demasiada carga en el sistema para procesar anotaciones de definici\u00f3n de recursos y entradas de descriptor de despliegue antes de que la aplicaci\u00f3n intente utilizarlas.
+CWWKC1200.resource.unavailable.useraction=Visualice el archivo messages.log para identificar la aparici\u00f3n de un error. Si no, reduzca la carga en el sistema.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, que se define mediante la aplicaci\u00f3n {1}, requiere un ContextService {2} pero el ContextService era inaccesible o no estaba disponible de forma oportuna.
+CWWKC1201.contextsvc.inaccessible.explanation=El recurso especificado que implementa la interfaz ContextService era inaccesible o no estaba disponible por uno de los siguientes motivos. 1.) Una anotaci\u00f3n de definici\u00f3n de recurso o una definici\u00f3n de recurso en un descriptor de despliegue de la aplicaci\u00f3n especifica un nombre de JNDI incorrecto en el que encontrar el recurso que implementa la interfaz ContextService. 2.) El recurso que implementa la interfaz ContextService est\u00e1 definida en un \u00e1mbito que no es accesible para el recurso que requiere el recurso que implementa la interfaz ContextService. 3.) El sistema est\u00e1 bajo demasiada carga para registrar un recurso que implementa la interfaz ContextService de forma oportuna.
+CWWKC1201.contextsvc.inaccessible.useraction=Corrija la aplicaci\u00f3n para que haga referencia al nombre de JNDI del ContextService al que se puede acceder. Si el nombre de JNDI especificado es correcto, reduzca la carga en el sistema.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: La configuraci\u00f3n conflictiva del contexto de hebra {0} se encuentra en ContextServiceDefinition {1}. El contexto borrado es {2}, el contexto propagado es {3} y el contexto no modificado es {4}.
+CWWKC1202.context.lists.overlap.explanation=Un tipo de contexto de hebra se puede configurar en cualquiera de las categor\u00edas de tipo de contexto: borrado, propagado o no modificado. El tipo de contexto no se puede configurar en varias categor\u00edas de tipo de contexto.
+CWWKC1202.context.lists.overlap.useraction=Corrija la configuraci\u00f3n para especificar el tipo de contexto de hebra en una categor\u00eda como m\u00e1ximo.
+
+CWWKC1203.duplicate.context=CWWKC1203E: El mismo tipo de contexto de hebra, {0}, lo proporcionan varios proveedores de contexto de hebra que est\u00e1n disponibles para la aplicaci\u00f3n. Los proveedores de contexto de hebra son: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Solo puede haber un proveedor de contexto de hebra para cada tipo de contexto.
+CWWKC1203.duplicate.context.useraction=Actualice la aplicaci\u00f3n, las bibliotecas o ambas para que no se pueda acceder a m\u00e1s de un proveedor de contexto de hebra del tipo de contexto especificado para la aplicaci\u00f3n.
+
+CWWKC1204.not.serializable=CWWKC1204E: No se puede crear un proxy contextual serializable que propague el contexto de hebra {0} que no es serializable.
+CWWKC1204.not.serializable.explanation=Los tipos de contexto de hebra de terceros no son compatibles con la serializaci\u00f3n y no se pueden configurar para que se propaguen para proxies contextuales serializables.
+CWWKC1204.not.serializable.useraction=Actualice la aplicaci\u00f3n para solicitar un proxy contextual no serializable o aseg\u00farese de que no hay ning\u00fan tipo de contexto de terceros configurado para que se propague.

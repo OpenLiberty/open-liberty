@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Configura\u0163ia furnizorului OAuth {0} nu este valid\u0103.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nu se poate ob\u0163ine configura\u0163ia furnizorului Oauth specificat\u0103.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Specifica\u0163i o configura\u0163ie de furnizor Oauth valid\u0103.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instala\u0163i Java versiunea 8 sau mai
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Jetonul cu tipul de acordare [{0}] nu este permis. Tipurile de acord\u0103ri permise sunt {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=Jetonul nu este valid pentru c\u0103 tipul s\u0103u de acordare nu este permis.
 WRONG_TOKEN_GRANTTYPE.useraction=Utiliza\u0163i un jeton cu un tip de acordare care este permis.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: URI [{0}] pentru c\u00e2mpul de metadate de \u00eenregistrare client {1} nu este valid deoarece acesta con\u021bine un fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=Cererea nu poate fi finalizat\u0103 deoarece secven\u021ba URI nu trebuie s\u0103 con\u021bin\u0103 un fragment.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Revizui\u021bi valoarea propriet\u0103\u021bii \u00een cerere \u0219i elimina\u021bi fragmentul din secven\u021ba URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: URI [{0}] pentru c\u00e2mpul de metadate de \u00eenregistrare client {1} nu este valid deoarece nu utilizeaz\u0103 schema HTTP sau HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=Valoarea URI trebuie s\u0103 utilizeze schema HTTP sau HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Revizui\u021bi valoarea propriet\u0103\u021bii \u00een cerere \u0219i actualiza\u021bi-o pentru a utiliza schema HTTP sau HTTPS.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: URI [{0}] pentru c\u00e2mpul de metadate de \u00eenregistrare client {1} nu este valid deoarece utilizeaz\u0103 schema HTTP, \u00eens\u0103 clientul OAuth [{2}] nu este un client confiden\u021bial.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=Valoarea URI pentru c\u00e2mpul de metadate specificat \u00een mesaj poate utiliza schema HTTP numai \u00een cazul \u00een care clientul OAuth este un client confiden\u021bial. \u00cen caz contrar, trebuie utilizat\u0103 schema HTTPS.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Actualiza\u021bi secven\u021ba URI pentru a utiliza schema HTTPS, sau actualiza\u021bi statusul clientului OAuth la cel de client confiden\u021bial.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Delogare

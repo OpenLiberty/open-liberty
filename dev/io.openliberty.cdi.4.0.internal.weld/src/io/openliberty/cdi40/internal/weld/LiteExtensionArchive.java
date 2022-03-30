@@ -169,7 +169,7 @@ public class LiteExtensionArchive extends AbstractCDIArchive implements Extensio
     /** {@inheritDoc} */
     @Override
     public boolean applicationBDAsVisible() {
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */

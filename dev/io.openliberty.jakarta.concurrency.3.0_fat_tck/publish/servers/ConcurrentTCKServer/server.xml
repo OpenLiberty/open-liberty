@@ -9,70 +9,72 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-	<featureManager>
-		<!-- Features being tested -->
-		<!--TODO enable <feature>jakartaee-10.0</feature> -->
-		<feature>concurrent-3.0</feature>
-		<feature>jdbc-4.2</feature>
-		<feature>enterpriseBeans-4.0</feature>
-		<feature>cdi-3.0</feature>
-		<feature>pages-3.0</feature>
-	    <!-- Supporting features -->
-	    <feature>jndi-1.0</feature> 
-	    <feature>appSecurity-4.0</feature>
-	    <!-- Features needed for arquillan support -->
-	    <feature>localConnector-1.0</feature>
-	    <feature>restConnector-2.0</feature>
-	</featureManager>
+    <featureManager>
+        <!-- Features being tested -->
+        <!--TODO one all of EE 10 is beta, could enable <feature>jakartaee-10.0</feature> or leave the individual features -->
+        <feature>concurrent-3.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>enterpriseBeans-4.0</feature>
+        <feature>cdi-3.0</feature> <!-- TODO once EE 10 feature is beta: <feature>cdi-4.0</feature> -->
+        <feature>pages-3.0</feature> <!-- TODO once EE 10 feature is beta: <feature>pages-3.1</feature> -->
+        <!-- Supporting features -->
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-4.0</feature> <!-- TODO once EE 10 feature is beta: <feature>appSecurity-5.0</feature> -->
+        <!-- Features needed for arquillan support -->
+        <feature>localConnector-1.0</feature>
+        <feature>restConnector-2.0</feature>
+    </featureManager>
 
-	<!-- Use logging instead of bootstrap for standalone WLP case -->
-	<logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all" /> 
-   
-	<!-- Allow Arquillian to monitor application -->
-	<applicationMonitor updateTrigger="mbean"/>
-   
-	<!-- Allow Arquillian remote access to server -->
-	<quickStartSecurity userName="${env.tck_username}" userPassword="${env.tck_password}" />
-	
-	<!-- Allow Arquillian to participate in TLS handshake with server -->
-	<ssl id="defaultSSLConfig" trustDefaultCerts="true" />
-	<keyStore id="defaultKeyStore" password="libertyPassword"/>
-	
-	<!-- Allow Arquillian to create a secure connection -->
+    <!-- Use logging instead of bootstrap for standalone WLP case -->
+    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all" />
+
+    <!-- Allow Arquillian to monitor application -->
+    <applicationMonitor updateTrigger="mbean"/>
+
+    <!-- Allow Arquillian remote access to server -->
+    <quickStartSecurity userName="${env.tck_username}" userPassword="${env.tck_password}" />
+
+    <!-- Allow Arquillian to participate in TLS handshake with server -->
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+    <keyStore id="defaultKeyStore" password="libertyPassword"/>
+
+    <!-- Allow Arquillian to create a secure connection -->
     <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${env.tck_port}" httpsPort="${env.tck_port_secure}">
-    	<sslOptions sslRef="defaultKeyStore"/>
+        <sslOptions sslRef="defaultKeyStore"/>
     </httpEndpoint>
-	
-	<!-- Allow Arquillian access to dropins directory for application installation -->
-	<remoteFileAccess>
-		<writeDir>${server.config.dir}/dropins</writeDir>
-	</remoteFileAccess>
-   
-	<!-- Include derby in gloabl library to make it available to all dropin apps -->
-	<library id="global">
-   	    	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
-   	    	<fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
-	</library>
 
-	<!--Java2 security-->
-	<javaPermission className="java.security.AllPermission"  name="*" actions="*" />   
-	<javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-	
-	<!-- Ensure JSP can handle lamdas -->
-	<jspEngine jdkSourceLevel="18"/>
-	
-	<!-- Security role(s) needed for TCK tests -->
-	<orb id="defaultOrb" orbSSLInitTimeout="60"/>
-		
-	<basicRegistry id="basic" realm="default">       
-	    <user name="javajoe" password="javajoe"/>
-	    <group name="Manager">
-	      <member name="javajoe"/>
-	    </group>
-	</basicRegistry>
-	
-	<security-role-mapping> 
-	  <role-name>Manager</role-name>
-	  <principal-name>javajoe</principal-name>
-	</security-role-mapping>
+    <!-- Allow Arquillian access to dropins directory for application installation -->
+    <remoteFileAccess>
+        <writeDir>${server.config.dir}/dropins</writeDir>
+    </remoteFileAccess>
+
+    <!-- Include derby in gloabl library to make it available to all dropin apps -->
+    <library id="global">
+               <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/sigtest" includes="sigtest-maven-plugin.jar"/>
+    </library>
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>
+
+    <!-- Ensure JSP can handle lamdas -->
+    <jspEngine jdkSourceLevel="18"/>
+
+    <!-- Security role(s) needed for TCK tests -->
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+
+    <basicRegistry id="basic" realm="default">
+        <user name="javajoe" password="javajoe"/>
+        <group name="Manager">
+          <member name="javajoe"/>
+        </group>
+    </basicRegistry>
+
+    <security-role-mapping>
+      <role-name>Manager</role-name>
+      <principal-name>javajoe</principal-name>
+    </security-role-mapping>
 </server>

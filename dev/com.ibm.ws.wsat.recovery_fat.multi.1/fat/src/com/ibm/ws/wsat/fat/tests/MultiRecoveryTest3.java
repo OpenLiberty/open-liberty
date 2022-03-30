@@ -32,11 +32,9 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	}
 	
 	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = {"javax.transaction.SystemException"})
-	//Caused by: javax.transaction.xa.XAException
-	//at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
-	//Perhaps this can be ignored
+	@AllowedFFDC(value = {"javax.transaction.SystemException", "javax.transaction.xa.XAException"})
+	// XAException should be expected here but halt is no longer halting the JVM so extra protocol
+	// messages can get through after the dumpState.
 	public void WSTXMPR009BFVT() throws Exception {
 		recoveryTest(server1, server2, "902","server2");
 	}
@@ -58,12 +56,9 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	
 	@Test
 	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException"})
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	// Need Jon Review:
-	// Caused by: javax.transaction.xa.XAException
-	// at com.ibm.ws.wsat.tm.impl.ParticipantResource.commit(ParticipantResource.java:114)
-	// Perhaps this can be ignored
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException","javax.transaction.xa.XAException"})
+	// XAException should be expected here but halt is no longer halting the JVM so extra protocol
+	// messages can get through after the dumpState.
 	public void WSTXMPR010BFVT() throws Exception {
 		recoveryTest(server1, server2, "1002","server2");
 	}

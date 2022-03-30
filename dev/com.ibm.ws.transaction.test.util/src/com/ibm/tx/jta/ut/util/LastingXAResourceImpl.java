@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -180,6 +180,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
 
         @Override
         public void dumpState() {
+        	dumped = true;
             if (STORE_STATE_IN_DATABASE) {
                 System.out.println("Dumping state to database");
                 // Defect 168553 - this string needs to be written in order for the test infrastructure to see that the

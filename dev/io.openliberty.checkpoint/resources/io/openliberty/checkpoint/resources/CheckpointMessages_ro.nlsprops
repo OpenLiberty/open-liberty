@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A fost solicitat un punct de con
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=S-a cerut un punct de control. Serverul este oprit \u0219i starea sa actual\u0103 este scris\u0103 pe disc.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Verifica\u021bi documenta\u021bia pentru detaliile punctului de control \u0219i restaura\u021bi opera\u021biile.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Serverul Liberty reia opera\u0163ia de la un punct de control.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Procesul serverului Liberty \u0219i-a reluat activitatea de la un punct de control \u00een {0} secunde.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=O opera\u021bie de restaurare a fost executat\u0103 pe o imagine de punct de control a serverului Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Verifica\u021bi documenta\u021bia pentru detaliile punctului de control \u0219i restaura\u021bi opera\u021biile.
 

@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=Csak bels\u0151 haszn\u00e1latra.
 ADD_ID.useraction=Nincs teend\u0151.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Hi\u00e1nyzik a(z) {0} k\u00f6telez\u0151 konfi
 INVALID_CONFIG_PARAM.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s fut\u00e1sidej\u0171 k\u00f3dja nem tal\u00e1lt egy k\u00f6telez\u0151 param\u00e9tert az \u00fcgyf\u00e9lk\u00e9r\u00e9s feldolgoz\u00e1sa sor\u00e1n.
 INVALID_CONFIG_PARAM.useraction=Keresse meg a hi\u00e1nyz\u00f3 param\u00e9tert a konfigur\u00e1ci\u00f3ban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az meg van adva \u00e9s helyes.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: A(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s \u00fcgyf\u00e9l nem tudta lek\u00e9rdezni az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e9gpont inform\u00e1ci\u00f3it a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9n [{1}] kereszt\u00fcl. Friss\u00edtse a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s (oidcLogin konfigur\u00e1ci\u00f3) konfigur\u00e1ci\u00f3j\u00e1t a helyes HTTPS felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edmmel. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: A(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s \u00fcgyf\u00e9l nem tudta lek\u00e9rdezni az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e9gpont inform\u00e1ci\u00f3it a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9n [{1}] kereszt\u00fcl. Friss\u00edtse a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s (oidcLogin konfigur\u00e1ci\u00f3) konfigur\u00e1ci\u00f3j\u00e1t a helyes HTTPS felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edmmel.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Az oidcLogin konfigur\u00e1ci\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e9gpontokat a felt\u00e9rk\u00e9pez\u00e9si URL c\u00edmen kereszt\u00fcl t\u00e9rk\u00e9pezze fel, de a felt\u00e9rk\u00e9pez\u00e9si folyamat meghi\u00fasult. Az \u00fcgyf\u00e9l addig nem fogja tudni feldolgozni a hiteles\u00edt\u00e9si k\u00e9r\u00e9seket, am\u00edg a discoveryEndpoint konfigur\u00e1ci\u00f3j\u00e1t ki nem jav\u00edtj\u00e1k vagy a felt\u00e9rk\u00e9pez\u00e9s sikeres nem lesz.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Az oidcLogin konfigur\u00e1ci\u00f3 jav\u00edt\u00e1s\u00e1val biztos\u00edtsa, hogy 1) a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edme a helyes OpenID Connect szolg\u00e1ltat\u00f3ra hivatkozzon, 2) a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edme HTTPS c\u00edm legyen, 3) az SSL szolg\u00e1ltat\u00e1s \u00e9s kulcst\u00e1rol\u00f3 elemei helyesen legyenek be\u00e1ll\u00edtva megb\u00edzhat\u00f3 OpenID Connect szolg\u00e1ltat\u00f3val, \u00e9s 4) gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont m\u0171k\u00f6dik.
 
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00
 REQUEST_URL_NOT_VALID=CWWKS5499E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja visszak\u00fcldeni a k\u00e9r\u00e9st az eredeti k\u00e9r\u00e9s URL c\u00edmre ([{0}]), mert az URL \u00e9rv\u00e9nytelen. {1}
 REQUEST_URL_NOT_VALID.explanation=Az eredeti k\u00e9r\u00e9s URL \u00e9rv\u00e9nytelen URL c\u00edm. Az URL \u00e9rv\u00e9nytelen karaktereket tartalmazhat vagy lehet, hogy az URL rossz form\u00e1tum\u00fa.
 REQUEST_URL_NOT_VALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott k\u00e9r\u00e9s URL megegyezik az eredeti v\u00e9dett er\u0151forr\u00e1sk\u00e9r\u00e9s URL c\u00edm\u00e9vel. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL szab\u00e1lyosan form\u00e1zott \u00e9s csak \u00e9rv\u00e9nyes URI karaktereket tartalmaz.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: A(z) [{0}] fel\u00e9 k\u00fcld\u00f6tt h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9st a(z) [{1}] k\u00f6z\u00f6ss\u00e9gi m\u00e9dia bejelentkez\u00e9si konfigur\u00e1ci\u00f3 nem t\u00e1mogatja.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=A k\u00f6z\u00f6ss\u00e9gi m\u00e9dia bejelentkez\u00e9si konfigur\u00e1ci\u00f3 nem OpenID Connect \u00fcgyf\u00e9l, \u00edgy nem t\u00e1mogatja a h\u00e1tt\u00e9r-kijelentkez\u00e9st.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Haszn\u00e1lja a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia bejelentkez\u00e9si konfigur\u00e1ci\u00f3j\u00e1hoz megfelel\u0151 kijelentkez\u00e9si v\u00e9gpontot.
+

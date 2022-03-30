@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,21 +55,20 @@ public class WCCMMetaDataImpl extends WCCMMetaData {
     }
 
     @Override
-    public boolean isStartEJBAtApplicationStart() {
-        return enterpriseBeanExtension != null &&
-               enterpriseBeanExtension.getStartAtAppStart() != null &&
-               enterpriseBeanExtension.getStartAtAppStart().getValue();
+    public boolean isStartEJBAtApplicationStart(boolean initAtStartupDefault) {
+        if (enterpriseBeanExtension != null && enterpriseBeanExtension.getStartAtAppStart() != null) {
+            return enterpriseBeanExtension.getStartAtAppStart().getValue();
+        }
+        return initAtStartupDefault;
     }
 
     @Override
-    public LocalTransactionSettings createLocalTransactionSettings()
-    {
+    public LocalTransactionSettings createLocalTransactionSettings() {
         return new LocalTranConfigDataImpl(enterpriseBeanExtension);
     }
 
     @Override
-    public GlobalTransactionSettings createGlobalTransactionSettings()
-    {
+    public GlobalTransactionSettings createGlobalTransactionSettings() {
         return new GlobalTranConfigDataImpl(enterpriseBeanExtension);
     }
 
