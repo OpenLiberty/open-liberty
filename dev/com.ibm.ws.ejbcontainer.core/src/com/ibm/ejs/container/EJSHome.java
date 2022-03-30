@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2021 IBM Corporation and others.
+ * Copyright (c) 1998, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -630,7 +630,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
 
             enabled = false;
 
-            if (pmiBean != null) {
+            if (pmiBean != null && container.pmiFactory != null) {
                 container.pmiFactory.removePmiModule(pmiBean); // d146239.14
             }
         }
