@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -37,6 +40,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -97,14 +101,14 @@ public class WCServerTest {
      * Simple test to a servlet then read the header to ensure we are using
      * Servlet 4.0. This test looks for the X-Powered-By header specifically.
      *
-     * This test is skipped for EE9_FEATURES repeat because for servlet-5.0 + the
+     * This test is skipped for EE9_FEATURES+ repeat because for servlet-5.0+ the
      * X-Powered-By header is going to be disabled by default.
      *
      * @throws Exception
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     public void testServletXPoweredByHeader() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -131,7 +135,7 @@ public class WCServerTest {
 
     /**
      * Simple test to a servlet then read the header to ensure the X-Powered-By
-     * header is disabled on Servlet-5.0
+     * header is disabled on Servlet-5.0+
      *
      * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
      *
@@ -139,7 +143,7 @@ public class WCServerTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat(NO_MODIFICATION)
     public void testServletXPoweredByHeader_Servlet50_Default() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -167,11 +171,13 @@ public class WCServerTest {
      *
      * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
      *
+     * TODO: Review this test for Jakarta EE10: https://github.com/OpenLiberty/open-liberty/issues/20419
+     *
      * @throws Exception
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION, EE10_FEATURES })
     public void testServletXPoweredByHeader_Servlet50_Enabled() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -230,6 +236,8 @@ public class WCServerTest {
         String majorVersionExpectedResult = "majorVersion: 4";
         if (JakartaEE9Action.isActive()) {
             majorVersionExpectedResult = "majorVersion: 5";
+        } else if (JakartaEE10Action.isActive()) {
+            majorVersionExpectedResult = "majorVersion: 6";
         }
         HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
