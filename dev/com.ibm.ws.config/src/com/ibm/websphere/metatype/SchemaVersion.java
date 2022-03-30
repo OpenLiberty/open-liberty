@@ -14,7 +14,12 @@ package com.ibm.websphere.metatype;
  *
  */
 public enum SchemaVersion {
-    v1_0("1"), v1_1("1.1");
+
+    // If new versions are added, for example V2, be consistent and make it V2_0("2.0").  The version
+    // representation here is, unfortunately, not consistent with the "OutputVersion", but we can't do
+    // anything about that now.  Note getNormalizedVersion() adds ".0" when the version does not
+    // contain a ".".  This is to make, for example, v1 = v1_0, or "1" = "1.0".
+    v1_0("1.0"), v1_1("1.1");
 
     private String value;
 
@@ -57,16 +62,16 @@ public enum SchemaVersion {
     public static String getNormalizedVersion(String version) {
 
         if (version == null) {
-            version = "1";
+            version = "1.0";
         } else {
             version = version.trim();
             if (version.length() == 0) {
-                version = "1";
+                version = "1.0";
             }
         }
 
-        if (version.endsWith(".0")) {
-            return version.substring(0, version.length() - 2);
+        if (!version.contains(".")) {
+            return version.concat(".0");
         }
         return version;
     }

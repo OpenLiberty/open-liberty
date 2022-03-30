@@ -48,6 +48,15 @@ public class GeneratorOptions {
     private SchemaVersion schemaVersion = SchemaVersion.v1_0;
     private OutputVersion outputVersion = OutputVersion.v1;
     private boolean compactOutput = false;
+    private boolean overwriteExistingFile = false;
+
+    public boolean getOverwriteExistingFile() {
+        return overwriteExistingFile;
+    }
+
+    public void setOverwriteExistingFile(boolean overwriteExistinFile) {
+        this.overwriteExistingFile = overwriteExistinFile;
+    }
 
     /**
      * @return
@@ -91,6 +100,9 @@ public class GeneratorOptions {
                 if (argToLower.contains("-help")) {
                     return ReturnCode.HELP_ACTION;
                     
+                } else if (argToLower.contains("-compactoutput")) {
+                    compactOutput = processBooleanArg(argToLower);
+                                      
                 } else if (argToLower.contains("-ignorepidsfile")) {
                     try {
                         addExcludeFile(new PidFileArgument(arg));
@@ -123,6 +135,9 @@ public class GeneratorOptions {
                         System.out.println(MessageFormat.format(messages.getString("error.unknownOutputVersion"), argValue));
                         return(ReturnCode.BAD_ARGUMENT);
                     }
+                    
+                } else if (argToLower.contains("-overwrite")) {
+                    overwriteExistingFile = processBooleanArg(argToLower);
                 	
                 }  else {
                     System.out.println(MessageFormat.format(messages.getString("error.unknownArgument"), arg));
@@ -152,6 +167,36 @@ public class GeneratorOptions {
         return rc;
     }
 
+    /**
+     * Boolean args are expected to be unary and are true if specified as unary.
+     * However, allow them to be specified as an assignment.
+     * Expected: 
+     *    --compactoutput    meaning: compactOutput=true
+     *    --overwrite        meaning: overwriteExistingFile=true
+     * Acceptable:
+     *    --compactoutput=true  (any value other than true is false)
+     *    --overwrite=true
+     * @param arg
+     * @return
+     */
+    private boolean processBooleanArg(String arg) {
+        String argValue;
+        try {
+            argValue= getArgumentValue(arg);
+            if (Boolean.parseBoolean(argValue)) {
+                return true;
+            } else {
+                return false;
+            }
+            
+        // If no "assignment" is specified, then it means compactOutput = true.
+        // This is actually the normal, documented, expected case, but code this 
+        // way to allow -compactOutput=true
+        } catch (SchemaGeneratorException sge) {
+            return true;
+        }
+    }
+    
     /**
      * @return
      */
