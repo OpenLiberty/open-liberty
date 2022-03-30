@@ -26,9 +26,7 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -188,46 +186,7 @@ public class EndpointPropertiesTest {
 
     }
 
-    /**
-     * TestDescription:
-     * - Test the user defined property - enableLoggingInOutInterceptor
-     * - Use webservice-endpoint-properties element in binding file to config this property
-     * Condition:
-     * - A testEndpointPropertiesWeb.war publishes HelloService
-     * - Config the enableLoggingInOutInterceptor="true" in binding file: WEB-INF/ibm-ws-bnd.xml
-     * Result:
-     * - incoming/outcoming messages will be dumped into message.log. Caution: if user enabled this setting for
-     * their applicaion, any credential in the messages will be output in the log files.
-     * - LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
-     */
     @Test
-    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
-    public void testDefaultLoggingInOutInterceptorProperty() throws Exception {
-        TestUtils.publishFileToServer(server,
-                                      "EndpointPropertiesTest", "ibm-ws-bnd_testDefaultLoggingInOutInterceptorProperty.xml",
-                                      "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
-
-        server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
-        String wsdl = getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl";
-        URL url = new URL(wsdl);
-
-        HelloNoWSDLService service = new HelloNoWSDLService(url);
-        // QName serviceQName = new QName("http://server.properties.endpoint.test.jaxws.ws.ibm.com/", "HelloNoWSDLService");
-        //Service service = null;
-        //service = Service.create(url, serviceQName);
-        String result = service.getPort(HelloNoWSDLInterface.class).sayHello("Hello");
-        assertTrue("Can not get expected result, the return result is: " + result,
-                   result.equalsIgnoreCase("Hello Hello"));
-        List<String> dumpInMessages = server.findStringsInLogs("Inbound Message");
-        List<String> dumpOutMessages = server.findStringsInLogs("Outbound Message");
-        assertTrue("Can't find inBoundMessage, the return inboundmessage is: " + dumpInMessages.toString(), !dumpInMessages.isEmpty());
-        assertTrue("Can't find outBoundMessage, the return outboundmessage is: " + dumpOutMessages.toString(), !dumpOutMessages.isEmpty());
-
-    }
-
-    @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testDefaultLoggingInOutInterceptorPropertyCXFFeature() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "EndpointPropertiesTest", "ibm-ws-bnd_testDefaultLoggingInOutInterceptorProperty.xml",
@@ -319,45 +278,6 @@ public class EndpointPropertiesTest {
      * - LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
      */
     @Test
-    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
-    public void testOverrideLogginInOutInterceptorProperty() throws Exception {
-        TestUtils.publishFileToServer(server,
-                                      "EndpointPropertiesTest", "ibm-ws-bnd_testOverrideLogginInOutInterceptorProperty.xml",
-                                      "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
-
-        server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
-        String wsdl = getBaseUrl() + "/testEndpointPropertiesWeb/HelloNoWSDLService?wsdl";
-        URL url = new URL(wsdl);
-        HelloNoWSDLService service = new HelloNoWSDLService(url);
-        //QName serviceQName = new QName("http://server.properties.endpoint.test.jaxws.ws.ibm.com/", "HelloNoWSDLService");
-        //Service service = null;
-        //service = Service.create(url, serviceQName);
-        String result = service.getPort(HelloNoWSDLInterface.class).sayHello("HelloOverride");
-        assertTrue("Can not get expected result, the return result is: " + result,
-                   result.equalsIgnoreCase("Hello HelloOverride"));
-        List<String> dumpInMessages = server.findStringsInLogs("Inbound Message");
-        List<String> dumpOutMessages = server.findStringsInLogs("Outbound Message");
-        assertTrue("Can't find inBoundMessage, the return inboundmessage is: " + dumpInMessages.toString(), !dumpInMessages.isEmpty());
-        assertTrue("Can't find outBoundMessage, the return outboundmessage is: " + dumpOutMessages.toString(), !dumpOutMessages.isEmpty());
-
-    }
-
-    /**
-     * TestDescription:
-     * - Test the user defined property - enableLoggingInOutInterceptor
-     * - Use webservice-endpoint-properties and webservice-endpoint/properties elements in binding file to config this property
-     * - webservice-endpoint.properties should override webservice-endpoint-properties
-     * Condition:
-     * - A testEndpointPropertiesWeb.war publishes HelloService
-     * - Config the enableLoggingInOutInterceptor="true" in binding file: WEB-INF/ibm-ws-bnd.xml
-     * Result:
-     * - incoming/outcoming messages will be dumped into message.log. Caution: if user enabled this setting for
-     * their applicaion, any credential in the messages will be output in the log files.
-     * - LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
-     */
-    @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testOverrideLogginInOutInterceptorPropertyCXFFeature() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "EndpointPropertiesTest", "ibm-ws-bnd_testOverrideLogginInOutInterceptorProperty.xml",

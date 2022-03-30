@@ -28,9 +28,7 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -167,33 +165,7 @@ public class WsBndServiceRefOverrideTest_Lite {
         assertTrue("WSDL Location Override is not working, and the result is not expected: " + result, "Hello".equals(result));
     }
 
-    /**
-     * Test the LoggingInOutInterceptor Prop defined in service-ref
-     *
-     * @throws Exception
-     *
-     *                       LoggingInOutInterceptors are replaced by LoggingFeature for jaxws-2.3 and xmlWS-3.0. This test will be skipped
-     */
     @Test
-    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
-    public void testLoggingInOutInterceptorProp() throws Exception {
-        TestUtils.publishFileToServer(server,
-                                      "WsBndServiceRefOverrideTest", "ibm-ws-bnd_testLoggingInOutInterceptorProp.xml",
-                                      "dropins/wsBndServiceRefOverride.war/WEB-INF/", "ibm-ws-bnd.xml");
-        String wsdlAddr = getDefaultEndpointAddr() + "?wsdl";
-        TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#WSDL_LOCATION#", wsdlAddr);
-        server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
-        getServletResponse(getServletAddr());
-        List<String> dumpInMessages = server.findStringsInLogs("Inbound Message");
-        List<String> dumpOutMessages = server.findStringsInLogs("Outbound Message");
-        assertTrue("Can't find inBoundMessage, the return inboundmessage is: " + dumpInMessages.toString(), !dumpInMessages.isEmpty());
-        assertTrue("Can't find outBoundMessage, the return outboundmessage is: " + dumpOutMessages.toString(), !dumpOutMessages.isEmpty());
-
-    }
-
-    @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testOverrideLogginInOutInterceptorPropertyCXFFeature() throws Exception {
         TestUtils.publishFileToServer(server,
                                       "WsBndServiceRefOverrideTest", "ibm-ws-bnd_testLoggingInOutInterceptorProp.xml",
