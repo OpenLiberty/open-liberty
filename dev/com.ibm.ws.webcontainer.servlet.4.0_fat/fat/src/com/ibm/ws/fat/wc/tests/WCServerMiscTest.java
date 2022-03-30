@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNull;
 
 import java.util.logging.Logger;
@@ -24,14 +26,13 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- *  Misc Test Class
+ * Misc Test Class
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) 
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 public class WCServerMiscTest {
 
@@ -56,15 +57,14 @@ public class WCServerMiscTest {
     }
 
     /**
-     * Test for "SRVE8501E: The servlet container did not load with an acceptable version." 
+     * Test for "SRVE8501E: The servlet container did not load with an acceptable version."
      * Find more at OLGH #17950
      * Occurs when com.ibm.ws.webcontianer is still activating but getServletContainerSpecLevel() call occurs in addGlobalListener
-       
+     *
      * @throws Exception
      */
     @Test
     public void ensureServletSpecLevelIsLoaded() throws Exception {
-       assertNull("Log should not contain SRVE8501E: The servlet container did not load with an acceptable version.", server.verifyStringNotInLogUsingMark("SRVE8501E.*", 1000));
+        assertNull("Log should not contain SRVE8501E: The servlet container did not load with an acceptable version.", server.verifyStringNotInLogUsingMark("SRVE8501E.*", 1000));
     }
-
 }
