@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -410,6 +410,22 @@ public interface EJBRuntime {
      *             component's environment.
      */
     Object javaColonLookup(String name, EJSHome home);
+
+    /**
+     * Determines if application start should optimize for checkpoint after all configured applications
+     * have been identified, but before any application code has been called.
+     *
+     * @return true if application start should optimize for checkpoint deployment; false otherwise.
+     */
+    boolean isCheckpointDeployment();
+
+    /**
+     * Determines if application start should optimize for checkpoint after all configured applications
+     * have started.
+     *
+     * @return true if application start should optimize for checkpoint applications; false otherwise.
+     */
+    boolean isCheckpointApplications();
 
     /**
      * Returns the BeanOFactory for the the specified bean type. <p>

@@ -12,6 +12,8 @@ package test.jakarta.concurrency;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,13 +45,29 @@ public class ConcurrencyJSPTest extends FATServletClient {
     public static void setUp() throws Exception {
         HttpUtils.setDefaultAuth("concurrency", "password");
 
-        ShrinkHelper.defaultApp(server, "ConcurrencyJSPTestApp", "test.jakarta.concurrency.jsp");
+        JavaArchive ConcurrencyWebFragment = ShrinkHelper.buildJavaArchive("ConcurrencyWebFragment");
+        ShrinkHelper.addDirectory(ConcurrencyWebFragment, "test-applications/ConcurrencyWebFragment/resources");
+
+        WebArchive ConcurrencyJSPTestApp = ShrinkHelper.buildDefaultApp("ConcurrencyJSPTestApp")
+                        .addAsLibrary(ConcurrencyWebFragment);
+        ShrinkHelper.addDirectory(ConcurrencyJSPTestApp, "test-applications/ConcurrencyJSPTestApp/resources");
+
+        ShrinkHelper.exportAppToServer(server, ConcurrencyJSPTestApp);
 
         server.startServer();
 
         // wait for LTPA key to be available to avoid CWWKS4000E
         assertNotNull("CWWKS4105I.* not received on server",
                       server.waitForStringInLog("CWWKS4105I.*"));
+    }
+
+    /**
+     * Configure a managed-scheduled-executor within a web fragment and verify that its
+     * max-async (1) and context propagation settings are honored.
+     */
+    @Test
+    public void maxAsyncTest() throws Exception {
+        Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/MaxAsync.jsp").trim());
     }
 
     /**
@@ -75,6 +93,15 @@ public class ConcurrencyJSPTest extends FATServletClient {
     @Test
     public void securityUnchangedTest() throws Exception {
         Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/SecurityUnchanged.jsp").trim());
+    }
+
+    /**
+     * Configure a managed-thread-factory within a web fragment and verify that its
+     * priority (7) and context propagation settings are honored.
+     */
+    @Test
+    public void threadPriorityTest() throws Exception {
+        Assert.assertEquals("SUCCESS", HttpUtils.getHttpResponseAsString(server, "/ConcurrencyJSPTestApp/ThreadPriority.jsp").trim());
     }
 
     @AfterClass

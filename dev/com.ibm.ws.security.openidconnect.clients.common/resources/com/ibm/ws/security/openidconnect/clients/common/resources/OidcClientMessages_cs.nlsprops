@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,21 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Ujist\u011bte se, \u017ee je we
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: Klient pro p\u0159ipojen\u00ed OpenID {0} nem\u016f\u017ee na\u010d\u00edst informace o p\u0159\u00edstupov\u00e9m tokenu z koncov\u00e9ho bodu UserInfo: {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Odpov\u011b\u010f z koncov\u00e9ho bodu UserInfo nemus\u00ed b\u00fdt ve form\u00e1tu, kter\u00fd se o\u010dek\u00e1v\u00e1. Klient pro p\u0159ipojen\u00ed OpenID mohl narazit na chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku UserInfo.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee se obsah odpov\u011bdi UserInfo shoduje se z\u00e1hlav\u00edm typu obsahu HTTP.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu odeslan\u00fd na [{0}] zjistil chybu. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=Po\u017eadavek nepou\u017e\u00edv\u00e1 metodu HTTP POST, po\u017eadavku chyb\u00ed token odhl\u00e1\u0161en\u00ed nebo token odhl\u00e1\u0161en\u00ed nelze ov\u011b\u0159it nebo se po\u017eadavek odhl\u00e1\u0161en\u00ed neprovedl \u00fasp\u011b\u0161n\u011b.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Ov\u011b\u0159te, zda je metoda HTTP POST pou\u017eita k odesl\u00e1n\u00ed po\u017eadavku na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu. Jinak si prohl\u00e9dn\u011bte u\u017eivatelskou akci pro chybu, kter\u00e1 je zahrnuta v t\u00e9to zpr\u00e1v\u011b.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu nen\u00ed platn\u00fd, proto\u017ee parametr logout_token chyb\u00ed nebo je pr\u00e1zdn\u00fd.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=Po\u017eadavek na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu mus\u00ed obsahovat parametr logout_token, jeho\u017e hodnota je platn\u00fdm tokenem odhl\u00e1\u0161en\u00ed.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Aktualizujte po\u017eadavek, aby zahrnoval token odhl\u00e1\u0161en\u00ed.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: Token odhl\u00e1\u0161en\u00ed v po\u017eadavku na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu nelze ov\u011b\u0159it: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=Token odhl\u00e1\u0161en\u00ed m\u016f\u017ee b\u00fdt chybn\u00fd, token m\u016f\u017ee b\u00fdt v neo\u010dek\u00e1van\u00e9m form\u00e1tu nebo do\u0161lo k dal\u0161\u00ed chyb\u011b p\u0159i ov\u011b\u0159ov\u00e1n\u00ed podpisu nebo po\u017eadavk\u016f tokenu.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Prohl\u00e9dn\u011bte si u\u017eivatelskou akci pro chybu, kter\u00e1 je zahrnuta v t\u00e9to zpr\u00e1v\u011b.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu nen\u00ed platn\u00fd, proto\u017ee neexistuje \u017e\u00e1dn\u00fd klient OpenID Connect, kter\u00fd by odpov\u00eddal po\u017eadavku.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Funkce OpenID Connect o\u010dek\u00e1v\u00e1, \u017ee identifik\u00e1tor URI po\u017eadavku na zadn\u00ed kan\u00e1l bude obsahovat ID klienta OpenID Connect, aby ur\u010dil, kter\u00fd klient se m\u00e1 odhl\u00e1sit.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Ov\u011b\u0159te, \u017ee identifik\u00e1tor URI po\u017eadavku obsahuje ID klienta OpenID Connect, kter\u00e9 m\u00e1 b\u00fdt pou\u017eito pro odhl\u00e1\u0161en\u00ed u\u017eivatele.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

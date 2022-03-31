@@ -750,16 +750,21 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
-        if (provider.isTrackOAuthClients()) {
-            OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
-            clientTracker.trackOAuthClient(clientId);
-        }
+        trackAuthenticatedOAuthClients(request, response, provider, clientId);
 
         consent.handleConsent(provider, request, prompt, clientId);
         getExternalClaimsFromWSSubject(request, options);
         oauthResult = provider.processAuthorization(request, response, options);
 
         return oauthResult;
+    }
+
+    void trackAuthenticatedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String clientId) {
+        OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+        if (provider.isTrackOAuthClients()) {
+            clientTracker.trackOAuthClient(clientId);
+        }
+        // TODO - track for back-channel logout purposes
     }
 
     /**

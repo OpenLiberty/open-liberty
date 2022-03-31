@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,9 @@ import com.ibm.ws.Transaction.JTA.Util;
 
 public class XAResourceImpl implements XAResource, Serializable {
     static final long serialVersionUID = -2141508727147091254L;
+    
+    // Set when dumped. If a operation occurs which changes the state after this has happened
+    protected static boolean dumped;
 
     protected static ConcurrentHashMap<Integer, XAResourceData> _resources = new ConcurrentHashMap<Integer, XAResourceData>();
 
@@ -57,6 +60,7 @@ public class XAResourceImpl implements XAResource, Serializable {
          */
         @Override
         public void dumpState() {
+        	dumped = true;
             printState();
             FileOutputStream fos = null;
             ObjectOutputStream oos = null;
@@ -532,32 +536,6 @@ public class XAResourceImpl implements XAResource, Serializable {
             sb.append("\nXid: " + _xid);
             sb.append("\nCommit order: " + _commitOrder);
 
-/*
- * private UUID RM;
- * private int prepareAction = XAResource.XA_OK;
- * private int rollbackAction = XAResource.XA_OK;
- * private int commitAction = XAResource.XA_OK;
- * private int endAction = XAResource.XA_OK;
- * private int startAction = XAResource.XA_OK;
- * private int forgetAction = XAResource.XA_OK;
- * private int recoverAction = XAResource.XA_OK;
- * private int setTransactionTimeoutAction = RETURN_TRUE;
- * private int commitRepeatCount;
- * private int rollbackRepeatCount;
- * private int forgetRepeatCount;
- * private int recoverRepeatCount;
- * private int statusDuringCommit;
- * private int statusDuringRollback;
- * private int statusDuringPrepare;
- * private int rollbackCount;
- * private int forgetCount;
- * private boolean heuristic;
- * private int _sleepTime;
- * private Xid _xid;
- * private boolean busyInLongRunningQuery;
- * private boolean queryAborted;
- * private boolean commitSuicide = true;
- */
             return sb.toString();
         }
 
@@ -792,7 +770,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
 
         if (self().getCommitSuicide()) {
-//			Log.info(getClass(), "killDoomedServers", "Uh oh");
+            System.out.println("Committing suicide");
             if (dumpState) {
                 dumpState();
             }
@@ -1073,6 +1051,11 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     private void setState(int state) {
         self().setState(state);
+        
+        if (dumped) {
+        	System.out.println("Dumping again to reflect new state");
+        	dumpState();
+        }
     }
 
     public XAResourceImpl setPrepareAction(int action) {

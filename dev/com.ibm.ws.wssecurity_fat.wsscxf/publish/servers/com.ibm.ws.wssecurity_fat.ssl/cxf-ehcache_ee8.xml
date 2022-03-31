@@ -31,7 +31,7 @@
         <key-type>java.lang.String</key-type>
         <value-type>org.apache.cxf.ws.security.tokenstore.SecurityToken</value-type>
         <expiry>
-            <ttl unit="seconds">3600</ttl>
+            <ttl unit="seconds">10</ttl>
         </expiry>
         <!-- 4/2021 this element "persistence" resulted test failure under new runtime "Cannot confirm XML sub-type correctness. You might be missing client side libraries." 
         <persistence>

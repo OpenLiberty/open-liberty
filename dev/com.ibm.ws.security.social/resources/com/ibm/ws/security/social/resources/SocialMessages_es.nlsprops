@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5370 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499, CWWKS2350 - CWWKS2399
 ADD_ID={0} ({1})
 ADD_ID.explanation=S\u00f3lo para uso interno.
 ADD_ID.useraction=No se requiere ninguna acci\u00f3n.
@@ -137,7 +137,7 @@ INVALID_CONFIG_PARAM=CWWKS5390E: Falta un par\u00e1metro de configuraci\u00f3n o
 INVALID_CONFIG_PARAM.explanation=El c\u00f3digo de tiempo de ejecuci\u00f3n del inicio de sesi\u00f3n social no ha encontrado el par\u00e1metro necesario al procesar la solicitud del cliente.
 INVALID_CONFIG_PARAM.useraction=Compruebe el par\u00e1metro que falta en la configuraci\u00f3n y aseg\u00farese de que est\u00e9 especificado y sea correcto.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: El cliente de Social Login [{0}] no ha podido obtener informaci\u00f3n de punto final del proveedor de OpenID ID Connect a trav\u00e9s del URL de punto final de descubrimiento de [{1}]. Actualice la configuraci\u00f3n de Social Login (configuraci\u00f3n de oidcLogin) con el URL de punto final de descubrimiento HTTPS correcto. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: El cliente de Social Login [{0}] no ha podido obtener informaci\u00f3n de punto final del proveedor de OpenID ID Connect a trav\u00e9s del URL de punto final de descubrimiento de [{1}]. Actualice la configuraci\u00f3n de Social Login (configuraci\u00f3n de oidcLogin) con el URL de punto final de descubrimiento HTTPS correcto.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configuraci\u00f3n de oidcLogin se ha configurado para descubrir los puntos finales de proveedor de OpenID Connect a trav\u00e9s del URL de descubrimiento, pero el proceso de descubrimiento ha fallado. El cliente no puede procesar las solicitudes de autenticaci\u00f3n hasta que la configuraci\u00f3n discoveryEndpoint se haya corregido o el descubrimiento sea satisfactorio.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija la configuraci\u00f3n de oidcLogin para garantizar que 1) el URL de punto final de descubrimiento haga referencia al proveedor correcto de OpenID Connect, 2) el URL de punto final de descubrimiento sea HTTPS 3) la caracter\u00edstica SSL y los elementos del almac\u00e9n de claves se hayan configurado correctamente con confianza para el proveedor de OpenID Connect y 4) aseg\u00farese de que el punto final de descubrimiento del proveedor de OpenID Connect sea funcional.
 
@@ -646,3 +646,10 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Compruebe que la configuraci\u00f3
 REQUEST_URL_NOT_VALID=CWWKS5499E: La caracter\u00edstica Social Login no puede redireccionar la solicitud de vuelta al URL de solicitud original [{0}] porque el URL no es v\u00e1lido. {1}
 REQUEST_URL_NOT_VALID.explanation=El URL de solicitud original no es un URL v\u00e1lido. Es posible que el URL incluya caracteres que no sean v\u00e1lidos o que est\u00e9 incorrectamente formado.
 REQUEST_URL_NOT_VALID.useraction=Compruebe que el URL de solicitud especificado en el mensaje coincide con el URL de solicitud de recurso protegido original. Compruebe que el URL est\u00e1 correctamente formato y que contiene s\u00f3lo caracteres de URI v\u00e1lidos.
+
+# NOTE: Start of new message prefix CWWKS2350 - 2399
+
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: La solicitud de cierre de sesi\u00f3n de canal de fondo que se ha enviado a [{0}] no recibe soporte de la configuraci\u00f3n de inicio de sesi\u00f3n de redes sociales [{1}].
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=La configuraci\u00f3n de inicio de sesi\u00f3n de redes sociales no es un cliente de OpenID Connect, por lo que no da soporte al cierre de sesi\u00f3n de canal de fondo.
+BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilice el punto final de cierre de sesi\u00f3n adecuado para la configuraci\u00f3n de inicio de sesi\u00f3n de redes sociales.
+

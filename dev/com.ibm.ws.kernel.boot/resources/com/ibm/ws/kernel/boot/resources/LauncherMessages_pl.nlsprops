@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: Okre\u015blona faza punktu kontrolnego "{0}" 
 error.invalidPhaseName.explanation=Podano nieznan\u0105 faz\u0119 jako warto\u015b\u0107 opcji punktu kontrolnego.
 error.invalidPhaseName.useraction=Zapoznaj si\u0119 z dokumentacj\u0105, aby okre\u015bli\u0107 poprawne nazwy faz. Ponownie wydaj komend\u0119, u\u017cywaj\u0105c poprawnej fazy punktu kontrolnego.
 
+error.set.securitymanager.jdk18=CWWKE0955E: W\u0142a\u015bciwo\u015b\u0107 websphere.java.security zosta\u0142a ustawiona w pliku bootstrap.properties, ale wersja \u015brodowiska Java to {0}.  Ta w\u0142a\u015bciwo\u015b\u0107 w\u0142\u0105cza mened\u017cer zabezpiecze\u0144 Java i nie jest poprawna w przypadku \u015brodowiska Java 18 lub nowszego.
+error.set.securitymanager.jdk18.explanation= W ramach dezaktualizacji mened\u017cera zabezpiecze\u0144 Java, okre\u015blonej w propozycji JEP 411, serwer Liberty nie obs\u0142uguje mened\u017cera zabezpiecze\u0144 Java w \u015brodowisku Java 18 lub nowszym.
+error.set.securitymanager.jdk18.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 websphere.java.security z pliku bootstrap.properties lub u\u017cyj wersji Java wcze\u015bniejszej ni\u017c Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Nie powiod\u0142o si\u0119 ustawienie mened\u017cera zabezpiecze\u0144 Java z powodu wyj\u0105tku: {0}.  Dzieje si\u0119 tak wtedy, gdy serwer u\u017cywa \u015brodowiska Java 18 lub nowszego, a w\u0142a\u015bciwo\u015b\u0107 systemowa Java "java.security.manager" nie zosta\u0142a ustawiona na warto\u015b\u0107 "allow".
+error.cannotset.securitymanager.jdk18.explanation=Nie mo\u017cna w\u0142\u0105czy\u0107 mened\u017cera zabezpiecze\u0144 Java, poniewa\u017c system korzysta ze \u015brodowiska Java 18, kt\u00f3re domy\u015blnie nie zezwala na u\u017cywanie mened\u017cera zabezpiecze\u0144 Java.
+error.cannotset.securitymanager.jdk18.useraction=Uruchom serwer z argumentem JVM -Djava.security.manager=allow.
+
+error.checkpoint.delete=CWWKE0955E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty z katalogu {0}.
+error.checkpoint.delete.explanation=\u017b\u0105danie punktu kontrolnego dla serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty.
+error.checkpoint.delete.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma uprawnienia do usuwania istniej\u0105cego katalogu. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
+
+error.checkpoint.workarea.backup=CWWKE0956E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna utworzy\u0107 kopii zapasowej katalogu {0}.
+error.checkpoint.workarea.backup.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia kopii zapasowej katalogu obszaru roboczego serwera punktu kontrolnego.
+error.checkpoint.workarea.backup.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do tworzenia kopii zapasowych katalogu obszaru roboczego punktu kontrolnego. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
+
+error.checkpoint.workarea.restore=CWWKE0957E: Katalog obszaru roboczego serwera punktu kontrolnego nie mo\u017ce zosta\u0107 odtworzony z katalogu {0}.
+error.checkpoint.workarea.restore.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania katalogu obszaru roboczego punktu kontrolnego.
+error.checkpoint.workarea.restore.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do odtworzenia obszaru roboczego punktu kontrolnego. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
+
+info.checkpoint.restore.failed=CWWKE0957I: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Uruchamianie serwera bez korzystania z obrazu punktu kontrolnego.
+info.checkpoint.restore.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego.  Serwer zosta\u0142 uruchomiony bez u\u017cycia obrazu punktu kontrolnego.
+info.checkpoint.restore.failed.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 uruchomiony. ID procesu: {1}.

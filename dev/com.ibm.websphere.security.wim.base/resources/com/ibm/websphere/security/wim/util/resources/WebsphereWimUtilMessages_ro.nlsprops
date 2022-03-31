@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,4 +28,5 @@ DUPLICATE_PROPERTY_ENTITY.useraction=Verifica\u0163i schema propriet\u0103\u0163
 
 GENERIC=CWIML1999E: Opera\u0163ia registrului de utilizatori nu a putut fi finalizat\u0103. A ap\u0103rut o eroare runtime \u00een timpul proces\u0103rii: {0}
 GENERIC.explanation=Programul a \u00eent\u00e2lnit eroarea specificat\u0103 \u00een timpul opera\u0163iei.
-GENERIC.useraction= Examina\u0163i istoricele pentru cauza acestei erori \u015fi face\u0163i ac\u0163iunea corespunz\u0103toare.
+GENERIC.useraction= Examina\u0163i istoricele pentru cauza acestei erori \u015fi face\u0163i ac\u0163iunile corectoare corespunz\u0103toare.
+

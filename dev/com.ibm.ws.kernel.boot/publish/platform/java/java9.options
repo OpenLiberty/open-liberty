@@ -52,3 +52,6 @@ java.base/java.security=ALL-UNNAMED
 # for java -jar execution on command line (java.net.URLClassLoader) and CXF 3.1.X Authenticator support
 --add-opens
 java.base/java.net=ALL-UNNAMED
+# for com.ibm.ws.clientcontainer.javacolon.fat.* tests (yoko accessible calls)
+--add-opens
+java.base/java.text=ALL-UNNAMED

@@ -61,7 +61,9 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String client_mgmt_endpoint;
     private String[] code_challenge_methods_supported;
     @Beta
-    private boolean backchannel_logout_supported;
+    private final boolean backchannel_logout_supported = true;
+    @Beta
+    private final boolean backchannel_logout_session_supported = true;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -489,14 +491,6 @@ public abstract class OIDCAbstractDiscoveryModel {
      */
     public void setPkceCodeChallengeMethodsSupported(String[] pkceCodeChallengeMethodsSupported) {
         this.code_challenge_methods_supported = defensiveCopy(pkceCodeChallengeMethodsSupported);
-    }
-
-    public boolean isBackchannelLogoutSupported() {
-        return this.backchannel_logout_supported;
-    }
-
-    public void setBackchannelLogoutSupported(boolean backchannelLogoutSupported) {
-        this.backchannel_logout_supported = backchannelLogoutSupported;
     }
 
     private String[] defensiveCopy(String[] strArr) {

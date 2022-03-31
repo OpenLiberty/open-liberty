@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,20 +47,17 @@ CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.explanation=El contenedor no ha podido 
 CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.useraction=Compruebe que el directorio de desactivaci\u00f3n exista, que el proceso tenga permiso de escritura en el directorio y que el espacio en disco sea suficiente.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: No se ha podido obtener la envoltura para la factor\u00eda: \n\
-\ Factor\u00eda: {0}
+FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: No se ha podido obtener la envoltura para la factor\u00eda: \n Factor\u00eda: {0}
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.useraction=CMSG0002
 
 # --------------------------------
-CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: No se ha podido activar un bean de sesi\u00f3n con estado: {0} {1} \n\
-\ {2}
+CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: No se ha podido activar un bean de sesi\u00f3n con estado: {0} {1} \n {2}
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.explanation=El contenedor no ha podido activar un bean de sesi\u00f3n con estado desde el almacenamiento.
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.useraction=Realice acciones en funci\u00f3n del mensaje de excepci\u00f3n que aparezca en el mensaje CNTR0003W.
 
 # --------------------------------
-ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Se ha dejado de intentar adquirir un bloqueo. \n\
-\ Bloqueo : {0}
+ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Se ha dejado de intentar adquirir un bloqueo. \n Bloqueo : {0}
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.explanation=Una hebra que intentaba adquirir un bloqueo exclusivo en el contenedor se ha interrumpido mientras esperaba el bloqueo.
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.useraction=CMSG0002
 
@@ -95,29 +92,22 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=El contenedor ha encontrado 
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Aseg\u00farese de que el tipo de entrada de entorno sea uno de los siguientes: String, Integer, Boolean, Double, Byte, Short, Long o Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: El colaborador {0} gener\u00f3 una excepci\u00f3n inesperada - siguiendo con los colaboradores restantes. \n\
-\ Datos de la excepci\u00f3n:{1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: El colaborador {0} gener\u00f3 una excepci\u00f3n inesperada - siguiendo con los colaboradores restantes. \n Datos de la excepci\u00f3n:{1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
 # --------------------------------
-UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: No se puede correlacionar la excepci\u00f3n. \n\
-\ {0} \n\
-\ {1}
+UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: No se puede correlacionar la excepci\u00f3n. \n {0} \n {1}
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.explanation=El contenedor no ha podido correlacionar la excepci\u00f3n con una excepci\u00f3n CORBA v\u00e1lida.
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.useraction=CMSG0002
 
 # --------------------------------
-STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Se ha interrumpido la hebra StatefulBeanReaper; cerrando. \n\
-\ {0}
+STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Se ha interrumpido la hebra StatefulBeanReaper; cerrando. \n {0}
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Se ha producido una excepci\u00f3n inesperada durante la limpieza del bean con estado. \n\
-\ Datos de la excepci\u00f3n: \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Se ha producido una excepci\u00f3n inesperada durante la limpieza del bean con estado. \n Datos de la excepci\u00f3n: \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -127,34 +117,32 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=El contenedor no ha p
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Realice acciones en funci\u00f3n del mensaje de excepci\u00f3n que aparezca en el mensaje CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: El colaborador de seguridad gener\u00f3 la excepci\u00f3n inesperada. \n\
-\ Datos de la excepci\u00f3n:{0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: El colaborador de seguridad gener\u00f3 la excepci\u00f3n inesperada. \n Datos de la excepci\u00f3n:{0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
 # --------------------------------
 NON_APPLICATION_EXCEPTION_CNTR0018E=CNTR0018E: EJB ha generado una excepci\u00f3n no esperada (no declarada). Datos de la excepci\u00f3n:{0}
 NON_APPLICATION_EXCEPTION_CNTR0018E.explanation=Se ha creado una excepci\u00f3n, no declarada en la firma del m\u00e9todo EJB, cuando el contenedor EJB intentaba invocar un m\u00e9todo EJB.
-NON_APPLICATION_EXCEPTION_CNTR0018E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n. Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
+NON_APPLICATION_EXCEPTION_CNTR0018E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n.  Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
 
 # --------------------------------
 NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E=CNTR0019E: EJB ha generado una excepci\u00f3n no esperada (no declarada) al invocar el m\u00e9todo "{1}". Datos de la excepci\u00f3n:{0}
 NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E.explanation=Se ha creado una excepci\u00f3n, no declarada en la firma del m\u00e9todo EJB, cuando el contenedor EJB intentaba invocar este m\u00e9todo EJB.
-NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n. Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
+NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n.  Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
 
 # --------------------------------
 NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E=CNTR0020E: EJB ha generado una excepci\u00f3n no esperada (no declarada) al invocar el m\u00e9todo "{1}" en el bean "{2}". Datos de la excepci\u00f3n:{0}
 NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E.explanation=Se ha creado una excepci\u00f3n, no declarada en la firma del m\u00e9todo EJB, cuando el contenedor EJB intentaba invocar este m\u00e9todo EJB.
-NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n. Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
+NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n.  Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
 
 # --------------------------------
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E=CNTR0021E: EJB ha generado una excepci\u00f3n no esperada (no declarada) al invocar un m\u00e9todo en el bean "{1}". Datos de la excepci\u00f3n:{0}
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.explanation=Se ha creado una excepci\u00f3n, no declarada en la firma del m\u00e9todo EJB, cuando el contenedor EJB intentaba invocar este m\u00e9todo EJB.
-NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n. Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
+NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Examine el rastreo de pila para determinar la causa de la excepci\u00f3n.  Si la excepci\u00f3n se ha originado en el c\u00f3digo escrito por el cliente, corrija la causa de la excepci\u00f3n. En caso contrario, visite el sitio Web de soporte de IBM si desea informaci\u00f3n sobre la determinaci\u00f3n de problemas
 
 # --------------------------------
-TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Coordinador de transacci\u00f3n no disponible. \n\
-\ {0}
+TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Coordinador de transacci\u00f3n no disponible. \n {0}
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.explanation=CMSG0001
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.useraction=CMSG0002
 
@@ -179,16 +167,14 @@ DATASOURCE_NAME_NULL_CNTR0026W.explanation=No se ha especificado origen de datos
 DATASOURCE_NAME_NULL_CNTR0026W.useraction=Especifique el origen de datos para el bean de entidad o especifique un origen de datos predeterminado para el m\u00f3dulo.
 
 # --------------------------------
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: No se ha podido comprometer la conexi\u00f3n: \n\
-\ {0}
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: No se ha podido comprometer la conexi\u00f3n: \n {0}
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.explanation=Se ha producido una SQLException al intentar comprometer una conexi\u00f3n de origen de datos.
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Consulte la documentaci\u00f3n espec\u00edfica del proveedor para el producto de la base de datos que est\u00e1 utilizando. Normalmente, un c\u00f3digo de excepci\u00f3n espec\u00edfico del proveedor se visualizar\u00e1 como parte de la SQLException. Este c\u00f3digo de excepci\u00f3n se puede utilizar, en combinaci\u00f3n con la documentaci\u00f3n espec\u00edfica del proveedor, para determinar el motivo de la excepci\u00f3n.
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Consulte la documentaci\u00f3n espec\u00edfica del proveedor para el producto de la base de datos que est\u00e1 utilizando.  Normalmente, un c\u00f3digo de excepci\u00f3n espec\u00edfico del proveedor se visualizar\u00e1 como parte de la SQLException.  Este c\u00f3digo de excepci\u00f3n se puede utilizar, en combinaci\u00f3n con la documentaci\u00f3n espec\u00edfica del proveedor, para determinar el motivo de la excepci\u00f3n.
 
 # --------------------------------
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: No se ha podido cerrar la conexi\u00f3n: \n\
-\ {0}
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: No se ha podido cerrar la conexi\u00f3n: \n {0}
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.explanation=Se ha producido una SQLException al intentar cerrar una conexi\u00f3n de origen de datos.
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consulte la documentaci\u00f3n espec\u00edfica del proveedor para el producto de la base de datos que est\u00e1 utilizando. Normalmente, un c\u00f3digo de excepci\u00f3n espec\u00edfico del proveedor se visualizar\u00e1 como parte de la SQLException. Este c\u00f3digo de excepci\u00f3n se puede utilizar, en combinaci\u00f3n con la documentaci\u00f3n espec\u00edfica del proveedor, para determinar el motivo de la excepci\u00f3n.
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consulte la documentaci\u00f3n espec\u00edfica del proveedor para el producto de la base de datos que est\u00e1 utilizando.  Normalmente, un c\u00f3digo de excepci\u00f3n espec\u00edfico del proveedor se visualizar\u00e1 como parte de la SQLException.  Este c\u00f3digo de excepci\u00f3n se puede utilizar, en combinaci\u00f3n con la documentaci\u00f3n espec\u00edfica del proveedor, para determinar el motivo de la excepci\u00f3n.
 
 # --------------------------------
 # No longer used in ejb container.
@@ -203,10 +189,9 @@ FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Consulte la documentaci\u00f3n e
 # Cannot.obtain.the.transaction.coordinator.{0}.useraction=CMSG0002
 
 # --------------------------------
-ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Se ha producido un error al iniciar el bean CMP {0}: \n\
-\ {1}
+ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Se ha producido un error al iniciar el bean CMP {0}: \n {1}
 ERROR_STARTING_CMP_BEAN_CNTR0031W.explanation=Es posible que se haya enlazado un bean de entidad a un origen de datos utilizando un nombre de origen de datos no v\u00e1lido o incorrecto. Si el nombre del origen de datos es correcto, es posible que el origen de datos no se haya configurado correctamente.
-ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=Si este mensaje va precedido por el mensaje CNTR0026W, debe proporcionar el nombre del origen de datos. Si CNTR0026W no preced\u00eda a este mensaje, compruebe el nombre del origen de datos que se muestra en el mensaje CNTR0032W a continuaci\u00f3n de este mensaje. Si se produce una excepci\u00f3n 'name not found' (nombre no encontrado), es muy probable que el nombre del origen de datos no sea correcto. Si se proporciona el nombre correcto de origen de datos, compruebe la configuraci\u00f3n del origen de datos. Por ejemplo, puede haber especificado un nombre de base de datos, ID de usuario o contrase\u00f1a incorrectos en la configuraci\u00f3n del origen de datos.
+ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=Si este mensaje va precedido por el mensaje CNTR0026W, debe proporcionar el nombre del origen de datos. Si CNTR0026W no preced\u00eda a este mensaje, compruebe el nombre del origen de datos que se muestra en el mensaje CNTR0032W a continuaci\u00f3n de este mensaje. Si se produce una excepci\u00f3n 'name not found' (nombre no encontrado), es muy probable que el nombre del origen de datos no sea correcto.  Si se proporciona el nombre correcto de origen de datos, compruebe la configuraci\u00f3n del origen de datos. Por ejemplo, puede haber especificado un nombre de base de datos, ID de usuario o contrase\u00f1a incorrectos en la configuraci\u00f3n del origen de datos.
 
 # --------------------------------
 ERROR_CREATING_CMP_PERSISTER_CNTR0032W=CNTR0032W: Error al crear el persistor CMP utilizando el origen de datos: {0}
@@ -239,7 +224,7 @@ PREPARED_STATEMENT_NOT_FOUND_CNTR0037E.explanation=CMSG0001
 PREPARED_STATEMENT_NOT_FOUND_CNTR0037E.useraction=CMSG0002
 
 # --------------------------------
-POTENTIAL_LOST_UPDATE_CNTR0038W=CNTR0038W: El atributo TX se debe modificar para eliminar la p\u00e9rdida de posibles actualizaciones en el bean {0} cuando se utiliza simult\u00e1neamente en distintas transacciones. El bean no debe utilizar los atributos de transacci\u00f3n TX_NOT_SUPPORTED, TX_NEVER ni TX_SUPPORTS.
+POTENTIAL_LOST_UPDATE_CNTR0038W=CNTR0038W: El atributo TX se debe modificar para eliminar la p\u00e9rdida de posibles actualizaciones en el bean {0} cuando se utiliza simult\u00e1neamente en distintas transacciones.  El bean no debe utilizar los atributos de transacci\u00f3n TX_NOT_SUPPORTED, TX_NEVER ni TX_SUPPORTS.
 POTENTIAL_LOST_UPDATE_CNTR0038W.explanation=Se ha iniciado una transacci\u00f3n mediante los atributos de transacci\u00f3n TX_NOT_SUPPORTED, TX_NEVER o TX_SUPPORTS. La transacci\u00f3n ha actualizado un bean de entidad de persistencia gestionada por contenedor (CMP) y la transacci\u00f3n est\u00e1 almacenando la actualizaci\u00f3n en el almac\u00e9n persistente. Si una transacci\u00f3n simult\u00e1nea utiliza el bean de entidad CMP con el mismo valor de clave primaria, las actualizaciones de una transacci\u00f3n pueden escribirse encima de las actualizaciones del resto de transacciones.
 POTENTIAL_LOST_UPDATE_CNTR0038W.useraction=La aplicaci\u00f3n debe evitar que transacciones simult\u00e1neas actualicen un bean de entidad CMP con el mismo valor de clave primaria. Si esto no es posible, el bean que empiece la transacci\u00f3n debe utilizar un atributo de transacci\u00f3n distinto a TX_NEVER, TX_NOT_SUPPORTED o TX_SUPPORTS para garantizar la coherencia de los datos.
 
@@ -266,12 +251,12 @@ FINDER_RESULT_EXCEEDED_LIMITS_CNTR0041W.useraction=Cambie el buscador de forma q
 
 # --------------------------------
 INVALID_ACTIVATION_POLICY_CNTR0043E=CNTR0043E: El bean "{0}" est\u00e1 intentado utilizar una combinaci\u00f3n no v\u00e1lida de ActivationPolicy y LoadPolicy en un servidor gestionado por carga de trabajo.
-INVALID_ACTIVATION_POLICY_CNTR0043E.explanation=El usuario ha especificado la 'opci\u00f3n de compromiso A' en un enterprise bean situado en un servidor que est\u00e9 gestionado por carga de trabajo. Esta combinaci\u00f3n de configuraci\u00f3n no est\u00e1 soportada.
+INVALID_ACTIVATION_POLICY_CNTR0043E.explanation=El usuario ha especificado la 'opci\u00f3n de compromiso A' en un enterprise bean situado en un servidor que est\u00e9 gestionado por carga de trabajo.  Esta combinaci\u00f3n de configuraci\u00f3n no est\u00e1 soportada.
 INVALID_ACTIVATION_POLICY_CNTR0043E.useraction=Cambie el enterprise bean para que utilice una opci\u00f3n de compromiso distinta, o cambie el servidor para que no est\u00e9 gestionado por carga de trabajo.
 
 # --------------------------------
 INVALID_LOAD_POLICY_CNTR0044W=CNTR0044W: El bean "{0}" est\u00e1 intentando utilizar una combinaci\u00f3n no v\u00e1lida de pol\u00edtica de activaci\u00f3n: transacci\u00f3n y pol\u00edtica de carga: activaci\u00f3n. El valor predeterminado de la pol\u00edtica de carga ser\u00e1: transacci\u00f3n.
-INVALID_LOAD_POLICY_CNTR0044W.explanation=La pol\u00edtica de activaci\u00f3n especificada para el enterprise bean no est\u00e1 soportada. La Opci\u00f3n C, que es la acci\u00f3n predeterminada a realizar, podr\u00eda no proporcionar el resultado correcto. La combinaci\u00f3n de la pol\u00edtica de activaci\u00f3n y la pol\u00edtica de carga es el m\u00e9todo en que el servidor de aplicaciones implementa las opciones de compromiso A, B y C en la especificaci\u00f3n EJB (Enterprise Java Bean).
+INVALID_LOAD_POLICY_CNTR0044W.explanation=La pol\u00edtica de activaci\u00f3n especificada para el enterprise bean no est\u00e1 soportada.  La Opci\u00f3n C, que es la acci\u00f3n predeterminada a realizar, podr\u00eda no proporcionar el resultado correcto. La combinaci\u00f3n de la pol\u00edtica de activaci\u00f3n y la pol\u00edtica de carga es el m\u00e9todo en que el servidor de aplicaciones implementa las opciones de compromiso A, B y C en la especificaci\u00f3n EJB (Enterprise Java Bean).
 INVALID_LOAD_POLICY_CNTR0044W.useraction=Vuelva a desplegar el enterprise bean con una combinaci\u00f3n v\u00e1lida para eliminar este mensaje.
 
 # --------------------------------
@@ -286,12 +271,8 @@ CONNECTION_FACTORY_BINDING_NOT_SPECIFIED_CNTR0046E.useraction=Especifique un enl
 
 # --------------------------------
 METHOD_NOT_ALLOWED_CNTR0047E=CNTR0047E: El bean est\u00e1 intentando utilizar la interfaz o el m\u00e9todo "{0}" en una situaci\u00f3n prohibida por la especificaci\u00f3n de EJB.
-METHOD_NOT_ALLOWED_CNTR0047E.explanation=La especificaci\u00f3n EJB (Enterprise Java Bean) no permite el m\u00e9todo por uno de los motivos siguientes: - Los m\u00e9todos getRollbackOnly y setRollbackOnly de la interfaz de contexto controlada por mensajes se deben utilizar en los m\u00e9todos de beans controlados por mensajes que se ejecutan en el contexto de una transacci\u00f3n. \
-# - La invocaci\u00f3n de los m\u00e9todos getCallerPrincipal e isCallerInRole no se permite en los m\u00e9todos de beans controlados por mensajes porque el contenedor no tiene un contexto de seguridad de cliente. \
-# - La invocaci\u00f3n de los m\u00e9todos getRollbackOnly y setRollbackOnly no est\u00e1 permitida en los m\u00e9todos de beans controlados por mensajes para los que el contenedor no tenga un contexto de transacci\u00f3n significativo, y para todos los beans controlados por mensajes con demarcaci\u00f3n de transacci\u00f3n gestionada por bean. \
-# - La interfaz UserTransaction no est\u00e1 disponible para los beans controlados por mensajes con demarcaci\u00f3n de transacciones gestionadas por contenedor. \
-# - La invocaci\u00f3n de los m\u00e9todos getEJBHome o getEJBLocalHome no se permite en los m\u00e9todos de beans controlados por mensajes porque no existen objetos EJBHome o EJBLocalHome para beans controlados por mensajes. \
-#
+METHOD_NOT_ALLOWED_CNTR0047E.explanation=La especificaci\u00f3n EJB (Enterprise Java Bean) no permite el m\u00e9todo por uno de los motivos siguientes: - Los m\u00e9todos getRollbackOnly y setRollbackOnly de la interfaz de contexto controlada por mensajes se deben utilizar en los m\u00e9todos de beans controlados por mensajes que se ejecutan en el contexto de una transacci\u00f3n. # - La invocaci\u00f3n de los m\u00e9todos getCallerPrincipal e isCallerInRole no se permite en los m\u00e9todos de beans controlados por mensajes porque el contenedor no tiene un contexto de seguridad de cliente. # - La invocaci\u00f3n de los m\u00e9todos getRollbackOnly y setRollbackOnly no est\u00e1 permitida en los m\u00e9todos de beans controlados por mensajes para los que el contenedor no tenga un contexto de transacci\u00f3n significativo, y para todos los beans controlados por mensajes con demarcaci\u00f3n de transacci\u00f3n gestionada por bean. # - La interfaz UserTransaction no est\u00e1 disponibl\
+    e para los beans controlados por mensajes con demarcaci\u00f3n de transacciones gestionadas por contenedor. # - La invocaci\u00f3n de los m\u00e9todos getEJBHome o getEJBLocalHome no se permite en los m\u00e9todos de beans controlados por mensajes porque no existen objetos EJBHome o EJBLocalHome para beans controlados por mensajes. #
 METHOD_NOT_ALLOWED_CNTR0047E.useraction=No invoque el m\u00e9todo en este entorno.
 
 # --------------------------------
@@ -301,7 +282,7 @@ FINDER_COLLECTION_SCOPE_TIMEOUT_NO_TIMEOUT_CNTR0048W.useraction=Especifique un v
 
 # --------------------------------
 COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E=CNTR0049E: El bean est\u00e1 intentando utilizar una combinaci\u00f3n no v\u00e1lida de opci\u00f3n de compromiso A y simultaneidad \u00f3ptima.
-COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.explanation=El usuario ha especificado la opci\u00f3n de compromiso A y el control de simultaneidad \u00f3ptima en un enterprise bean. El servidor de aplicaciones no tiene soporte para la opci\u00f3n de compromiso A y el control de simultaneidad \u00f3ptima en un enterprise bean.
+COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.explanation=El usuario ha especificado la opci\u00f3n de compromiso A y el control de simultaneidad \u00f3ptima en un enterprise bean.  El servidor de aplicaciones no tiene soporte para la opci\u00f3n de compromiso A y el control de simultaneidad \u00f3ptima en un enterprise bean.
 COMMIT_OPTION_A_AND_OPTIMISTIC_CONCURRENCY_CONTROL_NOT_SUPPORTED_CNTR0049E.useraction=Cambie el enterprise bean para que utilice la opci\u00f3n de compromiso A o el control de simultaneidad \u00f3ptima, pero no ambos.
 
 # --------------------------------
@@ -312,7 +293,7 @@ PROTOCOL_ERROR_IN_CONTAINER_TRANSACTION_CNTR0050E.useraction=CMSG0002
 #---------------------------------
 CLIENT_INACTIVITY_TIMEOUT_CNTR0051E=CNTR0051E: La transacci\u00f3n ha excedido el tiempo de espera debido a la falta de actividad del cliente durante m\u00e1s de {1} segundos. ID de transacci\u00f3n: {0}
 CLIENT_INACTIVITY_TIMEOUT_CNTR0051E.explanation=El cliente ha estado inactivo durante m\u00e1s tiempo del establecido por el valor de tiempo de espera de inactividad.
-CLIENT_INACTIVITY_TIMEOUT_CNTR0051E.useraction=Esto puede ser normal si el cliente abandona una transacci\u00f3n en estado activo. Si el cliente est\u00e1 todav\u00eda activo, el administrador debe determinar si se debe modificar el valor de tiempo de espera de inactividad de la transacci\u00f3n o del cliente.
+CLIENT_INACTIVITY_TIMEOUT_CNTR0051E.useraction=Esto puede ser normal si el cliente abandona una transacci\u00f3n en estado activo.  Si el cliente est\u00e1 todav\u00eda activo, el administrador debe determinar si se debe modificar el valor de tiempo de espera de inactividad de la transacci\u00f3n o del cliente.
 
 #---------------------------------
 LRU_THREAD_INTERRUPTED_CNTR0052W=CNTR0052W: La hebra de LRU se ha interrumpido. Se est\u00e1 terminando. {0}
@@ -330,25 +311,23 @@ EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.explanation=CMSG0001
 EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.useraction=CMSG0002
 
 # --------------------------------
-THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Se ha capturado una excepci\u00f3n throwable al intentar construir <env-entry-name> {0} <env-entry-value> {1} \n\
-\ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Se ha capturado una excepci\u00f3n throwable al intentar construir <env-entry-name> {0} <env-entry-value> {1} \n {2}
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.explanation=El contenedor ha generado una excepci\u00f3n throwable al intentar crear una entrada java:comp/env.
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.useraction=Realice acciones en funci\u00f3n del mensaje de excepci\u00f3n que aparezca en el mensaje CNTR0055W.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: No se ha podido obtener la envoltura para un bean. Bean: \n\
-\ {0}
+FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: No se ha podido obtener la envoltura para un bean. Bean: \n {0}
 FAILED_TO_GET_WRAPPER_CNTR0056W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_CNTR0056W.useraction=CMSG0002
 
 # --------------------------------
 INVALID_MIN_POOLSIZE_CNTR0057W=CNTR0057W: El tama\u00f1o de agrupaci\u00f3n m\u00ednimo especificado para el bean {0} no es un entero v\u00e1lido: {1}. En su lugar, se utilizar\u00e1 el valor predeterminado.
-INVALID_MIN_POOLSIZE_CNTR0057W.explanation=S\u00f3lo se puede especificar un entero positivo como tama\u00f1o de agrupaci\u00f3n m\u00ednimo. Se utilizar\u00e1 el valor predeterminado.
+INVALID_MIN_POOLSIZE_CNTR0057W.explanation=S\u00f3lo se puede especificar un entero positivo como tama\u00f1o de agrupaci\u00f3n m\u00ednimo.  Se utilizar\u00e1 el valor predeterminado.
 INVALID_MIN_POOLSIZE_CNTR0057W.useraction=Cambie el valor del tama\u00f1o m\u00ednimo de agrupaci\u00f3n por un entero positivo.
 
 # --------------------------------
 INVALID_MAX_POOLSIZE_CNTR0058W=CNTR0058W: El tama\u00f1o de agrupaci\u00f3n m\u00e1ximo especificado para el bean {0} no es un entero v\u00e1lido: {1}. En su lugar, se utilizar\u00e1 el valor predeterminado.
-INVALID_MAX_POOLSIZE_CNTR0058W.explanation=S\u00f3lo se puede especificar un entero positivo como tama\u00f1o de agrupaci\u00f3n m\u00e1ximo. Se utilizar\u00e1 el valor predeterminado.
+INVALID_MAX_POOLSIZE_CNTR0058W.explanation=S\u00f3lo se puede especificar un entero positivo como tama\u00f1o de agrupaci\u00f3n m\u00e1ximo.  Se utilizar\u00e1 el valor predeterminado.
 INVALID_MAX_POOLSIZE_CNTR0058W.useraction=Cambie el valor del tama\u00f1o m\u00e1ximo de agrupaci\u00f3n por un entero positivo.
 
 # --------------------------------
@@ -368,7 +347,7 @@ FBPK_READONLY_OVERRIDE_ALL_CNTR0061I.useraction=No es necesario que el usuario r
 
 # --------------------------------
 POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W=CNTR0062W: No se ha encontrado ning\u00fan signo igual en la serie de especificaci\u00f3n del tama\u00f1o de agrupaci\u00f3n {0}
-POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W.explanation=El formato de una especificaci\u00f3n de tama\u00f1o de agrupaci\u00f3n es: nombre_bean=m\u00edn,m\u00e1x. Debe haber un signo igual entre el nombre del bean y los valores de m\u00ednimo y m\u00e1ximo.
+POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W.explanation=El formato de una especificaci\u00f3n de tama\u00f1o de agrupaci\u00f3n es: nombre_bean=m\u00edn,m\u00e1x.  Debe haber un signo igual entre el nombre del bean y los valores de m\u00ednimo y m\u00e1ximo.
 POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W.useraction=Aseg\u00farese de que hay un signo igual entre el nombre del bean y los valores de m\u00ednimo y m\u00e1ximo.
 
 #---------------------------------
@@ -423,8 +402,7 @@ INVALID_ACTIVITY_SESSION_POLICY_CNTR0072E.useraction=Aseg\u00farese de que se ut
 
 #---------------------------------
 INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0073E=CNTR0073E: El bean "{0}" ha intentado utilizar un control de resoluci\u00f3n de transacciones locales no v\u00e1lido.
-INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0073E.explanation=El control de resoluci\u00f3n de transacciones locales debe tener un l\u00edmite \
-ContainerAtBoundary para una transacci\u00f3n gestionada por contenedor o una sesi\u00f3n de actividad gestionada por contenedor.
+INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0073E.explanation=El control de resoluci\u00f3n de transacciones locales debe tener un l\u00edmite ContainerAtBoundary para una transacci\u00f3n gestionada por contenedor o una sesi\u00f3n de actividad gestionada por contenedor.
 INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0073E.useraction=Establezca el control de resoluci\u00f3n de transacciones locales en "ContainerAtBoundary".
 
 #---------------------------------
@@ -468,8 +446,7 @@ ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.explanation=CMSG0001
 ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.useraction=CMSG0002
 
 #---------------------------------
-CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Error al crear un punto final de mensaje: \n\
-\ {0}
+CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Error al crear un punto final de mensaje: \n {0}
 CREATE_ENDPOINT_FAILED_CNTR0083E.explanation=CMSG0001
 CREATE_ENDPOINT_FAILED_CNTR0083E.useraction=CMSG0002
 
@@ -485,8 +462,8 @@ NO_SUCH_MDB_METHOD_CNTR0085E.useraction=Determine si el MDB se despleg\u00f3 par
 
 #---------------------------------
 ERROR_DURING_TRAN_RECOVERY_SETUP_CNTR0086E=CNTR0086E: Se ha producido un error de configuraci\u00f3n de recuperaci\u00f3n de la transacci\u00f3n para el adaptador del recurso {0}, MDB {1}.
-ERROR_DURING_TRAN_RECOVERY_SETUP_CNTR0086E.explanation=El adaptador de recursos llam\u00f3 al m\u00e9todo createEndpoint del objeto JCA MessageEndpointFactory y dicho adaptador de recursos pas\u00f3 un objeto XAResource como uno de los par\u00e1metros del m\u00e9todo createEndpoint. Sin embargo, el gestor del ciclo de vida del adaptador de recursos ha encontrado un error que ha impedido el establecimiento de la recuperaci\u00f3n de la transacci\u00f3n para este adaptador de recursos. El punto final no puede crearse satisfactoriamente.
-ERROR_DURING_TRAN_RECOVERY_SETUP_CNTR0086E.useraction=Revise si en las anotaciones cronol\u00f3gicas hay un mensaje de error anterior indicando la anomal\u00eda de la configuraci\u00f3n del bean controlado por mensajes (MDB) que estaba enlazado con el adaptador de recursos. Corrija el error para eliminar este mensaje de error.
+ERROR_DURING_TRAN_RECOVERY_SETUP_CNTR0086E.explanation=El adaptador de recursos llam\u00f3 al m\u00e9todo createEndpoint del objeto JCA MessageEndpointFactory y dicho adaptador de recursos pas\u00f3 un objeto XAResource como uno de los par\u00e1metros del m\u00e9todo createEndpoint.  Sin embargo, el gestor del ciclo de vida del adaptador de recursos ha encontrado un error que ha impedido el establecimiento de la recuperaci\u00f3n de la transacci\u00f3n para este adaptador de recursos. El punto final no puede crearse satisfactoriamente.
+ERROR_DURING_TRAN_RECOVERY_SETUP_CNTR0086E.useraction=Revise si en el registro hay un mensaje de error anterior indicando la anomal\u00eda de la configuraci\u00f3n del bean controlado por mensajes (MDB) que estaba enlazado con el adaptador de recursos. Corrija el error para eliminar este mensaje de error.
 
 #---------------------------------
 RA_DOES_NOT_SUPPORT_XATRANSACTIONS_CNTR0087E=CNTR0087E: El adaptador de recursos {0} no puede pasar un XAResource no nulo al m\u00e9todo createEndpoint para MDB {1}.
@@ -650,30 +627,27 @@ LIGHTWEIGHT_ENABLED_CNTR0118I.explanation=El bean se ha configurado para facilit
 LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=No es necesario que el usuario realice acci\u00f3n alguna.
 
 #-------------------------------------------------------------------------------
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: La clase proporcionada por el usuario "{0}" puede no implementar la interfaz com.ibm.websphere.ejbcontainer.LightweightLocal. C\u00f3digo de raz\u00f3n = {1}.
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=S\u00f3lo los Enterprise JavaBean (EJB) v2.x o posteriores con una interfaz local pueden implementar la interfaz com.ibm.websphere.ejbcontainer.LightweightLocal. El c\u00f3digo de raz\u00f3n identifica la violaci\u00f3n espec\u00edfica como se indica a continuaci\u00f3n: \n\
-\ 1 - El EJB no es un bean de entidad. \n\
-\ 2 - El bean es un EJB V1.x o bean de entidad de persistencia gestionada por contenedor (CMP) V1.x. \n\
-\ 3 - El EJB no tiene definida una interfaz local.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: La clase proporcionada por el usuario "{0}" puede no implementar la interfaz com.ibm.websphere.ejbcontainer.LightweightLocal.  C\u00f3digo de raz\u00f3n = {1}.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=S\u00f3lo los Enterprise JavaBean (EJB) v2.x o posteriores con una interfaz local pueden implementar la interfaz com.ibm.websphere.ejbcontainer.LightweightLocal. El c\u00f3digo de raz\u00f3n identifica la violaci\u00f3n espec\u00edfica como se indica a continuaci\u00f3n: \n 1 - El EJB no es un bean de entidad. \n 2 - El bean es un EJB V1.x o bean de entidad de persistencia gestionada por contenedor (CMP) V1.x. \n 3 - El EJB no tiene definida una interfaz local.
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.useraction=Cambie el EJB para que sea de tipo "Entidad", cambie el despliegue de EJB, cambie el despliegue de EJB por la versi\u00f3n 2.0 o posterior, cambie el despliegue de EJB para especificar una interfaz local o cambie la implementaci\u00f3n de modo que no implemente la interfaz com.ibm.websphere.ejbcontainer.LightweightLocal.
 
 #-------------------------------------------------------------------------------
 INVALID_BOOLEAN_FORMAT_CNTR0120W=CNTR0120W: La entrada de entorno de contexto EJB java:comp/env {0} de tipo booleano no est\u00e1 establecida en un valor booleano v\u00e1lido {1}. La entrada ha asignado un valor "false".
-INVALID_BOOLEAN_FORMAT_CNTR0120W.explanation=A una entrada de entorno de contexto java:comp/env de Enterprise JavaBean (EJB) de tipo booleano se le debe asignar un valor 'true' o 'false'. Cualquier otro valor dar\u00e1 como resultado 'false', aunque puede ser una indicaci\u00f3n de que hay un problema en la configuraci\u00f3n. Es posible que la aplicaci\u00f3n no funcione como se espera.
+INVALID_BOOLEAN_FORMAT_CNTR0120W.explanation=A una entrada de entorno de contexto java:comp/env de Enterprise JavaBean (EJB) de tipo booleano se le debe asignar un valor 'true' o 'false'.  Cualquier otro valor dar\u00e1 como resultado 'false', aunque puede ser una indicaci\u00f3n de que hay un problema en la configuraci\u00f3n.  Es posible que la aplicaci\u00f3n no funcione como se espera.
 INVALID_BOOLEAN_FORMAT_CNTR0120W.useraction=Cambie la entrada de entorno de contexto EJB java:comp/env del tipo booleano por 'true' o 'false'.
 
 #---------------------------------
-INVALID_CONTAINER_TRANSACTION_XML_CNTR0121W=CNTR0121W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}". El elemento container-transaction con error contiene el elemento trans-attribute: "{1}".
+INVALID_CONTAINER_TRANSACTION_XML_CNTR0121W=CNTR0121W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}".  El elemento container-transaction con error contiene el elemento trans-attribute: "{1}".
 INVALID_CONTAINER_TRANSACTION_XML_CNTR0121W.explanation=Todos los elementos ejb-name del elemento container-transaction deben coincidir con elementos ejb-name v\u00e1lidos del elemento enterprise-beans.
 INVALID_CONTAINER_TRANSACTION_XML_CNTR0121W.useraction=Corrija el archivo ejb-jar.xml de modo que todos los elementos ejb-name del elemento container-transaction coincidan con entradas ejb-name v\u00e1lidas del elemento enterprise-beans.
 
 #---------------------------------
-INVALID_METHOD_PERMISSION_XML_CNTR0123W=CNTR0123W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}". El elemento method-permission con error para el EJB: "{1}".
+INVALID_METHOD_PERMISSION_XML_CNTR0123W=CNTR0123W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}".  El elemento method-permission con error para el EJB: "{1}".
 INVALID_METHOD_PERMISSION_XML_CNTR0123W.explanation=Todos los elementos ejb-name del elemento method-permission deben coincidir con elementos ejb-name v\u00e1lidos del elemento enterprise-beans.
 INVALID_METHOD_PERMISSION_XML_CNTR0123W.useraction=Corrija el archivo ejb-jar.xml de modo que todos los elementos ejb-name del elemento method-permission coincidan con entradas ejb-name v\u00e1lidas del elemento enterprise-beans.
 
 #---------------------------------
-INVALID_EXCLUDE_LIST_XML_CNTR0124W=CNTR0124W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}". El elemento exclude-list con error para el EJB: "{1}".
+INVALID_EXCLUDE_LIST_XML_CNTR0124W=CNTR0124W: Error de configuraci\u00f3n de XML en ejb-jar.xml, en el archivo jar: "{0}".  El elemento exclude-list con error para el EJB: "{1}".
 INVALID_EXCLUDE_LIST_XML_CNTR0124W.explanation=Todos los elementos ejb-name del elemento exclude-list deben coincidir con elementos ejb-name v\u00e1lidos del elemento enterprise-beans.
 INVALID_EXCLUDE_LIST_XML_CNTR0124W.useraction=Corrija el archivo ejb-jar.xml de modo que todos los elementos ejb-name del elemento exclude-list coincidan con entradas ejb-name v\u00e1lidas del elemento enterprise-beans.
 
@@ -799,7 +773,7 @@ NO_MESSAGE_DESTINATION_BINDING_CNTR0145E.useraction=Compruebe el archivo de enla
 
 BINDINGS_FILE_CONFIG_ERROR_CNTR0146E=CNTR0146E: El archivo de enlaces {0} incluido en el m\u00f3dulo {1} tiene un error de configuraci\u00f3n en el n\u00famero de l\u00ednea: {2}, n\u00famero de columna: {3}.
 BINDINGS_FILE_CONFIG_ERROR_CNTR0146E.explanation=El archivo de enlaces contiene un error de sintaxis simple o una violaci\u00f3n sem\u00e1ntica.
-BINDINGS_FILE_CONFIG_ERROR_CNTR0146E.useraction=Examine el archivo de anotaciones cronol\u00f3gicas en busca de excepciones 'caused by' adicionales, que pueden proporcionar detalles espec\u00edficos sobre los mensajes del analizador. Corrija el error del archivo de enlaces y reinstale la aplicaci\u00f3n.
+BINDINGS_FILE_CONFIG_ERROR_CNTR0146E.useraction=Examine el archivo de registro en busca de excepciones 'caused by' adicionales, que pueden proporcionar detalles espec\u00edficos sobre los mensajes del analizador.  Corrija el error del archivo de enlaces y reinstale la aplicaci\u00f3n.
 
 #-------------------------------------------------------------------------------
 
@@ -816,12 +790,12 @@ NO_CONNECTION_FACTORY_FOR_CMP_BEAN_CNTR0148E.useraction=Cree el recurso necesari
 #---------------------------------------------------------------------------------
 UNEXPECTED_EJB_START_FAILURE_CNTR0149E=CNTR0149E: El proceso de inicio del enterprise bean {0} en el m\u00f3dulo {1} ha fallado con la siguiente excepci\u00f3n: {2}
 UNEXPECTED_EJB_START_FAILURE_CNTR0149E.explanation=Se ha producido un error durante los procesos de inicializaci\u00f3n e inicio del bean.
-UNEXPECTED_EJB_START_FAILURE_CNTR0149E.useraction=Examine el mensaje de la excepci\u00f3n para determinar por qu\u00e9 el bean no se inici\u00f3. Adem\u00e1s, compruebe las anotaciones cronol\u00f3gicas en busca de otros mensajes de excepci\u00f3n relacionados con el inicio de este bean.
+UNEXPECTED_EJB_START_FAILURE_CNTR0149E.useraction=Examine el mensaje de la excepci\u00f3n para determinar por qu\u00e9 el bean no se inici\u00f3. Adem\u00e1s, compruebe el registro en busca de otros mensajes de excepci\u00f3n relacionados con el inicio de este bean.
 
 #---------------------------------------------------------------------------------
 CONFLICTING_ANNOTATIONS_CONFIGURED_ON_METHOD_CNTR0150E=CNTR0150E: La anotaci\u00f3n {0} y la anotaci\u00f3n {1} no se pueden configurar ambas en el m\u00e9todo {2} de la clase del enterprise bean {3}.
 CONFLICTING_ANNOTATIONS_CONFIGURED_ON_METHOD_CNTR0150E.explanation=Las anotaciones identificadas en este mensaje de error entran en conflicto entre s\u00ed. No especifique estas anotaciones en el mismo m\u00e9todo.
-CONFLICTING_ANNOTATIONS_CONFIGURED_ON_METHOD_CNTR0150E.useraction=Cambie el c\u00f3digo fuente Java y elimine una o ambas anotaciones del m\u00e9todo especificado. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+CONFLICTING_ANNOTATIONS_CONFIGURED_ON_METHOD_CNTR0150E.useraction=Cambie el c\u00f3digo fuente Java y elimine una o ambas anotaciones del m\u00e9todo especificado.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
 DUPLICATE_ROLES_SPECIFIED_IN_METHOD_ANNOTATION_CNTR0151E=CNTR0151E: El rol {0} se ha especificado varias veces en la anotaci\u00f3n @RolesAllowed, en el m\u00e9todo {1} de la clase de enterprise bean {2}.
@@ -839,22 +813,22 @@ DUPLICATE_ROLES_SPECIFIED_IN_CLASS_ANNOTATION_CNTR0153E.explanation=Se puede esp
 DUPLICATE_ROLES_SPECIFIED_IN_CLASS_ANNOTATION_CNTR0153E.useraction=Cambie el c\u00f3digo fuente Java y elimine los roles duplicados de esta anotaci\u00f3n. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
-ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E=CNTR0154E: Otro componente est\u00e1 intentando hacer referencia al enterprise bean {0} del m\u00f3dulo {1}. Este bean no soporta una implementaci\u00f3n de la interfaz {2}, a la que el otro componente est\u00e1 intentando hacer referencia.
+ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E=CNTR0154E: Otro componente est\u00e1 intentando hacer referencia al enterprise bean {0} del m\u00f3dulo {1}.  Este bean no soporta una implementaci\u00f3n de la interfaz {2}, a la que el otro componente est\u00e1 intentando hacer referencia.
 ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E.explanation=El componente que est\u00e1 intentando hacer referencia a este bean tiene un error de configuraci\u00f3n. El componente ha especificado una interfaz no soportada para este bean.
-ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E.useraction=Cambie la etiqueta ejb-ref o la anotaci\u00f3n @EJB en el componente que est\u00e1 intentando hacer referencia a este bean, de modo que especifique una interfaz soportada. Compruebe el archivo de anotaciones cronol\u00f3gicas en busca de una excepci\u00f3n relacionada, que indique el componente de llamada con el error de configuraci\u00f3n.
+ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E.useraction=Cambie la etiqueta ejb-ref o la anotaci\u00f3n @EJB en el componente que est\u00e1 intentando hacer referencia a este bean, de modo que especifique una interfaz soportada. Compruebe el archivo de registro en busca de una excepci\u00f3n relacionada, que indique el componente de llamada con el error de configuraci\u00f3n.
 
 #---------------------------------------------------------------------------------
 AMBIGUOUS_REFERENCE_TO_DUPLICATE_INTERFACE_CNTR0155E=CNTR0155E: Otro componente est\u00e1 intentando hacer referencia al enterprise bean {0} del m\u00f3dulo {1}.  Este bean soporta implementaci\u00f3n local y remota de la interfaz {2}, a la que el otro componente est\u00e1 intentando hacer referencia.
 AMBIGUOUS_REFERENCE_TO_DUPLICATE_INTERFACE_CNTR0155E.explanation=El componente que est\u00e1 intentando hacer referencia al bean tiene un error de configuraci\u00f3n. El componente no ha especificado si se invoca la interfaz local o remota en este bean.
-AMBIGUOUS_REFERENCE_TO_DUPLICATE_INTERFACE_CNTR0155E.useraction=Cambie la etiqueta ejb-ref o la anotaci\u00f3n @EJB en el componente que est\u00e1 intentando hacer referencia a este bean, de modo que especifique la interfaz local o remota del bean. Compruebe el archivo de anotaciones cronol\u00f3gicas en busca de una excepci\u00f3n relacionada, que indique el componente de llamada con el error de configuraci\u00f3n.
+AMBIGUOUS_REFERENCE_TO_DUPLICATE_INTERFACE_CNTR0155E.useraction=Cambie la etiqueta ejb-ref o la anotaci\u00f3n @EJB en el componente que est\u00e1 intentando hacer referencia a este bean, de modo que especifique la interfaz local o remota del bean. Compruebe el archivo de registro en busca de una excepci\u00f3n relacionada, que indique el componente de llamada con el error de configuraci\u00f3n.
 
 #---------------------------------------------------------------------------------
 SFSB_FAILOVER_NOT_ALLOWED_WITH_EXTEND_PERSIST_CNTX_CNTR0156E=CNTR0156E: El bean de sesi\u00f3n con estado {0} del m\u00f3dulo {1} est\u00e1 configurado para sustituci\u00f3n por anomal\u00eda. No obstante, el bean de sesi\u00f3n tambi\u00e9n est\u00e1 configurado para utilizar contexto de persistencia de \u00e1mbito ampliado. Estos valores de configuraci\u00f3n entran en conflicto.
 SFSB_FAILOVER_NOT_ALLOWED_WITH_EXTEND_PERSIST_CNTX_CNTR0156E.explanation=Los beans de sesi\u00f3n con estado no pueden estar configurados a la vez para soporte de sustituci\u00f3n por anomal\u00eda y contexto de persistencia de \u00e1mbito ampliado.
-SFSB_FAILOVER_NOT_ALLOWED_WITH_EXTEND_PERSIST_CNTX_CNTR0156E.useraction=Elimine uno de estos dos valores de configuraci\u00f3n de este bean. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+SFSB_FAILOVER_NOT_ALLOWED_WITH_EXTEND_PERSIST_CNTX_CNTR0156E.useraction=Elimine uno de estos dos valores de configuraci\u00f3n de este bean.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
-BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E=CNTR0157E: El enterprise bean {0} del m\u00f3dulo {1} no implementa el m\u00e9todo {2}. Este m\u00e9todo forma parte de la interfaz de bean.
+BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E=CNTR0157E: El enterprise bean {0} del m\u00f3dulo {1} no implementa el m\u00e9todo {2}.  Este m\u00e9todo forma parte de la interfaz de bean.
 BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E.explanation=Los enterprise beans deben implementar todos los m\u00e9todos especificados en las clases de su interfaz.
 BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E.useraction=Corrija la implementaci\u00f3n del bean para que incluya todos los m\u00e9todos necesarios. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
@@ -888,19 +862,19 @@ CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E.useraction=Corrija la implementaci
 
 #---------------------------------------------------------------------------------
 # Do not translate "XML", or "@Timeout"
-CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E=CNTR0163E: El enterprise bean {0} del m\u00f3dulo {1} ha especificado el m\u00e9todo de tiempo de espera {2} en una etiqueta timeout-method en XML. Adem\u00e1s, el bean ha especificado el m\u00e9todo de tiempo de espera {3} en una anotaci\u00f3n @Timeout del c\u00f3digo fuente Java. Esta configuraci\u00f3n genera conflictos.
+CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E=CNTR0163E: El enterprise bean {0} del m\u00f3dulo {1} ha especificado el m\u00e9todo de tiempo de espera {2} en una etiqueta timeout-method en XML. Adem\u00e1s, el bean ha especificado el m\u00e9todo de tiempo de espera {3} en una anotaci\u00f3n @Timeout del c\u00f3digo fuente Java.  Esta configuraci\u00f3n genera conflictos.
 CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.explanation=Los beans de temporizador deben configurar s\u00f3lo un m\u00e9todo de tiempo de espera.
-CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.useraction=Corrija la configuraci\u00f3n del bean para especificar un solo m\u00e9todo de tiempo de espera. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E.useraction=Corrija la configuraci\u00f3n del bean para especificar un solo m\u00e9todo de tiempo de espera.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
 TIMEOUT_METHOD_THROWS_APP_EXCEPTION_CNTR0164E=CNTR0164E: El enterprise bean {0} del m\u00f3dulo {1} implementa un m\u00e9todo de tiempo de espera {2}, que crea una excepci\u00f3n en la aplicaci\u00f3n.
 TIMEOUT_METHOD_THROWS_APP_EXCEPTION_CNTR0164E.explanation=Los m\u00e9todos de tiempo de espera no deben crear excepciones de aplicaci\u00f3n.
-TIMEOUT_METHOD_THROWS_APP_EXCEPTION_CNTR0164E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo de tiempo de espera para no crear excepciones en la aplicaci\u00f3n. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+TIMEOUT_METHOD_THROWS_APP_EXCEPTION_CNTR0164E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo de tiempo de espera para no crear excepciones en la aplicaci\u00f3n.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
 TIMEOUT_METHOD_MUST_RETURN_VOID_CNTR0165E=CNTR0165E: El enterprise bean {0} del m\u00f3dulo {1} implementa un m\u00e9todo de tiempo de espera {2}, que tiene un tipo de retorno que no es void.
 TIMEOUT_METHOD_MUST_RETURN_VOID_CNTR0165E.explanation=Los m\u00e9todos de tiempo de espera deben devolver void.
-TIMEOUT_METHOD_MUST_RETURN_VOID_CNTR0165E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo de tiempo de espera para que devuelva void. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+TIMEOUT_METHOD_MUST_RETURN_VOID_CNTR0165E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo de tiempo de espera para que devuelva void.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
 TIMEOUT_METHOD_STATIC_OR_FINAL_CNTR0166E=CNTR0166E: El enterprise bean {0} del m\u00f3dulo {1} implementa un m\u00e9todo de tiempo de espera {2}, que se declara como static o final.
@@ -908,19 +882,19 @@ TIMEOUT_METHOD_STATIC_OR_FINAL_CNTR0166E.explanation=Los m\u00e9todos de tiempo 
 TIMEOUT_METHOD_STATIC_OR_FINAL_CNTR0166E.useraction=Corrija la declaraci\u00f3n de implementaci\u00f3n para el m\u00e9todo de tiempo de espera. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
-JNDI_BINDING_LOCATION_INFO_CNTR0167I=CNTR0167I: El servidor est\u00e1 enlazando la interfaz {0} del {1} enterprise bean en el {2} m\u00f3dulo de la aplicaci\u00f3n {3}. La ubicaci\u00f3n de enlace es: {4}
+JNDI_BINDING_LOCATION_INFO_CNTR0167I=CNTR0167I: El servidor est\u00e1 enlazando la interfaz {0} del {1} enterprise bean en el {2} m\u00f3dulo de la aplicaci\u00f3n {3}.  La ubicaci\u00f3n de enlace es: {4}
 JNDI_BINDING_LOCATION_INFO_CNTR0167I.explanation=La interfaz se ha enlazado en la ubicaci\u00f3n de denominaci\u00f3n especificada.
 JNDI_BINDING_LOCATION_INFO_CNTR0167I.useraction=Utilice la ubicaci\u00f3n de denominaci\u00f3n especificada al intentar buscar esta interfaz.
 
 #---------------------------------------------------------------------------------
-SIMPLE_BINDING_NAME_MISSUSED_CNTR0168W=CNTR0168W: El enterprise bean {0} del m\u00f3dulo {1} en la aplicaci\u00f3n {2} se ha configurado la aplicaci\u00f3n con un nombre de enlace sencillo, pero tiene varias interfaces locales o remotas. Las ubicaciones de denominaci\u00f3n utilizadas para enlazar estas interfaces ser\u00e1n distintas del nombre de enlace sencillo especificado.
+SIMPLE_BINDING_NAME_MISSUSED_CNTR0168W=CNTR0168W: El enterprise bean {0} del m\u00f3dulo {1} en la aplicaci\u00f3n {2} se ha configurado la aplicaci\u00f3n con un nombre de enlace sencillo, pero tiene varias interfaces locales o remotas.  Las ubicaciones de denominaci\u00f3n utilizadas para enlazar estas interfaces ser\u00e1n distintas del nombre de enlace sencillo especificado.
 SIMPLE_BINDING_NAME_MISSUSED_CNTR0168W.explanation=Dado que el enterprise bean tiene varias interfaces, cada nombre de enlace se debe ampliar para hacerlo \u00fanico.
 SIMPLE_BINDING_NAME_MISSUSED_CNTR0168W.useraction=Realice una de las acciones siguientes: /n Busque las interfaces de enterprise bean utilizando los nombres ampliados. /n Cambie los datos de configuraci\u00f3n de este bean para especificar ubicaciones de enlace \u00fanicas para cada interfaz.
 
 #---------------------------------------------------------------------------------
 ORPHAN_BINDING_ENTRY_CNTR0169E=CNTR0169E: No existe el enterprise bean {0} especificado en el enlace {1} del m\u00f3dulo {2}.
 ORPHAN_BINDING_ENTRY_CNTR0169E.explanation=El nombre del enterprise bean podr\u00eda ser incorrecto, o quiz\u00e1 se ha especificado un enlace para un bean que no existe.
-ORPHAN_BINDING_ENTRY_CNTR0169E.useraction=Corrija el archivo de enlace. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+ORPHAN_BINDING_ENTRY_CNTR0169E.useraction=Corrija el archivo de enlace.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 #---------------------------------------------------------------------------------
 # Do not translate "ejb-jar.xml"
@@ -936,8 +910,7 @@ EJB_NO_TYPE_DEFINED_CNTR0170E.useraction=Corrija la anotaci\u00f3n de c\u00f3dig
 #AMBIGUOUS_BINDING_NAME_CNTR0171E.useraction=Correct the binding file for one of these two beans so that each bean has a unique binding location.
 
 #---------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_FOR_EJB_CNTR0172E=CNTR0172E: La interfaz {0} del bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} no se puede enlazar a la ubicaci\u00f3n de nombre {4}. La interfaz {5} del bean {6} en el m\u00f3dulo {7} de la aplicaci\u00f3n {8} ya est\u00e1 enlazada a la ubicaci\u00f3n de nombre \
-{4}.
+NAME_ALREADY_BOUND_FOR_EJB_CNTR0172E=CNTR0172E: La interfaz {0} del bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} no se puede enlazar a la ubicaci\u00f3n de nombre {4}. La interfaz {5} del bean {6} en el m\u00f3dulo {7} de la aplicaci\u00f3n {8} ya est\u00e1 enlazada a la ubicaci\u00f3n de nombre {4}.
 NAME_ALREADY_BOUND_FOR_EJB_CNTR0172E.explanation=Cada interfaz de enterprise bean debe especificar una ubicaci\u00f3n de enlace \u00fanica.
 NAME_ALREADY_BOUND_FOR_EJB_CNTR0172E.useraction=Corrija el archivo de enlace de una de estas dos interfaces de bean de forma que cada interfaz tenga una ubicaci\u00f3n de enlace \u00fanica.
 
@@ -974,7 +947,7 @@ WS_ENDPOINT_METHOD_MISSING_CNTR0178E.useraction=Cambie la implementaci\u00f3n de
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
 NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W=CNTR0179W: Se ha rechazado el n\u00famero m\u00e1ximo de reintentos {0} del temporizador no persistente.
-NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.explanation=El n\u00famero m\u00e1ximo de reintentos configurado en el servicio del temporizador EJB (nonPersistentTimerRetryCount en el objeto de configuraci\u00f3n EJBTimer) se ha rechazado. No habr\u00e1 ning\u00fan otro intento hasta que no d\u00e9 resultado el m\u00e9todo de tiempo de espera.
+NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.explanation=El n\u00famero m\u00e1ximo de reintentos configurado en el servicio del temporizador EJB (nonPersistentTimerRetryCount en el objeto de configuraci\u00f3n EJBTimer) se ha rechazado.  No habr\u00e1 ning\u00fan otro intento hasta que no d\u00e9 resultado el m\u00e9todo de tiempo de espera.
 NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.useraction=Determine la causa de la anomal\u00eda del m\u00e9todo de tiempo de espera o aumente el n\u00famero m\u00e1ximo de reintentos.
 
 #---------------------------------------------------------------------------------
@@ -984,8 +957,7 @@ MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=No se requiere ninguna acci\u00f3n
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
-TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: No se ha podido obtener el gestor de temporizador utilizado por el servicio de temporizador EJB.\n\
-{0}
+TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: No se ha podido obtener el gestor de temporizador utilizado por el servicio de temporizador EJB.\n{0}
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.explanation=Se ha realizado un intento de obtener el gestor de temporizador, ya que la opci\u00f3n para crear una agrupaci\u00f3n de hebras distinta para temporizadores no persistentes se ha configurado en el objeto de configuraci\u00f3n EJBTimer (uniqueTimerManagerForNP).
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.useraction=De forma alternativa puede configurar el servicio de temporizador para que utilice un planificador para los temporizadores no persistentes.
 
@@ -996,7 +968,7 @@ DUPLICATE_REF_STANZA_CNTR0184W.explanation=Una secci\u00f3n de interceptor conti
 DUPLICATE_REF_STANZA_CNTR0184W.useraction=Suprima la secci\u00f3n err\u00f3nea o cambie el valor de su atributo de nombre en una o varias secciones ejb-ref, resource-ref, resource-env-ref o message-destination-ref, de modo que el nombre sea exclusivo dentro de la secci\u00f3n del interceptor y dentro de la secci\u00f3n session o message-driven para el enterprise bean.
 
 #--------------------------------------------------------------------------------
-INVALID_BEAN_TYPE_FOR_ASYNCH_METHOD_CNTR0185E=CNTR0185E: El bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene configurado uno o varios m\u00e9todos as\u00edncronos, pero no un bean de sesi\u00f3n. Los m\u00e9todos as\u00edncronos pueden s\u00f3lo configurarse en beans de sesiones.
+INVALID_BEAN_TYPE_FOR_ASYNCH_METHOD_CNTR0185E=CNTR0185E: El bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene configurado uno o varios m\u00e9todos as\u00edncronos, pero no un bean de sesi\u00f3n.  Los m\u00e9todos as\u00edncronos pueden s\u00f3lo configurarse en beans de sesiones.
 INVALID_BEAN_TYPE_FOR_ASYNCH_METHOD_CNTR0185E.explanation=Puede configurar los m\u00e9todos as\u00edncronos s\u00f3lo en beans de sesiones.
 INVALID_BEAN_TYPE_FOR_ASYNCH_METHOD_CNTR0185E.useraction=Elimine el m\u00e9todo as\u00edncrono en el bean.
 
@@ -1007,12 +979,12 @@ DUPLICATE_REF_BINDING_CNTR0186E.useraction=Elimine todas las referencias menos u
 
 #-------------------------------------------------------------------------------
 # Do not translate "TX_REQUIRED", "TX_REQUIRES_NEW", or "TX_NOT_SUPPORTED"
-INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E=CNTR0187E: El m\u00e9todo {0} en el bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} tiene configurado una transacci\u00f3n con atributo {4}. Los m\u00e9todos as\u00edncronos s\u00f3lo admiten atributos de transacciones del tipo TX_REQUIRED, TX_REQUIRES_NEW o TX_NOT_SUPPORTED.
+INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E=CNTR0187E: El m\u00e9todo {0} en el bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} tiene configurado una transacci\u00f3n con atributo {4}.  Los m\u00e9todos as\u00edncronos s\u00f3lo admiten atributos de transacciones del tipo TX_REQUIRED, TX_REQUIRES_NEW o TX_NOT_SUPPORTED.
 INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E.explanation=Los m\u00e9todos as\u00edncronos pueden tener los siguientes tipos de atributos de transacciones configurados: TX_REQUIRED, TX_REQUIRES_NEW o TX_NOT_SUPPORTED.
 INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E.useraction=Cambie la configuraci\u00f3n de atributo de transacci\u00f3n en el m\u00e9todo a uno de los tipos admitidos.
 
 #-------------------------------------------------------------------------------
-UNEXPECTED_EXCEPTION_CNTR0188E=CNTR0188E: Se ha detectado una excepci\u00f3n inesperada. La excepci\u00f3n es: {0}
+UNEXPECTED_EXCEPTION_CNTR0188E=CNTR0188E: Se ha detectado una excepci\u00f3n inesperada.  La excepci\u00f3n es: {0}
 UNEXPECTED_EXCEPTION_CNTR0188E.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_CNTR0188E.useraction=CMSG0002
 
@@ -1022,14 +994,13 @@ STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.explanation=S\u00f3lo 
 STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.useraction=Elimine la anotaci\u00f3n Java de arranque o descriptor de despliegue XML de esta clase EJB o cambie la clase para que sea un bean de sesi\u00f3n de monoinstancia.
 
 #-------------------------------------------------------------------------------
-STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: El bean de sesi\u00f3n de monoinstancia de arranque {0} en el m\u00f3dulo {1} no ha podido inicializarse con la excepci\u00f3n:\n\
-\ {2}
-STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.explanation=Se han creado instancias del bean de sesi\u00f3n de monoinstancia de arranque como parte del proceso de arranque de la aplicaci\u00f3n. Cualquier anomal\u00eda impedir\u00e1 que la aplicaci\u00f3n se inicie.
+STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: El bean de sesi\u00f3n de monoinstancia de arranque {0} en el m\u00f3dulo {1} no ha podido inicializarse con la excepci\u00f3n:\n {2}
+STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.explanation=Se han creado instancias del bean de sesi\u00f3n de monoinstancia de arranque como parte del proceso de arranque de la aplicaci\u00f3n.  Cualquier anomal\u00eda impedir\u00e1 que la aplicaci\u00f3n se inicie.
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.useraction=Elimine lo que provoca est\u00e1 excepci\u00f3n de este mensaje de error.
 
 # Do NOT translate "EJBTimer"
 TIMERSERVICE_NP_NUM_THREADS_INVALID_CNTR0191E=CNTR0191E: Se ha elegido la opci\u00f3n de crear un \u00fanico gestor de temporizador para temporizadores no persistentes, pero el n\u00famero de hebras del temporizador no est\u00e1 soportado: {0}
-TIMERSERVICE_NP_NUM_THREADS_INVALID_CNTR0191E.explanation=Cuando comparte agrupaciones de hebras configuradas para temporizadores persistentes, debe configurar varias hebras de temporizador. En el objeto de configuraci\u00f3n EJBTimer, si el atributo uniqueTimerManagerForNP se define en true, debe definirse el atributo numNPTimerThreads con el valor 1 o superior.
+TIMERSERVICE_NP_NUM_THREADS_INVALID_CNTR0191E.explanation=Cuando comparte agrupaciones de hebras configuradas para temporizadores persistentes, debe configurar varias hebras de temporizador.  En el objeto de configuraci\u00f3n EJBTimer, si el atributo uniqueTimerManagerForNP se define en true, debe definirse el atributo numNPTimerThreads con el valor 1 o superior.
 TIMERSERVICE_NP_NUM_THREADS_INVALID_CNTR0191E.useraction=En los par\u00e1metros del servicio de temporizador EJB del servidor de la aplicaci\u00f3n, especifique un valor positivo para el n\u00famero de hebras de temporizador no persistente. De forma alternativa, puede configurar el servicio del temporizador para que utilice un planificador para temporizadores no persistentes seleccionando la opci\u00f3n de compartir agrupaci\u00f3n de hebras configurada para temporizadores persistentes (especificar false en el atributo uniqueTimerManagerForNP en el objeto de configuraci\u00f3n EJBTimer).
 
 #-------------------------------------------------------------------------------
@@ -1041,7 +1012,7 @@ SINGLETON_INVALID_ACCESS_TIMEOUT_CNTR0192E.useraction=Corrija el valor de tiempo
 #-------------------------------------------------------------------------------
 # Do not translate "@ConcurrencyManagement", or "concurrency-management-type", or "Bean", or "Container"
 SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E=CNTR0193E: El valor {0}, que se especifica para el tipo de gesti\u00f3n de concurrencia {1} de la clase de enterprise bean debe ser Bean o Container.
-SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E.explanation=El tipo de gesti\u00f3n de concurrencia puede especificarse utilizando la anotaci\u00f3n @ConcurrencyManagement o la etiqueta concurrency-management-type en el descriptor de despliegue para un bean de sesi\u00f3n de monoinstancia. El valor debe ser BEAN o CONTAINER para los beans de sesiones de monoinstancia.
+SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E.explanation=El tipo de gesti\u00f3n de concurrencia puede especificarse utilizando la anotaci\u00f3n @ConcurrencyManagement o la etiqueta concurrency-management-type en el descriptor de despliegue para un bean de sesi\u00f3n de monoinstancia.  El valor debe ser BEAN o CONTAINER para los beans de sesiones de monoinstancia.
 SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E.useraction=Corrija la anotaci\u00f3n @ConcurrencyManagement o la etiqueta de gesti\u00f3n de concurrencia para que el valor sea Bean o Ccontainer.
 
 #-------------------------------------------------------------------------------
@@ -1069,7 +1040,7 @@ SINGLETON_DEPENDS_ON_NONEXISTENT_BEAN_CNTR0198E.explanation=Se ha configurado el
 SINGLETON_DEPENDS_ON_NONEXISTENT_BEAN_CNTR0198E.useraction=Elimine o cambie la dependencia del bean que no existe.
 
 SINGLETON_DEPENDS_ON_AMBIGUOUS_NAME_CNTR0199E=CNTR0199E: El bean de sesi\u00f3n de monoinstancia {0} en el m\u00f3dulo {1} depende de {2}, el cual no especifica un enterprise bean de forma exclusiva.
-SINGLETON_DEPENDS_ON_AMBIGUOUS_NAME_CNTR0199E.explanation=El bean esta configurado para depender de otro con el nombre especificado. No existe ning\u00fan bean con el nombre especificado en el mismo m\u00f3dulo y existe m\u00e1s de un m\u00f3dulo con un bean que tiene el mismo nombre.
+SINGLETON_DEPENDS_ON_AMBIGUOUS_NAME_CNTR0199E.explanation=El bean esta configurado para depender de otro con el nombre especificado.  No existe ning\u00fan bean con el nombre especificado en el mismo m\u00f3dulo y existe m\u00e1s de un m\u00f3dulo con un bean que tiene el mismo nombre.
 SINGLETON_DEPENDS_ON_AMBIGUOUS_NAME_CNTR0199E.useraction=Elimine la dependencia o utilice un nombre de bean completo como module.jar#BeanName
 
 SINGLETON_DEPENDS_ON_NON_SINGLETON_BEAN_CNTR0200E=CNTR0200E: El bean de sesi\u00f3n de monoinstancia {0} en el m\u00f3dulo {1} depende del enterprise bean {2} en el m\u00f3dulo {3}, pero el destino no es un bean de sesi\u00f3n de monoinstancia.
@@ -1082,7 +1053,7 @@ SINGLETON_DEPENDS_ON_SELF_CNTR0201E.useraction=Elimine o cambie la dependencia d
 
 # Do not translate "void" or "throws".
 INVALID_APPLICATION_EXCEPTION_FOR_VOID_ASYNCH_METHOD_CNTR0202E=CNTR0202E: El m\u00e9todo as\u00edncrono {0} en el bean {1} tiene un tipo de retorno de y la excepci\u00f3n o las excepciones de aplicaci\u00f3n {2} en la cl\u00e1usula throws.
-INVALID_APPLICATION_EXCEPTION_FOR_VOID_ASYNCH_METHOD_CNTR0202E.explanation=Este m\u00e9todo se ha configurado para que sea as\u00edncrono con la anotaci\u00f3n @Asynchronous o el elemento asynch-method en el archivo ejb-jar.xml. Los m\u00e9todos as\u00edncronos con un tipo de retorno void no debe tener excepciones de aplicaci\u00f3n en la cl\u00e1usula throws.
+INVALID_APPLICATION_EXCEPTION_FOR_VOID_ASYNCH_METHOD_CNTR0202E.explanation=Este m\u00e9todo se ha configurado para que sea as\u00edncrono con la anotaci\u00f3n @Asynchronous o el elemento asynch-method en el archivo ejb-jar.xml.  Los m\u00e9todos as\u00edncronos con un tipo de retorno void no debe tener excepciones de aplicaci\u00f3n en la cl\u00e1usula throws.
 INVALID_APPLICATION_EXCEPTION_FOR_VOID_ASYNCH_METHOD_CNTR0202E.useraction=Cambie el tipo de retorno de m\u00e9todo, elimine la excepci\u00f3n de la aplicaci\u00f3n de la cl\u00e1usula throws o cambie los metadatos del m\u00e9todo para que no sea as\u00edncrono.
 
 INVALID_ASYNC_METHOD_ELEMENT_MISSING_METHOD_NAME_CNTR0203E=CNTR0203E: El ejb-jar.xml declara un m\u00e9todo as\u00edncrono para el bean de sesi\u00f3n {0}, pero no declara un a method-name.
@@ -1090,17 +1061,17 @@ INVALID_ASYNC_METHOD_ELEMENT_MISSING_METHOD_NAME_CNTR0203E.explanation=El bean d
 INVALID_ASYNC_METHOD_ELEMENT_MISSING_METHOD_NAME_CNTR0203E.useraction=Modifique el archivo ejb-jar.xml y especifique el elemento method-name del m\u00e9todo que debe ser as\u00edncrono (o "*" para todos los m\u00e9todos).
 
 INVALID_ASYNC_METHOD_ELEMENT_SPECIFIED_PARMS_WITH_WILDCARD_METHOD_CNTR0204E=CNTR0204E: El archivo ejb-jar.xml declara un par\u00e1metro en un elemento de m\u00e9todo as\u00edncrono comod\u00edn para el bean de la sesi\u00f3n {0}. Es posible que los par\u00e1metros no est\u00e9n especificados con comodines.
-INVALID_ASYNC_METHOD_ELEMENT_SPECIFIED_PARMS_WITH_WILDCARD_METHOD_CNTR0204E.explanation=El archivo ejb-jar.xml especifica incorrectamente el elemento method-params dentro de un elemento async-method que contiene un elemento method-name con comod\u00edn (*). Esto no lo soporta la especificaci\u00f3n EJB 3.1.
+INVALID_ASYNC_METHOD_ELEMENT_SPECIFIED_PARMS_WITH_WILDCARD_METHOD_CNTR0204E.explanation=El archivo ejb-jar.xml especifica incorrectamente el elemento method-params dentro de un elemento async-method que contiene un elemento method-name con comod\u00edn (*).  Esto no lo soporta la especificaci\u00f3n EJB 3.1.
 INVALID_ASYNC_METHOD_ELEMENT_SPECIFIED_PARMS_WITH_WILDCARD_METHOD_CNTR0204E.useraction=Elimine el elemento method-params del XML o cambien el elemento method-name para que represente un m\u00e9todo espec\u00edfico con los par\u00e1metros method-params especificados.
 
 INVALID_ASYNC_METHOD_INTF_VALID_SPECIFIED_CNTR0205E=CNTR0205E: El bean {0} en el archivo ejb-jar.xml contiene un elemento async-method con un valor method-intf no v\u00e1lido. Este valor s\u00f3lo puede ser "Local" o "Remote". Se ha especificado "{1}".
-INVALID_ASYNC_METHOD_INTF_VALID_SPECIFIED_CNTR0205E.explanation=Los \u00fanicos valores v\u00e1lidos para el elemento method-intf de un m\u00e9todo as\u00edncrono son "Local" y "Remote". Cualquier otro valor no es v\u00e1lido y el contenedor EJB no va a reconocer el elemento async-method que contiene.
+INVALID_ASYNC_METHOD_INTF_VALID_SPECIFIED_CNTR0205E.explanation=Los \u00fanicos valores v\u00e1lidos para el elemento method-intf de un m\u00e9todo as\u00edncrono son "Local" y "Remote".  Cualquier otro valor no es v\u00e1lido y el contenedor EJB no va a reconocer el elemento async-method que contiene.
 INVALID_ASYNC_METHOD_INTF_VALID_SPECIFIED_CNTR0205E.useraction=Modifique el valor del elemento method-intf para que sea "Local" o "Remote".
 
 # Do not translate "void" or "future".
-ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E=CNTR0206E: El m\u00e9todo as\u00edncrono {0} en el bean {1} tiene un tipo de retorno de {2}. Los m\u00e9todos as\u00edncronos necesitan un tipo de retorno de void o future<V>.
+ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E=CNTR0206E: El m\u00e9todo as\u00edncrono {0} en el bean {1} tiene un tipo de retorno de {2}.  Los m\u00e9todos as\u00edncronos necesitan un tipo de retorno de void o future<V>.
 ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E.explanation=Los m\u00e9todos as\u00edncronos deben devolver void o future<V>.
-ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo as\u00edncrono para que devuelva void o future<V>. A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
+ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E.useraction=Corrija la implementaci\u00f3n del m\u00e9todo as\u00edncrono para que devuelva void o future<V>.  A continuaci\u00f3n, reinstale la aplicaci\u00f3n.
 
 AUTOMATIC_TIMER_ON_STATEFUL_SESSION_CNTR0207E=CNTR0207E: El bean de sesi\u00f3n con estado {0} del m\u00f3dulo {1} tiene un temporizador autom\u00e1tico.
 AUTOMATIC_TIMER_ON_STATEFUL_SESSION_CNTR0207E.explanation=No puede especificar temporizadores autom\u00e1ticos con beans de sesiones con estado.
@@ -1115,7 +1086,7 @@ INVALID_TIMEOUT_CALLBACK_SIGNATURE_CNTR0209E.explanation=La especificaci\u00f3n 
 INVALID_TIMEOUT_CALLBACK_SIGNATURE_CNTR0209E.useraction=Corrija la firma del m\u00e9todo de retorno de llamada de tiempo de espera para esta clase de bean.
 
 AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E=CNTR0210E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1tico en el descriptor de despliegue para el m\u00e9todo {2}. pero no se ha encontrado ning\u00fan m\u00e9todo de retorno de llamada de tiempo de espera con ese nombre.
-AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E.explanation=El descriptor de despliegue contiene metadatos de temporizador autom\u00e1tico para el nombre de m\u00e9todo especificado, pero no se ha encontrado ning\u00fan m\u00e9todo con un m\u00e9todo de retorno de llamada de tiempo de espera con ese nombre. Los m\u00e9todos de retorno de llamada de tiempo de espera deben tener un tipo de retorno void y no deben tener ning\u00fan par\u00e1metro o tener un \u00fanico par\u00e1metro de tipo javax.ejb.Timer.
+AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E.explanation=El descriptor de despliegue contiene metadatos de temporizador autom\u00e1tico para el nombre de m\u00e9todo especificado, pero no se ha encontrado ning\u00fan m\u00e9todo con un m\u00e9todo de retorno de llamada de tiempo de espera con ese nombre.  Los m\u00e9todos de retorno de llamada de tiempo de espera deben tener un tipo de retorno void y no deben tener ning\u00fan par\u00e1metro o tener un \u00fanico par\u00e1metro de tipo javax.ejb.Timer.
 AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E.useraction=A\u00f1ada un m\u00e9todo con el nombre especificado, cambie la firma del m\u00e9todo de un m\u00e9todo existente con ese nombre o elimine el temporizador del descriptor de despliegue.
 
 AUTOMATIC_TIMER_SCHEDULE_VALUE_CNTR0211E=CNTR0211E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} tiene un valor que no es v\u00e1lido.
@@ -1127,33 +1098,32 @@ AUTOMATIC_TIMER_SCHEDULE_VALUE_RANGE_CNTR0212E.explanation=El m\u00e9todo especi
 AUTOMATIC_TIMER_SCHEDULE_VALUE_RANGE_CNTR0212E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
 AUTOMATIC_TIMER_SCHEDULE_RANGE_BOUND_CNTR0213E=CNTR0213E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} tiene un l\u00edmite de intervalo no v\u00e1lido.
-AUTOMATIC_TIMER_SCHEDULE_RANGE_BOUND_CNTR0213E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un l\u00edmite de intervalo que no es v\u00e1lido. Los l\u00edmites superior e inferior de un intervalo deben ser n\u00fameros positivos enteros o valores de palabras clave.
+AUTOMATIC_TIMER_SCHEDULE_RANGE_BOUND_CNTR0213E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un l\u00edmite de intervalo que no es v\u00e1lido.  Los l\u00edmites superior e inferior de un intervalo deben ser n\u00fameros positivos enteros o valores de palabras clave.
 AUTOMATIC_TIMER_SCHEDULE_RANGE_BOUND_CNTR0213E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
 AUTOMATIC_TIMER_SCHEDULE_INCREMENT_INTERVAL_CNTR0214E=CNTR0214E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} tiene un valor de intervalo no v\u00e1lido.
-AUTOMATIC_TIMER_SCHEDULE_INCREMENT_INTERVAL_CNTR0214E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un valor de intervalo que no es v\u00e1lido. Los valores de incremento deben ser enteros.
+AUTOMATIC_TIMER_SCHEDULE_INCREMENT_INTERVAL_CNTR0214E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un valor de intervalo que no es v\u00e1lido.  Los valores de incremento deben ser enteros.
 AUTOMATIC_TIMER_SCHEDULE_INCREMENT_INTERVAL_CNTR0214E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
 AUTOMATIC_TIMER_SCHEDULE_LIST_VALUE_CNTR0215E=CNTR0215E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} tiene un valor de lista no v\u00e1lido.
-AUTOMATIC_TIMER_SCHEDULE_LIST_VALUE_CNTR0215E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un valor para una lista que no es v\u00e1lido. Los valores de lista deben ser n\u00fameros enteros, palabras claves o intervalos.
+AUTOMATIC_TIMER_SCHEDULE_LIST_VALUE_CNTR0215E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene un valor para una lista que no es v\u00e1lido.  Los valores de lista deben ser n\u00fameros enteros, palabras claves o intervalos.
 AUTOMATIC_TIMER_SCHEDULE_LIST_VALUE_CNTR0215E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
 AUTOMATIC_TIMER_SCHEDULE_UNINCREMENTABLE_CNTR0216E=CNTR0216E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} utiliza un incremento.
-AUTOMATIC_TIMER_SCHEDULE_UNINCREMENTABLE_CNTR0216E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos utiliza un incremento. S\u00f3lo puede utilizar incrementos en los campos de segundos, minutos y horas.
+AUTOMATIC_TIMER_SCHEDULE_UNINCREMENTABLE_CNTR0216E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en la anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos utiliza un incremento.  S\u00f3lo puede utilizar incrementos en los campos de segundos, minutos y horas.
 AUTOMATIC_TIMER_SCHEDULE_UNINCREMENTABLE_CNTR0216E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
 # Do not translate "1st", "2nd", "3rd", "4th", or "5th".
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E=CNTR0217E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador autom\u00e1ticos para el m\u00e9todo {2}, pero el campo de planificador {3} tiene una palabra clave ordinal sin d\u00eda de la semana.
-AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en una anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene una palabra clave ordinal sin d\u00eda de la semana. Las palabras claves 1.\u00ba, 2.\u00ba, 3.\u00ba, 4.\u00ba y 5.\u00ba deben ir seguidas de una palabra clave de d\u00eda de la semana.
+AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.explanation=El m\u00e9todo especificado tiene metadatos de temporizador autom\u00e1ticos en el descriptor de despliegue o en una anotaci\u00f3n @Schedule o @Schedules, pero el campo especificado en los metadatos tiene una palabra clave ordinal sin d\u00eda de la semana.  Las palabras claves 1.\u00ba, 2.\u00ba, 3.\u00ba, 4.\u00ba y 5.\u00ba deben ir seguidas de una palabra clave de d\u00eda de la semana.
 AUTOMATIC_TIMER_SCHEDULE_MISSING_DAY_OF_WEEK_CNTR0217E.useraction=Cambie el campo en los metadatos de temporizador autom\u00e1ticos o elimine los metadatos de temporizador autom\u00e1ticos.
 
-AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: Se ha producido un error al crear temporizadores autom\u00e1ticos persistentes para el m\u00f3dulo {0}:\n\
-\ {1}
+AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E=CNTR0218E: Se ha producido un error al crear temporizadores autom\u00e1ticos persistentes para el m\u00f3dulo {0}:\n {1}
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.explanation=El m\u00f3dulo tiene metadatos que no son v\u00e1lidos o el planificador del servicio de temporizador EJB no ha podido crear los temporizadores autom\u00e1ticos.
 AUTOMATIC_TIMER_CREATION_FAILURE_CNTR0218E.useraction=Compruebe la configuraci\u00f3n de los metadatos o del planificador del m\u00f3dulo.
 
 AUTOMATIC_TIMER_CREATION_CNTR0219I=CNTR0219I: El servidor ha creado {0} temporizador o temporizadores autom\u00e1ticos persistentes y {1} temporizador o temporizadores autom\u00e1ticos no persistentes para el m\u00f3dulo {2}.
-AUTOMATIC_TIMER_CREATION_CNTR0219I.explanation=El servidor ha creado el n\u00famero especificado de temporizadores autom\u00e1ticos para el m\u00f3dulo especificado. Si el servidor ha creado anteriormente temporizadores autom\u00e1ticos persistentes para este m\u00f3dulo, no se crear\u00e1n m\u00e1s temporizadores autom\u00e1ticos persistentes en los siguientes arranques de la aplicaci\u00f3n.
+AUTOMATIC_TIMER_CREATION_CNTR0219I.explanation=El servidor ha creado el n\u00famero especificado de temporizadores autom\u00e1ticos para el m\u00f3dulo especificado.  Si el servidor ha creado anteriormente temporizadores autom\u00e1ticos persistentes para este m\u00f3dulo, no se crear\u00e1n m\u00e1s temporizadores autom\u00e1ticos persistentes en los siguientes arranques de la aplicaci\u00f3n.
 AUTOMATIC_TIMER_CREATION_CNTR0219I.useraction=No es necesario que el usuario realice acci\u00f3n alguna.
 
 #-------------------------------------------------------------------------------
@@ -1162,8 +1132,8 @@ AUTOMATIC_TIMER_CREATION_CNTR0219I.useraction=No es necesario que el usuario rea
 # Do not translate "@Interceptors", or "interceptor-class"
 
 DUPLICATE_CLASS_INTERCEPTOR_CNTR0220E=CNTR0220E: CNTR0220E: La clase de interceptor {0} aparece m\u00e1s de una vez en la lista de interceptores del enterprise bean {1}. \u00c9sta es la lista de interceptores para este bean: {2}
-DUPLICATE_CLASS_INTERCEPTOR_CNTR0220E.explanation=La anotaci\u00f3n @Interceptors o la etiqueta interceptor-class del descriptor de despliegue se ha utilizado para proporcionar una lista de nombres de clase de interceptor. Una clase s\u00f3lo debe aparecer una vez en la lista de clases de interceptor.
-DUPLICATE_CLASS_INTERCEPTOR_CNTR0220E.useraction=Elimine la clase de interceptor duplicada de la lista de clases de interceptor. O cambie el nombre de la clase de interceptor si se ha especificado un nombre incorrecto.
+DUPLICATE_CLASS_INTERCEPTOR_CNTR0220E.explanation=La anotaci\u00f3n @Interceptors o la etiqueta interceptor-class del descriptor de despliegue se ha utilizado para proporcionar una lista de nombres de clase de interceptor.  Una clase s\u00f3lo debe aparecer una vez en la lista de clases de interceptor.
+DUPLICATE_CLASS_INTERCEPTOR_CNTR0220E.useraction=Elimine la clase de interceptor duplicada de la lista de clases de interceptor.  O cambie el nombre de la clase de interceptor si se ha especificado un nombre incorrecto.
 
 #-------------------------------------------------------------------------------
 ML_DUPLICATES_CL_CNTR0221E=CNTR0221E: El interceptor a nivel de m\u00e9todo {0} del m\u00e9todo {1} del enterprise bean {2} duplica un nombre que est\u00e1 en la siguiente lista de interceptores a nivel de clase: {3}
@@ -1177,7 +1147,7 @@ ML_DUPLICATES_DEFAULT_CNTR0222E.useraction=Elimine la clase de interceptor de la
 
 #-------------------------------------------------------------------------------
 DUPLICATE_INTERCEPTOR_METHOD_CNTR0223E=CNTR0223E: S\u00f3lo se permite que un m\u00e9todo {0} de la clase sea un m\u00e9todo interceptor {1}.
-DUPLICATE_INTERCEPTOR_METHOD_CNTR0223E.explanation=Se ha especificado m\u00e1s de un m\u00e9todo de esta clase como m\u00e9todo interceptor del tipo determinado. La especificaci\u00f3n de Enterprise JavaBeans 3.0 no permite tener varios m\u00e9todos interceptores del mismo tipo en esta clase.
+DUPLICATE_INTERCEPTOR_METHOD_CNTR0223E.explanation=Se ha especificado m\u00e1s de un m\u00e9todo de esta clase como m\u00e9todo interceptor del tipo determinado.  La especificaci\u00f3n de Enterprise JavaBeans 3.0 no permite tener varios m\u00e9todos interceptores del mismo tipo en esta clase.
 DUPLICATE_INTERCEPTOR_METHOD_CNTR0223E.useraction=Corrija las anotaciones del c\u00f3digo fuente Java o el descriptor de despliegue de esta clase para que s\u00f3lo contenga un m\u00e9todo interceptor del tipo determinado.
 
 #-------------------------------------------------------------------------------
@@ -1192,27 +1162,27 @@ INVALID_EXCLUDE_CLASS_INTERCEPTORS_CNTR0224E.useraction=Corrija el descriptor de
 
 INVALID_EXCLUDE_DEFAULT_INTERCEPTORS_CNTR0225E=CNTR0225E: El elemento exclude-default-interceptors del descriptor de despliegue no es v\u00e1lido para un elemento interceptor-binding de estilo 1.
 INVALID_EXCLUDE_DEFAULT_INTERCEPTORS_CNTR0225E.explanation=El elemento interceptor-binding est\u00e1 utilizando un elemento exclude-default-interceptors que s\u00f3lo es v\u00e1lido para un elemento interceptor-binding de estilo 2, estilo 3 o estilo 4.
-INVALID_EXCLUDE_DEFAULT_INTERCEPTORS_CNTR0225E.useraction=Elimine el elemento exclude-default-interceptor. O cambie la etiqueta ejb-name en el elemento interceptor-binding para proporcionar un nombre de enterprise bean espec\u00edfico.
+INVALID_EXCLUDE_DEFAULT_INTERCEPTORS_CNTR0225E.useraction=Elimine el elemento exclude-default-interceptor.  O cambie la etiqueta ejb-name en el elemento interceptor-binding para proporcionar un nombre de enterprise bean espec\u00edfico.
 
 #-------------------------------------------------------------------------------
 # Do not translate "interceptor-binding".
 
-DUPLICATE_INTERCEPTOR_BINDING_CNTR0226E=CNTR0226E: El enterprise bean {2} especifica un elemento interceptor-binding de estilo 4 del m\u00e9todo {0} con la firma {1}. No se puede utilizar un elemento interceptor-binding de estilo 4 si tambi\u00e9n se utiliza un enlace de estilo 3 para el mismo m\u00e9todo del mismo enterprise bean.
+DUPLICATE_INTERCEPTOR_BINDING_CNTR0226E=CNTR0226E: El enterprise bean {2} especifica un elemento interceptor-binding de estilo 4 del m\u00e9todo {0} con la firma {1}.  No se puede utilizar un elemento interceptor-binding de estilo 4 si tambi\u00e9n se utiliza un enlace de estilo 3 para el mismo m\u00e9todo del mismo enterprise bean.
 DUPLICATE_INTERCEPTOR_BINDING_CNTR0226E.explanation=No se pueden especificar los elementos interceptor-binding de estilo 3 y estilo 4 en el mismo m\u00e9todo de un enterprise bean.
 DUPLICATE_INTERCEPTOR_BINDING_CNTR0226E.useraction=Elimine el elemento interceptor-binding de estilo 3 o de estilo 4 de este bean.
 
 #-------------------------------------------------------------------------------
 # Do not translate "interceptor-order", or "exclude-default-inteceptors".
 
-PARTIAL_CLASS_INTERCEPTOR_ORDER_CNTR0227E=CNTR0227E: El enterprise bean {0} tiene un elemento interceptor-order que especifica la siguiente lista interceptor-order: {1}. Esta lista no es una clasificaci\u00f3n total de interceptores a nivel de clase para este bean. Faltan los nombres de interceptor siguientes: {2}
-PARTIAL_CLASS_INTERCEPTOR_ORDER_CNTR0227E.explanation=Si se utiliza el elemento interceptor-order, la clasificaci\u00f3n especificada a nivel de clase class-level debe ser una clasificaci\u00f3n total. La clasificaci\u00f3n debe ser sobre todas las clases de interceptor que se hayan definido a ese nivel y por encima. La \u00fanica excepci\u00f3n a esta regla es cuando las clases de interceptor se han excluido expl\u00edcitamente por medio de un elemento exclude-default-interceptors.
+PARTIAL_CLASS_INTERCEPTOR_ORDER_CNTR0227E=CNTR0227E: El enterprise bean {0} tiene un elemento interceptor-order que especifica la siguiente lista interceptor-order: {1}.  Esta lista no es una clasificaci\u00f3n total de interceptores a nivel de clase para este bean.  Faltan los nombres de interceptor siguientes: {2}
+PARTIAL_CLASS_INTERCEPTOR_ORDER_CNTR0227E.explanation=Si se utiliza el elemento interceptor-order, la clasificaci\u00f3n especificada a nivel de clase class-level debe ser una clasificaci\u00f3n total. La clasificaci\u00f3n debe ser sobre todas las clases de interceptor que se hayan definido a ese nivel y por encima.  La \u00fanica excepci\u00f3n a esta regla es cuando las clases de interceptor se han excluido expl\u00edcitamente por medio de un elemento exclude-default-interceptors.
 PARTIAL_CLASS_INTERCEPTOR_ORDER_CNTR0227E.useraction=Especifique nombres de interceptor adicionales en el elemento interceptor-order a nivel de clase para este bean. A continuaci\u00f3n, el bean proporcionar\u00e1 una clasificaci\u00f3n total de los interceptores.
 
 #-------------------------------------------------------------------------------
 # Do not translate "interceptor-order", "exclude-class-interceptors", or "exclude-default-inteceptors".
 
-PARTIAL_METHOD_INTERCEPTOR_ORDER_CNTR0228E=CNTR0228E: El enterprise bean {0} especifica interceptores a nivel de m\u00e9todo {1} con la siguiente lista interceptor-order: {2}. Esta lista no es una clasificaci\u00f3n total de interceptores a nivel de m\u00e9todo para este bean. Faltan los nombres de interceptor siguientes en la lista: {3}
-PARTIAL_METHOD_INTERCEPTOR_ORDER_CNTR0228E.explanation=Si se utiliza el elemento interceptor-order, la clasificaci\u00f3n especificada a nivel de m\u00e9todo debe ser una clasificaci\u00f3n total. La clasificaci\u00f3n debe ser sobre todas las clases de interceptor que se hayan definido a ese nivel y por encima. La \u00fanica excepci\u00f3n a esta regla es cuando las clases de interceptor se han excluido expl\u00edcitamente por medio de un elemento exclude-class-interceptors o exclude-default-interceptors.
+PARTIAL_METHOD_INTERCEPTOR_ORDER_CNTR0228E=CNTR0228E: El enterprise bean {0} especifica interceptores a nivel de m\u00e9todo {1} con la siguiente lista interceptor-order: {2}.  Esta lista no es una clasificaci\u00f3n total de interceptores a nivel de m\u00e9todo para este bean.  Faltan los nombres de interceptor siguientes en la lista: {3}
+PARTIAL_METHOD_INTERCEPTOR_ORDER_CNTR0228E.explanation=Si se utiliza el elemento interceptor-order, la clasificaci\u00f3n especificada a nivel de m\u00e9todo debe ser una clasificaci\u00f3n total. La clasificaci\u00f3n debe ser sobre todas las clases de interceptor que se hayan definido a ese nivel y por encima.  La \u00fanica excepci\u00f3n a esta regla es cuando las clases de interceptor se han excluido expl\u00edcitamente por medio de un elemento exclude-class-interceptors o exclude-default-interceptors.
 PARTIAL_METHOD_INTERCEPTOR_ORDER_CNTR0228E.useraction=Especifique nombres de interceptor adicionales en el elemento interceptor-order a nivel de m\u00e9todo para este bean. A continuaci\u00f3n, el bean proporcionar\u00e1 una clasificaci\u00f3n total de los interceptores.
 
 #-------------------------------------------------------------------------------
@@ -1246,7 +1216,7 @@ INVALID_LIFECYCLE_SIGNATURE_CNTR0232E.useraction=Corrija la firma del m\u00e9tod
 #-------------------------------------------------------------------------------
 # Do not translate "@Remove"
 
-INVALID_REMOVE_ANNOTATION_CNTR0233E=CNTR0233E: El enterprise bean {1} especifica una anotaci\u00f3n @Remove en el m\u00e9todo {0}. Esta anotaci\u00f3n no es v\u00e1lida porque este m\u00e9todo no es un m\u00e9todo de empresa de este bean.
+INVALID_REMOVE_ANNOTATION_CNTR0233E=CNTR0233E: El enterprise bean {1} especifica una anotaci\u00f3n @Remove en el m\u00e9todo {0}.  Esta anotaci\u00f3n no es v\u00e1lida porque este m\u00e9todo no es un m\u00e9todo de empresa de este bean.
 INVALID_REMOVE_ANNOTATION_CNTR0233E.explanation=La especificaci\u00f3n de Enterprise JavaBeans 3.0 requiere que las anotaciones @Remove se apliquen a los m\u00e9todos de empresa de un bean de sesi\u00f3n con estado.
 INVALID_REMOVE_ANNOTATION_CNTR0233E.useraction=Cambie de sitio la anotaci\u00f3n @Remove para un m\u00e9todo de empresa de este bean, o cambie el m\u00e9todo especificado para que sea un m\u00e9todo de empresa.
 
@@ -1262,7 +1232,7 @@ INVALID_INIT_ANNOTATION_CNTR0234E.useraction=Elimine la anotaci\u00f3n @Init o e
 
 AMBIGUOUS_INIT_ANNOTATION_CNTR0235E=CNTR0235E: El nombre del m\u00e9todo create&lt;METHOD&gt; se debe especificar para el m\u00e9todo {0} o el m\u00e9todo {1} del enterprise bean {2}.
 AMBIGUOUS_INIT_ANNOTATION_CNTR0235E.explanation=La anotaci\u00f3n @Init se aplica a varios m\u00e9todos del enterprise bean. La especificaci\u00f3n de Enterprise JavaBeans 3.0 requiere que se especifique el nombre del m\u00e9todo create&lt;METHOD&gt; de la interfaz inicial local o inicial en caso de existir alguna ambig\u00fcedad.
-AMBIGUOUS_INIT_ANNOTATION_CNTR0235E.useraction=Utilice el elemento value de la anotaci\u00f3n @Init para especificar el nombre de create&lt;METHOD&gt; en uno de los dos m\u00e9todos especificados. Este enfoque eliminar\u00e1 la ambig\u00fcedad.
+AMBIGUOUS_INIT_ANNOTATION_CNTR0235E.useraction=Utilice el elemento value de la anotaci\u00f3n @Init para especificar el nombre de create&lt;METHOD&gt; en uno de los dos m\u00e9todos especificados.  Este enfoque eliminar\u00e1 la ambig\u00fcedad.
 
 #-------------------------------------------------------------------------------
 # Do not translate "init-method", or "public"
@@ -1362,20 +1332,20 @@ INVALID_AROUND_CONSTRUCT_DEFINITION_CNTR0249E.useraction=Elimine la anotaci\u00f
 #-------------------------------------------------------------------------------
 # CNTR0251 to CNTR0300 reserved for SM extension related messages.
 #-------------------------------------------------------------------------------
-UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0251W=CNTR0251W: No se han podido eliminar los temporizadores autom\u00e1ticos de Enterprise Java Bean del planificador para la aplicaci\u00f3n {0} que est\u00e1 ejecut\u00e1ndose en el servidor {1}. Para eliminar manualmente los temporizadores, utilice wsadmin para ejecutar este mandato: $AdminTask removeAutomaticEJBTimers "-appName {0} -serverName {1} -nodeName {2} "
-UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0251W.explanation=Todos los temporizadores autom\u00e1ticos de Enterprise Java Bean asociados a la aplicaci\u00f3n en el servidor no se han eliminado del planificador. Por lo que es posible que el planificador intente ejecutar estos temporizadores en el futuro.
+UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0251W=CNTR0251W: No se han podido eliminar los temporizadores autom\u00e1ticos de Enterprise Java Bean del planificador para la aplicaci\u00f3n {0} que est\u00e1 ejecut\u00e1ndose en el servidor {1}.  Para eliminar manualmente los temporizadores, utilice wsadmin para ejecutar este mandato: $AdminTask removeAutomaticEJBTimers "-appName {0} -serverName {1} -nodeName {2} "
+UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0251W.explanation=Todos los temporizadores autom\u00e1ticos de Enterprise Java Bean asociados a la aplicaci\u00f3n en el servidor no se han eliminado del planificador.  Por lo que es posible que el planificador intente ejecutar estos temporizadores en el futuro.
 UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0251W.useraction=Ejecute el mandato 'removeAutomaticEJBTimers' a partir de una sesi\u00f3n wsadmin conectada para eliminar los temporizadores asociados con la aplicaci\u00f3n en este servidor espec\u00edfico.
 
-UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0252W=CNTR0252W: No se han podido eliminar los temporizadores autom\u00e1ticos de Enterprise Java Bean del planificador para la aplicaci\u00f3n {0} y el m\u00f3dulo {1} que est\u00e1n ejecut\u00e1ndose en el servidor {2}. Para eliminar manualmente los temporizadores, utilice wsadmin para ejecutar este mandato: $AdminTask removeAutomaticEJBTimers "-appName {0} -moduleName {1} -serverName {2} -nodeName {3} "
-UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0252W.explanation=Todos los temporizadores autom\u00e1ticos de Enterprise Java Bean asociado a la aplicaci\u00f3n y el m\u00f3dulo en el servidor no se han eliminado del planificador. Por lo que es posible que el planificador intente ejecutar estos temporizadores en el futuro.
+UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0252W=CNTR0252W: No se han podido eliminar los temporizadores autom\u00e1ticos de Enterprise Java Bean del planificador para la aplicaci\u00f3n {0} y el m\u00f3dulo {1} que est\u00e1n ejecut\u00e1ndose en el servidor {2}.  Para eliminar manualmente los temporizadores, utilice wsadmin para ejecutar este mandato: $AdminTask removeAutomaticEJBTimers "-appName {0} -moduleName {1} -serverName {2} -nodeName {3} "
+UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0252W.explanation=Todos los temporizadores autom\u00e1ticos de Enterprise Java Bean asociado a la aplicaci\u00f3n y el m\u00f3dulo en el servidor no se han eliminado del planificador.  Por lo que es posible que el planificador intente ejecutar estos temporizadores en el futuro.
 UNABLE_TO_PURGE_AUTOMATIC_TIMERS_CNTR0252W.useraction=Ejecute el mandato 'removeAutomaticEJBTimers' a partir de una sesi\u00f3n wsadmin conectada para eliminar los temporizadores asociados con la aplicaci\u00f3n y el m\u00f3dulo en este servidor espec\u00edfico.
 
-UNABLE_TO_FIND_REMOVE_BINARIES_TASK_CNTR0253W=CNTR0253W: No se ha podido encontrar la tarea RemoveBinaries. Esto provoca que no se eliminen los temporizadores EJB creados autom\u00e1ticamente en el caso de que existan.
-UNABLE_TO_FIND_REMOVE_BINARIES_TASK_CNTR0253W.useraction=El proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean lo desencadena otro proceso interno denominado RemoveBinaries, el cual no se ha encontrado. Esto provoca que no se ejecute el proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean.
+UNABLE_TO_FIND_REMOVE_BINARIES_TASK_CNTR0253W=CNTR0253W: No se ha podido encontrar la tarea RemoveBinaries.  Esto provoca que no se eliminen los temporizadores EJB creados autom\u00e1ticamente en el caso de que existan.
+UNABLE_TO_FIND_REMOVE_BINARIES_TASK_CNTR0253W.useraction=El proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean lo desencadena otro proceso interno denominado RemoveBinaries, el cual no se ha encontrado.  Esto provoca que no se ejecute el proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean.
 UNABLE_TO_FIND_REMOVE_BINARIES_TASK_CNTR0253W.explanation=Utilice el mandato removeAutomaticEJBTimers para eliminar manualmente cualquier temporizador autom\u00e1tico de Enterprise Java Bean que ya no sea v\u00e1lido.
 
-UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W=CNTR0254W: La aplicaci\u00f3n o el m\u00f3dulo que se ha actualizado o eliminado conten\u00edan temporizadores creados autom\u00e1ticamente de Enterprise Java Bean. No obstante, los temporizadores no se han eliminado, ya que el proceso se ha ejecutado en la modalidad local. Utilice el mandato removeAutomaticEJBTimers para eliminarlos manualmente.
-UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W.useraction=El proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean no se ejecuta cuando la ejecuci\u00f3n se hace en una sesi\u00f3n wsadmin desconectada. Esto provoca que no se eliminen los temporizadores autom\u00e1ticos de Enterprise Java Bean.
+UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W=CNTR0254W: La aplicaci\u00f3n o el m\u00f3dulo que se ha actualizado o eliminado conten\u00edan temporizadores creados autom\u00e1ticamente de Enterprise Java Bean.  No obstante, los temporizadores no se han eliminado, ya que el proceso se ha ejecutado en la modalidad local.  Utilice el mandato removeAutomaticEJBTimers para eliminarlos manualmente.
+UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W.useraction=El proceso que elimina los temporizadores autom\u00e1ticos de Enterprise Java Bean no se ejecuta cuando la ejecuci\u00f3n se hace en una sesi\u00f3n wsadmin desconectada.  Esto provoca que no se eliminen los temporizadores autom\u00e1ticos de Enterprise Java Bean.
 UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W.explanation=Utilice el mandato removeAutommaticEJBTimers para eliminar manualmente cualquier temporizador autom\u00e1tico de Enterprise Java Bean que ya no sea v\u00e1lido.
 
 #-------------------------------------------------------------------------------
@@ -1384,7 +1354,7 @@ UNABLE_TO_PURGE_TIMERS_BECAUSE_RUNNING_IN_LOCAL_MODE_CNTR0254W.explanation=Utili
 
 AUTOMATIC_TIMER_VALIDATION_FAILED_CNTR0301E=CNTR0301E: El enterprise bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene un temporizador autom\u00e1tico para el m\u00e9todo {3}, pero se ha realizado alg\u00fan cambio que no es compatible con la aplicaci\u00f3n, ya que el servidor ha creado el temporizador.
 AUTOMATIC_TIMER_VALIDATION_FAILED_CNTR0301E.explanation=El servidor ha intentado ejecutar un m\u00e9todo de retorno de llamada de tiempo de espera para un temporizador autom\u00e1tico, pero se ha realizado un cambio que no es compatible con la aplicaci\u00f3n sin eliminar los temporizadores autom\u00e1ticos.
-AUTOMATIC_TIMER_VALIDATION_FAILED_CNTR0301E.useraction=Detenga la aplicaci\u00f3n y ejecute el mandato removeAutomaticEJBTimers para que el objeto AdminTask elimine manualmente el contenido de la base de datos. El servidor vuelve a crear autom\u00e1ticamente los temporizadores cuando se reinicia la aplicaci\u00f3n.
+AUTOMATIC_TIMER_VALIDATION_FAILED_CNTR0301E.useraction=Detenga la aplicaci\u00f3n y ejecute el mandato removeAutomaticEJBTimers para que el objeto AdminTask elimine manualmente el contenido de la base de datos.  El servidor vuelve a crear autom\u00e1ticamente los temporizadores cuando se reinicia la aplicaci\u00f3n.
 
 NON_COMPLIANT_WORK_MANAGER_CONFIG_CNTR0302W=CNTR0302W: La configuraci\u00f3n del gestor de trabajo que se utiliza para los m\u00e9todos as\u00edncronos no cumple la especificaci\u00f3n EJB (Enterprise JavaBeans).
 NON_COMPLIANT_WORK_MANAGER_CONFIG_CNTR0302W.explanation=La especificaci\u00f3n requiere m\u00e9todos as\u00edncronos para tener s\u00f3lo informaci\u00f3n de contexto de seguridad.
@@ -1394,36 +1364,36 @@ NON_COMPLIANT_WORK_MANAGER_CONFIG_CNTR0303W=CNTR0303W: La configuraci\u00f3n del
 NON_COMPLIANT_WORK_MANAGER_CONFIG_CNTR0303W.explanation=La especificaci\u00f3n no soporta ninguna informaci\u00f3n de contexto de ejecuci\u00f3n pasada al m\u00e9todo de tiempo de espera.
 NON_COMPLIANT_WORK_MANAGER_CONFIG_CNTR0303W.useraction=Aseg\u00farese de que la instancia de gestor de trabajo est\u00e1 configurada para pasar informaci\u00f3n de contexto, tal y como la especificaci\u00f3n lo requiere.
 
-STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W=CNTR0304W: El enterprise bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene la anotaci\u00f3n @StatefulTimeout. La anotaci\u00f3n StatefulTimeout s\u00f3lo es v\u00e1lida en los beans de sesi\u00f3n con estado. El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 la anotaci\u00f3n en este bean.
-STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W.explanation=La anotaci\u00f3n @StatefulTimeout s\u00f3lo es aplicable en los beans de sesi\u00f3n con estado. El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 la anotaci\u00f3n en este bean.
+STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W=CNTR0304W: El enterprise bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene la anotaci\u00f3n @StatefulTimeout.  La anotaci\u00f3n StatefulTimeout s\u00f3lo es v\u00e1lida en los beans de sesi\u00f3n con estado.  El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 la anotaci\u00f3n en este bean.
+STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W.explanation=La anotaci\u00f3n @StatefulTimeout s\u00f3lo es aplicable en los beans de sesi\u00f3n con estado.  El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 la anotaci\u00f3n en este bean.
 STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W.useraction=Elimine la anotaci\u00f3n @StatefulTimeout del bean especificado o haga del bean un bean de sesi\u00f3n con estado.
 
-ASYNC_ON_INTERFACE_CNTR0305W=CNTR0305W: La interfaz de empresa {0} contiene una anotaci\u00f3n @Asynchronous. Estas anotaciones no son v\u00e1lidas en estos tipos de interfaz y el contenedor EJB (Enterprise JavaBean) las ignora.
-ASYNC_ON_INTERFACE_CNTR0305W.explanation=La anotaci\u00f3n @Asynchronous s\u00f3lo es aplicable en las clases de bean, no en interfaces de empresa. El contenedor EJB ignora esta anotaci\u00f3n en las interfaces. A menos que se especifique esta anotaci\u00f3n en la clase de bean o en el m\u00e9todo de clase de bean, o si los m\u00e9todos se declaran as\u00edncronos en el descriptor de despliegue ejb-jar.xml, los m\u00e9todos de bean no se ejecutar\u00e1n de forma s\u00edncrona.
+ASYNC_ON_INTERFACE_CNTR0305W=CNTR0305W: La interfaz de empresa {0} contiene una anotaci\u00f3n @Asynchronous.  Estas anotaciones no son v\u00e1lidas en estos tipos de interfaz y el contenedor EJB (Enterprise JavaBean) las ignora.
+ASYNC_ON_INTERFACE_CNTR0305W.explanation=La anotaci\u00f3n @Asynchronous s\u00f3lo es aplicable en las clases de bean, no en interfaces de empresa.  El contenedor EJB ignora esta anotaci\u00f3n en las interfaces.  A menos que se especifique esta anotaci\u00f3n en la clase de bean o en el m\u00e9todo de clase de bean, o si los m\u00e9todos se declaran as\u00edncronos en el descriptor de despliegue ejb-jar.xml, los m\u00e9todos de bean no se ejecutar\u00e1n de forma s\u00edncrona.
 ASYNC_ON_INTERFACE_CNTR0305W.useraction=Elimine las anotaciones @Asynchronous en la interfaz de empresa especificada y verifique que las anotaciones se han especificado correctamente en la clase de bean.
 
-STATEFUL_TIMEOUT_ON_INTERFACE_CNTR0306W=CNTR0306W: La interfaz de empresa {0} contiene la anotaci\u00f3n @StatefulTimeout. Esta anotaci\u00f3n no es v\u00e1lida en estos tipos de interfaz y el contenedor EJB (Enterprise JavaBean) la ignora.
-STATEFUL_TIMEOUT_ON_INTERFACE_CNTR0306W.explanation=La anotaci\u00f3n @StatefulTimeout s\u00f3lo es aplicable en las clases de bean, no en interfaces de empresa. El contenedor EJB ignora esta anotaci\u00f3n en las interfaces. A menos que se especifique esta anotaci\u00f3n en la clase de bean o en el m\u00e9todo de clase de bean, o si el bean declara stateful-timeout en el descriptor ejb-jar.xml, el bean utilizar\u00e1 el valor de tiempo de espera predeterminado.
+STATEFUL_TIMEOUT_ON_INTERFACE_CNTR0306W=CNTR0306W: La interfaz de empresa {0} contiene la anotaci\u00f3n @StatefulTimeout.  Esta anotaci\u00f3n no es v\u00e1lida en estos tipos de interfaz y el contenedor EJB (Enterprise JavaBean) la ignora.
+STATEFUL_TIMEOUT_ON_INTERFACE_CNTR0306W.explanation=La anotaci\u00f3n @StatefulTimeout s\u00f3lo es aplicable en las clases de bean, no en interfaces de empresa.  El contenedor EJB ignora esta anotaci\u00f3n en las interfaces.  A menos que se especifique esta anotaci\u00f3n en la clase de bean o en el m\u00e9todo de clase de bean, o si el bean declara stateful-timeout en el descriptor ejb-jar.xml, el bean utilizar\u00e1 el valor de tiempo de espera predeterminado.
 STATEFUL_TIMEOUT_ON_INTERFACE_CNTR0306W.useraction=Elimine la anotaci\u00f3n @StatefulTimeout en la interfaz de empresa especificada y verifique que las anotaciones se han especificado correctamente en la clase de bean.
 
-INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0307W=CNTR0307W: El EJB (Enterprise JavaBean) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene un valor de tiempo de espera en la anotaci\u00f3nStatefulTimeout o elemento de descriptor de despliegue stateful-timeout que no es un n\u00famero entero v\u00e1lido: {3}. Se utilizar\u00e1 el valor predeterminado {4} milisegundos en su lugar.
-INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0307W.explanation=S\u00f3lo se puede especificar un entero positivo como valor de tiempo de espera con estado. Se utilizar\u00e1 el valor predeterminado.
+INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0307W=CNTR0307W: El EJB (Enterprise JavaBean) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene un valor de tiempo de espera en la anotaci\u00f3nStatefulTimeout o elemento de descriptor de despliegue stateful-timeout que no es un n\u00famero entero v\u00e1lido: {3}.  Se utilizar\u00e1 el valor predeterminado {4} milisegundos en su lugar.
+INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0307W.explanation=S\u00f3lo se puede especificar un entero positivo como valor de tiempo de espera con estado.  Se utilizar\u00e1 el valor predeterminado.
 INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0307W.useraction=Cambie el valor del tiempo de espera con estado a un valor entero positivo.
 
 # Do NOT translate "timeout" or "stateful-timeout"
-STATEFUL_TIMEOUT_WITHOUT_TIMEOUT_CNTR0308W=CNTR0308W: El Enterprise JavaBean (EJB) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene el elemento de descriptor de despliegue stateful-timeout , pero falta el elemento de tiempo de espera necesario. El contenedor EJB (Enterprise JavaBean) calcular\u00e1 un valor predeterminado.
+STATEFUL_TIMEOUT_WITHOUT_TIMEOUT_CNTR0308W=CNTR0308W: El Enterprise JavaBean (EJB) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene el elemento de descriptor de despliegue stateful-timeout , pero falta el elemento de tiempo de espera necesario.  El contenedor EJB (Enterprise JavaBean) calcular\u00e1 un valor predeterminado.
 STATEFUL_TIMEOUT_WITHOUT_TIMEOUT_CNTR0308W.explanation=Debe especificarse el valor de tiempo de espera en el elemento de descriptor de despliegue stateful-timeout.
 STATEFUL_TIMEOUT_WITHOUT_TIMEOUT_CNTR0308W.useraction=Agregue un valor de tiempo de espera al elemento descriptor de despliegue stateful-timeout para el bean especificado.
 
 # Do not translate "@StatefulTimeout" or "java.lang.Long.MAX_VALUE (9223372036854775807)"
-STATEFUL_TIMEOUT_OVERFLOW_CNTR0309E=CNTR0309E: El EJB (Enterprise JavaBean) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene un valor de tiempo de espera con estado {3} con unidad de tiempo {4}. La conversi\u00f3n a milisegundos ha provocado un desbordamiento.
+STATEFUL_TIMEOUT_OVERFLOW_CNTR0309E=CNTR0309E: El EJB (Enterprise JavaBean) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene un valor de tiempo de espera con estado {3} con unidad de tiempo {4}.  La conversi\u00f3n a milisegundos ha provocado un desbordamiento.
 STATEFUL_TIMEOUT_OVERFLOW_CNTR0309E.explanation=El tiempo de espera con estado se especifica mediante anotaciones o con el descriptor de despliegue. La conversi\u00f3n que resulte en milisegundos debe ser superior a cero e inferior al valor java.lang.Long.MAX_VALUE (9223372036854775807) para que sea v\u00e1lida.
 STATEFUL_TIMEOUT_OVERFLOW_CNTR0309E.useraction=Corrija el valor de tiempo de espera con estado del Enterprise JavaBean que identifica el mensaje.
 
 # --------------------------------
 # Do NOT translate "stateful-timeout"
-STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0310W=CNTR0310W: El Enterprise JavaBean (EJB) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene el elemento de descriptor de despliegue stateful-timeout. stateful-timeout se aplica s\u00f3lo a beans de sesi\u00f3n con estado. El contenedor EJB ignorar\u00e1 el stateful-timeout en este bean.
-STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0310W.explanation=Este elemento se aplica s\u00f3lo a beans de sesi\u00f3n con estado. El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 stateful-timeout en este bean.
+STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0310W=CNTR0310W: El Enterprise JavaBean (EJB) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} contiene el elemento de descriptor de despliegue stateful-timeout.  stateful-timeout se aplica s\u00f3lo a beans de sesi\u00f3n con estado.  El contenedor EJB ignorar\u00e1 el stateful-timeout en este bean.
+STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0310W.explanation=Este elemento se aplica s\u00f3lo a beans de sesi\u00f3n con estado.  El contenedor EJB (Enterprise JavaBean) ignorar\u00e1 stateful-timeout en este bean.
 STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0310W.useraction=Elimine el elemento de descriptor de despliegue stateful-timeout del bean especificado o haga del bean un bean de sesi\u00f3n con estado.
 
 NEGATIVE_STATEFUL_TIMEOUT_ANN_CNTR0311E=CNTR0311E: El EJB (Enterprise JavaBean) {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} tiene un valor de tiempo de espera en la anotaci\u00f3n StatefulTimeout que es negativo: {3}.
@@ -1434,24 +1404,24 @@ NEGATIVE_STATEFUL_TIMEOUT_XML_CNTR0312E=CNTR0312E: El EJB (Enterprise JavaBean) 
 NEGATIVE_STATEFUL_TIMEOUT_XML_CNTR0312E.explanation=El tiempo de espera con estado debe ser un valor positivo o 0 para indicar que no haya tiempo de espera, o -1 para indicar un tiempo de espera infinito.
 NEGATIVE_STATEFUL_TIMEOUT_XML_CNTR0312E.useraction=Modifique el elemento de tiempo de espera stateful-timeout en el descriptor de despliegue EJB.
 
-INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0313W=CNTR0313W: Se ha especificado un valor en la propiedad de sistema {0} que no es un valor entero v\u00e1lido: {1}. Se utilizar\u00e1 el valor predeterminado {2} minutos en su lugar.
+INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0313W=CNTR0313W: Se ha especificado un valor en la propiedad de sistema {0} que no es un valor entero v\u00e1lido: {1}.  Se utilizar\u00e1 el valor predeterminado {2} minutos en su lugar.
 INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0313W.explanation=S\u00f3lo se puede especificar un entero positivo como valor de tiempo de espera con estado.  Se utilizar\u00e1 el valor predeterminado.
 INVALID_STATEFUL_TIMEOUT_TIMEOUT_CNTR0313W.useraction=Cambie el valor del tiempo de espera con estado a un valor entero positivo.
 
-AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador en el descriptor de despliegue que tiene como destino el m\u00e9todo {2}, pero no indica si el m\u00e9todo de destino acepta alg\u00fan par\u00e1metro o no. Se han encontrado ambas versiones con o sin par\u00e1metro del m\u00e9todo {2} en la jerarqu\u00eda de clases del bean.
-AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=El descriptor de despliegue define un temporizador que tiene como destino el m\u00e9todo especificado, pero no indica cu\u00e1ntos par\u00e1metros acepta el m\u00e9todo. Varios m\u00e9todos tienen el mismo nombre en la jerarqu\u00eda de clases del bean que se ha elegido para recibir los retornos de llamadas del temporizador. Esto provoca que el contenedor EJB no pueda determinar qu\u00e9 m\u00e9todo debe ser el destino del temporizador.
+AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E=CNTR0314E: El enterprise bean {0} en el m\u00f3dulo {1} tiene metadatos de temporizador en el descriptor de despliegue que tiene como destino el m\u00e9todo {2}, pero no indica si el m\u00e9todo de destino acepta alg\u00fan par\u00e1metro o no.  Se han encontrado ambas versiones con o sin par\u00e1metro del m\u00e9todo {2} en la jerarqu\u00eda de clases del bean.
+AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.explanation=El descriptor de despliegue define un temporizador que tiene como destino el m\u00e9todo especificado, pero no indica cu\u00e1ntos par\u00e1metros acepta el m\u00e9todo.  Varios m\u00e9todos tienen el mismo nombre en la jerarqu\u00eda de clases del bean que se ha elegido para recibir los retornos de llamadas del temporizador.  Esto provoca que el contenedor EJB no pueda determinar qu\u00e9 m\u00e9todo debe ser el destino del temporizador.
 AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E.useraction=Cambie el descriptor de despliegue para que el temporizador indique de forma expl\u00edcita si el m\u00e9todo de destino es de la versi\u00f3n con par\u00e1metro o sin par\u00e1metro.
 
 # In use in EJBJPAMessages.nlsprops
 # PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E
 
-CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Se ha detectado un conflicto de referencia de recursos. {0}
+CONFLICTING_RESOURCE_REFERENCE_CNTR0316E=CNTR0316E: Se ha detectado un conflicto de referencia de recursos.  {0}
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.explanation=Se ha definido una referencia de recursos en varios sitios que contiene informaci\u00f3n en conflicto.
 CONFLICTING_RESOURCE_REFERENCE_CNTR0316E.useraction=Cambie las definiciones de referencia de recursos de manera que no est\u00e9n m\u00e1s en conflicto o utilice una \u00fanica referencia de recursos y elimine las definiciones repetidas.
 
-JAX_RPC_ENDPOINT_IN_WAR_CNTR0317E=CNTR0317E: El bean {0} est\u00e1 empaquetado en un m\u00f3dulo WAR y se ha definido como un punto final JAX-RPC utilizando el descriptor ejb-jar.xml. La interfaz {1} est\u00e1 declarada como el punto final JAX-RPC. No obstante, los beans empaquetados en un m\u00f3dulo WAR no est\u00e1n soportados como puntos finales JAX-RPC. Empaquete el bean en un m\u00f3dulo EJBJAR o elimine la interfaz de punto final de servicio del descriptor de despliegue.
+JAX_RPC_ENDPOINT_IN_WAR_CNTR0317E=CNTR0317E: El bean {0} est\u00e1 empaquetado en un m\u00f3dulo WAR y se ha definido como un punto final JAX-RPC utilizando el descriptor ejb-jar.xml.  La interfaz {1} est\u00e1 declarada como el punto final JAX-RPC.  No obstante, los beans empaquetados en un m\u00f3dulo WAR no est\u00e1n soportados como puntos finales JAX-RPC.  Empaquete el bean en un m\u00f3dulo EJBJAR o elimine la interfaz de punto final de servicio del descriptor de despliegue.
 JAX_RPC_ENDPOINT_IN_WAR_CNTR0317E.explanation=Es posible que no haya un Enterprise JavaBean declarado como un punto final JAX-RPC y empaquetado dentro de un m\u00f3dulo WAR.
-JAX_RPC_ENDPOINT_IN_WAR_CNTR0317E.useraction=Empaquete el Enterprise JavaBean en el m\u00f3dulo EJBJAR. O, actualice el descriptor ejb-jar.xml para que no declare m\u00e1s el Enterprise JavaBean como un punto final JAX-RPC.
+JAX_RPC_ENDPOINT_IN_WAR_CNTR0317E.useraction=Empaquete el Enterprise JavaBean en el m\u00f3dulo EJBJAR.  O, actualice el descriptor ejb-jar.xml para que no declare m\u00e1s el Enterprise JavaBean como un punto final JAX-RPC.
 
 # --------------------------------
 # Do NOT translate "ejb-class" or "ejb-jar.xml"
@@ -1461,9 +1431,9 @@ MISSING_EJB_CLASS_ELEMENT_CNTR0318E.useraction=Modifique el archivo ejb-jar.xml 
 
 # --------------------------------
 # Do NOT translate ".war", "war", "ejb jar", or "@Startup"
-LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E=CNTR0319E: El {0} es un bean de arranque y est\u00e1 empaquetado dentro de un m\u00f3dulo WAR (archivador web), lo que no est\u00e1 permitido. Los beans de arranque deben estar empaquetados dentro de un m\u00f3dulo EJB (Enterprise JavaBean) aut\u00f3nomo. El comportamiento de arranque de un componente EJB empaquetado dentro de un m\u00f3dulo WAR se obtiene mediante un bean de sesi\u00f3n de monoinstancia que se marca con la anotaci\u00f3n @Startup o el elemento XML correspondiente.
+LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E=CNTR0319E: El {0} es un bean de arranque y est\u00e1 empaquetado dentro de un m\u00f3dulo WAR (archivador web), lo que no est\u00e1 permitido.  Los beans de arranque deben estar empaquetados dentro de un m\u00f3dulo EJB (Enterprise JavaBean) aut\u00f3nomo.  El comportamiento de arranque de un componente EJB empaquetado dentro de un m\u00f3dulo WAR se obtiene mediante un bean de sesi\u00f3n de monoinstancia que se marca con la anotaci\u00f3n @Startup o el elemento XML correspondiente.
 LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E.explanation=Los beans de arranque no pueden estar empaquetados en un archivo .war.
-LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E.useraction=Empaquete el bean de arranque en un m\u00f3dulo JAR EJB aut\u00f3nomo. Tambi\u00e9n puede utilizar un bean de sesi\u00f3n de monoinstancia marcado con la anotaci\u00f3n @Startup o el correspondiente elemento XML y empaquete el bean en un m\u00f3dulo JAR EJB o en un m\u00f3dulo WAR.
+LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E.useraction=Empaquete el bean de arranque en un m\u00f3dulo JAR EJB aut\u00f3nomo.  Tambi\u00e9n puede utilizar un bean de sesi\u00f3n de monoinstancia marcado con la anotaci\u00f3n @Startup o el correspondiente elemento XML y empaquete el bean en un m\u00f3dulo JAR EJB o en un m\u00f3dulo WAR.
 
 INVALID_SINGLETON_COMPONENT_INTERFACE_SPECIFIED_CNTR0320E=CNTR0320E: El bean de sesi\u00f3n de monoinstancia {0} en el m\u00f3dulo {1} tiene una interfaz configurada para una vista de componente.
 INVALID_SINGLETON_COMPONENT_INTERFACE_SPECIFIED_CNTR0320E.explanation=Seg\u00fan la especificaci\u00f3n de Enterprise JavaBeans (EJB), las vistas de cliente local y remoto EJB 2.1 no son compatibles con los beans de sesi\u00f3n de monoinstancia.
@@ -1508,9 +1478,9 @@ INVALID_SESSION_SYNCH_SIGNATURE_CNTR0327E.useraction=Corrija la firma del m\u00e
 
 #-------------------------------------------------------------------------------
 # Do not translate "AsyncFutureObjectCount" or "com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults".
-MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W=CNTR0328W: Hay {0} resultados no reclamados de las invocaciones de m\u00e9todos EJB as\u00edncronos remotos. El producto descartar\u00e1 el resultado m\u00e1s antiguo cuando el n\u00famero de resultados no reclamados exceda de {1}.
-MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.explanation=El n\u00famero de resultados no recuperados de las invocaciones de m\u00e9todos EJB as\u00edncronos remotos se acerca o ha excedido el valor m\u00e1ximo. Cuando el n\u00famero de resultados no recuperados exceda el valor m\u00e1ximo, el producto descartar\u00e1 el resultado m\u00e1s antiguo.
-MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Supervise la estad\u00edstica de PMI de AsyncFutureObjectCount para determinar qu\u00e9 resultados EJB tienen resultados no reclamados y, a continuaci\u00f3n, actualice el c\u00f3digo de cliente correspondiente para reclamar los resultados. Si los resultados se descartan m\u00e1s r\u00e1pidamente que la velocidad con que los clientes pueden reclamarlos, ajuste la duraci\u00f3n de objeto de futuro remoto para los m\u00e9todos EJB as\u00edncronos, y establezca la propiedad del sistema com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults en el n\u00famero m\u00e1ximo deseado de resultados no reclamados. De forma alternativa, cambie el EJB para que utilice una interfaz local en lugar de una remota, ya que no es necesario que el contenedor EJB haga un seguimiento de los resultados de un m\u00e9todo as\u00edncrono en una interfaz local, y la basura se puede recoger normalmente.
+MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W=CNTR0328W: Hay {0} resultados no reclamados de las invocaciones de m\u00e9todos EJB as\u00edncronos remotos.  El producto descartar\u00e1 el resultado m\u00e1s antiguo cuando el n\u00famero de resultados no reclamados exceda de {1}.
+MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.explanation=El n\u00famero de resultados no recuperados de las invocaciones de m\u00e9todos EJB as\u00edncronos remotos se acerca o ha excedido el valor m\u00e1ximo.  Cuando el n\u00famero de resultados no recuperados exceda el valor m\u00e1ximo, el producto descartar\u00e1 el resultado m\u00e1s antiguo.
+MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Supervise la estad\u00edstica de PMI de AsyncFutureObjectCount para determinar qu\u00e9 resultados EJB tienen resultados no reclamados y, a continuaci\u00f3n, actualice el c\u00f3digo de cliente correspondiente para reclamar los resultados.  Si los resultados se descartan m\u00e1s r\u00e1pidamente que la velocidad con que los clientes pueden reclamarlos, ajuste la duraci\u00f3n de objeto de futuro remoto para los m\u00e9todos EJB as\u00edncronos, y establezca la propiedad del sistema com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults en el n\u00famero m\u00e1ximo deseado de resultados no reclamados.  De forma alternativa, cambie el EJB para que utilice una interfaz local en lugar de una remota, ya que no es necesario que el contenedor EJB haga un seguimiento de los resultados de un m\u00e9todo as\u00edncrono en una interfaz local, y la basura se puede recoger normalmente.
 
 
 #-------------------------------------------------------------------------------
@@ -1574,6 +1544,11 @@ NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corrija el archivo de enlace
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: El nombre de enlace de JNDI (Java Naming and Directory Interface) {2} para el bean {0} o interfaz inicial local en el m\u00f3dulo {1} contiene un espacio de nombres que no es v\u00e1lido.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=El nombre de enlace local s\u00f3lo puede contener un espacio de nombres y debe empezar con ejblocal:. Los espacios de nombres se indican mediante el car\u00e1cter de dos puntos (:). La serie entera anterior e incluyendo el car\u00e1cter de dos puntos (:) se considera un espacio de nombres.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corrija el archivo de enlaces ibm-ejb-jar-bnd.xml para asignar a este bean un nombre de enlace JNDI v\u00e1lido eliminando el espacio de nombres que no es v\u00e1lido.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: No se puede enlazar la interfaz {0} del bean {1} en el m\u00f3dulo {2} de la aplicaci\u00f3n {3} a la ubicaci\u00f3n del nombre de {4}. El servidor de nombres CORBA no est\u00e1 disponible.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=El enlace de Enterprise Bean remoto no se puede crear porque el servidor de nombres CORBA no est\u00e1 disponible.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Consulte el archivo de registro para ver si hay excepciones relacionadas con la inicializaci\u00f3n del servidor de nombres ORB o CORBA.
 
 #-------------------------------------------------------------------------------
 #
@@ -1790,8 +1765,7 @@ JIT_MISSING_REMOTE_EX_CNTR5104E.useraction=A\u00f1ada la excepci\u00f3n RemoteEx
 
 #-------------------------------------------------------------------------------
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E=CNTR5105E: La interfaz {0} no es una interfaz remota v\u00e1lida. El nombre IDL del m\u00e9todo {1} entra en conflicto con el m\u00e9todo {2}.
-JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=En interfaces remotas, la especificaci\u00f3n de Java Language to IDL Mapping establece lo siguiente:\n\
-\ Los m\u00e9todos que siguen a los patrones de dise\u00f1o de los JavaBeans para propiedades sencillas de lectura y escritura o de s\u00f3lo lectura se correlacionan con los atributos de la interfaz IDL OMG. Ambos m\u00e9todos especificados se correlacionan con el mismo atributo de interfaz IDL OMG. La interfaz no es un tipo RMI/IIOP.
+JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=En interfaces remotas, la especificaci\u00f3n de Java Language to IDL Mapping establece lo siguiente:\n Los m\u00e9todos que siguen a los patrones de dise\u00f1o de los JavaBeans para propiedades sencillas de lectura y escritura o de s\u00f3lo lectura se correlacionan con los atributos de la interfaz IDL OMG. Ambos m\u00e9todos especificados se correlacionan con el mismo atributo de interfaz IDL OMG. La interfaz no es un tipo RMI/IIOP.
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.useraction=Cambie la aplicaci\u00f3n renombrando o eliminando uno de los m\u00e9todos conflictivos.
 
 #-------------------------------------------------------------------------------
@@ -1831,14 +1805,14 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Consulte el mensaje para obtener
 # Do NOT translate any word beginning with a "-"
 CNTR9000I=Uso: {0} <servidor> <filtro> [opciones]
 CNTR9001I=\tfiltro : <-all> | <-timer> | <-app [-mod [-bean]]>
-CNTR9002I=\t         -all
-CNTR9003I=\t         -timer <ID de temporizador>
-CNTR9004I=\t         -app <nombre de aplicaci\u00f3n>
-CNTR9005I=\t         -mod <nombre de m\u00f3dulo>
-CNTR9006I=\t         -bean <nombre de bean>\n
+CNTR9002I=\t\ \ \ \ \ \ \ \ \ -all
+CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <ID de temporizador>
+CNTR9004I=\t\ \ \ \ \ \ \ \ \ -app <nombre de aplicaci\u00f3n>
+CNTR9005I=\t\ \ \ \ \ \ \ \ \ -mod <nombre de m\u00f3dulo>
+CNTR9006I=\t\ \ \ \ \ \ \ \ \ -bean <nombre de bean>\n
 CNTR9007I=\topciones:-host <nombre de host>
-CNTR9008I=\t         -user <ID de usuario>
-CNTR9009I=\t         -node <nombre de nodo>
+CNTR9008I=\t\ \ \ \ \ \ \ \ \ -user <ID de usuario>
+CNTR9009I=\t\ \ \ \ \ \ \ \ \ -node <nombre de nodo>
 
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Expiration", "Single", "Repeating", "Calendar", "expression" "Automatic timer with timeout method", "Programmatic timer", "timer"
@@ -1902,10 +1876,9 @@ CNTR9106E.useraction=Examine la sentencia de uso y especifique alg\u00fan nombre
 #-------------------------------------------------------------------------------
 # Do NOT translate any word beginning with a "-", "createEJBStubs", "class" "jar", "JAR", "war", "WAR",  "ear", "EAR", "\n", or "\t"
 NEWLINE_CNTR9200I=\n
-CNTR9201I=\n\
-Uso: createEJBStubs <nombre de clase completo, archivo jar o archivo ear> [opciones]
+CNTR9201I=\nUso: createEJBStubs <nombre de clase completo, archivo jar o archivo ear> [opciones]
 CNTR9202I=\nopciones:
-CNTR9203I=\t -help
+CNTR9203I=\t\ -help
 CNTR9204I=\t-newfile [archivo nuevo]
 CNTR9205I=\t-updatefile [archivo jar, war o ear]
 CNTR9206I=\t-quiet
@@ -1915,20 +1888,11 @@ CNTR9209I=\t-appendlog
 CNTR9210I=\t-cp <v\u00eda de acceso de clases>
 CNTR9239I=\t-rmic {0}
 CNTR9211I=\t-trace
-CNTR9212I=\n\
-ejemplos:
+CNTR9212I=\nejemplos:
 CNTR9213I=\tcreateEJBStubs com.ibm.myRemoteInterface -cp myPath
-CNTR9214I=\t   Genera la clase stub para una clase de interfaz remota y la coloca en la estructura de \n\
-\t   directorio definido por el paquete, comenzando en el directorio actual. El directorio myPath se \n\
-\t   utilizar\u00e1 como la v\u00eda de acceso de clases. \n\
-\t   Si la clase de interfaz est\u00e1 en un archivo Java (JAR), se puede utilizar la sintaxis \n\
-\t   myPath/myInterfaces.jar para la v\u00eda de acceso de clases.
+CNTR9214I=\t\ \ \ Genera la clase stub para una clase de interfaz remota y la coloca en la estructura de \n\t   directorio definido por el paquete, comenzando en el directorio actual.  El directorio myPath se \n\t   utilizar\u00e1 como la v\u00eda de acceso de clases. \n\t   Si la clase de interfaz est\u00e1 en un archivo Java (JAR), se puede utilizar la sintaxis \n\t   myPath/myInterfaces.jar para la v\u00eda de acceso de clases.
 CNTR9215I=\tcreateEJBStubs myPath/myBeans.jar -newfile -quiet
-CNTR9216I=\t Genera las clases de ap\u00e9ndice para todos los enterprise beans del archivo myBeans.jar\n\
-\t   que disponen de interfaces remotas. \n\
-\t   Los stub generados y el contenido del archivo JAR original se colocar\u00e1 en un archivo JAR\n\
-\t   myBeans_withStubs.jar nuevo porque no se ha especificado un nombre de archivo nuevo. \n\
-\t   Suprima los mensajes de salida salvo para notificaciones de error.
+CNTR9216I=\t\ Genera las clases de ap\u00e9ndice para todos los enterprise beans del archivo myBeans.jar\n\t   que disponen de interfaces remotas. \n\t   Los stub generados y el contenido del archivo JAR original se colocar\u00e1 en un archivo JAR\n\t   myBeans_withStubs.jar nuevo porque no se ha especificado un nombre de archivo nuevo. \n\t   Suprima los mensajes de salida salvo para notificaciones de error.
 CNTR9217I=\tcreateEJBStubs myPath/myServerApp.ear -logfile myLog.out
 CNTR9218I=\tGenera clases de ap\u00e9ndice para todos los enterprise beans que se hallen en el archivo myServerApp.ear\n\
 \t   y que tengan interfaces remotas. \n\
@@ -1936,15 +1900,9 @@ CNTR9218I=\tGenera clases de ap\u00e9ndice para todos los enterprise beans que s
 \t   Las clases stub se colocar\u00e1n en el mismo m\u00f3dulo o m\u00f3dulos que las clases bean. \n\
 \t   Los mensajes se grabar\u00e1n tanto en el archivo de anotaciones myLog.out como en la ventana de mandatos.
 CNTR9219I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile myPath/myClientInterfaces.jar
-CNTR9229I=\tGenera las clases de ap\u00e9ndice para todos los enterprise beans que se hallen en el archivo myServerApp.ear\n\
-\t   y que tengan interfaces remotas. \n\
-\t   Los stub generados se colocan tanto en el archivo EAR original como en el archivo myClientInterfaces.jar.\n\
-\t   Las clases stub se colocar\u00e1n en el mismo m\u00f3dulo o m\u00f3dulos como las clases de interfaz remota.
+CNTR9229I=\tGenera las clases de ap\u00e9ndice para todos los enterprise beans que se hallen en el archivo myServerApp.ear\n\t   y que tengan interfaces remotas. \n\t   Los stub generados se colocan tanto en el archivo EAR original como en el archivo myClientInterfaces.jar.\n\t   Las clases stub se colocar\u00e1n en el mismo m\u00f3dulo o m\u00f3dulos como las clases de interfaz remota.
 CNTR9230I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile
-CNTR9232I=\tGenera clases de ap\u00e9ndice para todos los enterprise beans que se hallen en el archivo myServerApp.ear\n\
-\t   y que tengan interfaces remotas. \n\
-\t   Los stub generados se colocar\u00e1n en el archivo EAR original. \n\
-\t   Las clases stub se colocar\u00e1n en el mismo m\u00f3dulo o m\u00f3dulos como las clases de interfaz remota.
+CNTR9232I=\tGenera clases de ap\u00e9ndice para todos los enterprise beans que se hallen en el archivo myServerApp.ear\n\t   y que tengan interfaces remotas. \n\t   Los stub generados se colocar\u00e1n en el archivo EAR original. \n\t   Las clases stub se colocar\u00e1n en el mismo m\u00f3dulo o m\u00f3dulos como las clases de interfaz remota.
 
 #-------------------------------------------------------------------------------
 # Do Not translate "jar", "Jar", "ear", "Ear", "EJB", "rc", "\n", or "\t"
@@ -1988,7 +1946,7 @@ NO_REMOTE_INTERFACES_CNTR9241I.useraction=Si este m\u00f3dulo deb\u00eda tener e
 #-------------------------------------------------------------------------------
 # Do NOT translate "Java", "JAR", "WAR", "EAR", or "-help"
 FIRST_PARAM_ERROR_CNTR9250E=CNTR9250E: el primer par\u00e1metro debe ser un nombre de clase completo, archivo de archivado Java (JAR), archivo de archivador web (WAR) o archivo enterprise archive (EAR).
-FIRST_PARAM_ERROR_CNTR9250E.explanation=El primer par\u00e1metro debe ser un nombre de clase completo, un archivo JAR, un archivo WAR o un archivo EAR. Los archivos JAR, WAR y EAR deben incluir la v\u00eda de acceso de directorio completa.
+FIRST_PARAM_ERROR_CNTR9250E.explanation=El primer par\u00e1metro debe ser un nombre de clase completo, un archivo JAR, un archivo WAR o un archivo EAR.  Los archivos JAR, WAR y EAR deben incluir la v\u00eda de acceso de directorio completa.
 FIRST_PARAM_ERROR_CNTR9250E.useraction=Invoque el mandato createEJBStubs con la opci\u00f3n -help para ver la sintaxis del mandato.
 
 #-------------------------------------------------------------------------------
@@ -2005,7 +1963,7 @@ OPTION_OVERSPECIFIED_CNTR9252E.useraction=Invoque el mandato createEJBStubs con 
 #-------------------------------------------------------------------------------
 # Do NOT translate "-help"
 BAD_LOG_FLIE_CNTR9253E=CNTR9253E: el par\u00e1metro del nombre del archivo de anotaciones cronol\u00f3gicas {0}.
-BAD_LOG_FLIE_CNTR9253E.explanation=El nombre del archivo de anotaciones cronol\u00f3gicas debe hacer referencia a un archivo, incluyendo la v\u00eda de acceso al directorio. Adem\u00e1s, el nombre del archivo de anotaciones cronol\u00f3gicas no puede comenzar por "-".
+BAD_LOG_FLIE_CNTR9253E.explanation=El nombre del archivo de registro debe hacer referencia a un archivo, incluyendo la v\u00eda de acceso al directorio. Adem\u00e1s, el nombre del archivo de registro no puede comenzar por "-".
 BAD_LOG_FLIE_CNTR9253E.useraction=Invoque el mandato createEJBStubs con la opci\u00f3n -help para ver la sintaxis del mandato.
 
 #-------------------------------------------------------------------------------
@@ -2016,8 +1974,8 @@ UNABLE_TO_WRITE_FILE_CNTR9254E.useraction=Examine el valor de los permisos en el
 #-------------------------------------------------------------------------------
 # Do NOT translate "-logfile"
 MISSING_LOG_FILE_PARAM_CNTR9255E=CNTR9255E: falta el par\u00e1metro obligatorio del nombre de archivo de anotaciones cronol\u00f3gicas.
-MISSING_LOG_FILE_PARAM_CNTR9255E.explanation=En la opci\u00f3n -logfile, debe proporcionarse el nombre del archivo de anotaciones cronol\u00f3gicas como par\u00e1metro siguiente
-MISSING_LOG_FILE_PARAM_CNTR9255E.useraction=Examine la sentencia de uso y proporcione el par\u00e1metro necesario con el nombre del archivo de anotaciones cronol\u00f3gicas.
+MISSING_LOG_FILE_PARAM_CNTR9255E.explanation=En la opci\u00f3n -logfile, debe proporcionarse el nombre del archivo de registro como par\u00e1metro siguiente
+MISSING_LOG_FILE_PARAM_CNTR9255E.useraction=Examine la sentencia de uso y proporcione el par\u00e1metro necesario con el nombre del archivo de registro.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "-help", or "createEJBStubs"
@@ -2054,18 +2012,15 @@ UNABLE_TO_CREATE_TEMP_FILE_CNTR9261E.useraction=Examine los valores de los permi
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_LOAD_ERROR_CNTR9262E=CNTR9262E: La clase de interfaz {0} no se ha podido cargar. Esto puede ser debido a un error ortogr\u00e1fico, una opci\u00f3n -cp incorrecta, a un error al cargar la clase padre o a un error al cargar la clase en el par\u00e1metro de m\u00e9todo.
+CLASS_LOAD_ERROR_CNTR9262E=CNTR9262E: La clase de interfaz {0} no se ha podido cargar.  Esto puede ser debido a un error ortogr\u00e1fico, una opci\u00f3n -cp incorrecta, a un error al cargar la clase padre o a un error al cargar la clase en el par\u00e1metro de m\u00e9todo.
 CLASS_LOAD_ERROR_CNTR9262E.explanation=No se ha podido cargar la clase especificada.
-CLASS_LOAD_ERROR_CNTR9262E.useraction=Compruebe si hay errores de escritura y aseg\u00farese de que todas las clases padre de esta clase se incluyen en el archivo JAR (Java Archive) de entrada o en el archivo EAR (Enterprise Archive), o haga \
-que est\u00e9n disponibles utilizando la opci\u00f3n -cp.
+CLASS_LOAD_ERROR_CNTR9262E.useraction=Compruebe si hay errores de escritura y aseg\u00farese de que todas las clases padre de esta clase se incluyen en el archivo JAR (Java Archive) de entrada o en el archivo EAR (Enterprise Archive), o haga que est\u00e9n disponibles utilizando la opci\u00f3n -cp.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: La clase de interfaz {0} no se ha podido procesar. \n\
-La clase del par\u00e1metro de m\u00e9todo {1} no se ha encontrado.
+CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: La clase de interfaz {0} no se ha podido procesar. \nLa clase del par\u00e1metro de m\u00e9todo {1} no se ha encontrado.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.explanation=No se ha podido cargar un valor de par\u00e1metro de m\u00e9todo o de retorno de m\u00e9todo de la clase listada.
-CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Aseg\u00farese de que todas las clases pasadas como par\u00e1metros de m\u00e9todo o utilizadas como valores de retorno de m\u00e9todos en los m\u00e9todos de la clase listada se incluyen en el archivo JAR (Java Archive) de entrada o en el archivo EAR (Enterprise Archive), o haga \
-que est\u00e9n disponibles utilizando la opci\u00f3n -cp.
+CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Aseg\u00farese de que todas las clases pasadas como par\u00e1metros de m\u00e9todo o utilizadas como valores de retorno de m\u00e9todos en los m\u00e9todos de la clase listada se incluyen en el archivo JAR (Java Archive) de entrada o en el archivo EAR (Enterprise Archive), o haga que est\u00e9n disponibles utilizando la opci\u00f3n -cp.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "-cp".
@@ -2136,8 +2091,7 @@ OUTPUT_FILE_ALREADY_EXISTS_CNTR9275E.useraction=Especifique un nombre de archivo
 #-------------------------------------------------------------------------------
 # Do NOT translate "Java", "JAR", "WAR", "EAR", or "application.xml"
 EAR_LIBRARY_DIRECTORY_DISABLED_CNTR9276I=CNTR9276I: la aplicaci\u00f3n {0} ha inhabilitado el directorio de biblioteca. Los archivos de archivado de Java (JAR) y archivado web (WAR) en el directorio de la biblioteca no se procesar\u00e1n.
-EAR_LIBRARY_DIRECTORY_DISABLED_CNTR9276I.explanation=Los datos de configuraci\u00f3n de aplicaci\u00f3n han especificado una biblioteca con una cadena en blanco para el nombre de directorio de la biblioteca.   Esta acci\u00f3n \
-inhabilita el directorio de biblioteca.
+EAR_LIBRARY_DIRECTORY_DISABLED_CNTR9276I.explanation=Los datos de configuraci\u00f3n de aplicaci\u00f3n han especificado una biblioteca con una cadena en blanco para el nombre de directorio de la biblioteca.   Esta acci\u00f3n inhabilita el directorio de biblioteca.
 EAR_LIBRARY_DIRECTORY_DISABLED_CNTR9276I.useraction=Si el directorio de biblioteca para esta aplicaci\u00f3n no se debe inhabilitar, modifique el archivo de configuraci\u00f3n application.xml en el archivo enterprise archive (EAR) de la aplicaci\u00f3n.
 
 #-------------------------------------------------------------------------------
@@ -2202,14 +2156,14 @@ CNTR9410I_STOP.useraction=No es necesario que el usuario realice acci\u00f3n alg
 # CNTR9411 - Unused/available (F743-29629).
 
 CNTR9412E_JNDI_CLOSE_FAIL=CNTR9412E: Se ha producido un error al cerrar el espacio de nombres JNDI. Excepci\u00f3n: {0}
-CNTR9412E_JNDI_CLOSE_FAIL.explanation=El contenedor EJB incorporable no ha podido cerrar el espacio de nombres java:global. Esto significa que podr\u00eda haber falta de memoria en algunos Enterprise JavaBeans u otros objetos vinculados al espacio de nombres. Tambi\u00e9n podr\u00eda dar problemas en la JNDI si se crean otras instancias del contenedor Enterprise JavaBeans (EJB) incorporable.
+CNTR9412E_JNDI_CLOSE_FAIL.explanation=El contenedor EJB incorporable no ha podido cerrar el espacio de nombres java:global. Esto significa que podr\u00eda haber falta de memoria en algunos Enterprise JavaBeans u otros objetos vinculados al espacio de nombres.  Tambi\u00e9n podr\u00eda dar problemas en la JNDI si se crean otras instancias del contenedor Enterprise JavaBeans (EJB) incorporable.
 CNTR9412E_JNDI_CLOSE_FAIL.useraction=Resuelva el problema examinando la excepci\u00f3n, los registros y la salida FFDC.
 
 CNTR9413E_CONFIG_READ_FAIL=CNTR9413E: No se ha podido leer el archivo de configuraci\u00f3n de {0}
-CNTR9413E_CONFIG_READ_FAIL.explanation=El contenedor Enterprise JavaBeans (EJB) incorporable no ha podido leer las propiedades de configuraci\u00f3n del archivo especificado. Esto puede ocurrir cuando el archivo de propiedades no tiene un formato correcto.
+CNTR9413E_CONFIG_READ_FAIL.explanation=El contenedor Enterprise JavaBeans (EJB) incorporable no ha podido leer las propiedades de configuraci\u00f3n del archivo especificado.  Esto puede ocurrir cuando el archivo de propiedades no tiene un formato correcto.
 CNTR9413E_CONFIG_READ_FAIL.useraction=Verifique si existe el archivo que se especifica en el sistema de archivos y que su formato es correcto, por ejemplo, <nombre_propiedad>=<nombre_valor>).
 
-CNTR9414E_CONFIG_READ_FAIL=CNTR9414E: No se ha podido enlazar el origen de datos en la JNDI utilizando el nombre {0}. Excepci\u00f3n: {1}
+CNTR9414E_CONFIG_READ_FAIL=CNTR9414E: No se ha podido enlazar el origen de datos en la JNDI utilizando el nombre {0}.  Excepci\u00f3n: {1}
 CNTR9414E_CONFIG_READ_FAIL.explanation=El contenedor Enterprise JavaBeans (EJB) incorporable no ha podido enlazar una instancia javax.sql.DataSource al nombre de espacios JNDI.
 CNTR9414E_CONFIG_READ_FAIL.useraction=Resuelva el problema examinando la excepci\u00f3n, los registros y la salida FFDC.
 
@@ -2233,10 +2187,10 @@ CNTR9419E_JPA_CLOSE_FAIL.useraction=Resuelva el problema examinando la excepci\u
 
 CNTR9420E_INVALID_CONNECTION_POOL_SPECIFIED=CNTR9420E: Las propiedades del contenedor Enterprise JavaBeans (EJB) incorporable del origen de datos {0} contienen un valor ConnectionPool {1} que no es v\u00e1lido.
 CNTR9420E_INVALID_CONNECTION_POOL_SPECIFIED.explanation=Las propiedades que el contenedor Enterprise JavaBeans (EJB) incorporable utiliza contienen un origen de datos con un valor ConnectionPool que no es v\u00e1lido.
-CNTR9420E_INVALID_CONNECTION_POOL_SPECIFIED.useraction=Cambie el valor de propiedad ConnectionPool para que el origen de datos sea un valor v\u00e1lido. Los valores v\u00e1lidos son nombres de agrupaciones de conexiones.
+CNTR9420E_INVALID_CONNECTION_POOL_SPECIFIED.useraction=Cambie el valor de propiedad ConnectionPool para que el origen de datos sea un valor v\u00e1lido.  Los valores v\u00e1lidos son nombres de agrupaciones de conexiones.
 
 #Do not translate "Application" or "ContainerAtBoundary"
-CNTR9421E_INVALID_LTC_RESOLVER_PROPERTY=CNTR9421E: Se ha asignado a la propiedad {0} el valor incorrecto {1}. Esta propiedad indica el par\u00e1metro de acci\u00f3n solucionador LTC (Contenedor de transacciones locales), el cual debe ser Application (valor predeterminado) o ContainerAtBoundary.
+CNTR9421E_INVALID_LTC_RESOLVER_PROPERTY=CNTR9421E: Se ha asignado a la propiedad {0} el valor incorrecto {1}.  Esta propiedad indica el par\u00e1metro de acci\u00f3n solucionador LTC (Contenedor de transacciones locales), el cual debe ser Application (valor predeterminado) o ContainerAtBoundary.
 CNTR9421E_INVALID_LTC_RESOLVER_PROPERTY.explanation=Se ha asignado a la propiedad de acci\u00f3n de solucionador LTC un valor no admitido.
 CNTR9421E_INVALID_LTC_RESOLVER_PROPERTY.useraction=El valor de la propiedad de acci\u00f3n de solucionador LTC debe ser el valor predeterminado Application o ContainerAtBoundary.
 
@@ -2245,7 +2199,7 @@ CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY=CNTR9422E: Se ha asignado a la 
 CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY.explanation=Se ha asignado a la propiedad de acci\u00f3n no resulta LTC un valor no admitido.
 CNTR9422E_INVALID_LTC_UNRESOLVED_ACTION_PROPERTY.useraction=El valor de la propiedad de acci\u00f3n no resulta LTC debe ser el valor predeterminado Rollback o Commit.
 
-CNTR9423E_URL_BIND_FAIL=CNTR9423E: No se ha podido enlazar el recurso URL en la JNDI utilizando el nombre {0}. Excepci\u00f3n: {1}
+CNTR9423E_URL_BIND_FAIL=CNTR9423E: No se ha podido enlazar el recurso URL en la JNDI utilizando el nombre {0}.  Excepci\u00f3n: {1}
 CNTR9423E_URL_BIND_FAIL.explanation=El contenedor Enterprise JavaBeans (EJB) incorporable no ha podido enlazar una instancia java.net.URL al nombre de espacios JNDI.
 CNTR9423E_URL_BIND_FAIL.useraction=Resuelva el problema examinando la excepci\u00f3n, los registros y la salida FFDC.
 

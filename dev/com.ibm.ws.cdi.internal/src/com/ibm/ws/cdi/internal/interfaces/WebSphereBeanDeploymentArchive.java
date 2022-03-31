@@ -299,4 +299,11 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      */
     void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers);
 
+    /**
+     * Get the BCE class names from this archive
+     *
+     * @return the build compatible extension class names
+     */
+    Set<String> getBuildCompatibleExtensionClassNames();
+
 }

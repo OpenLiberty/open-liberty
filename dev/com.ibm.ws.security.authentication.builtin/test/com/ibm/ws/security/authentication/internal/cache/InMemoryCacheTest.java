@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,7 @@ public class InMemoryCacheTest {
         });
         InMemoryAuthCache cache = new InMemoryAuthCache(0, 0, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
-        cache.insert("1", 1);
+        cache.insert("1", new CacheObject(null));
     }
 
     /**
@@ -99,7 +99,7 @@ public class InMemoryCacheTest {
         });
         InMemoryAuthCache cache = new InMemoryAuthCache(0, 0, 5, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
-        cache.insert("1", 1);
+        cache.insert("1", new CacheObject(null));
     }
 
     /**
@@ -120,10 +120,10 @@ public class InMemoryCacheTest {
         });
         InMemoryAuthCache cache = new InMemoryAuthCache(0, 1, defaultTimeoutInMilliSeconds, mockCacheEvictionListenerSet);
         registeredCachesForStoppingEvictionTasks.add(cache);
-        cache.insert("1", 1);
-        cache.insert("2", 2);
-        cache.insert("3", 3);
-        cache.insert("4", 4);
+        cache.insert("1", new CacheObject(null));
+        cache.insert("2", new CacheObject(null));
+        cache.insert("3", new CacheObject(null));
+        cache.insert("4", new CacheObject(null));
     }
 
     /**
@@ -163,7 +163,7 @@ public class InMemoryCacheTest {
     @Test
     public void isEvictionRequired_underByOne() {
         InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
-        cache.insert("1", 1);
+        cache.insert("1", new CacheObject(null));
         assertFalse(cache.isEvictionRequired());
     }
 
@@ -174,8 +174,8 @@ public class InMemoryCacheTest {
     @Test
     public void isEvictionRequired_equals() {
         InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
-        cache.insert("1", 1);
-        cache.insert("2", 2);
+        cache.insert("1", new CacheObject(null));
+        cache.insert("2", new CacheObject(null));
         assertFalse(cache.isEvictionRequired());
     }
 
@@ -186,9 +186,9 @@ public class InMemoryCacheTest {
     @Test
     public void isEvictionRequired_overByOne() {
         InMemoryAuthCache cache = new InMemoryAuthCache(10, 2, 0);
-        cache.insert("1", 1);
-        cache.insert("2", 2);
-        cache.insert("3", 3);
+        cache.insert("1", new CacheObject(null));
+        cache.insert("2", new CacheObject(null));
+        cache.insert("3", new CacheObject(null));
         assertTrue(cache.isEvictionRequired());
     }
 

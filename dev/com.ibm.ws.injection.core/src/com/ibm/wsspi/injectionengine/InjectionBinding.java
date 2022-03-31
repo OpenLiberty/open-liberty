@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2015 IBM Corporation and others.
+ * Copyright (c) 2006, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -815,6 +815,12 @@ implements Formattable
         String module = ivNameSpaceConfig.getModuleName();
         String application = ivNameSpaceConfig.getApplicationName();
         String jndiName = getJndiName();
+
+        if (oldValue instanceof String[])
+            oldValue = Arrays.toString((String[]) oldValue);
+
+        if (newValue instanceof String[])
+            newValue = Arrays.toString((String[]) newValue);
 
         if (xml) {
             Tr.error(tc, "CONFLICTING_XML_VALUES_CWNEN0052E",

@@ -116,6 +116,8 @@ import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PRO
 
 /**
  * @author Bill Burke (initial commit according to GitHub history)
+ * 
+ * This class is based on org/jboss/resteasy/microprofile/client/RestClientBuilderImpl
  */
 public class LibertyRestClientBuilderImpl implements RestClientBuilder {
 
@@ -313,11 +315,10 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         ResteasyClient client;
 
         ResteasyClientBuilder resteasyClientBuilder;
-        List<String> noProxyHosts = Arrays.asList(
-                getSystemProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("\\|"));
         if (this.proxyHost != null) {
             resteasyClientBuilder = builderDelegate.defaultProxy(proxyHost, this.proxyPort);
         } else {
+            List<String> noProxyHosts = getProxyHostsAsRegex(); // via https://github.com/resteasy/resteasy-microprofile/pull/9
             String envProxyHost = getSystemProperty("http.proxyHost", null);
             boolean isUriMatched = false;
             if (envProxyHost != null && !noProxyHosts.isEmpty()) {
@@ -414,6 +415,21 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
                 new LibertyProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager, interceptorInvokers));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
         return proxy;
+    }
+    // added via https://github.com/resteasy/resteasy-microprofile/pull/9
+    /**
+     * Get the users list of proxy hosts. Translate list to regex format
+     * @return list of proxy hosts
+     */
+    private List<String> getProxyHostsAsRegex(){
+        String noProxyHostsSysProps = getSystemProperty("http.nonProxyHosts", null);
+        if (noProxyHostsSysProps == null) {
+            noProxyHostsSysProps = "localhost|127.*|[::1]";
+        } else {
+            String src2 = noProxyHostsSysProps.replace(".", "\\.");
+            noProxyHostsSysProps = src2.replace("*", "[A-Za-z0-9-]*");
+        }
+        return Arrays.asList(noProxyHostsSysProps.split("\\|"));
     }
 
     /**

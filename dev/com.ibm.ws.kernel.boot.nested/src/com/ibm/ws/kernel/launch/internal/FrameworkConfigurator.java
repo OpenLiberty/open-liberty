@@ -62,7 +62,7 @@ public class FrameworkConfigurator {
      * <li>osgi.user.area -- set to the server directory (parent of workarea)
      * <li>osgi.framework.activeThreadType -- none; prevent equinox from
      * spawning a thread to prevent framework from stopping
-     * <li>osgi.checkConfiguration -- true; ensure equinox checks for updates to
+     * <li>osgi.checkConfiguration -- false; Avoid equinox timestamp check on
      * referenced jars
      * <li>osgi.compatibility.eagerStart.LazyActivation -- false; do not
      * auto-start bundles with Bundle-ActivationPolicy: lazy
@@ -96,11 +96,10 @@ public class FrameworkConfigurator {
         // equinox to do that.
         config.put("osgi.framework.activeThreadType", "none");
 
-        // Use an equinox property to ensure that equinox checks whether or not
-        // the jar files we're installing (for file:// URLs) have changed if
-        // osgi is not starting clean. If the bundle jar has changed, associated
-        // cached data is tossed.
-        config.putIfAbsent("osgi.checkConfiguration", "true");
+        // No longer check timestamps of JARs from Equinox
+        // on restart.  It is assumed any new Liberty bundles
+        // will use a different location on disk
+        config.putIfAbsent("osgi.checkConfiguration", "false");
 
         // We do not want Bundle-ActivationPolicy: lazy to cause bundle
         // resolution to automatically start bundles.

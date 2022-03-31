@@ -27,6 +27,8 @@ import componenttest.topology.impl.LibertyServer;
                 TestWithFATServlet2.class,
                 LogsVerificationTest.class,
                 OSGiConsoleTest.class,
+                RemoteEJBTest.class,
+                TestSPIConfig.class,
                 TestMPConfigServlet.class
 })
 public class FATSuite {

@@ -48,6 +48,7 @@ import com.ibm.ws.cdi.internal.config.CDIConfiguration;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.BeansXmlParser;
+import com.ibm.ws.cdi.internal.interfaces.BuildCompatibleExtensionFinder;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
@@ -114,6 +115,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference
     private BeansXmlParser beansXmlParser;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile BuildCompatibleExtensionFinder bceFinder;
 
     @Reference
     private CDIConfiguration cdiContainerConfig;
@@ -661,6 +665,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public Collection<ExtensionArchiveProvider> getExtensionArchiveProviders() {
         return extensionArchiveProviders;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public BuildCompatibleExtensionFinder getBuildCompatibleExtensionFinder() {
+        return bceFinder;
     }
 
 }

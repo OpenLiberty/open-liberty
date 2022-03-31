@@ -26,11 +26,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
     DDValidAppTests.class,
     DDValidAppTests_J9.class,
-    // DDValidAppTests_J10.class,
+    DDValidAppTests_J10.class,
 
     DDValidModTests.class,
     DDValidModTests_J9.class,
-    // DDValidModTests_J10.class,
+    DDValidModTests_J10.class,
 
     DDValidAppPartialHeaderTests.class,
     DDValidAppMinimalHeaderTests.class,

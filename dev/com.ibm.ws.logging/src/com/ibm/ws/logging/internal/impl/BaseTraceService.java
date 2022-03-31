@@ -13,6 +13,7 @@ package com.ibm.ws.logging.internal.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -249,6 +250,9 @@ public class BaseTraceService implements TrService {
         }
     };
 
+    protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
+    public static boolean isStackJoinEnabled = false;
+
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
      */
@@ -385,6 +389,11 @@ public class BaseTraceService implements TrService {
          */
         String messageFormat = trConfig.getMessageFormat();
         String consoleFormat = trConfig.getConsoleFormat();
+
+        /**
+         * Retrieve the format setting for our stack traces
+         */
+        isStackJoinEnabled = trConfig.isStackJoin();
 
         //Retrieve the source lists of both message and console
         List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());
@@ -1632,10 +1641,17 @@ public class BaseTraceService implements TrService {
      * will be invoked on the BaseTraceService to trace the string with
      * the appropriate trace component.
      */
-    public static class TrOutputStream extends ByteArrayOutputStream {
+    public static class TrOutputStream extends ThreadLocalByteArrayOutputStream {
         final SystemLogHolder holder;
         final BaseTraceService service;
+
         public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
+        public static ThreadLocal<Boolean> isPrintingStackTrace = new ThreadLocal<Boolean>() {
             @Override
             protected Boolean initialValue() {
                 return Boolean.FALSE;
@@ -1651,11 +1667,11 @@ public class BaseTraceService implements TrService {
         public synchronized void flush() throws IOException {
 
             /*
-             * sPrinting is a ThreadLocal that is set to disable flushing while printing.
+             * isPrinting is a ThreadLocal that is set to disable flushing while printing.
              * This helps us ignore flush requests that the JDK automatically creates in the middle of printing large (>8k) strings.
              * We want the whole String to be flushed in one shot for benefit of downstream event consumers.
              */
-            if (isPrinting.get())
+            if ((super.threadLocal.get().size() < BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD) && (isPrinting.get() || isPrintingStackTrace.get()))
                 return;
 
             super.flush();
@@ -1681,6 +1697,62 @@ public class BaseTraceService implements TrService {
 
             service.echo(holder, logRecord);
         }
+    }
+
+    public static class ThreadLocalByteArrayOutputStream extends OutputStream {
+        private final static int BYTE_ARRAY_OUTPUT_BUFFER_SIZE = 128;
+        private final ThreadLocal<ByteArrayOutputStream> threadLocal = new ThreadLocal<ByteArrayOutputStream>() {
+            @Override
+            protected ByteArrayOutputStream initialValue() {
+                return new ByteArrayOutputStream(BYTE_ARRAY_OUTPUT_BUFFER_SIZE);
+            }
+        };
+
+        @Override
+        public void write(int b) throws IOException {
+            threadLocal.get().write(b);
+
+        }
+
+        public void reset() {
+            if (threadLocal.get().size() > BYTE_ARRAY_OUTPUT_BUFFER_SIZE) {
+                threadLocal.remove();
+            } else {
+                threadLocal.get().reset();
+            }
+        }
+
+        @Override
+        public void flush() throws IOException {
+            threadLocal.get().flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            threadLocal.get().close();
+        }
+
+        @Override
+        public String toString() {
+            return threadLocal.get().toString();
+        }
+
+        private static int getByteArrayOutputThreshold() {
+            int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256 * 1024; //256 KiloBytes
+
+            try {
+                if ((System.getenv("WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE") != null)) {
+                    int byteArrayOutputStreamThreshold = Integer.valueOf(System.getenv("WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE"));
+
+                    if (byteArrayOutputStreamThreshold >= 0)
+                        return byteArrayOutputStreamThreshold;
+                }
+            } catch (Exception e) {
+            }
+
+            return BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE;
+        }
+
     }
 
     /**
@@ -1729,6 +1801,47 @@ public class BaseTraceService implements TrService {
     }
 
     /**
+     * This method is accessed by bytecode injected into the start of the Throwable.printStackTrace(PrintStream) method.
+     * When this method returns true, printStackTrace will not run the normal printStackTrace method body.
+     * When this method returns false, printStackTrace will run the normal printStackTrace method body.
+     *
+     * @param t              reference to the current Throwable object calling printStackTrace
+     * @param originalStream reference to the PrintStream object to be written to
+     * @return true if the printStackTrace method was overridden, false otherwise
+     */
+    public static boolean prePrintStackTrace(Throwable t, PrintStream originalStream) {
+        if ((originalStream == System.err || originalStream == System.out) && !TrOutputStream.isPrintingStackTrace.get()) {
+            TrOutputStream.isPrintingStackTrace.set(true);
+            t.printStackTrace(originalStream);
+            TrOutputStream.isPrintingStackTrace.set(false);
+            originalStream.flush();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Trim multi or single line stack traces
+     */
+    public static String filterStackTraces(String txt) {
+        String[] lines = txt.split("\\r?\\n");
+        if (lines.length > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < lines.length; i++) {
+                String filteredLine = filterStackTracesOriginal(lines[i]);
+                if (filteredLine != null) {
+                    sb.append(filteredLine);
+                    if (i != lines.length - 1) {
+                        sb.append("\n");
+                    }
+                }
+            }
+            return sb.toString();
+        }
+        return filterStackTracesOriginal(txt);
+    }
+
+    /**
      * Trim stack traces. This isn't as sophisticated as what TruncatableThrowable
      * does, since pass through all code except code which is clearly IBM-internal.
      * This means we pass through Java API and third-party calls - this means we
@@ -1749,7 +1862,7 @@ public class BaseTraceService implements TrService {
      * @return null if the stack trace should be suppressed, or an indicator we're suppressing,
      *         or maybe the original stack trace
      */
-    public static String filterStackTraces(String txt) {
+    public static String filterStackTracesOriginal(String txt) {
         // Check for stack traces, which we may want to trim
         StackTraceFlags stackTraceFlags = traceFlags.get();
         // We have a little thread-local state machine here with four states controlled by two

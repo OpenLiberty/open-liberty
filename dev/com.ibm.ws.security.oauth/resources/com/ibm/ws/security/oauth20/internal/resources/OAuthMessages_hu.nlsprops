@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: A(z) {0} OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nytelen.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nem k\u00e9rhet\u0151 le a megadott oauth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Adjon meg \u00e9rv\u00e9nyes oauth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3t.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Telep\u00edtse a Java 8 vagy \u00fajabb
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: A(z) [{0}] feljogos\u00edt\u00e1si t\u00edpus\u00fa token nem enged\u00e9lyezett. Az enged\u00e9lyezett feljogos\u00edt\u00e1si t\u00edpusok: {1}.
 WRONG_TOKEN_GRANTTYPE.explanation=A token nem \u00e9rv\u00e9nyes, mert a feljogos\u00edt\u00e1si t\u00edpusa nem enged\u00e9lyezett.
 WRONG_TOKEN_GRANTTYPE.useraction=Haszn\u00e1ljon egy enged\u00e9lyezett feljogos\u00edt\u00e1si t\u00edpus\u00fa tokent.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: A(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 [{0}] URI azonos\u00edt\u00f3ja \u00e9rv\u00e9nytelen, mert egy t\u00f6red\u00e9ket tartalmaz.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=A k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert az URI nem tartalmazhat t\u00f6red\u00e9ket.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=Tekintse \u00e1t a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a k\u00e9r\u00e9sben, \u00e9s t\u00e1vol\u00edtsa el az URI t\u00f6red\u00e9ket.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: A(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 [{0}] URI azonos\u00edt\u00f3ja \u00e9rv\u00e9nytelen, mert nem HTTP vagy HTTPS s\u00e9m\u00e1t haszn\u00e1l.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=Az URI \u00e9rt\u00e9knek a HTTP vagy HTTPS s\u00e9m\u00e1t kell haszn\u00e1lnia.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=Tekintse \u00e1t a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a k\u00e9r\u00e9sben, \u00e9s friss\u00edtse azt a HTTP vagy HTTPS s\u00e9ma haszn\u00e1lat\u00e1ra.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: A(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 [{0}] URI azonos\u00edt\u00f3ja nem \u00e9rv\u00e9nyes, mivel a HTTP s\u00e9m\u00e1t haszn\u00e1lja, de a(z) [{2}] OAuth \u00fcgyf\u00e9l nem bizalmas \u00fcgyf\u00e9l.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=Az \u00fczenetben megadott metaadat mez\u0151 URI \u00e9rt\u00e9ke csak akkor haszn\u00e1lhatja a HTTP s\u00e9m\u00e1t, ha az OAuth \u00fcgyf\u00e9l egy bizalmas \u00fcgyf\u00e9l. Ellenkez\u0151 esetben a HTTPS s\u00e9m\u00e1t kell haszn\u00e1lni.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=Friss\u00edtse az URI-t a HTTPS s\u00e9ma haszn\u00e1lat\u00e1ra, vagy friss\u00edtse az OAuth \u00fcgyfelet egy bizalmas \u00fcgyf\u00e9lre.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Kijelentkez\u00e9s

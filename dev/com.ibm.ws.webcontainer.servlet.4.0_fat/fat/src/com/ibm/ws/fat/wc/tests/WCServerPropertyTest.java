@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -98,18 +99,14 @@ public class WCServerPropertyTest {
                 LOG.info("\n" + "Response Text:");
                 LOG.info("\n" + responseText);
 
-                if (JakartaEE9Action.isActive()) {
+                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
                     assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
                 } else {
                     assertTrue("The response should have been empty! " + expectedResponse, responseText.length() == 0);
                 }
                 // True for both runs
                 assertTrue("The response should have been 500!", response.getCode() == 500);
-
-                
-
             }
         }
     }
-
 }

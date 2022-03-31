@@ -16,8 +16,7 @@ src: \
 
 fat.project: true
 
-tested.features:\
-	concurrent-3.0
+tested.features: appsecurity-4.0, cdi-3.0, concurrent-3.0, pages-3.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

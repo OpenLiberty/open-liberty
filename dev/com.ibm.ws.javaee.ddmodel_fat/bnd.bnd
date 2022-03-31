@@ -23,6 +23,24 @@ src: \
 
 test.project: true
 
+# The update of the features from servlet-5.0 to servlet-6.0 impacts the
+# resolution of the EJB dependencies by the AutoFVT framework.
+#
+# AutoFVT automatically computes tested features based on a static analysis
+# of the FAT server provisioned features.  Explicit features are automatically
+# added as tested features.  Condition "tolerated" features are not automatically
+# added.
+#
+# ejb-4.0, a FAT provisioned feature, depends on connectors-2.0, which tolerates
+# connectors-2.1.  connectors-2.1 depends on xmlBinding-4.0.
+#
+# servlet-6.0 triggers EE 10 dependencies, including connectors-2.1, and
+# consequently xmlBindings-4.0.  Since provisioning only conditionally
+# has dependencies on these features, they must be be explicitly added to
+# the tested features list.
+
+tested.features: connectors-2.1, xmlbinding-4.0
+
 -sub: *.bnd
 
 # To define a global minimum java level for the FAT, use the following property.

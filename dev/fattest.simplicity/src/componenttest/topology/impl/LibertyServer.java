@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -481,7 +482,7 @@ public class LibertyServer implements LogMonitorClient {
 
     private static class CheckPointInfo {
 
-        Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
+        final Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
             Log.debug(c, "No beforeRestoreLambda supplied.");
         };
 
@@ -513,11 +514,10 @@ public class LibertyServer implements LogMonitorClient {
         /*
          * save intermediate results of ongoing checkpoint restore test
          */
-        private final boolean checkpointTaken = false;
-        private ProgramOutput output;
         private boolean validateApps;
         private boolean expectStartFailure;
         private boolean validateTimedExit;
+        private Properties checkpointEnv = null;
     }
 
     /**
@@ -855,6 +855,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
+     *
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
@@ -1668,8 +1669,9 @@ public class LibertyServer implements LogMonitorClient {
             if (doCheckpoint()) {
                 checkpointValidate(output, expectStartFailure);
                 checkpointInfo.beforeRestoreLambda.accept(this);
+                checkpointInfo.checkpointEnv = envVars;
                 if (checkpointInfo.autoRestore) {
-                    checkpointRestore();
+                    checkpointRestore(false);
                 } else {
                     return output;
                 }
@@ -1714,10 +1716,12 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * After a checkpoint image has been created and basic validation
-     *
-     * @param output
      */
     public void checkpointRestore() throws Exception {
+        checkpointRestore(true);
+    }
+
+    private void checkpointRestore(boolean validate) throws Exception {
         String method = "checkpointRestore";
         //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
         // polling timeout on the launch
@@ -1727,9 +1731,8 @@ public class LibertyServer implements LogMonitorClient {
             @Override
             public void run() {
                 try {
-                    //Launch the execute without any environment or JDK options. The restore should manage the
-                    //  process creation with all the original env/option in effect
-                    restoreProgramOutputQueue.put(machine.execute(cmd));
+                    Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + checkpointInfo.checkpointEnv);
+                    restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], checkpointInfo.checkpointEnv));
                 } catch (Exception e) {
                     Log.info(c, method, "Exception while attempting to restore a server: " + e.getMessage());
                 }
@@ -1742,18 +1745,22 @@ public class LibertyServer implements LogMonitorClient {
         try {
             output = restoreProgramOutputQueue.poll(scriptTimeout, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.error(c, method, e);
         }
-        if (output == null || output.getReturnCode() != 0) {
+        if (output == null) {
+            Log.warning(c, "The output is null");
+            fail("Failed to restore: no output");
+        } else if (output.getReturnCode() != 0) {
             Log.warning(c, "Restore failed with RC:" + output.getReturnCode());
             Log.warning(c, "Restore stdout: " + output.getStdout());
             Log.warning(c, "Restore stderr: " + output.getStderr());
+            fail("Failed to restore: " + output.getStdout() + " " + output.getStderr());
         }
-        if (checkpointInfo.autoRestore == false) {
-            if (output != null && output.getReturnCode() == 0) {
-                validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectStartFailure,
-                                      checkpointInfo.validateTimedExit);
-            }
+        if (validate) {
+            validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectStartFailure,
+                                  checkpointInfo.validateTimedExit);
+            Log.info(c, method, "Restored from checkpoint, mark server as started.");
+            setStarted();
         }
     }
 

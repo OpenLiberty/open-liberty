@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, kt\u00f3ry jest zdefiniowany przez aplikacj\u0119 {1}, nie by\u0142 dost\u0119pny w odpowiednim czasie.
+CWWKC1200.resource.unavailable.explanation=Zbyt du\u017ce obci\u0105\u017cenie systemu w zwi\u0105zku z przetwarzaniem adnotacji definicji zasob\u00f3w i pozycji deskryptora wdra\u017cania przed podj\u0119ciem przez aplikacj\u0119 pr\u00f3by u\u017cycia tych adnotacji.
+CWWKC1200.resource.unavailable.useraction=Przejrzyj plik messages.log, aby zidentyfikowa\u0107 wyst\u0105pienie b\u0142\u0119du. W przeciwnym razie zmniejsz obci\u0105\u017cenie systemu.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, kt\u00f3ry jest zdefiniowany przez aplikacj\u0119 {1}, wymaga interfejsu ContextService {2}, ale interfejs ContextService by\u0142 niedost\u0119pny w odpowiednim czasie.
+CWWKC1201.contextsvc.inaccessible.explanation=Okre\u015blony zas\u00f3b, kt\u00f3ry implementuje interfejs ContextService, by\u0142 niedost\u0119pny z jednego z poni\u017cszych powod\u00f3w. 1.) Adnotacja definicji zasobu lub definicja zasobu w deskryptorze wdra\u017cania aplikacji okre\u015bla niepoprawn\u0105 nazw\u0119 JNDI, przy u\u017cyciu kt\u00f3rej mo\u017cna znale\u017a\u0107 zas\u00f3b implementuj\u0105cy interfejs ContextService. 2.) Zas\u00f3b implementuj\u0105cy interfejs ContextService jest zdefiniowany w zasi\u0119gu niedost\u0119pnym dla zasobu, kt\u00f3ry wymaga zasobu implementuj\u0105cego interfejs ContextService. 3.) System jest zbyt obci\u0105\u017cony, aby zarejestrowa\u0107 zas\u00f3b implementuj\u0105cy interfejs ContextService w odpowiednim czasie.
+CWWKC1201.contextsvc.inaccessible.useraction=Popraw aplikacj\u0119 w taki spos\u00f3b, aby odwo\u0142ywa\u0142a si\u0119 do nazwy JNDI interfejsu ContextService, kt\u00f3ry jest dost\u0119pny. Je\u015bli podana nazwa JNDI jest poprawna, zmniejsz obci\u0105\u017cenie systemu.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: W elemencie ContextServiceDefinition {1} znaleziono konflikt konfiguracji kontekstu w\u0105tku {0}. Skasowany kontekst to {2}, propagowany kontekst to {3}, a niezmieniony kontekst to {4}.
+CWWKC1202.context.lists.overlap.explanation=Typ kontekstu w\u0105tku mo\u017ce by\u0107 skonfigurowany w dowolnej z kategorii typu kontekstu: wyczyszczone, propagowane lub niezmienione. Typ kontekstu nie mo\u017ce by\u0107 skonfigurowany w wielu kategoriach typu kontekstu.
+CWWKC1202.context.lists.overlap.useraction=Popraw konfiguracj\u0119 tak, aby okre\u015bla\u0142a typ kontekstu w\u0105tku w co najwy\u017cej jednej kategorii.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Ten sam typ kontekstu w\u0105tku, {0}, jest udost\u0119pniany przez wielu dostawc\u00f3w kontekstu w\u0105tku dost\u0119pnych dla aplikacji. Dostawcami kontekstu w\u0105tku s\u0105: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Dla ka\u017cdego typu kontekstu mo\u017ce istnie\u0107 tylko jeden dostawca kontekstu w\u0105tku.
+CWWKC1203.duplicate.context.useraction=Zaktualizuj aplikacj\u0119, biblioteki lub oba te elementy tak, aby dla aplikacji nie by\u0142 dost\u0119pny wi\u0119cej ni\u017c jeden dostawca kontekstu w\u0105tku o okre\u015blonym typie kontekstu.
+
+CWWKC1204.not.serializable=CWWKC1204E: Nie mo\u017cna utworzy\u0107 przekszta\u0142calnego do postaci szeregowej proxy propaguj\u0105cego kontekst w\u0105tku {0}, kt\u00f3ry nie jest przekszta\u0142calny do postaci szeregowej.
+CWWKC1204.not.serializable.explanation=Typy kontekstu w\u0105tku innych firm nie s\u0105 zgodne z przekszta\u0142caniem do postaci szeregowej i nie mo\u017cna ich skonfigurowa\u0107 do propagowania dla przekszta\u0142calnych do postaci szeregowej kontekstowych proxy.
+CWWKC1204.not.serializable.useraction=Zaktualizuj aplikacj\u0119, aby \u017c\u0105da\u0142a nieprzekszta\u0142calnego do postaci szeregowej kontekstowego proxy, lub upewnij si\u0119, \u017ce \u017cadne typy kontekstu innych firm nie s\u0105 skonfigurowane do propagowania.

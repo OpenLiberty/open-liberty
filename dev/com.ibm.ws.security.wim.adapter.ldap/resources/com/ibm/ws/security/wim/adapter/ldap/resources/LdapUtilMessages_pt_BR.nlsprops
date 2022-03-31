@@ -92,7 +92,7 @@ TBS_CERTIFICATE_UNSUPPORTED.explanation=O atributo de certificado TBSCertificate
 TBS_CERTIFICATE_UNSUPPORTED.useraction=Assegure de que o filtro de certificados esteja correto.
 
 UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. Um atributo de certificado desconhecido {0} foi usado na especifica\u00e7\u00e3o do filtro. Especifique um filtro de certificado suportado.
-UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=\u00c9 poss\u00edvel usar somente os valores de atributo de certificado a seguir no lado direito da especifica\u00e7\u00e3o de filtro. As sequ\u00eancias de caracteres fazem distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=\u00c9 poss\u00edvel usar somente os valores de atributo de certificado a seguir no lado direito da especifica\u00e7\u00e3o de filtro. As sequ\u00eancias de caracteres fazem distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas: $'{UniqueKey}', $'{PublicKey}', $'{Issuer}', $'{NotAfter}', $'{NotBefore}', $'{SerialNumber}', $'{SigAlgName}', $'{SigAlgOID}', $'{SigAlgParams}', $'{SubjectCN}', $'{Version}'.
 UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Assegure de que o filtro de certificados esteja correto.
 
 UNKNOWN_DN_FIELD=CWIML0003E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda. O campo Nome Distinto configurado {0} n\u00e3o \u00e9 v\u00e1lido. Especifique um campo Nome Distinto v\u00e1lido.

@@ -337,31 +337,84 @@ public class FailoverServlet extends FATServlet {
         con.setAutoCommit(false);
         DatabaseMetaData mdata = con.getMetaData();
         String dbName = mdata.getDatabaseProductName();
-        boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-        PreparedStatement specStatement = null;
+
+        // Access the Database
+        boolean rowNotFound = false;
+        boolean isPostgreSQL = false;;
+        if (dbName.toLowerCase().contains("postgresql")) {
+            // we are PostgreSQL
+            isPostgreSQL = true;
+            System.out.println("insertStaleLease: This is a PostgreSQL Database");
+        }
+        Statement claimPeerlockingStmt = con.createStatement();
+        ResultSet claimPeerLockingRS = null;
+
         try {
-            String insertString = "INSERT INTO WAS_LEASES_LOG" +
-                                  " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
-                                  " VALUES (?,?,?,?)";
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 " WHERE SERVER_IDENTITY='cloudstale'" +
+                                 (isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
+            System.out.println("insertStaleLease: Attempt to select the row for UPDATE using - " + queryString);
+            claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString);
+        } catch (Exception e) {
+            System.out.println("insertStaleLease: Query failed with exception: " + e);
+            rowNotFound = true;
+        } // eof Exception e block
 
+        // see if we acquired the row
+        if (!rowNotFound && claimPeerLockingRS.next()) {
+            // We found an existing lease row
+            long storedLease = claimPeerLockingRS.getLong(1);
+            System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
+
+            // Construct the UPDATE string
+            String updateString = "UPDATE WAS_LEASES_LOG" +
+                                  " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                  " WHERE SERVER_IDENTITY='cloudstale'";
+
+            System.out.println("insertStaleLease: update lease for cloudstale");
+
+            PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString);
+
+            // Set the Lease_time
             long fir1 = System.currentTimeMillis() - (1000 * 300);
+            claimPeerUpdateStmt.setString(1, "cloudstale");
+            claimPeerUpdateStmt.setLong(2, fir1);
 
-            System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + fir1);
-            specStatement = con.prepareStatement(insertString);
-            specStatement.setString(1, "cloudstale");
-            specStatement.setString(2, "defaultGroup");
-            specStatement.setString(3, "cloudstale");
-            specStatement.setLong(4, fir1);
+            System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
 
-            int ret = specStatement.executeUpdate();
+            int ret = claimPeerUpdateStmt.executeUpdate();
 
-            System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
-            con.commit();
-        } catch (Exception ex) {
-            System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
-        } finally {
-            if (specStatement != null && !specStatement.isClosed())
-                specStatement.close();
+            System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+        } else {
+            // We didn't find the row in the table
+            System.out.println("insertStaleLease: Could not find row");
+
+            PreparedStatement specStatement = null;
+            try {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+
+                System.out.println("insertStaleLease: Using - " + insertString + ", and time: " + fir1);
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, "cloudstale");
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, "cloudstale");
+                specStatement.setLong(4, fir1);
+
+                int ret = specStatement.executeUpdate();
+
+                System.out.println("insertStaleLease: Have inserted Server row with return: " + ret);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+            } finally {
+                if (specStatement != null && !specStatement.isClosed())
+                    specStatement.close();
+            }
         }
     }
 

@@ -11,12 +11,13 @@
 package io.openliberty.concurrent.internal.processor;
 
 import java.lang.reflect.Member;
-import java.security.AccessController;
 import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedThreadFactory;
@@ -32,6 +33,8 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
  */
 @Component(service = InjectionProcessorProvider.class)
 public class ManagedThreadFactoryDefinitionProvider extends InjectionProcessorProvider<ManagedThreadFactoryDefinition, ManagedThreadFactoryDefinition.List> {
+
+    private static final TraceComponent tc = Tr.register(ManagedThreadFactoryDefinitionProvider.class);
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedThreadFactory.class);
@@ -62,6 +65,7 @@ public class ManagedThreadFactoryDefinitionProvider extends InjectionProcessorPr
     }
 
     class Processor extends InjectionProcessor<ManagedThreadFactoryDefinition, ManagedThreadFactoryDefinition.List> {
+        @Trivial
         public Processor() {
             super(ManagedThreadFactoryDefinition.class, ManagedThreadFactoryDefinition.List.class);
         }
@@ -70,18 +74,36 @@ public class ManagedThreadFactoryDefinitionProvider extends InjectionProcessorPr
         public InjectionBinding<ManagedThreadFactoryDefinition> createInjectionBinding(ManagedThreadFactoryDefinition annotation,
                                                                                        Class<?> instanceClass, Member member,
                                                                                        String jndiName) throws InjectionException {
+            final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
+            if (trace)
+                Tr.entry(this, tc, "createInjectionBinding", ManagedThreadFactoryDefinitionBinding.toString(annotation), instanceClass, member, jndiName);
+
             InjectionBinding<ManagedThreadFactoryDefinition> injectionBinding = //
                             new ManagedThreadFactoryDefinitionBinding(jndiName, ivNameSpaceConfig);
             injectionBinding.merge(annotation, instanceClass, null);
+
+            if (trace)
+                Tr.exit(this, tc, "createInjectionBinding", injectionBinding);
             return injectionBinding;
         }
 
         @Override
         public ManagedThreadFactoryDefinition[] getAnnotations(ManagedThreadFactoryDefinition.List pluralAnnotation) {
-            return pluralAnnotation.value();
+            ManagedThreadFactoryDefinition[] annos = pluralAnnotation.value();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Object[] a = new String[annos.length];
+                for (int i = 0; i < annos.length; i++)
+                    a[i] = new StringBuilder().append("ManagedThreadFactoryDefinition@").append(Integer.toHexString(annos[i].hashCode())) //
+                                    .append(' ').append(annos[i].name()) //
+                                    .toString();
+                Tr.debug(this, tc, "getAnnotations", a);
+            }
+            return annos;
         }
 
         @Override
+        @Trivial
         public String getJndiName(ManagedThreadFactoryDefinition annotation) {
             return annotation.name();
         }

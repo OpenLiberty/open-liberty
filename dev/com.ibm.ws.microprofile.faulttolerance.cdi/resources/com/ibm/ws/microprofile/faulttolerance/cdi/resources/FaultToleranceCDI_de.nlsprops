@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Aktualisieren Sie de
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: Die Fallback-Methode {1} mit den Parametern {2} wurde nicht in der Klasse {0} gefunden.
-fallback.method.not.found.CWMFT5003E.explanation=Es wurde eine Fallback-Methode f\u00fcr die Methode {1} deklariert. Diese Methode ist jedoch nicht in der Klasse {0} vorhanden.
+fallback.method.not.found.CWMFT5003E.explanation=Es wurde eine Fallback-Methode deklariert, aber diese Methode ist in der deklarierenden Klasse nicht vorhanden.
 fallback.method.not.found.CWMFT5003E.useraction=Entfernen Sie die Fallback-Annotation oder f\u00fcgen Sie die fehlende Methode hinzu.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=A
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: Die Fallback-Methode {0} mit Parameter- und R\u00fcckgabetypen, die mit der Methode {1} \u00fcbereinstimmen, wurde in der Klassenhierarchie {2} nicht gefunden.
 fallback.method.not.found.CWMFT5021E.explanation=Es wurde eine Fallback-Methode deklariert, die jedoch in der deklarierten Klasse, in den zugeh\u00f6rigen Superklassen oder den Schnittstellen, die sie implementiert, nicht vorhanden ist.
 fallback.method.not.found.CWMFT5021E.useraction=Entfernen Sie die Fallback-Annotation oder f\u00fcgen Sie die fehlende Methode hinzu. Wenn die Fallback-Methode vorhanden ist, jedoch nicht gefunden werden kann, \u00fcberpr\u00fcfen Sie, ob Parameter- und R\u00fcckgabetypen der beiden Methoden \u00fcbereinstimmen, und ob die Fallback-Methode f\u00fcr die Klasse, die die annotierte Methode deklariert, sichtbar ist.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: MicroProfile-Fehlertoleranzannotationen k\u00f6nnen nicht in Kombination mit der Annotation {0} verwendet werden.
+anno.conflict.CWMFT5022E.explanation=Das Mischen von MicroProfile-Fehlertoleranzannotationen mit der angegebenen Annotation wird nicht unterst\u00fctzt.
+anno.conflict.CWMFT5022E.useraction=Entfernen Sie die MicroProfile Fault Tolerance-Annotationen oder die in Konflikt stehende Annotation.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}

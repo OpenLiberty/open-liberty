@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -46,6 +48,7 @@ import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 
@@ -585,24 +588,51 @@ public class FrameworkManager {
                 String phaseProp = config.get(CheckpointPhase.CHECKPOINT_PROPERTY);
                 if (phaseProp != null) {
                     // register the checkpoint phase as early as possible
-                    CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
                     BundleContext fwkContext = fwk.getBundleContext();
-                    fwkContext.registerService(CheckpointPhase.class, phase,
-                                               FrameworkUtil.asDictionary(Collections.singletonMap(CheckpointPhase.CHECKPOINT_PROPERTY, phase)));
+                    final CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
+                    final Dictionary<String, Object> phaseRegProps = new Hashtable<>();
+                    phaseRegProps.put(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY, Boolean.FALSE);
+                    phaseRegProps.put(CheckpointPhase.CHECKPOINT_PROPERTY, phase);
+                    final ServiceRegistration<CheckpointPhase> phaseReg = fwkContext.registerService(CheckpointPhase.class, phase, phaseRegProps);
 
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                        Field restoredField = null;
+
                         @Override
                         public void prepare() {
+                            try {
+                                restoredField = CheckpointPhase.class.getDeclaredField("RESTORED");
+                                restoredField.setAccessible(true);
+                            } catch (NoSuchFieldException e) {
+                                throw new RuntimeException(e);
+                            }
                             logProvider.stop();
                         }
 
                         @Override
                         public void restore() {
+                            try {
+                                restoredField.set(null, Boolean.TRUE);
+                            } catch (IllegalArgumentException | IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                             Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
                             TrConfigurator.update(configMap);
                         }
 
                     }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+
+                    // Update service properties while in multi-threaded to allow proper events.
+                    Hashtable<String, Object> restoredHookProps = new Hashtable<>();
+                    restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
+                    restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+                    fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                        @Override
+                        public void restore() {
+                            phaseRegProps.put(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
+                            phaseReg.setProperties(phaseRegProps);
+                        }
+                    }, restoredHookProps);
                 }
             }
             return fwk;

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1400 - CWWKS1499
+# Message prefix block: CWWKS1400 - CWWKS1499, CWWKS2300 - CWWKS2349
 OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: OAuth \uc81c\uacf5\uc790 {0} \uad6c\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=\uc9c0\uc815\ub41c oauth \uc81c\uacf5\uc790 \uad6c\uc131\uc744 \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=\uc62c\ubc14\ub978 oauth \uc81c\uacf5\uc790 \uad6c\uc131\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
@@ -457,6 +457,20 @@ JAVA8_REQUIRED_FOR_AT_HASHING.useraction=\uc5b8\uae09\ub41c \uad6c\uc131 \uc635\
 WRONG_TOKEN_GRANTTYPE=CWWKS1497E: \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc774 [{0}]\uc778 \ud1a0\ud070\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud5c8\uc6a9\ub41c \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc740 {1}\uc785\ub2c8\ub2e4.
 WRONG_TOKEN_GRANTTYPE.explanation=\uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c \ud1a0\ud070\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 WRONG_TOKEN_GRANTTYPE.useraction=\ud5c8\uc6a9\ub418\ub294 \uad8c\ud55c \ubd80\uc5ec \uc720\ud615\uc758 \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT=CWWKS1498E: {1} \ud074\ub77c\uc774\uc5b8\ud2b8 \ub4f1\ub85d \uba54\ud0c0\ub370\uc774\ud130 \ud544\ub4dc\uc758 [{0}] URI\uc5d0 \ub2e8\ud3b8\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.explanation=URI\uc5d0 \ub2e8\ud3b8\uc774 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc544\uc57c \ud558\ubbc0\ub85c \uc694\uccad\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_CONTAINS_FRAGMENT.useraction=\uc694\uccad\uc758 \ud2b9\uc131 \uac12\uc744 \uac80\ud1a0\ud558\uace0 URI \ub2e8\ud3b8\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME=CWWKS1499E: {1} \ud074\ub77c\uc774\uc5b8\ud2b8 \ub4f1\ub85d \uba54\ud0c0\ub370\uc774\ud130 \ud544\ub4dc\uc758 [{0}] URI\uac00 HTTP \ub610\ub294 HTTPS \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.explanation=URI \uac12\uc740 HTTP \ub610\ub294 HTTPS \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud574\uc57c \ud569\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME.useraction=\uc694\uccad\uc5d0\uc11c \ud2b9\uc131 \uac12\uc744 \uac80\ud1a0\ud558\uace0 HTTP \ub610\ub294 HTTPS \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# NOTE: Start of new message prefix CWWKS2300 - 2349
+
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL=CWWKS2300E: {1} \ud074\ub77c\uc774\uc5b8\ud2b8 \ub4f1\ub85d \uba54\ud0c0\ub370\uc774\ud130 \ud544\ub4dc\uc758 [{0}] URI\ub294 HTTP \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud558\uc9c0\ub9cc [{2}] OAuth \ud074\ub77c\uc774\uc5b8\ud2b8\ub294 \uae30\ubc00 \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc544\ub2c8\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.explanation=\uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uba54\ud0c0\ub370\uc774\ud130 \ud544\ub4dc\uc758 URI \uac12\uc740 OAuth \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uae30\ubc00 \ud074\ub77c\uc774\uc5b8\ud2b8\uc778 \uacbd\uc6b0\uc5d0\ub9cc HTTP \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uadf8\ub807\uc9c0 \uc54a\uc73c\uba74 HTTPS \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud574\uc57c \ud569\ub2c8\ub2e4.
+OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL.useraction=HTTPS \uc2a4\ud0b4\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d URI\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uac70\ub098 OAuth \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uae30\ubc00 \ud074\ub77c\uc774\uc5b8\ud2b8\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=\ub85c\uadf8\uc544\uc6c3

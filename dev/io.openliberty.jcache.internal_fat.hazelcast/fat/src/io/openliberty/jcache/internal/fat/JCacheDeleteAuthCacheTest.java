@@ -36,6 +36,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SuppressWarnings("restriction")
 public class JCacheDeleteAuthCacheTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;

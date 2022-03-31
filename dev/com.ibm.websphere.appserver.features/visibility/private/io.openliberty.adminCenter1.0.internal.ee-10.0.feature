@@ -8,7 +8,6 @@ singleton=true
   io.openliberty.jta-2.0, \
   io.openliberty.pages-3.1
 -bundles=\
-  com.ibm.ws.ui.jakarta, \
-  com.ibm.ws.org.owasp.esapi.2.1.0.jakarta
+  com.ibm.ws.ui.jakarta
 kind=noship
 edition=full

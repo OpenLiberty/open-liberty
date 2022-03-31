@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2021 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public class Generator {
         // Jump a few numbers for error return codes
         BAD_ARGUMENT(20),
         RUNTIME_EXCEPTION(21),
+        NO_ARGUMENT(22),
 
         // All "actions" should be < 0, these are not returned externally
         HELP_ACTION(-1),
@@ -141,13 +142,18 @@ public class Generator {
                     generate(smtp.getMetatypeInformation());
                     break;
                 case HELP_ACTION:
-                    // Only show command-line-style brief usage -help or --help invoked from command line
-                    System.out.println(MessageFormat.format(options.getString("briefUsageScript"), SCRIPT_NAME));
-                    System.out.println();
+
+                    showPurpose();                    
+                    showBriefUsage();
                     showUsageInfo();
 
                     rc = ReturnCode.OK;
                     break;
+                case NO_ARGUMENT:
+
+                    showPurpose();                    
+                    showBriefUsage();
+                    
                 default:
                     rc = ReturnCode.BAD_ARGUMENT;
                     break;
@@ -201,9 +207,17 @@ public class Generator {
         }
     }
 
-    /**
-     * @param b
-     */
+    private void showPurpose() {
+        System.out.println();
+        System.out.println(MessageFormat.format(options.getString("purpose"), SCRIPT_NAME));
+        System.out.println();
+    }
+    
+    private void showBriefUsage() {
+        System.out.println(MessageFormat.format(options.getString("briefUsageScript"), SCRIPT_NAME));
+        System.out.println();
+    }
+
     private void showUsageInfo() {
         final String okpfx = "option-key.";
         final String odpfx = "option-desc.";

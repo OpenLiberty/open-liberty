@@ -698,6 +698,30 @@ error.invalidPhaseName=CWWKE0954E: Die angegebene Pr\u00fcfpunktphase "{0}" ist 
 error.invalidPhaseName.explanation=Als Wert der Pr\u00fcfpunktoption wurde eine unbekannte Phase angegeben.
 error.invalidPhaseName.useraction=Informationen zu g\u00fcltigen Phasennamen finden Sie in der Dokumentation. Geben Sie den Befehl mit einer g\u00fcltigen Pr\u00fcfpunktphase erneut aus.
 
+error.set.securitymanager.jdk18=CWWKE0955E: Die Eigenschaft "websphere.java.security" wurde in der Datei "bootstrap.properties" definiert, aber die Java-Version ist {0}.  Diese Eigenschaft aktiviert den Java Security Manager und ist mit Java 18 oder h\u00f6her nicht g\u00fcltig.
+error.set.securitymanager.jdk18.explanation= Im Rahmen der Einstellung der Unterst\u00fctzung von Java Security Manager, wie in JEP 411 angegeben, unterst\u00fctzt Liberty Java Security Manager mit Java 18 oder h\u00f6her nicht.
+error.set.securitymanager.jdk18.useraction=Entfernen Sie die Eigenschaft "websphere.java.security" aus der Datei "bootstrap.properties" oder verwenden Sie eine Java-Version vor Java 18.
+
+error.cannotset.securitymanager.jdk18=CWWKE0956E: Der Java Security Manager konnte aufgrund einer Ausnahme nicht festgelegt werden: {0}.  Dies tritt auf, wenn der Server Java 18 oder h\u00f6her verwendet und die Java-Systemeigenschaft "Java.security.manager" nicht auf "allow" gesetzt wurde.
+error.cannotset.securitymanager.jdk18.explanation=Java Security Manager konnte nicht aktiviert werden, da das System Java 18 verwendet, was die Verwendung eines Java Security Manager standardm\u00e4\u00dfig nicht zul\u00e4sst.
+error.cannotset.securitymanager.jdk18.useraction=Starten Sie den Server mit dem JVM-Argument -Djava.security.manager = allow.
+
+error.checkpoint.delete=CWWKE0955E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil das vorhandene Pr\u00fcfpunktimage nicht aus dem Verzeichnis {0} gel\u00f6scht werden kann.
+error.checkpoint.delete.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da ein vorhandenes Pr\u00fcfpunkt-Image nicht gel\u00f6scht werden kann.
+error.checkpoint.delete.useraction=Stellen Sie sicher, dass der Benutzer berechtigt ist, das vorhandene Verzeichnis zu l\u00f6schen. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+error.checkpoint.workarea.backup=CWWKE0956E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, da das Verzeichnis {0} nicht gesichert werden kann.
+error.checkpoint.workarea.backup.explanation=Beim Sichern des Arbeitsbereichsverzeichnisses des Pr\u00fcfpunktservers ist ein Fehler aufgetreten.
+error.checkpoint.workarea.backup.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Sichern des Verzeichnisses des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+error.checkpoint.workarea.restore=CWWKE0957E: Das Arbeitsbereichsverzeichnis des Pr\u00fcfpunktservers kann nicht aus dem Verzeichnis {0} wiederhergestellt werden.
+error.checkpoint.workarea.restore.explanation=Beim Wiederherstellen des Arbeitsbereichsverzeichnisses f\u00fcr den Pr\u00fcfpunkt ist ein Fehler aufgetreten.
+error.checkpoint.workarea.restore.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Wiederherstellen des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+info.checkpoint.restore.failed=CWWKE0957I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
+info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
+info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

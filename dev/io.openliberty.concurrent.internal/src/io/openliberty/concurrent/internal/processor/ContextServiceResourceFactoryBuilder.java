@@ -213,6 +213,13 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
         String[] properties = (String[]) contextSvcProps.remove("properties"); // TODO process these?
 
+        if (cleared == null)
+            cleared = new String[0];
+        if (propagated == null)
+            propagated = new String[0];
+        if (unchanged == null)
+            unchanged = new String[0];
+
         String transaction = null;
         String remaining = null;
 
@@ -310,9 +317,9 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1202.context.lists.overlap",
                                                                 dups,
                                                                 jndiName,
-                                                                Arrays.asList(cleared),
-                                                                Arrays.asList(propagated),
-                                                                Arrays.asList(unchanged)));
+                                                                Arrays.toString(cleared),
+                                                                Arrays.toString(propagated),
+                                                                Arrays.toString(unchanged)));
 
         // Add Transaction context provider
         if (transaction == null)

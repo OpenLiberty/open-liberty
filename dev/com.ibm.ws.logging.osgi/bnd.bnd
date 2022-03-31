@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -46,11 +46,14 @@ instrument.disabled: true
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.ras.instrument;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.ras.instrument;version=latest,\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

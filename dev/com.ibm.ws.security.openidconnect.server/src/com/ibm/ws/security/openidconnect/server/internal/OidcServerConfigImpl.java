@@ -109,7 +109,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     public static final String CFG_KEY_AUTH_PROXY_ENDPOINT_URL = "authProxyEndpointUrl";
     public static final String CFG_KEY_REQUIRE_OPENID_SCOPE_FOR_USERINFO = "requireOpenidScopeForUserInfo";
     public static final String CFG_KEY_OIDC_ENDPOINT = "oidcEndpoint";
-    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED = "backchannelLogoutSupported";
 
     public static final String CFG_KEY_JWK_ENABLED = "jwkEnabled";
     public static final String CFG_KEY_JWK_ROTATION = "jwkRotationTime";
@@ -184,7 +183,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     private int jwkSigningKeySize = 0;
     private boolean allowLtpaToken2Name = false;
     private boolean requireOpenidScopeForUserInfo = true;
-    private boolean backchannelLogoutSupported = false;
     // End of OIDC Discovery Configuration Metadata
     private OidcEndpointSettings oidcEndpointSettings;
 
@@ -354,9 +352,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
         if (props.containsKey(CFG_KEY_REQUIRE_OPENID_SCOPE_FOR_USERINFO)) {
             requireOpenidScopeForUserInfo = (Boolean) props.get(CFG_KEY_REQUIRE_OPENID_SCOPE_FOR_USERINFO);
         }
-        if (props.containsKey(CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED)) {
-            backchannelLogoutSupported = (Boolean) props.get(CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED);
-        }
 
         jwkEnabled = (Boolean) props.get(CFG_KEY_JWK_ENABLED);
         jwkRotationTime = (Long) props.get(CFG_KEY_JWK_ROTATION);
@@ -395,7 +390,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
             Tr.debug(tc, "jwkEnabled: " + jwkEnabled);
             Tr.debug(tc, "allowLtpaToken2Name: " + this.allowLtpaToken2Name);
             Tr.debug(tc, "cacheIDToken: " + cacheIDToken);
-            Tr.debug(tc, "backchannelLogoutSupported: " + backchannelLogoutSupported);
 
             //TODO: Joe Add debug statements for Discovery Properties
         }
@@ -1134,11 +1128,6 @@ public class OidcServerConfigImpl implements OidcServerConfig {
     @Override
     public boolean isOpenidScopeRequiredForUserInfo() {
         return requireOpenidScopeForUserInfo;
-    }
-
-    @Override
-    public boolean isBackchannelLogoutSupported() {
-        return backchannelLogoutSupported;
     }
 
     /**

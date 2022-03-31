@@ -63,10 +63,6 @@
 #              to y to allow remote debugging. By default, this value is not
 #              defined, which does not allow remote debugging on newer JDK/JREs.
 #
-# WLP_IN_CONTAINER - Set to true to signal that the script is being invoked from
-#              a container. If true, certain code will be optimized out where it 
-#              does not make sense to be run in container.
-#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #              to be used.
 #
@@ -82,6 +78,9 @@
 #              (ex, /logs), that location will be utilized, else if a relative 
 #              path (ex, logs) is set it will be relative to the default 
 #              location.
+# WLP_IMMUTABLE_VARS - The comma separated list of environment variable names
+#              that will have immutable values between when a server checkpoint
+#              action is done and when the server is restored.
 #
 ###############################################################################
 SERVER_UNKNOWN_STATUS=5
@@ -573,12 +572,6 @@ serverEnvDefaults()
     unset PID_FILE
   fi
 
-  if [ -z "$WLP_IN_CONTAINER" ]; then
-    X_WLP_IN_CONTAINER=false
-  else
-    X_WLP_IN_CONTAINER=$WLP_IN_CONTAINER
-  fi
-
   if [ -z "${JAVA_HOME}" ]
   then
     if [ -z "${JRE_HOME}" ]
@@ -929,7 +922,16 @@ javaCmd()
       CHECKPOINT_AT="features"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -Dosgi.bundlefile.limit=0"
+
+    # Default list of immutable env vars for checkpoint
+    X_WLP_IMMUTABLE_VARS="-Dorg.eclipse.openj9.criu.ImmutableEnvVars=INVOKED,WLP_USER_DIR,WLP_OUTPUT_DIR,LOG_DIR,X_LOG_DIR,LOG_FILE,X_LOG_FILE,VARIABLE_SOURCE_DIRS,X_CMD"
+
+    # Add any additional user specified variables
+    if [ -n "$WLP_IMMUTABLE_VARS" ]; then
+      X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
+    fi
+
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport $X_WLP_IMMUTABLE_VARS"
   fi
   
 
@@ -1213,11 +1215,6 @@ serverCmd()
 #        checkpoint/workarea contains the backup of workarea contents, less the checkpoint dir
 backupWorkarea()
 {
-  if $X_WLP_IN_CONTAINER
-  then
-    return 0
-  fi
-
   # first remove the temporary destination to ensure we get errors if it exists and cannot be deleted
   rm -fr "${SERVER_OUTPUT_DIR}/checkpoint"
   rc=$?
@@ -1233,7 +1230,7 @@ backupWorkarea()
   fi
 
   # copy the workarea to the checkpoint folder so it can be restored later
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/workarea" "${SERVER_OUTPUT_DIR}/checkpoint/workarea"
   rc=$?
   if [ $rc -ne 0 ]; then
     return 3
@@ -1265,7 +1262,7 @@ restoreWorkarea()
   fi
   rm -rf "${SERVER_OUTPUT_DIR}/workarea"
   # copy backup to workarea
-  cp -r --preserve=timestamps "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
+  cp -r --preserve=all "${SERVER_OUTPUT_DIR}/checkpoint/workarea" "${SERVER_OUTPUT_DIR}/workarea"
   rc=$?
   # mv checkpoint directory back
   mkdirs "${SERVER_OUTPUT_DIR}/workarea/"
@@ -1378,11 +1375,8 @@ restoreServer()
   # Store the current restored environment into a file that the JVM can read to restore the values.
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
-  # - JAVA_OPTIONS vars are not set the same on the restore side so we filter them out
-  # - SHLVL the shell level could be different
-  # - HOSTNAME the host name likely is always different for containers
-  # - _ holds the currently running process, here we do no need to have it set to `env`
-  env | grep -Ev "JAVA_OPTIONS=|SHLVL=|HOSTNAME=|_=|X_LOG_FILE=|X_LOG_DIR=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
+  env | grep -Ev "^INVOKED=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?

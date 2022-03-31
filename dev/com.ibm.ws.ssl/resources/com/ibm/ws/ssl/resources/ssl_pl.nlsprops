@@ -57,9 +57,7 @@ ssl.init.svcstartfail.CWPKI0007I.useraction=Nie jest wymagana \u017cadna czynno\
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania us\u0142ugi SSL. Wyj\u0105tek: {0}
 ssl.init.error.CWPKI0008E.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas inicjowania zabezpiecze\u0144.
-ssl.init.error.CWPKI0008E.useraction=To jest b\u0142\u0105d og\u00f3lny. \
-Sprawd\u017a poprzednie komunikaty, kt\u00f3re maj\u0105 zwi\u0105zek z inicjowaniem us\u0142ugi SSL lub problemem dotycz\u0105cym konfiguracji.  \
-Aby uzyska\u0107 dodatkowe informacje, w\u0142\u0105cz \u015bledzenie debugowania: SSL=all=enabled.
+ssl.init.error.CWPKI0008E.useraction=To jest b\u0142\u0105d og\u00f3lny. Sprawd\u017a poprzednie komunikaty, kt\u00f3re maj\u0105 zwi\u0105zek z inicjowaniem us\u0142ugi SSL lub problemem dotycz\u0105cym konfiguracji.  Aby uzyska\u0107 dodatkowe informacje, w\u0142\u0105cz \u015bledzenie debugowania: SSL=all=enabled.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: System nie mo\u017ce utworzy\u0107 obiektu zabezpiecze\u0144 podczas inicjowania.
 ssl.init.nullsecobject.CWPKI0009E.explanation=Nie mo\u017cna utworzy\u0107 obiektu zabezpiecze\u0144 na podstawie repozytorium. Jest to b\u0142\u0105d wewn\u0119trzny. Brak pliku security.xml lub zosta\u0142 on uszkodzony. 
@@ -87,9 +85,7 @@ ssl.init.ssldm.init.CWPKI0014I.useraction=Nie jest wymagana \u017cadna czynno\u0
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zatrzymywania komponentu SSL. Wyj\u0105tek: {0}
 ssl.stop.error.CWPKI0015E.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas zatrzymywania komponentu SSL.
-ssl.stop.error.CWPKI0015E.useraction=To jest b\u0142\u0105d og\u00f3lny. \
-Sprawd\u017a poprzednie komunikaty, kt\u00f3re maj\u0105 zwi\u0105zek z tym b\u0142\u0119dem lub problemem dotycz\u0105cym konfiguracji.  \
-Aby uzyska\u0107 dodatkowe informacje, w\u0142\u0105cz \u015bledzenie debugowania: SSL=all=enabled.
+ssl.stop.error.CWPKI0015E.useraction=To jest b\u0142\u0105d og\u00f3lny. Sprawd\u017a poprzednie komunikaty, kt\u00f3re maj\u0105 zwi\u0105zek z tym b\u0142\u0119dem lub problemem dotycz\u0105cym konfiguracji.  Aby uzyska\u0107 dodatkowe informacje, w\u0142\u0105cz \u015bledzenie debugowania: SSL=all=enabled.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Certyfikat z aliasem {0} w magazynie kluczy {1} utraci wa\u017cno\u015b\u0107 za nast\u0119puj\u0105c\u0105 liczb\u0119 dni: {2}.
 ssl.expiration.warning.CWPKI0016W.explanation=Certyfikat w magazynie kluczy wkr\u00f3tce utraci wa\u017cno\u015b\u0107.
@@ -119,27 +115,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: B\u0142\u0105d uzgadniania pro
 ssl.client.handshake.error.CWPKI0022E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzgadniania protoko\u0142u SSL.  Mo\u017ce by\u0107 wymagany eksport/import osoby podpisuj\u0105cej z docelowego hosta do magazynu zaufanych certyfikat\u00f3w klienta.
 ssl.client.handshake.error.CWPKI0022E.useraction=Aby dowiedzie\u0107 si\u0119, co nale\u017cy zmieni\u0107 w konfiguracjach protoko\u0142u SSL hosta docelowego i klienta, przeczytaj rozszerzony komunikat o b\u0142\u0119dzie z mened\u017cera zaufania.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Alias \
-certyfikatu {0} okre\u015blony w atrybucie clientKeyAlias nie znajduje si\u0119 w magazynie kluczy {1} \
-lub jest niepoprawny.
-ssl.client.alias.not.found.CWPKI0023E.explanation=Alias \
-certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym \
-magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad \
-niepoprawnego certyfikatu.
-ssl.client.alias.not.found.CWPKI0023E.useraction=Dodaj \
-do magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w \
-niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy klienta.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Alias certyfikatu {0} okre\u015blony w atrybucie clientKeyAlias nie znajduje si\u0119 w magazynie kluczy {1} lub jest niepoprawny.
+ssl.client.alias.not.found.CWPKI0023E.explanation=Alias certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad niepoprawnego certyfikatu.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Dodaj do magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy klienta.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Alias \
-certyfikatu {0} okre\u015blony w atrybucie serverKeyAlias nie znajduje si\u0119 w \
-magazynie kluczy {1} lub jest niepoprawny.
-ssl.server.alias.not.found.CWPKI0024E.explanation=Alias \
-certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym \
-magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad \
-niepoprawnego certyfikatu.
-ssl.server.alias.not.found.CWPKI0024E.useraction=Dodaj do \
-magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w \
-niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy serwera.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Alias certyfikatu {0} okre\u015blony w atrybucie serverKeyAlias nie znajduje si\u0119 w magazynie kluczy {1} lub jest niepoprawny.
+ssl.server.alias.not.found.CWPKI0024E.explanation=Alias certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad niepoprawnego certyfikatu.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Dodaj do magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy serwera.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: System nie mo\u017ce za\u0142adowa\u0107 klasy procedury obs\u0142ugi protoko\u0142u HTTPS {0}. Rozszerzony komunikat o b\u0142\u0119dzie: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d \u0142adowania klasy podczas pr\u00f3by za\u0142adowania klasy URLStreamHandler protoko\u0142u HTTPS. 
@@ -197,18 +179,15 @@ ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: Monitor dat wa\u017cno
 ssl.expiration.monitor.start.error.CWPKI0038E.explanation=Wyst\u0105pi\u0142 problem podczas uruchamiania czynno\u015bci monitora dat wa\u017cno\u015bci certyfikat\u00f3w.
 ssl.expiration.monitor.start.error.CWPKI0038E.useraction=Spr\u00f3buj uruchomi\u0107 monitor dat wa\u017cno\u015bci bezpo\u015brednio, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
 # -------------------------------------------------------------------------------------------------
-ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Nie mo\u017cna \
-znale\u017a\u0107 w\u0142a\u015bciwo\u015bci konektora w\u0119z\u0142a dla nazwy hosta {0} z listy host\u00f3w dla \
-magazynu kluczy {1}.
+ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Nie mo\u017cna znale\u017a\u0107 w\u0142a\u015bciwo\u015bci konektora w\u0119z\u0142a dla nazwy hosta {0} z listy host\u00f3w dla magazynu kluczy {1}.
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=Nazw\u0119 hosta nale\u017cy wprowadzi\u0107 na list\u0119 host\u00f3w, stosuj\u0105c ten sam format kanoniczny, kt\u00f3ry jest u\u017cywany w pliku serverindex.xml.
 ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Przekszta\u0142\u0107 list\u0119 host\u00f3w do postaci wymaganego formatu kanonicznego.
 # -------------------------------------------------------------------------------------------------
-ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Wyst\u0105pi\u0142 b\u0142\u0105d uzgadniania protoko\u0142u SSL pochodz\u0105cy z zabezpieczonego klienta.  Nale\u017cy doda\u0107 osob\u0119 podpisuj\u0105c\u0105 protoko\u0142u SSL serwera do magazynu zaufanych certyfikat\u00f3w klienta.  Program narz\u0119dziowy retrieveSigners jest udost\u0119pniany w celu pobrania os\u00f3b podpisuj\u0105cych z serwera, lecz wymaga on uprawnie\u0144 administratora.  Uzgodnij z administratorem uruchomienie tego programu narz\u0119dziowego, aby skonfigurowa\u0107 bezpieczne \u015brodowisko przed uruchomieniem klienta.  Mo\u017cna tak\u017ce w\u0142\u0105czy\u0107 w\u0142a\u015bciwo\u015b\u0107 com.ibm.ssl.enableSignerExchangePrompt w sekcji \"DefaultSSLSettings\" pliku ssl.client.props, aby zezwoli\u0107 na akceptowanie osoby podpisuj\u0105cej podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia.
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Wyst\u0105pi\u0142 b\u0142\u0105d uzgadniania protoko\u0142u SSL pochodz\u0105cy z zabezpieczonego klienta.  Nale\u017cy doda\u0107 osob\u0119 podpisuj\u0105c\u0105 protoko\u0142u SSL serwera do magazynu zaufanych certyfikat\u00f3w klienta.  Program narz\u0119dziowy retrieveSigners jest udost\u0119pniany w celu pobrania os\u00f3b podpisuj\u0105cych z serwera, lecz wymaga on uprawnie\u0144 administratora.  Uzgodnij z administratorem uruchomienie tego programu narz\u0119dziowego, aby skonfigurowa\u0107 bezpieczne \u015brodowisko przed uruchomieniem klienta.  Mo\u017cna tak\u017ce w\u0142\u0105czy\u0107 w\u0142a\u015bciwo\u015b\u0107 com.ibm.ssl.enableSignerExchangePrompt w sekcji "DefaultSSLSettings" pliku ssl.client.props, aby zezwoli\u0107 na akceptowanie osoby podpisuj\u0105cej podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia.
 ssl.handshake.failure.info.CWPKI0040I.explanation=Nale\u017cy doda\u0107 osob\u0119 podpisuj\u0105c\u0105 protoko\u0142u SSL serwera do magazynu zaufanych certyfikat\u00f3w klienta. Osoby podpisuj\u0105ce mo\u017cna pobiera\u0107 automatycznie z serwera albo wprowadza\u0107 r\u0119cznie podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia.
 ssl.handshake.failure.info.CWPKI0040I.useraction=Uruchom program narz\u0119dziowy retrieveSigners albo w\u0142\u0105cz zapytanie o wymian\u0119 osoby podpisuj\u0105cej.
 # -------------------------------------------------------------------------------------------------
-ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: Co najmniej jeden \
-magazyn kluczy u\u017cywa domy\u015blnego has\u0142a.
+ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: Co najmniej jeden magazyn kluczy u\u017cywa domy\u015blnego has\u0142a.
 ssl.default.password.in.use.CWPKI0041W.explanation=Podczas pierwszego uruchomienia ka\u017cdego serwera jako autonomicznego serwera aplikacji lub w konfiguracji wdro\u017cenia sieciowego tworzony jest magazyn kluczy oraz magazyn zaufanych certyfikat\u00f3w na potrzeby domy\u015blnej konfiguracji protoko\u0142u Secure Sockets Layer (SSL). Podczas tworzenia tych plik\u00f3w przez serwer domy\u015blnie u\u017cywane jest has\u0142o WebAS.
 ssl.default.password.in.use.CWPKI0041W.useraction=Tego domy\u015blnego has\u0142a nie nale\u017cy u\u017cywa\u0107 w \u015brodowisku produkcyjnym. Zmie\u0144 has\u0142o domy\u015blne magazynu kluczy i magazynu zaufanych certyfikat\u00f3w, modyfikuj\u0105c plik ssl.client.props. Po zmianie hase\u0142 w pliku ssl.client.props nale\u017cy za pomoc\u0105 programu narz\u0119dziowego PropFilePasswordEncoder ponownie zakodowa\u0107 nowe has\u0142a.
 # -------------------------------------------------------------------------------------------------
@@ -251,14 +230,12 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=Aby zapewni\u0107 mo\u017cliwo\u
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** WIERSZ KOMEND WYMIANY OS\u00d3B PODPISUJ\u0104CYCH PROTOKO\u0141U SSL ***
-ssl.trustmanager.signer.prompt.CWPKI0101I=Nie znaleziono osoby podpisuj\u0105cej protoko\u0142u SSL z hosta docelowego w magazynie zaufanych certyfikat\u00f3w {0}.\n\
-\n\
-Poni\u017cej znajduj\u0105 si\u0119 informacje o osobie podpisuj\u0105cej (sprawd\u017a, czy warto\u015b\u0107 skr\u00f3tu odpowiada warto\u015bci wy\u015bwietlanej na serwerze): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  Nazwa wyr\u00f3\u017cniaj\u0105ca podmiotu:    
-ssl.trustmanager.signer.prompt.CWPKI0103I=  Nazwa wyr\u00f3\u017cniaj\u0105ca wystawcy:     
-ssl.trustmanager.signer.prompt.CWPKI0104I=  Numer seryjny: 
-ssl.trustmanager.signer.prompt.CWPKI0105I=  Skr\u00f3t SHA-1:  
-ssl.trustmanager.signer.prompt.CWPKI0106I=  Skr\u00f3t MD5:    
+ssl.trustmanager.signer.prompt.CWPKI0101I=Nie znaleziono osoby podpisuj\u0105cej protoko\u0142u SSL z hosta docelowego w magazynie zaufanych certyfikat\u00f3w {0}.\n\nPoni\u017cej znajduj\u0105 si\u0119 informacje o osobie podpisuj\u0105cej (sprawd\u017a, czy warto\u015b\u0107 skr\u00f3tu odpowiada warto\u015bci wy\u015bwietlanej na serwerze): 
+ssl.trustmanager.signer.prompt.CWPKI0102I= Nazwa wyr\u00f3\u017cniaj\u0105ca podmiotu:    
+ssl.trustmanager.signer.prompt.CWPKI0103I= Nazwa wyr\u00f3\u017cniaj\u0105ca wystawcy:     
+ssl.trustmanager.signer.prompt.CWPKI0104I= Numer seryjny: 
+ssl.trustmanager.signer.prompt.CWPKI0105I= Skr\u00f3t SHA-1:  
+ssl.trustmanager.signer.prompt.CWPKI0106I= Skr\u00f3t MD5:    
 ssl.trustmanager.signer.prompt.CWPKI0107I=Czy doda\u0107 teraz osob\u0119 podpisuj\u0105c\u0105 do magazynu zaufanych certyfikat\u00f3w? (t/n) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
@@ -268,15 +245,13 @@ ssl.trustmanager.signer.prompt.answer.yes=t
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=tak
 ssl.trustmanager.signer.prompt.CWPKI0108I=Mo\u017ce by\u0107 potrzebna ponowna pr\u00f3ba wykonania \u017c\u0105dania, je\u015bli up\u0142ynie limit czasu gniazda podczas oczekiwania na odpowied\u017a w wierszu komend.  Je\u015bli ponowienie jest wymagane, wiersz komend nie zostanie ponownie wy\u015bwietlony w przypadku wprowadzenia warto\u015bci (y), kt\u00f3ra wskazuje, \u017ce osoba podpisuj\u0105ca zosta\u0142a ju\u017c dodana do magazynu zaufanych certyfikat\u00f3w.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Utrata wa\u017cno\u015bci:       
+ssl.trustmanager.signer.prompt.CWPKI0109I= Utrata wa\u017cno\u015bci:       
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: Podj\u0119to \
-pr\u00f3b\u0119 wygenerowania kluczy za pomoc\u0105 zestawu kluczy {0}, ale ten zestaw kluczy \
-nie jest skonfigurowany na potrzeby generowania kluczy.  Komunikat: {1}
+crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: Podj\u0119to pr\u00f3b\u0119 wygenerowania kluczy za pomoc\u0105 zestawu kluczy {0}, ale ten zestaw kluczy nie jest skonfigurowany na potrzeby generowania kluczy.  Komunikat: {1}
 crypto.key.generate.configuration.error.CWPKI0200E.explanation=Dla zestawu kluczy nie zdefiniowano klasy generowania kluczy, nie mo\u017ce on znale\u017a\u0107 klasy generowania kluczy, z zestawem kluczy powi\u0105zano magazyn kluczy dost\u0119pny tylko do odczytu albo magazyn kluczy nie zezwala na zapis kluczy tajnych.
 crypto.key.generate.configuration.error.CWPKI0200E.useraction=Zmodyfikuj konfiguracj\u0119 w taki spos\u00f3b, aby skonfigurowana by\u0142a odpowiednia klasa generowania kluczy, a typ magazynu kluczy zezwala\u0142 na zapisywanie kluczy tajnych.
 # -------------------------------------------------------------------------------------------------
@@ -284,19 +259,15 @@ crypto.key.getkey.error.CWPKI0201E=CWPKI0201E: Wyst\u0105pi\u0142 b\u0142\u0105d
 crypto.key.getkey.error.CWPKI0201E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania kluczy z magazynu kluczy dla okre\u015blonego zestawu kluczy.
 crypto.key.getkey.error.CWPKI0201E.useraction=Sprawd\u017a, czy konfiguracja zestawu kluczy jest poprawna.
 # -------------------------------------------------------------------------------------------------
-crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: Wyst\u0105pi\u0142 b\u0142\u0105d \
-podczas pr\u00f3by utworzenia instancji klasy generowania kluczy {0} skonfigurowanej \
-w zestawie kluczy {1}.  Komunikat: {2}
+crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by utworzenia instancji klasy generowania kluczy {0} skonfigurowanej w zestawie kluczy {1}.  Komunikat: {2}
 crypto.key.generate.class.load.error.CWPKI0202E.explanation=\u015arodowisko wykonawcze nie mo\u017ce znale\u017a\u0107 klasy generowania kluczy skonfigurowanej dla zestawu kluczy albo ta klasa nie implementuje interfejsu com.ibm.websphere.crypto.KeyGenerator lub com.ibm.websphere.crypto.KeyPairGenerator.
 crypto.key.generate.class.load.error.CWPKI0202E.useraction=Upewnij si\u0119, \u017ce skonfigurowana klasa generowania kluczy jest okre\u015blona w lokalizacji, kt\u00f3ra mo\u017ce zosta\u0107 znaleziona przez \u015brodowisko wykonawcze serwera aplikacji.  Sprawd\u017a w Centrum informacyjnym, w jaki spos\u00f3b nale\u017cy okre\u015bla\u0107 klasy niestandardowe, aby mog\u0142y by\u0107 znajdowane przez \u015brodowisko wykonawcze.
 # -------------------------------------------------------------------------------------------------
-crypto.key.import.error.CWPKI0203E=CWPKI0203E: Nie powiod\u0142a si\u0119 pr\u00f3ba \
-zaimportowania kluczy do zestawu kluczy {0}.  Wyj\u0105tek: {1}
+crypto.key.import.error.CWPKI0203E=CWPKI0203E: Nie powiod\u0142a si\u0119 pr\u00f3ba zaimportowania kluczy do zestawu kluczy {0}.  Wyj\u0105tek: {1}
 crypto.key.import.error.CWPKI0203E.explanation=By\u0107 mo\u017ce klucze przekazane jako dane wej\u015bciowe nie zosta\u0142y poprawnie zbudowane lub nie mo\u017cna uzyska\u0107 dost\u0119pu do magazynu kluczy, aby je zapisa\u0107.
 crypto.key.import.error.CWPKI0203E.useraction=Okre\u015bl przyczyn\u0119 w oparciu o wyj\u0105tek, a nast\u0119pnie dopasuj odpowiednio konfiguracj\u0119.
 # -------------------------------------------------------------------------------------------------
-crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: Wyst\u0105pi\u0142 b\u0142\u0105d \
-podczas zaplanowanego procesu generowania kluczy dla grupy zestaw\u00f3w kluczy {0}.  Wyj\u0105tek: {1}
+crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zaplanowanego procesu generowania kluczy dla grupy zestaw\u00f3w kluczy {0}.  Wyj\u0105tek: {1}
 crypto.key.auto.generate.error.CWPKI0204E.explanation=Wyst\u0105pi\u0142 problem podczas tworzenia nowego odwo\u0142ania do klucza dla okre\u015blonej grupy zestaw\u00f3w kluczy.  Najpierw w konfiguracji zosta\u0142o utworzone odwo\u0142anie do klucza, a nast\u0119pnie ten klucz zosta\u0142 wygenerowany.  Jeden z tych krok\u00f3w zako\u0144czy\u0142 si\u0119 niepowodzeniem.
 crypto.key.auto.generate.error.CWPKI0204E.useraction=Okre\u015bl przyczyn\u0119 w oparciu o wyj\u0105tek, a nast\u0119pnie dopasuj odpowiednio konfiguracj\u0119.
 
@@ -304,16 +275,11 @@ crypto.key.auto.generate.error.CWPKI0204E.useraction=Okre\u015bl przyczyn\u0119 
 # Range 300-399 reserved for Signer Util Messages
 ################################################################################
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: U\u017cyj opcji -listRemoteKeyStoreNames oraz -listLocalKeyStoreNames, aby uzyska\u0107 list\u0119 nazw odpowiednio zdalnych i lokalnych magazyn\u00f3w kluczy.\n\
-\n\
-Sk\u0142adnia: retrieveSigners <nazwa_zdalnego_magazynu_kluczy> <nazwa_lokalnego_magazynu_kluczy> [opcje]\n\
-\ \
-        opcje: [-profileName <nazwa_profilu>] [-remoteAlias <alias_w_zdalnym_magazynie>] [-localAlias <alias_do_zapisania>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <u\u017cytkownik>] [-password <has\u0142o>] [-trace] [-logfile <nazwa_pliku>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: U\u017cyj opcji -listRemoteKeyStoreNames oraz -listLocalKeyStoreNames, aby uzyska\u0107 list\u0119 nazw odpowiednio zdalnych i lokalnych magazyn\u00f3w kluczy.\n\nSk\u0142adnia: retrieveSigners <nazwa_zdalnego_magazynu_kluczy> <nazwa_lokalnego_magazynu_kluczy> [opcje]\n opcje: [-profileName <nazwa_profilu>] [-remoteAlias <alias_w_zdalnym_magazynie>] [-localAlias <alias_do_zapisania>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <u\u017cytkownik>] [-password <has\u0142o>] [-trace] [-logfile <nazwa_pliku>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: Tryb \u015bledzenia jest \
-w\u0142\u0105czony.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: Tryb \u015bledzenia jest w\u0142\u0105czony.
 ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
@@ -321,8 +287,7 @@ ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: System nie mo\u017ce z
 ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=Wyst\u0105pi\u0142 problem zapisu do okre\u015blonego pliku dziennika.
 ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=Zmie\u0144 \u015bcie\u017ck\u0119 do pliku dziennika lub upewnij si\u0119, \u017ce podany plik nie jest u\u017cywany.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: Dane \u015bledzenia s\u0105 rejestrowane \
-w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: Dane \u015bledzenia s\u0105 rejestrowane w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
 ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
@@ -334,13 +299,11 @@ ssl.signer.alias.not.found.CWPKI0305E=CWPKI0305E: Alias w zdalnym magazynie okre
 ssl.signer.alias.not.found.CWPKI0305E.explanation=Okre\u015blony alias nie zosta\u0142 znaleziony w magazynie zaufanych certyfikat\u00f3w.
 ssl.signer.alias.not.found.CWPKI0305E.useraction=Wykonaj komend\u0119 -listRemoteKeyStoreNames, aby uzyska\u0107 list\u0119 nazw.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: Na okre\u015blonym \
-serwerze istniej\u0105 nast\u0119puj\u0105ce zdalne magazyny kluczy: {0}.
+ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: Na okre\u015blonym serwerze istniej\u0105 nast\u0119puj\u0105ce zdalne magazyny kluczy: {0}.
 ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Na okre\u015blonym \
-kliencie istniej\u0105 nast\u0119puj\u0105ce lokalne magazyny kluczy: {0}.
+ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Na okre\u015blonym kliencie istniej\u0105 nast\u0119puj\u0105ce lokalne magazyny kluczy: {0}.
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
@@ -360,26 +323,21 @@ ssl.certificate.before.date.invalid.CWPKI0311E=CWPKI0311E: Certyfikat o nazwie w
 ssl.certificate.before.date.invalid.CWPKI0311E.explanation=Data rozpocz\u0119cia certyfikatu jest niepoprawna.
 ssl.certificate.before.date.invalid.CWPKI0311E.useraction=Upewnij si\u0119, \u017ce zegar klienta jest zgodny z zegarem serwera. W przeciwnym razie utw\u00f3rz certyfikat o poprawnej dacie rozpocz\u0119cia.
 # -------------------------------------------------------------------------------------------------
-ssl.certificate.end.date.invalid.CWPKI0312E=CWPKI0312E: Certyfikat o \
-nazwie wyr\u00f3\u017cniaj\u0105cej tematu {0} ma dat\u0119 zako\u0144czenia {1}, kt\u00f3ra nie jest ju\u017c \
-poprawna.
+ssl.certificate.end.date.invalid.CWPKI0312E=CWPKI0312E: Certyfikat o nazwie wyr\u00f3\u017cniaj\u0105cej tematu {0} ma dat\u0119 zako\u0144czenia {1}, kt\u00f3ra nie jest ju\u017c poprawna.
 ssl.certificate.end.date.invalid.CWPKI0312E.explanation=Certyfikat utraci\u0142 wa\u017cno\u015b\u0107.
 ssl.certificate.end.date.invalid.CWPKI0312E.useraction=Zast\u0105p certyfikat poprawnym certyfikatem.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.invalid.option.CWPKI0313W=CWPKI0313W: Nast\u0119puj\u0105ca opcja jest \
-niepoprawna: {0}.
+ssl.signer.invalid.option.CWPKI0313W=CWPKI0313W: Nast\u0119puj\u0105ca opcja jest niepoprawna: {0}.
 ssl.signer.invalid.option.CWPKI0313W.explanation=Sprawd\u017a wiersz komend, aby upewni\u0107 si\u0119, \u017ce okre\u015blona opcja jest poprawna.
 ssl.signer.invalid.option.CWPKI0313W.useraction=Sprawd\u017a pomoc dotycz\u0105c\u0105 sk\u0142adni i pon\u00f3w pr\u00f3b\u0119 po poprawieniu opcji.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.general.error.CWPKI0314E=CWPKI0314E: Z wyj\u0105tku zwr\u00f3cono \
-nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.signer.general.error.CWPKI0314E=CWPKI0314E: Z wyj\u0105tku zwr\u00f3cono nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.signer.general.error.CWPKI0314E.explanation=Sprawd\u017a wiersz komend, aby upewni\u0107 si\u0119, \u017ce okre\u015blone opcje s\u0105 poprawne.
 ssl.signer.general.error.CWPKI0314E.useraction=Sprawd\u017a pomoc dotycz\u0105c\u0105 sk\u0142adni i pon\u00f3w pr\u00f3b\u0119 po poprawieniu opcji.
 # -------------------------------------------------------------------------------------------------
-ssl.no.properties.error.CWPKI0315E=CWPKI0315E: W\u0142a\u015bciwo\u015bci \
-konfiguracji SSL maj\u0105 warto\u015b\u0107 NULL. M\u00f3g\u0142 wyst\u0105pi\u0107 problem podczas analizowania konfiguracji klienta SSL.
-ssl.no.properties.error.CWPKI0315E.explanation=Nie ma ustawionych w\u0142a\u015bciwo\u015bci konfiguracji SSL.  W\u0142a\u015bciwo\u015b\u0107 \'com.ibm.SSL.ConfigURL\' mo\u017ce by\u0107 ustawiona niepoprawnie lub m\u00f3g\u0142 wyst\u0105pi\u0107 b\u0142\u0105d podczas analizowania konfiguracji klienta SSL.
-ssl.no.properties.error.CWPKI0315E.useraction=Sprawd\u017a, czy w pliku ssl.client.props nie ma b\u0142\u0119d\u00f3w, i upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 \'com.ibm.SSL.ConfigURL\' jest ustawiona.
+ssl.no.properties.error.CWPKI0315E=CWPKI0315E: W\u0142a\u015bciwo\u015bci konfiguracji SSL maj\u0105 warto\u015b\u0107 NULL. M\u00f3g\u0142 wyst\u0105pi\u0107 problem podczas analizowania konfiguracji klienta SSL.
+ssl.no.properties.error.CWPKI0315E.explanation=Nie ma ustawionych w\u0142a\u015bciwo\u015bci konfiguracji SSL.  W\u0142a\u015bciwo\u015b\u0107 'com.ibm.SSL.ConfigURL' mo\u017ce by\u0107 ustawiona niepoprawnie lub m\u00f3g\u0142 wyst\u0105pi\u0107 b\u0142\u0105d podczas analizowania konfiguracji klienta SSL.
+ssl.no.properties.error.CWPKI0315E.useraction=Sprawd\u017a, czy w pliku ssl.client.props nie ma b\u0142\u0119d\u00f3w, i upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 'com.ibm.SSL.ConfigURL' jest ustawiona.
 
 ################################################################################
 # Range 400-599 reserved for CA Pure Client Util and Impls
@@ -389,8 +347,7 @@ ssl.ca.client.usage=CWPKI0400I:
 ssl.ca.client.usage.explanation=Informacje o sk\u0142adni parametr\u00f3w u\u017cywanych do wykonywania tego skryptu.
 ssl.ca.client.usage.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.tracemodeon=CWPKI0401I: Tryb \u015bledzenia jest \
-w\u0142\u0105czony.
+ssl.ca.client.tracemodeon=CWPKI0401I: Tryb \u015bledzenia jest w\u0142\u0105czony.
 ssl.ca.client.tracemodeon.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.ca.client.tracemodeon.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
@@ -398,18 +355,15 @@ ssl.ca.client.logfile.error=CWPKI0402E: System nie mo\u017ce zapisa\u0107 do pli
 ssl.ca.client.logfile.error.explanation=Wyst\u0105pi\u0142 problem zapisu do okre\u015blonego pliku dziennika.
 ssl.ca.client.logfile.error.useraction=Zmie\u0144 \u015bcie\u017ck\u0119 do pliku dziennika na poprawn\u0105 lub upewnij si\u0119, \u017ce podany plik nie jest u\u017cywany.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.logfile.location=CWPKI0403I: Dane \u015bledzenia s\u0105 rejestrowane \
-w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+ssl.ca.client.logfile.location=CWPKI0403I: Dane \u015bledzenia s\u0105 rejestrowane w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
 ssl.ca.client.logfile.location.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.ca.client.logfile.location.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.invalid.option=CWPKI0404W: Nast\u0119puj\u0105ca opcja jest \
-niepoprawna: {0}.
+ssl.ca.client.invalid.option=CWPKI0404W: Nast\u0119puj\u0105ca opcja jest niepoprawna: {0}.
 ssl.ca.client.invalid.option.explanation=Podana opcja jest niepoprawna.
 ssl.ca.client.invalid.option.useraction=Sprawd\u017a pomoc do sk\u0142adni, a nast\u0119pnie pon\u00f3w pr\u00f3b\u0119 po poprawieniu opcji.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.general.error=CWPKI0405E: Z wyj\u0105tku zwr\u00f3cono \
-nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.ca.client.general.error=CWPKI0405E: Z wyj\u0105tku zwr\u00f3cono nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.ca.client.general.error.explanation=Podana opcja jest niepoprawna.
 ssl.ca.client.general.error.useraction=Sprawd\u017a pomoc do sk\u0142adni, a nast\u0119pnie pon\u00f3w pr\u00f3b\u0119 po poprawieniu opcji.
 # -------------------------------------------------------------------------------------------------
@@ -437,39 +391,31 @@ ssl.ca.client.cert.publickey.not.found=CWPKI0411E: Certyfikat o kluczu publiczny
 ssl.ca.client.cert.publickey.not.found.explanation=Aby mo\u017cna by\u0142o odebra\u0107 certyfikat znajduj\u0105cy si\u0119 w magazynie kluczy, klucz publiczny certyfikatu musi by\u0107 zgodny z kluczem publicznym certyfikatu znajduj\u0105cego si\u0119 w magazynie kluczy. 
 ssl.ca.client.cert.publickey.not.found.useraction=Uruchom komend\u0119 z certyfikatem, kt\u00f3rego klucz publiczny jest zgodny z kluczem publicznym certyfikatu znajduj\u0105cego si\u0119 w magazynie kluczy.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.request.out.of.band=CWPKI0412I: Certyfikat zwr\u00f3cony z \
-o\u015brodka certyfikacji ma warto\u015b\u0107 NULL.  \u017b\u0105danie certyfikatu nie zosta\u0142o przetworzone niezw\u0142ocznie i musi zosta\u0107 uzyskane inn\u0105 metod\u0105, za pomoc\u0105 komendy queryCertificate.
+ssl.ca.client.request.out.of.band=CWPKI0412I: Certyfikat zwr\u00f3cony z o\u015brodka certyfikacji ma warto\u015b\u0107 NULL.  \u017b\u0105danie certyfikatu nie zosta\u0142o przetworzone niezw\u0142ocznie i musi zosta\u0107 uzyskane inn\u0105 metod\u0105, za pomoc\u0105 komendy queryCertificate.
 ssl.ca.client.request.out.of.band.explanation=\u017b\u0105danie certyfikatu nie zosta\u0142o natychmiast przetworzone przez o\u015brodek certyfikacji (CA) i nale\u017cy go uzyska\u0107 inn\u0105 metod\u0105.
 ssl.ca.client.request.out.of.band.useraction=Uruchom komend\u0119 queryCertificate, aby sprawdzi\u0107 status certyfikatu i otrzyma\u0107 go, je\u015bli \u017c\u0105danie zosta\u0142o przetworzone.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.invalid.option.type=CWPKI0413E: Nale\u017cy poda\u0107 warto\u015b\u0107 \
-{0} dla {1}.
+ssl.ca.client.invalid.option.type=CWPKI0413E: Nale\u017cy poda\u0107 warto\u015b\u0107 {0} dla {1}.
 ssl.ca.client.invalid.option.type.explanation=Podana warto\u015b\u0107 ma niepoprawny typ.
 ssl.ca.client.invalid.option.type.useraction=Sprawd\u017a pomoc dotycz\u0105c\u0105 sk\u0142adni, popraw typ warto\u015bci i pon\u00f3w pr\u00f3b\u0119.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.invalid.option.value=CWPKI0414E: Opcja {0} musi mie\u0107 \
-warto\u015b\u0107. 
+ssl.ca.client.invalid.option.value=CWPKI0414E: Opcja {0} musi mie\u0107 warto\u015b\u0107. 
 ssl.ca.client.invalid.option.value.explanation=W wierszu komend nie podano poprawnej warto\u015bci.
 ssl.ca.client.invalid.option.value.useraction=Sprawd\u017a pomoc do sk\u0142adni, a nast\u0119pnie pon\u00f3w pr\u00f3b\u0119 po poprawieniu opcji.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.error.init=CWPKI0415E: Podczas inicjowania implementacji \
-o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.ca.client.error.init=CWPKI0415E: Podczas inicjowania implementacji o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.ca.client.error.init.explanation= Podczas inicjowania implementacji o\u015brodka certyfikacji wyst\u0105pi\u0142 b\u0142\u0105d.
 ssl.ca.client.error.init.useraction= Sprawd\u017a komunikat o b\u0142\u0119dzie.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.error.create=CWPKI0416E: Podczas tworzenia certyfikatu \
-podpisanego o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.ca.client.error.create=CWPKI0416E: Podczas tworzenia certyfikatu podpisanego o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.ca.client.error.create.explanation= Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by utworzenia certyfikatu podpisanego o\u015brodka certyfikacji.
 ssl.ca.client.error.create.useraction= Sprawd\u017a komunikat o b\u0142\u0119dzie.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.error.revoke=CWPKI0417E: Podczas uniewa\u017cniania certyfikatu \
-podpisanego o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.ca.client.error.revoke=CWPKI0417E: Podczas uniewa\u017cniania certyfikatu podpisanego o\u015brodka certyfikacji wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.ca.client.error.revoke.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uniewa\u017cnienia certyfikatu podpisanego o\u015brodka certyfikacji (CA).
 ssl.ca.client.error.revoke.useraction=Sprawd\u017a komunikat o b\u0142\u0119dzie.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.client.error.query=CWPKI0418E: Podczas przetwarzania zapytania \
-skierowanego do o\u015brodka certyfikacji i dotycz\u0105cego certyfikatu podpisanego \
-wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
+ssl.ca.client.error.query=CWPKI0418E: Podczas przetwarzania zapytania skierowanego do o\u015brodka certyfikacji i dotycz\u0105cego certyfikatu podpisanego wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {0}.
 ssl.ca.client.error.query.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wys\u0142ania do o\u015brodka certyfikacji zapytania dotycz\u0105cego certyfikatu podpisanego.
 ssl.ca.client.error.query.useraction=Sprawd\u017a komunikat o b\u0142\u0119dzie.
 # -------------------------------------------------------------------------------------------------
@@ -513,21 +459,19 @@ ssl.ca.client.invalid.custom.attrs.useraction=Sprawd\u017a pomoc do sk\u0142adni
 
 
 #  CA CMP Client Impl
-ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E:  Atrybut {0} jest nieobecny lub ma niepoprawny typ.  Poprawny typ: {1}.
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E: \ Atrybut {0} jest nieobecny lub ma niepoprawny typ.  Poprawny typ: {1}.
 ssl.ca.cmp.impl.invalid.attribute.explanation=Atrybut przekazany do implementacji ma warto\u015b\u0107 NULL lub niepoprawny typ.
 ssl.ca.cmp.impl.invalid.attribute.useraction=Upewnij si\u0119, \u017ce do implementacji jest przekazywany wymagany atrybut.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: \u017b\u0105danie certyfikatu \
-ma warto\u015b\u0107 NULL.
+ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: \u017b\u0105danie certyfikatu ma warto\u015b\u0107 NULL.
 ssl.ca.cmp.impl.invalid.certificate.request.explanation=Tablica bajt\u00f3w \u017c\u0105dania certyfikatu ma warto\u015b\u0107 NULL.
 ssl.ca.cmp.impl.invalid.certificate.request.useraction=Upewnij si\u0119, \u017ce do implementacji jest przekazywana poprawna tablica bajt\u00f3w \u017c\u0105dania certyfikatu.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  Has\u0142o \
-uniewa\u017cnienia dla tego \u017c\u0105dania ma warto\u015b\u0107 NULL.
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E: \ Has\u0142o uniewa\u017cnienia dla tego \u017c\u0105dania ma warto\u015b\u0107 NULL.
 ssl.ca.cmp.impl.invalid.revocation.reason.explanation=Tablica bajt\u00f3w has\u0142a uniewa\u017cnienia dla tego \u017c\u0105dania ma warto\u015b\u0107 NULL.
 ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Upewnij si\u0119, \u017ce do implementacji jest przekazywana poprawna tablica bajt\u00f3w has\u0142a uniewa\u017cnienia.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.general.error=CWPKI0453E:  Wyst\u0105pi\u0142 nast\u0119puj\u0105cy nieoczekiwany wyj\u0105tek: {0}
+ssl.ca.cmp.impl.general.error=CWPKI0453E: \ Wyst\u0105pi\u0142 nast\u0119puj\u0105cy nieoczekiwany wyj\u0105tek: {0}
 ssl.ca.cmp.impl.general.error.explanation=CMSG0001
 ssl.ca.cmp.impl.general.error.useraction=CMSG0002
 # -------------------------------------------------------------------------------------------------
@@ -555,8 +499,7 @@ ssl.ca.cmp.impl.invalid.certificate.chain=CWPKI0459E: \u0141a\u0144cuch certyfik
 ssl.ca.cmp.impl.invalid.certificate.chain.explanation=\u017baden \u0142a\u0144cuch certyfikat\u00f3w nie jest dost\u0119pny dla implementacji.
 ssl.ca.cmp.impl.invalid.certificate.chain.useraction=Sprawd\u017a, czy do implementacji jest przekazywany poprawny \u0142a\u0144cuch certyfikat\u00f3w.
 # -------------------------------------------------------------------------------------------------
-ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: Uniewa\u017cnianie certyfikatu \
-podpisanego o\u015brodka certyfikacji (CA).
+ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: Uniewa\u017cnianie certyfikatu podpisanego o\u015brodka certyfikacji (CA).
 ssl.ca.cmp.impl.revoke.request.created.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.ca.cmp.impl.revoke.request.created.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
@@ -606,8 +549,7 @@ ssl.create.certificate.end.useraction=Nie jest wymagana \u017cadna czynno\u015b\
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Podczas tworzenia certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
 ssl.create.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna utworzy\u0107 certyfikatu SSL.
-ssl.create.certificate.error.useraction=Upewnij si\u0119, czy to \
-po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
+ssl.create.certificate.error.useraction=Upewnij si\u0119, czy to po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nie mo\u017cna utworzy\u0107 pliku kluczy SSL: {0}
@@ -629,15 +571,9 @@ ssl.create.certificate.password.error=CWPKI0808E: Do utworzenia domy\u015blnego 
 ssl.create.certificate.password.error.explanation=Konfiguracja magazynu kluczy wymaga has\u0142a o d\u0142ugo\u015bci co najmniej 6 znak\u00f3w na potrzeby utworzenia domy\u015blnego magazynu kluczy.
 ssl.create.certificate.password.error.useraction=Zmie\u0144 konfiguracj\u0119 domy\u015blnego magazynu kluczy, okre\u015blaj\u0105c has\u0142o o d\u0142ugo\u015bci co najmniej 6 znak\u00f3w.
 #--------------------------------------------------------------------------------------------------
-ssl.config.not.used.CWPKI0809W=CWPKI0809W: Wyst\u0105pi\u0142 b\u0142\u0105d \
-podczas \u0142adowania magazynu kluczy {0}. Je\u015bli konfiguracja SSL odwo\u0142uje si\u0119 do \
-magazynu kluczy {1}, jej zainicjowanie nie powiedzie si\u0119.  
-ssl.config.not.used.CWPKI0809W.explanation=Plik \
-magazynu kluczy nie istnieje lub has\u0142o albo typ magazynu kluczy nie jest \
-poprawny, wi\u0119c nie b\u0119dzie mo\u017cna u\u017cywa\u0107 \u017cadnej konfiguracji SSL odwo\u0142uj\u0105cej si\u0119 \
-do magazynu kluczy.
-ssl.config.not.used.CWPKI0809W.useraction=Usu\u0144 problem z \
-konfiguracj\u0105 magazynu kluczy.
+ssl.config.not.used.CWPKI0809W=CWPKI0809W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania magazynu kluczy {0}. Je\u015bli konfiguracja SSL odwo\u0142uje si\u0119 do magazynu kluczy {1}, jej zainicjowanie nie powiedzie si\u0119.  
+ssl.config.not.used.CWPKI0809W.explanation=Plik magazynu kluczy nie istnieje lub has\u0142o albo typ magazynu kluczy nie jest poprawny, wi\u0119c nie b\u0119dzie mo\u017cna u\u017cywa\u0107 \u017cadnej konfiguracji SSL odwo\u0142uj\u0105cej si\u0119 do magazynu kluczy.
+ssl.config.not.used.CWPKI0809W.useraction=Usu\u0144 problem z konfiguracj\u0105 magazynu kluczy.
 #--------------------------------------------------------------------------------------------------
 ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: Magazyn kluczy {0} jest dost\u0119pny tylko do odczytu i certyfikat nie zostanie zapisany do pliku kluczy.  Zaufanie b\u0119dzie akceptowane tylko dla tego po\u0142\u0105czenia. 
 ssl.keystore.readonly.CWPKI0810I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
@@ -647,32 +583,17 @@ ssl.keystore.modified.CWPKI0811I=CWPKI0811I: Plik kluczy {0} zosta\u0142 zmodyfi
 ssl.keystore.modified.CWPKI0811I.explanation=Podany plik kluczy zosta\u0142 zmodyfikowany i \u015brodowisko wykonawcze zostanie uruchomione przy u\u017cyciu zaktualizowanego pliku kluczy. 
 ssl.keystore.modified.CWPKI0811I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 #--------------------------------------------------------------------------------------------------
-ssl.key.error.CWPKI0812E=CWPKI0812E: B\u0142\u0105d podczas pr\u00f3by \
-uzyskania klucza [{0}] z magazynu kluczy [{1}]. Upewnij si\u0119, \u017ce wpis jest \
-kluczem, a has\u0142o do klucza jest poprawne. Zwr\u00f3cony wyj\u0105tek: [{2}].
-ssl.key.error.CWPKI0812E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d \
-podczas pr\u00f3by pobrania klucza z pliku kluczy. By\u0107 mo\u017ce wyst\u0105pi\u0142 problem \
-zwi\u0105zany z kluczem lub has\u0142o do klucza jest niepoprawne. 
-ssl.key.error.CWPKI0812E.useraction=Sprawd\u017a magazyn kluczy, \
-aby upewni\u0107 si\u0119, \u017ce wpis klucza istnieje oraz sprawd\u017a, czy skonfigurowane jest \
-poprawne has\u0142o na potrzeby uzyskiwania dost\u0119pu do wpisu klucza.
+ssl.key.error.CWPKI0812E=CWPKI0812E: B\u0142\u0105d podczas pr\u00f3by uzyskania klucza [{0}] z magazynu kluczy [{1}]. Upewnij si\u0119, \u017ce wpis jest kluczem, a has\u0142o do klucza jest poprawne. Zwr\u00f3cony wyj\u0105tek: [{2}].
+ssl.key.error.CWPKI0812E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by pobrania klucza z pliku kluczy. By\u0107 mo\u017ce wyst\u0105pi\u0142 problem zwi\u0105zany z kluczem lub has\u0142o do klucza jest niepoprawne. 
+ssl.key.error.CWPKI0812E.useraction=Sprawd\u017a magazyn kluczy, aby upewni\u0107 si\u0119, \u017ce wpis klucza istnieje oraz sprawd\u017a, czy skonfigurowane jest poprawne has\u0142o na potrzeby uzyskiwania dost\u0119pu do wpisu klucza.
 #--------------------------------------------------------------------------------------------------
 ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: B\u0142\u0105d podczas pr\u00f3by zainicjowania mened\u017cera kluczy dla magazynu kluczy [{0}]. Has\u0142o klucza prywatnego nie jest poprawne lub magazyn kluczy zawiera wiele kluczy prywatnych z r\u00f3\u017cnymi has\u0142ami.  Nie mo\u017cna u\u017cywa\u0107 tego magazynu kluczy w przypadku protoko\u0142u SSL.  Komunikat o wyj\u0105tku: [{1}].
 ssl.unrecoverablekey.error.CWPKI0813E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zainicjowania mened\u017cera kluczy.  Nie mo\u017cna utworzy\u0107 kontekstu SSL, gdy has\u0142o do klucza prywatnego nie jest poprawne lub gdy magazyn kluczy zawiera wiele kluczy z r\u00f3\u017cnymi has\u0142ami. 
 ssl.unrecoverablekey.error.CWPKI0813E.useraction=Przed u\u017cyciem magazynu kluczy na potrzeby po\u0142\u0105cze\u0144 SSL sprawd\u017a, czy has\u0142o klucza prywatnego jest poprawne, a magazyn kluczy nie zawiera wielu kluczy z r\u00f3\u017cnymi has\u0142ami.
 #--------------------------------------------------------------------------------------------------
-ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Wyst\u0105pi\u0142 \
-b\u0142\u0105d podczas inicjowania sprz\u0119towego magazynu kluczy [{0}].  Sprawd\u017a plik \
-konfiguracyjny {1} sprz\u0119tu, aby upewni\u0107 si\u0119, \u017ce atrybuty zosta\u0142y poprawnie \
-ustawione.  Wyj\u0105tek zwr\u00f3cony przez dostawc\u0119: {2}.
-ssl.hwkeystore.load.error.CWPKI0814E.explanation=Wyst\u0105pi\u0142 \
-problem z konfiguracj\u0105 sprz\u0119tu, kt\u00f3ry uniemo\u017cliwia u\u017cycie magazynu kluczy.  Je\u015bli \
-istnieje konfiguracja SSL odwo\u0142uj\u0105ca si\u0119 do tego magazynu kluczy, nie b\u0119dzie \
-mo\u017cna jej u\u017cywa\u0107.
-ssl.hwkeystore.load.error.CWPKI0814E.useraction=Sprawd\u017a, \
-czy plik konfiguracyjny sprz\u0119tu zawiera wymagane atrybuty, nazw\u0119 i \
-bibliotek\u0119. Upewnij si\u0119, \u017ce inne atrybuty w pliku konfiguracyjnym s\u0105 zgodne ze \
-specyfikacj\u0105 urz\u0105dzenia sprz\u0119towego.
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania sprz\u0119towego magazynu kluczy [{0}].  Sprawd\u017a plik konfiguracyjny {1} sprz\u0119tu, aby upewni\u0107 si\u0119, \u017ce atrybuty zosta\u0142y poprawnie ustawione.  Wyj\u0105tek zwr\u00f3cony przez dostawc\u0119: {2}.
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=Wyst\u0105pi\u0142 problem z konfiguracj\u0105 sprz\u0119tu, kt\u00f3ry uniemo\u017cliwia u\u017cycie magazynu kluczy.  Je\u015bli istnieje konfiguracja SSL odwo\u0142uj\u0105ca si\u0119 do tego magazynu kluczy, nie b\u0119dzie mo\u017cna jej u\u017cywa\u0107.
+ssl.hwkeystore.load.error.CWPKI0814E.useraction=Sprawd\u017a, czy plik konfiguracyjny sprz\u0119tu zawiera wymagane atrybuty, nazw\u0119 i bibliotek\u0119. Upewnij si\u0119, \u017ce inne atrybuty w pliku konfiguracyjnym s\u0105 zgodne ze specyfikacj\u0105 urz\u0105dzenia sprz\u0119towego.
 #--------------------------------------------------------------------------------------------------
 ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: W co najmniej jednym elemencie OutboundConnection podano jako filtr host [{0}] i port [{1}]. Zostanie u\u017cyty element OutboundConnection skonfigurowany w elemencie SSL [{2}].
 ssl.dynamicSelection.conflict.CWPKI0815W.explanation=W konfiguracji serwera zdefiniowano elementy OutboundConnection powoduj\u0105ce konflikt. Aby okre\u015bli\u0107 konfiguracj\u0119 protoko\u0142u SSL dla po\u0142\u0105cze\u0144 wychodz\u0105cych, serwer u\u017cyje pierwszego przetwarzanego elementu OutboundConnection.
@@ -732,10 +653,32 @@ ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Przejrzyj rozszerzony k
 # -------------------------------------------------------------------------------------------------
 ssl.update.certificate.error=CWPKI0829E: Podczas aktualizowania certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
 ssl.update.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna zaktualizowa\u0107 certyfikatu SSL.
-ssl.update.certificate.error.useraction=Upewnij si\u0119, czy to \
-po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera.  Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
+ssl.update.certificate.error.useraction=Upewnij si\u0119, czy to po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera.  Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
 # -------------------------------------------------------------------------------------------------
 ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certyfikat z nazw\u0105 SubjectDN {0} ze zmiennej \u015brodowiskowej {1} jest dodawany do magazynu kluczy {2}.
 ssl.certificate.add.CWPKI0830I.explanation=Certyfikat zosta\u0142 pobrany ze zmiennej \u015brodowiskowej w konfiguracji i jest dodawany do pliku magazynu kluczy.
 ssl.certificate.add.CWPKI0830I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0831E=CWPKI0831E: Nie mo\u017cna u\u017cywa\u0107 protoko\u0142u SSL/TLS {0}. Rozszerzony b\u0142\u0105d to: {1} 
+ssl.protocol.error.CWPKI0831E.explanation=Nie mo\u017cna u\u017cywa\u0107 podanego protoko\u0142u. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by pobrania instancji kontekstu SSLContext z warto\u015bci\u0105 protoko\u0142u. 
+ssl.protocol.error.CWPKI0831E.useraction=Upewnij si\u0119, \u017ce w konfiguracji u\u017cywane s\u0105 poprawne warto\u015bci protoko\u0142u SSL/TLS dla tej wirtualnej maszyny j\u0119zyka Java.
+# -------------------------------------------------------------------------------------------------
+ssl.protocol.error.CWPKI0832E=CWPKI0832E: Podana warto\u015b\u0107 {0} protoko\u0142u SSL/TLS nie mo\u017ce by\u0107 u\u017cywana do konfigurowania listy warto\u015bci protoko\u0142\u00f3w SSL.
+ssl.protocol.error.CWPKI0832E.explanation=Warto\u015b\u0107 protoko\u0142u nie jest poprawna w grupie listy protoko\u0142\u00f3w.
+ssl.protocol.error.CWPKI0832E.useraction=Upewnij si\u0119, \u017ce lista protoko\u0142\u00f3w SSL/TLS zawiera tylko te warto\u015bci, kt\u00f3re s\u0105 odpowiednie dla listy protoko\u0142\u00f3w.
+# ------------------------------------------------------------------------------------------------- 
+ssl.protocol.error.CWPKI0833E=CWPKI0833E: Konfiguracja protoko\u0142u SSL/TLS {0} zawiera b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwia utworzenie konfiguracji protoko\u0142u SSL/TLS. 
+ssl.protocol.error.CWPKI0833E.explanation=W atrybutach konfiguracji protoko\u0142u SSL wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwia tworzenie kontekstu SSL. 
+ssl.protocol.error.CWPKI0833E.useraction=Upewnij si\u0119, \u017ce atrybuty konfiguracji SSL s\u0105 poprawne. Przejrzyj dzienniki pod k\u0105tem dodatkowych b\u0142\u0119d\u00f3w zwi\u0105zanych z atrybutami konfiguracji SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0834E=CWPKI0834E: Konfiguracja protoko\u0142u SSL/TLS {0} nie mo\u017ce by\u0107 ustawiona jako domy\u015blna konfiguracja protoko\u0142u SSL procesu z powodu b\u0142\u0119du.
+ssl.config.error.CWPKI0834E.explanation=Podana konfiguracja SSL/TLS zawiera b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 ustawienie jej jako domy\u015blnej konfiguracji protoko\u0142u SSL procesu. 
+ssl.config.error.CWPKI0834E.useraction=Upewnij si\u0119, \u017ce atrybuty konfiguracji SSL s\u0105 poprawne. Przejrzyj dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w, kt\u00f3re s\u0105 powi\u0105zane z atrybutami konfiguracji SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0835E=CWPKI0835E: \ Nie mo\u017cna utworzy\u0107 konfiguracji SSL/TLS dla po\u0142\u0105czenia przychodz\u0105cego, poniewa\u017c nie utworzono mened\u017cera kluczy.
+ssl.config.error.CWPKI0835E.explanation=B\u0142\u0105d w konfiguracji uniemo\u017cliwi\u0142 utworzenie mened\u017cera kluczy.
+ssl.config.error.CWPKI0835E.useraction=Upewnij si\u0119, \u017ce atrybuty konfiguracji SSL s\u0105 poprawne. Przejrzyj dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w, kt\u00f3re s\u0105 powi\u0105zane z atrybutami konfiguracji SSL.
+# -------------------------------------------------------------------------------------------------
+ssl.config.error.CWPKI0836E=CWPKI0836E: Nie mo\u017cna utworzy\u0107 konfiguracji SSL/TLS, poniewa\u017c nie utworzono mened\u017cera kluczy i mened\u017cera zaufania.
+ssl.config.error.CWPKI0836E.explanation=B\u0142\u0105d w konfiguracji uniemo\u017cliwi\u0142 utworzenie mened\u017cera kluczy i mened\u017cera zaufania.
+ssl.config.error.CWPKI0836E.useraction=Upewnij si\u0119, \u017ce atrybuty konfiguracji SSL s\u0105 poprawne. Przejrzyj dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w, kt\u00f3re s\u0105 powi\u0105zane z atrybutami konfiguracji SSL.

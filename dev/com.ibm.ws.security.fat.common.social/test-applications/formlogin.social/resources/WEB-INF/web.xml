@@ -55,6 +55,10 @@
         <servlet-name>FormLoginServlet</servlet-name>
         <url-pattern>/SecureSimpleServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>FormLoginServlet</servlet-name>
+      <url-pattern>/simple/*</url-pattern>
+    </servlet-mapping>
 
     <!-- SECURITY CONSTRAINTS -->
     <security-constraint>
@@ -123,6 +127,18 @@
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+       <web-resource-collection>
+          <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+          <url-pattern>/simple/*</url-pattern>
+          <http-method>GET</http-method>
+          <http-method>POST</http-method>
+       </web-resource-collection>
+       <auth-constraint>
+          <role-name>Employee</role-name>
+          <role-name>Manager</role-name>        
+       </auth-constraint>
     </security-constraint>
 
     <!-- CHALLENGE TYPE -->

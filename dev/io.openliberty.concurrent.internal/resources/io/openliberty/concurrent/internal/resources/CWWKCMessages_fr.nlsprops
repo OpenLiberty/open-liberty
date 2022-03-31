@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.concurrent.internal/resources/io/openliberty/concurrent/internal/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Jakarta EE Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1200 to CWWCK1399
+
+CWWKC1200.resource.unavailable=CWWKC1200E: {0}, qui est d\u00e9fini par l''application {1}, n''\u00e9tait pas disponible en temps utile.
+CWWKC1200.resource.unavailable.explanation=Trop de charge sur le syst\u00e8me pour traiter les annotations de d\u00e9finition de ressource et les entr\u00e9es de descripteur de d\u00e9ploiement avant que l'application ne tente de les utiliser.
+CWWKC1200.resource.unavailable.useraction=Affichez le fichier messages.log pour identifier l'occurrence d'une erreur. Sinon, r\u00e9durela charge sur le syst\u00e8me.
+
+CWWKC1201.contextsvc.inaccessible=CWWKC1201E: {0}, qui est d\u00e9fini par l''application {1}, requiert un ContextService {2} mais le service ContextService est inaccessible ou n''est pas disponible en temps voulu.
+CWWKC1201.contextsvc.inaccessible.explanation=La ressource sp\u00e9cifi\u00e9e qui impl\u00e9mente l'interface ContextService est inaccessible ou n'est pas disponible en raison de l'une des raisons suivantes. 1.) Une annotation de d\u00e9finition de ressource ou une d\u00e9finition de ressource dans un descripteur de d\u00e9ploiement de l'application indique un nom JNDI incorrect pour trouver la ressource qui impl\u00e9mente l'interface. 2.) La ressource qui impl\u00e9mente l'interface ContextService est d\u00e9finie dans une port\u00e9e qui n'est pas accessible \u00e0 la ressource qui requiert la ressource qui impl\u00e9mente l'interface ContextService. 3.) Le syst\u00e8me est trop charg\u00e9 pour enregistrer une ressource qui impl\u00e9mente l'interface ContextService en temps utile.
+CWWKC1201.contextsvc.inaccessible.useraction=Corrigez l'application pour faire r\u00e9f\u00e9rence au nom JNDI du Service ContextService accessibl. Si le nom JNDI indiqu\u00e9 est correct, r\u00e9duis la charge sur le syst\u00e8me.
+
+CWWKC1202.context.lists.overlap=CWWKC1202E: La configuration en conflit du contexte d''unit\u00e9 d''ex\u00e9cution {0} se trouve dans ContextServiceDefinition {1}. Le contexte effac\u00e9 est {2}, le contexte propag\u00e9 est {3}et le contexte inchang\u00e9 est {4}.
+CWWKC1202.context.lists.overlap.explanation=Un type de contexte d'unit\u00e9 d'ex\u00e9cution peut \u00eatre configur\u00e9 dans n'importe laquelle des cat\u00e9gories de type de contexte effac\u00e9es, propag\u00e9es ou inchang\u00e9es. Le type de contexte ne peut pas \u00eatre configur\u00e9 dans plusieurs cat\u00e9gories de type de contexte.
+CWWKC1202.context.lists.overlap.useraction=Corrigez la configuration pour sp\u00e9cifier le type de contexte d'unit\u00e9 d'ex\u00e9cution dans la plupart des cat\u00e9gories.
+
+CWWKC1203.duplicate.context=CWWKC1203E: Le m\u00eame type de contexte d''unit\u00e9 d''ex\u00e9cution, {0}, est fourni par plusieurs fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution qui sont disponibles pour l''application. Les fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution sont: {1}, {2}.
+CWWKC1203.duplicate.context.explanation=Il ne peut y avoir qu'un seul fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution pour chaque type de contexte.
+CWWKC1203.duplicate.context.useraction=Mettez \u00e0 jour l'application, les biblioth\u00e8ques ou les deux, de sorte qu'aucun fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution du type de contexte sp\u00e9cifi\u00e9 ne soit accessible \u00e0 l'application.
+
+CWWKC1204.not.serializable=CWWKC1204E: Impossible de cr\u00e9er un proxy contextuel s\u00e9rialisable qui propage le contexte d''unit\u00e9 d''ex\u00e9cution {0} qui n''est pas s\u00e9rialisable.
+CWWKC1204.not.serializable.explanation=Les types de contexte d'unit\u00e9 d'ex\u00e9cution tiers ne sont pas compatibles avec la s\u00e9rialisation et ne peuvent pas \u00eatre configur\u00e9s pour \u00eatre propag\u00e9s pour les proxys contextuels s\u00e9rialisables.
+CWWKC1204.not.serializable.useraction=Mettez \u00e0 jour l'application pour demander un proxy contextuel non s\u00e9rialisable ou v\u00e9rifiez qu'aucun type de contexte tiers n'est configur\u00e9 pour \u00eatre propag\u00e9.

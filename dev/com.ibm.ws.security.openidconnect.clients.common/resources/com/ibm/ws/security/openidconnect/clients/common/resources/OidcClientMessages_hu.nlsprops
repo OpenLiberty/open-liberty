@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2021 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -249,5 +249,21 @@ JWT_RESPONSE_STRING_NOT_IN_JWT_FORMAT.useraction=Gondoskodj\u00e9k r\u00f3la, ho
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS=CWWKS1540E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tud inform\u00e1ci\u00f3kat lek\u00e9rni a hozz\u00e1f\u00e9r\u00e9si tokenr\u0151l a UserInfo v\u00e9gpontr\u00f3l: {1}
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.explanation=Lehet, hogy a UserInfo v\u00e9gpont v\u00e1lasza nem az elv\u00e1rt form\u00e1tumban van. Lehets\u00e9ges, hogy az OpenID Connect \u00fcgyf\u00e9l hib\u00e1ra futott a UserInfo k\u00e9r\u00e9s elk\u00fcld\u00e9sekor.
 ERROR_GETTING_USERINFO_OR_EXTRACTING_CLAIMS.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a hiba\u00fczenetet. Ellen\u0151rizze, hogy a UserInfo v\u00e1lasz tartalma megfelel-e a Content-Type HTTP fejl\u00e9cnek.
+
+BACKCHANNEL_LOGOUT_REQUEST_FAILED=CWWKS1541E: A(z) [{0}] fel\u00e9 k\u00fcld\u00f6tt h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9s hib\u00e1ba \u00fctk\u00f6z\u00f6tt. {1}
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.explanation=A k\u00e9r\u00e9s nem a HTTP POST met\u00f3dust haszn\u00e1lja, a k\u00e9r\u00e9sb\u0151l hi\u00e1nyzik egy kijelentkez\u00e9si token vagy a kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes\u00edthet\u0151, vagy a kijelentkez\u00e9si k\u00e9r\u00e9s nem fejez\u0151d\u00f6tt be sikeresen.
+BACKCHANNEL_LOGOUT_REQUEST_FAILED.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a HTTP POST met\u00f3dust haszn\u00e1lja-e a h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9s elk\u00fcld\u00e9s\u00e9hez. Ellenkez\u0151 esetben tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1hoz tartoz\u00f3 teend\u0151t.
+
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER=CWWKS1542E: A h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9s \u00e9rv\u00e9nytelen, mert a logout_token param\u00e9ter hi\u00e1nyzik vagy \u00fcres.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.explanation=A h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9snek tartalmaznia kell egy logout_token param\u00e9tert, amelynek \u00e9rt\u00e9ke egy \u00e9rv\u00e9nyes kijelentkez\u00e9si token.
+BACKCHANNEL_LOGOUT_REQUEST_MISSING_PARAMETER.useraction=Friss\u00edtse a k\u00e9r\u00e9st, hogy tartalmazzon kijelentkez\u00e9si tokent.
+
+BACKCHANNEL_LOGOUT_TOKEN_ERROR=CWWKS1543E: A h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9sben l\u00e9v\u0151 kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes\u00edthet\u0151: {0}
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.explanation=Lehet, hogy a kijelentkez\u00e9si token rossz form\u00e1tum\u00fa, a token v\u00e1ratlan form\u00e1tum\u00fa lehet, vagy m\u00e1s hiba t\u00f6rt\u00e9nt a token al\u00e1\u00edr\u00e1s\u00e1nak vagy k\u00f6vetel\u00e9seinek \u00e9rv\u00e9nyes\u00edt\u00e9sekor.
+BACKCHANNEL_LOGOUT_TOKEN_ERROR.useraction=Tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1hoz tartoz\u00f3 teend\u0151t.
+
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: A h\u00e1tt\u00e9r-kijelentkez\u00e9si k\u00e9r\u00e9s \u00e9rv\u00e9nytelen, mert nincs olyan OpenID Connect \u00fcgyf\u00e9l, amelyik megfelel a k\u00e9r\u00e9snek.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Az OpenID Connect szolg\u00e1ltat\u00e1s elv\u00e1rja, hogy a h\u00e1tt\u00e9r k\u00e9r\u00e9s URI azonos\u00edt\u00f3ja tartalmazzon egy OpenID Connect \u00fcgyf\u00e9lazonos\u00edt\u00f3t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy melyik \u00fcgyf\u00e9l jelentkezzen ki.
+BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s URI tartalmazza-e az OpenID Connect \u00fcgyf\u00e9lazonos\u00edt\u00f3t a felhaszn\u00e1l\u00f3 kijelentkez\u00e9s\u00e9hez.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

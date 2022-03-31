@@ -691,7 +691,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 isExtension = false;
             } else {
                 Set<String> extensionClazz = archive.getExtensionClasses();
-                isExtension = extensionClazz.isEmpty() ? false : true;
+                Set<String> bceClazz = getBuildCompatibleExtensionClassNames();
+                isExtension = extensionClazz.isEmpty() && bceClazz.isEmpty() ? false : true;
             }
         }
         return isExtension;
@@ -1066,6 +1067,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers) {
         this.spiExtensionSuppliers.clear();
         this.spiExtensionSuppliers.addAll(spiExtensionSuppliers);
+    }
+
+    @Override
+    public Set<String> getBuildCompatibleExtensionClassNames() {
+        return archive.getBuildCompatibleExtensionClasses();
     }
 
     private static ClassLoader getContextClassLoader() {

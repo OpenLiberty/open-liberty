@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Aggiornare il tipo d
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: Il metodo fallback {1} con i parametri {2} non \u00e8 stato trovato nella classe {0}.
-fallback.method.not.found.CWMFT5003E.explanation=Un metodo fallback \u00e8 stato dichiarato per il metodo {1}. Tuttavia, questo metodo non esiste nella classe {0}.
+fallback.method.not.found.CWMFT5003E.explanation=Un metodo fallback \u00e8 stato dichiarato, ma non esiste nella classe dichiarante.
 fallback.method.not.found.CWMFT5003E.useraction=Rimuovere l'annotazione fallback o aggiungere il metodo mancante.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=A
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: Il metodo fallback {0} con i tipi di parametri corrispondenti al metodo {1} non \u00e8 stato trovato nella gerarchia della classe {2}.
 fallback.method.not.found.CWMFT5021E.explanation=\u00c8 stato dichiarato un metodo fallback ma non esiste nella classe di dichiarazione, nelle sue superclassi o nelle interfacce che implementa.
 fallback.method.not.found.CWMFT5021E.useraction=Rimuovere l'annotazione fallback o aggiungere il metodo mancante. Se il metodo fallback esiste ma non \u00e8 stato trovato, verificare che i tipi di parametro e il tipo di restituzione dei due metodi corrispondano e che il metodo fallback sia visibile alla classe che dichiara il metodo annotato.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: Le annotazioni MicroProfile Fault Tolerance non possono essere utilizzate in combinazione con l'annotazione {0}.
+anno.conflict.CWMFT5022E.explanation=La combinazione delle annotazioni MicroProfile Fault Tolerance con l'annotazione specificata non \u00e8 supportata.
+anno.conflict.CWMFT5022E.useraction=Rimuovere le annotazioni MicroProfile Fault Tolerance o l'annotazione in conflitto.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Si \u00e8 verificato un errore interno. L'eccezione \u00e8 {0}.

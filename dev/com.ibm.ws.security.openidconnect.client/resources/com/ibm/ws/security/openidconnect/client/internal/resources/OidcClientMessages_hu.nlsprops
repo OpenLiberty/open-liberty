@@ -288,6 +288,6 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u00c9rv\u00e9nytele
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Rossz form\u00e1tum\u00fa cookie-t tartalmaz\u00f3 k\u00e9r\u00e9s \u00e9rkezett.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3i \u00e9s az \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3kat. A rosszul form\u00e1zott cookie-t okozhatja, hogy a cookie m\u00f3dos\u00edt\u00e1sa a felhaszn\u00e1l\u00f3 \u00fcgyf\u00e9len olyan hosztn\u00e9vvel t\u00f6rt\u00e9nt, ami elt\u00e9r a szolg\u00e1ltat\u00f3n regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1si hosztn\u00e9vt\u0151l. Ha a hosztn\u00e9v elv\u00e1rt, akkor adja azt hozz\u00e1 a webAppSecurity elem wasReqURLRedirectDomainNames attrib\u00fatum\u00e1hoz a server.xml f\u00e1jlban.
 
-# 1533-1540 used in clients.common bundle, do not use here.
+# 1533-1544 used in clients.common bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

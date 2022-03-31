@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2021 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -47,20 +47,17 @@ CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.explanation=Kontejner nemohl zak\u00e1z
 CANNOT_PASSIVATE_STATEFUL_BEAN_CNTR0001W.useraction=Ov\u011b\u0159te, zda existuje adres\u00e1\u0159 pro zak\u00e1z\u00e1n\u00ed, proces m\u00e1 v tomto adres\u00e1\u0159i opr\u00e1vn\u011bn\u00ed k z\u00e1pisu a na disku je dostatek m\u00edsta.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Nezda\u0159ilo se z\u00edsk\u00e1n\u00ed modulu wrapper pro domovsk\u00e9 rozhran\u00ed. \n\
-\ Domovsk\u00e9 rozhran\u00ed: {0}
+FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W=CNTR0002W: Nezda\u0159ilo se z\u00edsk\u00e1n\u00ed modulu wrapper pro domovsk\u00e9 rozhran\u00ed. \n Domovsk\u00e9 rozhran\u00ed: {0}
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_FOR_HOME_CNTR0002W.useraction=CMSG0002
 
 # --------------------------------
-CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Stavov\u00fd objekt Session Bean nelze povolit: {0} {1} \n\
-\ {2}
+CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W=CNTR0003W: Stavov\u00fd objekt Session Bean nelze povolit: {0} {1} \n {2}
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.explanation=Kontejneru se nezda\u0159ilo povolit stavov\u00fd objekt session bean z \u00falo\u017ei\u0161t\u011b.
 CANNOT_ACTIVATE_STATEFUL_BEAN_CNTR0003W.useraction=Prove\u010fte akci na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ve zpr\u00e1v\u011b CNTR0003W.
 
 # --------------------------------
-ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Pokus o z\u00edsk\u00e1n\u00ed z\u00e1mku byl p\u0159eru\u0161en. \n\
-\ Z\u00e1mek: {0}
+ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E=CNTR0004E: Pokus o z\u00edsk\u00e1n\u00ed z\u00e1mku byl p\u0159eru\u0161en. \n Z\u00e1mek: {0}
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.explanation=Podproces, kter\u00fd se pokusil z\u00edskat v\u00fdhradn\u00ed z\u00e1mek v r\u00e1mci kontejneru, byl p\u0159eru\u0161en b\u011bhem \u010dek\u00e1n\u00ed na z\u00e1mek.
 ATTEMPT_TO_ACQUIRE_LOCK_INTERRUPTED_CNTR0004E.useraction=CMSG0002
 
@@ -95,29 +92,22 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=Kontejner zjistil typ polo\u
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Ov\u011b\u0159te, zda je typ polo\u017eky prost\u0159ed\u00ed n\u011bkter\u00fd z n\u00e1sleduj\u00edc\u00edch: String, Integer, Boolean, Double, Byte, Short, Long nebo Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Spolupracovn\u00edk {0} vyvolal neo\u010dek\u00e1vanou v\u00fdjimku - jsou zpracov\u00e1v\u00e1ni zb\u00fdvaj\u00edc\u00ed spolupracovn\u00edci.\n\
-\ Data v\u00fdjimky: {1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: Spolupracovn\u00edk {0} vyvolal neo\u010dek\u00e1vanou v\u00fdjimku - jsou zpracov\u00e1v\u00e1ni zb\u00fdvaj\u00edc\u00ed spolupracovn\u00edci.\n Data v\u00fdjimky: {1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
 # --------------------------------
-UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Nelze mapovat v\u00fdjimku. \n\
-\ {0} \n\
-\ {1}
+UNABLE_TO_MAP_EXCEPTION_CNTR0013W=CNTR0013W: Nelze mapovat v\u00fdjimku. \n {0} \n {1}
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.explanation=Kontejner nemohl mapovat v\u00fdjimku na platnou v\u00fdjimku CORBA.
 UNABLE_TO_MAP_EXCEPTION_CNTR0013W.useraction=CMSG0002
 
 # --------------------------------
-STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Podproces StatefulBeanReaper byl p\u0159eru\u0161en; prob\u00edh\u00e1 ukon\u010den\u00ed. \n\
-\ {0}
+STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W=CNTR0014W: Podproces StatefulBeanReaper byl p\u0159eru\u0161en; prob\u00edh\u00e1 ukon\u010den\u00ed. \n {0}
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: B\u011bhem \u010di\u0161t\u011bn\u00ed stavov\u00fdch objekt\u016f typu bean do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. \n\
-\ \u00dadaje o v\u00fdjimce: \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: B\u011bhem \u010di\u0161t\u011bn\u00ed stavov\u00fdch objekt\u016f typu bean do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. \n \u00dadaje o v\u00fdjimce: \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -127,8 +117,7 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=Kontejner nemohl odeb
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Prove\u010fte akci na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ve zpr\u00e1v\u011b CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Spolupracovn\u00edk v oblasti zabezpe\u010den\u00ed vyvolal neo\u010dek\u00e1vanou v\u00fdjimku. \n\
-\ Data v\u00fdjimky: {0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: Spolupracovn\u00edk v oblasti zabezpe\u010den\u00ed vyvolal neo\u010dek\u00e1vanou v\u00fdjimku. \n Data v\u00fdjimky: {0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
@@ -153,8 +142,7 @@ NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.explanation=P\u0159i pokusu kontejne
 NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E.useraction=Prozkoumejte trasov\u00e1n\u00ed z\u00e1sobn\u00edku, abyste mohli ur\u010dit p\u016fvod v\u00fdjimky. Poch\u00e1z\u00ed-li v\u00fdjimka z k\u00f3du vytvo\u0159en\u00e9ho z\u00e1kazn\u00edkem, opravte p\u0159\u00ed\u010dinu v\u00fdjimky. Jinak naleznete informace o ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory spole\u010dnosti IBM.
 
 # --------------------------------
-TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Koordin\u00e1tor transakc\u00ed nen\u00ed k dispozici. \n\
-\ {0}
+TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E=CNTR0022E: Koordin\u00e1tor transakc\u00ed nen\u00ed k dispozici. \n {0}
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.explanation=CMSG0001
 TRANSACTION_COORDINATOR_NOT_AVAILABLE_CNTR0022E.useraction=CMSG0002
 
@@ -179,14 +167,12 @@ DATASOURCE_NAME_NULL_CNTR0026W.explanation=Pro objekt entity bean nebyl zad\u00e
 DATASOURCE_NAME_NULL_CNTR0026W.useraction=Zadejte zdroj dat pro objekt entity bean nebo ur\u010dete v\u00fdchoz\u00ed zdroj dat pro modul.
 
 # --------------------------------
-FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Nezda\u0159ilo se potvrzen\u00ed p\u0159ipojen\u00ed: \n\
-\ {0}
+FAILED_TO_COMMIT_CONNECTION_CNTR0027W=CNTR0027W: Nezda\u0159ilo se potvrzen\u00ed p\u0159ipojen\u00ed: \n {0}
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.explanation=Do\u0161lo k v\u00fdjimce SQLException p\u0159i pokusu o potvrzen\u00ed p\u0159ipojen\u00ed zdroje dat.
 FAILED_TO_COMMIT_CONNECTION_CNTR0027W.useraction=Prohl\u00e9dn\u011bte si dokumentaci k pou\u017e\u00edvan\u00e9mu datab\u00e1zov\u00e9mu produktu. Obvykle je sou\u010d\u00e1st\u00ed v\u00fdjimky SQLException specifick\u00fd k\u00f3d v\u00fdjimky dodavatele. Tento k\u00f3d v\u00fdjimky lze spolu s dokumentac\u00ed pou\u017e\u00edt ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny v\u00fdjimky.
 
 # --------------------------------
-FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Nezda\u0159ilo se uzav\u0159en\u00ed p\u0159ipojen\u00ed: \n\
-\ {0}
+FAILED_TO_CLOSE_CONNECTION_CNTR0028W=CNTR0028W: Nezda\u0159ilo se uzav\u0159en\u00ed p\u0159ipojen\u00ed: \n {0}
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.explanation=Do\u0161lo k v\u00fdjimce SQLException p\u0159i pokusu o uzav\u0159en\u00ed p\u0159ipojen\u00ed zdroje dat.
 FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Prohl\u00e9dn\u011bte si dokumentaci k pou\u017e\u00edvan\u00e9mu datab\u00e1zov\u00e9mu produktu. Obvykle je sou\u010d\u00e1st\u00ed v\u00fdjimky SQLException specifick\u00fd k\u00f3d v\u00fdjimky dodavatele. Tento k\u00f3d v\u00fdjimky lze spolu s dokumentac\u00ed pou\u017e\u00edt ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny v\u00fdjimky.
 
@@ -203,8 +189,7 @@ FAILED_TO_CLOSE_CONNECTION_CNTR0028W.useraction=Prohl\u00e9dn\u011bte si dokumen
 # Cannot.obtain.the.transaction.coordinator.{0}.useraction=CMSG0002
 
 # --------------------------------
-ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Chyba p\u0159i spou\u0161t\u011bn\u00ed objektu typu bean CMP {0}: \n\
-\ {1}
+ERROR_STARTING_CMP_BEAN_CNTR0031W=CNTR0031W: Chyba p\u0159i spou\u0161t\u011bn\u00ed objektu typu bean CMP {0}: \n {1}
 ERROR_STARTING_CMP_BEAN_CNTR0031W.explanation=Objekt entity bean m\u016f\u017ee b\u00fdt v\u00e1z\u00e1n na zdroj dat pomoc\u00ed neplatn\u00e9ho nebo nespr\u00e1vn\u00e9ho n\u00e1zvu zdroje dat. Je-li n\u00e1zev zdroje dat spr\u00e1vn\u00fd, je mo\u017en\u00e9, \u017ee zdroj dat nen\u00ed spr\u00e1vn\u011b konfigurov\u00e1n.
 ERROR_STARTING_CMP_BEAN_CNTR0031W.useraction=Pokud t\u00e9to zpr\u00e1v\u011b p\u0159edch\u00e1z\u00ed zpr\u00e1va CNTR0026W, je t\u0159eba zadat n\u00e1zev zdroje dat. Pokud zpr\u00e1va CNTR0026W t\u00e9to zpr\u00e1v\u011b nep\u0159edch\u00e1z\u00ed, zkontrolujte n\u00e1zev zdroje dat uveden\u00fd ve zpr\u00e1v\u011b CNTR0032W, kter\u00e1 n\u00e1sleduje po t\u00e9to zpr\u00e1v\u011b. Pokud do\u0161lo k v\u00fdjimce nenalezen\u00e9ho n\u00e1zvu, n\u00e1zev zdroje dat pravd\u011bpodobn\u011b nen\u00ed spr\u00e1vn\u00fd. Pokud je zad\u00e1n spr\u00e1vn\u00fd n\u00e1zev zdroje dat, zkontrolujte konfiguraci zdroje dat. Je nap\u0159\u00edklad mo\u017en\u00e9, \u017ee jste do konfigurace zdroje dat zadali nespr\u00e1vn\u00fd n\u00e1zev datab\u00e1ze, jm\u00e9no u\u017eivatele nebo heslo.
 
@@ -286,12 +271,8 @@ CONNECTION_FACTORY_BINDING_NOT_SPECIFIED_CNTR0046E.useraction=P\u0159i instalaci
 
 # --------------------------------
 METHOD_NOT_ALLOWED_CNTR0047E=CNTR0047E: Objekt typu bean se pokou\u0161\u00ed pou\u017e\u00edt rozhran\u00ed nebo metodu "{0}" v situaci zak\u00e1zan\u00e9 specifikac\u00ed sady EJB.
-METHOD_NOT_ALLOWED_CNTR0047E.explanation=Specifikace sady EJB (Enterprise Java Bean) neumo\u017e\u0148uje pou\u017e\u00edt danou metodu z n\u011bkter\u00e9 z n\u00e1sleduj\u00edc\u00edch p\u0159\u00ed\u010din: - Metody getRollbackOnly a setRollbackOnly rozhran\u00ed MessageDriven-Context je mo\u017en\u00e9 pou\u017e\u00edvat pouze u metod objekt typu message-driven bean, kter\u00e9 jsou spou\u0161t\u011bny v kontextu transakce. \
-# - Vyvol\u00e1n\u00ed metod CallerPrincipal a isCallerInRole nen\u00ed povoleno v metod\u00e1ch objektu typu message-driven bean, proto\u017ee kontejner neobsahuje kontext zabezpe\u010den\u00ed klienta. \
-# - Vyvol\u00e1n\u00ed metod getRollbackOnly a setRollbackOnly nen\u00ed povoleno v metod\u00e1ch objektu typu message-driven bean, pro kter\u00e9 kontejner neobsahuje smyslupln\u00fd kontext transakce a pro v\u0161echny objekty typu message-driven bean s demarkac\u00ed transakce spravovan\u00e9 objektem typu bean. \
-# - Rozhran\u00ed transakce u\u017eivatele nen\u00ed k dispozici pro objekty typu message-driven bean s demarkac\u00ed transakce spravovan\u00e9 kontejnerem. \
-# - Vyvol\u00e1n\u00ed metod getEJBHome nebo getEJBLocalHome nen\u00ed povoleno u metod objekt typu message-driven bean, proto\u017ee neexistuj\u00ed \u017e\u00e1dn\u00e9 objekty EJBHome nebo EJBLocalHome pro objekty typu message-driven bean. \
-#
+METHOD_NOT_ALLOWED_CNTR0047E.explanation=Specifikace sady EJB (Enterprise Java Bean) neumo\u017e\u0148uje pou\u017e\u00edt danou metodu z n\u011bkter\u00e9 z n\u00e1sleduj\u00edc\u00edch p\u0159\u00ed\u010din: - Metody getRollbackOnly a setRollbackOnly rozhran\u00ed MessageDriven-Context je mo\u017en\u00e9 pou\u017e\u00edvat pouze u metod objekt typu message-driven bean, kter\u00e9 jsou spou\u0161t\u011bny v kontextu transakce. # - Vyvol\u00e1n\u00ed metod CallerPrincipal a isCallerInRole nen\u00ed povoleno v metod\u00e1ch objektu typu message-driven bean, proto\u017ee kontejner neobsahuje kontext zabezpe\u010den\u00ed klienta. # - Vyvol\u00e1n\u00ed metod getRollbackOnly a setRollbackOnly nen\u00ed povoleno v metod\u00e1ch objektu typu message-driven bean, pro kter\u00e9 kontejner neobsahuje smyslupln\u00fd kontext transakce a pro v\u0161echny objekty typu message-driven bean s demarkac\u00ed transakce spravovan\u00e9 objektem typu bean. # - Rozhran\u00ed transakce u\u017eivatele nen\
+    \u00ed k dispozici pro objekty typu message-driven bean s demarkac\u00ed transakce spravovan\u00e9 kontejnerem. # - Vyvol\u00e1n\u00ed metod getEJBHome nebo getEJBLocalHome nen\u00ed povoleno u metod objekt typu message-driven bean, proto\u017ee neexistuj\u00ed \u017e\u00e1dn\u00e9 objekty EJBHome nebo EJBLocalHome pro objekty typu message-driven bean. #
 METHOD_NOT_ALLOWED_CNTR0047E.useraction=Nevyvol\u00e1vejte uvedenou metodu v tomto prost\u0159ed\u00ed.
 
 # --------------------------------
@@ -330,14 +311,12 @@ EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.explanation=CMSG0001
 EXCEPTION_THROWN_BY_DISCARD_STRATEGY_CNTR0054W.useraction=CMSG0002
 
 # --------------------------------
-THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Byl zachycen objekt Throwable v\u00fdjimky p\u0159i pokusu o vytvo\u0159en\u00ed polo\u017eky <env-entry-name> {0} <env-entry-value> {1} \n\
- \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W=CNTR0055W: Byl zachycen objekt Throwable v\u00fdjimky p\u0159i pokusu o vytvo\u0159en\u00ed polo\u017eky <env-entry-name> {0} <env-entry-value> {1} \n {2}
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.explanation=Kontejner zachytil objekt Throwable p\u0159i pokusu o vytvo\u0159en\u00ed polo\u017eky java:comp/env.
 THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CNTR0055W.useraction=Prove\u010fte akci na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ve zpr\u00e1v\u011b CNTR0055W.
 
 # --------------------------------
-FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Nezda\u0159ilo se z\u00edskat modul wrapper pro objekt typu bean. Objekt typu bean: \n\
-\ {0}
+FAILED_TO_GET_WRAPPER_CNTR0056W=CNTR0056W: Nezda\u0159ilo se z\u00edskat modul wrapper pro objekt typu bean. Objekt typu bean: \n {0}
 FAILED_TO_GET_WRAPPER_CNTR0056W.explanation=CMSG0001
 FAILED_TO_GET_WRAPPER_CNTR0056W.useraction=CMSG0002
 
@@ -467,8 +446,7 @@ ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.explanation=CMSG0001
 ENDPOINT_RECOVERY_ID_UNKNOWN_CNTR0082E.useraction=CMSG0002
 
 #---------------------------------
-CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Vytv\u00e1\u0159en\u00ed koncov\u00e9ho bodu zpr\u00e1vy se nezda\u0159ilo: \n\
-\ {0}
+CREATE_ENDPOINT_FAILED_CNTR0083E=CNTR0083E: Vytv\u00e1\u0159en\u00ed koncov\u00e9ho bodu zpr\u00e1vy se nezda\u0159ilo: \n {0}
 CREATE_ENDPOINT_FAILED_CNTR0083E.explanation=CMSG0001
 CREATE_ENDPOINT_FAILED_CNTR0083E.useraction=CMSG0002
 
@@ -650,10 +628,7 @@ LIGHTWEIGHT_ENABLED_CNTR0118I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u
 
 #-------------------------------------------------------------------------------
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E=CNTR0119E: T\u0159\u00edda {0} zadan\u00e1 u\u017eivatelem nesm\u00ed implementovat com.ibm.websphere.ejbcontainer.LightweightLocal. K\u00f3d p\u0159\u00ed\u010diny: {1}.
-INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Rozhran\u00ed com.ibm.websphere.ejbcontainer.LightweightLocal mohou implementovat pouze objekty entity bean EJB (Enterprise Java Bean) verze 2.x nebo nov\u011bj\u0161\u00ed s lok\u00e1ln\u00edm rozhran\u00edm. Specifick\u00e9 poru\u0161en\u00ed ur\u010d\u00edte podle dan\u00e9ho k\u00f3du p\u0159\u00ed\u010diny: \n\
-\ 1 - Sada EJB nen\u00ed objektem typu bean Entity. \n\
-\ 2 - Objektem typu bean je bu\u010f objekt typu bean EJB verze 1.x, nebo objekt entity bean s perzistenc\u00ed spravovanou kontejnerem (CMP) verze 1.x. \n\
-\ 3 - Sada EJB nem\u00e1 definov\u00e1no lok\u00e1ln\u00ed rozhran\u00ed.
+INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.explanation=Rozhran\u00ed com.ibm.websphere.ejbcontainer.LightweightLocal mohou implementovat pouze objekty entity bean EJB (Enterprise Java Bean) verze 2.x nebo nov\u011bj\u0161\u00ed s lok\u00e1ln\u00edm rozhran\u00edm. Specifick\u00e9 poru\u0161en\u00ed ur\u010d\u00edte podle dan\u00e9ho k\u00f3du p\u0159\u00ed\u010diny: \n 1 - Sada EJB nen\u00ed objektem typu bean Entity. \n 2 - Objektem typu bean je bu\u010f objekt typu bean EJB verze 1.x, nebo objekt entity bean s perzistenc\u00ed spravovanou kontejnerem (CMP) verze 1.x. \n 3 - Sada EJB nem\u00e1 definov\u00e1no lok\u00e1ln\u00ed rozhran\u00ed.
 INVALID_LIGHTWEIGHT_IMPL_CNTR0119E.useraction=Zm\u011b\u0148te sadu EJB na typ Entity, zm\u011b\u0148te implementaci sady EJB na verzi 2.0 nebo vy\u0161\u0161\u00ed, zm\u011b\u0148te implementaci sady EJB tak, aby uv\u00e1d\u011bla lok\u00e1ln\u00ed rozhran\u00ed, nebo zm\u011b\u0148te implementaci tak, aby neimplementovala rozhran\u00ed com.ibm.websphere.ejbcontainer.LightweightLocal.
 
 #-------------------------------------------------------------------------------
@@ -688,15 +663,13 @@ NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E.explanation=Objekt typu message-driven b
 NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E.useraction=Zkontrolujte k\u00f3d XML a zdroj k\u00f3du Java pro t\u0159\u00eddu objekt\u016f MDB a ur\u010dete rozhran\u00ed modulu listener pro zpr\u00e1vy.
 
 # --------------------------------
-INVALID_MAX_POOLTIMEOUT_CNTR0127W=CNTR0127W: \u010casov\u00fd limit maxim\u00e1ln\u00ed velikosti fondu u\u010den\u00fd pro objekt {0} typu bean nen\u00ed platn\u00e9 cel\u00e9 \u010d\u00edslo: {1}. M\u00edsto toho se pou\u017eijte v\u00fdchoz\u00ed hodnota \
-{2} sekund.
+INVALID_MAX_POOLTIMEOUT_CNTR0127W=CNTR0127W: \u010casov\u00fd limit maxim\u00e1ln\u00ed velikosti fondu u\u010den\u00fd pro objekt {0} typu bean nen\u00ed platn\u00e9 cel\u00e9 \u010d\u00edslo: {1}. M\u00edsto toho se pou\u017eijte v\u00fdchoz\u00ed hodnota {2} sekund.
 INVALID_MAX_POOLTIMEOUT_CNTR0127W.explanation=Jako \u010dasov\u00fd limit maxim\u00e1ln\u00ed velikosti fondu lze ur\u010dit pouze kladn\u00e9 cel\u00e9 \u010d\u00edslo nebo nulu. Bude pou\u017eita v\u00fdchoz\u00ed hodnota.
 INVALID_MAX_POOLTIMEOUT_CNTR0127W.useraction=Zm\u011b\u0148te hodnotu \u010dasov\u00e9ho limitu maxim\u00e1ln\u00ed velikosti fondu na kladn\u00e9 cel\u00e9 \u010d\u00edslo nebo nulu.
 
 # --------------------------------
 POOLSIZE_VALUES_CNTR0128I=CNTR0128I: (Min,Max,\u010casov\u00fd limit) velikost fondu pro objekt {3} typu bean je ({0},{1},{2}).
-POOLSIZE_VALUES_CNTR0128I.explanation=Jedn\u00e1 se o hodnoty minim\u00e1ln\u00ed velikosti fondu, maxim\u00e1ln\u00ed velikosti fondu a \u010dasov\u00e9ho limitu maxim\u00e1ln\u00ed velikosti fondu, kter\u00e9 se budou pou\u017e\u00edvat pro \
-tento objekt typu bean.
+POOLSIZE_VALUES_CNTR0128I.explanation=Jedn\u00e1 se o hodnoty minim\u00e1ln\u00ed velikosti fondu, maxim\u00e1ln\u00ed velikosti fondu a \u010dasov\u00e9ho limitu maxim\u00e1ln\u00ed velikosti fondu, kter\u00e9 se budou pou\u017e\u00edvat pro tento objekt typu bean.
 POOLSIZE_VALUES_CNTR0128I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 #---------------------------------
@@ -984,8 +957,7 @@ MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
-TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Nezda\u0159ilo se z\u00edskat spr\u00e1vce \u010dasova\u010d\u016f vyu\u017e\u00edvan\u00e9ho slu\u017ebou \u010dasova\u010de sady EJB. \n\
-{0}
+TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Nezda\u0159ilo se z\u00edskat spr\u00e1vce \u010dasova\u010d\u016f vyu\u017e\u00edvan\u00e9ho slu\u017ebou \u010dasova\u010de sady EJB. \n{0}
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.explanation=Prob\u011bhl pokus o z\u00edsk\u00e1n\u00ed spr\u00e1vce \u010dasova\u010d\u016f, proto\u017ee v objektu konfigurace EJBTimer byla nastavena volba vytvo\u0159en\u00ed samostatn\u00e9ho fondu podproces\u016f pro do\u010dasn\u00e9 \u010dasova\u010de (uniqueTimerManagerForNP).
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.useraction=Jako alternativu m\u016f\u017eete nakonfigurovat slu\u017ebu \u010dasova\u010de tak, aby pro do\u010dasn\u00e9 \u010dasova\u010de pou\u017e\u00edvala slu\u017ebu pl\u00e1nova\u010de.
 
@@ -1022,8 +994,7 @@ STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.explanation=Pomoc\u00e
 STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E.useraction=Odeberte z t\u00e9to t\u0159\u00eddy EJB anotaci spu\u0161t\u011bn\u00ed jazyka Java nebo deskriptor implementace jazyka XML nebo t\u0159\u00eddu zm\u011b\u0148te na objekt session bean typu singleton.
 
 #-------------------------------------------------------------------------------
-STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: Nezda\u0159ilo se inicializovat spou\u0161t\u011bc\u00ed objekt session bean typu singleton {0} v modulu {1} a byla vygenerov\u00e1na v\u00fdjimka:\n\
-{2}
+STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E=CNTR0190E: Nezda\u0159ilo se inicializovat spou\u0161t\u011bc\u00ed objekt session bean typu singleton {0} v modulu {1} a byla vygenerov\u00e1na v\u00fdjimka:\n{2}
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.explanation=V r\u00e1mci procesu spu\u0161t\u011bn\u00ed aplikace se vytv\u00e1\u0159ej\u00ed instance spou\u0161t\u011bc\u00edch objekt\u016f session bean typu singleton. V p\u0159\u00edpad\u011b jak\u00e9hokoli selh\u00e1n\u00ed se aplikaci nepoda\u0159\u00ed spustit.
 STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu v\u00fdjimky, kter\u00e1 je p\u0159ipojena k t\u00e9to chybov\u00e9 zpr\u00e1v\u011b.
 
@@ -1509,7 +1480,8 @@ INVALID_SESSION_SYNCH_SIGNATURE_CNTR0327E.useraction=Opravte signaturu metody sy
 # Do not translate "AsyncFutureObjectCount" or "com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults".
 MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W=CNTR0328W: Existuje {0} nepo\u017eadovan\u00fdch v\u00fdsledk\u016f z vyvol\u00e1n\u00ed vzd\u00e1len\u00fdch asynchronn\u00edch metod EJB. Jakmile po\u010det nepo\u017eadovan\u00fdch v\u00fdsledk\u016f p\u0159ekro\u010d\u00ed {1}, produkt zahod\u00ed nejstar\u0161\u00ed v\u00fdsledek.
 MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.explanation=Po\u010det nena\u010dten\u00fdch v\u00fdsledk\u016f z vyvol\u00e1n\u00ed vzd\u00e1len\u00fdch asynchronn\u00edch metod EJB se bl\u00ed\u017e\u00ed maximu nebo jej p\u0159ekro\u010dil. Kdy\u017e po\u010det nena\u010dten\u00fdch v\u00fdsledk\u016f p\u0159ekro\u010d\u00ed maximum, produkt zahod\u00ed nejstar\u0161\u00ed v\u00fdsledek.
-MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Sledov\u00e1n\u00edm statistiky PMI AsyncFutureObjectCount ur\u010dete, kter\u00e9 v\u00fdsledky EJB maj\u00ed nepo\u017eadovan\u00e9 v\u00fdsledky, a aktualizujte k\u00f3d p\u0159\u00edslu\u0161n\u00e9ho klienta, aby v\u00fdsledky n\u00e1rokoval. Pokud se v\u00fdsledky zahazuj\u00ed rychleji, ne\u017e je klienti mohou n\u00e1rokovat, upravte dobu trv\u00e1n\u00ed vzd\u00e1len\u00fdch budouc\u00edch objekt\u016f pro asynchronn\u00ed metody EJB a nastavte syst\u00e9movou vlastnost com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults na po\u017eadovan\u00fd maxim\u00e1ln\u00ed po\u010det nen\u00e1rokovan\u00fdch v\u00fdsledk\u016f. P\u0159\u00edpadn\u011b upravte EJB tak, aby se pou\u017e\u00edvalo lok\u00e1ln\u00ed rozhran\u00ed nam\u00edsto vzd\u00e1len\u00e9ho rozhran\u00ed, proto\u017ee v\u00fdsledky asynchronn\u00ed metody na lok\u00e1ln\u00edm rozhran\u00ed nemus\u00ed b\u00fdt sledov\u00e1ny kontejnerem EJB a lze je obvykl\u00fdm zp\u016fsobem uvol\u0148ovat z pam\u011bti.
+MAXIMUM_UNCLAIMED_ASYNC_RESULTS_CNTR0328W.useraction=Sledov\u00e1n\u00edm statistiky PMI AsyncFutureObjectCount ur\u010dete, kter\u00e9 v\u00fdsledky EJB maj\u00ed nepo\u017eadovan\u00e9 v\u00fdsledky, a aktualizujte k\u00f3d p\u0159\u00edslu\u0161n\u00e9ho klienta, aby v\u00fdsledky n\u00e1rokoval. Pokud se v\u00fdsledky zahazuj\u00ed rychleji, ne\u017e je klienti mohou n\u00e1rokovat, upravte dobu trv\u00e1n\u00ed vzd\u00e1len\u00fdch budouc\u00edch objekt\u016f pro asynchronn\u00ed metody EJB a nastavte syst\u00e9movou vlastnost com.ibm.websphere.ejbcontainer.maxUnclaimedAsyncResults na po\u017eadovan\u00fd maxim\u00e1ln\u00ed po\u010det nen\u00e1rokovan\u00fdch v\u00fdsledk\u016f. P\u0159\u00edpadn\u011b upravte EJB tak, aby se pou\u017e\u00edvalo lok\u00e1ln\u00ed rozhran\u00ed nam\u00edsto vzd\u00e1len\u00e9ho rozhran\u00ed, proto\u017ee v\u00fdsledky asynchronn\u00ed metody na lok\u00e1ln\u00edm rozhran\u00ed nemus\u00ed b\u00fdt sledov\u00e1ny kontejnerem EJB a lze je obvykl\u00fd\
+    m zp\u016fsobem uvol\u0148ovat z pam\u011bti.
 
 
 #-------------------------------------------------------------------------------
@@ -1573,6 +1545,11 @@ NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Opravte v\u00e1zac\u00ed sou
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: N\u00e1zev vazby rozhran\u00ed JNDI (Java Naming and Directory Interface) {2} pro objekt typu bean {0} nebo lok\u00e1ln\u00ed domovsk\u00e9 rozhran\u00ed v modulu {1} obsahuje obor n\u00e1zv\u016f, kter\u00fd nen\u00ed platn\u00fd.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=N\u00e1zev lok\u00e1ln\u00ed vazby m\u016f\u017ee obsahovat pouze jeden obor n\u00e1zv\u016f a mus\u00ed za\u010d\u00ednat ejblocal:. Obory n\u00e1zv\u016f jsou ozna\u010deny znakem dvojte\u010dka (:). Cel\u00fd \u0159et\u011bzec p\u0159ed a v\u010detn\u011b znaku dvojte\u010dka (:) je pova\u017eov\u00e1n za obor n\u00e1zv\u016f.
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Opravte v\u00e1zac\u00ed soubor ibm-ejb-jar-bnd.xml tak, aby tento objekt typu bean m\u011bl platn\u00fd n\u00e1zev vazby rozhran\u00ed JNDI, a to tak, \u017ee odeberete neplatn\u00fd obor n\u00e1zv\u016f.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Nelze sv\u00e1zat rozhran\u00ed {0} objektu typu bean {1} v modulu {2} aplikace {3} s n\u00e1zvem um\u00edst\u011bn\u00ed {4}. Server n\u00e1zv\u016f CORBA nen\u00ed k dispozici.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Vazbu vzd\u00e1len\u00e9ho objektu typu enterprise bean nelze vytvo\u0159it, proto\u017ee server n\u00e1zv\u016f CORBA nen\u00ed k dispozici.
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Zkontrolujte, zda soubor protokolu neobsahuje v\u00fdjimky souvisej\u00edc\u00ed s inicializac\u00ed n\u00e1zvu ORB nebo CORBA.
 
 #-------------------------------------------------------------------------------
 #
@@ -1789,9 +1766,7 @@ JIT_MISSING_REMOTE_EX_CNTR5104E.useraction=P\u0159idejte do klauzule throws dan\
 
 #-------------------------------------------------------------------------------
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E=CNTR5105E: Rozhran\u00ed {0} nen\u00ed platn\u00fdm vzd\u00e1len\u00fdm rozhran\u00edm. N\u00e1zev IDL metody {1} je v konfliktu s metodou {2}.
-JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pro vzd\u00e1len\u00e1 rozhran\u00ed ur\u010duje specifikace Java Language to IDL Mapping n\u00e1sleduj\u00edc\u00ed informace:\n\
-\ \
-Metody, kter\u00e9 se \u0159\u00edd\u00ed n\u00e1vrhov\u00fdmi vzory objekt\u016f Java bean pro jednoduch\u00e9 vlastnosti pro \u010dten\u00ed i z\u00e1pis nebo jen pro \u010dten\u00ed, jsou mapov\u00e1ny na atributy rozhran\u00ed OMG IDL. Ob\u011b zadan\u00e9 metody se mapuj\u00ed na tent\u00fd\u017e atribut rozhran\u00ed OMG IDL. Rozhran\u00ed nen\u00ed platn\u00fdm rozhran\u00edm typu RMI/IIOP.
+JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.explanation=Pro vzd\u00e1len\u00e1 rozhran\u00ed ur\u010duje specifikace Java Language to IDL Mapping n\u00e1sleduj\u00edc\u00ed informace:\n Metody, kter\u00e9 se \u0159\u00edd\u00ed n\u00e1vrhov\u00fdmi vzory objekt\u016f Java bean pro jednoduch\u00e9 vlastnosti pro \u010dten\u00ed i z\u00e1pis nebo jen pro \u010dten\u00ed, jsou mapov\u00e1ny na atributy rozhran\u00ed OMG IDL. Ob\u011b zadan\u00e9 metody se mapuj\u00ed na tent\u00fd\u017e atribut rozhran\u00ed OMG IDL. Rozhran\u00ed nen\u00ed platn\u00fdm rozhran\u00edm typu RMI/IIOP.
 JIT_DUPLICATE_PROPERTY_METHODS_CNTR5105E.useraction=Zm\u011b\u0148te danou aplikaci bu\u010f p\u0159ejmenov\u00e1n\u00edm, nebo odebr\u00e1n\u00edm jedn\u00e9 z konfliktn\u00edch metod.
 
 #-------------------------------------------------------------------------------
@@ -1831,14 +1806,14 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Podrobnosti naleznete v p\u0159\
 # Do NOT translate any word beginning with a "-"
 CNTR9000I=Pou\u017eit\u00ed: {0} <server> <filtr> [volby]
 CNTR9001I=\tfiltr: <-all> | <-timer> | <-app [-mod [-bean]]>
-CNTR9002I=\t        -all
-CNTR9003I=\t         -timer <ID \u010dasova\u010de>
-CNTR9004I=\t         -app <n\u00e1zev aplikace>
-CNTR9005I=\t         -mod <n\u00e1zev modulu>
-CNTR9006I=\t         -bean <n\u00e1zev objektu typu bean>\n
+CNTR9002I=\t\ \ \ \ \ \ \ \ -all
+CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <ID \u010dasova\u010de>
+CNTR9004I=\t\ \ \ \ \ \ \ \ \ -app <n\u00e1zev aplikace>
+CNTR9005I=\t\ \ \ \ \ \ \ \ \ -mod <n\u00e1zev modulu>
+CNTR9006I=\t\ \ \ \ \ \ \ \ \ -bean <n\u00e1zev objektu typu bean>\n
 CNTR9007I=\tvolby:   -host <n\u00e1zev hostitele>
-CNTR9008I=\t         -user <jm\u00e9no u\u017eivatele>
-CNTR9009I=\t         -node <n\u00e1zev uzlu>
+CNTR9008I=\t\ \ \ \ \ \ \ \ \ -user <jm\u00e9no u\u017eivatele>
+CNTR9009I=\t\ \ \ \ \ \ \ \ \ -node <n\u00e1zev uzlu>
 
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Expiration", "Single", "Repeating", "Calendar", "expression" "Automatic timer with timeout method", "Programmatic timer", "timer"
@@ -1902,8 +1877,7 @@ CNTR9106E.useraction=P\u0159e\u010dt\u011bte si informace o pou\u017eit\u00ed p\
 #-------------------------------------------------------------------------------
 # Do NOT translate any word beginning with a "-", "createEJBStubs", "class" "jar", "JAR", "war", "WAR",  "ear", "EAR", "\n", or "\t"
 NEWLINE_CNTR9200I=\n
-CNTR9201I=\n\
-Pou\u017eit\u00ed: createEJBStubs <\u00fapln\u00fd n\u00e1zev t\u0159\u00eddy, soubor JAR nebo EAR> [volby]
+CNTR9201I=\nPou\u017eit\u00ed: createEJBStubs <\u00fapln\u00fd n\u00e1zev t\u0159\u00eddy, soubor JAR nebo EAR> [volby]
 CNTR9202I=\nVolby:
 CNTR9203I=\t-help
 CNTR9204I=\t-newfile [nov\u00fd soubor]
@@ -1915,35 +1889,17 @@ CNTR9209I=\t-appendlog
 CNTR9210I=\t-cp <cesta ke t\u0159\u00edd\u00e1m>
 CNTR9239I=\t-rmic {0}
 CNTR9211I=\t-trace
-CNTR9212I=\n\
-P\u0159\u00edklady:
+CNTR9212I=\nP\u0159\u00edklady:
 CNTR9213I=\tcreateEJBStubs com.ibm.myRemoteInterface -cp myPath
-CNTR9214I=\t   Vygenerov\u00e1n\u00ed t\u0159\u00eddy Stub pro jednu t\u0159\u00eddu vzd\u00e1len\u00e9ho rozhran\u00ed a jej\u00ed um\u00edst\u011bn\u00ed do adres\u00e1\u0159ov\u00e9 struktury\n\
-\t   definovan\u00e9 bal\u00edkem a za\u010d\u00ednaj\u00edc\u00ed v aktu\u00e1ln\u00edm adres\u00e1\u0159i. Jako cesta ke t\u0159\u00edd\u00e1m bude pou\u017eit adres\u00e1\u0159 myPath.\n\
-\t   Je-li t\u0159\u00edda rozhran\u00ed obsa\u017eena v souboru archivu Java (JAR), lze pro cestu ke t\u0159\u00edd\u00e1m pou\u017e\u00edt syntaxi\n\
-\t   myPath/myInterfaces.jar.
+CNTR9214I=\t\ \ \ Vygenerov\u00e1n\u00ed t\u0159\u00eddy Stub pro jednu t\u0159\u00eddu vzd\u00e1len\u00e9ho rozhran\u00ed a jej\u00ed um\u00edst\u011bn\u00ed do adres\u00e1\u0159ov\u00e9 struktury\n\t   definovan\u00e9 bal\u00edkem a za\u010d\u00ednaj\u00edc\u00ed v aktu\u00e1ln\u00edm adres\u00e1\u0159i. Jako cesta ke t\u0159\u00edd\u00e1m bude pou\u017eit adres\u00e1\u0159 myPath.\n\t   Je-li t\u0159\u00edda rozhran\u00ed obsa\u017eena v souboru archivu Java (JAR), lze pro cestu ke t\u0159\u00edd\u00e1m pou\u017e\u00edt syntaxi\n\t   myPath/myInterfaces.jar.
 CNTR9215I=\tcreateEJBStubs myPath/myBeans.jar -newfile -quiet
-CNTR9216I=\t   Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean v souboru myBeans.jar\n\
-\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\
-\t   Vygenerovan\u00e9 k\u00f3dy Stub a p\u016fvodn\u00ed obsah soubor\u016f JAR budou um\u00edst\u011bny do nov\u00e9ho souboru JAR myBeans_withStubs.jar,\n\
-\t   proto\u017ee nebyl zad\u00e1n n\u00e1zev nov\u00e9ho souboru.\n\
-\t   V\u00fdstupn\u00ed zpr\u00e1vy s v\u00fdjimkou ozn\u00e1men\u00ed o chyb\u00e1ch budou potla\u010deny.
+CNTR9216I=\t\ \ \ Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean v souboru myBeans.jar\n\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\t   Vygenerovan\u00e9 k\u00f3dy Stub a p\u016fvodn\u00ed obsah soubor\u016f JAR budou um\u00edst\u011bny do nov\u00e9ho souboru JAR myBeans_withStubs.jar,\n\t   proto\u017ee nebyl zad\u00e1n n\u00e1zev nov\u00e9ho souboru.\n\t   V\u00fdstupn\u00ed zpr\u00e1vy s v\u00fdjimkou ozn\u00e1men\u00ed o chyb\u00e1ch budou potla\u010deny.
 CNTR9217I=\tcreateEJBStubs myPath/myServerApp.ear -logfile myLog.out
-CNTR9218I=\t   Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\
-\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\
-\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru podnikov\u00e9ho archivu (EAR).\n\
-\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy objekt\u016f bean.\n\
-\t   Zpr\u00e1vy budou zapisov\u00e1ny do souboru protokolu myLog.out i do okna p\u0159\u00edkazu.
+CNTR9218I=\t\ \ \ Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru podnikov\u00e9ho archivu (EAR).\n\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy objekt\u016f bean.\n\t   Zpr\u00e1vy budou zapisov\u00e1ny do souboru protokolu myLog.out i do okna p\u0159\u00edkazu.
 CNTR9219I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile myPath/myClientInterfaces.jar
-CNTR9229I=\t   Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\
-\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\
-\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru EAR i do souboru myClientInterfaces.jar.\n\
-\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy vzd\u00e1len\u00e9ho rozhran\u00ed.
+CNTR9229I=\t\ \ \ Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru EAR i do souboru myClientInterfaces.jar.\n\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy vzd\u00e1len\u00e9ho rozhran\u00ed.
 CNTR9230I=\tcreateEJBStubs myPath/myServerApp.ear -updatefile
-CNTR9232I=\t   Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\
-\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\
-\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru EAR.\n\
-\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy vzd\u00e1len\u00e9ho rozhran\u00ed.
+CNTR9232I=\t\ \ \ Vygenerov\u00e1n\u00ed t\u0159\u00edd Stub pro v\u0161echny objekty enterprise bean nalezen\u00e9 v souboru myServerApp.ear\n\t   se vzd\u00e1len\u00fdmi rozhran\u00edmi.\n\t   Vygenerovan\u00e9 k\u00f3dy Stub budou um\u00edst\u011bny do p\u016fvodn\u00edho souboru EAR.\n\t   T\u0159\u00eddy Stub budou um\u00edst\u011bny ve stejn\u00fdch modulech jako t\u0159\u00eddy vzd\u00e1len\u00e9ho rozhran\u00ed.
 
 #-------------------------------------------------------------------------------
 # Do Not translate "jar", "Jar", "ear", "Ear", "EJB", "rc", "\n", or "\t"
@@ -2059,8 +2015,7 @@ CLASS_LOAD_ERROR_CNTR9262E.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 zad\u00
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "JAR", "EAR", or "-cp"
-CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: T\u0159\u00eddu rozhran\u00ed {0} nelze zpracovat. \n\
-T\u0159\u00edda parametru metody {1} nebyla nalezena.
+CLASS_PARM_LOAD_ERROR_CNTR9263E=CNTR9263E: T\u0159\u00eddu rozhran\u00ed {0} nelze zpracovat. \nT\u0159\u00edda parametru metody {1} nebyla nalezena.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.explanation=Parametr metody nebo t\u0159\u00eddu n\u00e1vratov\u00e9 hodnoty metody uveden\u00e9 t\u0159\u00eddy nebylo mo\u017en\u00e9 na\u010d\u00edst.
 CLASS_PARM_LOAD_ERROR_CNTR9263E.useraction=Ujist\u011bte se, \u017ee jsou v\u0161echny t\u0159\u00eddy p\u0159ed\u00e1van\u00e9 jako parametry metody nebo pou\u017e\u00edvan\u00e9 jako n\u00e1vratov\u00e9 hodnoty v r\u00e1mci metod uveden\u00e9 t\u0159\u00eddy obsa\u017eeny ve vstupn\u00edm souboru archivu Java (JAR) nebo podnikov\u00e9ho archivu (EAR) nebo \u017ee jsou zp\u0159\u00edstupn\u011bny pomoc\u00ed volby -cp.
 

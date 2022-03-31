@@ -1,1 +1,4 @@
 -Dcom.ibm.tools.attach.enable=yes
+-Djimage.dir=sigtest
+--add-exports=java.base/jdk.internal.vm.annotation=ALL-UNNAMED
+--add-opens=java.base/jdk.internal.vm.annotation=ALL-UNNAMED

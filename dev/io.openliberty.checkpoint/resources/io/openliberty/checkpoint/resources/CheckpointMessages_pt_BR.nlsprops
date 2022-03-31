@@ -25,7 +25,7 @@ CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Um ponto de verifica\u00e7\u00e3
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Um ponto de verifica\u00e7\u00e3o foi solicitado. O servidor foi interrompido e seu estado atual \u00e9 gravado no disco.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Verifique a documenta\u00e7\u00e3o para obter detalhes das opera\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o e de restaura\u00e7\u00e3o.
 
-CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: O servidor Liberty est\u00e1 retomando a opera\u00e7\u00e3o a partir de um ponto de verifica\u00e7\u00e3o.
+CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: O processo do servidor Liberty retomou a opera\u00e7\u00e3o a partir de um ponto de verifica\u00e7\u00e3o em {0} segundos.
 CHECKPOINT_RESTORE_CWWKC0452I.explanation=Uma opera\u00e7\u00e3o de restaura\u00e7\u00e3o foi executada em uma imagem de ponto de verifica\u00e7\u00e3o do servidor Liberty.
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Verifique a documenta\u00e7\u00e3o para obter detalhes das opera\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o e de restaura\u00e7\u00e3o.
 

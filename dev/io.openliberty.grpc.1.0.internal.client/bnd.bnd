@@ -10,7 +10,8 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.72.Final
+grpcVersion=1.43.2
+nettyVersion=4.1.75.Final
 
 Bundle-Name: gRPC Client
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
@@ -43,7 +44,7 @@ Import-Package: \
   *
 
 Export-Package: \
-  !io.netty.handler.ssl,\
+  io.grpc.netty;version=${grpcVersion}, \
   io.netty.*;version=${nettyVersion},\
   io.openliberty.grpc.internal.client.*,\
   io.openliberty.grpc.client.monitor
@@ -86,7 +87,7 @@ instrument.disabled: true
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion},\
-  io.openliberty.grpc.client.1.0.thirdparty;version=latest,\
+  io.grpc:grpc-netty;version=${grpcVersion},\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest

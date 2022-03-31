@@ -10,7 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-instrument.disabled: false
+instrument.disabled: true
+instrument.ffdc: false
 
 cxfVersion=3.4.3
 

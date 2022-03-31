@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.rmi.CORBA.Util;
+
 import org.apache.felix.scr.ext.annotation.DSExt;
 import org.omg.CORBA.LocalObject;
 import org.omg.CORBA.ORB;
@@ -48,6 +50,8 @@ import com.ibm.ws.transport.iiop.spi.ServerPolicySource;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * Provides access to the ORB.
  */
@@ -70,11 +74,23 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     private final Map<String, Object> extraConfig = new HashMap<>();
 
     private final transient ConcurrentServiceReferenceMap<String, AdapterActivatorOp> map = new ConcurrentServiceReferenceMap<>(KEY);
-
+    
+    private CheckpointPhase checkpointPhase = null;
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setCheckpoint(CheckpointPhase checkpointPhase) {
+    	this.checkpointPhase = checkpointPhase;
+    }
+    
     @Activate
     protected void activate(Map<String, Object> properties, ComponentContext cc) throws Exception {
         map.activate(cc);
         super.activate(properties, cc.getBundleContext());
+        try {
+        	if (checkpointPhase != null) {
+        		Util.createValueHandler().getRunTimeCodeBase();
+        	}
+        } catch (Exception e) {
+        }
         try {
             if (endpoints.isEmpty()) {
                 this.orb = configAdapter.createClientORB(properties, subsystemFactories);
