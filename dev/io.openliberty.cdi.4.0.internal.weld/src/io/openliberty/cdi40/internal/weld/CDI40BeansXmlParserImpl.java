@@ -35,7 +35,7 @@ public class CDI40BeansXmlParserImpl implements BeansXmlParser {
     public BeansXml parse(WebSphereCDIDeployment cdiDeployment, URL beansXmlUrl) {
         //Prior to CDI 4.0 an empty beans.xml meant an explicit archive (mode=ALL)
         //In CDI 4.0 the default becomes implicit (mode=ANNOTATED) but we provide a configuration option to switch it back to ALL
-        BeanDiscoveryMode emptyBeansXMLMode = cdiContainerConfig.emptyBeansXMLExplicitArchive() ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
+        BeanDiscoveryMode emptyBeansXMLMode = cdiContainerConfig.emptyBeansXMLExplicitBeanArchive() ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
         return cdiDeployment.getBootstrap().parse(beansXmlUrl, emptyBeansXMLMode);
     }
 

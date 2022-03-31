@@ -88,17 +88,17 @@ public class CDIConfigTest {
 
     @Test
     @SkipForRepeat(EERepeatActions.EE10_ID)
-    public void testCdiEmptyBeansXMLExplicitArchiveWarning() throws Exception {
+    public void testCdiEmptyBeansXMLExplicitBeanArchiveWarning() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Cdi> cdis = config.getCdi();
         Cdi cdi = new Cdi();
-        cdi.setEmptyBeansXMLExplicitArchive(true);
+        cdi.setEmptyBeansXMLExplicitBeanArchive(true);
         cdis.add(cdi);
 
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
+            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitBeanArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
             assertTrue("Message CWOWB1016W not found", warningMessages.size() > 0);
             assertEquals("Message CWOWB1016W was found more than once", 1, warningMessages.size());
         } finally {

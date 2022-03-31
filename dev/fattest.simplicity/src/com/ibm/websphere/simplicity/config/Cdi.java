@@ -19,7 +19,7 @@ public class Cdi extends ConfigElement {
 
     private Boolean enableImplicitBeanArchives;
 
-    private Boolean emptyBeansXMLExplicitArchive;
+    private Boolean emptyBeansXMLExplicitBeanArchive;
 
     @XmlAttribute
     public Boolean getEnableImplicitBeanArchives() {
@@ -31,12 +31,12 @@ public class Cdi extends ConfigElement {
     }
 
     @XmlAttribute
-    public Boolean getEmptyBeansXMLExplicitArchive() {
-        return emptyBeansXMLExplicitArchive;
+    public Boolean getEmptyBeansXMLExplicitBeanArchive() {
+        return emptyBeansXMLExplicitBeanArchive;
     }
 
-    public void setEmptyBeansXMLExplicitArchive(Boolean emptyBeansXMLExplicitArchive) {
-        this.emptyBeansXMLExplicitArchive = emptyBeansXMLExplicitArchive;
+    public void setEmptyBeansXMLExplicitBeanArchive(Boolean emptyBeansXMLExplicitBeanArchive) {
+        this.emptyBeansXMLExplicitBeanArchive = emptyBeansXMLExplicitBeanArchive;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Cdi extends ConfigElement {
         if (getEnableImplicitBeanArchives() != null)
             buf.append("enableImplicitBeanArchives=").append(getEnableImplicitBeanArchives()).append(' ');
         if (getEnableImplicitBeanArchives() != null)
-            buf.append("emptyBeansXMLExplicitArchive=").append(getEmptyBeansXMLExplicitArchive()).append(' ');
+            buf.append("emptyBeansXMLExplicitBeanArchive=").append(getEmptyBeansXMLExplicitBeanArchive()).append(' ');
         buf.append('}');
         return buf.toString();
     }
