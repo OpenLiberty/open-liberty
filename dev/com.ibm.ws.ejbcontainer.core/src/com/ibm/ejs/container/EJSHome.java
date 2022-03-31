@@ -630,7 +630,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
 
             enabled = false;
 
-            if (pmiBean != null) {
+            if (pmiBean != null && container.pmiFactory != null) {
                 container.pmiFactory.removePmiModule(pmiBean); // d146239.14
             }
         }
