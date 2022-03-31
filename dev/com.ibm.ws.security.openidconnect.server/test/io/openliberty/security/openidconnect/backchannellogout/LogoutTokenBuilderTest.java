@@ -11,7 +11,6 @@
 package io.openliberty.security.openidconnect.backchannellogout;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -81,7 +81,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private final OidcBaseClient client2 = mockery.mock(OidcBaseClient.class, "client2");
     private final OidcBaseClient client3 = mockery.mock(OidcBaseClient.class, "client3");
     private final OAuth20EnhancedTokenCache tokenCache = mockery.mock(OAuth20EnhancedTokenCache.class);
-    private final OAuth20Token token = mockery.mock(OAuth20Token.class, "token");
     private final OAuth20Token accessToken1 = mockery.mock(OAuth20Token.class, "accessToken1");
     private final OAuth20Token accessToken2 = mockery.mock(OAuth20Token.class, "accessToken2");
     private final IDTokenImpl idToken = mockery.mock(IDTokenImpl.class, "idToken");
@@ -162,34 +161,29 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_buildLogoutTokens_noRegisteredClients() throws Exception {
-        setRegisteredClients(new ArrayList<>());
+    public void test_buildLogoutTokensForUser_noCachedTokens() throws Exception {
+        setTokenCacheExpectations(subject);
 
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
+        Map<OidcBaseClient, Set<String>> result = builder.buildLogoutTokensForUser(subject);
         assertNotNull("Result should not have been null but was.", result);
         assertTrue("Result should have been empty but wasn't: " + result, result.isEmpty());
     }
 
     @Test
-    public void test_buildLogoutTokens_idTokenOneAudience_oneClientRegistered_doesNotMatch() throws Exception {
-        setRegisteredClients(Arrays.asList(client1));
+    public void test_buildLogoutTokensForUser_oneCachedToken_accessTokenType() throws Exception {
+        setTokenCacheExpectations(subject, accessToken1);
+        setClientLookupExpectations();
 
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client3Id);
-
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
+        Map<OidcBaseClient, Set<String>> result = builder.buildLogoutTokensForUser(subject);
         assertNotNull("Result should not have been null but was.", result);
         assertTrue("Result should have been empty but wasn't: " + result, result.isEmpty());
     }
 
     @Test
-    public void test_buildLogoutTokens_idTokenOneAudience_oneClientRegistered_matches() throws Exception {
-        setRegisteredClients(Arrays.asList(client1));
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
+    public void test_buildLogoutTokensForUser_oneCachedToken_idToken() throws Exception {
         setTokenCacheExpectations(subject, idToken1);
+        setClientLookupExpectations(client1);
+
         mockery.checking(new Expectations() {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
@@ -200,128 +194,51 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not have the expected number of entries: " + result, 1, result.size());
-        assertTrue("Result did not contain an entry for the expected client \"" + client1Id + "\". Result was: " + result, result.containsKey(client1));
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForUser(subject);
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens, client1);
 
-        String clientLogoutToken = result.get(client1).get(0);
-        verifyLogoutToken(clientLogoutToken, Arrays.asList(client1Id), subject, null);
+        Set<String> client1LogoutTokens = clientsToLogoutTokens.get(client1);
+        verifyLogoutTokensForClient(client1Id, client1LogoutTokens, 1, null);
     }
 
     @Test
-    public void test_buildLogoutTokens_idTokenContainsSid_oneMatchingCachedToken() throws Exception {
-        setRegisteredClients(Arrays.asList(client1));
+    public void test_buildLogoutTokensForUser_multipleCachedIdTokens() throws Exception {
+        setTokenCacheExpectations(subject, idToken1, idToken, idToken2, idToken3);
+        setClientLookupExpectations(client1, client2, client3);
 
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-
-        // One cached ID token has a matching sid
+        // One cached ID token has a sid claim
         JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
         cachedTokenClaims.put("sid", sid);
         String cachedIdTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
 
-        setTokenCacheExpectations(subject, idToken1, idToken, idToken2, idToken3);
-
+        setCustomIdTokenExpectations(idToken, client1Id, cachedIdTokenString);
         mockery.checking(new Expectations() {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client1Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
-            }
-        });
-        setJwtCreationExpectations(client1, client1Secret);
-
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not have the expected number of entries: " + result, 1, result.size());
-        assertTrue("Result did not contain an entry for the expected client \"" + client1Id + "\". Result was: " + result, result.containsKey(client1));
-
-        String clientLogoutToken = result.get(client1).get(0);
-        verifyLogoutToken(clientLogoutToken, Arrays.asList(client1Id), subject, sid);
-    }
-
-    @Test
-    public void test_buildLogoutTokens_idTokenMultipleAudiences_multipleClientsRegistered_oneCachedTokenHasWrongIssuer() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id, client2Id, client3Id);
-
-        // One cached ID token has a different issuer
-        String cachedIdTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, "some other issuer", client2Id), client2Secret);
-
-        setTokenCacheExpectations(subject, idToken1, idToken, idToken3);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client2Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
                 one(client2).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client2"));
+                will(returnValue(null));
                 one(client3).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client3"));
             }
         });
+        // Should create three logout tokens
+        setJwtCreationExpectations(client1, client1Secret);
         setJwtCreationExpectations(client1, client1Secret);
         setJwtCreationExpectations(client3, client3Secret);
 
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not have the expected number of entries: " + result, 2, result.size());
-        assertTrue("Result did not contain an entry for the expected client \"" + client1 + "\". Result was: " + result, result.containsKey(client1));
-        assertTrue("Result did not contain an entry for the expected client \"" + client3 + "\". Result was: " + result, result.containsKey(client3));
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForUser(subject);
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens, client1, client3);
 
-        String client1LogoutToken = result.get(client1).get(0);
-        verifyLogoutToken(client1LogoutToken, Arrays.asList(client1Id), subject, null);
-        String client3LogoutToken = result.get(client3).get(0);
-        verifyLogoutToken(client3LogoutToken, Arrays.asList(client3Id), subject, null);
-    }
+        Set<String> client1LogoutTokens = clientsToLogoutTokens.get(client1);
+        verifyLogoutTokensForClient(client1Id, client1LogoutTokens, 2, sid);
 
-    @Test
-    public void test_buildLogoutTokens_idTokenMultipleAudiences_multipleClientsRegistered() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id, client3Id);
-
-        setTokenCacheExpectations(subject, idToken1, idToken3);
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-                one(client3).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client3"));
-            }
-        });
-        setJwtCreationExpectations(client1, client1Secret);
-        setJwtCreationExpectations(client3, client3Secret);
-
-        Map<OidcBaseClient, List<String>> result = builder.buildLogoutTokens(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not have the expected number of entries: " + result, 2, result.size());
-        assertTrue("Result did not contain an entry for the expected client \"" + client1 + "\". Result was: " + result, result.containsKey(client1));
-        assertTrue("Result did not contain an entry for the expected client \"" + client3 + "\". Result was: " + result, result.containsKey(client3));
-
-        String client1LogoutToken = result.get(client1).get(0);
-        verifyLogoutToken(client1LogoutToken, Arrays.asList(client1Id), subject, null);
-        String client3LogoutToken = result.get(client3).get(0);
-        verifyLogoutToken(client3LogoutToken, Arrays.asList(client3Id), subject, null);
+        Set<String> client3LogoutTokens = clientsToLogoutTokens.get(client3);
+        verifyLogoutTokensForClient(client3Id, client3LogoutTokens, 1, null);
     }
 
     @Test
@@ -357,77 +274,205 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getClientsToLogOut_noCachedUserTokens() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
+    public void test_verifyIdTokenContainsRequiredClaims_emptyClaims() {
+        JwtClaims claims = new JwtClaims();
 
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss, sub, aud");
+        }
+    }
+
+    @Test
+    public void test_verifyIdTokenContainsRequiredClaims_nonEmptyClaims_missingAllRequired() {
+        JwtClaims claims = new JwtClaims();
+        claims.setStringClaim("claim1", "value");
+        claims.setStringClaim("claim2", "value");
+        claims.setClaim("int-claim", 123);
+
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss, sub, aud");
+        }
+    }
+
+    @Test
+    public void test_verifyIdTokenContainsRequiredClaims_missingIss() {
+        JwtClaims claims = new JwtClaims();
+        claims.setStringClaim("sub", subject);
+        claims.setStringClaim("aud", client1Id);
+
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss");
+        }
+    }
+
+    @Test
+    public void test_verifyIdTokenContainsRequiredClaims_missingSub() {
+        JwtClaims claims = new JwtClaims();
+        claims.setStringClaim("iss", issuerIdentifier);
+        claims.setStringClaim("aud", client1Id);
+
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "sub");
+        }
+    }
+
+    @Test
+    public void test_verifyIdTokenContainsRequiredClaims_missingAud() {
+        JwtClaims claims = new JwtClaims();
+        claims.setStringClaim("iss", issuerIdentifier);
+        claims.setStringClaim("sub", subject);
+
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "aud");
+        }
+    }
+
+    @Test
+    public void test_verifyIdTokenContainsRequiredClaims_allClaimsPresent() {
+        JwtClaims claims = new JwtClaims();
+        claims.setStringClaim("iss", issuerIdentifier);
+        claims.setStringClaim("sub", subject);
+        claims.setStringClaim("aud", client1Id);
+        claims.setStringClaim("claim2", "value");
+        claims.setClaim("int-claim", 123);
+
+        try {
+            builder.verifyIdTokenContainsRequiredClaims(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but did: " + e);
+        }
+    }
+
+    @Test
+    public void test_verifyIssuer_missingIss() {
+        JwtClaims claims = getClaims(subject, null, client1Id);
 
         mockery.checking(new Expectations() {
             {
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
             }
         });
+        try {
+            builder.verifyIssuer(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (MalformedClaimException e) {
+            fail("Did not through the expected exception. Got: " + e);
+        } catch (IdTokenDifferentIssuerException e) {
+            verifyException(e, CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
+        }
+    }
 
+    @Test
+    public void test_verifyIssuer_emptyIss() {
+        JwtClaims claims = getClaims(subject, "", client1Id);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        try {
+            builder.verifyIssuer(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (MalformedClaimException e) {
+            fail("Did not through the expected exception. Got: " + e);
+        } catch (IdTokenDifferentIssuerException e) {
+            verifyException(e, CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
+        }
+    }
+
+    @Test
+    public void test_verifyIssuer_issSuperstring() {
+        JwtClaims claims = getClaims(subject, issuerIdentifier + "2", client1Id);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        try {
+            builder.verifyIssuer(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (MalformedClaimException e) {
+            fail("Did not through the expected exception. Got: " + e);
+        } catch (IdTokenDifferentIssuerException e) {
+            verifyException(e, CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
+        }
+    }
+
+    @Test
+    public void test_verifyIssuer_matchingIss() {
+        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        try {
+            builder.verifyIssuer(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but got: " + e);
+        }
+    }
+
+    @Test
+    public void test_getClientsToLogOut_noCachedUserTokens() throws Exception {
         // No tokens cached for user
         setTokenCacheExpectations(subject);
 
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertTrue("Result should have been empty but was: " + result, result.isEmpty());
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
     public void test_getClientsToLogOut_noCachedIdTokens() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        mockery.checking(new Expectations() {
-            {
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-            }
-        });
-
         // No ID tokens cached for user
         setTokenCacheExpectations(subject, accessToken1, accessToken2);
+        setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertTrue("Result should have been empty but was: " + result, result.isEmpty());
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
-    public void test_getClientsToLogOut_noRegisteredClients() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
+    public void test_getClientsToLogOut_oneCachedIdToken_associatedClientMissingLogoutUri() throws Exception {
+        setTokenCacheExpectations(subject, idToken1);
+        setClientLookupExpectations(client1);
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue(null));
+            }
+        });
 
-        // No registered clients
-        setRegisteredClients(new ArrayList<>());
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertTrue("Result should have been empty but was: " + result, result.isEmpty());
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
-    public void test_getClientsToLogOut_idTokenAudDoesNotMatchAnyRegisteredClients() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        // client1 not among registered clients
-        setRegisteredClients(Arrays.asList(client2, client3));
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertTrue("Result should have been empty but was: " + result, result.isEmpty());
-    }
-
-    @Test
-    public void test_getClientsToLogOut_idTokenAudDoesNotMatchAnyCachedIdTokenClients() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
+    public void test_getClientsToLogOut_oneCachedIdToken_associatedClientHasLogoutUri() throws Exception {
+        setTokenCacheExpectations(subject, idToken1);
+        setClientLookupExpectations(client1);
         mockery.checking(new Expectations() {
             {
                 one(client1).getBackchannelLogoutUri();
@@ -435,200 +480,23 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        // No ID tokens cached for client1
-        setTokenCacheExpectations(subject, idToken2, idToken3);
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertTrue("Result should have been empty but was: " + result, result.isEmpty());
-    }
-
-    @Test
-    public void test_getClientsToLogOut_goldenPath_oneAud_oneCachedIdToken() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        // One ID token cached for client1
-        setTokenCacheExpectations(subject, idToken1, idToken2, idToken3);
-
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 1, result.size());
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client1 + "]: " + result, result.containsKey(client1));
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
         // Should find the ID token that matched
-        List<IDTokenImpl> cachedIdTokensForClient = result.get(client1);
-        assertEquals("List of cached ID tokens for [" + client1 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken1 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken1));
+        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
     @Test
-    public void test_getClientsToLogOut_goldenPath_oneAud_multipleCachedIdTokens() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        // Two ID tokens cached for client1
-        setTokenCacheExpectations(subject, idToken1, idToken, idToken2, idToken3);
-
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        String cachedIdTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client1Id), client1Secret);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client1Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 1, result.size());
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client1 + "]: " + result, result.containsKey(client1));
-
-        // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient = result.get(client1);
-        assertEquals("List of cached ID tokens for [" + client1 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 2, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken));
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken1 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken1));
-    }
-
-    @Test
-    public void test_getClientsToLogOut_goldenPath_multipleAud_multipleCachedIdTokens() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id, client2Id, client3Id);
-
-        // One ID token cached for each of client1, client2, and client3
-        setTokenCacheExpectations(subject, idToken1, idToken2, idToken3);
-
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-                one(client2).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client2"));
-                one(client3).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client3"));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientsToLogOut(idTokenClaims);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 3, result.size());
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client1 + "]: " + result, result.containsKey(client1));
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client2 + "]: " + result, result.containsKey(client2));
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client3 + "]: " + result, result.containsKey(client3));
-
-        // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient = result.get(client1);
-        assertEquals("List of cached ID tokens for [" + client1 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken1 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken1));
-
-        cachedIdTokensForClient = result.get(client2);
-        assertEquals("List of cached ID tokens for [" + client2 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client2 + "] did not contain [" + idToken2 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken2));
-
-        cachedIdTokensForClient = result.get(client3);
-        assertEquals("List of cached ID tokens for [" + client3 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client3 + "] did not contain [" + idToken3 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken3));
-    }
-
-    @Test
-    public void test_getClientsToConsiderLoggingOut_noConfiguredClients() throws Exception {
-        setRegisteredClients(new ArrayList<>());
-
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id);
-
-        List<OidcBaseClient> clients = builder.getClientsToConsiderLoggingOut(claims);
-
-        assertNotNull("List of clients should not have been null but was.", clients);
-        assertTrue("List of clients should have been empty but wasn't: " + clients, clients.isEmpty());
-    }
-
-    @Test
-    public void test_getClientsToConsiderLoggingOut_audNotOneOfRegisteredClients() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims claims = getClaims(subject, issuerIdentifier, "client4");
-
-        List<OidcBaseClient> clients = builder.getClientsToConsiderLoggingOut(claims);
-
-        assertNotNull("List of clients should not have been null but was.", clients);
-        assertTrue("List of clients should have been empty but wasn't: " + clients, clients.isEmpty());
-    }
-
-    @Test
-    public void test_getClientsToConsiderLoggingOut_audMatchesOneRegisteredClient() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id);
-
+    public void test_getClientsToLogOut_multipleCachedIdTokens_subsetHasLogoutUri() throws Exception {
+        setTokenCacheExpectations(subject, idToken1, accessToken1, idToken2, accessToken2, idToken3);
+        setClientLookupExpectations(client1, client2, client3);
         mockery.checking(new Expectations() {
             {
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
-            }
-        });
-
-        List<OidcBaseClient> clients = builder.getClientsToConsiderLoggingOut(claims);
-
-        assertNotNull("List of clients should not have been null but was.", clients);
-        assertFalse("List of clients should not have been empty but was.", clients.isEmpty());
-        assertEquals("Did not receive expected number of clients. Clients were: " + clients, 1, clients.size());
-        assertTrue("List of clients did not contain expected client [" + client1 + "]. Clients were: " + clients, clients.contains(client1));
-    }
-
-    @Test
-    public void test_getClientsToConsiderLoggingOut_audMatchesSubsetOfRegisteredClients_noneHaveLogoutUri() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client2Id, client3Id);
-
-        mockery.checking(new Expectations() {
-            {
-                one(client2).getBackchannelLogoutUri();
-                will(returnValue(null));
-                one(client3).getBackchannelLogoutUri();
-                will(returnValue(null));
-            }
-        });
-
-        List<OidcBaseClient> clients = builder.getClientsToConsiderLoggingOut(claims);
-
-        assertNotNull("List of clients should not have been null but was.", clients);
-        assertTrue("List of clients should have been empty but wasn't: " + clients, clients.isEmpty());
-    }
-
-    @Test
-    public void test_getClientsToConsiderLoggingOut_audMatchesSubsetOfRegisteredClients_someHaveLogoutUri() throws Exception {
-        setRegisteredClients(Arrays.asList(client1, client2, client3));
-
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id, client2Id, client3Id);
-
-        mockery.checking(new Expectations() {
-            {
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
+                // client2 has no logout URI configured, so there shouldn't be any logout tokens created for that client
                 one(client2).getBackchannelLogoutUri();
                 will(returnValue(null));
                 one(client3).getBackchannelLogoutUri();
@@ -636,639 +504,259 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        List<OidcBaseClient> clients = builder.getClientsToConsiderLoggingOut(claims);
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client3);
 
-        assertNotNull("List of clients should not have been null but was.", clients);
-        assertFalse("List of clients should not have been empty but was.", clients.isEmpty());
-        assertEquals("Did not receive expected number of clients. Clients were: " + clients, 2, clients.size());
-        assertTrue("List of clients did not contain expected client [" + client1 + "]. Clients were: " + clients, clients.contains(client1));
-        assertTrue("List of clients did not contain expected client [" + client3 + "]. Clients were: " + clients, clients.contains(client3));
+        // Should find the ID tokens that matched
+        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
+
+        List<IDTokenImpl> cachedIdTokensForClient3 = clientsToCachedIdTokens.get(client3);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient3, idToken3);
     }
 
     @Test
     public void test_getClientToCachedIdTokensMap_noCachedIdTokens() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
         // No ID tokens are in the cache
         Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
 
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
+        setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertTrue("Resulting map of clients to cached ID tokens should have been empty but wasn't: " + result, result.isEmpty());
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
-    public void test_getClientToCachedIdTokensMap_multipleCachedIdTokens_noneMatchClientUnderConsideration() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
+    public void test_getClientToCachedIdTokensMap_oneCachedIdToken_noLogoutUri() throws Exception {
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1);
 
-        // No ID tokens for client1 are cached
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, idToken3, accessToken2, idToken2);
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertTrue("Resulting map of clients to cached ID tokens should have been empty but wasn't: " + result, result.isEmpty());
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_oneCachedIdToken_matchesClientUnderConsideration_differentIss() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken, accessToken1, accessToken2);
-
-        // The ID token hint has been verified to have the correct issuer at this point, so the cached token must be the one with a different issuer value
-        String cachedIdTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, "some other issuer", client1Id), client1Secret);
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
+        setClientLookupExpectations(client1);
         mockery.checking(new Expectations() {
             {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client1Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertTrue("Resulting map of clients to cached ID tokens should have been empty but wasn't: " + result, result.isEmpty());
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_oneCachedIdToken_matchesClientUnderConsideration_differentSub() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2, idToken1);
-
-        // ID token hint has a different sub claim
-        JwtClaims idTokenClaims = getClaims("some other subject", issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertTrue("Resulting map of clients to cached ID tokens should have been empty but wasn't: " + result, result.isEmpty());
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_oneCachedIdToken_matchesClientUnderConsideration_allClaimsMatch() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2, idToken1);
-
-        // All requisite claims in the ID token hint match the cached ID token
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 1, result.size());
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_multipleCachedIdTokens_oneMatchesClientUnderConsideration_allClaimsMatch() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
-        // Multiple ID tokens in the cache, but only one for client1
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, idToken2, accessToken2, idToken1, idToken3);
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 1, result.size());
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_multipleCachedIdTokens_multipleMatchClientUnderConsideration() throws Exception {
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1);
-
-        // Multiple ID tokens in the cache, more than one are for client1
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, idToken, accessToken2, idToken1, idToken3);
-
-        // Set a "sid" claim for one of the ID tokens; this should prevent it from matching
-        JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        cachedTokenClaims.put("sid", sid);
-        String cachedIdTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client1Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
-            }
-        });
-
-        // Should find an entry for client1
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 1, result.size());
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client1 + "]: " + result, result.containsKey(client1));
-
-        // Should find the one ID token that matched
-        List<IDTokenImpl> cachedIdTokensForClient = result.get(client1);
-        assertEquals("List of cached ID tokens for [" + client1 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken1 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken1));
-    }
-
-    @Test
-    public void test_getClientToCachedIdTokensMap_multipleClientsUnderConsideration_multipleCachedIdTokens_multipleMatchClientsUnderConsideration() throws Exception {
-        // Multiple clients are under consideration for logout
-        List<OidcBaseClient> clientsUnderConsiderationForLogout = Arrays.asList(client1, client2);
-
-        // A couple cached ID tokens are for client1, another ID token is for client2
-        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, idToken, accessToken2, idToken1, idToken2, idToken3);
-
-        String cachedIdTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client1Id), client1Secret);
-
-        // ID token hint aud claim lists multiple clients, two of which are under consideration for logout
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id, client2Id, client3Id);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-                allowing(idToken).getType();
-                will(returnValue(OAuth20Constants.ID_TOKEN));
-                allowing(idToken).getClientId();
-                will(returnValue(client1Id));
-                allowing(idToken).getTokenString();
-                will(returnValue(cachedIdTokenString));
-            }
-        });
-
-        // Should find entries for all clients under consideration for logout that were also in the ID token hint's aud claim
-        Map<OidcBaseClient, List<IDTokenImpl>> result = builder.getClientToCachedIdTokensMap(clientsUnderConsiderationForLogout, allCachedUserTokens, idTokenClaims);
-        assertNotNull("Resulting map of clients to cached ID tokens should not have been null but was.", result);
-        assertEquals("Resulting map of clients to cached ID tokens did not match expected size. Result was: " + result, 2, result.size());
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client1 + "]: " + result, result.containsKey(client1));
-        assertTrue("Resulting map of clients to cached ID tokens did not contain entry for [" + client2 + "]: " + result, result.containsKey(client2));
-
-        List<IDTokenImpl> cachedIdTokensForClient = result.get(client1);
-        assertEquals("List of cached ID tokens for [" + client1 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 2, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken));
-        assertTrue("List of cached ID tokens for [" + client1 + "] did not contain [" + idToken1 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken1));
-
-        cachedIdTokensForClient = result.get(client2);
-        assertEquals("List of cached ID tokens for [" + client2 + "] did not match expected size. Result was: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertTrue("List of cached ID tokens for [" + client2 + "] did not contain [" + idToken2 + "]: " + cachedIdTokensForClient, cachedIdTokensForClient.contains(idToken2));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_differentClientIds() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        mockery.checking(new Expectations() {
-            {
-                allowing(token).getClientId();
-                will(returnValue(client2Id));
-            }
-        });
-        assertFalse("A cached token with a different client ID should not have matched " + client1 + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, token, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_cachedTokenMissingIss() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        String cachedTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, null, client1Id), client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        try {
-            boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
-            fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
-        } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss");
-        }
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_differentIssuer() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims(subject, "some other issuer", client1Id);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with a different \"iss\" claim should not have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims
-                    + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_cachedTokenMissingAud() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        String cachedTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier), client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        try {
-            boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
-            fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
-        } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "aud");
-        }
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_differentAud() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client2Id);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with a different \"aud\" claim should not have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims
-                    + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_cachedTokenMissingSub() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        String cachedTokenString = jwtUtils.getHS256Jws(getIdTokenClaims(null, issuerIdentifier, client1Id), client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        try {
-            boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
-            fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
-        } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "sub");
-        }
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_differentSub() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims("some other sub", issuerIdentifier, client1Id);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with a different \"sub\" claim should not have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims
-                    + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_idTokenMissingSid_cachedTokenContainsSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims("some other sub", issuerIdentifier, client1Id);
-        cachedTokenClaims.put("sid", sid);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with a \"sid\" claim should not have matched an ID token hint with one. ID token hint claims: " + idTokenClaims + ". Cached token claims: "
-                    + cachedTokenClaims + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_idTokenContainsSid_cachedTokenMissingSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims("some other sub", issuerIdentifier, client1Id);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with missing a \"sid\" claim should not have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims
-                    + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_differentSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims("some other sub", issuerIdentifier, client1Id);
-        cachedTokenClaims.put("sid", "some other sid value");
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertFalse("A cached token with a different \"sid\" claim should not have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims
-                    + ".", builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_allNecessaryClaimsMatch_excludeSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertTrue("A cached token with matching claims should have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims + ".",
-                   builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isIdTokenWithMatchingClaims_allNecessaryClaimsMatch_includeSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-
-        JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        cachedTokenClaims.put("sid", sid);
-        cachedTokenClaims.put(Claims.ISSUED_AT, 1);
-        cachedTokenClaims.put(Claims.EXPIRATION, 2);
-        cachedTokenClaims.put("nonce", "some nonce value");
-        String cachedTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getClientId();
-                will(returnValue(client1Id));
-                one(idToken).getTokenString();
-                will(returnValue(cachedTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        assertTrue("A cached token with matching claims should have matched. ID token hint claims: " + idTokenClaims + ". Cached token claims: " + cachedTokenClaims + ".",
-                   builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1));
-    }
-
-    @Test
-    public void test_isSameClientId_tokenMissingClientId() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                allowing(token).getClientId();
+                one(client1).getBackchannelLogoutUri();
                 will(returnValue(null));
             }
         });
-        assertFalse("A cached token missing a client ID should not have matched " + client1 + ".", builder.isSameClientId(token, client1));
+
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
-    public void test_isSameClientId_tokenHasDifferentClientId() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                allowing(token).getClientId();
-                will(returnValue(client2Id));
-            }
-        });
-        assertFalse("A cached token with a different client ID should not have matched " + client1 + ".", builder.isSameClientId(token, client1));
-    }
+    public void test_getClientToCachedIdTokensMap_multipleCachedIdTokens() throws Exception {
+        IDTokenImpl tmpIdToken1 = mockery.mock(IDTokenImpl.class, "tmpIdToken1");
+        IDTokenImpl tmpIdToken2 = mockery.mock(IDTokenImpl.class, "tmpIdToken2");
 
-    @Test
-    public void test_isSameClientId_tokenHasSameClientId() throws Exception {
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
+
+        setClientLookupExpectations(client1);
         mockery.checking(new Expectations() {
             {
-                allowing(token).getClientId();
+                allowing(client1).getBackchannelLogoutUri();
+                will(returnValue("https://localhost/my/logout/uri/client1"));
+                one(tmpIdToken1).getType();
+                will(returnValue(OAuth20Constants.ID_TOKEN));
+                one(tmpIdToken1).getClientId();
+                will(returnValue(client1Id));
+                one(tmpIdToken2).getType();
+                will(returnValue(OAuth20Constants.ID_TOKEN));
+                one(tmpIdToken2).getClientId();
                 will(returnValue(client1Id));
             }
         });
-        assertTrue("A cached token with the same client ID should have matched " + client1 + ".", builder.isSameClientId(token, client1));
-    }
 
-    @Test
-    public void test_isSameAud_emptyAud() throws Exception {
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier);
-        cachedIdTokenClaims.setAudience(new ArrayList<>());
-        assertFalse("A token with an empty \"aud\" claim should not have matched " + client1 + ".", builder.isSameAud(client1, cachedIdTokenClaims));
-    }
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
-    @Test
-    public void test_isSameAud_audSingleString_audDoesNotContainClient() throws Exception {
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client2Id);
-        assertFalse("A token with an \"aud\" claim that doesn't include the client ID should not have matched " + client1 + ".", builder.isSameAud(client1, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameAud_audSingleString_matchesClient() throws Exception {
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        assertTrue("A token with an \"aud\" claim that matches the client ID should have matched " + client1 + ".", builder.isSameAud(client1, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameAud_audList_audDoesNotContainClient() throws Exception {
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client2Id, client3Id);
-        assertFalse("A token with an \"aud\" claim that doesn't include the client ID should not have matched " + client1 + ".", builder.isSameAud(client1, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameAud_audList_audContainsClient() throws Exception {
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client2Id, client1Id, client3Id);
-        assertTrue("A token with an \"aud\" claim that includes the client ID should have matched " + client1 + ".", builder.isSameAud(client1, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSub_differentValues() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        JwtClaims cachedIdTokenClaims = getClaims("some other subject", issuerIdentifier, client1Id);
-        assertFalse("Two sets of claims with different \"sub\" entries should not be considered to have the same sub.", builder.isSameSub(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSub_sameValue() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        assertTrue("Two sets of claims with identical \"sub\" entries should be considered to have the same sub.", builder.isSameSub(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSid_bothClaimsMissingSid() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        assertTrue("Two sets of claims both missing a \"sid\" entry should be considered to have the same sid.", builder.isSameSid(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSid_idTokenHasSid_cachedTokenDoesNot() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        assertFalse("One set of claims with a \"sid\" entry and the other without should not be considered to have the same sid.",
-                    builder.isSameSid(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSid_cachedTokenHasSid_idTokenDoesNot() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        cachedIdTokenClaims.setStringClaim("sid", sid);
-        assertFalse("One set of claims with a \"sid\" entry and the other without should not be considered to have the same sid.",
-                    builder.isSameSid(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSid_bothHaveSid_differentValues() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        cachedIdTokenClaims.setStringClaim("sid", "some other sid");
-        assertFalse("Two sets of claims with different \"sid\" entries should not be considered to have the same sid.", builder.isSameSid(idTokenClaims, cachedIdTokenClaims));
-    }
-
-    @Test
-    public void test_isSameSid_bothHaveSid_sameValue() throws Exception {
-        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.setStringClaim("sid", sid);
-        JwtClaims cachedIdTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        cachedIdTokenClaims.setStringClaim("sid", sid);
-        assertTrue("Two sets of claims with identical \"sid\" entries should be considered to have the same sid.", builder.isSameSid(idTokenClaims, cachedIdTokenClaims));
+        // Should find the ID tokens that matched
+        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, tmpIdToken1, tmpIdToken2);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_noEntries() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> cachedIdTokensMap = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
 
-        builder.addCachedIdTokenToMap(cachedIdTokensMap, client1, idToken1);
+        builder.addCachedIdTokenToMap(clientsToCachedIdTokens, client1, idToken1);
 
-        assertEquals("Updated map did was not the expected size: " + cachedIdTokensMap, 1, cachedIdTokensMap.size());
-        assertTrue("Updated map did not contain entry for [" + client1 + "]: " + cachedIdTokensMap, cachedIdTokensMap.containsKey(client1));
-        List<IDTokenImpl> cachedIdTokensForClient = cachedIdTokensMap.get(client1);
-        assertEquals("List of cached ID tokens for client was not the expected size: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertEquals("Cached ID token did not match expected value.", idToken1, cachedIdTokensForClient.get(0));
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
+
+        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_entriesForOtherClients() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> cachedIdTokensMap = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
-        cachedIdTokensMap.put(client2, new ArrayList<>());
-        cachedIdTokensMap.put(client3, new ArrayList<>());
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        clientsToCachedIdTokens.put(client2, new ArrayList<>());
+        clientsToCachedIdTokens.put(client3, new ArrayList<>());
 
-        builder.addCachedIdTokenToMap(cachedIdTokensMap, client1, idToken1);
+        builder.addCachedIdTokenToMap(clientsToCachedIdTokens, client1, idToken1);
 
-        assertEquals("Updated map did was not the expected size: " + cachedIdTokensMap, 3, cachedIdTokensMap.size());
-        assertTrue("Updated map did not contain entry for [" + client1 + "]: " + cachedIdTokensMap, cachedIdTokensMap.containsKey(client1));
-        List<IDTokenImpl> cachedIdTokensForClient = cachedIdTokensMap.get(client1);
-        assertEquals("List of cached ID tokens for client was not the expected size: " + cachedIdTokensForClient, 1, cachedIdTokensForClient.size());
-        assertEquals("Cached ID token did not match expected value.", idToken1, cachedIdTokensForClient.get(0));
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2, client3);
+
+        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_oneExistingEntryForClient() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> cachedIdTokensMap = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
         List<IDTokenImpl> existingCachedTokens = new ArrayList<>();
         existingCachedTokens.add(idToken1);
-        cachedIdTokensMap.put(client1, existingCachedTokens);
-        cachedIdTokensMap.put(client2, new ArrayList<>());
+        clientsToCachedIdTokens.put(client1, existingCachedTokens);
+        clientsToCachedIdTokens.put(client2, new ArrayList<>());
 
-        builder.addCachedIdTokenToMap(cachedIdTokensMap, client1, idToken2);
+        builder.addCachedIdTokenToMap(clientsToCachedIdTokens, client1, idToken2);
 
-        assertEquals("Updated map did was not the expected size: " + cachedIdTokensMap, 2, cachedIdTokensMap.size());
-        assertTrue("Updated map did not contain entry for [" + client1 + "]: " + cachedIdTokensMap, cachedIdTokensMap.containsKey(client1));
-        List<IDTokenImpl> cachedIdTokensForClient = cachedIdTokensMap.get(client1);
-        assertEquals("List of cached ID tokens for client was not the expected size: " + cachedIdTokensForClient, 2, cachedIdTokensForClient.size());
-        assertEquals("Cached ID token #1 did not match expected value. Cached tokens were: " + cachedIdTokensForClient, idToken1, cachedIdTokensForClient.get(0));
-        assertEquals("Cached ID token #2 did not match expected value. Cached tokens were: " + cachedIdTokensForClient, idToken2, cachedIdTokensForClient.get(1));
+        verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2);
+
+        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, idToken2);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClients_noClientsToLogOut() throws Exception {
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
+
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClients_oneClient_noIdTokens() throws Exception {
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        clientsToLogOut.put(client1, new ArrayList<>());
+
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
+
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClients_oneClient_oneIdToken() throws Exception {
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        clientsToLogOut.put(client1, Arrays.asList(idToken1));
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        setJwtCreationExpectations(client1, client1Secret);
+
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
+
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens, client1);
+
+        Set<String> logoutTokensForClient = clientsToLogoutTokens.get(client1);
+        verifyLogoutTokensForClient(client1Id, logoutTokensForClient, 1, null);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClients_multipleClients_multipleIdTokens() throws Exception {
+        IDTokenImpl tmpIdToken1 = mockery.mock(IDTokenImpl.class, "tmpIdToken1");
+        IDTokenImpl tmpIdToken3 = mockery.mock(IDTokenImpl.class, "tmpIdToken3");
+
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        clientsToLogOut.put(client1, Arrays.asList(idToken1, tmpIdToken1));
+        clientsToLogOut.put(client2, Arrays.asList(idToken2));
+        clientsToLogOut.put(client3, Arrays.asList(idToken3, tmpIdToken3));
+
+        JSONObject tmpIdToken1Claims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
+        String tmpIdToken1Sid = client1Id + "-sid for tmpIdToken1";
+        tmpIdToken1Claims.put("sid", tmpIdToken1Sid);
+        final String tmpIdToken1String = jwtUtils.getHS256Jws(tmpIdToken1Claims, "some secret");
+
+        JSONObject tmpIdToken3Claims = getIdTokenClaims(subject, issuerIdentifier, client3Id);
+        String tmpIdToken3Sid = client3Id + "-sid for tmpIdToken3";
+        tmpIdToken3Claims.put("sid", tmpIdToken3Sid);
+        final String tmpIdToken3String = jwtUtils.getHS256Jws(tmpIdToken3Claims, "some secret");
+
+        setCustomIdTokenExpectations(tmpIdToken1, client1Id, tmpIdToken1String);
+        setCustomIdTokenExpectations(tmpIdToken3, client3Id, tmpIdToken3String);
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        setJwtCreationExpectations(client1, client1Secret);
+        setJwtCreationExpectations(client1, client1Secret);
+        setJwtCreationExpectations(client2, client2Secret);
+        setJwtCreationExpectations(client3, client3Secret);
+        setJwtCreationExpectations(client3, client3Secret);
+
+        Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
+
+        verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens, client1, client2, client3);
+
+        Set<String> logoutTokensForClient1 = clientsToLogoutTokens.get(client1);
+        verifyLogoutTokensForClient(client1Id, logoutTokensForClient1, 2, tmpIdToken1Sid);
+
+        Set<String> logoutTokensForClient2 = clientsToLogoutTokens.get(client2);
+        verifyLogoutTokensForClient(client2Id, logoutTokensForClient2, 1, null);
+
+        Set<String> logoutTokensForClient3 = clientsToLogoutTokens.get(client3);
+        verifyLogoutTokensForClient(client3Id, logoutTokensForClient3, 2, tmpIdToken3Sid);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClient_oneCachedIdToken() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        setJwtCreationExpectations(client1, client1Secret);
+
+        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1);
+
+        Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
+
+        verifyLogoutTokensForClient(client1Id, logoutTokens, 1, null);
+    }
+
+    @Test
+    public void test_buildLogoutTokensForClient_multipleCachedIdTokens() throws Exception {
+        IDTokenImpl tmpIdToken1 = mockery.mock(IDTokenImpl.class, "tmpIdToken1");
+        IDTokenImpl tmpIdToken2 = mockery.mock(IDTokenImpl.class, "tmpIdToken2");
+
+        // Give one cached ID token a jti and sid claim so we can ensure the associated logout token gets created with a matching sid claim
+        JSONObject idTokenClaims1 = getIdTokenClaims(subject, issuerIdentifier, client1Id);
+        String idTokenSid = "sid1";
+        idTokenClaims1.put("sid", idTokenSid);
+        final String idTokenString1 = jwtUtils.getHS256Jws(idTokenClaims1, "some secret");
+
+        // One ID token with a different issuer value; should not have an associated logout token created
+        JSONObject idTokenClaims2 = getIdTokenClaims(subject, "some other issuer", client1Id);
+        final String idTokenString2 = jwtUtils.getHS256Jws(idTokenClaims2, "some secret 2");
+
+        setCustomIdTokenExpectations(tmpIdToken1, client1Id, idTokenString1);
+        setCustomIdTokenExpectations(tmpIdToken2, client1Id, idTokenString2);
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        // Should create two logout tokens
+        setJwtCreationExpectations(client1, client1Secret);
+        setJwtCreationExpectations(client1, client1Secret);
+
+        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
+
+        Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
+
+        verifyLogoutTokensForClient(client1Id, logoutTokens, 2, idTokenSid);
     }
 
     @Test
     public void test_createLogoutTokenForClientFromCachedIdToken_idTokenDifferentIssuer() throws Exception {
-        Map<OidcBaseClient, List<String>> clientsAndLogoutTokens = new HashMap<OidcBaseClient, List<String>>();
-
-        JSONObject idTokenClaims = getIdTokenClaims("some subject", "some other issuer", "some audience");
+        JSONObject idTokenClaims = getIdTokenClaims(subject, "some other issuer", "some audience");
         final String idTokenString = jwtUtils.getHS256Jws(idTokenClaims, "some secret");
         mockery.checking(new Expectations() {
             {
@@ -1279,100 +767,26 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
         try {
-            builder.createLogoutTokenForClientFromCachedIdToken(clientsAndLogoutTokens, client1, idToken);
-            fail("Should have thrown an exception but didn't. Clients and logout tokens map was: " + clientsAndLogoutTokens);
-        } catch (LogoutTokenBuilderException e) {
+            String logoutToken = builder.createLogoutTokenForClientFromCachedIdToken(client1, idToken);
+            fail("Should have thrown an exception but didn't. Got: " + logoutToken);
+        } catch (Exception e) {
             verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
         }
     }
 
     @Test
-    public void test_createLogoutTokenForClientFromCachedIdToken_noExistingLogoutTokens() throws Exception {
-        Map<OidcBaseClient, List<String>> clientsAndLogoutTokens = new HashMap<OidcBaseClient, List<String>>();
-
-        JSONObject idTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        final String idTokenString = jwtUtils.getHS256Jws(idTokenClaims, "some secret");
+    public void test_createLogoutTokenForClientFromCachedIdToken_goldenPath() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(idToken).getTokenString();
-                will(returnValue(idTokenString));
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        builder.createLogoutTokenForClientFromCachedIdToken(clientsAndLogoutTokens, client1, idToken);
-
-        assertEquals("Did not find expected number of entries in the logout tokens map: " + clientsAndLogoutTokens, 1, clientsAndLogoutTokens.size());
-        assertTrue("Logout tokens map did not contain entry for client [" + client1 + "]. Map was: " + clientsAndLogoutTokens, clientsAndLogoutTokens.containsKey(client1));
-    }
-
-    @Test
-    public void test_createLogoutTokenForClientFromCachedIdToken_someExistingLogoutTokensDifferentClient() throws Exception {
-        Map<OidcBaseClient, List<String>> clientsAndLogoutTokens = new HashMap<OidcBaseClient, List<String>>();
-        clientsAndLogoutTokens.put(client2, Arrays.asList("one", "two"));
-
-        JSONObject idTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        final String idTokenString = jwtUtils.getHS256Jws(idTokenClaims, "some secret");
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getTokenString();
-                will(returnValue(idTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        setJwtCreationExpectations(client1, client1Secret);
-
-        builder.createLogoutTokenForClientFromCachedIdToken(clientsAndLogoutTokens, client1, idToken);
-
-        assertEquals("Did not find expected number of entries in the logout tokens map: " + clientsAndLogoutTokens, 2, clientsAndLogoutTokens.size());
-        assertTrue("Logout tokens map did not contain entry for client [" + client1 + "]. Map was: " + clientsAndLogoutTokens, clientsAndLogoutTokens.containsKey(client1));
-
-        // Verify the new logout token that was created
-        List<String> clientLogoutTokens = clientsAndLogoutTokens.get(client1);
-        assertEquals("Did not find the expected number of logout tokens for client [" + client1 + "]: " + clientLogoutTokens, 1, clientLogoutTokens.size());
-        JwtClaims logoutTokenClaims = builder.getClaimsFromIdTokenString(clientLogoutTokens.get(0));
-        verifyLogoutTokenClaims(logoutTokenClaims, Arrays.asList(client1Id), subject, null);
-    }
-
-    @Test
-    public void test_createLogoutTokenForClientFromCachedIdToken_someExistingLogoutTokens() throws Exception {
-        Map<OidcBaseClient, List<String>> clientsAndLogoutTokens = new HashMap<OidcBaseClient, List<String>>();
-        // Client already contains entries for a couple logout tokens
-        List<String> client1Tokens = new ArrayList<>();
-        client1Tokens.add("1-one");
-        client1Tokens.add("1-two");
-        List<String> client2Tokens = new ArrayList<>();
-        client2Tokens.add("2-one");
-        client2Tokens.add("2-two");
-        clientsAndLogoutTokens.put(client1, client1Tokens);
-        clientsAndLogoutTokens.put(client2, client2Tokens);
-
-        JSONObject idTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
-        idTokenClaims.put("sid", sid);
-        final String idTokenString = jwtUtils.getHS256Jws(idTokenClaims, "some secret");
-        mockery.checking(new Expectations() {
-            {
-                one(idToken).getTokenString();
-                will(returnValue(idTokenString));
-                allowing(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        setJwtCreationExpectations(client1, client1Secret);
-
-        builder.createLogoutTokenForClientFromCachedIdToken(clientsAndLogoutTokens, client1, idToken);
-
-        assertEquals("Did not find expected number of entries in the logout tokens map: " + clientsAndLogoutTokens, 2, clientsAndLogoutTokens.size());
-        assertTrue("Logout tokens map did not contain entry for client [" + client1 + "]. Map was: " + clientsAndLogoutTokens, clientsAndLogoutTokens.containsKey(client1));
-
-        // Verify the new logout token that was created
-        List<String> clientLogoutTokens = clientsAndLogoutTokens.get(client1);
-        assertEquals("Did not find the expected number of logout tokens for client [" + client1 + "]: " + clientLogoutTokens, 3, clientLogoutTokens.size());
-        JwtClaims logoutTokenClaims = builder.getClaimsFromIdTokenString(clientLogoutTokens.get(2));
-        verifyLogoutTokenClaims(logoutTokenClaims, Arrays.asList(client1Id), subject, sid);
+        String logoutToken = builder.createLogoutTokenForClientFromCachedIdToken(client1, idToken1);
+        assertNotNull("Should have created a logout token for a valid ID token but didn't.", logoutToken);
+        verifyLogoutToken(logoutToken, Arrays.asList(client1Id), subject, null);
     }
 
     @Test
@@ -1386,8 +800,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        String result = builder.createLogoutTokenForClient(client1, idTokenClaims);
-        verifyLogoutToken(result, Arrays.asList(client1Id), subject, null);
+        String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
+        verifyLogoutToken(logoutToken, Arrays.asList(client1Id), subject, null);
     }
 
     @Test
@@ -1402,8 +816,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        String result = builder.createLogoutTokenForClient(client1, idTokenClaims);
-        verifyLogoutToken(result, Arrays.asList(client1Id), subject, sid);
+        String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
+        verifyLogoutToken(logoutToken, Arrays.asList(client1Id), subject, sid);
     }
 
     @Test
@@ -1571,6 +985,58 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
     }
 
+    private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
+        assertNotNull("Map of clients to cached ID tokens should not have been null but was.", clientsToCachedIdTokens);
+        if (expectedClientEntries == null || expectedClientEntries.length == 0) {
+            assertTrue("Map of clients to cached ID tokens should have been empty but wasn't. Map was: " + clientsToCachedIdTokens, clientsToCachedIdTokens.isEmpty());
+            return;
+        }
+        assertEquals("Map of clients to cached ID tokens was not the expected size: " + clientsToCachedIdTokens, expectedClientEntries.length, clientsToCachedIdTokens.size());
+        for (OidcBaseClient expectedClient : expectedClientEntries) {
+            assertTrue("Map of clients did not contain entry for [" + expectedClient + "]: " + clientsToCachedIdTokens, clientsToCachedIdTokens.containsKey(expectedClient));
+        }
+    }
+
+    private void verifyCachedIdTokensForClient(List<IDTokenImpl> cachedIdTokensForClient, IDTokenImpl... expectedIdTokens) throws Exception {
+        if (expectedIdTokens == null || expectedIdTokens.length == 0) {
+            assertTrue("List of cached ID tokens should have been empty but wasn't. Map was: " + cachedIdTokensForClient, cachedIdTokensForClient.isEmpty());
+            return;
+        }
+        assertEquals("List of cached ID tokens was not the expected size: " + cachedIdTokensForClient, expectedIdTokens.length, cachedIdTokensForClient.size());
+        for (IDTokenImpl expectedIdToken : expectedIdTokens) {
+            assertTrue("List of cached ID tokens did not contain entry for [" + expectedIdToken + "]: " + cachedIdTokensForClient,
+                       cachedIdTokensForClient.contains(expectedIdToken));
+        }
+    }
+
+    private void verifyLogoutTokensMapContainsExpectedClients(Map<OidcBaseClient, Set<String>> logoutTokens, OidcBaseClient... expectedClientEntries) {
+        assertNotNull("Map of clients to logout tokens should not have been null but was.", logoutTokens);
+        if (expectedClientEntries == null || expectedClientEntries.length == 0) {
+            assertTrue("Map of clients to logout tokens should have been empty but wasn't. Map was: " + logoutTokens, logoutTokens.isEmpty());
+            return;
+        }
+        assertEquals("Map of clients to logout tokens was not the expected size: " + logoutTokens, expectedClientEntries.length, logoutTokens.size());
+        for (OidcBaseClient expectedClient : expectedClientEntries) {
+            assertTrue("Map of clients did not contain entry for [" + expectedClient + "]: " + logoutTokens, logoutTokens.containsKey(expectedClient));
+        }
+    }
+
+    private void verifyLogoutTokensForClient(String clientId, Set<String> logoutTokensForClient, int expectedNumberOfEntries, String expectedSid) throws Exception {
+        assertEquals("Set of logout tokens for " + clientId + " was not the expected size: " + logoutTokensForClient, expectedNumberOfEntries, logoutTokensForClient.size());
+
+        for (String logoutToken : logoutTokensForClient) {
+            JwtClaims logoutTokenClaims = builder.getClaimsFromIdTokenString(logoutToken);
+
+            if (logoutTokenClaims.hasClaim("sid")) {
+                // One of the cached ID tokens must have had a sid claim in it; the corresponding logout token should have the expected sid claim value
+                verifyLogoutToken(logoutToken, Arrays.asList(clientId), subject, expectedSid);
+            } else {
+                // The cached ID tokens that don't have a sid claim should not have a logout token with a sid claim in it
+                verifyLogoutToken(logoutToken, Arrays.asList(clientId), subject, null);
+            }
+        }
+    }
+
     void verifyLogoutToken(String logoutTokenString, List<String> expectedAudiences, String expectedSubject, String expectedSid) throws Exception {
         assertNotNull("Logout token string should not have been null but was.", logoutTokenString);
 
@@ -1590,24 +1056,32 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long timeFrameStart = now - 5;
         long timeFrameEnd = now + 5;
 
+        // iss
         assertEquals("Issuer did not match expected value. Claims were: " + result, issuerIdentifier, result.getIssuer());
+        // aud
         assertEquals("Audience did not match expected value. Claims were: " + result, expectedAudiences, result.getAudience());
+        // iat
         long issuedAt = result.getIssuedAt().getValue();
         assertTrue("Issued at time (" + issuedAt + ") is not in an expected reasonable time frame (" + timeFrameStart + " to " + timeFrameEnd + "). Claims were: " + result,
                    (timeFrameStart <= issuedAt) && (issuedAt <= timeFrameEnd));
+        // jti
         assertNotNull("JTI claim should not have been null but was. Claims were: " + result, result.getJwtId());
+        // events
         Map<String, Object> eventsClaim = (Map<String, Object>) result.getClaimValue("events");
         assertNotNull("Events claim should not have been null but was. Claims were: " + result, eventsClaim);
         assertTrue("Events claim did not contain the " + LogoutTokenBuilder.EVENTS_MEMBER_NAME + " member. Claims were: " + result,
                    eventsClaim.containsKey(LogoutTokenBuilder.EVENTS_MEMBER_NAME));
         assertEquals("Events claim entry did not match expected value. Claims were: " + result, new HashMap<>(), eventsClaim.get(LogoutTokenBuilder.EVENTS_MEMBER_NAME));
+        // nonce
         assertNull("A nonce claim was found but shouldn't have been. Claims were: " + result, result.getClaimValue("nonce"));
 
+        // sub
         if (expectedSubject == null) {
             assertNull("A sub claim was found but shouldn't have been: \"" + result + "\".", result.getSubject());
         } else {
             assertEquals("Sub claim did not match expected value. Claims were: " + result, expectedSubject, result.getSubject());
         }
+        // sid
         if (expectedSid == null) {
             assertNull("A sid claim was found but shouldn't have been: \"" + result + "\".", result.getStringClaimValue("sid"));
         } else {
@@ -1615,15 +1089,23 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         }
     }
 
-    private void setRegisteredClients(List<OidcBaseClient> registeredClients) throws OidcServerException {
+    private void setClientLookupExpectations(OidcBaseClient... clientsToFetch) throws OidcServerException {
         mockery.checking(new Expectations() {
             {
                 one(oauth20provider).getClientProvider();
                 will(returnValue(clientProvider));
-                one(clientProvider).getAll();
-                will(returnValue(registeredClients));
             }
         });
+        if (clientsToFetch != null) {
+            for (OidcBaseClient client : clientsToFetch) {
+                mockery.checking(new Expectations() {
+                    {
+                        one(clientProvider).get(client.getClientId());
+                        will(returnValue(client));
+                    }
+                });
+            }
+        }
     }
 
     private void setTokenCacheExpectations(String user, OAuth20Token... tokens) {
@@ -1633,6 +1115,19 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(tokenCache));
                 one(tokenCache).getAllUserTokens(subject);
                 will(returnValue(Arrays.asList(tokens)));
+            }
+        });
+    }
+
+    private void setCustomIdTokenExpectations(IDTokenImpl customIdToken, String idTokenClientId, String idTokenString) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(customIdToken).getType();
+                will(returnValue(OAuth20Constants.ID_TOKEN));
+                allowing(customIdToken).getClientId();
+                will(returnValue(idTokenClientId));
+                allowing(customIdToken).getTokenString();
+                will(returnValue(idTokenString));
             }
         });
     }
