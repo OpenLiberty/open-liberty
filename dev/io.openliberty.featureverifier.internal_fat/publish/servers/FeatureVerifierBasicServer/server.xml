@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Server for testing Feature Verifier 2.0">
+    <featureManager>
+        <feature>featureverifier-2.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+
+</server>

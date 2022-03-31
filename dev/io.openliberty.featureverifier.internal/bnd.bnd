@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: featureverifier
+Bundle-SymbolicName: io.openliberty.featureverifier.internal
+Bundle-Description: Verifies API/SPI for features.; version=${bVersion}
+
+Bundle-Activator: io.openliberty.featureverifier.internal.FeatureVerifier
+
+WS-TraceGroup: featureverifier
+
+Private-Package: io.openliberty.featureverifier.internal.*
+ 
+Import-Package: !org.osgi.service.framework,\
+ com.ibm.wsspi.kernel.service.location;version="[1.0,2)",\
+ com.sun.net.httpserver;resolution:=optional,\
+ !com.sun.*,\
+ !javax.xml.bind.*,\
+ *
+
+Export-Package:
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF,\
+    asm.jar=../com.ibm.ws.org.objectweb.asm/${target-dir}/com.ibm.ws.org.objectweb.asm.jar,\
+    ariesutils.jar=../com.ibm.ws.org.apache.aries.util/${target-dir}/com.ibm.ws.org.apache.aries.util.jar,\
+    commonslang.jar=../com.ibm.ws.org.apache.commons.lang3/${target-dir}/com.ibm.ws.org.apache.commons.lang3.jar,\
+    diffutils.jar=@${repo;io.github.java-diff-utils:java-diff-utils;4.11;EXACT},\
+    xmlunit.jar=@${repo;org.xmlunit:xmlunit-core;2.9.0;EXACT},\
+    bnd.jar=@${repo;biz.aQute.bnd:biz.aQute.bnd;5.3.0;EXACT}
+    
+Bundle-ClassPath: asm.jar,ariesutils.jar,commonslang.jar,diffutils.jar,xmlunit.jar,bnd.jar,.
+
+instrument.disabled: true
+test.project: true
+publish.wlp.jar.disabled: false
+
+-buildpath: \
+        com.ibm.websphere.appserver.spi.kernel.service,\
+        com.ibm.ws.org.apache.commons.lang3,\
+        com.ibm.ws.org.apache.aries.util,\
+        com.ibm.websphere.org.osgi.core,\
+        com.ibm.ws.org.objectweb.asm,\
+        org.xmlunit:xmlunit-core;version=2.9.0,\
+        io.github.java-diff-utils:java-diff-utils;version=4.11,\
+        biz.aQute.bnd:biz.aQute.bnd;version=5.3.0

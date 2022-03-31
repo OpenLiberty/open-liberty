@@ -676,6 +676,7 @@ org.testcontainers:postgresql:1.16.2
 org.testcontainers:selenium:1.16.2
 org.testcontainers:testcontainers:1.16.2
 org.testng:testng:6.14.3
+org.xmlunit:xmlunit-core:2.9.0
 org.yaml:snakeyaml:1.27
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.2
