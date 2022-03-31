@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -796,9 +796,13 @@ public class OidcClientWasReqURLTests extends CommonTest {
                 break;
             case EXCEPTION:
                 expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected exception",
-                                                    null, "timed out");
-                break;
+		// have been getting an exception with "timed out" in it, now we have a jdk that is returning "timeout"
+		// the exception checking code can't handle matches (to use ".*time.*out.*") so, we'll use 2 checks
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time outexception",
+                                                    null, "time");
+                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time out exception",
+                                                    null, "out");
+               break;
             case MISSING_COOKIE:
                 expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
                 expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
