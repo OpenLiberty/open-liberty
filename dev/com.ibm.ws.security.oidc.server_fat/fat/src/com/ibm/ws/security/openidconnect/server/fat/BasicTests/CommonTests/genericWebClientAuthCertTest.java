@@ -204,7 +204,8 @@ public class genericWebClientAuthCertTest extends CommonTest {
      * An exception is thrown on the request
      *
      */
-    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.ChannelException", "java.lang.IllegalArgumentException", "sun.security.validator.ValidatorException" })
+    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.ChannelException", "java.lang.IllegalArgumentException", "sun.security.validator.ValidatorException",
+                           "java.net.SocketException" })
     @Test
     public void testWebClientAuthCodeCertUserNotInTrust() throws Exception {
         testOPServer.reconfigServer(server_cert_user_not_in_trust_config, _testName);
@@ -225,7 +226,7 @@ public class genericWebClientAuthCertTest extends CommonTest {
             Log.info(thisClass, _testName, "Exception message: " + e.getMessage());
             Log.info(thisClass, _testName, "#########################################################################################");
             String[] possibleFailures = new String[] { "javax.net.ssl.SSLException", "readHandshakeRecord", "javax.net.ssl.SSLHandshakeException",
-                                                       "Remote host terminated the handshake", "Connection refused" };
+                                                       "Remote host terminated the handshake", "Connection refused", "java.net.SocketException" };
             boolean found = false;
             for (String err : possibleFailures) {
                 if (e.toString().contains(err)) {
