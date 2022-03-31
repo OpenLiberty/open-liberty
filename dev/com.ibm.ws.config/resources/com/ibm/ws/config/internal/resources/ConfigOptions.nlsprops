@@ -66,7 +66,3 @@ option-desc.outputVersion=\
 If outputVersion=2.0 is specified, only the xsd:any element is used    \n\
 in the output file, so that unknown elements pass XSD validation at    \n\
 the expense of losing validation for known elements.
-
-option-key.overwriteExistingFile=--overwrite
-option-desc.overwriteExistingFile=                                     \n\
-Overwrite output schema file if it already exists.

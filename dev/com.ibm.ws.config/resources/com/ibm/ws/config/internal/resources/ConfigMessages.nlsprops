@@ -492,9 +492,5 @@ schemagen.info.schema.file.created=CWWKG0109I: The schema was created in file [{
 schemagen.info.schema.file.created.explanation=The command completed successfully.
 schemagen.info.schema.file.created.useraction=No action is required.
 
-schemagen.error.output.file.exists=CWWKG0110E: The output file [{0}] already exists.
-schemagen.error.output.file.exists.explanation=The file could not be written, because another file with the same name already exists.
-schemagen.error.output.file.exists.useraction=Specify a different output file name or use the {0} option.
-
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]

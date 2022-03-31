@@ -177,14 +177,6 @@ public class Generator {
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         try {
             String outputFileName = generatorOptions.getOutputFile();
-            File outputFile = new File(outputFileName);
-            if ( outputFile.exists()) {
-                if ( !generatorOptions.getOverwriteExistingFile())  {
-                    System.out.println(MessageFormat.format(messages.getString("schemagen.error.output.file.exists"), outputFileName));
-                    return;
-                }                   
-            }
-            
             PrintWriter writer = new PrintWriter(outputFileName, generatorOptions.getEncoding());
             XMLStreamWriter xmlWriter = null;
             if (generatorOptions.getCompactOutput()) {
@@ -230,7 +222,7 @@ public class Generator {
         // Kernel feature list tools and schema tools for some reason share the same configuration options file.
         // Hard-code the ones that apply to the schema generator tool to prevent --help from displaying undesired information.
 
-        String[] optionKeys = new String[] { "option-key.compactoutput", "option-key.encoding", "option-key.ignorePids", "option-key.locale", "option-key.schemaVersion", "option-key.outputVersion", "option-key.overwriteExistingFile" };
+        String[] optionKeys = new String[] { "option-key.compactoutput", "option-key.encoding", "option-key.ignorePids", "option-key.locale", "option-key.schemaVersion", "option-key.outputVersion" };
 
         System.out.println(options.getString("use.options"));
         System.out.println();

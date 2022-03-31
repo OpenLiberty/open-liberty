@@ -48,15 +48,6 @@ public class GeneratorOptions {
     private SchemaVersion schemaVersion = SchemaVersion.v1_0;
     private OutputVersion outputVersion = OutputVersion.v1;
     private boolean compactOutput = false;
-    private boolean overwriteExistingFile = false;
-
-    public boolean getOverwriteExistingFile() {
-        return overwriteExistingFile;
-    }
-
-    public void setOverwriteExistingFile(boolean overwriteExistinFile) {
-        this.overwriteExistingFile = overwriteExistinFile;
-    }
 
     /**
      * @return
@@ -135,9 +126,6 @@ public class GeneratorOptions {
                         System.out.println(MessageFormat.format(messages.getString("error.unknownOutputVersion"), argValue));
                         return(ReturnCode.BAD_ARGUMENT);
                     }
-                    
-                } else if (argToLower.contains("-overwrite")) {
-                    overwriteExistingFile = processBooleanArg(argToLower);
                 	
                 }  else {
                     System.out.println(MessageFormat.format(messages.getString("error.unknownArgument"), arg));
@@ -169,13 +157,13 @@ public class GeneratorOptions {
 
     /**
      * Boolean args are expected to be unary and are true if specified as unary.
-     * However, allow them to be specified as an assignment.
+     * However, allow them to be specified as an assignment.  For example:
      * Expected: 
      *    --compactoutput    meaning: compactOutput=true
-     *    --overwrite        meaning: overwriteExistingFile=true
+     *
      * Acceptable:
      *    --compactoutput=true  (any value other than true is false)
-     *    --overwrite=true
+     *
      * @param arg
      * @return
      */
@@ -189,9 +177,9 @@ public class GeneratorOptions {
                 return false;
             }
             
-        // If no "assignment" is specified, then it means compactOutput = true.
+        // If no "assignment" is specified, then it means the unary option is "true".
         // This is actually the normal, documented, expected case, but code this 
-        // way to allow -compactOutput=true
+        // way to allow -unaryOption=true
         } catch (SchemaGeneratorException sge) {
             return true;
         }
