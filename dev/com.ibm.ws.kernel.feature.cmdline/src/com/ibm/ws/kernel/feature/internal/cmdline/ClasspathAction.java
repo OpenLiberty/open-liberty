@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,13 +113,25 @@ public class ClasspathAction implements ActionHandler {
         Result r = resolver.resolveFeatures(repo, Collections.<ProvisioningFeatureDefinition> emptySet(), Arrays.asList(features), Collections.<String> emptySet(), false);
 
         Map<String, FeatureInfo> featuresToCheck = new HashMap<String, FeatureInfo>();
-        for (String name : r.getResolvedFeatures()) {
-            featuresToCheck.put(name, getFeatureInfo(name, productInfos, featuresBySymbolicName));
+
+		for (String name : r.getResolvedFeatures()) {
+			FeatureInfo fullFeature = getFeatureInfo(name, productInfos, featuresBySymbolicName);
+			if (fullFeature != null) {
+				String[] fullFeatureInfo = fullFeature.toString().split("/");
+				// fullFeature has the format of <symbolicName>/<version> OR
+				// <shortName>/<symbolicName>/<version>
+				if (fullFeatureInfo.length > 2) { // If feature name is IBM-shortName, put symbolic name as well
+					featuresToCheck.put(fullFeatureInfo[1], fullFeature);
+				}
+				featuresToCheck.put(name, fullFeature);
+			}
+			
         }
         // Collect the API JARs from the user-specified features.
         Set<File> apiJars = new LinkedHashSet<File>();
+
         for (FeatureInfo featureInfo : featureInfos) {
-            collectAPIJars(featureInfo, featuresToCheck, apiJars);
+			collectAPIJars(featureInfo, featuresToCheck, apiJars);
         }
 
         File outputFile = new File(output);
@@ -238,8 +250,7 @@ public class ClasspathAction implements ActionHandler {
      * @param featuresBySymbolicName symbolic name to info
      */
     private void collectAPIJars(FeatureInfo featureInfo,
-                                Map<String, FeatureInfo> allowedFeatures,
-                                Set<File> apiJars) {
+			Map<String, FeatureInfo> allowedFeatures, Set<File> apiJars) {
         for (SubsystemContentType contentType : JAR_CONTENT_TYPES) {
             for (FeatureResource resource : featureInfo.feature.getConstituents(contentType)) {
                 if (APIType.getAPIType(resource) == APIType.API) {
@@ -254,9 +265,10 @@ public class ClasspathAction implements ActionHandler {
         for (FeatureResource resource : featureInfo.feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
             String name = resource.getSymbolicName();
             FeatureInfo childFeatureInfo = allowedFeatures.get(name);
+
             if (childFeatureInfo != null && APIType.API.matches(resource)) {
-                allowedFeatures.remove(name);
-                collectAPIJars(childFeatureInfo, allowedFeatures, apiJars);
+				allowedFeatures.remove(name);
+				collectAPIJars(childFeatureInfo, allowedFeatures, apiJars);
             }
         }
     }
