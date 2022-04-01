@@ -93,9 +93,9 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: O elemento de configura\u00
 cdi12.element.type.superceded.CWOWB1015W.explanation=O elemento de configura\u00e7\u00e3o cdi substitui o elemento de configura\u00e7\u00e3o cdi12 e cont\u00e9m todas as mesmas op\u00e7\u00f5es, al\u00e9m de novas op\u00e7\u00f5es.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Mude sua configura\u00e7\u00e3o do server.xml para usar o elemento de configura\u00e7\u00e3o cdi em vez do elemento de configura\u00e7\u00e3o cdi12.
 
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: O atributo emptyBeansXMLExplicitArchive do elemento de configura\u00e7\u00e3o cdi \u00e9 suportado apenas no CDI 4.0 ou mais recente. Esse atributo ser\u00e1 ignorado.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=O atributo emptyBeansXMLExplicitArchive n\u00e3o tem efeito quando \u00e9 usado com uma vers\u00e3o CDI inferior a 4.0.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Atualize sua configura\u00e7\u00e3o server.xml para remover o atributo ou usar o CDI vers\u00e3o 4.0 ou mais recente.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: O atributo emptyBeansXMLExplicitBeanArchive do elemento de configura\u00e7\u00e3o cdi \u00e9 suportado apenas no CDI 4.0 ou mais recente. Esse atributo ser\u00e1 ignorado.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=O atributo emptyBeansXMLExplicitBeanArchive n\u00e3o tem efeito quando \u00e9 usado com uma vers\u00e3o CDI inferior a 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Atualize sua configura\u00e7\u00e3o server.xml para remover o atributo ou usar o CDI vers\u00e3o 4.0 ou mais recente.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: O atributo enableImplicitBeanArchives foi configurado em ambos os elementos de configura\u00e7\u00e3o cdi12 e cdi. O valor a partir do elemento cdi \u00e9 usado e o valor no elemento cdi12 \u00e9 ignorado.
 enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Embora voc\u00ea defina o atributo enableImplicitBeanArchives nos elementos de configura\u00e7\u00e3o do elemento de configura\u00e7\u00e3o  cdi12 e cdi, voc\u00ea n\u00e3o deve definir esse atributo com valores diferentes na mesma configura\u00e7\u00e3o do servidor.

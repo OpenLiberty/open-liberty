@@ -22,17 +22,17 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
     private static final TraceComponent tc = Tr.register(AggregatedConfiguration.class);
 
     public static final String ENABLE_IMPLICIT_BEAN_ARCHIVES = "enableImplicitBeanArchives";
-    public static final String EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE = "emptyBeansXMLExplicitArchive";
+    public static final String EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE = "emptyBeansXMLExplicitBeanArchive";
 
     private static final Boolean ENABLE_IMPLICIT_BEAN_ARCHIVES_DEFAULT = Boolean.TRUE; //default value is set here rather that in config metatype
     private static final Boolean EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE_DEFAULT = Boolean.FALSE; //default value is set here rather that in config metatype
 
     private Boolean cdi12EnableImplicitBeanArchives = null;
     private Boolean cdiEnableImplicitBeanArchives = null;
-    private Boolean cdiEmptyBeansXMLExplicitArchive = null;
+    private Boolean cdiEmptyBeansXMLExplicitBeanArchive = null;
 
     private boolean enableImplicitBeanArchives = ENABLE_IMPLICIT_BEAN_ARCHIVES_DEFAULT;
-    private boolean emptyBeansXMLExplicitArchive = EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE_DEFAULT;
+    private boolean emptyBeansXMLExplicitBeanArchive = EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE_DEFAULT;
 
     /**
      * Set the value of enableImplicitBeanArchives as set in the cdi12 configuration element
@@ -45,14 +45,14 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
     }
 
     /**
-     * Set the values of enableImplicitBeanArchives and emptyBeansXMLExplicitArchive as set in the cdi configuration element
+     * Set the values of enableImplicitBeanArchives and emptyBeansXMLExplicitBeanArchive as set in the cdi configuration element
      *
      * @param enableImplicitBeanArchives
-     * @param emptyBeansXMLExplicitArchive
+     * @param emptyBeansXMLExplicitBeanArchive
      */
-    public void setCdiConfig(Boolean enableImplicitBeanArchives, Boolean emptyBeansXMLExplicitArchive) {
+    public void setCdiConfig(Boolean enableImplicitBeanArchives, Boolean emptyBeansXMLExplicitBeanArchive) {
         this.cdiEnableImplicitBeanArchives = enableImplicitBeanArchives;
-        this.cdiEmptyBeansXMLExplicitArchive = emptyBeansXMLExplicitArchive;
+        this.cdiEmptyBeansXMLExplicitBeanArchive = emptyBeansXMLExplicitBeanArchive;
         updateAggregateConfig();
     }
 
@@ -83,16 +83,16 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
             Tr.warning(tc, "implicit.bean.scanning.disabled.CWOWB1009W");
         }
 
-        //if emptyBeansXMLExplicitArchive was explicitly set in server.xml then use that value, otherwise use the default (false)
-        if (this.cdiEmptyBeansXMLExplicitArchive != null) {
-            this.emptyBeansXMLExplicitArchive = this.cdiEmptyBeansXMLExplicitArchive;
+        //if emptyBeansXMLExplicitBeanArchive was explicitly set in server.xml then use that value, otherwise use the default (false)
+        if (this.cdiEmptyBeansXMLExplicitBeanArchive != null) {
+            this.emptyBeansXMLExplicitBeanArchive = this.cdiEmptyBeansXMLExplicitBeanArchive;
         } else {
-            this.emptyBeansXMLExplicitArchive = EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE_DEFAULT;
+            this.emptyBeansXMLExplicitBeanArchive = EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE_DEFAULT;
         }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Aggregated Config: " + ENABLE_IMPLICIT_BEAN_ARCHIVES + ": " + this.enableImplicitBeanArchives + " " + EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE + ": "
-                         + this.emptyBeansXMLExplicitArchive);
+                         + this.emptyBeansXMLExplicitBeanArchive);
         }
 
     }
@@ -104,8 +104,8 @@ public abstract class AggregatedConfiguration implements CDIConfiguration {
     }
 
     @Override
-    public boolean emptyBeansXMLExplicitArchive() {
-        return this.emptyBeansXMLExplicitArchive;
+    public boolean emptyBeansXMLExplicitBeanArchive() {
+        return this.emptyBeansXMLExplicitBeanArchive;
     }
 
 }

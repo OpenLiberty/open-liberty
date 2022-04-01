@@ -65,7 +65,7 @@ public class LegacyConfigTest {
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Cdi> cdis = config.getCdi();
         Cdi cdi = new Cdi();
-        cdi.setEmptyBeansXMLExplicitArchive(true);
+        cdi.setEmptyBeansXMLExplicitBeanArchive(true);
         cdis.add(cdi);
 
         server.updateServerConfiguration(config);
@@ -87,8 +87,8 @@ public class LegacyConfigTest {
      * Testing that the warning is NOT output on CDI 4.0
      */
     @Test
-    public void testCdiEmptyBeansXMLExplicitArchiveWarning() throws Exception {
-        List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
+    public void testCdiEmptyBeansXMLExplicitBeanArchiveWarning() throws Exception {
+        List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitBeanArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
         assertEquals("Message CWOWB1016W was found when it should not have been", 0, warningMessages.size());
     }
 }
