@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,8 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken1.common.CxfSSLSAMLBasicTests;
 
-//issue 18363
-import java.util.Set;
-
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.annotation.SkipForRepeat;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -47,7 +41,7 @@ import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+//@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
@@ -62,6 +56,7 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
 
+        setFeatureVersion("EE8");
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
