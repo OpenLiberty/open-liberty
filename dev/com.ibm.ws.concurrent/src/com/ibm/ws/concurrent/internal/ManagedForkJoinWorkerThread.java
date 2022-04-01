@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
      * @param threadFactory managed thread factory
      * @param pool          ForkJoinPool in which the thread runs
      */
+    @Trivial
     ManagedForkJoinWorkerThread(ManagedThreadFactoryImpl threadFactory, ForkJoinPool pool) {
         // TODO there is no way to supply the thread group as a parameter to the superclass.
         // ThreadGroupTracker might be able to track these ForkJoinPools per app, but would
@@ -124,6 +125,16 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
         if (threadFactory.service.isShutdown.get())
             interrupt();
         super.start();
+    }
+
+    /**
+     * Include the instance information in trace:
+     * ManagedForkJoinWorkerThread@07718601:Thread[ForkJoinPool-1-worker-3,3,Default Executor Thread Group]
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        return getClass().getSimpleName() + '@' + Integer.toHexString(hashCode()) + ':' + super.toString();
     }
 
     /**
