@@ -1,0 +1,26 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+compileJava {
+    inputs.files { rasInstrumentationInputFiles() }
+    doLast {
+        rasInstrumentationTaskdef(ant)
+        println 'Running manual instrumentation for webcontainer.servlet.6.0'
+        ant.instrumentForTrace(ffdc: true, taskInjection: false) {
+            fileset(dir: compileJava.destinationDir) {
+                include(name: '**/*.class')
+                exclude(name: '**/io/openliberty/webcontainer60/internal/**')
+                include(name: '**/io/openliberty/webcontainer60/internal/osgi/**/*.class')
+                exclude(name: '**/io/openliberty/webcontainer60/internal/osgi/request/IRequest40Impl.class')
+            }
+        }
+    }
+}
