@@ -5,5 +5,6 @@ Subsystem-Version: 1.0.0
 Subsystem-Content: test.concurrent.sim.zos.syncToOSThread; version="[1,1.0.100)",
  test.concurrent.sim.zos.wlm; version="[1,1.0.100)"
 Subsystem-Type: osgi.subsystem.feature
-IBM-API-Package: test.concurrent.sim.context.zos.wlm; type="internal"
+IBM-API-Package: test.concurrent.cache; type="internal",
+ test.concurrent.sim.context.zos.wlm; type="internal"
 IBM-Feature-Version: 2

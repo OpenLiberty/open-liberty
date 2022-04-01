@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.internal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
 
@@ -31,6 +32,13 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
     private static final TraceComponent tc = Tr.register(ManagedForkJoinWorkerThread.class);
 
     /**
+     * Associates ForkJoinWorkerThreads with a ThreadGroup.
+     * Although not actually in the thread group, this allows us to interrupt these
+     * threads upon application stop and/or removal of the configured managedThreadFactory.
+     */
+    static final ConcurrentHashMap<ManagedForkJoinWorkerThread, ThreadGroup> ACTIVE_THREADS = new ConcurrentHashMap<>();
+
+    /**
      * Managed thread factory instance that created this thread.
      */
     private final ManagedThreadFactoryImpl threadFactory;
@@ -43,10 +51,6 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
      */
     @Trivial
     ManagedForkJoinWorkerThread(ManagedThreadFactoryImpl threadFactory, ForkJoinPool pool) {
-        // TODO there is no way to supply the thread group as a parameter to the superclass.
-        // ThreadGroupTracker might be able to track these ForkJoinPools per app, but would
-        // need to do so in a way that avoids causing a memory leak over time if an application
-        // cycles through a lot of ForkJoinPools without itself restarting.
         super(pool);
         this.threadFactory = threadFactory;
 
@@ -109,6 +113,8 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run", x);
             throw x;
+        } finally {
+            ACTIVE_THREADS.remove(this);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -124,6 +130,9 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
         // ManagedThreadFactory has shut down [are] required to start with an interrupted status.
         if (threadFactory.service.isShutdown.get())
             interrupt();
+        else
+            ACTIVE_THREADS.put(this, threadFactory.threadGroup);
+
         super.start();
     }
 
