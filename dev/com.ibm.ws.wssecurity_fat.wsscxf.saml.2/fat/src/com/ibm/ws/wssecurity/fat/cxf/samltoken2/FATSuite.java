@@ -28,8 +28,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 	    //Lite
         CxfSAMLCaller1ServerTests.class,
-        //Full TODO: 03/25/22 - once we complete the feature, runtime updates of jaxws-2.2, complete the testing updates
-        //CxfSAMLCaller2ServerTests.class
+        //Full 
+        CxfSAMLCaller2ServerTests.class
 })
 
 /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 	    //Lite
         AlwaysRunAndPassTest.class,
-        //Full TODO: 03/25/22 - once we complete the feature, runtime updates of jaxws-2.2, complete the testing updates
-        //CxfSAMLCaller2ServerTests.class
+        //Full 
+        CxfSAMLCaller2ServerTests.class
 })
 
 /**

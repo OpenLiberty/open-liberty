@@ -100,12 +100,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
 
         //issue 18363
-        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
-		if (features.contains("jaxws-2.2")) {
-            setFeatureVersion("EE7");
-        } else if (features.contains("jaxws-2.3")) {
-            setFeatureVersion("EE8");
-        } // End of 18363
+		setFeatureVersion("EE8");
 		
     }
     
@@ -124,8 +119,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
 
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_clockSkew_test() throws Exception {
 
@@ -175,8 +169,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException","org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignature() throws Exception {
 
@@ -229,7 +222,6 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      */
     
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_valid() throws Exception {
         
     	//issue 18363
@@ -250,8 +242,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     }
  
     
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalid() throws Exception {
         
@@ -282,7 +273,6 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         } //End of 18363
     }
 
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_valid() throws Exception {
         
@@ -304,8 +294,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     }
      
 
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_invalid() throws Exception {
     
