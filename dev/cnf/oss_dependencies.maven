@@ -606,8 +606,9 @@ org.reactivestreams:reactive-streams:1.0.3
 org.rnorth.duct-tape:duct-tape:1.0.8
 org.rnorth.visible-assertions:visible-assertions:2.1.2
 org.seleniumhq.webdriver:webdriver-common:0.9.7376
-org.slf4j:slf4j-api:1.7.30
-org.slf4j:slf4j-simple:1.7.30
+org.slf4j:slf4j-api:1.7.36
+org.slf4j:slf4j-jdk14:1.7.36
+org.slf4j:slf4j-simple:1.7.36
 org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.0.RELEASE

@@ -108,4 +108,4 @@ Private-Package: \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	org.slf4j:slf4j-api;strategy=exact;version=1.7.30
+	com.ibm.ws.org.slf4j.api;version=latest

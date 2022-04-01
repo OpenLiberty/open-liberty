@@ -63,7 +63,7 @@ dependencies {
     project(':io.openliberty.com.fasterxml.jackson'),
     'org.apache.wink:wink-client:1.4',
     'org.apache.wink:wink-common:1.4',
-    "org.slf4j:slf4j-api:1.7.7",
+    project(':com.ibm.ws.org.slf4j.api'),
     project(':io.openliberty.org.apache.commons.codec'),
     'org.apache.cxf:cxf-core:3.4.3',
     'org.apache.cxf:cxf-rt-frontend-jaxrs:3.4.3',

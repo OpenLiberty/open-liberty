@@ -26,7 +26,7 @@ IBM-API-Package:\
   com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.0, \
   com.ibm.websphere.appserver.injection-2.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7
+  com.ibm.websphere.appserver.internal.slf4j-1.7
 -bundles=\
  io.openliberty.org.osgi.service.http; location:="dev/api/spec/,lib/", \
  com.ibm.ws.cxf.client, \

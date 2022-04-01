@@ -20,7 +20,8 @@ fat.project: true
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.ws.org.slf4j.simple;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.concurrency.2.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\

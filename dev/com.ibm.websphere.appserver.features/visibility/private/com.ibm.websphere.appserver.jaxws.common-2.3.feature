@@ -34,7 +34,7 @@ IBM-API-Package:\
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.jaxb-2.3, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.internal.cxf.common-3.2, \
   com.ibm.websphere.appserver.javax.mail-1.6
 -bundles=\

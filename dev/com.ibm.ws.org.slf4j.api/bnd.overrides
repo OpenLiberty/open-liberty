@@ -1,4 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.ws.org.slf4j.api.1.7.7
+Bundle-SymbolicName: com.ibm.ws.org.slf4j.api
+
+Import-Package: org.slf4j.impl;version=1.7.36

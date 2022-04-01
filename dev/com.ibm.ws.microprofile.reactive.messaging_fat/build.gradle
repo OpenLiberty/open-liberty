@@ -10,8 +10,8 @@ dependencies {
     kafkaClient 'org.lz4:lz4-java:1.5.0'
     kafkaClient 'com.github.luben:zstd-jni:1.3.8-1'
     kafkaClient 'org.xerial.snappy:snappy-java:1.1.7.2'
-    kafkaClient 'org.slf4j:slf4j-api:1.7.7'
-    kafkaClient 'org.slf4j:slf4j-jdk14:1.7.7'
+    kafkaClient project(':com.ibm.ws.org.slf4j.api')
+    kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
     requiredLibs 'org.testng:testng:6.14.3'
     requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.3'
     requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')

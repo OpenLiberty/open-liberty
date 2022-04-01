@@ -45,5 +45,5 @@ fat.project: true
     com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest,\
     de.flapdoodle.embed.mongo;version='3.0.0',\
 	de.flapdoodle.embed.process;version='3.0.1',\
-	org.slf4j:slf4j-jdk14;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.ws.org.slf4j.jdk14;version=latest

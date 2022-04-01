@@ -28,8 +28,7 @@ Export-Package: \
 	com.sun.jna.*;version="5.8.0",\
 	org.apache.commons.*;version="1.20",\
 	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
-	org.rnorth.*;version="1.0.8",\
-	org.slf4j.*;version="1.7.30";-split-package:=merge-last
+	org.rnorth.*;version="1.0.8"
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.	
@@ -62,6 +61,6 @@ generate.replacement: true
 	org.testcontainers:postgresql;version=${testContainerVersion},\
 	org.testcontainers:selenium;version=${testContainerVersion},\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.slf4j:slf4j-api;version=1.7.30,\
-	org.slf4j:slf4j-simple;version=1.7.30,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.ws.org.slf4j.simple;version=latest,\
 	net.java.dev.jna:jna;version=5.8.0

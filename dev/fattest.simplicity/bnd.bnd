@@ -101,4 +101,5 @@ test.project: true
 	io.openliberty.jakarta.cdi.3.0;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
-	io.openliberty.org.eclipse.openj9.criu;version=latest
+	io.openliberty.org.eclipse.openj9.criu;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest

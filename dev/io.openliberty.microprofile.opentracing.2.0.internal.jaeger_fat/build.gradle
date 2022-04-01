@@ -24,8 +24,8 @@ dependencies {
   jaegerClient 'io.jaegertracing:jaeger-client:1.6.0'
   jaegerClient 'io.jaegertracing:jaeger-tracerresolver:1.6.0'
   jaegerClient 'org.apache.thrift:libthrift:0.14.1'
-  jaegerClient 'org.slf4j:slf4j-simple:1.7.30'
-  jaegerClient 'org.slf4j:slf4j-api:1.7.30'
+  jaegerClient project(':com.ibm.ws.org.slf4j.api')
+  jaegerClient project(':com.ibm.ws.org.slf4j.simple')
 }
 
 autoFVT {
