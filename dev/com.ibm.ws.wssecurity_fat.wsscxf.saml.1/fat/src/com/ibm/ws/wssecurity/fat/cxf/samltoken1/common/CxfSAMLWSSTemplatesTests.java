@@ -65,7 +65,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * 
      */
     
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSL() throws Exception {
 
@@ -184,7 +184,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorToken() throws Exception {
     	
@@ -243,7 +242,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientToken() throws Exception {
     	
@@ -333,7 +331,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@ExpectedFFDC(value = { "org.apache.wss4j.common.ext.security.WSSecurityExceptionn" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicy() throws Exception {
     	

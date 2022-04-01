@@ -81,7 +81,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {
@@ -165,7 +165,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {

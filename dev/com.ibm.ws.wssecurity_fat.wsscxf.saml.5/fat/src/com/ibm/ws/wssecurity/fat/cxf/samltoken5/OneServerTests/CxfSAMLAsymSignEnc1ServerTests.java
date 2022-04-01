@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken5.OneServerTests;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.util.ArrayList;
 import java.util.List;
-//issue 18363
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -24,12 +24,11 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken5.common.CxfSAMLAsymSignEncTests;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.annotation.SkipForRepeat;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 
 /**
@@ -90,12 +89,7 @@ public class CxfSAMLAsymSignEnc1ServerTests extends CxfSAMLAsymSignEncTests {
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
         //issue 18363
-        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            setFeatureVersion("EE7");
-        } else if (features.contains("jaxws-2.3")) {
-            setFeatureVersion("EE8");
-        } // End of 18363
+        setFeatureVersion("EE8");
         
      }
 }
