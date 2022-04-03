@@ -12,7 +12,7 @@
 bVersion=1.0
 
 grpcVersion=1.43.2
-nettyVersion=4.1.72.Final
+nettyVersion=4.1.75.Final
 
 Bundle-Name: Open Liberty gRPC Client Third Party API
 Bundle-SymbolicName: io.openliberty.grpc.client.1.0.thirdparty

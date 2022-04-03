@@ -15,7 +15,7 @@ Subsystem-Name: MicroProfile Config 3.0
   com.ibm.websphere.appserver.containerServices-1.0, \
   io.openliberty.jakarta.annotation-2.0, \
   io.openliberty.org.eclipse.microprofile.config-3.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.mpCompatible-5.0, \
   io.openliberty.jakarta.cdi-3.0
 -bundles=io.openliberty.io.smallrye.config.jakarta, \

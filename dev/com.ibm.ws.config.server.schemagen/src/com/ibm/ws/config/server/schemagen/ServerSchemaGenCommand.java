@@ -172,8 +172,15 @@ public class ServerSchemaGenCommand extends UtilityTemplate {
         // Check the output dir.. If the value isn't the same as the value the server is using we won't find the logs directory
         File logsDir = new File(getOutputDir(serverName) + serverName + File.separator + "logs");
         if (!logsDir.exists()) {
-            stderr.println(getMessage("server.output.logs.dir.not.found", serverName, logsDir.getAbsolutePath()));
-            return RC_SERVER_OUTPUT_NOT_FOUND;
+            // If the logs dir isn't there, then that probably means the server isn't running.  When the
+            // server is created, the logs directory will not exist until the server is run for the first time.
+            // In that case, it is better to make the logs dir here, which will avoid the message about the
+            // logs dir and eventually give the more important message that the server isn't running.
+            boolean logsDirCreated = logsDir.mkdir();
+            if (!logsDirCreated) {
+                stderr.println(getMessage("server.output.logs.dir.not.found", serverName, logsDir.getAbsolutePath()));
+                return RC_SERVER_OUTPUT_NOT_FOUND;
+            }
         }
 
         // The file containing the local connector URL is always in the

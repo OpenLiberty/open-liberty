@@ -14,7 +14,7 @@ Subsystem-Name: gRPC Client 1.0
 -features= \
   com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="5.0, 6.0", \
   io.openliberty.grpcClient1.0.internal.ee-8.0; ibm.tolerates:="9.0", \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.internal.grpc-1.0
 -jars=\
   io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.43.2", \

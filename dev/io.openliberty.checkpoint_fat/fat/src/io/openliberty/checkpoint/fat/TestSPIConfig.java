@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
@@ -56,48 +57,77 @@ public class TestSPIConfig {
         server.deleteFileFromLibertyInstallRoot(USER_BUNDLE_PATH + USER_FEATURE_USERTEST_JAR);
     }
 
+    private void findLogMessage(String testMessage, String expectedPrefix, String expectedPostfix, long timeout) {
+        String actual = server.waitForStringInLogUsingMark(expectedPrefix, timeout);
+        assertNotNull("No message prefix found: " + expectedPrefix, actual);
+        actual = actual.substring(actual.indexOf(expectedPrefix));
+        assertEquals("Unexpected: ", expectedPrefix + expectedPostfix, actual);
+
+    }
+
     @Test
     public void testRestoreWithDefaults() throws Exception {
         server.startServer();
-        assertNotNull("No restore config",
-                      server.waitForStringInLogUsingMark("TESTING - restore config: pida=test1 pidb=test1", 0));
+        findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
+        findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
     }
 
     @Test
     public void testRestoreWithEnvSet() throws Exception {
         server.startServer();
-        assertNotNull("No restore config",
-                      server.waitForStringInLogUsingMark("TESTING - modified config: pida=env2 pidb=env2", 0));
+        findLogMessage("No restore config", "TESTING - modified config: pida=env2 pidb=env2", "", 0);
+    }
+
+    @Test
+    public void testAddImmutableEnvKey() throws Exception {
+        server.startServer();
+        findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
     }
 
     @Before
     public void setUp() throws Exception {
         TestMethod testMethod = getTestMethod();
-        configureBeforeCheckpoint(testMethod);
+        runBeforeCheckpoint(testMethod);
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
                              server -> {
-                                 assertNotNull("No prepare config",
-                                               server.waitForStringInLogUsingMark("TESTING - prepare config: pida=test1 pidb=test1", 0));
-                                 configureBeforeRestore(testMethod);
+                                 findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
+                                 findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
+                                 runBeforeRestore(testMethod);
                              });
-
     }
 
     /**
      * @param testMethod
      */
-    private void configureBeforeCheckpoint(TestMethod testMethod) {
-        // do nothing for now
-    }
-
-    /**
-     * @param testMethod
-     */
-    private void configureBeforeRestore(TestMethod testMethod) {
+    private void runBeforeCheckpoint(TestMethod testMethod) {
         try {
             server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
             switch (testMethod) {
+                case testAddImmutableEnvKey:
+                    server.copyFileToLibertyServerRoot("addImmutableEnvKey/server.env");
+                    break;
+                default:
+                    Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
+                    break;
+            }
+
+        } catch (Exception e) {
+            throw new AssertionError("Unexpected error configuring test.", e);
+        }
+    }
+
+    /**
+     * @param testMethod
+     */
+    private void runBeforeRestore(TestMethod testMethod) {
+        try {
+            server.saveServerConfiguration();
+            Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+            switch (testMethod) {
+                case testAddImmutableEnvKey:
+                    findLogMessage("No message for env keys", "TESTING - in prepare envs -", " v1 - v2 - null - null", 500);
+                    break;
                 case testRestoreWithEnvSet:
                     // environment value overrides defaultValue in restore
                     server.copyFileToLibertyServerRoot("envConfigChange/server.env");
@@ -136,6 +166,7 @@ public class TestSPIConfig {
     static enum TestMethod {
         testRestoreWithDefaults,
         testRestoreWithEnvSet,
+        testAddImmutableEnvKey,
         unknown
     }
 

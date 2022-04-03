@@ -164,7 +164,8 @@ Include-Resource: \
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.security.jwt;version=latest
 	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
@@ -191,7 +192,7 @@ Include-Resource: \
 	com.ibm.ws.security.fat.common;version=latest,\
  	com.ibm.ws.crypto.passwordutil;version=latest,\
 	joda-time;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security.jwt;version=latest, \

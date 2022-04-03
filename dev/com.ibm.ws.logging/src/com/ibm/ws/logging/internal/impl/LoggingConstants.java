@@ -62,6 +62,10 @@ public interface LoggingConstants {
     String ENV_WLP_LOGGING_JSON_ACCESS_LOG_FIELDS = "WLP_LOGGING_JSON_ACCESS_LOG_FIELDS";
     String DEFAULT_JSON_ACCESS_LOG_FIELDS = "default";
 
+    // Stack Joiner feature configurations
+    String ENV_WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE = "WLP_LOGGING_MAX_SYSTEM_STREAM_PRINT_EVENT_SIZE";
+    String ENV_WLP_LOGGING_STACK_JOIN = "WLP_LOGGING_STACK_JOIN";
+
     enum FFDCSummaryPolicy {
         DEFAULT, IMMEDIATE
     };

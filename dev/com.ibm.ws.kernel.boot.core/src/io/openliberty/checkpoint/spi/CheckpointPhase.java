@@ -36,9 +36,15 @@ public enum CheckpointPhase {
     DEPLOYMENT;
 
     /**
-     * The checkpoint service property used to store the checkpoint phase when registered as a service.
+     * The checkpoint phase service property used to store the checkpoint phase when registered as a service.
      */
     public static final String CHECKPOINT_PROPERTY = "io.openliberty.checkpoint";
+
+    /**
+     * The checkpoint phase service property used to store if the checkpoint process has been restored.
+     * Initially this property will be set to false. When the process is restored this will change to true.
+     */
+    public static final String CHECKPOINT_RESTORED_PROPERTY = "io.openliberty.checkpoint.restored";
 
     private static Map<String, CheckpointPhase> phases;
     static {
@@ -58,4 +64,17 @@ public enum CheckpointPhase {
     public static CheckpointPhase getPhase(String p) {
         return phases.get(p.trim().toUpperCase());
     }
+
+    // Using static so this applies to all phases
+    static volatile boolean RESTORED = false;
+
+    /**
+     * Returns true if the process has been restored
+     *
+     * @return true if the process has been restored
+     */
+    public boolean restored() {
+        return RESTORED;
+    }
+
 }

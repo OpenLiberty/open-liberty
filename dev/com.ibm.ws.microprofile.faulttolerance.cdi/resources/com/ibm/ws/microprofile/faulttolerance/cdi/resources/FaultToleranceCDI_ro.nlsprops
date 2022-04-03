@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=Actualiza\u0163i tip
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: Nu a fost g\u0103sit\u0103 metoda regresiv\u0103 {1} cu parametrii {2} \u00een clasa {0}.
-fallback.method.not.found.CWMFT5003E.explanation=A fost declarat\u0103 o metod\u0103 regresiv\u0103 pentru metoda {1}. Totu\u015fi, aceast\u0103 metod\u0103 nu exist\u0103 \u00een clasa {0}.
+fallback.method.not.found.CWMFT5003E.explanation=A fost declarat\u0103 o metod\u0103 de repliere, dar ea nu exist\u0103 \u00een clasa care o declar\u0103.
 fallback.method.not.found.CWMFT5003E.useraction=Fie \u00eenl\u0103tura\u0163i adnotarea regresiv\u0103, fie ad\u0103uga\u0163i metoda lips\u0103.
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=A
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: Nu a fost g\u0103sit\u0103 metoda fallback {0} cu tipuri de parametru \u015fi de returnare care s\u0103 se potriveasc\u0103 cu metoda {1} \u00een ierarhia de clase {2}.
 fallback.method.not.found.CWMFT5021E.explanation=O metod\u0103 fallback a fost declarat\u0103, dar ea nu exist\u0103 \u00een clasa de declarare, \u00een superclasele sale sau \u00een interfe\u0163ele pe care le implementeaz\u0103.
 fallback.method.not.found.CWMFT5021E.useraction=Fie \u00eenl\u0103tura\u0163i adnotarea regresiv\u0103, fie ad\u0103uga\u0163i metoda lips\u0103. Dac\u0103 metoda fallback exist\u0103, dar nu este g\u0103sit\u0103 \u00een continuare, verifica\u0163i dac\u0103 tipurile de parametru \u015fi tipul de returnare ale metodelor se potrivesc \u015fi c\u0103 metoda fallback este vizibil\u0103 clasei care declar\u0103 metoda adnotat\u0103.
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: Adnot\u0103rile MicroProfile Fault Tolerance nu pot fi utilizate \u00een combina\u021bie cu adnotarea {0}.
+anno.conflict.CWMFT5022E.explanation=Combinarea adnot\u0103rilor MicroProfile Fault Tolerance cu adnotarea specificat\u0103 nu este acceptat\u0103.
+anno.conflict.CWMFT5022E.useraction=Elimina\u021bi adnot\u0103rile MicroProfile Fault Tolerance sau adnotarea contradictorie.
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia este {0}.

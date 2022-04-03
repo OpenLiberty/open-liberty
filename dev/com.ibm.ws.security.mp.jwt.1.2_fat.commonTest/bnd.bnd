@@ -71,5 +71,5 @@ test.project: true
 	org.eclipse.microprofile.jwt;version=latest,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.org.jose4j;version=latest,\
-    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
+    com.ibm.ws.org.slf4j.api;version=latest
 	

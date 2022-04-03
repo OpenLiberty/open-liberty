@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ fallback.policy.return.type.not.match.CWMFT5002E.useraction=\u66f4\u65b0\u8fd4\u
 
 #A fallback method that should exist cannot be found.
 fallback.method.not.found.CWMFT5003E=CWMFT5003E: \u5728\u7c7b {0} \u4e2d\u627e\u4e0d\u5230\u5e26\u6709\u53c2\u6570 {2} \u7684\u56de\u9000\u65b9\u6cd5 {1}\u3002
-fallback.method.not.found.CWMFT5003E.explanation=\u5df2\u9488\u5bf9\u65b9\u6cd5 {1} \u58f0\u660e\u56de\u9000\u65b9\u6cd5\u3002\u4f46\u662f\uff0c\u6b64\u65b9\u6cd5\u4e0d\u5728\u7c7b {0} \u4e2d\u3002
+fallback.method.not.found.CWMFT5003E.explanation=\u5df2\u58f0\u660e\u56de\u9000\u65b9\u6cd5\uff0c\u4f46\u662f\u6b64\u65b9\u6cd5\u4e0d\u5728\u58f0\u660e\u7c7b\u4e2d\u3002
 fallback.method.not.found.CWMFT5003E.useraction=\u79fb\u9664\u56de\u9000\u6ce8\u91ca\u6216\u6dfb\u52a0\u7f3a\u5931\u7684\u65b9\u6cd5\u3002
 
 #A security exception was thrown while trying to create a fallback policy.
@@ -133,6 +133,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=\
 fallback.method.not.found.CWMFT5021E=CWMFT5021E: \u5728 {2} \u7684\u7c7b\u5c42\u6b21\u7ed3\u6784\u4e2d\u627e\u4e0d\u5230\u53c2\u6570\u7c7b\u578b\u548c\u8fd4\u56de\u7c7b\u578b\u4e0e\u65b9\u6cd5 {1} \u5339\u914d\u7684\u56de\u9000\u65b9\u6cd5 {0}\u3002
 fallback.method.not.found.CWMFT5021E.explanation=\u58f0\u660e\u4e86\u56de\u9000\u65b9\u6cd5\uff0c\u4f46\u8be5\u65b9\u6cd5\u4e0d\u5b58\u5728\u4e8e\u58f0\u660e\u7c7b\u3001\u5176\u8d85\u7c7b\u6216\u5176\u5b9e\u73b0\u7684\u63a5\u53e3\u4e2d\u3002
 fallback.method.not.found.CWMFT5021E.useraction=\u79fb\u9664\u56de\u9000\u6ce8\u91ca\u6216\u6dfb\u52a0\u7f3a\u5931\u7684\u65b9\u6cd5\u3002\u5982\u679c\u8be5\u56de\u9000\u65b9\u6cd5\u5b58\u5728\uff0c\u4f46\u4ecd\u7136\u627e\u4e0d\u5230\uff0c\u8bf7\u68c0\u67e5\u8fd9\u4e24\u79cd\u65b9\u6cd5\u7684\u53c2\u6570\u7c7b\u578b\u548c\u8fd4\u56de\u7c7b\u578b\u662f\u5426\u5339\u914d\uff0c\u4ee5\u53ca\u8be5\u56de\u9000\u65b9\u6cd5\u5bf9\u4e8e\u58f0\u660e\u9644\u6ce8\u91ca\u7684\u65b9\u6cd5\u7684\u7c7b\u662f\u5426\u53ef\u89c6\u3002
+
+# Conflict with Concurrency's @Asynchronous
+anno.conflict.CWMFT5022E=CWMFT5022E: MicroProfile Fault Tolerance \u6ce8\u91ca\u4e0d\u80fd\u4e0e {0} \u6ce8\u91ca\u7ed3\u5408\u4f7f\u7528\u3002
+anno.conflict.CWMFT5022E.explanation=\u4e0d\u652f\u6301\u5c06 MicroProfile Fault Tolerance \u6ce8\u91ca\u4e0e\u6307\u5b9a\u7684\u6ce8\u91ca\u6df7\u7528\u3002
+anno.conflict.CWMFT5022E.useraction=\u79fb\u9664 MicroProfile Fault Tolerance \u6ce8\u91ca\u6216\u5b58\u5728\u51b2\u7a81\u7684\u6ce8\u91ca\u3002
 
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u5f02\u5e38\u4e3a {0}\u3002

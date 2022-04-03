@@ -36,8 +36,7 @@ public class MPConfigServlet extends FATServlet {
         bean.envValueTest();
     }
 
-    // disable @Test
-    // TODO disabled until we have J9 support for modifying env values
+    @Test
     public void envValueChangeTest() {
         bean.envValueChangeTest();
     }

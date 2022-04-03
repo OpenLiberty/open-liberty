@@ -102,6 +102,7 @@ public class JspDependent {
         File dependentFile = new File(rp);
         long ts = dependentFile.lastModified();
         if (ts == 0) {ts = getTimestamp();}
+        if (ts == 0) {ts = context.getRealTimeStamp(dependentFilePath); }
         if (ts != lastModified) {  
              outdated = true;
     	     // begin 213703: add logging for isoutdated checks

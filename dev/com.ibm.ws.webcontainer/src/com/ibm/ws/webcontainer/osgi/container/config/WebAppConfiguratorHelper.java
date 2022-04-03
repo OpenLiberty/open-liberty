@@ -828,7 +828,11 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         configureMessageDestinationRefs(webFragment.getMessageDestinationRefs());
         configurePersistenceUnitRefs(webFragment.getPersistenceUnitRefs());
         configurePersistenceContextRefs(webFragment.getPersistenceContextRefs());
+        configureContextServices(webFragment.getContextServices());
         configureDataSources(webFragment.getDataSources());
+        configureManagedExecutors(webFragment.getManagedExecutors());
+        configureManagedScheduledExecutors(webFragment.getManagedScheduledExecutors());
+        configureManagedThreadFactories(webFragment.getManagedThreadFactories());
         configureServiceRefs(webFragment.getServiceRefs());
         configureEJBRefs(webFragment.getEJBRefs());
         configureEJBLocalRefs(webFragment.getEJBLocalRefs());

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,7 +102,14 @@ Service-Component: \
     activate:='activate'; \
     deactivate:='deactivate'; \
     immediate:=true; \
-    properties:="service.vendor=IBM"
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.security.saml.sso.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="\
+      service.vendor=IBM,\
+      classes=com.ibm.ws.security.saml.sso20.token.Saml20TokenImpl"
+
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
@@ -129,7 +136,7 @@ Service-Component: \
 	com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest,\
 	com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest,\
 	com.ibm.ws.org.opensaml.openws.1.5.6;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
 	com.ibm.websphere.appserver.spi.saml20;version=latest, \
@@ -159,8 +166,8 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.org.apache.commons.io;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
-    org.slf4j:slf4j-api;version=1.7.7, \
-    org.slf4j:slf4j-jdk14;version=1.7.7, \
+    com.ibm.ws.org.slf4j.api;version=latest, \
+    com.ibm.ws.org.slf4j.jdk14;version=latest, \
     com.ibm.ws.org.apache.commons.fileupload;version=latest, \
     io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.security.common;version=latest, \

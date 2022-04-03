@@ -35,7 +35,7 @@ dependencies {
       project(':io.openliberty.org.apache.xercesImpl'),
       'xalan:xalan:2.7.2',
       project(':com.ibm.ws.org.apache.commons.io'),
-      'org.slf4j:slf4j-api:1.7.7',
+      project(':com.ibm.ws.org.slf4j.api'),
       'com.unboundid:unboundid-ldapsdk:4.0.9'
       
 }

@@ -48,10 +48,11 @@ import java.util.Map;
  * drive SQLTransientExceptions or SQLExceptions at appropriate points through the simQueryFailover() method.
  */
 public class IfxPreparedStatement implements PreparedStatement {
-    PreparedStatement wrappedPS = null;
+    private static final int QUERY_TIMEOUT = 30;
+    PreparedStatement wrappedPS;
 
-    static int failoverCounter = 0;
-    static boolean failoverQuery = false;
+    static int failoverCounter;
+    static boolean failoverQuery;
 
     /**
      * Use the _duplicateRows object to store a set of rows that will be duplicated in the DB table
@@ -63,7 +64,7 @@ public class IfxPreparedStatement implements PreparedStatement {
      * Keep track of each stored row in _duplicateRows using _rowNum
      *
      */
-    private static int _rowNum = 0;
+    private static int _rowNum;
 
     /**
      * Use the _columnValues object to store a list of values in a particular row to be duplicated.
@@ -71,7 +72,7 @@ public class IfxPreparedStatement implements PreparedStatement {
      */
     private static List<Object> _columnValues;
 
-    private static int _lastIndexEntry = 0;
+    private static int _lastIndexEntry;
 
     /**
      * The _cachedRow object keeps a local cache of column values.
@@ -79,9 +80,9 @@ public class IfxPreparedStatement implements PreparedStatement {
      */
     private static Map<Integer, Object> _cachedRow;
 
-    private boolean _tranlogInsertFlag = false;
-    private boolean _leaselogUpdateFlag = false;
-    private boolean _leaselogClaimFlag = false;
+    private boolean _tranlogInsertFlag;
+    private boolean _leaselogUpdateFlag;
+    private boolean _leaselogClaimFlag;
 
     /**
      * Lookup string that allows character digit lookup by index value.
@@ -89,8 +90,10 @@ public class IfxPreparedStatement implements PreparedStatement {
      */
     private final static String _digits = "0123456789abcdef";
 
-    IfxPreparedStatement(PreparedStatement realPS) {
+    IfxPreparedStatement(PreparedStatement realPS) throws SQLException {
         wrappedPS = realPS;
+        wrappedPS.setQueryTimeout(QUERY_TIMEOUT);
+        System.out.println("SIMHADB: query timeout is " + wrappedPS.getQueryTimeout());
     }
 
     @Override

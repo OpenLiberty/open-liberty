@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,16 +16,23 @@ src: \
 	test-applications/subjectcast/src
 
 fat.project: true
+tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, pages-3.0
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
 
 -buildpath: \
-    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.security;version=latest,\
-    com.ibm.ws.com.meterware.httpunit.1.7;version=latest, \
-    com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    com.ibm.ws.security.common;version=latest, \
-    com.ibm.ws.security.fat.common;version=latest, \
-    com.ibm.ws.serialization;version=latest, \
-    com.ibm.ws.webcontainer.security;version=latest, \
-    com.ibm.ws.webcontainer.security_test.servlets;version=latest, \
-    io.openliberty.jcache.internal;version=latest
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.ws.security.common;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+	io.openliberty.jcache.internal;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.ws.security.saml.sso_fat.common;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version=2.59.0
     

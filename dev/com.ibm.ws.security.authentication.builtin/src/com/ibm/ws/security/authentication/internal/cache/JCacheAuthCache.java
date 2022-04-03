@@ -16,6 +16,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.authentication.cache.CacheObject;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.jcache.CacheService;
@@ -121,18 +122,40 @@ public class JCacheAuthCache implements AuthCache {
 
     @Override
     @FFDCIgnore({ SerializationException.class })
-    public void insert(Object key, Object value) {
-        try {
-            Cache<Object, Object> jCache = getJCache();
-            if (jCache != null) {
-                jCache.put(key, value);
+    public void insert(Object key, CacheObject value) {
+
+        /*
+         * Skip trying to serialize if we know we don't support it.
+         */
+        boolean forceInMemory = false;
+//        for (Object cred : value.getSubject().getPrivateCredentials()) {
+//            if ("ClassNameHere".equals(cred.getClass().getSimpleName())) {
+//                forceInMemory = true;
+//                break;
+//            }
+//        }
+
+        if (!forceInMemory) {
+            try {
+                Cache<Object, Object> jCache = getJCache();
+                if (jCache != null) {
+                    jCache.put(key, value);
+                }
+            } catch (SerializationException e) {
+                /*
+                 * If we could not serialize the object, we should store it in the local cache.
+                 */
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to insert value for key " + key + " into JCache due to SerializationException. Inserting into in-memory cache instead.", e);
+                }
+                inMemoryCache.insert(key, value);
             }
-        } catch (SerializationException e) {
+        } else {
             /*
-             * If we could not serialize the object, we should store it in the local cache.
+             * We didn't attempt to serialize the object. Put it in the local cache.
              */
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to insert value for key " + key + " into JCache due to SerializationException.", e);
+                Tr.debug(tc, "Refused to insert value for key " + key + " into JCache due to known limitation. Inserting into in-memory cache instead.");
             }
             inMemoryCache.insert(key, value);
         }

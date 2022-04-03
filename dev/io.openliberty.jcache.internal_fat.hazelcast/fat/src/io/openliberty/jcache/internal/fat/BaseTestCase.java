@@ -231,7 +231,7 @@ public abstract class BaseTestCase {
     }
 
     /**
-     * Assert whether there was or was not a JWT authentication cache hit.
+     * Assert whether there was or was not a JWT authentication cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
      * @param server         The server to check the logs for the cache hit.
@@ -248,6 +248,46 @@ public abstract class BaseTestCase {
         } else {
             assertFalse("Request should have resulted in an auth cache miss for JWT (hashed) cookie " + hashedCookie + ".",
                         server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS + encodedCookie).isEmpty());
+        }
+    }
+
+    /**
+     * Assert whether there was or was not a SAML authentication cache hit to the JCache.
+     *
+     * @param expectCacheHit Whether to expect there was a cache hit.
+     * @param server         The server to check the logs for the cache hit.
+     * @param key            The key to check for.
+     * @throws Exception If the check failed for some unforeseen reason.
+     */
+    protected static void assertJCacheSamlAuthCacheHit(boolean expectCacheHit, LibertyServer server, String key) throws Exception {
+        String encodedCookie = encodeForRegex(key);
+
+        if (expectCacheHit) {
+            assertFalse("Request should have resulted in a JCache auth cache hit for SAML cache key " + key + ".",
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT + encodedCookie).isEmpty());
+        } else {
+            assertFalse("Request should have resulted in a JCache auth cache miss for SAML cache key " + key + ".",
+                        server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS + encodedCookie).isEmpty());
+        }
+    }
+
+    /**
+     * Assert whether there was or was not a SAML authentication cache hit to the in-memory cache.
+     *
+     * @param expectCacheHit Whether to expect there was a cache hit.
+     * @param server         The server to check the logs for the cache hit.
+     * @param key            The key to check for.
+     * @throws Exception If the check failed for some unforeseen reason.
+     */
+    protected static void assertInMemorySamlAuthCacheHit(boolean expectCacheHit, LibertyServer server, String key) throws Exception {
+        String encodedKey = encodeForRegex(key);
+
+        if (expectCacheHit) {
+            assertFalse("Request should have resulted in an in-memory auth cache hit for SAML cache key " + key + ".",
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_HIT + encodedKey).isEmpty());
+        } else {
+            assertFalse("Request should have resulted in an in-memory auth cache miss for SAML cache key " + key + ".",
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_MISS + encodedKey).isEmpty());
         }
     }
 

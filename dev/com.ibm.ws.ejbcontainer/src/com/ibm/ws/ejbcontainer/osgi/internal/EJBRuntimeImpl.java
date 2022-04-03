@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,6 +172,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
            configurationPid = "com.ibm.ws.ejbcontainer.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -254,6 +256,13 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String BIND_TO_JAVA_GLOBAL = "bindToJavaGlobal";
     private static final String DISABLE_SHORT_DEFAULT_BINDINGS = "disableShortDefaultBindings";
     private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
+
+    private final CheckpointPhase checkpointPhase;
+
+    @Activate
+    public EJBRuntimeImpl(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        this.checkpointPhase = checkpointPhase;
+    }
 
     @Override
     public void serverStopping() {
@@ -1681,6 +1690,28 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                 remoteLatch.countDown();
             }
         }
+    }
+
+    /**
+     * Determines if application start should optimize for checkpoint after all configured applications
+     * have been identified, but before any application code has been called.
+     *
+     * @return true if application start should optimize for checkpoint deployment; false otherwise.
+     */
+    @Override
+    public boolean isCheckpointDeployment() {
+        return CheckpointPhase.DEPLOYMENT == checkpointPhase;
+    }
+
+    /**
+     * Determines if application start should optimize for checkpoint after all configured applications
+     * have started.
+     *
+     * @return true if application start should optimize for checkpoint applications; false otherwise.
+     */
+    @Override
+    public boolean isCheckpointApplications() {
+        return CheckpointPhase.APPLICATIONS == checkpointPhase;
     }
 
     @Override
