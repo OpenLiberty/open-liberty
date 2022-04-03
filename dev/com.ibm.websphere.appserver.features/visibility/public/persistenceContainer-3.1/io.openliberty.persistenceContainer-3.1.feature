@@ -15,7 +15,7 @@ IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.xmlBinding-4.0, \
-  io.openliberty.jakarta.annotation-2.0; apiJar=false, \
+  io.openliberty.jakarta.annotation-2.1; apiJar=false, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.jndi-1.0, \

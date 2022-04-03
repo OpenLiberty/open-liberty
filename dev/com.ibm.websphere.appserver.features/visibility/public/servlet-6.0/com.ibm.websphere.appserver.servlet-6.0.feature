@@ -44,7 +44,7 @@ Subsystem-Category: JakartaEE10Application
   com.ibm.websphere.appserver.javaeedd-1.0, \
   com.ibm.websphere.appserver.appmanager-1.0, \
   com.ibm.websphere.appserver.requestProbes-1.0, \
-  io.openliberty.jakarta.annotation-2.0, \
+  io.openliberty.jakarta.annotation-2.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.anno-2.0, \
   com.ibm.websphere.appserver.artifact-1.0
