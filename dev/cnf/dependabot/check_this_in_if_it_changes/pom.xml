@@ -2644,7 +2644,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>5.0.0.CR1</version>
+      <version>5.0.0.CR2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -2664,7 +2664,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>5.0.0.CR1</version>
+      <version>5.0.0.CR2</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>

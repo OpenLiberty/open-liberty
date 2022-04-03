@@ -27,7 +27,10 @@ import java.util.stream.Collectors;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.BeanDeploymentModule;
+import org.jboss.weld.bootstrap.BeanDeploymentModules;
 import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.config.ConfigurationKey;
@@ -48,6 +51,7 @@ import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIContainer;
+import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
@@ -146,10 +150,16 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
                 // get the application id
                 String contextID = webSphereCDIDeployment.getDeploymentID();
+                // get the environment
+                CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
+                Environment environment = Environments.EE;
+                if (eventManager != null) {
+                    environment = eventManager.getEnvironment();
+                }
                 // start the bootrapping process...
                 final WeldBootstrap weldBootstrap = webSphereCDIDeployment.getBootstrap();
                 weldBootstrap.startExtensions(webSphereCDIDeployment.getExtensions());
-                weldBootstrap.startContainer(contextID, Environments.EE, webSphereCDIDeployment);
+                weldBootstrap.startContainer(contextID, environment, webSphereCDIDeployment);
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
                     public Void run() {
@@ -186,6 +196,40 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 weldBootstrap.endInitialization();
             } finally {
                 currentDeployment.remove();
+            }
+        }
+    }
+
+    public void applicationStarted(Application application) throws CDIException {
+        CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
+        if (eventManager != null) {
+            WebSphereCDIDeployment deployment = getDeployment(application);
+            if (deployment != null) {
+                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
+                if (modules != null) {
+                    for (BeanDeploymentModule module : modules) {
+                        if (!module.isWebModule()) {
+                            eventManager.fireStartupEvent(module);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void applicationStopping(Application application) throws CDIException {
+        CDIContainerEventManager eventManager = cdiRuntime.getCDIContainerEventManager();
+        if (eventManager != null) {
+            WebSphereCDIDeployment deployment = getDeployment(application);
+            if (deployment != null) {
+                BeanDeploymentModules modules = deployment.getServices().get(BeanDeploymentModules.class);
+                if (modules != null) {
+                    for (BeanDeploymentModule module : modules) {
+                        if (!module.isWebModule()) {
+                            eventManager.fireShutdownEvent(module);
+                        }
+                    }
+                }
             }
         }
     }
@@ -247,7 +291,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
