@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ public class SSLConfig {
      * This method will warn if any requested cipher suites appear to not match the options
      *
      * @param candidateCipherSuites locally supported cipher suites
-     * @param requested cipher suites explicitly configured
-     * @param options association options configured
+     * @param requested             cipher suites explicitly configured
+     * @param options               association options configured
      * @return intersection of candidates and requested
      */
     private String[] filter(String[] candidateCipherSuites, String[] requested, OptionsKey options) {
@@ -138,9 +138,8 @@ public class SSLConfig {
         EnumSet<Options> requires = toOptions(options.requires, false);
         List<String> result = new ArrayList<String>(requested.length);
         for (String choice : requested) {
-            if (!matches(supports, requires, choice)) {
-                Tr.warning(tc, "CSIv2_COMMON_CIPHER_SUITE_MISMATCH", choice, getOptions(choice), supports, requires);
-            }
+            //Issue a warning/debug message only
+            matches(supports, requires, choice);
             if (candidates.contains(choice)) {
                 result.add(choice);
             }
@@ -257,27 +256,25 @@ public class SSLConfig {
         return result;
     }
 
-    public static String[] getCompatibleCipherSuites(String[] choices, EnumSet<Options> supports, EnumSet<Options> requires) {
-        List<String> compatible = new ArrayList<String>(choices.length);
-        for (String choice : choices) {
-            boolean matches = matches(supports, requires, choice);
-            if (matches) {
-                compatible.add(choice);
-            }
-        }
-        return compatible.toArray(new String[compatible.size()]);
-    }
-
     /**
      * @param supports
      * @param requires
      * @param choice
      * @return
      */
-    private static boolean matches(EnumSet<Options> supports, EnumSet<Options> requires, String choice) {
+    private static void matches(EnumSet<Options> supports, EnumSet<Options> requires, String choice) {
         EnumSet<Options> actual = getOptions(choice);
-        boolean matches = actual.containsAll(requires) && supports.containsAll(actual);
-        return matches;
+
+        boolean matchesRequires = actual.containsAll(requires);
+        if (!matchesRequires) {
+            Tr.warning(tc, "CSIv2_COMMON_CIPHER_SUITE_MISMATCH", choice, getOptions(choice), requires);
+        }
+        boolean matchesSupports = supports.containsAll(actual);
+        if (!matchesSupports && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The " + choice + " requested cipher suite appears to have " + getOptions(choice) + " association options that do not match the specified " + supports
+                         + " supported options.");
+        }
+
     }
 
     /**
