@@ -434,28 +434,28 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
     }
 
-    /**
-     * This tests that a backchannelLogout is NOT performed when backchannelLogoutSupported="false" is specified in the config.
-     * This setting should prevent the logout from being done
-     *
-     * @throws Exception
-     */
-    // TODO runtime does not currently check this - update test when it does @Test
-    public void LogoutTokenValidationTests_backchannelLogout_not_supported() throws Exception {
-
-        String client = "clientBackChannelLogoutNotSupported";
-        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
-
-        String logutOutEndpoint = buildBackchannelLogoutUri(client);
-
-        List<endpointSettings> parms = createParmFromBuilder(builder);
-
-        // TODO add proper expectations
-        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.OK_STATUS);
-
-        invokeBcl(logutOutEndpoint, parms, expectations);
-
-    }
+    //    /**
+    //     * This tests that a backchannelLogout is NOT performed when backchannelLogoutSupported="false" is specified in the config.
+    //     * This setting should prevent the logout from being done
+    //     *
+    //     * @throws Exception
+    //     */
+    //    // TODO The current RP config is not using the backchannelLogoutSupported attribute - so, bcl requests will always be supported/allowed @Test
+    //    public void LogoutTokenValidationTests_backchannelLogout_not_supported() throws Exception {
+    //
+    //        String client = "clientBackChannelLogoutNotSupported";
+    //        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
+    //
+    //        String logutOutEndpoint = buildBackchannelLogoutUri(client);
+    //
+    //        List<endpointSettings> parms = createParmFromBuilder(builder);
+    //
+    //        // TODO add proper expectations
+    //        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.OK_STATUS);
+    //
+    //        invokeBcl(logutOutEndpoint, parms, expectations);
+    //
+    //    }
 
     /**
      * Test that the backchannelLogout fails when we omit the required iss claim from the logout token.
@@ -702,12 +702,11 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     }
 
     /**
-     * // * Test that a logout token can not be used multiple times - try to reuse the same token (same jti value) and show that
-     * the
-     * // * backchannelLogout request fails.
-     * // *
-     * // * @throws Exception
-     * //
+     * Test that a logout token can not be used multiple times - try to reuse the same token (same jti value) and show that
+     * the backchannelLogout request fails.
+     *
+     * @throws Exception
+     *
      */
     // TODO - jti is not currently checked by the runtime @Test
     public void LogoutTokenValidationTests_replay_required_jti() throws Exception {
@@ -914,53 +913,54 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
     }
 
-    /**
-     * Test that the backchannelLogout fails when the logout token does not have a sid, but the client configure requires a sid.
-     *
-     * @throws Exception
-     */
-    // TODO
-    @Test
-    public void LogoutTokenValidationTests_omit_sid_when_config_requires_it() throws Exception {
+    //    /**
+    //     * Test that the backchannelLogout fails when the logout token does not have a sid, but the client configure requires a sid.
+    //     *
+    //     * @throws Exception
+    //     */
+    //    // TODO backchannelLogoutSessionRequired is not supporte/used in the RP config, so, we'll always allow sid, but never require it as far as the RP is concerned
+    //    //@Test
+    //    public void LogoutTokenValidationTests_omit_sid_when_config_requires_it() throws Exception {
+    //
+    //        String client = "clientRequiresSid";
+    //        String logutOutEndpoint = buildBackchannelLogoutUri(client);
+    //
+    //        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
+    //        builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
+    //
+    //        List<endpointSettings> parms = createParmFromBuilder(builder);
+    //
+    //        List<validationData> expectations = setInvalidBCLRequestExpectations(MessageConstants.CWWKS1551E_BACK_CHANNEL_LOGOUT_MISSING_SID);
+    //
+    //        invokeBcl(logutOutEndpoint, parms, expectations);
+    //
+    //    }
 
-        String client = "clientRequiresSid";
-        String logutOutEndpoint = buildBackchannelLogoutUri(client);
-
-        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
-        builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
-
-        List<endpointSettings> parms = createParmFromBuilder(builder);
-
-        List<validationData> expectations = setInvalidBCLRequestExpectations(MessageConstants.CWWKS1551E_BACK_CHANNEL_LOGOUT_MISSING_SID);
-
-        invokeBcl(logutOutEndpoint, parms, expectations);
-
-    }
-
-    /**
-     * Test that the backchannelLogout does not perform a logout when the request contains a logout token and that logout token
-     * does not have a sid.
-     * (The fact that the client doesn;t support backchannelLogouts should take priority over the client requiring a sid)
-     * TODO: may need a check or allow a warning during server startup for this config
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenValidationTests_backchannelLogout_not_supported_sid_required() throws Exception {
-
-        String client = "clientBackChannelLogout_NotSupportedRequiresSid";
-        String logutOutEndpoint = buildBackchannelLogoutUri(client);
-
-        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
-        builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
-
-        List<endpointSettings> parms = createParmFromBuilder(builder);
-
-        List<validationData> expectations = setInvalidBCLRequestExpectations(MessageConstants.CWWKS1551E_BACK_CHANNEL_LOGOUT_MISSING_SID);
-
-        invokeBcl(logutOutEndpoint, parms, expectations);
-
-    }
+    //    /**
+    //     * Test that the backchannelLogout does not perform a logout when the request contains a logout token and that logout token
+    //     * does not have a sid.
+    //     * (The fact that the client doesn;t support backchannelLogouts should take priority over the client requiring a sid)
+    //     * TODO: may need a check or allow a warning during server startup for this config
+    //     *
+    //     * @throws Exception
+    //     */
+    //    // TODO backchannelLogoutSupported and backchannelLogoutSessionRequired not currently supported/used by the RP
+    //    @Test
+    //    public void LogoutTokenValidationTests_backchannelLogout_not_supported_sid_required() throws Exception {
+    //
+    //        String client = "clientBackChannelLogout_NotSupportedRequiresSid";
+    //        String logutOutEndpoint = buildBackchannelLogoutUri(client);
+    //
+    //        JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
+    //        builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
+    //
+    //        List<endpointSettings> parms = createParmFromBuilder(builder);
+    //
+    //        List<validationData> expectations = setInvalidBCLRequestExpectations(MessageConstants.CWWKS1551E_BACK_CHANNEL_LOGOUT_MISSING_SID);
+    //
+    //        invokeBcl(logutOutEndpoint, parms, expectations);
+    //
+    //    }
 
     /**
      * Test that the backchannelLogout fails when we specify the nonce claim that is NOT allowed in a lgoutout token.

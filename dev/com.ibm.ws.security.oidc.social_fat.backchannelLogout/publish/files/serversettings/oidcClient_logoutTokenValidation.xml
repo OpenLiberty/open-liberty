@@ -10,6 +10,7 @@
  -->
 <server>
 
+<!--  config attributes are not supported
 	<openidConnectClient
 		id="clientBackChannelLogoutNotSupported"
 		scope="openid profile"
@@ -68,7 +69,7 @@
 		authFilterRef="myClientRequiresSidAuthFilter"
 	>
 	</openidConnectClient>
-
+-->
 	<openidConnectClient
 		id="clientSignHS256"
 		scope="openid profile"
@@ -83,7 +84,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS256AuthFilter"
 	>
 	</openidConnectClient>
@@ -102,7 +102,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS384AuthFilter"
 	>
 	</openidConnectClient>
@@ -121,7 +120,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS512AuthFilter"
 	>
 	</openidConnectClient>
@@ -141,7 +139,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignRS256AuthFilter"
 	>
 	</openidConnectClient>
@@ -161,7 +158,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignRS384AuthFilter"
 	>
 	</openidConnectClient>
@@ -181,7 +177,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignRS512AuthFilter"
 	>
 	</openidConnectClient>
@@ -201,7 +196,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignES256AuthFilter"
 	>
 	</openidConnectClient>
@@ -221,7 +215,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignES384AuthFilter"
 	>
 	</openidConnectClient>
@@ -241,7 +234,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignES512AuthFilter"
 	>
 	</openidConnectClient>
@@ -262,7 +254,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS256_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS256AuthFilter"
@@ -284,7 +275,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS384_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS384AuthFilter"
@@ -306,7 +296,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS512_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS512AuthFilter"
@@ -328,7 +317,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES256_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES256AuthFilter"
@@ -350,7 +338,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES384_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES384AuthFilter"
@@ -372,7 +359,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES512_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES512AuthFilter"
