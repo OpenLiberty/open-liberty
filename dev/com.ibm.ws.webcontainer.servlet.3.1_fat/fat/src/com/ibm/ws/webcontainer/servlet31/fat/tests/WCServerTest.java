@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -50,7 +51,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
-
 
 /**
  * All Servlet 3.1 tests with all applicable server features enabled.
@@ -227,7 +227,7 @@ public class WCServerTest extends LoggingTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void test_Servlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
@@ -385,7 +385,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void test_ServletContextMinorMajorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
                             "majorVersion: 3");
@@ -524,7 +524,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     public void test_DecodeUrlPlusSignDefault() throws Exception {
         this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
     }
@@ -541,6 +541,7 @@ public class WCServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     public void test_DecodeUrlPlusSign() throws Exception {
         boolean isEE9 = componenttest.rules.repeater.JakartaEE9Action.isActive();
+        boolean isEE10 = componenttest.rules.repeater.JakartaEE10Action.isActive();
 
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
@@ -551,7 +552,7 @@ public class WCServerTest extends LoggingTest {
         // Set the decodeUrlPlusSign property to false.
         WebContainerElement webContainer = configuration.getWebContainer();
 
-        if (isEE9) {
+        if (isEE9 || isEE10) {
             webContainer.setDecodeurlplussign(true);
             LOG.info("Setting decodeUrlPlusSign to true");
         } else {
@@ -566,7 +567,7 @@ public class WCServerTest extends LoggingTest {
         LOG.info("Server configuration updated to: " + configuration);
 
         try {
-            if (isEE9)
+            if (isEE9 || isEE10)
                 this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
             else
                 this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
@@ -612,8 +613,8 @@ public class WCServerTest extends LoggingTest {
         String responseText = response.getText().trim();
         LOG.info("Response text: " + responseText + " length: " + responseText.length());
 
-        Assert.assertTrue("The response length was incorrect: " + responseText.length() + " != " + target.length(), 
-            responseText.length() == target.length());
+        Assert.assertTrue("The response length was incorrect: " + responseText.length() + " != " + target.length(),
+                          responseText.length() == target.length());
     }
 
     /*
