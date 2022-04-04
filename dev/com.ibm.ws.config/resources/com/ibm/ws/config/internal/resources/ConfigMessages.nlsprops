@@ -488,7 +488,7 @@ error.unknownSchemaVersion=CWWKG0108E: The schema version, {0}, is not supported
 error.unknownSchemaVersion.explanation=The value supplied with the "--schemaVersion" option is not valid.
 error.unknownSchemaVersion.useraction=To see valid options enter the "./schemaGen --help" command.
 
-schemagen.info.schema.file.created=CWWKG0109I: The schema was created in file [{0}].
+schemagen.info.schema.file.created=CWWKG0109I: The schema was created in [{0}] file.
 schemagen.info.schema.file.created.explanation=The command completed successfully.
 schemagen.info.schema.file.created.useraction=No action is required.
 
