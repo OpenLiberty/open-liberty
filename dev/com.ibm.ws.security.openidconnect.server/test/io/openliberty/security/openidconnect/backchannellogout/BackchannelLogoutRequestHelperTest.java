@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -54,6 +55,12 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+    }
+
+    @Test
+    public void test_sendBackchannelLogoutRequests_nullToken() throws IOException {
+        String idTokenString = null;
+        helper.sendBackchannelLogoutRequests(idTokenString);
     }
 
 }

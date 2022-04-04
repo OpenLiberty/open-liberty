@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ Bundle-Description: Common code for security test bundles; version=${bVersion}
 WS-TraceGroup: SecurityTestCommon
 
 Export-Package: \
-    com.ibm.ws.security.test.common*
+    com.ibm.ws.security.test.common
 
 Import-Package: \
     !*.internal.*, \
@@ -40,8 +40,7 @@ generate.replacement: true
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-    com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.json4j;version=latest
+    com.ibm.ws.kernel.boot;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

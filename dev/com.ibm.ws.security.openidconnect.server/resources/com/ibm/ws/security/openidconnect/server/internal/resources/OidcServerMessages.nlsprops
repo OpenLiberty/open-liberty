@@ -184,29 +184,7 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: The claims from the third-party
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=The claims from the third-party ID token cannot be extracted. View the error message for more information.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ensure that the third-party OpenID Connect provider is sending a valid ID token.
 
-OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: The {0} OpenID Connect provider encountered the following error when it tried to build logout tokens for back-channel logout requests: {1}
-OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=The ID token string in the id_token_hint parameter, if one was provided, might be malformed. The provider might not be able to determine the set of clients to send back-channel logout requests. If the id_token_hint parameter is not malformed, another error occurred when the provider tried to build a logout token.
-OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=See the user action for the error that is included in the message.
-
-LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: The OpenID Connect provider cannot extract claims to reuse from the ID token. The error is: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=The ID token might be malformed or a claim within the token might have a value that is an unexpected data type. Alternatively, the token might be missing claims that are required or the issuer of the token is not the issuer that is expected.
-LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ensure the ID token is formatted correctly. See the error that is included in the message for more information.
-
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: The OpenID Connect provider cannot determine the set of OpenID Connect clients to log out because of the following error: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=The provider failed to retrieve the set of clients that are registered, or the ID token claims might be malformed.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=See the error that is included in the message for more information.
-
-# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: The Java version used by this run time [{0}] is not supported by the ID token Mediator SPI. The supported Java version is 1.7 or higher.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=The Java version in the message can not support the ID token Mediator SPI function. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Install Java version 1.7 or higher.
 
-ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: The [{0}] issuer claim in the ID token does not match the [{1}] expected issuer for the {2} OpenID Connect provider.
-ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=The OpenID Connect provider did not issue the ID token, so the token cannot be handled by this OpenID Connect provider.
-ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Send only ID tokens with an issuer claim that matches the configuration for the OpenID Connect provider that is specified in the message.
-
-ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: The ID token is not valid because it is missing at least one claim that is required: {0}
-ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=The OpenID Connect specification requires that the claim or claims that are listed in the error message must be present in the ID token.
-ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Ensure that the ID token contains all of the required claims.
-
-# NOTE: Stop at CWWKS1649
