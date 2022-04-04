@@ -16,7 +16,7 @@ src: \
     test-applications/mpOpenTracing/src,\
     test-applications/inventory/src/java,\
     test-applications/system/src/java
-    
+
 -sub: *.bnd
 
 fat.project: true

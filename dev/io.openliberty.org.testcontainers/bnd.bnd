@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.16.2
+testContainerVersion: 1.16.3
 dockerJavaVersion: 3.2.12
 
 Bundle-Name: FAT Testcontainer Bundle
@@ -26,12 +26,12 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 Export-Package: \
 	com.github.*;version="${dockerJavaVersion}",\
 	com.sun.jna.*;version="5.8.0",\
-	org.apache.commons.*;version="1.20",\
+	org.apache.commons.*;version="1.21",\
 	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
 	org.rnorth.*;version="1.0.8"
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
-# This will ensure that the other docker container strategies are accessible at runtime.	
+# This will ensure that the other docker container strategies are accessible at runtime.
 Include-Resource: \
 	@${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**
 
@@ -40,17 +40,16 @@ publish.wlp.jar.disabled: true
 #Ensure that a stub project is created in CL
 generate.replacement: true
 
-#Notice: com.github.docker-java:docker-java-api has a runtime dependency on 
+#Notice: com.github.docker-java:docker-java-api has a runtime dependency on
 # com.fasterxml.jackson.core:jackson-annotations;version=2.12.3
 # It is not included in the build path or export-package because all FATs already include jackson-annotations.
 # Currently, the version included in each FAT is 2.11.2. If Testcontainers ever depends on a version of
-# jackson-annotations that is not backwards compatible with 2.11.2 then we will need to upgrade 
+# jackson-annotations that is not backwards compatible with 2.11.2 then we will need to upgrade
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
 -buildpath: \
 	com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
-	org.apache.commons:commons-compress;version=1.20,\
 	org.testcontainers:testcontainers;version=${testContainerVersion},\
 	org.testcontainers:database-commons;version=${testContainerVersion},\
 	org.testcontainers:jdbc;version=${testContainerVersion},\
@@ -60,6 +59,7 @@ generate.replacement: true
 	org.testcontainers:oracle-xe;version=${testContainerVersion},\
 	org.testcontainers:postgresql;version=${testContainerVersion},\
 	org.testcontainers:selenium;version=${testContainerVersion},\
+	org.apache.commons:commons-compress;version=1.21,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.simple;version=latest,\

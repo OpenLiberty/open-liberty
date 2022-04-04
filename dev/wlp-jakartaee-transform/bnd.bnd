@@ -13,4 +13,3 @@
 
 -includeresource: \
     @${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.3.0.20211005}!/!META-INF/maven/*
-
