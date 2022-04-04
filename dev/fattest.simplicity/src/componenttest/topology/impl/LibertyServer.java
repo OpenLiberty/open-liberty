@@ -475,6 +475,10 @@ public class LibertyServer implements LogMonitorClient {
         checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
     }
 
+    public void unsetCheckpoint() {
+        checkpointInfo = null;
+    }
+
     /**
      * Info
      */
