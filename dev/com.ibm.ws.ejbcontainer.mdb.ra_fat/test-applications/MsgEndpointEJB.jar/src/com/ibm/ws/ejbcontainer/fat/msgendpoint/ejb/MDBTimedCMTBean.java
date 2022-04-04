@@ -60,7 +60,6 @@ public class MDBTimedCMTBean implements MessageListener {
     private static CountDownLatch svTimerResultsLatch = new CountDownLatch(1);
     private static CountDownLatch svTimerLatch = new CountDownLatch(1);
     private static CountDownLatch svTimerIntervalLatch = new CountDownLatch(1);
-    private static CountDownLatch svTimerIntervalWaitLatch = new CountDownLatch(1);
 
     // The time for the container to run post invoke processing for @Timeout.
     // Should be used after a Timer has triggered a CountDownLatch to insure
@@ -74,6 +73,8 @@ public class MDBTimedCMTBean implements MessageListener {
     public static Timer timer[] = null;
 
     public MDBTimedCMTBean() {}
+
+    private static boolean svCancelTimer = false;
 
     /**
      * Test getTimerService()/TimerService access from ejbCreate on a
@@ -321,15 +322,6 @@ public class MDBTimedCMTBean implements MessageListener {
                             }
                         }
 
-                        // -------------------------------------------------------------------
-                        // Wait up to MAX_TIMER_WAIT for interval timers to expire
-                        // -------------------------------------------------------------------
-                        svTimerIntervalWaitLatch.countDown(); // allow 2nd interval to run
-                        waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
-                        svTimerIntervalWaitLatch = new CountDownLatch(1);
-                        svTimerIntervalLatch = new CountDownLatch(2);
-                        Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
-
                         // -----------------------------------------------------------------------
                         // 21 - Verify Timer.getNextTimeout() on repeating Timer works
                         // -----------------------------------------------------------------------
@@ -365,7 +357,7 @@ public class MDBTimedCMTBean implements MessageListener {
                             // -------------------------------------------------------------------
                             // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
                             // -------------------------------------------------------------------
-                            svTimerIntervalWaitLatch.countDown(); // allow 3rd interval to run
+                            svTimerIntervalLatch = new CountDownLatch(2);
                             waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
                             Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
@@ -375,9 +367,9 @@ public class MDBTimedCMTBean implements MessageListener {
                                 switch (i) {
                                     case 2:
                                     case 4:
-                                        if (svTimeoutCounts[i] != 3) {
+                                        if (svTimeoutCounts[i] <= 1) {
                                             successful = false;
-                                            System.out.println("Timer[" + i + "] not executed thrice: " + timer[i]);
+                                            System.out.println("Repeating timer[" + i + "] not executed multiple times: " + timer[i]);
                                         }
                                         break;
 
@@ -404,6 +396,11 @@ public class MDBTimedCMTBean implements MessageListener {
                         // 23 - Verify NoSuchObjectLocalException occurs accessing self cancelled
                         //      timer
                         // -----------------------------------------------------------------------
+                        svTimerIntervalLatch = new CountDownLatch(2);
+                        svCancelTimer = true;
+                        waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
+                        Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
+
                         try {
                             System.out.println("testTimerService: Calling Timer.getInfo() on self cancelled Timer");
                             System.out.println("23 ---> testTimerService: Calling Timer.getInfo() on self cancelled Timer");
@@ -623,9 +620,9 @@ public class MDBTimedCMTBean implements MessageListener {
         timer = new Timer[6];
 
         svTimeoutCounts = new int[timer.length];
+        svCancelTimer = false;
 
         svTimerLatch = new CountDownLatch(timer.length - 1); // one timer cancelled
-        svTimerIntervalWaitLatch = new CountDownLatch(1); // block interval timer until ready
         svTimerIntervalLatch = new CountDownLatch(2);
 
         // -----------------------------------------------------------------------
@@ -820,7 +817,7 @@ public class MDBTimedCMTBean implements MessageListener {
                     }
                 }
 
-                assertTrue("18 --> ejbTimeout executed on 5 Timers", successful);
+                assertTrue("18 --> ejbTimeout not executed on 5 Timers", successful);
             }
 
             // -----------------------------------------------------------------------
@@ -848,7 +845,7 @@ public class MDBTimedCMTBean implements MessageListener {
                 System.out.println("  returned : " + timersArray[i]);
             }
 
-            assertEquals("20 --> getTimers returned 2 Timers", 2, timers.size());
+            assertEquals("20 --> getTimers did not return 2 Timers", 2, timers.size());
 
             // Make sure they are the correct timers...
             for (int i = 0; i < timer.length; i++) {
@@ -868,15 +865,6 @@ public class MDBTimedCMTBean implements MessageListener {
                 }
             }
 
-            // -------------------------------------------------------------------
-            // Wait up to MAX_TIMER_WAIT for interval timers to expire
-            // -------------------------------------------------------------------
-            svTimerIntervalWaitLatch.countDown(); // allow 2nd interval to run
-            waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
-            svTimerIntervalWaitLatch = new CountDownLatch(1);
-            svTimerIntervalLatch = new CountDownLatch(2);
-            Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
-
             // -----------------------------------------------------------------------
             // 21 - Verify Timer.getNextTimeout() on repeating Timer works
             // -----------------------------------------------------------------------
@@ -884,7 +872,18 @@ public class MDBTimedCMTBean implements MessageListener {
             System.out.println("21 ---> testTimerService: Calling Timer.getNextTimeout()");
             Date nextTime = timer[2].getNextTimeout();
             remaining = nextTime.getTime() - System.currentTimeMillis();
-            assertTrue("21 --> Timer.getNextTimeout() worked: " + remaining, remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
+
+            int retryCount = 0;
+
+            // If remaining is negative it is possible the postInvoke hasn't completed
+            while (remaining < 0 && retryCount < 4) {
+                Thread.sleep(POST_INVOKE_DELAY);
+                retryCount++;
+                nextTime = timer[4].getNextTimeout();
+                remaining = nextTime.getTime() - System.currentTimeMillis();
+            }
+
+            assertTrue("21 --> Timer.getNextTimeout() unexpected remaining time: " + remaining, remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
 
             // -----------------------------------------------------------------------
             // 22 - Verify ejbTimeout is executed multiple times for repeating Timers
@@ -897,7 +896,7 @@ public class MDBTimedCMTBean implements MessageListener {
             // -------------------------------------------------------------------
             // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
             // -------------------------------------------------------------------
-            svTimerIntervalWaitLatch.countDown(); // allow 3rd interval to run
+            svTimerIntervalLatch = new CountDownLatch(2);
             waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
             Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
@@ -907,9 +906,9 @@ public class MDBTimedCMTBean implements MessageListener {
                 switch (i) {
                     case 2:
                     case 4:
-                        if (svTimeoutCounts[i] != 3) {
+                        if (svTimeoutCounts[i] <= 1) {
                             successful = false;
-                            System.out.println("Timer[" + i + "] not executed thrice: " + timer[i]);
+                            System.out.println("Repeating Timer[" + i + "] not executed multiple times: " + timer[i]);
                         }
                         break;
 
@@ -929,12 +928,17 @@ public class MDBTimedCMTBean implements MessageListener {
                 }
             }
 
-            assertTrue("22 --> ejbTimeout executed on 2 Timers", successful);
+            assertTrue("22 --> ejbTimeout not executed on 2 Timers", successful);
 
             // -----------------------------------------------------------------------
             // 23 - Verify NoSuchObjectLocalException occurs accessing self cancelled
             //      timer
             // -----------------------------------------------------------------------
+            svTimerIntervalLatch = new CountDownLatch(2);
+            svCancelTimer = true;
+            waitForTimers(svTimerIntervalLatch, MAX_TIMER_WAIT);
+            Thread.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
+
             try {
                 System.out.println("testTimerService: Calling Timer.getInfo() on self cancelled Timer");
                 System.out.println("23 ---> testTimerService: Calling Timer.getInfo() on self cancelled Timer");
@@ -958,7 +962,7 @@ public class MDBTimedCMTBean implements MessageListener {
                 System.out.println("  returned : " + timersArray[i]);
             }
 
-            assertEquals("24 --> getTimers returned 0 Timers", 0, timers.size());
+            assertEquals("24 --> getTimers should have returned 0 Timers", 0, timers.size());
         }
     }
 
@@ -1037,26 +1041,19 @@ public class MDBTimedCMTBean implements MessageListener {
 
         if (timerIndex >= 0) {
 
-            if (svTimeoutCounts[timerIndex] > 0) {
-                // Don't run the 2nd & 3rd interval until test is ready
-                try {
-                    svTimerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace(System.out);
-                }
-            }
-
             svTimeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " + svTimeoutCounts[timerIndex] + " time(s)");
 
             if (svTimeoutCounts[timerIndex] == 1) {
                 svTimerLatch.countDown();
-            } else if (svTimeoutCounts[timerIndex] > 2) {
-                timer.cancel();
-                svTimerIntervalLatch.countDown();
             } else if (svTimeoutCounts[timerIndex] > 1) {
                 svTimerIntervalLatch.countDown();
+            }
+
+            if (svCancelTimer) {
+                System.out.println("Timer " + timerIndex + "self cancelling ");
+                timer.cancel();
             }
 
             return;
