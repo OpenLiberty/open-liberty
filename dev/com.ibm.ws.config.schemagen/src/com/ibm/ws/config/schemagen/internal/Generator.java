@@ -154,6 +154,8 @@ public class Generator {
                     showPurpose();                    
                     showBriefUsage();
                     
+                    rc = ReturnCode.OK;
+                    break;
                 default:
                     rc = ReturnCode.BAD_ARGUMENT;
                     break;
