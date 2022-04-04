@@ -6,50 +6,68 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
-import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
+import com.ibm.wsspi.ssl.SSLSupport;
+
+@Component
 public class BackchannelLogoutRequestHelper {
 
-    private static TraceComponent tc = Tr.register(BackchannelLogoutRequestHelper.class);
+    private static SSLSupport SSL_SUPPORT = null;
 
-    private final HttpServletRequest request;
-    private final OidcServerConfig oidcServerConfig;
+    private HttpServletRequest request;
+    private OidcServerConfig oidcServerConfig;
+
+    private Jose4jUtil jose4jUtil = null;
+
+    @Reference
+    protected void setSslSupport(SSLSupport sslSupport) {
+        SSL_SUPPORT = sslSupport;
+    }
+
+    protected void unsetSslSupport() {
+        SSL_SUPPORT = null;
+    }
+
+    /**
+     * Do not use; needed for this to be a valid @Component object.
+     */
+    public BackchannelLogoutRequestHelper() {
+    }
 
     public BackchannelLogoutRequestHelper(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
         this.request = request;
         this.oidcServerConfig = oidcServerConfig;
+        jose4jUtil = new Jose4jUtil(SSL_SUPPORT);
     }
 
     /**
-     * Uses the provided ID token string to build logout tokens and sends back-channel logout requests to all of the necessary
-     * RPs. If the ID token contains multiple audiences, logout tokens are created for each client audience. Logout tokens are
-     * also created for all RPs that the OP is aware of having active or recently valid sessions.
+     * Uses the provided ID token string to build a Logout Token and sends that Logout Token in back-channel logout requests to
+     * all of the necessary RPs.
+     *
+     * @param idTokenString
      */
     public void sendBackchannelLogoutRequests(String idTokenString) {
-        if (idTokenString == null || idTokenString.isEmpty()) {
-            return;
-        }
-        Map<OidcBaseClient, List<String>> logoutTokens = null;
         try {
-            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(request, oidcServerConfig);
-            logoutTokens = tokenBuilder.buildLogoutTokensFromIdTokenString(idTokenString);
-        } catch (LogoutTokenBuilderException e) {
-            Tr.error(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", new Object[] { oidcServerConfig.getProviderId(), e.getMessage() });
-            return;
+            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(idTokenString);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
         }
         // TODO
+//        JwtContext jwtContext = jose4jUtil.validateJwtStructureAndGetContext(idTokenString, config);
+//        JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, config);
     }
 
 }

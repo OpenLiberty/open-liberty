@@ -433,12 +433,12 @@ public class Jose4jUtil {
      * token to ensure it is formatted correctly. If the token is a JWE, this decrypts and extracts the JWS payload from the
      * token.
      */
-    public JwtContext validateJwtStructureAndGetContext(String jwtString, ConvergedClientConfig clientConfig) throws Exception {
-        checkJwtFormatAgainstConfigRequirements(jwtString, clientConfig);
-        if (JweHelper.isJwe(jwtString)) {
-            jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
+    public JwtContext validateJwtStructureAndGetContext(String logoutTokenString, ConvergedClientConfig clientConfig) throws Exception {
+        checkJwtFormatAgainstConfigRequirements(logoutTokenString, clientConfig);
+        if (JweHelper.isJwe(logoutTokenString)) {
+            logoutTokenString = JweHelper.extractJwsFromJweToken(logoutTokenString, clientConfig, null);
         }
-        return Jose4jUtil.parseJwtWithoutValidation(jwtString);
+        return Jose4jUtil.parseJwtWithoutValidation(logoutTokenString);
     }
 
     public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig) throws Exception {
