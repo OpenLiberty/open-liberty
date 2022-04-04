@@ -293,7 +293,6 @@ define([
          * which has a white arrow png.
          */
         __handleHighContrastBackgroundColor: function() {
-          console.log("----- lavena: handling black on white contrast for graphs button");
           if (document.body.classList.contains('dj_a11y')) {
             // determine whether it is black on white
             const testDiv = document.createElement('div');
