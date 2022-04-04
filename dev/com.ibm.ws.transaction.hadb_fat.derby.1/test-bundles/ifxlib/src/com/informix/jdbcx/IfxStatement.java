@@ -25,16 +25,20 @@ import java.sql.Statement;
  * drive SQLTransientExceptions or SQLExceptions at appropriate points through the simQueryFailover() method.
  */
 public class IfxStatement implements Statement {
-    Statement wrappedStmt = null;
+    private static final int QUERY_TIMEOUT = 30;
 
-    IfxConnection ifxConn = null;
+    Statement wrappedStmt;
 
-    static boolean failoverQuery = false;
-    private boolean _leaselogDeleteFlag = false;
-    private boolean _leaselogGetFlag = false;
+    IfxConnection ifxConn;
 
-    IfxStatement(Statement realStmt, IfxConnection ifxConnection) {
+    static boolean failoverQuery;
+    private boolean _leaselogDeleteFlag;
+    private boolean _leaselogGetFlag;
+
+    IfxStatement(Statement realStmt, IfxConnection ifxConnection) throws SQLException {
         wrappedStmt = realStmt;
+        wrappedStmt.setQueryTimeout(QUERY_TIMEOUT);
+        System.out.println("SIMHADB: query timeout is " + wrappedStmt.getQueryTimeout());
         ifxConn = ifxConnection;
     }
 
@@ -94,8 +98,7 @@ public class IfxStatement implements Statement {
         System.out.println("SIMHADB: executeBatch, this - " + this + ", wrapped - " + wrappedStmt);
 
         if (IfxConnection.isFailoverEnabled()) {
-            System.out
-                            .println("SIMHADB: executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
+            System.out.println("SIMHADB: executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
             IfxConnection.incrementFailoverCounter();
             if (IfxConnection.getFailoverCounter() == IfxConnection.getFailoverValue())
                 failOver = true;
@@ -107,7 +110,6 @@ public class IfxStatement implements Statement {
             Connection myconn = getConnection();
             try {
                 myconn.rollback();
-//                myconn.close();
             } catch (Exception ex) {
                 System.out.println("SIMHADB: on close connection, caught exc: " + ex);
             }

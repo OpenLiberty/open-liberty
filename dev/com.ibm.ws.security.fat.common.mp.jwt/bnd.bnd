@@ -77,7 +77,7 @@ com.ibm.ws.org.apache.httpcomponents;version=latest,\
 com.ibm.ws.org.glassfish.json.1.1,\
 com.ibm.ws.org.jose4j;version=latest,\
 com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+com.ibm.ws.org.slf4j.api;version=latest,\
 com.ibm.ws.security.fat.common.jwt;version=latest,\
 com.ibm.ws.security.fat.common;version=latest,\
 com.ibm.ws.security.jwt;version=latest,\

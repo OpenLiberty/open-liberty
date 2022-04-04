@@ -20,7 +20,7 @@ dependencies {
     project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.com.unboundid'),
-    'org.slf4j:slf4j-jdk14:1.7.7'
+    project(':com.ibm.ws.org.slf4j.jdk14')
 }
 
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'

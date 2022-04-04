@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Ensure that you have configured a keyStore e
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: The {0} requested cipher suite appears to have {1} association options that do not match the specified {2} supported options and the {3} required options.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=The cipher suite might not match the association options that are written to the Interoperable Object Reference (IOR) or that are used to match the IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verify that the requested cipher suite matches the specified association options, or remove it.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: The {0} requested cipher suite appears to have {1} association options that do not match the specified {2} required options.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=The cipher suite might not match the required options that are written to the Interoperable Object Reference (IOR) or that are used to match the IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verify that the requested cipher suite matches the specified required options, or remove it.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: The {0} SSL configuration does not exist.  This could be due to a missing SSL element or an invalid reference to a keystore or truststore element in the configuration. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Unable to get the SSL configuration element that is needed due to an error in the configuration.  

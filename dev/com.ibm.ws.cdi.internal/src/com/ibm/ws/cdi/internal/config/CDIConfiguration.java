@@ -30,5 +30,5 @@ public interface CDIConfiguration {
      *
      * @return true if an archive which has an empty beans.xml file should be treated as an explicit bean archive.
      */
-    public boolean emptyBeansXMLExplicitArchive();
+    public boolean emptyBeansXMLExplicitBeanArchive();
 }

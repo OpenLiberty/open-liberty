@@ -26,7 +26,7 @@ if (parseBoolean(bnd('globalize', 'true'))) {
     def quotationExcludes = bnd('globalize.quotation.excludes')
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
-    
+
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
@@ -156,8 +156,8 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
   dependencies {
     jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
                             'commons-cli:commons-cli:1.4',
-                            'org.slf4j:slf4j-simple:1.7.30',
-                            'org.slf4j:slf4j-api:1.7.26',
+                            'org.slf4j:slf4j-api:1.7.36',
+                            'org.slf4j:slf4j-simple:1.7.36',
                             'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
                             'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
   }
@@ -170,7 +170,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
     doLast {
       fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
 
-      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
+      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }
       bundles.each { bundleJar ->
 
         println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
@@ -278,7 +278,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
           def directBundleDataKey = initialBundleId
           def directBundleDataValue =
             finalBundleId + ',' +
-            finalBundleVersion + ',' + 
+            finalBundleVersion + ',' +
             finalBundleShortName + ',' +
             finalBundleDescription
 

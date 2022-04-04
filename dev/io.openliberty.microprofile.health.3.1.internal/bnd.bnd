@@ -102,6 +102,6 @@ jakartaeeMe: true
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \
         org.glassfish:javax.json;version=1.0.4, \
-        com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
-        com.ibm.ws.org.slf4j.jdk14.1.7.7;version=latest, \
+        com.ibm.ws.org.slf4j.api;version=latest, \
+        com.ibm.ws.org.slf4j.jdk14;version=latest, \
         ./resources/;version=file

@@ -50,7 +50,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
   io.openliberty.jakarta.xmlBinding-3.0, \
   io.openliberty.jakarta.annotation-2.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.jakarta.interceptor-2.0, \
   io.openliberty.jakarta.pages-3.0, \
   com.ibm.websphere.appserver.transaction-2.0

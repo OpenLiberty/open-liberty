@@ -15,8 +15,8 @@ dependencies {
     'org.apache.httpcomponents.client5:httpclient5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5-h2:5.0.2',
-    'org.slf4j:slf4j-api:1.7.30',
-    'org.slf4j:slf4j-simple:1.7.30'
+    project(':com.ibm.ws.org.slf4j.api'),
+    project(':com.ibm.ws.org.slf4j.simple')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

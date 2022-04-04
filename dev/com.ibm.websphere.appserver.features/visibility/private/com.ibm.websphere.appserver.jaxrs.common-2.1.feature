@@ -12,7 +12,7 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.servlet-4.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.jsonpInternal-1.1, \
   com.ibm.websphere.appserver.globalhandler-1.0, \
   com.ibm.websphere.appserver.javax.jaxrs-2.1, \

@@ -93,9 +93,9 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: The cdi12 configuration ele
 cdi12.element.type.superceded.CWOWB1015W.explanation=The cdi configuration element replaces the cdi12 configuration element and contains all the same options, plus new options.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Change your server.xml configuration to use the cdi configuration element instead of the cdi12 configuration element.
 
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: The emptyBeansXMLExplicitArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=The emptyBeansXMLExplicitArchive attribute has no effect when it is used with a CDI version lower than 4.0.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Update your server.xml configuration to either remove the attribute or use CDI version 4.0 or newer.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: The emptyBeansXMLExplicitBeanArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=The emptyBeansXMLExplicitBeanArchive attribute has no effect when it is used with a CDI version lower than 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Update your server.xml configuration to either remove the attribute or use CDI version 4.0 or newer.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: The enableImplicitBeanArchives attribute was set on both cdi12 and cdi configuration elements. The value from the cdi element is used and the value in the cdi12 element is ignored.
 enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Although you can set the enableImplicitBeanArchives attribute on both of the cdi12 and cdi configuration element configuration elements, you should not set this attribute with different values in the same server configuration.

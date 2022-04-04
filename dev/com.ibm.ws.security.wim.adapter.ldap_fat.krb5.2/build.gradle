@@ -21,7 +21,7 @@ dependencies {
     project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.com.unboundid'),
     project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
-    'org.slf4j:slf4j-jdk14:1.7.7'
+    project(':com.ibm.ws.org.slf4j.jdk14')
 }
 
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
