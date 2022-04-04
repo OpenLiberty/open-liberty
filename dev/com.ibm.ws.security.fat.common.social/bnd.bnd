@@ -23,8 +23,6 @@ Import-Package: \
     !com.ibm.ws.kernel.boot.cmdline, \
     *
 
-Private-Package: \
-
 src: \
     src, \
     test-applications/formlogin.social/src

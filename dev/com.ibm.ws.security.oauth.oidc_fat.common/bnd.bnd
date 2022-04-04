@@ -84,9 +84,7 @@ test.project: true
 	de.flapdoodle.embed.process;version='3.0.1',\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest,\
-	com.ibm.ws.javaee.servlet.3.1;version='1.0.10',
-	org.glassfish:javax.json;version=1.0,\
-	javax.servlet-api
+	com.ibm.ws.javaee.servlet.3.1;version='1.0.10'
     
 -testpath: \
     cglib:cglib-nodep;version=3.3.0, \

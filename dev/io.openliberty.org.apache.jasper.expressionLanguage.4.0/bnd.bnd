@@ -19,7 +19,7 @@ Export-Package: org.apache.el;thread-context=true;version=${Implementation-Versi
    org.apache.el.lang;thread-context=true;version=${Implementation-Version}, \
    org.apache.el.parser;version=${Implementation-Version}, \
    org.apache.el.util;version=${Implementation-Version}, \
-   org.apache.el.stream;version=${Implementation-Version}, \
+   org.apache.el.stream;version=${Implementation-Version}
 
 Import-Package: \
     jakarta.el; version=4.0.0, \

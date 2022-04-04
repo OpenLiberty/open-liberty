@@ -28,7 +28,7 @@ Bundle-ClassPath:\
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
     lib/mongo.jar=${repo;org.mongodb:mongo-java-driver;2.13.3},\
-    META-INF=resources/META-INF,
+    META-INF=resources/META-INF
 
 Service-Component: \
   OSGI-INF/security.custom.store.xml

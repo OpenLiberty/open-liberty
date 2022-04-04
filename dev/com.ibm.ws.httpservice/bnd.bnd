@@ -29,7 +29,7 @@ Private-Package: org.apache.felix.http.*, com.ibm.ws.httpsvc.*
 
 Export-Package: \
   org.osgi.service.http;provide:=true, \
-  org.apache.felix.http.api, 
+  org.apache.felix.http.api
 
 ##
 ## The HttpServiceContainer is immediate to prevent it from recycling as 

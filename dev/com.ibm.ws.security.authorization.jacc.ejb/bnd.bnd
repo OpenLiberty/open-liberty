@@ -28,7 +28,7 @@ jakartaFinalBundleDescription: Security EJB support for JACC 2.0 Service
 WS-TraceGroup: Authorization
 
 Export-Package: \
-  com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+  com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true
 
 Import-Package: \
   !com.ibm.ws.security.authorization.jacc.ejb.impl, \

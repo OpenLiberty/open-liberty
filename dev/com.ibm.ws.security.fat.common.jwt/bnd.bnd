@@ -29,8 +29,6 @@ Import-Package: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common
     
-Private-Package: \
-
 src: \
     src,\
     fat/src,\

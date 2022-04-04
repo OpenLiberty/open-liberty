@@ -31,8 +31,6 @@ Include-Resource: \
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-Service-Component: \
-
 -dsannotations: \
   com.ibm.ws.security.client.internal.jaas.JAASClientService, \
   com.ibm.ws.security.client.internal.jaas.JAASClientConfigurationImpl, \

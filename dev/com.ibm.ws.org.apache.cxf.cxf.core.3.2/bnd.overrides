@@ -22,7 +22,7 @@ exportVer=3.2.4
 
 #Export-Package: org.apache.cxf,\
 #  org.apache.cxf.attachment,\
-#  org.apache.cxf.common.classloader,
+#  org.apache.cxf.common.classloader,\
 #  org.apache.cxf.common.i18n
 
 Export-Package: \

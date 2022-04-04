@@ -37,14 +37,14 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer31.session*;provide:=true, \
     com.ibm.websphere.servlet31.response*, \
     com.ibm.websphere.servlet31.request*, \
-    com.ibm.wsspi.webcontainer31*, \
+    com.ibm.wsspi.webcontainer31*
 
 Private-Package: \
     com.ibm.ws.webcontainer31.resources, \
     com.ibm.ws.webcontainer31.util*, \
     com.ibm.ws.servlet31.request*, \
     com.ibm.ws.webcontainer31.facade*, \
-    com.ibm.ws.webcontainer31.async.listener, \
+    com.ibm.ws.webcontainer31.async.listener
 
 Import-Package: \
     javax.servlet; version="[2.6,3)", \

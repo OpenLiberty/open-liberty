@@ -31,8 +31,6 @@ WS-TraceGroup: METRICS
 
 -dsannotations: com.ibm.ws.microprofile.metrics.monitor.MonitorMetricsHandler
 
-Service-Component: \
-
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.microprofile.metrics.2.0.monitor;version=latest,\

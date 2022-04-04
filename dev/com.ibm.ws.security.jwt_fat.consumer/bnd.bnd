@@ -19,8 +19,6 @@ Import-Package: \
 	org.jose4j.*;version="[0.6,5)", \
 	org.apache.commons.codec.binary,\
 	*
-#	com.ibm.json.java.*,\
-
 src: \
         fat/src, \
 		src, \

@@ -25,7 +25,7 @@ Service-Component: \
 
 Include-Resource:\
   META-INF=resources/META-INF
-#  io/openliberty=${bin}/io/openliberty, \
+#  io/openliberty=${bin}/io/openliberty
 
 Export-Package: \
  io.openliberty.restfulWS30.appSecurity;thread-context=true
