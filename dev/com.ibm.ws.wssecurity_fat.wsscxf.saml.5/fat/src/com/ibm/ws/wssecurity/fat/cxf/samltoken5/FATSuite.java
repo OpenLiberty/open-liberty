@@ -33,11 +33,11 @@ import componenttest.rules.repeater.RepeatTests;
 	   //Lite
 	   AlwaysRunAndPassTest.class,
              
-       //Full TODO: 03/25/22 - once we complete the feature, runtime updates of jaxws-2.2, complete the testing updates
-       /*CxfSAMLSymSignEnc2ServerTests.class, 
+       //Full 
+       CxfSAMLSymSignEnc2ServerTests.class, 
        CxfSAMLAsymSignEnc2ServerTests.class,
        CxfSAMLSymSignEnc1ServerTests.class, 
-       CxfSAMLAsymSignEnc1ServerTests.class*/
+       CxfSAMLAsymSignEnc1ServerTests.class
           
               
 })

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
 package com.ibm.ws.wssecurity.fat.cxf.samltoken5.common;
 
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,15 +23,11 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import componenttest.rules.repeater.EmptyAction;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -117,7 +115,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     //3/2021 @AV999 - even though the client policy does not have SignedSupportingTokens, 
     //the saml token is signed by default with the new runtime and making the request processing successful at the provider   
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 
@@ -181,7 +179,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     	
@@ -240,7 +238,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
   
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     
@@ -278,7 +276,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     //Looks like with the new runtime the saml tokens are signed by default.
     //This change causes the test to complete the message exchange successful between client and providers
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 
