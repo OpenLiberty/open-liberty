@@ -448,11 +448,6 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
         this.backchannelLogoutUri = backchannelLogoutUri;
     }
 
-    @Override
-    public boolean isBackchannelLogoutSessionRequired() {
-        return backchannelLogoutSessionRequired;
-    }
-
     @Trivial
     public void setBackchannelLogoutSessionRequired(boolean backchannelLogoutSessionRequired) {
         this.backchannelLogoutSessionRequired = backchannelLogoutSessionRequired;

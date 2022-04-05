@@ -238,7 +238,6 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public static final String KEY_CLIENT_PROOF_KEY_FOR_CODE_EXCHANGE = "proofKeyForCodeExchange";
     public static final String KEY_CLIENT_PUBLIC_CLIENT = "publicClient";
     public static final String KEY_CLIENT_BACKCHANNEL_LOGOUT_URI = "backchannelLogoutUri";
-    public static final String KEY_CLIENT_BACKCHANNEL_LOGOUT_SESSION_REQUIRED = "backchannelLogoutSessionRequired";
 
     public static final String KEY_ROPC_PREFER_USERSECURITYNAME = "ropcPreferUserSecurityName";
     public static final String KEY_ROPC_PREFER_USERPRINCIPALNAME = "ropcPreferUserPrincipalName";
@@ -1275,11 +1274,6 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         }
         newClient.setPublicClient(publicClient);
         newClient.setBackchannelLogoutUri((String) props.get(KEY_CLIENT_BACKCHANNEL_LOGOUT_URI));
-        boolean isBackchannelLogoutSessionRequired = false;
-        if (props.get(KEY_CLIENT_BACKCHANNEL_LOGOUT_SESSION_REQUIRED) != null) {
-            isBackchannelLogoutSessionRequired = ((Boolean) props.get(KEY_CLIENT_BACKCHANNEL_LOGOUT_SESSION_REQUIRED)).booleanValue();
-        }
-        newClient.setBackchannelLogoutSessionRequired(isBackchannelLogoutSessionRequired);
         // newClient.setAppPasswordLifetime(((Long) props.get(KEY_CLIENT_APP_PASSWORD_LIFETIME)).longValue());
         // newClient.setAppTokenLifetime(((Long) props.get(KEY_CLIENT_APP_TOKEN_LIFETIME)).longValue());
         // newClient.setAppTokenOrPasswordLimit(((Long) props.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT)).longValue());

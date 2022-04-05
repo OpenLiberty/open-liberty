@@ -431,8 +431,6 @@
 
            <AD id="backchannelLogoutUri" name="internal" description="internal use only" required="false" type="String" ibm:beta="true" />
 
-           <AD id="backchannelLogoutSessionRequired" name="internal" description="internal use only" required="false" type="Boolean" default="false" ibm:beta="true" />
-
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.security.oauth20.client">

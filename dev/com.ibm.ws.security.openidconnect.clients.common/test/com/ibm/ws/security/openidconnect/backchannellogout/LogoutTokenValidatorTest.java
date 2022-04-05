@@ -48,7 +48,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER = "CWWKS1548E";
     final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
     final String CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON = "CWWKS1550E";
-    final String CWWKS1551E_LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING = "CWWKS1551E";
 
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
@@ -418,30 +417,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifySubAndOrSidPresent_missingSid_sidRequired() throws Exception {
+    public void test_verifySubAndOrSidPresent_hasSubMissingSid() throws Exception {
         JsonObject jsonClaims = getMinimumClaimsNoSid();
-        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(clientConfig).isBackchannelLogoutSessionRequired();
-                    will(returnValue(true));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
-                }
-            });
-            validator.verifySubAndOrSidPresent(claims);
-            fail("Should have thrown an exception but didn't.");
-        } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1551E_LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING);
-        }
-    }
-
-    @Test
-    public void test_verifySubAndOrSidPresent_hasSidMissingSub_sidRequired() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.remove(Claims.SUBJECT);
-        jsonClaims.addProperty("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifySubAndOrSidPresent(claims);
@@ -589,8 +566,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 will(returnValue(clockSkew));
                 allowing(clientConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                allowing(clientConfig).isBackchannelLogoutSessionRequired();
-                will(returnValue(false));
             }
         });
         if (sharedKey != null) {
