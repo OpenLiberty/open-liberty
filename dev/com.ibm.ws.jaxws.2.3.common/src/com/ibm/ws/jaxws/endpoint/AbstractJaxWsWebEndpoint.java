@@ -18,6 +18,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,13 +42,21 @@ import org.apache.cxf.transport.servlet.BaseUrlHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
+
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
+
 import com.ibm.ws.jaxws.metadata.EndpointInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.LibertyJaxWsCompatibleWSDLGetInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.Bus;
 
 public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
@@ -144,7 +153,58 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     }
 
     protected void enableLogging(EndpointInfo libertyEndpointInfo) {
-        // Replaced by FeatureLogging for jaxws-2.3 and xmlWS-3.0
+        Map<String, String> endpointProperties = libertyEndpointInfo.getEndpointProperties();
+
+        if (null != endpointProperties && Boolean.valueOf(endpointProperties.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+            // If we're here we know this property is set in the config and is true. We enable pretty logging of the SOAP Message
+            // by LibertyLoggingIn(Out)Interceptors
+            // TODO Create a way of enabling and disabling logging for individual endpoints. 
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR
+                             + " has been enabled, enabling SOAP Message Logging with the LibertyLoggingInInterceptor and LibertyLoggingOutInterceptor");
+            }
+            
+            if(this.jaxWsModuleMetaData != null) {
+   
+                if( jaxWsModuleMetaData.getServerMetaData().getServerBus() != null ) {
+
+                    Bus bus = jaxWsModuleMetaData.getServerMetaData().getServerBus();
+                
+                    Collection<Feature> featureList = bus.getFeatures();
+                
+                    if( !featureList.contains(LoggingFeature.class)) {
+                        LoggingFeature loggingFeature = new LoggingFeature();
+
+                    
+                        if (!featureList.contains(loggingFeature)) {
+                            loggingFeature.setPrettyLogging(true);
+                            loggingFeature.initialize(bus);
+                            featureList.add(loggingFeature);
+                            bus.setFeatures(featureList);
+                        }
+                        
+                    }
+                } else if ( jaxWsModuleMetaData.getClientMetaData() != null ) {
+                    Bus bus = jaxWsModuleMetaData.getClientMetaData().getClientBus();
+                    
+                    Collection<Feature> featureList = bus.getFeatures();
+                    
+                    if(!featureList.contains(LoggingFeature.class)) {
+                        LoggingFeature loggingFeature = new LoggingFeature();
+
+                        
+                        if (!featureList.contains(loggingFeature)) {
+                            loggingFeature.setPrettyLogging(true);
+                            loggingFeature.initialize(bus);
+                            
+                            featureList.add(loggingFeature);
+                            bus.setFeatures(featureList);
+                        }
+                    }
+                }
+            } 
+
+        }
     }
 
     public AbstractHTTPDestination getDestination() {

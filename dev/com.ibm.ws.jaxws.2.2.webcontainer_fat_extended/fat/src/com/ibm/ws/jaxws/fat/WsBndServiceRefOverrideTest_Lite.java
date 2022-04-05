@@ -192,6 +192,24 @@ public class WsBndServiceRefOverrideTest_Lite {
 
     }
 
+    @Test
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
+    public void testOverrideLogginInOutInterceptorPropertyCXFFeature() throws Exception {
+        TestUtils.publishFileToServer(server,
+                                      "WsBndServiceRefOverrideTest", "ibm-ws-bnd_testLoggingInOutInterceptorProp.xml",
+                                      "dropins/wsBndServiceRefOverride.war/WEB-INF/", "ibm-ws-bnd.xml");
+        String wsdlAddr = getDefaultEndpointAddr() + "?wsdl";
+        TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#WSDL_LOCATION#", wsdlAddr);
+        server.startServer();
+        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
+        getServletResponse(getServletAddr());
+        List<String> dumpInMessages = server.findStringsInLogs("REQ_OUT");
+        List<String> dumpOutMessages = server.findStringsInLogs("RESP_IN");
+        assertTrue("Can't find inBoundMessage, the return inboundmessage is: " + dumpInMessages.toString(), !dumpInMessages.isEmpty());
+        assertTrue("Can't find outBoundMessage, the return outboundmessage is: " + dumpOutMessages.toString(), !dumpOutMessages.isEmpty());
+
+    }
+
     protected String getServletResponse(String servletUrl) throws Exception {
         URL url = new URL(servletUrl);
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
