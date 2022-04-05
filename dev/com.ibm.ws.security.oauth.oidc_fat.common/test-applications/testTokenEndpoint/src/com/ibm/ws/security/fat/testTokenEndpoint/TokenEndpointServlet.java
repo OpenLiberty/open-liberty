@@ -32,7 +32,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.fat.common.utils.KeyTools;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 
 public class TokenEndpointServlet extends HttpServlet {
 
@@ -97,7 +96,7 @@ public class TokenEndpointServlet extends HttpServlet {
                 builder.claim("uniqueSecurityName", "testuser");
                 builder.claim("realmName", "BasicRealm");
                 builder.subject("testuser");
-                builder.claim(Constants.PAYLOAD_SESSION_ID, randomSessionId());
+                builder.claim("sid", randomSessionId());
                 //System.out.println("Token value: " + builder.toString());
                 setEncryptWith(builder, req);
                 builtToken = builder.buildJwt();
