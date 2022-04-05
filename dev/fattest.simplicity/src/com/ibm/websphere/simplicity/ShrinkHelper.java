@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -531,6 +532,44 @@ public class ShrinkHelper {
         JavaArchive jar = buildJavaArchive(userFeatureJarName, packages);
         exportUserFeatureArchive(server, jar, DeployOptions.OVERWRITE);
         return jar;
+    }
+
+    /**
+     * Add a file to a WebArchive. The source file is relative to a given package. It is then placed in the
+     * archive in the same relative location.
+     *
+     * @param  archive         The archive to add to
+     * @param  resourcePackage The source package
+     * @param  resourceName    The relative path of the resource. Relative to the source package and relative to the root of the target archive.
+     * @return                 The updated WebArchive
+     */
+    public static WebArchive addResource(WebArchive archive, Package resourcePackage, String resourceName) {
+        archive.add(getResourceAsset(resourcePackage, resourceName),
+                    "/" + resourceName);
+        return archive;
+    }
+
+    /**
+     * Create a resource path String from a given package and a relative resource name
+     *
+     * @param  resourcePackage The source package
+     * @param  resourceName    The relative resource name
+     * @return                 The complete path to the resource
+     */
+    public static String getResourcePath(Package resourcePackage, String resourceName) {
+        return resourcePackage.getName().replaceAll("\\.", "/") + "/" + resourceName;
+    }
+
+    /**
+     * Get a ShrinkWrap Asset for a resource
+     *
+     * @param  resourcePackage The source package
+     * @param  resourceName    The relative resource name
+     * @return                 an Asset the represents the resource
+     */
+    public static Asset getResourceAsset(Package resourcePackage, String resourceName) {
+        String path = getResourcePath(resourcePackage, resourceName);
+        return new ClassLoaderAsset(path);
     }
 
 }
