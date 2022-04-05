@@ -27,7 +27,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,9 +52,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
@@ -83,13 +80,6 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
 
     public String keycloakClientId1 = null;
     public String keycloakClientId2 = null;
-
-    /*
-     * Run EE9 tests in LITE mode and run all tests in FULL mode.
-     */
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(new JakartaEE9Action());
 
     @BeforeClass
     public static void beforeClass() throws Exception {
