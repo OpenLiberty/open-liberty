@@ -27,7 +27,6 @@ src: \
     test-applications/StoreApp.war/src
 
 fat.project: true
-fat.minimum.java.level: 1.8
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
