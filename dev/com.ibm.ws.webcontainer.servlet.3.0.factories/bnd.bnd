@@ -30,7 +30,7 @@ Service-Component: \
   com.ibm.ws.webcontainer.v30.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
     provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=30", \
+    properties:="version:Integer=30"
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 

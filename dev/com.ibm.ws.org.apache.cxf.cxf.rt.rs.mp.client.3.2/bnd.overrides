@@ -51,7 +51,7 @@ Import-Package: \
  com.ibm.wsspi.classloading,\
  com.ibm.ws.cdi.extension;resolution:=optional,\
  com.ibm.ws.jaxrs20.client.configuration
-# org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
+# org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)"
 
 DynmaicImport-Package: \
  org.apache.cxf.jaxrs.ext;version="[3.1,4)"

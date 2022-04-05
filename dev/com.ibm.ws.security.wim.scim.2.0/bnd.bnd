@@ -21,7 +21,7 @@ Bundle-Description: SCIM 2.0; version=${bVersion}
 # Eventually can move the websphere classes to an API project.
 #
 #Export-Package: \
-#	com.ibm.websphere.security.wim.scim20.*;provide:=true,\
+#	com.ibm.websphere.security.wim.scim20.*;provide:=true
 
 
 Private-Package: \

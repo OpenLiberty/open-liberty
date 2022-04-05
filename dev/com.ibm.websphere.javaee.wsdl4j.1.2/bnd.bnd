@@ -19,7 +19,7 @@ Export-Package: javax.wsdl.xml.*; version="1.2", \
  javax.wsdl.extensions.*; version="1.2", \
  javax.wsdl.*; version="1.2", \
  com.ibm.wsdl.util.xml;version="1.1.0", \
- com.ibm.wsdl.util;version="1.1.0", \
+ com.ibm.wsdl.util;version="1.1.0"
 
 Import-Package: \
 *

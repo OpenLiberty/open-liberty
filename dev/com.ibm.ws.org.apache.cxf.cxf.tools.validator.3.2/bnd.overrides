@@ -14,8 +14,7 @@ cxfVersion=3.4.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2
 
-
-Import-Package: \
+Import-Package:
 
 Export-Package: \
   org.apache.cxf.tools.validator;version=${cxfVersion}

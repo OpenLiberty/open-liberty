@@ -14,7 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/retryApp/src,\
-  test-applications/timeoutApp/src,\
+  test-applications/timeoutApp/src
 
 fat.project: true
 

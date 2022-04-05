@@ -2,3 +2,4 @@ com.ibm.ws.jsonb_fat
 com.ibm.ws.jsonp.1.1_fat
 com.ibm.ws.jsonp_fat
 io.openliberty.jakarta.jsonb.internal_fat
+io.openliberty.jakarta.jsonb.3.0_fat_tck

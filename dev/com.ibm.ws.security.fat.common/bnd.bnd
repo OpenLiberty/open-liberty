@@ -26,8 +26,6 @@ Import-Package: \
 -dependson: \
     build.changeDetector
     
-Private-Package: \
-
 src: \
     src,\
     fat/src,\
