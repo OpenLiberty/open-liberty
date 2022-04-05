@@ -772,6 +772,10 @@ abstract class SibRaListener implements StoppableAsynchConsumerCallback {
             //  consumer session been close by MP as the destination
             //  has been deleted or the receiveAllowed=false been applied
 
+        } catch ( final SIConnectionDroppedException exception ) {
+        	// Similarly, no FFDC code needed.
+        	// This exception can also be thrown if the underlying connection has already been closed.
+        	
         } catch (final SIException exception) {
 
             FFDCFilter.processException(exception, CLASS_NAME + "."
