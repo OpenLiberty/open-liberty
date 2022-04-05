@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.common.jwk.utils.JsonUtils;
+import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl;
 
@@ -34,12 +34,12 @@ public class JwtPrincipalMapping {
     String userName = null;
     ArrayList<String> groupIds = null;
 
-    public JwtPrincipalMapping(String jsonstr, String userAttr, String groupAttr, boolean mapToUr) {
+    public JwtPrincipalMapping(JwtToken jwtToken, String userAttr, String groupAttr, boolean mapToUr) {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jsonstr, userAttr, groupAttr, mapToUr);
+            Tr.entry(tc, methodName, jwtToken, userAttr, groupAttr, mapToUr);
         }
-        userName = getUserName(userAttr, jsonstr);
+        userName = getUserName(userAttr, jwtToken);
         if (userName == null) {
             if (tc.isDebugEnabled()) {
                 Tr.exit(tc, methodName);
@@ -50,8 +50,8 @@ public class JwtPrincipalMapping {
             Tr.debug(tc, "user name = ", userName);
         }
         if (!mapToUr) {
-            realm = getRealm(REALM_CLAIM, jsonstr);
-            populateGroupIds(jsonstr, groupAttr);
+            realm = getRealm(REALM_CLAIM, jwtToken);
+            populateGroupIds(jwtToken, groupAttr);
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
@@ -63,10 +63,10 @@ public class JwtPrincipalMapping {
      * @param jsonstr
      * @return
      */
-    private String getRealm(String realmAttribute, String jsonstr) {
+    private String getRealm(String realmAttribute, JwtToken jwtToken) {
 
-        if (jsonstr != null && realmAttribute != null) {
-            Object realm = getClaim(jsonstr, realmAttribute);
+        if (jwtToken != null && realmAttribute != null) {
+            Object realm = getClaim(jwtToken, realmAttribute);
             if (realm instanceof String) {
                 return (String) realm;
             }
@@ -90,13 +90,13 @@ public class JwtPrincipalMapping {
         return groupIds;
     }
 
-    private String getUserName(String userNameAttr, String jsonstr) {
+    private String getUserName(String userNameAttr, JwtToken jwtToken) {
         String methodName = "getUserName";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, userNameAttr, jsonstr);
+            Tr.entry(tc, methodName, userNameAttr, jwtToken);
         }
-        if (jsonstr != null && userNameAttr != null && !userNameAttr.isEmpty()) {
-            Object user = getClaim(jsonstr, userNameAttr);
+        if (jwtToken != null && userNameAttr != null && !userNameAttr.isEmpty()) {
+            Object user = getClaim(jwtToken, userNameAttr);
             setUserName(userNameAttr, user);
         }
         if (userName == null) {
@@ -122,14 +122,14 @@ public class JwtPrincipalMapping {
         }
     }
 
-    void populateGroupIds(String jsonstr, String groupAttr) {
+    void populateGroupIds(JwtToken jwtToken, String groupAttr) {
         String methodName = "populateGroupIds";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jsonstr, groupAttr);
+            Tr.entry(tc, methodName, jwtToken, groupAttr);
         }
         Object groupClaim = null;
         if (groupAttr != null) {
-            groupClaim = getClaim(jsonstr, groupAttr);
+            groupClaim = getClaim(jwtToken, groupAttr);
         }
         populateGroupIdsFromGroupClaim(groupClaim);
         if (tc.isDebugEnabled()) {
@@ -137,10 +137,10 @@ public class JwtPrincipalMapping {
         }
     }
 
-    Object getClaim(String jsonstr, String claimAttr) {
+    Object getClaim(JwtToken jwtToken, String claimAttr) {
         String methodName = "getClaim";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jsonstr, claimAttr);
+            Tr.entry(tc, methodName, jwtToken, claimAttr);
         }
         Object claim = null;
 
@@ -149,7 +149,7 @@ public class JwtPrincipalMapping {
             if (claims != null) {
                 claim = claims.get(claimAttr);
             } else {
-                claims = JsonUtils.claimsFromJsonObject(jsonstr);
+                claims = jwtToken.getClaims();
 
                 if (claims != null) {
                     claim = claims.get(claimAttr);
