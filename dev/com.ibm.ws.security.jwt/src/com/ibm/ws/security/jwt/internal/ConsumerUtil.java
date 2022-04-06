@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,10 +83,17 @@ public class ConsumerUtil {
     }
 
     public JwtToken parseJwt(String jwtString, JwtConsumerConfig config, MpConfigProperties properties) throws Exception {
-        setMpConfigProps(properties);
-        JwtContext jwtContext = parseJwtAndGetJwtContext(jwtString, config);
+        JwtContext jwtContext = getJwtContextFromCache(jwtString, config);
+        boolean isJwtContextAlreadyCached = jwtContext != null;
+        if (!isJwtContextAlreadyCached) {
+            setMpConfigProps(properties);
+            jwtContext = parseJwtAndGetJwtContext(jwtString, config);
+        }
         JwtTokenConsumerImpl jwtToken = new JwtTokenConsumerImpl(jwtContext);
         checkForReusedJwt(jwtToken, config);
+        if (!isJwtContextAlreadyCached) {
+            cacheJwtContext(jwtString, jwtContext, config);
+        }
         return jwtToken;
     }
 
@@ -148,8 +155,7 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    Key getSigningKeyBasedOnSignatureAlgorithm(JwtConsumerConfig config, JwtContext jwtContext)
-            throws KeyException {
+    Key getSigningKeyBasedOnSignatureAlgorithm(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
         Key signingKey = null;
         String sigAlg = mpConfigProps.getConfiguredSignatureAlgorithm(config);
 
@@ -348,13 +354,7 @@ public class ConsumerUtil {
             throw new InvalidTokenException(errorMsg);
         }
         checkJwtFormatAgainstConfigRequirements(jwtString, config);
-        JwtContext jwtContext = getJwtContextFromCache(jwtString, config);
-        if (jwtContext != null) {
-            return jwtContext;
-        }
-        jwtContext = parseNewJwtWithoutValidation(jwtString, config);
-        cacheJwtContext(jwtString, jwtContext, config);
-        return jwtContext;
+        return parseNewJwtWithoutValidation(jwtString, config);
     }
 
     void checkJwtFormatAgainstConfigRequirements(String jwtString, JwtConsumerConfig config) throws InvalidTokenException {
@@ -369,20 +369,20 @@ public class ConsumerUtil {
     }
 
     JwtContext getJwtContextFromCache(@Sensitive String jwtString, JwtConsumerConfig config) {
-        initializeCache(config);
-        return (JwtContext) jwtCache.get(jwtString);
+        initializeCache();
+        return (JwtContext) jwtCache.get(jwtString, config.getId());
     }
 
-    private synchronized void initializeCache(JwtConsumerConfig config) {
+    private synchronized void initializeCache() {
         long timeoutMillis = 1000 * 60 * 5;
         if (jwtCache == null) {
-            jwtCache = new JwtCache(timeoutMillis, config);
+            jwtCache = new JwtCache(timeoutMillis);
         }
     }
 
     void cacheJwtContext(@Sensitive String jwtString, JwtContext jwtContext, JwtConsumerConfig config) {
-        initializeCache(config);
-        jwtCache.put(jwtString, jwtContext);
+        initializeCache();
+        jwtCache.put(jwtString, config.getId(), jwtContext, config.getClockSkew());
     }
 
     JwtContext parseNewJwtWithoutValidation(@Sensitive String jwtString, JwtConsumerConfig config) throws InvalidTokenException, InvalidJwtException {
@@ -394,8 +394,7 @@ public class ConsumerUtil {
         return firstPassJwtConsumer.process(jwtString);
     }
 
-    protected JwtContext parseJwtWithValidation(String jwtString, JwtContext jwtContext, JwtConsumerConfig config,
-            Key key) throws Exception {
+    protected JwtContext parseJwtWithValidation(String jwtString, JwtContext jwtContext, JwtConsumerConfig config, Key key) throws Exception {
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
 
         if (tc.isDebugEnabled()) {
@@ -419,8 +418,7 @@ public class ConsumerUtil {
         return builder;
     }
 
-    JwtConsumerBuilder initializeJwtConsumerBuilderWithValidation(JwtConsumerConfig config, JwtClaims jwtClaims,
-            Key key) throws MalformedClaimException {
+    JwtConsumerBuilder initializeJwtConsumerBuilderWithValidation(JwtConsumerConfig config, JwtClaims jwtClaims, Key key) throws MalformedClaimException {
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
         builder.setExpectedIssuer(jwtClaims.getIssuer());
         builder.setSkipDefaultAudienceValidation();
@@ -431,8 +429,7 @@ public class ConsumerUtil {
         return builder;
     }
 
-    void validateClaims(JwtClaims jwtClaims, JwtContext jwtContext, JwtConsumerConfig config)
-            throws MalformedClaimException, InvalidClaimException, InvalidTokenException {
+    void validateClaims(JwtClaims jwtClaims, JwtContext jwtContext, JwtConsumerConfig config) throws MalformedClaimException, InvalidClaimException, InvalidTokenException {
         String issuer = config.getIssuer();
         if (issuer == null) {
             issuer = mpConfigProps.get(MpConfigProperties.ISSUER);
@@ -574,8 +571,7 @@ public class ConsumerUtil {
         }
     }
 
-    void validateIssuedAtClaim(NumericDate issueAtClaim, NumericDate expirationClaim, long clockSkewInMilliseconds)
-            throws InvalidClaimException {
+    void validateIssuedAtClaim(NumericDate issueAtClaim, NumericDate expirationClaim, long clockSkewInMilliseconds) throws InvalidClaimException {
         long now = (new Date()).getTime();
         NumericDate currentTimePlusSkew = NumericDate.fromMilliseconds(now + clockSkewInMilliseconds);
 
@@ -597,8 +593,7 @@ public class ConsumerUtil {
         }
     }
 
-    void validateExpirationClaim(NumericDate expirationClaim, long clockSkewInMilliseconds)
-            throws InvalidClaimException {
+    void validateExpirationClaim(NumericDate expirationClaim, long clockSkewInMilliseconds) throws InvalidClaimException {
         long now = (new Date()).getTime();
         NumericDate currentTimeMinusSkew = NumericDate.fromMilliseconds(now - clockSkewInMilliseconds);
 
@@ -704,8 +699,7 @@ public class ConsumerUtil {
         }
     }
 
-    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString)
-            throws InvalidTokenException, InvalidJwtException {
+    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, InvalidJwtException {
         JwtContext validatedJwtContext = null;
         try {
             validatedJwtContext = jwtConsumer.process(jwtString);

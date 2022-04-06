@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     private final ProviderAuthenticationResult authnResult = mockery.mock(ProviderAuthenticationResult.class);
     private final Principal principal = mockery.mock(Principal.class);
 
+    private static final String CONFIG_ID = "myOidcConfigId";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String HTTPS_URL = "https://localhost:8020/root";
     private static final String GOOD_USER = "user";
@@ -63,19 +64,25 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     private final AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() {
         outputMgr.captureStreams();
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfterClass() {
         outputMgr.trace("*=all=disabled");
         outputMgr.restoreStreams();
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.out.println("Entering test: " + testName.getMethodName());
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getId();
+                will(returnValue(CONFIG_ID));
+            }
+        });
     }
 
     @After
@@ -118,7 +125,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_getCachedTokenAuthenticationResult_nothingCachedForToken() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
-        cache.put("someToken", new AccessTokenCacheEntry("unqiue id", cachedResult));
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey("someToken", CONFIG_ID);
+        cache.put(cacheKey, new AccessTokenCacheValue("unqiue id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -136,7 +144,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_getCachedTokenAuthenticationResult_resultAlreadyCached() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry("unique id", cachedResult));
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+        cache.put(cacheKey, new AccessTokenCacheValue("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -159,7 +168,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         SingleTableCache cache = getCache();
         String uniqueID = "unique id";
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry(uniqueID, cachedResult));
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+        cache.put(cacheKey, new AccessTokenCacheValue(uniqueID, cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -192,7 +202,9 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         assertNotNull("Cache entry should not have been null but was.", cacheEntry);
 
         ProviderAuthenticationResult cachedResult = cacheEntry.getResult();
@@ -206,7 +218,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         SingleTableCache cache = getCache();
         // Create an existing cache entry for a different key
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
-        cache.put("otherEntry", new AccessTokenCacheEntry("unique id", cachedResult));
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey("otherEntry", CONFIG_ID);
+        cache.put(cacheKey, new AccessTokenCacheValue("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -219,7 +232,9 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         assertNotNull("Cache entry should not have been null but was.", cacheEntry);
 
         ProviderAuthenticationResult newCachedResult = cacheEntry.getResult();
@@ -232,7 +247,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_cacheTokenAuthenticationResult_entryAlreadyExists() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
-        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry("unique id", cachedResult));
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+        cache.put(cacheKey, new AccessTokenCacheValue("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -245,7 +261,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         assertNotNull("Cache entry should not have been null but was.", cacheEntry);
 
         ProviderAuthenticationResult newCachedResult = cacheEntry.getResult();
@@ -271,7 +287,9 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         resultToCache.getCustomProperties().put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         assertNotNull("Cache entry should not have been null but was.", cacheEntry);
         assertEquals("Unique ID in cache entry should have matched unique ID in custom properties.", uniqueID, cacheEntry.getUniqueID());
     }

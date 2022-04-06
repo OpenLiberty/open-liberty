@@ -12,7 +12,6 @@ package com.ibm.ws.security.jwt.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -23,9 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.structures.CacheEntry;
 import com.ibm.ws.security.common.structures.SingleTableCache;
-import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 
 public class JwtCache extends SingleTableCache {
 
@@ -33,23 +30,29 @@ public class JwtCache extends SingleTableCache {
 
     static final int DEFAULT_ENTRY_LIMIT = 500;
 
-    private final JwtConsumerConfig config;
-
-    public JwtCache(long timeoutInMilliSeconds, JwtConsumerConfig config) {
+    public JwtCache(long timeoutInMilliSeconds) {
         super(DEFAULT_ENTRY_LIMIT, timeoutInMilliSeconds);
-        this.config = config;
     }
 
     /**
      * Find and return the object associated with the specified key.
      */
-    @Override
-    public synchronized Object get(@Sensitive String key) {
-        JwtContext jwtContext = (JwtContext) super.get(key);
-        if (jwtContext == null || isJwtExpired(jwtContext)) {
+    public synchronized Object get(@Sensitive String jwt, String configId) {
+        JwtCacheKey key = getCacheKey(jwt, configId);
+        JwtCacheValue cacheValue = (JwtCacheValue) get(key);
+        if (cacheValue == null || isJwtExpired(cacheValue)) {
             return null;
         }
-        return jwtContext;
+        return cacheValue.getValue();
+    }
+
+    /**
+     * Insert the value into the Cache using the specified key.
+     */
+    public synchronized void put(@Sensitive String jwt, String configId, JwtContext value, long clockSkew) {
+        JwtCacheKey key = getCacheKey(jwt, configId);
+        JwtCacheValue cacheValue = new JwtCacheValue(value, clockSkew);
+        super.put(key, cacheValue, clockSkew);
     }
 
     /**
@@ -59,22 +62,21 @@ public class JwtCache extends SingleTableCache {
     protected synchronized void evictStaleEntries() {
         super.evictStaleEntries();
 
-        List<String> keysToRemove = new ArrayList<String>();
-        for (Entry<String, Object> entry : lookupTable.entrySet()) {
-            String key = entry.getKey();
-            CacheEntry cacheEntry = (CacheEntry) entry.getValue();
-            JwtContext jwtContext = (JwtContext) cacheEntry.getValue();
-            if (jwtContext == null || isJwtExpired(jwtContext)) {
+        List<Object> keysToRemove = new ArrayList<>();
+        for (Object key : lookupTable.keySet()) {
+            JwtCacheValue cacheValue = (JwtCacheValue) get(key);
+            if (cacheValue == null || isJwtExpired(cacheValue)) {
                 keysToRemove.add(key);
             }
         }
-        for (String keyToRemove : keysToRemove) {
-            lookupTable.remove(keyToRemove);
+        for (Object keyToRemove : keysToRemove) {
+            remove(keyToRemove);
         }
     }
 
     @FFDCIgnore(MalformedClaimException.class)
-    public boolean isJwtExpired(JwtContext jwtContext) {
+    public boolean isJwtExpired(JwtCacheValue cacheValue) {
+        JwtContext jwtContext = (JwtContext) cacheValue.getValue();
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
         if (jwtClaims == null) {
             return true;
@@ -92,7 +94,11 @@ public class JwtCache extends SingleTableCache {
             }
             return true;
         }
-        return (System.currentTimeMillis() > (jwtExp + config.getClockSkew()));
+        return (System.currentTimeMillis() > (jwtExp + cacheValue.getClockSkew()));
+    }
+
+    private JwtCacheKey getCacheKey(@Sensitive String jwt, String configId) {
+        return new JwtCacheKey(jwt, configId);
     }
 
 }

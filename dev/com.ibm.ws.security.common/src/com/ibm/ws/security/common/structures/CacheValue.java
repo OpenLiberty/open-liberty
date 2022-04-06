@@ -10,14 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-public class CacheEntry {
+import java.util.Objects;
+
+public class CacheValue {
 
     private Object value;
     private long createdAt = 0L;
 
-    public CacheEntry(Object value) {
+    public CacheValue(Object value) {
+        this(value, 0);
+    }
+
+    public CacheValue(Object value, long clockSkew) {
         this.value = value;
         this.createdAt = System.currentTimeMillis();
+        if (clockSkew > 0) {
+            // Take the clock skew into account up front
+            this.createdAt -= clockSkew;
+        }
     }
 
     public Object getValue() {
@@ -38,10 +48,7 @@ public class CacheEntry {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hash(value);
     }
 
     @Override
@@ -52,15 +59,8 @@ public class CacheEntry {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CacheEntry other = (CacheEntry) obj;
-        if (value == null) {
-            if (other.getValue() != null) {
-                return false;
-            }
-        } else if (!value.equals(other.getValue())) {
-            return false;
-        }
-        return true;
+        CacheValue other = (CacheValue) obj;
+        return Objects.equals(value, other.value);
     }
 
 }

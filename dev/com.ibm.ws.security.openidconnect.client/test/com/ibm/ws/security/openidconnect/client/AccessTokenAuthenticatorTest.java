@@ -59,7 +59,9 @@ import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
-import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheEntry;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheKey;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheValue;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -124,11 +126,13 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_JWT = "application/jwt";
     private static final String TEXT_PLAIN = "text/plain";
+    private static final String CONFIG_ID = "configId";
 
     private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator();
     private final AccessTokenAuthenticator sslTokenAuth = new FakeAccessTokenAuthenticator(sslSupport);
     private final ReferrerURLCookieHandler referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecConfig);
     private final Map<String, Object> respMap = new HashMap<String, Object>();
+    private final AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -353,7 +357,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         assertSuccessWithOK(oidcResult);
 
         // Verify that the result was cached
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         assertNotNull("Cached authentication result should not have been null but was.", cacheEntry);
         assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cacheEntry.getResult());
     }
@@ -439,8 +444,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withDefaultBearerAuthorizationHeaderExpectations();
         SingleTableCache cache = withAccessTokenCacheExpectations(true, true);
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        AccessTokenCacheEntry cacheEntry = new AccessTokenCacheEntry("unique id", cachedResult);
-        cache.put(ACCESS_TOKEN, cacheEntry);
+        AccessTokenCacheValue cacheEntry = new AccessTokenCacheValue("unique id", cachedResult);
+        AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
+        cache.put(cacheKey, cacheEntry);
         withPropagationTokenAuthenticatedAttribute();
 
         ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
@@ -924,6 +930,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                     will(returnValue(cache));
                 }
             });
+            withConfigId();
         } else {
             cache = null;
         }
@@ -1115,7 +1122,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 allowing(clientConfig).getId();
-                will(returnValue("configId"));
+                will(returnValue(CONFIG_ID));
             }
         });
     }

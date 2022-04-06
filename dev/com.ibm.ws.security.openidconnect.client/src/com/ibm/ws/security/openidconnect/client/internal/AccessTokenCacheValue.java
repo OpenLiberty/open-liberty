@@ -12,12 +12,12 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-public class AccessTokenCacheEntry {
+public class AccessTokenCacheValue {
 
     private final String uniqueID;
     private final ProviderAuthenticationResult result;
 
-    public AccessTokenCacheEntry(String uniqueID, ProviderAuthenticationResult result) {
+    public AccessTokenCacheValue(String uniqueID, ProviderAuthenticationResult result) {
         this.uniqueID = uniqueID;
         this.result = result;
     }

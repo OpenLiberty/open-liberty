@@ -759,6 +759,12 @@ public class ConsumerUtilTest {
     @Test
     public void test_getJwtContextFromCache_nothingCached() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getId();
+                    will(returnValue("myJwtConfigId"));
+                }
+            });
             final String tokenString = testName.getMethodName();
             JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
             assertNull("Should not have found anything in the cache, but got: " + result, result);
@@ -773,6 +779,8 @@ public class ConsumerUtilTest {
             final String tokenString = testName.getMethodName();
             mockery.checking(new Expectations() {
                 {
+                    allowing(jwtConfig).getId();
+                    will(returnValue("myJwtConfigId"));
                     allowing(jwtContext).getJwtClaims();
                     will(returnValue(jwtClaims));
                     allowing(jwtClaims).getExpirationTime();
@@ -795,11 +803,13 @@ public class ConsumerUtilTest {
             final String tokenString = testName.getMethodName();
             mockery.checking(new Expectations() {
                 {
+                    allowing(jwtConfig).getId();
+                    will(returnValue("myJwtConfigId"));
                     one(jwtContext).getJwtClaims();
                     will(returnValue(jwtClaims));
                     one(jwtClaims).getExpirationTime();
                     will(returnValue(createDate(-1 * 1000 * 60 * 60 * 2)));
-                    one(jwtConfig).getClockSkew();
+                    allowing(jwtConfig).getClockSkew();
                     will(returnValue(0L));
                 }
             });

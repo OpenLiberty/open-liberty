@@ -29,11 +29,6 @@ public abstract class CommonCache {
     private final PrivilegedAction<ScheduledExecutorService> getScheduledExecutorServiceAction = new GetScheduledExecutorServiceAction();
 
     /**
-     * Maximum number of entries allowed in the cache.
-     */
-    protected int entryLimit = 50000;
-
-    /**
      * Default cache timeout.
      */
     protected long timeoutInMilliSeconds = 5 * 60 * 1000;
@@ -44,10 +39,6 @@ public abstract class CommonCache {
     private ScheduledExecutorService evictionSchedule;
 
     private ScheduledFuture<?> previousScheduledTask = null;
-
-    public int size() {
-        return this.entryLimit;
-    }
 
     public long getTimeoutInMilliseconds() {
         return timeoutInMilliSeconds;
@@ -61,12 +52,12 @@ public abstract class CommonCache {
     /**
      * Find and return the object associated with the specified key.
      */
-    abstract public Object get(@Sensitive String key);
+    abstract public Object get(@Sensitive Object key);
 
     /**
      * Insert the value into the Cache using the specified key.
      */
-    abstract public void put(@Sensitive String key, Object value);
+    abstract public void put(@Sensitive Object key, Object value);
 
     /**
      * Implementation of the eviction strategy.

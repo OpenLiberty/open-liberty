@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,14 +83,15 @@ public class TAIUserApiUtils {
         if (userApiResponse == null) {
             OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
             userApiResponse = openShiftUtils.getUserApiResponseForServiceAccountToken(serviceAccountToken, sslSocketFactory);
-            cacheUserApiResponse(serviceAccountToken + config.getUniqueId(), userApiResponse);
+            cacheUserApiResponse(config, serviceAccountToken, userApiResponse);
         }
         return userApiResponse;
     }
 
     private String getUserApiResponseFromCache(SocialLoginConfig config, @Sensitive String serviceAccountToken) {
         initializeCache(config);
-        return (String) userApiCache.get(serviceAccountToken + config.getUniqueId());
+        UserApiCacheKey key = new UserApiCacheKey(serviceAccountToken, config.getUniqueId());
+        return (String) userApiCache.get(key);
     }
 
     private synchronized void initializeCache(SocialLoginConfig config) {
@@ -104,8 +105,9 @@ public class TAIUserApiUtils {
         }
     }
 
-    private void cacheUserApiResponse(@Sensitive String serviceAccountToken, String userApiResponse) {
-        userApiCache.put(serviceAccountToken, userApiResponse);
+    private void cacheUserApiResponse(SocialLoginConfig config, @Sensitive String serviceAccountToken, String userApiResponse) {
+        UserApiCacheKey key = new UserApiCacheKey(serviceAccountToken, config.getUniqueId());
+        userApiCache.put(key, userApiResponse);
     }
 
     private String getUserApiResponseFromGenericThirdParty(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, String userinfoApi) throws Exception {

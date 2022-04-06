@@ -30,12 +30,17 @@ public class AccessTokenCacheHelper {
 
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
+    public AccessTokenCacheKey getCacheKey(String accessToken, String configId) {
+        return new AccessTokenCacheKey(accessToken, configId);
+    }
+
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
         if (!clientConfig.getAccessTokenCacheEnabled()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(token);
+        AccessTokenCacheKey cacheKey = getCacheKey(token, clientConfig.getId());
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         if (cacheEntry == null) {
             return null;
         }
@@ -60,7 +65,8 @@ public class AccessTokenCacheHelper {
             if (customProperties != null) {
                 uniqueID = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
             }
-            cache.put(token, new AccessTokenCacheEntry(uniqueID, result));
+            AccessTokenCacheKey cacheKey = getCacheKey(token, clientConfig.getId());
+            cache.put(cacheKey, new AccessTokenCacheValue(uniqueID, result));
         }
     }
 

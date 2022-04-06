@@ -43,10 +43,10 @@ public class CacheEntryTest extends CommonTestClass {
     public void test_equals_identicalValues() {
         try {
             String value = "value";
-            CacheEntry entry1 = new CacheEntry(value);
+            CacheValue entry1 = new CacheValue(value);
             // Ensure the createdAt time for each is different
             Thread.sleep(100);
-            CacheEntry entry2 = new CacheEntry(value);
+            CacheValue entry2 = new CacheValue(value);
 
             assertTrue("Entry [" + entry1 + "] was not considered equal to [" + entry2 + "].", entry1.equals(entry2));
             assertTrue("Entry [" + entry2 + "] was not considered equal to [" + entry1 + "].", entry2.equals(entry1));
@@ -60,11 +60,11 @@ public class CacheEntryTest extends CommonTestClass {
         try {
             String value1 = "value1";
             String value2 = "value2";
-            CacheEntry entry1 = new CacheEntry(value1);
-            CacheEntry entry2 = new CacheEntry(value2);
+            CacheValue cacheValue1 = new CacheValue(value1);
+            CacheValue cacheValue2 = new CacheValue(value2);
 
-            assertFalse("Entry [" + entry1 + "] was considered equal to [" + entry2 + "].", entry1.equals(entry2));
-            assertFalse("Entry [" + entry2 + "] was considered equal to [" + entry1 + "].", entry2.equals(entry1));
+            assertFalse("Value [" + cacheValue1 + "] was considered equal to [" + cacheValue2 + "].", cacheValue1.equals(cacheValue2));
+            assertFalse("Value [" + cacheValue2 + "] was considered equal to [" + cacheValue1 + "].", cacheValue2.equals(cacheValue1));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -74,14 +74,14 @@ public class CacheEntryTest extends CommonTestClass {
     public void test_isExpired_timeoutZero() {
         try {
             String value = "value";
-            CacheEntry entry = new CacheEntry(value);
+            CacheValue cacheValue = new CacheValue(value);
             long timeout = 0;
 
             Thread.sleep(10);
 
-            boolean result = entry.isExpired(timeout);
+            boolean result = cacheValue.isExpired(timeout);
 
-            assertTrue("Entry should have been considered expired, but wasn't. Entry created at [" + entry.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
+            assertTrue("Value should have been considered expired, but wasn't. Value created at [" + cacheValue.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -91,14 +91,14 @@ public class CacheEntryTest extends CommonTestClass {
     public void test_isExpired_shortTimeout_waitToExpire() {
         try {
             String value = "value";
-            CacheEntry entry = new CacheEntry(value);
+            CacheValue cacheValue = new CacheValue(value);
             long timeout = 50;
 
             Thread.sleep(100);
 
-            boolean result = entry.isExpired(timeout);
+            boolean result = cacheValue.isExpired(timeout);
 
-            assertTrue("Entry should have been considered expired, but wasn't. Entry created at [" + entry.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
+            assertTrue("Value should have been considered expired, but wasn't. Value created at [" + cacheValue.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -108,12 +108,12 @@ public class CacheEntryTest extends CommonTestClass {
     public void test_isExpired_longTimeout() {
         try {
             String value = "value";
-            CacheEntry entry = new CacheEntry(value);
+            CacheValue cacheValue = new CacheValue(value);
             long timeout = 1000 * 60;
 
-            boolean result = entry.isExpired(timeout);
+            boolean result = cacheValue.isExpired(timeout);
 
-            assertFalse("Entry should not have been considered expired yet, but was. Entry created at [" + entry.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
+            assertFalse("Value should not have been considered expired yet, but was. Value created at [" + cacheValue.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
