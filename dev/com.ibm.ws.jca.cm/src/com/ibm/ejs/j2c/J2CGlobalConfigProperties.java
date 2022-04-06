@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -317,6 +317,35 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      */
     private int agedTimeout = 0;
     /**
+     * Abort long running in use connections (seconds)
+     * <p><p>
+     * Abort long running in use connections is the approximate interval (or in use time of
+     * a ManagedConnection), in seconds, before a ManagedConnection is aborted.
+     * The default value is -1 which will allow active
+     * ManagedConnections to remain in use in the pool indefinitely until
+     * the connection is closed and/or transaction completed. The recommended
+     * way to disable the pool maintenance thread is to set Reap Time to -1, in
+     * which case Aged Timeout, Unused Timeout and Abort long running in use connections
+     * will be ignored. Abort long running in use connections should only be used when
+     * application code is using managed connections correctly (get/use/close),
+     * but some outside environment issues results in stuck long running
+     * in use connections that can not be release. If abort long running in use connections is
+     * used, the recommended value is 1200 seconds which is much longer then a normal transaction.
+     * If its normal for applications to have long running transactions, then
+     * Abort long running in use connections recommended value would be double the value of the
+     * longest application running transaction. Example, the long transaction takes 20 minutes
+     * to run, abort long running in use connections to 40 minutes (2400 seconds)
+     * <p><p>
+     * Note that accuracy of this timeout, as well as performance, is affect by
+     * the Reap Time. See Reap Time for more information.
+     * <p><p>
+     * MBeans: The Abort long running in use connections will be changed to the
+     * new value and will follow
+     * the rules above. (Which are wrong)
+     *
+     */
+    private int maxInUseTime = -1;
+    /**
      * Comment for <code>agedTimeoutMillis</code>
      */
     private long agedTimeoutMillis = 0;
@@ -383,6 +412,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                      int reapTime,
                                      int unusedTimeout,
                                      int agedTimeout,
+                                     int maxInUseTime,
                                      int holdTimeLimit,
                                      int commitPriority,
                                      boolean autoCloseConnections,
@@ -424,6 +454,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         this.reapTime = reapTime;
         this.unusedTimeout = unusedTimeout;
         this.agedTimeout = agedTimeout;
+        this.maxInUseTime = maxInUseTime;
         this.agedTimeoutMillis = (long) agedTimeout * 1000;
         this.holdTimeLimit = holdTimeLimit;
         this.commitPriority = commitPriority;
@@ -995,5 +1026,20 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                               Boolean throwExceptionOnMCThreadCheck) {
         changeSupport.firePropertyChange("throwExceptionOnMCThreadCheck", this.throwExceptionOnMCThreadCheck, throwExceptionOnMCThreadCheck);
         this.throwExceptionOnMCThreadCheck = throwExceptionOnMCThreadCheck;
+    }
+
+    /**
+     * @return
+     */
+    public int getMaxInUseTime() {
+        return maxInUseTime;
+    }
+
+    /**
+     * @param maxInUseTime
+     */
+    public void setMaxInUseTime(int _maxInUseTime) {
+        changeSupport.firePropertyChange("agedTimeout", this.maxInUseTime, _maxInUseTime);
+        this.maxInUseTime = _maxInUseTime;
     }
 }

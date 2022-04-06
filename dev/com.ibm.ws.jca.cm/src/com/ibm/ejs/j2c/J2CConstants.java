@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,7 @@ public interface J2CConstants {
 
     public final static String POOL_ReapTime = "reapTime";
     public final static String POOL_AgedTimeout = "agedTimeout";
+    public final static String POOL_MaxInUseTime = "maxInUseTime";
 
     public final static String POOL_PurgePolicy = "purgePolicy";
 

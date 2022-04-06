@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,6 +175,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
 
+    private long maxInUseTime = -1;
+
     public PoolManager(
                        AbstractConnectionFactoryService cfSvc,
                        Properties dsProps,
@@ -204,6 +206,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         this.reapTime = gConfigProps.getReapTime();
         this.unusedTimeout = gConfigProps.getUnusedTimeout();
         this.agedTimeout = gConfigProps.getAgedTimeout();
+        this.maxInUseTime = gConfigProps.getMaxInUseTime();
         this.agedTimeoutMillis = (long) this.agedTimeout * 1000;
         this.maxFreePoolHashSize = gConfigProps.getMaxFreePoolHashSize();
         this.maxSharedBuckets = gConfigProps.getMaxSharedBuckets();
@@ -294,6 +297,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.debug(this, tc, "Reclaim Connection Thread Time Interval = " + reapTime + " (seconds)");
             Tr.debug(this, tc, "Unused Timeout                          = " + unusedTimeout + " (seconds)");
             Tr.debug(this, tc, "Aged Timeout                            = " + agedTimeout + " (seconds)");
+            Tr.debug(this, tc, "Abort Long Running Inuse Connections    = " + maxInUseTime + " (minutes)");
             Tr.debug(this, tc, "Free Pool Distribution Table Size       = " + maxFreePoolHashSize);
             Tr.debug(this, tc, "Number Of Shared Pool Partitions        = " + maxSharedBuckets);
         }
@@ -3559,6 +3563,58 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 } // end sync
             }
         } // end for (int j
+
+        // Look for long running in use connections to abort
+        if (maxInUseTime > 0) {
+            // Get a lock on master list.
+            long currentTime = System.currentTimeMillis();
+            boolean needToAbortConnections = false;
+            // create new array for this abort path
+            ArrayList<MCWrapper> mcWrappersToAbort = new ArrayList<MCWrapper>();
+            mcToMCWMapWrite.lock();
+            try {
+                Iterator<MCWrapper> mcwIt = mcToMCWMap.values().iterator();
+                while (mcwIt.hasNext()) {
+                    MCWrapper mcw = mcwIt.next();
+                    boolean mayAbort = false;
+                    if (mcw.isDestroyState()) {
+                        // Error has occurred, abort the connection
+                        mayAbort = true;
+                    }
+                    if (mcw.isStale()) {
+                        // Connection is stale, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mcw.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())) {
+                        // Likely a purge normal or an resource error occurred, abort the connection.
+                        mayAbort = true;
+                    }
+                    if (mayAbort) {
+                        long mcwHoldTimeStart = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
+                        if (mcwHoldTimeStart > 0) {
+                            long timeInUseInSeconds = (currentTime - mcwHoldTimeStart) / 1000;
+                            long maxInUseTimeSeconds = maxInUseTime * 60;
+                            if (timeInUseInSeconds > maxInUseTimeSeconds) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(this, tc, "Abort long running in use connection " + mcw + " was inuse for " + timeInUseInSeconds);
+                                }
+                                mcWrappersToAbort.add(mcw);
+                                needToAbortConnections = true;
+                            }
+                        }
+                    }
+                }
+
+            } finally {
+                mcToMCWMapWrite.unlock();
+            }
+            if (needToAbortConnections) {
+                for (MCWrapper mcw : mcWrappersToAbort) {
+                    ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC();
+                }
+            }
+        }
+
         if (tc.isEntryEnabled()) {
             if (tc.isDebugEnabled()) {
                 // This information should only be printed if tc.isEntryEnabled()
@@ -3952,7 +4008,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.debug(this, tc, "reaperThreadStarted: ", reaperThreadStarted);
         }
 
-        if (needToReclaimConnections() || needToReclaimTLSConnections()) {
+        if (needToReclaimConnections() || needToReclaimTLSConnections() || (maxInUseTime > 0 && totalConnectionCount.get() > 0)) {
             // Create thread to reclaim connections
             startReclaimConnectionThread();
         }

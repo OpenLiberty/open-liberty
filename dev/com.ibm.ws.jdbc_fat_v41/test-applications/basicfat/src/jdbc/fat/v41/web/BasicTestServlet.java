@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static com.ibm.websphere.simplicity.config.DataSourceProperties.INFORMIX_
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.MICROSOFT_SQLSERVER;
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.SYBASE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -46,6 +47,8 @@ import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +88,14 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Resource(name = "jdbc/ds2", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds2;
 
+    @Resource(name = "jdbc/ds2abort", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds2abort;
+    @Resource(name = "jdbc/ds2abort1m", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds2abort1m;
+    @Resource(name = "jdbc/ds2abort60s", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds2abort60s;
+    @Resource(name = "jdbc/ds2abort-1", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds2abortMinus1;
     @Resource(name = "jdbc/ds3", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds3;
 
@@ -912,6 +923,123 @@ public class BasicTestServlet extends FATDatabaseServlet {
         // Aborted connection should have been destroyed, so we should be able to get
         // and close a new connection no problem.
         Connection c = ds2.getConnection();
+        c.close();
+    }
+
+    /**
+     * Function to get and abort a connection using maxInUseTime="1"
+     *
+     * After running this function, one connection should be removed by the reaper thread
+     * from the connection pool and a call to getSingleConnectionAfterAbort
+     * should succeed.
+     *
+     * Uses datasource ds2abort for shareable connections.
+     */
+    public void testAbortedConnectionDestroyedAuto() throws Exception {
+        Connection c1 = ds2abort.getConnection();
+        getConnectionManagerBean("jdbc/ds2abort").purgePoolContents("");
+        Connection c2 = ds2abort.getConnection();
+        assertEquals(2, getPoolSize("jdbc/ds2abort"));
+        try {
+            int i = 0;
+            int size = getPoolSize("jdbc/ds2abort");
+            while (size > 1) {
+                ++i;
+                Thread.sleep(1000);
+                size = getPoolSize("jdbc/ds2abort");
+                if (i > 120) {
+                    break;
+                }
+            }
+        } finally {
+            c2.close();
+            c1.close();
+            assertEquals(1, getPoolSize("jdbc/ds2abort"));
+        }
+    }
+
+    /**
+     * Function to just get and close a connection
+     *
+     * This function should be called right after testAbortedConnectionDestroyedAuto to
+     * ensure that the aborted connection was removed from the pool and existing
+     * connection is still usable.
+     */
+    public void getSingleConnectionAfterAbortAuto() throws Exception {
+        assertEquals(1, getPoolSize("jdbc/ds2abort"));
+        Connection c = ds2abort.getConnection();
+        c.close();
+        assertEquals(1, getPoolSize("jdbc/ds2abort"));
+    }
+
+    /**
+     * Test using maxInUseTime="1s"
+     */
+    @Test
+    @AllowedFFDC({ "java.security.PrivilegedActionException",
+                   "javax.resource.ResourceException" })
+    public void getSingleConnectionAfterAbortAuto1Second() throws Exception {
+        InitialContext ctx = new javax.naming.InitialContext();
+        DataSource ds2abort1s = null;
+        try {
+            ds2abort1s = (DataSource) ctx.lookup("jdbc/ds2abort1s");
+        } catch (NamingException n) {
+            // expected exception from lookup
+        }
+        assertNull(ds2abort1s);
+    }
+
+    /**
+     * Test using maxInUseTime="0"
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "java.security.PrivilegedActionException",
+                   "javax.resource.ResourceException" })
+    public void getSingleConnectionAfterAbortAuto0Seconds() throws Exception {
+        InitialContext ctx = new javax.naming.InitialContext();
+        DataSource ds2abort0 = null;
+        try {
+            ds2abort0 = (DataSource) ctx.lookup("jdbc/ds2abort0");
+            Connection c = ds2abort0.getConnection();
+            c.close();
+        } catch (NamingException n) {
+            // expected exception from lookup
+        }
+        assertNull(ds2abort0);
+    }
+
+    /**
+     * Test using maxInUseTime="-1"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getSingleConnectionAfterAbortAutoMinus1() throws Exception {
+        Connection c = ds2abortMinus1.getConnection();
+        c.close();
+    }
+
+    /**
+     * Test using maxInUseTime="60s"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getSingleConnectionAfterAbortAuto60Seconds() throws Exception {
+        Connection c = ds2abort60s.getConnection();
+        c.close();
+    }
+
+    /**
+     * Test using maxInUseTime="1m"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getSingleConnectionAfterAbortAuto1Minute() throws Exception {
+        Connection c = ds2abort1m.getConnection();
         c.close();
     }
 

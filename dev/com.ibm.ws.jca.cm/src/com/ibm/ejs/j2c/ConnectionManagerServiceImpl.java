@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -465,7 +465,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     private J2CGlobalConfigProperties processServerPoolManagerProperties(AbstractConnectionFactoryService svc, Map<String, Object> properties) throws ResourceException {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = properties == null ? Collections.EMPTY_MAP : new HashMap<String, Object>(properties);
-        int agedTimeout, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize, numConnectionsPerThreadLocal, reapTime;
+        int agedTimeout, maxInUseTime = -1, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize,
+                        numConnectionsPerThreadLocal,
+                        reapTime;
         PurgePolicy purgePolicy;
 
         if (svc != null) {
@@ -493,6 +495,8 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             numConnectionsPerThreadLocal = 0;
         } else {
             agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
+            maxInUseTime = validateProperty(map, J2CConstants.POOL_MaxInUseTime, -1, TimeUnit.MINUTES, -1, Integer.MAX_VALUE, false,
+                                            connectorSvc);
             connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
             maxIdleTime = validateProperty(map, MAX_IDLE_TIME, ConnectionPoolProperties.DEFAULT_UNUSED_TIMEOUT, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);
             maxNumberOfMCsAllowableInThread = validateProperty(map, MAX_CONNECTIONS_PER_THREAD, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
@@ -538,6 +542,10 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (pm.gConfigProps.getAgedTimeout() != agedTimeout)
                 pm.gConfigProps.setAgedTimeout(agedTimeout);
 
+            if (pm.gConfigProps.getMaxInUseTime() != maxInUseTime) {
+                pm.gConfigProps.setMaxInUseTime(maxInUseTime);
+            }
+
             if (pm.gConfigProps.getAutoCloseConnections() != autoCloseConnections)
                 pm.gConfigProps.setAutoCloseConnections(autoCloseConnections);
 
@@ -575,7 +583,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                             200, // maxSharedBuckets,
                             100, // maxFreePoolHashSize,
                             false, // diagnoseConnectionUsage,
-                            connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
+                            connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, maxInUseTime, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
                             autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, //
                             temporarilyAssociateIfDissociateUnavailable, throwExceptionOnMCThreadCheck);
 
