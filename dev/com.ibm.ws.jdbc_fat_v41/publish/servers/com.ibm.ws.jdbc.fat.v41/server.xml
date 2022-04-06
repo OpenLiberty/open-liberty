@@ -72,28 +72,10 @@
       <connectionManager agedTimeout="-1" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1"/>
     </dataSource>
     
-    <dataSource id="dsfat22ctls" fat.modify="true" jndiName="jdbc/dsfat22ctls">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="2s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
-    </dataSource>
-    
-    <dataSource id="dsfat22dtls" fat.modify="true" jndiName="jdbc/dsfat22dtls">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="15s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
-    </dataSource>
-    
     <dataSource id="dsfat22etls" fat.modify="true" jndiName="jdbc/dsfat22etls">
       <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
       <connectionManager agedTimeout="1s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="-1"/>
-    </dataSource>
-    
-    <dataSource id="dsfat22ftls" fat.modify="true" jndiName="jdbc/dsfat22ftls">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="1s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="5s"/>
     </dataSource>
     
     <dataSource id="dsfat22gtls" fat.modify="true" jndiName="jdbc/dsfat22gtls">
@@ -105,7 +87,7 @@
     <dataSource id="dsfat22htls" fat.modify="true" jndiName="jdbc/dsfat22htls">
       <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" maxConnectionsPerThread="2"/>
+      <connectionManager connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" maxConnectionsPerThread="0"/>
     </dataSource>
     
     <dataSource id="dsfat22itls" fat.modify="true" jndiName="jdbc/dsfat22itls">
@@ -120,31 +102,11 @@
       <connectionManager agedTimeout="-1" maxIdleTime="1s" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
     
-    <dataSource id="dsfat22ktls" fat.modify="true" jndiName="jdbc/dsfat22ktls">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="-1" maxIdleTime="30s" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
-    </dataSource>
-    
     <dataSource id="dsfat22ltls" fat.modify="true" jndiName="jdbc/dsfat22ltls">
       <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
       <connectionManager agedTimeout="-1" maxIdleTime="-1" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
-    
-    <dataSource id="dsfat22mtls" jndiName="jdbc/dsfat22mtls" queryTimeout="30s" syncQueryTimeoutWithTransactionTimeout="true">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="-1" connectionTimeout="30s" maxConnectionsPerThread="3" maxIdleTime="-1" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" purgePolicy="FailingConnectionOnly" reapTime="1"/>
-    </dataSource>
-    
-    <dataSource id="dsfat22ntls" jndiName="jdbc/dsfat22ntls" queryTimeout="30s" syncQueryTimeoutWithTransactionTimeout="true" validationTimeout="30s">
-      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-      <connectionManager agedTimeout="-1" connectionTimeout="30s" maxConnectionsPerThread="3" maxIdleTime="-1" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="0" reapTime="1"/>
-    </dataSource>
-    
-    
     
     <dataSource id="XAds" jndiName="jdbc/${id}" type="javax.sql.XADataSource" fat.modify="true">
         <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
