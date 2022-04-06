@@ -100,7 +100,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
         for (Extension ext : orig) {
             names.add(ext.getName());
         }
-        LOG.info("Adding the extensions from bundle " + bundle.getSymbolicName()
+        LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName()
                  + " (" + bundle.getBundleId() + ") " + names);
         List<OSGiExtension> list = extensions.get(bundle.getBundleId());
         if (list == null) {
@@ -120,7 +120,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     protected void unregister(final long bundleId) {
         List<OSGiExtension> list = extensions.remove(bundleId);
         if (list != null) {
-            LOG.info("Removing the extensions for bundle " + bundleId);
+            LOG.finest("Removing the extensions for bundle " + bundleId);
             ExtensionRegistry.removeExtensions(list);
         }
     }
