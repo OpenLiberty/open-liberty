@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ @import url("graphsExcludeValidator.css");
+
 .statusGraph {
     display: none;
     position: relative;
@@ -549,4 +551,70 @@
     width: 22px;
     float: left;
     padding-right: 10px;
+}
+
+/* High contrast mode css */
+.dj_a11y .statusGraphActionButton, .dj_a11y .statusGraphActionButton .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .statusGraphActionMenu .statusGraphActionMenuItems .dijitMenuArrowCell .dijitMenuExpandA11y {
+    display: none;
+}
+
+.dj_a11y .showGraphsButton .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .showGraphsButton:hover, .dj_a11y .showGraphsButton.dijitButtonFocused {
+    border: black outset medium !important;
+}
+
+.dj_a11y .showGraphsButton .dijitIcon {
+    display: inline-block !important; /* show the edit graphs icon */
+}
+
+.dj_a11y .showGraphsOptionButton .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .showGraphsOptionButton .dijitIcon {
+    display: inline-block !important;
+}
+
+.dj_a11y .statusGraphDeleteButton, .dj_a11y .statusGraphDeleteButton .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .statusGraphDeleteButton:hover, .dj_a11y .statusGraphDeleteButton:focus {
+    border: 2px solid transparent !important;
+}
+
+.dj_a11y .statusGraphActionButtonFocused {
+    outline: 1px solid !important;
+}
+
+.dj_a11y .hoverEnableGraphButtonIcon {
+    background-image: url(../images/monitoring-added-check-DT.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+}
+
+.dj_a11y .showGraphsDialogButton .dijitIcon {
+    display: inline-block !important;
+}
+
+.dj_a11y .showGraphsDialogButton .dijitButtonText {
+    display: none !important;
+}
+
+.dj_a11y .showGraphs_openButton:hover, .dj_a11y .showGraphs_openButton.dijitButtonFocused,
+.dj_a11y .showGraphs_closeButton:hover, .dj_a11y .showGraphs_closeButton.dijitButtonFocused {
+   outline: 1px solid;
+}
+
+.dj_a11y .showGraphsDialogContainer {
+    border: 1px solid;
 }

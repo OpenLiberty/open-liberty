@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -429,6 +429,14 @@ define(["js/toolbox/toolbox",
         // need to take care of the small box created by the widget domNode
         console.log("filterIconButtonWidget: ", filterIconButtonWidget);
         filterIconButtonWidget.domNode.style.display = filterIconDisplayStyle;
+      }
+
+      // if in high contrast mode, use delete-D.png instead for cancel
+      if (this._isUsingHighContrastMode()) {
+       var cancelFilterDom = dom.byId("cancelFiltering");
+       if (cancelFilterDom !== undefined) {
+         cancelFilterDom.src = "images/delete-D.png";
+       }
       }
     },
 
@@ -873,6 +881,10 @@ define(["js/toolbox/toolbox",
         toolbox.getToolbox().updateToolEntries(this.buildOrderedToolEntries());
       }
 
+    },
+
+    _isUsingHighContrastMode: function() {
+      return document.body.classList.contains('dj_a11y');
     }
 
   });
