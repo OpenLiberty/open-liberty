@@ -118,6 +118,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             List<List<Assertion>> usedAlternatives = null;
             
             if (ignoreUnsupportedPolicy) {
+                // Please do not modify log message below, it's been used in PropertySettingTest
                 LOG.fine("WARNING: checkEffectivePolicy will not be called because "
                     + "property cxf.ignore.unsupported.policy is set to true.");
             } else {

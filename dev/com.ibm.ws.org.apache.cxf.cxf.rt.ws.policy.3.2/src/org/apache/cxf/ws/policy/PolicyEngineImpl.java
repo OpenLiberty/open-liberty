@@ -669,6 +669,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
                             // Liberty change begin migration of behaviour from CXF 2.6.2
                             if (ignoreUnsupportedPolicy) {
+                                // Please do not modify log message below, it's been used in PropertySettingTest
                                 LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
                                     + "property cxf.ignore.unsupported.policy is set to true.");
                                 return true;
