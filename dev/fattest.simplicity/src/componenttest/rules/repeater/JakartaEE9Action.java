@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.transformer.jakarta.JakartaTransformer;
+import org.eclipse.transformer.cli.JakartaTransformerCLI;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -350,11 +350,12 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         System.setOut(ps);
         System.setErr(ps);
 
+        String TRANSFORMER = "org.eclipse.transformer.cli.JakartaTransformerCLI";
         try {
-            Class.forName("org.eclipse.transformer.jakarta.JakartaTransformer");
+            Class.forName(TRANSFORMER);
         } catch (Throwable e) {
-            String mesg = "Unable to load the org.eclipse.transformer.jakarta.JakartaTransformer class. " +
-                          "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?";
+            String mesg = "Unable to load [ " + TRANSFORMER + " ]. " +
+                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
             Log.error(c, m, e, mesg);
             throw new RuntimeException(mesg, e);
         }
@@ -428,10 +429,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
             Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));
 
-            // Note the use of 'com.ibm.ws.JakartaTransformer'.
-            // 'org.eclipse.transformer.Transformer' might also be used instead.
-
-            JakartaTransformer.main(args);
+            JakartaTransformerCLI.main(args);
 
             if (outputPath.toFile().exists()) {
                 if (backupPath != null) {

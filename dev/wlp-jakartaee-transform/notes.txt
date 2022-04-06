@@ -1,4 +1,79 @@
-gCurrent latest transformer version: 0.3.0.20211005
+Uploads:
+
+https://paddleandroll1.fyre.ibm.com:9443/uploader/
+
+Current transformer version: 0.4.0-20220406.134108-5 from 0.4.0-20220401.191936-1.
+
+commons-cli from 1.4 to 1.5
+
+See:
+
+https://na.artifactory.swg-devops.com/ui/native/wasliberty-open-liberty/org/eclipse/transformer/
+
+These were downloaded from:
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer/
+
+Also:
+
+https://na.artifactory.swg-devops.com/ui/native/wasliberty-open-liberty/commons-cli/commons-cli/1.5.0/
+
+Which was downloaded from:
+
+https://dlcdn.apache.org/commons/cli/binaries/commons-cli-1.5.0-bin.zip
+
+Notes:
+
+(*) Transformer versions changed from "0.3.0.20211005" to "0.4.0.20220406".
+(*) The main class name changed from "org.eclipse.transformer.jakarta.JakartaTransformer" to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+(*) Project org.eclipse.transformer.jakarta is new.
+(*) The dependency component "commons-cli" version changed from 1.4 to 1.5.0.
+
+---
+
+  dev/wlp-jakartaee-transform/notes.txt
+  -- Notes (this file)
+
+  dev/com.ibm.ws.kernel.boot.core/src/com/ibm/ws/kernel/provisioning/ContentBasedLocalBundleRepository.java
+  -- Improved error reporting in the BundleInfo constructor.
+  dev/wlp-featureTasks/src/com/ibm/ws/wlp/feature/tasks/FeatureBnd.java
+  -- Improved error reporting.
+
+  dev/fattest.simplicity/bnd.bnd
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/fattest.simplicity/src/componenttest/rules/repeater/JakartaEE9Action.java
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+
+  dev/wlp-gradle/subprojects/fat.gradle
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/wlp-gradle/subprojects/tasks.gradle
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+  -- Add overwrite option.
+
+  dev/wlp-jakartaee-transform/bnd.bnd
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/wlp-jakartaee-transform/bnd.overrides
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+
+  dev/cnf/oss_ibm.maven
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+
+---
+
+Current latest transformer version: 0.3.0.20211005
 
 Update to 0.2.0:
   https://github.com/OpenLiberty/open-liberty/pull/15125/files

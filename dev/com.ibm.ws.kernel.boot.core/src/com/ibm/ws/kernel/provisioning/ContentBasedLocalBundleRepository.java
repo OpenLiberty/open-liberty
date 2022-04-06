@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,31 +99,59 @@ public class ContentBasedLocalBundleRepository extends AbstractResourceRepositor
         }
 
         /**
-         * This constructor cracks open the bundle and configures this Bundle Info based on the bundle manifest
+         * Create bundle information from the manifest of a bundle jar.
          * 
-         * @param f the bundle file
-         * @param baseLoc the base loc for the file
-         * @throws IOException
+         * @param bFile The bundle jar file.
+         * @param bLoc The location of the bundle jar file.
+         *
+         * @throws IOException Thrown if the bundle file cannot be read as
+         *     a jar file, or if the bundle jar does not have a manifest.
          */
-        public BundleInfo(File f, String baseLoc) throws IOException {
-            file = f;
-            baseLocation = baseLoc;
-            this.size = file.length();
-            this.lastUpdated = file.lastModified();
-            JarFile jar = new JarFile(file);
-            Manifest man = jar.getManifest();
-            Attributes a = man.getMainAttributes();
-            String bsn = getSymbolicName(a);
-            symbolicName = (bsn == null) ? null : bsn.trim();
+        public BundleInfo(File bFile, String bLoc) throws IOException {
+            this.baseLocation = bLoc;
+
+            this.file = bFile;
+            this.size = bFile.length();
+            this.lastUpdated = bFile.lastModified();
+
+            Manifest bManifest;
+            try ( JarFile bJar = new JarFile(file) ) {
+                bManifest = bJar.getManifest();
+            } catch ( IOException e ) {
+                String msg =
+                    "Failed to read bundle JAR [ " + bFile.getAbsolutePath() + " ]: " +
+                    e.getMessage();
+                System.err.println(msg);
+                e.printStackTrace(System.err);
+
+                throw new IOException(msg, e);
+            }
+
+            if ( bManifest == null ) {
+                String msg = "No manifest in bundle JAR [ " + bFile.getAbsolutePath() + " ]";
+                System.err.println(msg);
+                throw new IllegalArgumentException(msg);
+            }
+
+            Attributes bAttrs = bManifest.getMainAttributes();
+
+            this.symbolicName = getSymbolicName(bAttrs);
+
+            this.isFix = ( (bAttrs.getValue("IBM-Interim-Fixes") != null) ||
+                           (bAttrs.getValue("IBM-Test-Fixes") != null) );
+
+            String bVer = bAttrs.getValue(Constants.BUNDLE_VERSION);
             try {
-                version = Version.parseVersion(a.getValue(Constants.BUNDLE_VERSION));
-                Object iFixHeader = a.getValue("IBM-Interim-Fixes");
-                Object tFixHeader = a.getValue("IBM-Test-Fixes");
-                isFix = (iFixHeader != null || tFixHeader != null);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid " + Constants.BUNDLE_VERSION + " in " + f + ": " + e.getMessage(), e);
-            } finally {
-                Utils.tryToClose(jar);
+                this.version = Version.parseVersion(bVer);
+            } catch ( IllegalArgumentException e ) {
+                String msg =
+                    "Bundle JAR [ " + bFile.getAbsolutePath() + " ]: " +
+                    "Non-valid version [ " + Constants.BUNDLE_VERSION + " ]" + " [ " + bVer + " ]: " +
+                    e.getMessage();
+                System.err.println(msg);
+                e.printStackTrace(System.err);
+
+                throw new IllegalArgumentException(msg, e);
             }
         }
 
@@ -184,16 +212,27 @@ public class ContentBasedLocalBundleRepository extends AbstractResourceRepositor
         }
 
         /**
-         * The Bundle Symbolic name from the header can take attributes and directives so
-         * we need to strip that out if present.
+         * Answer the raw bundle symbolic name main attribute value.  Strip
+         * attributes and directives which are packed within the value.
+         * Trim any leading and trailing spaces from the value.
+         *
+         * Answer null if no symbolic name main attribute was found.
          * 
-         * @param attributes The attributes in the manifest header.
-         * @return the symbolic name minus any attributes.
+         * @param attributes Attributes containing a symbolic name value.
+         * @return The raw symbolic name attribute value.
          */
         private String getSymbolicName(Attributes attributes) {
             String value = attributes.getValue(Constants.BUNDLE_SYMBOLICNAME);
-            int index = (value != null) ? value.indexOf(';') : -1;
-            return (index > 0) ? value.substring(0, index).trim() : value;
+            if ( value == null ) {
+                return null;
+            }
+
+            int index = value.indexOf(';');
+            if ( index > 0 ) {
+                value = value.substring(0, index);
+            }
+
+            return value.trim();
         }
 
         /**
