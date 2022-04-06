@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -75,7 +74,6 @@ public class BasicTestServlet extends FATDatabaseServlet {
     private static final String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
     private static final String colorTable = "JDBC_FAT_v41_COLORS";
     private static final String userTable = "JDBC_FAT_v41_USERS";
-    private static final String cities = "cities";
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
     private List<String> globalSchemaList = null;
     private boolean isGetColorRegistered = false;
@@ -108,19 +106,10 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/dsfat22btls")
     DataSource dsfat22btls;
-
-    @Resource(name = "jdbc/dsfat22ctls")
-    DataSource dsfat22ctls;
-
-    @Resource(name = "jdbc/dsfat22dtls")
-    DataSource dsfat22dtls;
-
+    
     @Resource(name = "jdbc/dsfat22etls")
     DataSource dsfat22etls;
-
-    @Resource(name = "jdbc/dsfat22ftls")
-    DataSource dsfat22ftls;
-
+    
     @Resource(name = "jdbc/dsfat22gtls")
     DataSource dsfat22gtls;
 
@@ -129,21 +118,12 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/dsfat22itls")
     DataSource dsfat22itls;
-
+    
     @Resource(name = "jdbc/dsfat22jtls")
     DataSource dsfat22jtls;
-
-    @Resource(name = "jdbc/dsfat22ktls")
-    DataSource dsfat22ktls;
-
+    
     @Resource(name = "jdbc/dsfat22ltls")
     DataSource dsfat22ltls;
-
-    @Resource(name = "jdbc/dsfat22mtls")
-    DataSource dsfat22mtls;
-
-    @Resource(name = "jdbc/dsfat22ntls")
-    DataSource dsfat22ntls;
 
     @Resource(name = "jdbc/XAds")
     DataSource xads;
@@ -151,7 +131,6 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Override
     public void init() throws ServletException {
         createTable(ds1, colorTable, "id int not null primary key, color varchar(30)");
-        createTable(dsfat22ntls, cities, "name varchar(50) not null primary key, population int, county varchar(30)");
     }
 
     @Test
@@ -1079,61 +1058,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
     }
-
-    /**
-     * Test if a aged timeout value of 2s causes connections to be discarded correctly with thread local storage.
-     */
-    public void testAgedTimeoutWithTLS() throws Throwable {
-        Connection cnt = dsfat22ctls.getConnection();
-        try {
-            cnt.getMetaData();
-            cnt.close();
-
-        } finally {
-            cnt.close();
-        }
-    }
-
-    /**
-     * This function should be called right after testAgedTimeoutWithTLS
-     */
-    public void checkPoolAfterTestAgedTimeoutWithTLS() throws Exception {
-        Thread.sleep(3000);
-        String dsJndiName = "jdbc/dsfat22ctls";
-        int size = getPoolSize(dsJndiName);
-        if (size != 0)
-            throw new Exception("Expected pool to be 0 when testAgedTimeoutWithTLS was called, but it was " + size);
-
-        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
-    }
-
-    /**
-     * Test if a aged timeout value of 15s causes connections to be maintained with thread local storage.
-     */
-    public void testAgedTimeout15sWithTLS() throws Throwable {
-        Connection cnt = dsfat22dtls.getConnection();
-        try {
-            cnt.getMetaData();
-            cnt.close();
-
-        } finally {
-            cnt.close();
-        }
-    }
-
-    /**
-     * This function should be called right after testAgedTimeout15sWithTLS
-     */
-    public void checkPoolAfterTestAgedTimeout15sWithTLS() throws Exception {
-        Thread.sleep(3000);
-        String dsJndiName = "jdbc/dsfat22dtls";
-        int size = getPoolSize(dsJndiName);
-        if (size != 1)
-            throw new Exception("Expected pool to be 1 when testAgedTimeout15sWithTLS was called, but it was " + size);
-
-        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
-    }
-
+    
     /**
      * Test if reapTime=-1 causes connections to be maintained with thread local storage.
      */
@@ -1160,60 +1085,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
     }
-
-    /**
-     * Test if reapTime=5s causes connections to be removed only after 5s with thread local storage.
-     */
-    public void testReapPendingWithTLS() throws Throwable {
-        Connection cnt = dsfat22ftls.getConnection();
-        try {
-            cnt.getMetaData();
-            cnt.close();
-
-        } finally {
-            cnt.close();
-        }
-    }
-
-    /**
-     * This function should be called right after testReapPendingWithTLS
-     */
-    public void checkPoolAfterTestReapPendingWithTLS() throws Exception {
-        //after 1001ms, the connection should be agedOut, but not yet reaped
-        Thread.sleep(1001);
-        String dsJndiName = "jdbc/dsfat22ftls";
-        int size = getPoolSize(dsJndiName);
-        if (size != 1)
-            throw new Exception("Expected pool to be 1 when testReapPendingWithTLS was called after 1s, but it was " + size);
-
-        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
-
-        //after 5001ms, the aged connection should be reaped
-        Thread.sleep(5001);
-        size = getPoolSize(dsJndiName);
-        if (size != 0)
-            throw new Exception("Expected pool to be 0 when testReapPendingWithTLS was called after 5s, but it was " + size);
-
-        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
-    }
-
-    /**
-     * Connection request should succeed when trying with maxConnectionsPerThread=0 with thread local storage.
-     */
-    @Test
-    public void testMaxConnectionsPerThreadDisabledWithTLS() throws Throwable {
-
-        Connection con1 = dsfat22htls.getConnection();
-        try {
-            Connection con2 = dsfat22htls.getConnection();
-
-            con1.close();
-            con2.close();
-        } finally {
-            con1.close();
-        }
-    }
-
+    
     /**
      * Connection request should fail when trying to exceed the maxConnectionsPerThread with thread local storage.
      */
@@ -1230,6 +1102,23 @@ public class BasicTestServlet extends FATDatabaseServlet {
             throw new Exception("This connection should not be allowed (exceeds maxConnectionsPerThread of 1)");
         } catch (SQLException x) {
             //We should get an exception here indicating that we exceeded the max # of managed connections per thread
+        } finally {
+            con1.close();
+        }
+    }
+    
+    /**
+     * Connection request should succeed when trying with maxConnectionsPerThread=0 with thread local storage.
+     */
+    @Test
+    public void testMaxConnectionsPerThreadDisabledWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22htls.getConnection();
+        try {
+            Connection con2 = dsfat22htls.getConnection();
+
+            con1.close();
+            con2.close();
         } finally {
             con1.close();
         }
@@ -1287,42 +1176,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 2, TLSConnectionType.free, false);
     }
-
-    /**
-     * Ensure connections are not removed before maxIdleTime is met with thread local storage.
-     */
-    public void testMinPoolSizeNotMettWithTLS() throws Throwable {
-
-        Connection con1 = dsfat22ktls.getConnection();
-        try {
-            Connection con2 = dsfat22ktls.getConnection();
-            try {
-                Connection con3 = dsfat22ktls.getConnection();
-                con1.close();
-                con2.close();
-                con3.close();
-            } finally {
-                con2.close();
-            }
-        } finally {
-            con1.close();
-        }
-    }
-
-    /**
-     * This function should be called right after testMinPoolSizeNotMettWithTLS
-     */
-    public void checkPoolAfterTestMinPoolSizeNotMettWithTLS() throws Exception {
-        //after 3000ms, the connection should not have reached maxIdleTime=30s and should still be present
-        Thread.sleep(3000);
-        String dsJndiName = "jdbc/dsfat22ktls";
-        int size = getPoolSize(dsJndiName);
-        if (size != 3)
-            throw new Exception("Expected pool to be 3 when testMinPoolSizeNotMettWithTLS was called after 3s, but it was " + size);
-
-        checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
-    }
-
+    
     /**
      * Ensure connections are not removed when maxIdleTime is disabled with thread local storage.
      */
@@ -1357,212 +1211,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
     }
-
-    /**
-     * Test that purgePolicy=FailingConnectionOnly correctly removes connections as they are discovered to be bad
-     */
-    public void testPurgePolicyFailingOnlyWithTLS() throws Throwable {
-        //create 3 connections then shut down the db so that they become bad
-        allocateConnectionsAndShutDownDB(dsfat22mtls);
-        // At this point there are 3 bad connections in the pool.
-    }
-
-    /**
-     * This function should be called right after testPurgePolicyFailingOnlyWithTLS
-     */
-    @ExpectedFFDC({ "javax.resource.ResourceException" })
-    public void checkPoolAfterTestPurgePolicyFailingOnlyWithTLS() throws Exception {
-        String dsJndiName = "jdbc/dsfat22mtls";
-
-        //before attempting to get a connection, all 3 should still be in the pool
-        checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
-        int size = getPoolSize(dsJndiName);
-        if (size != 3)
-            throw new Exception("Expected pool to be 3 when testPurgePolicyFailingOnlyWithTLS was called, but it was " + size);
-
-        //now try to get a connection and ensure that the pool size is reduced by 1 after each attempt
-        try {
-            attemptBadConnectionAndStatement(dsfat22mtls);
-        } catch (SQLException x) {
-            System.out.println(System.currentTimeMillis() + ": expected bad connection 1");
-        }
-
-        checkTLSPoolSize(dsJndiName, 2, TLSConnectionType.free, false);
-
-        try {
-            attemptBadConnectionAndStatement(dsfat22mtls);
-        } catch (SQLException x) {
-            System.out.println(System.currentTimeMillis() + ": expected bad connection 2");
-        }
-
-        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
-
-        try {
-            attemptBadConnectionAndStatement(dsfat22mtls);
-        } catch (SQLException x) {
-            System.out.println(System.currentTimeMillis() + ": expected bad connection 3");
-        }
-
-        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
-    }
-
-    /**
-     * Test that purgePolicy=EntirePool correctly removes all connections once 1 is discovered to be bad
-     */
-    public void testPurgePolicyEntirePoolWithTLS() throws Throwable {
-        //create 3 connections then shut down the db so that they become bad
-        allocateConnectionsAndShutDownDB(dsfat22ntls);
-        // At this point there are 3 bad connections in the pool.
-    }
-
-    /**
-     * This function should be called right after testPurgePolicyFailingOnlyWithTLS
-     */
-    @ExpectedFFDC({ "javax.resource.ResourceException" })
-    public void checkPoolAfterTestPurgePolicyEntirePoolWithTLS() throws Exception {
-        String dsJndiName = "jdbc/dsfat22ntls";
-
-        //checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
-        int size = getPoolSize(dsJndiName);
-        if (size != 3)
-            throw new Exception("Expected pool to be 3 when testPurgePolicyFailingOnlyWithTLS was called, but it was " + size);
-
-        Thread.sleep(3000);
-        try {
-            System.out.println(System.currentTimeMillis() + ": about to attempt connection");
-            attemptBadConnectionAndStatement(dsfat22ntls);
-        } catch (SQLException x) {
-            System.out.println(System.currentTimeMillis() + ": expected bad connection 1");
-            x.printStackTrace();
-        }
-
-        System.out.println(getPoolContent(dsJndiName));
-        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
-//        size = getPoolSize(dsJndiName);
-//        if (size != 0)
-//            throw new Exception("Expected pool to be 0 when testPurgePolicyFailingOnlyWithTLS was called, but it was " + size);
-    }
-
-    //helper method to create 3 connections and then shut down the db
-    //to force the connections in the pool to become bad
-    private void allocateConnectionsAndShutDownDB(DataSource datasource) throws Exception {
-        ClassLoader loader;
-        String databaseName;
-        boolean testWasNotRun = false;
-        // Put 3 connections into the pool
-        Connection con1 = datasource.getConnection();
-        try {
-            // This test can only run against Derby Embedded
-            // because we take advantage of shutting down the Derby database
-            // in order to cause pooled connections to go bad.
-            if (con1.getMetaData().getDriverName().indexOf("Derby Embedded") < 0)
-                return;
-
-            // Find the databaseName from the URL.
-            String url = con1.getMetaData().getURL();
-            databaseName = url.substring("jdbc:derby:".length());
-
-            // Get the class loader used for the Derby driver
-            Clob clob = con1.createClob();
-            loader = clob.getClass().getClassLoader();
-            clob.free();
-
-            Connection con2 = datasource.getConnection();
-            try {
-                datasource.getConnection().close();
-                System.out.println(System.currentTimeMillis() + ": first connection closed");
-            } finally {
-                con2.close();
-                System.out.println(System.currentTimeMillis() + ": second connection closed");
-            }
-        } finally {
-            con1.close();
-            System.out.println(System.currentTimeMillis() + ": third connection closed");
-        }
-
-        long start = System.currentTimeMillis();
-
-        // shut down Derby
-        Class<?> EmbDS = Class.forName("org.apache.derby.jdbc.EmbeddedDataSource40", true, loader);
-        DataSource ds = (DataSource) EmbDS.newInstance();
-        EmbDS.getMethod("setDatabaseName", String.class).invoke(ds, databaseName);
-        EmbDS.getMethod("setShutdownDatabase", String.class).invoke(ds, "shutdown");
-        EmbDS.getMethod("setUser", String.class).invoke(ds, "dbuser1");
-        EmbDS.getMethod("setPassword", String.class).invoke(ds, "{xor}Oz0vKDtu");
-        try {
-            ds.getConnection().close();
-            throw new Exception("Failed to shut down Derby database: " + databaseName);
-        } catch (SQLException x) {
-            // expected for shutdown
-            System.out.println(System.currentTimeMillis() + ": Derby shutdown result: " + x.getMessage());
-        }
-
-        try {
-            // Wait 3 seconds (from close) for maxIdleTime to remove a connection
-            /*
-             * We are checking the time and logging the result to know how long its
-             * taken to shut down derby. If this shut down takes too long on a slow system,
-             * this test is invalid. We are just going to return. Normally derby shuts
-             * down very fast.
-             *
-             * I added the same change for the 7 second shut down.
-             */
-            long elapsedTime = System.currentTimeMillis() - start;
-            if (elapsedTime > 3000l) {
-                System.out.println("Can't run test becase it took longer than 3 seconds to shut down derby: " + elapsedTime + "ms");
-                /*
-                 * Just return since the rest of the test will result in an unpredictable result. This should
-                 * not occur during normal test runs. This timing issue should only occur
-                 * when our test systems are too slow for various reason.
-                 */
-                testWasNotRun = true;
-                return;
-            }
-            Thread.sleep(3000l - elapsedTime);
-        } catch (Throwable x) {
-            testWasNotRun = true;
-            throw x;
-        } finally {
-            if (testWasNotRun) {
-                // Ensure there are no bad connections left in the pool
-                for (int i = 1; i <= 3; i++) {
-                    try {
-                        datasource.getConnection().close();
-                        System.out.println("clean up connection " + i + " good");
-                    } catch (Throwable t) {
-                        System.out.println("clean up connection " + i + " bad");
-                    }
-                }
-            }
-        }
-        if (testWasNotRun) {
-            System.out.println("Derby did not shut down correctly, subsequent tests that use DataSource " + datasource.toString() + " will not succeed");
-        }
-        // At this point there are 3 bad connections in the pool.
-    }
-
-    //helper method to attempt to use a bad connection
-    //it is expected that the datasource passed in first had allocateConnectionsAndShutDownDB called on it
-    private void attemptBadConnectionAndStatement(DataSource datasource) throws Exception {
-        Connection conn = datasource.getConnection();
-        if (conn != null) {
-            System.out.println("Connection isValid=" + conn.isValid(30));
-            try {
-                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO cities VALUES (?, ?, ?)");
-                pstmt.setString(1, "Minneapolis - North Loop");
-                pstmt.setInt(2, 4291);
-                pstmt.setString(3, "Hennepin");
-                pstmt.executeUpdate();
-
-                throw new Exception("Insert #1 should have failed since the connection from the pool should be bad");
-            } finally {
-                conn.close();
-            }
-        } else {
-            System.out.println("getConnection() returned a null connection object");
-        }
-    }
-
+    
     @Test
     @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC })
     public void testAbortWithEntirePoolPurge() throws Exception {
@@ -2077,11 +1726,8 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     private ConnectionManagerMBean getConnectionManagerBean(String jndiName) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        //ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",*");
         ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",jndiName=" + jndiName + ",*");
         Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
-        for (ObjectInstance i : s)
-            System.out.println("  Found MBean: " + i.getObjectName());
         if (s.size() != 1) {
             System.out.println("ERROR: Found incorrect number of MBeans (" + s.size() + ")");
             for (ObjectInstance i : s)
