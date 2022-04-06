@@ -26,10 +26,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JDBC41UpgradeTest.class,
+                //JDBC41UpgradeTest.class,
                 JDBC41Test.class,
-                ErrorMappingTest.class,
-                ErrorMappingConfigUpdateTest.class
+//ErrorMappingTest.class,
+//ErrorMappingConfigUpdateTest.class
 })
 public class FATSuite {
     public static final String appName = "basicfat";

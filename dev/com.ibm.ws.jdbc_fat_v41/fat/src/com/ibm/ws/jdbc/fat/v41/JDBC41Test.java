@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -52,6 +53,8 @@ public class JDBC41Test extends FATServletClient {
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist
+                          "J2CA0045E", //expected from testMaxPoolSizeWithTLS
+                          "J2CA0021E", //expected from checkPoolAfterTestPurgePolicyFailingOnlyWithTLS
                           "J2CA0079E"); // expected by testMBeanPurgeAbort
     }
 
@@ -61,15 +64,114 @@ public class JDBC41Test extends FATServletClient {
      * Test ensures that the aborted connection is immediately destroyed
      * so that new getConnection() attempts do not grab aborted connection.
      */
+//    @Test
+//    public void testAbortedConnectionDestroyed() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyed");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbort");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testNumConnectionsPerThreadLocal() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testNumConnectionsPerThreadLocal");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterNumConnectionsPerThreadLocal");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testAgedTimeoutImmediateWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutImmediateWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutImmediateWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testAgedTimeoutDisabledWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutDisabledWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutDisabledWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testAgedTimeoutWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testAgedTimeout15sWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeout15sWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeout15sWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testReapDisabledWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testReapDisabledWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestReapDisabledWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testReapPendingWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testReapPendingWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestReapPendingWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testMinPoolSizeMettWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeMettWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeMettWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testMinPoolSizeNotMettWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeNotMettWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeNotMettWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    public void testMaxIdleTimeDisabledtWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMaxIdleTimeDisabledtWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMaxIdleTimeDisabledtWithTLS");
+//    }
+//
+//    /**
+//     */
+//    @Test
+//    @ExpectedFFDC({ "javax.resource.ResourceException" })
+//    public void testPurgePolicyFailingOnlyWithTLS() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testPurgePolicyFailingOnlyWithTLS");
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestPurgePolicyFailingOnlyWithTLS");
+//    }
+
+    /**
+     */
     @Test
-    public void testAbortedConnectionDestroyed() throws Exception {
-        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyed");
-        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbort");
+    @ExpectedFFDC({ "javax.resource.ResourceException" })
+    public void testPurgePolicyEntirePoolWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testPurgePolicyEntirePoolWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestPurgePolicyEntirePoolWithTLS");
     }
 
-    @Test
-    public void testJDBCVersionLimiting() throws Exception {
-        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testJDBCVersionLimiting&expectedVersion=4.1");
-    }
+//
+//    @Test
+//    public void testJDBCVersionLimiting() throws Exception {
+//        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testJDBCVersionLimiting&expectedVersion=4.1");
+//    }
 
 }
