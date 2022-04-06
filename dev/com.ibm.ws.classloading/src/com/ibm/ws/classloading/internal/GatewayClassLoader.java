@@ -47,7 +47,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         }
         @Trivial
         static Class<?> loadClass(String className, BundleLoader loader) {
-            return loader.findClassNoParentNoException(className);
+            return loader.findClassNoException(className);
         }
     }
 

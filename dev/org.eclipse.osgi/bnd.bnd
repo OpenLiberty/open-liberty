@@ -12,8 +12,11 @@
 -nouses: true
 -nodefaultversion: true
 
+instrument.disabled: true
+
 -includeresource: \
-   @${repo;org.eclipse.platform:org.eclipse.osgi;3.17.200}
+   @${repo;org.eclipse.platform:org.eclipse.osgi;3.17.200}, \
+   org/eclipse=${bin}/org/eclipse
 
 -buildpath: \
 	org.eclipse.platform:org.eclipse.osgi;version=3.17.200
