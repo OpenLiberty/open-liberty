@@ -741,7 +741,7 @@ public class MemorySession implements ISession {
      * If HideSessionValues is set, we will only show the attribute names, otherwise we will show the key/value pairs
      */
     @Override
-    public synchronized String toString() {
+    public String toString() {
         StringBuffer sb = new StringBuffer();
         //sb.append("# MemorySession # \n { ").
         sb.append("# ").append(this.getClass().getName()).append(" # \n { ")
