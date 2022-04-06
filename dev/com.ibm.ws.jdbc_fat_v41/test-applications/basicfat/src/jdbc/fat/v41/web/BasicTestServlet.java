@@ -106,10 +106,10 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/dsfat22btls")
     DataSource dsfat22btls;
-    
+
     @Resource(name = "jdbc/dsfat22etls")
     DataSource dsfat22etls;
-    
+
     @Resource(name = "jdbc/dsfat22gtls")
     DataSource dsfat22gtls;
 
@@ -118,10 +118,10 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/dsfat22itls")
     DataSource dsfat22itls;
-    
+
     @Resource(name = "jdbc/dsfat22jtls")
     DataSource dsfat22jtls;
-    
+
     @Resource(name = "jdbc/dsfat22ltls")
     DataSource dsfat22ltls;
 
@@ -1058,7 +1058,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
     }
-    
+
     /**
      * Test if reapTime=-1 causes connections to be maintained with thread local storage.
      */
@@ -1085,7 +1085,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
     }
-    
+
     /**
      * Connection request should fail when trying to exceed the maxConnectionsPerThread with thread local storage.
      */
@@ -1106,7 +1106,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
             con1.close();
         }
     }
-    
+
     /**
      * Connection request should succeed when trying with maxConnectionsPerThread=0 with thread local storage.
      */
@@ -1176,7 +1176,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 2, TLSConnectionType.free, false);
     }
-    
+
     /**
      * Ensure connections are not removed when maxIdleTime is disabled with thread local storage.
      */
@@ -1211,7 +1211,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
         checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
     }
-    
+
     @Test
     @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC })
     public void testAbortWithEntirePoolPurge() throws Exception {
