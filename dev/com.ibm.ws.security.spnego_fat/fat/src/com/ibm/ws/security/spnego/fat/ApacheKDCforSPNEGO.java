@@ -123,10 +123,8 @@ public class ApacheKDCforSPNEGO extends ApacheDSandKDC {
         String methodName = "createSpnegoSPNEntry";
         Log.info(c, methodName, "Creating KDC user entries");
 
-        session = kdcServer.getDirectoryService().getAdminSession();
-
         // spnego HTTP service
-        Entry entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
+        Entry entry = new DefaultEntry(getDirectoryService().getSchemaManager());
         entry.setDn(spnegoUserDN);
         entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
         entry.add("cn", "HTTP");
@@ -135,7 +133,7 @@ public class ApacheKDCforSPNEGO extends ApacheDSandKDC {
         entry.add("userPassword", SPN_PASSWORD);
         entry.add("krb5PrincipalName", SPN);
         entry.add("krb5KeyVersionNumber", "0");
-        session.add(entry);
+        getDirectoryService().getAdminSession().add(entry);
 
         Log.info(c, methodName, "Created " + entry.getDn());
     }

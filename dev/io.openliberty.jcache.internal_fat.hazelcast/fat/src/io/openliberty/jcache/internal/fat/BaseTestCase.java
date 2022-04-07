@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
@@ -408,5 +409,35 @@ public abstract class BaseTestCase {
     protected static void waitForCachingProvider(LibertyServer server, String cacheName) {
         assertNotNull("Expected caching provider would be loaded for " + cacheName + ".",
                       server.waitForStringInLog("CWLJC0003I:.*" + cacheName + ".*" + TestPluginHelper.getTestPlugin().getCachingProviderName()));
+    }
+
+    /**
+     * This method will the reset the log and trace marks for log and trace searches, update the
+     * configuration and then wait for the server to re-initialize.
+     *
+     * @param server The server to update.
+     * @param config The configuration to use.
+     * @throws Exception If there was an issue updating the server configuration.
+     */
+    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
+        updateConfigDynamically(server, config, false);
+    }
+
+    /**
+     * This method will the reset the log and trace marks for log and trace searches, update the
+     * configuration and then wait for the server to re-initialize. Optionally it will then wait for the application to start.
+     *
+     * @param server            The server to update.
+     * @param config            The configuration to use.
+     * @param waitForAppToStart Wait for the application to start.
+     * @throws Exception If there was an issue updating the server configuration.
+     */
+    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
+        resetMarksInLogs(server);
+        server.updateServerConfiguration(config);
+        server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
+        if (waitForAppToStart) {
+            server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
+        }
     }
 }

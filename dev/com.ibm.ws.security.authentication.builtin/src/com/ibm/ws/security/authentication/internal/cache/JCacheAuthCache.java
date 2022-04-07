@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.cache.Cache;
 
 import com.ibm.websphere.ras.Tr;
@@ -36,6 +39,17 @@ public class JCacheAuthCache implements AuthCache {
     private CacheService cacheService = null;
 
     private AuthCache inMemoryCache = null;
+
+    private static final Set<String> NOT_SERIALIZABLE_CREDS = new HashSet<String>();
+
+    static {
+        /*
+         * Configure the set of common private credentials that we know are not Serializable.
+         */
+        NOT_SERIALIZABLE_CREDS.add("sun.security.jgss.GSSCredentialImpl"); // SPNEGO
+        NOT_SERIALIZABLE_CREDS.add("com.ibm.security.jgss.GSSCredentialImpl"); // SPNEGO
+        NOT_SERIALIZABLE_CREDS.add("com.sun.security.jgss.ExtendedGSSCredentialImpl"); // SPNEGO
+    }
 
     /**
      * Instantiate a new {@link JCacheAuthCache} instance.
@@ -128,12 +142,15 @@ public class JCacheAuthCache implements AuthCache {
          * Skip trying to serialize if we know we don't support it.
          */
         boolean forceInMemory = false;
-//        for (Object cred : value.getSubject().getPrivateCredentials()) {
-//            if ("ClassNameHere".equals(cred.getClass().getSimpleName())) {
-//                forceInMemory = true;
-//                break;
-//            }
-//        }
+        for (Object cred : value.getSubject().getPrivateCredentials()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Checking private credential: " + cred.getClass());
+            }
+            if (NOT_SERIALIZABLE_CREDS.contains(cred.getClass().getName())) {
+                forceInMemory = true;
+                break;
+            }
+        }
 
         if (!forceInMemory) {
             try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,9 @@ public class Spnego extends ConfigElement {
     @XmlAttribute
     public String ntlmTokenReceivedErrorPageURL;
 
+    @XmlAttribute
+    public Boolean includeClientGSSCredentialInSubject;
+
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(getClass().getSimpleName()).append('{');
@@ -58,6 +61,7 @@ public class Spnego extends ConfigElement {
         buf.append("spnegoAuthenticationErrorPageURL=").append(spnegoAuthenticationErrorPageURL).append(",\n");
         buf.append("spnegoNotSupportedErrorPageURL=").append(spnegoNotSupportedErrorPageURL).append(",\n");
         buf.append("ntlmTokenReceivedErrorPageURL=").append(ntlmTokenReceivedErrorPageURL).append(",\n");
+        buf.append("includeClientGSSCredentialInSubject=").append(includeClientGSSCredentialInSubject).append(",\n");
         buf.append('}');
         return buf.toString();
     }
