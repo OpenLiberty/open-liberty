@@ -24,6 +24,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class LeaseTimeoutManager {
     private static final TraceComponent tc = Tr.register(
@@ -38,13 +39,12 @@ public class LeaseTimeoutManager {
     public static void setTimeouts(SharedServerLeaseLog leaseLog, String recoveryIdentity, String recoveryGroup, RecoveryAgent recoveryAgent, RecoveryDirector recoveryDirector,
                                    int leaseLength, int leaseCheckInterval) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeouts",
-                     new Object[] { leaseLog, recoveryIdentity, recoveryGroup, recoveryAgent, recoveryDirector, leaseLength, leaseCheckInterval });
+            Tr.entry(tc, "setTimeouts", leaseLog, recoveryIdentity, recoveryGroup, recoveryAgent, recoveryDirector, leaseLength, leaseCheckInterval);
 
         _recoveryIdentity = recoveryIdentity;
         _recoveryGroup = recoveryGroup;
 
-        _renewer = new LeaseRenewer(leaseLength, leaseLog, recoveryAgent);
+        _renewer = new LeaseRenewer(leaseLength, leaseLog);
         _checker = new LeaseChecker(leaseCheckInterval, recoveryAgent, recoveryDirector);
 
         if (tc.isEntryEnabled())
@@ -53,21 +53,17 @@ public class LeaseTimeoutManager {
 
     private static class LeaseRenewer implements AlarmListener {
 
-        private final RecoveryAgent _recoveryAgent;
         private final SharedServerLeaseLog _leaseLog;
         private Alarm _alarm;
 
-        private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog, RecoveryAgent recoveryAgent) {
-            _recoveryAgent = recoveryAgent;
+        private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog) {
             _leaseLog = leaseLog;
 
             // Renew lease
-            boolean leaseRenewed = renewLease();
-
             // Disable lease checking if we failed to renew our own lease;
-            recoveryAgent.setCheckingLeases(leaseRenewed);
-
-            schedule(delay);
+            if (renewLease()) {
+                schedule(delay);
+            }
         }
 
         /*
@@ -78,23 +74,16 @@ public class LeaseTimeoutManager {
         @Override
         public void alarm(Object delay) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "LeaseRenewal",
-                         new Object[] { _recoveryIdentity, _recoveryGroup });
+                Tr.debug(tc, "LeaseRenewal", _recoveryIdentity, _recoveryGroup);
 
-            if (!_recoveryAgent.isServerStopping()) {
-                boolean leaseRenewed = renewLease();
-
-                // Disable lease checking if we failed to renew our own lease;
-                _recoveryAgent.setCheckingLeases(leaseRenewed);
-            }
-
-            if (!_recoveryAgent.isServerStopping())
+            if (!FrameworkState.isStopping() && renewLease()) {
                 schedule((int) delay);
+            }
         }
 
         void schedule(int delay) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Scheduling lease renewal in " + delay + " seconds");
+                Tr.debug(tc, "Scheduling lease renewal in {0} seconds", delay);
             _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
         }
 
@@ -157,10 +146,9 @@ public class LeaseTimeoutManager {
         @Override
         public void alarm(Object delay) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "LeaseCheck",
-                         new Object[] { _recoveryGroup });
+                Tr.debug(tc, "LeaseCheck", _recoveryGroup);
 
-            if (_recoveryAgent != null && _recoveryAgent.checkingLeases() && !_recoveryAgent.isServerStopping()) {
+            if (!FrameworkState.isStopping() && _recoveryAgent != null && !_recoveryAgent.isServerStopping()) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
                 if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
                     try {
@@ -170,10 +158,9 @@ public class LeaseTimeoutManager {
                             Tr.debug(tc, "Swallow exception " + e);
                     }
                 }
-            }
 
-            if (!_recoveryAgent.isServerStopping())
                 schedule((int) delay);
+            }
         }
 
         void schedule(int delay) {
