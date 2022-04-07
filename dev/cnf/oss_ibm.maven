@@ -70,6 +70,7 @@ com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws:nekohtml:1.9.18
 io.openliberty.jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.0.20220120
 io.openliberty.jakarta.json.bind:jakarta.json.bind-api:3.0.0
+io.openliberty.jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.0.20220124
 io.openliberty.org.eclipse:yasson:3.0.0-RC1
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
