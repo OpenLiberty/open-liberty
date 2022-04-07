@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonBuilderFactory;
@@ -28,6 +27,8 @@ import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.jwt.Claims;
+import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
@@ -40,21 +41,37 @@ public class ClaimsUtils {
 
     private static final JsonBuilderFactory builderFactory = Json.createBuilderFactory(null);
 
-    public ClaimsUtils() {
+    /**
+     * Uses the claims from the JwtToken to avoid having to reparse the jwt json string.
+     */
+    public static JwtClaims getJwtClaims(JwtToken jwtToken) {
+        String methodName = "getJwtClaims";
+        if (tc.isDebugEnabled()) {
+            Tr.entry(tc, methodName, jwtToken);
+        }
+        Claims claims = jwtToken.getClaims();
+        JwtClaims jwtclaims = createJwtClaims(claims, jwtToken.compact());
+        if (tc.isDebugEnabled()) {
+            Tr.exit(tc, methodName, jwtclaims);
+        }
+        return jwtclaims;
     }
 
     /**
      * Parses the provided JWT and returns the claims found within its payload.
      */
-    public JwtClaims getJwtClaims(String jwt) throws JoseException {
+    public static JwtClaims getJwtClaims(String jwt) throws JoseException {
         String methodName = "getJwtClaims";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, jwt);
         }
-        JwtClaims jwtclaims = new JwtClaims();
+        JwtClaims jwtclaims;
         String payload = getJwtPayload(jwt);
         if (payload != null) {
-            jwtclaims = getClaimsFromJwtPayload(jwt, payload);
+            Map<String, Object> payloadClaims = JsonUtil.parseJson(payload);
+            jwtclaims = createJwtClaims(payloadClaims, jwt);
+        } else {
+            jwtclaims = new JwtClaims();
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, jwtclaims);
@@ -62,7 +79,7 @@ public class ClaimsUtils {
         return jwtclaims;
     }
 
-    String getJwtPayload(String jwt) {
+    static String getJwtPayload(String jwt) {
         String methodName = "getJwtPayload";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, jwt);
@@ -80,12 +97,22 @@ public class ClaimsUtils {
         return payload;
     }
 
-    JwtClaims getClaimsFromJwtPayload(String jwt, String payload) throws JoseException {
+    static JwtClaims createJwtClaims(Map<String, Object> claimsMap, String jwt) {
         String methodName = "getClaimsFromJwtPayload";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jwt, payload);
+            Tr.entry(tc, methodName, jwt);
         }
-        JwtClaims jwtclaims = parsePayloadAndCreateClaims(payload);
+        JwtClaims jwtclaims = new JwtClaims();
+        for (Entry<String, Object> entry : claimsMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Key : " + key + ", Value: " + value);
+            }
+            if (key != null && value != null) {
+                jwtclaims.setClaim(key, value);
+            }
+        }
         jwtclaims.setStringClaim(org.eclipse.microprofile.jwt.Claims.raw_token.name(), jwt);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Key : " + "raw_token" + ", Value: " + "raw_token");
@@ -97,38 +124,10 @@ public class ClaimsUtils {
         return jwtclaims;
     }
 
-    JwtClaims parsePayloadAndCreateClaims(String payload) throws JoseException {
-        String methodName = "parsePayloadAndCreateClaims";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, payload);
-        }
-        JwtClaims jwtClaims = new JwtClaims();
-        Map<String, Object> payloadClaims = JsonUtil.parseJson(payload);
-        Set<Entry<String, Object>> entries = payloadClaims.entrySet();
-        for (Entry<String, Object> entry : entries) {
-            addEntryToClaims(entry, jwtClaims);
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, jwtClaims);
-        }
-        return jwtClaims;
-    }
-
-    void addEntryToClaims(Entry<String, Object> entry, JwtClaims jwtclaims) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Key : " + key + ", Value: " + value);
-        }
-        if (key != null && value != null) {
-            jwtclaims.setClaim(key, value);
-        }
-    }
-
     /**
      * Convert the types jose4j uses for address, sub_jwk, and jwk
      */
-    private void convertJoseTypes(JwtClaims claimsSet) {
+    private static void convertJoseTypes(JwtClaims claimsSet) {
         //        if (claimsSet.hasClaim(Claims.address.name())) {
         //            replaceMap(Claims.address.name());
         //        }
@@ -158,7 +157,7 @@ public class ClaimsUtils {
     /**
      * Replace the jose4j Map<String,Object> with a JsonObject
      */
-    private void replaceMapWithJsonObject(String claimName, JwtClaims claimsSet) {
+    private static void replaceMapWithJsonObject(String claimName, JwtClaims claimsSet) {
         try {
             Map<String, Object> map = claimsSet.getClaimValue(claimName, Map.class);
             JsonObjectBuilder builder = builderFactory.createObjectBuilder();
@@ -178,7 +177,7 @@ public class ClaimsUtils {
      * Converts the value for the specified claim into a String list.
      */
     @FFDCIgnore({ MalformedClaimException.class })
-    private void convertToList(String claimName, JwtClaims claimsSet) {
+    private static void convertToList(String claimName, JwtClaims claimsSet) {
         List<String> list = null;
         try {
             list = claimsSet.getStringListClaimValue(claimName);

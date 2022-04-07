@@ -27,7 +27,6 @@ public class TokenImpl implements JwtToken {
 
     public TokenImpl(BuilderImpl jwtBuilder, JwtConfig config) throws JwtException {
         // claims = jwtBuilder.getClaims();
-        claims = new ClaimsImpl();
         try {
             createToken(jwtBuilder, config);
         } catch (Exception e) {
