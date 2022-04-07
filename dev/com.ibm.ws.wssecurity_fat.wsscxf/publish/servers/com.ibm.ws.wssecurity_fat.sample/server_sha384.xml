@@ -12,7 +12,7 @@
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
-		<feature>usr:wsseccbh-1.0</feature>
+		<feature>usr:wsseccbh-2.0</feature>
 		<feature>servlet-3.1</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.2</feature>
@@ -87,10 +87,12 @@
 	<wsSecurityClient
 		id="default"
 		ws-security.encryption.username="x509ServerSecondCert"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.password="security"
 		ws-security.username="user1"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->
+
 		<signatureProperties
 			signatureAlgorithm="sha384"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -106,8 +108,10 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->
+
 		<signatureProperties
 			signatureAlgorithm="sha384"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -123,6 +127,6 @@
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />
-     
+    
 </server>
 

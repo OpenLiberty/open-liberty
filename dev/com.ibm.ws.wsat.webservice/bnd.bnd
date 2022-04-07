@@ -24,7 +24,7 @@ Import-Package: \
  !com.ibm.ws.wsat.interceptor, \
  javax.xml.ws.*;version="[2.2,3)", \
  javax.xml.bind.*;version="[2.2,3)", \
- org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ org.apache.cxf.*;version="[2.6.2,4)", \
  com.ibm.ws.wsat.webservice.client.soap, \
  com.ibm.ws.wsat.webservice.client.wscoor, \
  com.ibm.ws.wsat.service, \

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName = io.openliberty.samlWeb2.0.internal.opensaml-3.4
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 -bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0, \
@@ -13,5 +14,5 @@ singleton=true
   com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5, \
   com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5, \
   com.ibm.ws.security.saml.websso.2.0
-kind=noship
-edition=full
+kind=ga
+edition=base

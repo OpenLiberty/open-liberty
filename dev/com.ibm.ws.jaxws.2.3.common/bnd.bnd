@@ -44,8 +44,8 @@ Export-Package: \
     com.ibm.wsspi.jaxws;version=${exportVer}
 
 Import-Package: \
-   javax.xml.bind.*;version="[2.3,3)", \
-   javax.xml.ws.*;version="[2.3,3)", \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    !com.sun.tools.ws.wscompile.*;version=!, \
    !org.apache.tools.ant;version=!, \
