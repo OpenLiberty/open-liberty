@@ -33,12 +33,12 @@ import componenttest.topology.utils.HttpUtils;
  * in class SwAOutInterceptor
  */
 @RunWith(FATRunner.class)
-public class PropertySettingTest {
+public class LibertyCXFPropertiesTest {
 
     @Server("PropertyTestServer")
     public static LibertyServer server;
 
-    private final Class<?> c = PropertySettingTest.class;
+    private final Class<?> c = LibertyCXFPropertiesTest.class;
     private static final int CONN_TIMEOUT = 10;
 
     @BeforeClass

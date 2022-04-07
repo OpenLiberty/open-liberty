@@ -32,7 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class PropertySettingTest {
+public class LibertyCXFPropertiesTest {
 
 	// Server Information
 	public static String server1Port = "8091";

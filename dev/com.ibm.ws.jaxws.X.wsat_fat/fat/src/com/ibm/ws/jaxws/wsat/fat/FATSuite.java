@@ -21,7 +21,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ServiceIOTest.class, WSATAssertionTest.class, PropertySettingTest.class,
+@SuiteClasses({ ServiceIOTest.class, WSATAssertionTest.class, LibertyCXFPropertiesTest.class,
 		// For special policy attachment function
 		// Defect 199798
 		PolicyAttachmentTest.class })

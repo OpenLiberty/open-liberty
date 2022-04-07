@@ -31,7 +31,7 @@ import componenttest.rules.repeater.RepeatTests;
                 HttpConduitPropertiesTest.class,
                 LoggingTest.class,
                 MTOMTest.class,
-                PropertySettingTest.class,
+                LibertyCXFPropertiesTest.class,
                 PureCXFTest.class,
                 ServerSideStubClientTest.class,
                 VirtualHostTest.class,
