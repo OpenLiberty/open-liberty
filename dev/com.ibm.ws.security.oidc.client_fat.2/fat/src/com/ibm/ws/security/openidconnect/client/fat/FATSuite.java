@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTests;
@@ -29,7 +31,6 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationRemoteVal
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -56,5 +57,7 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new JakartaEE9Action().fullFATOnly());
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
+
 }
