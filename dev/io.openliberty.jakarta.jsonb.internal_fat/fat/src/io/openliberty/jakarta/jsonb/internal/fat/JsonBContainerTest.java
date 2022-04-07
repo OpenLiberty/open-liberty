@@ -29,15 +29,14 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import test.jsonb.web.JsonBTestServlet;
+import test.jsonb.container.web.JsonBContainerTestServlet;
 
 @MinimumJavaLevel(javaLevel = 11)
 @RunWith(FATRunner.class)
 public class JsonBContainerTest extends FATServletClient {
 
-    // TODO write tests specifically for JSON-B container instead of reusing the jsonb-3.0 tests
     @Server("io.openliberty.jakarta.jsonb.internal.fat.container")
-    @TestServlet(servlet = JsonBTestServlet.class, contextRoot = "jsonbcontainertestapp")
+    @TestServlet(servlet = JsonBContainerTestServlet.class, contextRoot = "jsonbcontainertestapp")
     public static LibertyServer server;
 
     @BeforeClass
@@ -52,7 +51,7 @@ public class JsonBContainerTest extends FATServletClient {
 
         ShrinkHelper.exportToServer(server, "providers", fake_json_b);
 
-        ShrinkHelper.defaultApp(server, "jsonbcontainertestapp", "test.jsonb.web");
+        ShrinkHelper.defaultApp(server, "jsonbcontainertestapp", "test.jsonb.container.web");
         server.startServer();
     }
 

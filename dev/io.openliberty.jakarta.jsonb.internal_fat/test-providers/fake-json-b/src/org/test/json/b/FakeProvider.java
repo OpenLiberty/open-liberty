@@ -11,7 +11,9 @@
 package org.test.json.b;
 
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 import jakarta.json.bind.JsonbException;
+import jakarta.json.bind.config.PropertyNamingStrategy;
 import jakarta.json.bind.spi.JsonbProvider;
 
 /**
@@ -25,7 +27,12 @@ public class FakeProvider extends JsonbProvider {
                             .getConstructor()
                             .newInstance();
 
-            JsonbBuilder builder = provider.create();
+            // Change some defaults so that tests can know this is the fake provider:
+            JsonbConfig config = new JsonbConfig()
+                            .setProperty(JsonbConfig.CREATOR_PARAMETERS_REQUIRED, true)
+                            .setProperty(JsonbConfig.PROPERTY_NAMING_STRATEGY, PropertyNamingStrategy.LOWER_CASE_WITH_DASHES);
+
+            JsonbBuilder builder = provider.create().withConfig(config);
 
             return builder;
         } catch (Exception x) {
