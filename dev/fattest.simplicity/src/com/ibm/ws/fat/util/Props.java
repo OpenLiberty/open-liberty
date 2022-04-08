@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.ibm.websphere.simplicity.Topology;
 
 /**
  * <p>
@@ -168,7 +166,7 @@ public class Props {
 
     /**
      * Configures the global properties instance. Subclasses should call this method before any properties are read.
-     * 
+     *
      * @param props the global properties instance to use
      */
     public static void setInstance(Props props) {
@@ -226,37 +224,37 @@ public class Props {
 
     /**
      * Retrieves a list of useful system properties that describe a JRE
-     * 
+     *
      * @return a list of interesting Java property keys
      */
     protected String[] getJavaPropertyKeys() {
         return new String[] {
-                             "os.name",
-                             "os.version",
-                             "os.arch",
-                             "user.name",
-                             "user.home",
-                             "user.dir",
-                             "java.home",
-                             "java.version",
-                             "java.fullversion",
-                             "java.jcl.version",
-                             "java.vendor",
-                             "java.runtime.name",
-                             "java.runtime.version",
-                             "java.vm.name",
-                             "java.vm.home",
-                             "java.vm.version",
-                             "java.vm.vendor",
-                             "java.class.version",
-                             "java.compiler",
-                             "java.io.tmpdir" };
+                              "os.name",
+                              "os.version",
+                              "os.arch",
+                              "user.name",
+                              "user.home",
+                              "user.dir",
+                              "java.home",
+                              "java.version",
+                              "java.fullversion",
+                              "java.jcl.version",
+                              "java.vendor",
+                              "java.runtime.name",
+                              "java.runtime.version",
+                              "java.vm.name",
+                              "java.vm.home",
+                              "java.vm.version",
+                              "java.vm.vendor",
+                              "java.class.version",
+                              "java.compiler",
+                              "java.io.tmpdir" };
     }
 
     /**
      * Collects information about the current version of Java and other
      * dependencies.
-     * 
+     *
      * @return a map of key/value pairs that describe the current environment
      */
     public PropertyMap collectVersionInformation() {
@@ -264,7 +262,7 @@ public class Props {
         for (String prop : this.getJavaPropertyKeys()) {
             properties.put(prop, System.getProperty(prop));
         }
-        properties.put("simplicity.version", Topology.SIMPLICITY_VERSION);
+        properties.put("simplicity.version", "2.0.0");
         //        properties.put("jiiws.version", SessionManager.getVersion());
         try {
             properties.put("host.address", InetAddress.getLocalHost().getHostAddress());
@@ -278,10 +276,10 @@ public class Props {
 
     /**
      * Determines whether or not a property is set.
-     * 
-     * @param prop
-     *            The key of the property you want to check for the existence of
-     * @return true if the input property is set
+     *
+     * @param  prop
+     *                  The key of the property you want to check for the existence of
+     * @return      true if the input property is set
      */
     public boolean isSet(String prop) {
         if (prop == null) {
@@ -294,11 +292,11 @@ public class Props {
     /**
      * Determines whether a property is set to a String composed of white-space
      * characters.
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return true if the input property is set, but either contains spaces or
-     *         is the empty String
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      true if the input property is set, but either contains spaces or
+     *              is the empty String
      */
     public boolean isSetToBlank(String prop) {
         if (prop == null) {
@@ -314,10 +312,10 @@ public class Props {
     /**
      * Determines whether a property is set to a String composed of
      * non-white-space characters.
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return true if the input property is set and is not blank
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      true if the input property is set and is not blank
      */
     public boolean isSetToText(String prop) {
         if (prop == null) {
@@ -332,10 +330,10 @@ public class Props {
 
     /**
      * Determine the value of a property as a String
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return The value of the input property
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      The value of the input property
      */
     public String getProperty(String prop) {
         if (prop == null) {
@@ -346,11 +344,11 @@ public class Props {
 
     /**
      * Determine the value of a property as an int.
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return The value of the input property, or zero if the value of the
-     *         property could not be parsed
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      The value of the input property, or zero if the value of the
+     *              property could not be parsed
      */
     public int getIntProperty(String prop) {
         String value = getProperty(prop);
@@ -372,10 +370,10 @@ public class Props {
      * <br>
      * Example: <tt>Boolean.valueOf("True")</tt> returns <tt>true</tt>.<br>
      * Example: <tt>Boolean.valueOf("yes")</tt> returns <tt>false</tt>.
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return The value of the input property as a boolean
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      The value of the input property as a boolean
      */
     public boolean getBooleanProperty(String prop) {
         return Boolean.valueOf(getProperty(prop)).booleanValue();
@@ -386,10 +384,10 @@ public class Props {
      * <code>File</code> instance by converting the value specified by the
      * property key into an abstract pathname. If the given string is the empty
      * string, then the result is the empty abstract pathname.
-     * 
-     * @param prop
-     *            The key of the property you want to check
-     * @return The value of the input property as a File
+     *
+     * @param  prop
+     *                  The key of the property you want to check
+     * @return      The value of the input property as a File
      */
     public File getFileProperty(String prop) {
         return new File(getProperty(prop));
@@ -398,11 +396,11 @@ public class Props {
     /**
      * Sets a property if the input key and value are not null. If either
      * parameter is null, no property is set.
-     * 
+     *
      * @param prop
-     *            The key of the property you want to set
+     *                  The key of the property you want to set
      * @param value
-     *            The value of the property you want to set
+     *                  The value of the property you want to set
      */
     public void setProperty(String prop, String value) {
         if (prop != null && value != null) {
@@ -413,11 +411,11 @@ public class Props {
     /**
      * Sets an int property if the input key is not null. If the key is null, no
      * property is set.
-     * 
+     *
      * @param prop
-     *            The key of the property you want to set
+     *                  The key of the property you want to set
      * @param value
-     *            The value of the property you want to set
+     *                  The value of the property you want to set
      */
     public void setIntProperty(String prop, int value) {
         setProperty(prop, new Integer(value).toString());
@@ -426,11 +424,11 @@ public class Props {
     /**
      * Sets a boolean property if the input key is not null. If the key is null,
      * no property is set.
-     * 
+     *
      * @param prop
-     *            The key of the property you want to set
+     *                  The key of the property you want to set
      * @param value
-     *            The value of the property you want to set
+     *                  The value of the property you want to set
      */
     public void setBooleanProperty(String prop, boolean value) {
         setProperty(prop, new Boolean(value).toString());
@@ -439,11 +437,11 @@ public class Props {
     /**
      * Sets a File property if the input key and value are not null. If either
      * parameter is null, no property is set.
-     * 
+     *
      * @param prop
-     *            The key of the property you want to set
+     *                 The key of the property you want to set
      * @param file
-     *            The value of the property you want to set
+     *                 The value of the property you want to set
      */
     public void setFileProperty(String prop, File file) {
         if (file != null) {

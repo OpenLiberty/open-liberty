@@ -21,8 +21,6 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.utils.FATServletClient;
-
 /**
  * This class can be used as a @Rule to process a @OnlyIfDataSourceProperties annotation
  * specified on one or more @Test.

@@ -37,5 +37,4 @@ tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, persistence-3.0,
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.apache.commons.io;version=latest,\
-	com.ibm.ws.componenttest:provider.api;version=1.0.0,\
 	org.apache.derby:derby;version=10.11.1.1
