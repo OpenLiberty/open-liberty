@@ -13,12 +13,14 @@ package io.openliberty.jakarta.jsonb.tck;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.BeforeClass;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -47,10 +49,19 @@ public class JsonbTckLauncher {
     @BeforeClass
     public static void setUp() throws Exception {
         int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
-        //To work around the issue described in issue:
-        //https://github.com/eclipse-ee4j/jsonb-api/issues/272
-        if(javaSpecVersion >= 13) {
+        // To work around the issue described in issue:
+        // https://github.com/eclipse-ee4j/jsonb-api/issues/272
+        if (javaSpecVersion >= 13) {
             additionalProps.put("java.locale.providers", "COMPAT");
+        }
+
+        // Skip signature testing on Windows and Semeru JDK.
+        // So far as I can tell the signature test plugin is not supported on this configuration
+        //Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
+        if (System.getProperty("os.name").contains("Windows") &&
+            System.getProperty("java.runtime.name").contains("Semeru")) {
+            Log.info(JsonbTckLauncher.class, "setUp", "Skipping JSONB Signature Test on Windows and Semeru JDK");
+            additionalProps.put("exclude.tests", "ee.jakarta.tck.json.bind.signaturetest.jsonb.JSONBSigTest.java");
         }
     }
 
@@ -60,6 +71,7 @@ public class JsonbTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonbTCK() throws Exception {
+
         Map<String, String> resultInfo = MvnUtils.getResultInfo(DONOTSTART);
 
         /**
