@@ -40,4 +40,4 @@ Private-Package:\
 -dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
 
 -buildpath: \
-  com.ibm.ws.jaxrs.2.x.concurrent
+  com.ibm.ws.jaxrs.2.0.concurrent
