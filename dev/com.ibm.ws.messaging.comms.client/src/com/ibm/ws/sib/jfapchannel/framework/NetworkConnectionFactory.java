@@ -41,9 +41,16 @@ public interface NetworkConnectionFactory
      */
     NetworkConnection createConnection() throws FrameworkException;
 
+//    /**
+//     * 
+//     * @return an VirtualConnectionFactory
+//     */
+//    VirtualConnectionFactory getOutboundVirtualConFactory();
+    
     /**
-     * 
-     * @return an VirtualConnectionFactory
+     * Destroys the connection object stored
+     * @return if connection was successfully destroyed
      */
-    VirtualConnectionFactory getOutboundVirtualConFactory();
+    void destroy() throws FrameworkException;
+    
 }

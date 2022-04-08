@@ -19,6 +19,8 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.OutboundVirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+import com.ibm.wsspi.channelfw.exception.ChainException;
+import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.ChannelFrameworkException;
 
 /**
@@ -136,9 +138,19 @@ public class CFWNetworkConnectionFactory implements NetworkConnectionFactory
  * 
  * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory#getOutboundVirtualConFactory()
  */
+//    @Override
+//    public VirtualConnectionFactory getOutboundVirtualConFactory(){
+//        return vcFactory;
+//    }
+    
     @Override
-    public VirtualConnectionFactory getOutboundVirtualConFactory() {
-        return vcFactory;
+    public void destroy() throws FrameworkException{
+    	try {
+            this.vcFactory.destroy();
+    	} catch(ChannelException | ChainException e) {
+    		throw new FrameworkException(e);
+    	}
     }
+
 
 }

@@ -11,6 +11,7 @@
 package com.ibm.ws.sib.jfapchannel.richclient.impl;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLSession;
 
@@ -23,6 +24,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.tcpchannel.SSLConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+import io.netty.channel.Channel;
 
 /**
  * Implementation of conversation meta data interface.
@@ -38,7 +40,8 @@ public class ConversationMetaDataImpl implements ConversationMetaData
    private ConnectionLink baseLink;                                             // F206161.5
    
    // Romil liberty change make this method public so that server pacakge can access it
-   public ConversationMetaDataImpl(ChainData chainData, ConnectionLink baseLink)            // F206161.5
+//   public ConversationMetaDataImpl(ChainData chainData, ConnectionLink baseLink, Channel channel)            // F206161.5
+   public ConversationMetaDataImpl(ChainData chainData, ConnectionLink baseLink) 
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", new Object[]{chainData, baseLink});   // F206161.5
       

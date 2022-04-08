@@ -13,6 +13,7 @@ package com.ibm.ws.sib.jfapchannel.richclient.framework.impl;
 import com.ibm.websphere.channelfw.CFEndPoint;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
@@ -21,6 +22,9 @@ import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory. It is the
@@ -50,18 +54,20 @@ public class RichClientTransportFactory implements NetworkTransportFactory
     }
 
     /** Local reference to the channel framework */
-    private ChannelFramework channelFramework = null;
+//    private ChannelFramework channelFramework = null;
+//    private NettyFramework nettyFramework = null;
 
     /**
      * Constructor.
      * 
      * @param channelFramework
      */
-    public RichClientTransportFactory(ChannelFramework channelFramework)
+//    public RichClientTransportFactory(ChannelFramework channelFramework) // TODO Verify if bundle needed to pass as instance. Doesn't seem to be used. Could just pass if it's Netty or not.
+    public RichClientTransportFactory()
     {
         if (tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", channelFramework);
-        this.channelFramework = channelFramework;
+            SibTr.entry(this, tc, "<init>");
+//        this.nettyFramework = CommsClientServiceFacade.getNettyBundle();
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -79,11 +85,18 @@ public class RichClientTransportFactory implements NetworkTransportFactory
 
         try
         {
+        	// TODO: If NOT Netty, do channelfw
             // Get the virtual connection factory from the channel framework using the chain name
-
-            VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramewrok().getOutboundVCFactory(chainName);
-
-            connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	
+        	if(CommsClientServiceFacade.useNetty()) {
+        		// If Netty, create new Netty channel factory
+            	connFactory = new NettyNetworkConnectionFactory(chainName);
+        	}else {
+        		VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramework().getOutboundVCFactory(chainName);
+                connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	}
+         
+            
 
         } catch (com.ibm.wsspi.channelfw.exception.ChannelException e) {
 
@@ -125,8 +138,18 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         {
             // Get the virtual connection factory from the EP and wrap it in our implementation of
             // the NetworkConnectionFactory interface
-            VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
-            connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	// TODO Check this out from a Netty endpoint perspective. Used for other types of connects. See CreateNewVirtualConnectionFactory in ConnectionDataGroup
+        	// If NOT Netty do the same as we've done
+        	if(!CommsClientServiceFacade.useNetty()) {
+        		VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
+                connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	}
+        	else {
+            // If Netty throw exception until we figure it out
+        		if (tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
+        		return null;
+        	}
         }
 
         if (tc.isEntryEnabled())

@@ -38,6 +38,7 @@ import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.Framework;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
+import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.richclient.impl.octracker.JFapOutboundChannelDefinitionImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
@@ -83,7 +84,9 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>");
-        framework = ChannelFrameworkReference.getInstance();
+        // TODO: Check beta fencing
+        if(!CommsClientServiceFacade.useNetty())
+        	framework = ChannelFrameworkReference.getInstance();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -99,7 +102,8 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getNetworkTransportFactory");
-        NetworkTransportFactory factory = new RichClientTransportFactory(framework);
+//        NetworkTransportFactory factory = new RichClientTransportFactory(framework);
+        NetworkTransportFactory factory = new RichClientTransportFactory();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getNetworkTransportFactory", factory);
         return factory;
@@ -120,6 +124,7 @@ public class RichClientFramework extends Framework
             SibTr.entry(this, tc, "getOutboundConnectionProperties",
                         outboundTransportName);
 
+        // TODO: Check Netty for data
         ChainData chainData = framework.getChain(outboundTransportName);
 
         // Obtain properties for outbound channel

@@ -31,7 +31,7 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
  * An outbound connection link.  This represents a single outbound connection.
  * This implementation is required to participate as a channel in the
  * Channel Framework.
- * @author prestona
+ * @author prestona TODO this need to be updated to use Netty
  */
 public class JFapOutboundConnLink extends OutboundProtocolLink implements MetaDataProvider
 {

@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
 import com.ibm.ws.sib.jfapchannel.ConversationUsageType;
@@ -31,10 +32,13 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
+import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.impl.JFapAddress;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
 import com.ibm.ws.sib.utils.Semaphore;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * Groups together connection data objects by remote host. Groups are used by the
@@ -698,6 +702,18 @@ public class ConnectionDataGroup
 
                         NetworkConnection vc = connectOverNetwork(jfapAddressHolder, ncfHolder);
                         connectionDataToUse = createnewConnectionData(vc);
+                        if(CommsClientServiceFacade.useNetty()) {
+                        	if(vc instanceof NettyNetworkConnection) {
+                        		try {
+									((NettyNetworkConnection) vc).linkOutboundConnection(connectionDataToUse.getConnection());
+								} catch (NettyException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+									throw new JFapConnectFailedException(e.getMessage());
+								}
+                        	}else
+                        		throw new JFapConnectFailedException("Couldn't link outbound channel appropriately");
+                        }
                         isNewConnectionData = true;
                     } catch (FrameworkException frameworkException)
                     {
@@ -755,6 +771,7 @@ public class ConnectionDataGroup
             SibTr.entry(this, tc, "connectOverNetwork", new Object[] { addressHolder, factoryHolder });
 
         NetworkConnectionFactory vcf = factoryHolder.getFactory();
+        // TODO: If use Netty, need to get the conversation type to establish the mapping
         NetworkConnection vc = vcf.createConnection();
         Semaphore sem = new Semaphore();
         ClientConnectionReadyCallback callback = new ClientConnectionReadyCallback(sem);

@@ -1,14 +1,9 @@
-/*******************************************************************************
- * Copyright (c) 2003, 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package com.ibm.ws.sib.jfapchannel.richclient.framework.impl;
+package com.ibm.ws.netty.jfapchannel;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
+import javax.net.ssl.SSLSession;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
@@ -17,25 +12,20 @@ import com.ibm.ws.sib.jfapchannel.MetaDataProvider;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
+import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOConnectionContext;
+import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnection;
+import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnectionContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
-/**
- * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext. It
- * basically wrappers the com.ibm.wsspi.channel.ConnectionLink code in the
- * underlying TCP channel.
- * 
- * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext
- * @see ConnectionLink
- * 
- * @author Gareth Matthews
- */
-public class CFWNetworkConnectionContext implements NetworkConnectionContext
-{
-    /** Trace */
-    private static final TraceComponent tc = SibTr.register(CFWNetworkConnectionContext.class,
+import io.netty.channel.Channel;
+
+public class NettyNetworkConnectionContext implements NetworkConnectionContext{
+
+	/** Trace */
+    private static final TraceComponent tc = SibTr.register(NettyNetworkConnectionContext.class,
                                                             JFapChannelConstants.MSG_GROUP,
                                                             JFapChannelConstants.MSG_BUNDLE);
 
@@ -44,24 +34,53 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(tc,
-                        "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/jfapchannel/framework/impl/CFWNetworkConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
+                        "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/jfapchannel/netty/NettyNetworkConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
     }
 
     /** The underlying connection link */
-    private ConnectionLink connLink = null;
+    private ConversationMetaData metaData;
 
     /** The connection reference */
-    private NetworkConnection conn = null;
+    private NettyNetworkConnection conn = null;
+    
 
     /**
      * @param connLink
      */ // Could use either concreate jfap class or similar analogous placeholder
-    public CFWNetworkConnectionContext(NetworkConnection conn, ConnectionLink connLink)
+    public NettyNetworkConnectionContext(NettyNetworkConnection conn)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", new Object[] { conn, connLink });
+            SibTr.entry(this, tc, "<init>", new Object[] { conn });
         this.conn = conn;
-        this.connLink = connLink;
+        // TODO: Check if this is the best way to do this
+        this.metaData = new ConversationMetaData() {
+			
+			@Override
+			public boolean isInbound() {
+				return false;
+			}
+			
+			@Override
+			public SSLSession getSSLSession() {
+				// TODO Check what to do with SSL here
+				return null;
+			}
+			
+			@Override
+			public int getRemotePort() {
+				return ((InetSocketAddress)conn.getVirtualConnection().remoteAddress()).getPort();
+			}
+			
+			@Override
+			public InetAddress getRemoteAddress() {
+				return ((InetSocketAddress)conn.getVirtualConnection().remoteAddress()).getAddress();
+			}
+			
+			@Override
+			public String getChainName() {
+				return conn.getChainName();
+			}
+		};
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -75,8 +94,8 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "close", new Object[] { networkConnection, throwable });
 
-        // If the server is stopping, all connections will be closed/flushed by channel 
-        // framework, so don't do it here. 
+        // TODO: Verify this statement
+        // If the server is stopping, all connections will be closed/flushed by netty bundle? Verify
         if (FrameworkState.isStopping()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(this, tc, "close");
@@ -91,8 +110,16 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
         {
             exception = new Exception(throwable);
         }
-        connLink.close(((CFWNetworkConnection) networkConnection).getVirtualConnection(),
-                       exception);
+        
+        if(conn.getVirtualConnection() != null && (conn.getVirtualConnection().isActive() || conn.getVirtualConnection().isOpen())) {
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(this, tc, "close", "Found Netty Channel to close");
+        	conn.getVirtualConnection().close();
+        }else {
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(this, tc, "close", "Found NULL Netty Channel to close");
+        }
+        	
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "close");
@@ -106,21 +133,9 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getIOContextForDevice");
+        
+        final IOConnectionContext ioConnCtx = new NettyIOConnectionContext(conn);
 
-        final IOConnectionContext ioConnCtx;
-        final ConnectionLink deviceLink = connLink.getDeviceLink();
-
-        if (deviceLink == null)
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "Got a null device link.");
-            ioConnCtx = null;
-        }
-        else
-        {
-            final TCPConnectionContext tcpCtx = (TCPConnectionContext) deviceLink.getChannelAccessor();
-            ioConnCtx = new CFWIOConnectionContext(conn, tcpCtx);
-        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getIOContextForDevice", ioConnCtx);
@@ -135,9 +150,11 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getMetaData");
-        ConversationMetaData metaData = ((MetaDataProvider) connLink).getMetaData();
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getMetaData", metaData);
         return metaData;
     }
+	
+	
 }
