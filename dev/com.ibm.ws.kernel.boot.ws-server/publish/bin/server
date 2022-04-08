@@ -325,7 +325,7 @@ checkCriuUnprivileged()
   # Determine if CRIU supports unprivileged mode
   criu --help | grep -q -e '--unprivileged' && CRIU_SUPPORTS_UNPRIVILEGED=true || CRIU_SUPPORTS_UNPRIVILEGED=false
 
-  # Determine which CRIU mode to use, based on current euid and values of CRIU_SUPPORTS_UNPRIVILEGED and CRIU_UNPRIVILEGED
+  # Determine which CRIU mode to use, based on current euid and value of CRIU_SUPPORTS_UNPRIVILEGED
   DO_CRIU_UNPRIVILEGED=false
   if [ "$(id -u)" != 0 ]; then
     # Not root, unprivileged by default if CRIU supports it
