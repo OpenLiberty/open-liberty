@@ -99,7 +99,8 @@ public class CheckpointImplTest {
         }
 
         @Override
-        public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+        public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps,
+                         boolean unprivileged) throws CheckpointFailedException {
             singleThreaded.set(true);
             try {
                 prepare.run();
