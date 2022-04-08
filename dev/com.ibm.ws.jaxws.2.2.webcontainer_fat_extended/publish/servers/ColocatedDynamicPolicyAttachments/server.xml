@@ -5,12 +5,9 @@
         <feature>ejbLite-3.2</feature>
 		<feature>servlet-3.1</feature>
     </featureManager>
-
-    <logging traceSpecification="com.ibm.ws.jaxws.*=all" />
     
     <include location="../fatTestPorts.xml"/>
     
- 
     <webApplication id="policyAttachmentsClient1" name="policyAttachmentsClient1" cotext-root="policyAttachmentsClient1" location="policyAttachmentsClient1.war">
 		<webservices-bnd>
 		<!-- Since we're using dynamic @WebServiceRef injected clients, 
