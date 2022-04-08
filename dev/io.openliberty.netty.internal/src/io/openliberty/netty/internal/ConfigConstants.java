@@ -14,9 +14,11 @@ import io.netty.util.AttributeKey;
 
 public interface ConfigConstants {
 
-    public AttributeKey<String> NameKey = AttributeKey.valueOf("Name");
-    public AttributeKey<String> HostKey = AttributeKey.valueOf("Host");
-    public AttributeKey<String> ExternalHostKey = AttributeKey.valueOf("ExternalHost");
-    public AttributeKey<Integer> PortKey = AttributeKey.valueOf("Port");
+	public final String ExternalName = "ExternalName";
+    public final AttributeKey<String> NameKey = AttributeKey.valueOf(ExternalName);
+    public final AttributeKey<String> HostKey = AttributeKey.valueOf("Host");
+    public final AttributeKey<String> ExternalHostKey = AttributeKey.valueOf("ExternalHost");
+    public final AttributeKey<Integer> PortKey = AttributeKey.valueOf("Port");
+    public final AttributeKey<Boolean> IsInboundKey = AttributeKey.valueOf("IsInbound");
 
 }

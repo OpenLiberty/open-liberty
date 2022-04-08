@@ -192,7 +192,7 @@ public class ChannelFrameworkReference
    * @return Returns the singleton instance of the channel framework.
    */
     public static synchronized ChannelFramework getInstance() {
-       return CommsClientServiceFacade.getChannelFramewrok();
+       return CommsClientServiceFacade.getChannelFramework();
     }
     
     public static boolean isOutboundSSLChainDefinedWithoutProperties()
