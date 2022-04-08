@@ -312,6 +312,16 @@ fi
 ##
 checkCriuUnprivileged()
 {
+  if [ -n "$CRIU_UNPRIVILEGED" ]; then
+    if [ "${CRIU_UNPRIVILEGED}" = "true" -o "${CRIU_UNPRIVILEGED}" = "1" -o "${CRIU_UNPRIVILEGED}" = "TRUE" -o "${CRIU_UNPRIVILEGED}" = "True" ]; then
+      # Use unprivileged if explicitly requested; if CRIU doesn't support it we'll hit an error later that will be shown to the user
+      DO_CRIU_UNPRIVILEGED=true
+    else
+      DO_CRIU_UNPRIVILEGED=false
+    fi
+    return
+  fi
+
   # Determine if CRIU supports unprivileged mode
   criu --help | grep -q -e '--unprivileged' && CRIU_SUPPORTS_UNPRIVILEGED=true || CRIU_SUPPORTS_UNPRIVILEGED=false
 
@@ -319,14 +329,9 @@ checkCriuUnprivileged()
   DO_CRIU_UNPRIVILEGED=false
   if [ "$(id -u)" != 0 ]; then
     # Not root, unprivileged by default if CRIU supports it
-    if [ $CRIU_SUPPORTS_UNPRIVILEGED = true -a "${CRIU_UNPRIVILEGED}" != "false" -a "${CRIU_UNPRIVILEGED}" != "0" -a "${CRIU_UNPRIVILEGED}" != "FALSE" -a "${CRIU_UNPRIVILEGED}" != "False" ]; then
+    if [ $CRIU_SUPPORTS_UNPRIVILEGED = true ]; then
       DO_CRIU_UNPRIVILEGED=true
     fi
-  fi
-
-  # Use unprivileged if explicitly requested; if CRIU doesn't support it we'll hit an error later that will be shown to the user
-  if [ "${CRIU_UNPRIVILEGED}" = "true" -o "${CRIU_UNPRIVILEGED}" = "1" -o "${CRIU_UNPRIVILEGED}" = "TRUE" -o "${CRIU_UNPRIVILEGED}" = "True" ]; then
-    DO_CRIU_UNPRIVILEGED=true
   fi
 }
 
