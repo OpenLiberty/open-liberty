@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -159,11 +164,15 @@ public class ScheduledTask<T> implements Callable<T> {
     private final ManagedScheduledExecutorServiceImpl managedExecSvc;
 
     /**
-     * Next execution time for the task. If trigger is used, unit is milliseconds. Otherwise nanoseconds.
-     * Note: this means more than 106751 days cannot be supported. However, we already have that limitation
-     * due to being built on top of java.util.concurrent.ScheduledThreadPoolExecutor and java.util.concurrent.TimeUnit.
+     * More than 106751 days cannot be supported
+     * due to being built on top of java.util.concurrent.ScheduledThreadPoolExecutor.
      */
-    private volatile long nextExecutionTime;
+    private static final Duration MAX_DELAY = Duration.of(Long.MAX_VALUE, ChronoUnit.NANOS);
+
+    /**
+     * Next execution time for the task.
+     */
+    private volatile ZonedDateTime nextExecutionTime;
 
     /**
      * Possibly empty result of the task. A CountDownLatch in the result can be used to wait for it to be populated.
@@ -178,12 +187,7 @@ public class ScheduledTask<T> implements Callable<T> {
     /**
      * Date at which the task was originally scheduled.
      */
-    private final Date taskScheduledTime = new Date();
-
-    /**
-     * Nanoseconds at which the task was originally scheduled.
-     */
-    private final long taskScheduledNanos = System.nanoTime();
+    private final ZonedDateTime taskScheduledTime;
 
     /**
      * Previously captured thread context with which the task should run.
@@ -197,9 +201,9 @@ public class ScheduledTask<T> implements Callable<T> {
 
     /**
      * Unit of time for fixed delay, fixed rate, or one-shot tasks.
-     * In the case of trigger, unit is always milliseconds, which corresponds to the precision of java.util.Date.
+     * In the case of trigger, unit is always nanoseconds, which corresponds to the precision of java.time.ZonedDateTime.
      */
-    private final TimeUnit unit;
+    private final ChronoUnit unit;
 
     /**
      * Construct and schedule a task which also serves as a future.
@@ -210,10 +214,10 @@ public class ScheduledTask<T> implements Callable<T> {
      * @param initialDelay   indicates when the task should first run
      * @param fixedDelay     fixed delay between executions of the task. Null if not using fixed delay.
      * @param fixedRate      fixed period between the start of executions of the task. Null if not using fixed rate.
-     * @param unit           unit of time.
+     * @param timeunit       unit of time.
      */
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable,
-                  long initialDelay, Long fixedDelay, Long fixedRate, TimeUnit unit) {
+                  long initialDelay, Long fixedDelay, Long fixedRate, TimeUnit timeunit) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         this.fixedDelay = fixedDelay;
@@ -222,8 +226,9 @@ public class ScheduledTask<T> implements Callable<T> {
         this.isCallable = isCallable;
         this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
+        this.taskScheduledTime = ZonedDateTime.now();
         this.trigger = null;
-        this.unit = unit;
+        this.unit = toChronoUnit(timeunit);
 
         if (task instanceof ContextualAction) {
             ContextualAction<?> a = (ContextualAction<?>) task;
@@ -241,7 +246,12 @@ public class ScheduledTask<T> implements Callable<T> {
             }
         }
 
-        nextExecutionTime = taskScheduledNanos + unit.toNanos(initialDelay);
+        // Cap the maximum delay at what is supported by ScheduledThreadPoolExecutor, upon which Liberty ScheduledExecutorService is built
+        Duration delay = Duration.of(initialDelay, unit);
+        if (delay.compareTo(MAX_DELAY) > 0)
+            delay = MAX_DELAY;
+
+        nextExecutionTime = taskScheduledTime.plus(delay);
 
         Result result = resultRef.get();
 
@@ -264,9 +274,9 @@ public class ScheduledTask<T> implements Callable<T> {
         Status<T> status = result.getStatus();
         if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "schedule " + initialDelay + ' ' + unit + " from now");
+                Tr.debug(this, tc, "schedule " + delay + " from now");
             ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
-            ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, initialDelay, unit);
+            ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, delay.toNanos(), TimeUnit.NANOSECONDS);
             future.scheduledFutureRef.set(scheduledFuture);
         }
     }
@@ -288,8 +298,9 @@ public class ScheduledTask<T> implements Callable<T> {
         this.isCallable = isCallable;
         this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
+        this.taskScheduledTime = ZonedDateTime.now(getZoneId(trigger));
         this.trigger = trigger;
-        this.unit = TimeUnit.MILLISECONDS;
+        this.unit = ChronoUnit.NANOS;
 
         if (task instanceof ContextualAction) {
             ContextualAction<?> a = (ContextualAction<?>) task;
@@ -305,17 +316,15 @@ public class ScheduledTask<T> implements Callable<T> {
             }
         }
 
-        Date nextExecutionDate;
         try {
-            nextExecutionDate = trigger.getNextRunTime(lastExecution = null, taskScheduledTime);
+            nextExecutionTime = getNextRunTime(null, taskScheduledTime, trigger);
         } catch (Throwable x) {
             throw new RejectedExecutionException(x);
         }
-        if (nextExecutionDate == null)
+        if (nextExecutionTime == null)
             throw new RejectedExecutionException("Trigger.getNextRunTime: null");
 
-        nextExecutionTime = nextExecutionDate.getTime();
-        long delay = nextExecutionTime - taskScheduledTime.getTime();
+        long delay = taskScheduledTime.until(nextExecutionTime, ChronoUnit.NANOS);
 
         Result result = resultRef.get();
 
@@ -334,18 +343,13 @@ public class ScheduledTask<T> implements Callable<T> {
             }
         }
 
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getNextRunTime",
-                     "taskScheduled " + Utils.toString(taskScheduledTime),
-                     "nextRunTime = " + Utils.toString(nextExecutionDate));
-
         // schedule the task if the listener didn't cancel it
         Status<T> status = result.getStatus();
         if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "schedule " + delay + "ms from now");
+                Tr.debug(this, tc, "schedule " + Duration.of(delay, ChronoUnit.NANOS) + " from now");
             ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
-            ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, delay, TimeUnit.MILLISECONDS);
+            ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, delay, TimeUnit.NANOSECONDS);
             future.scheduledFutureRef.set(scheduledFuture);
         }
     }
@@ -380,7 +384,7 @@ public class ScheduledTask<T> implements Callable<T> {
             // Determine if task should be skipped
             if (trigger != null)
                 try {
-                    if (trigger.skipRun(lastExecution, new Date(nextExecutionTime)))
+                    if (skipRun(lastExecution, nextExecutionTime, trigger))
                         skipped = new Status<T>(Status.Type.SKIPPED, null, null, false);
                 } catch (Throwable x) {
                     // spec requires skip when skipRun fails
@@ -388,7 +392,7 @@ public class ScheduledTask<T> implements Callable<T> {
                     skipped = new Status<T>(Status.Type.SKIPPED, null, x, false);
                 }
 
-            Date nextExecutionDate = null;
+            ZonedDateTime computedNextExecution = null;
 
             // Run task if it wasn't skipped
             if (skipped == null) {
@@ -412,14 +416,14 @@ public class ScheduledTask<T> implements Callable<T> {
                             else
                                 ((Runnable) task).run();
                         else {
-                            long startTime = System.currentTimeMillis();
+                            ZonedDateTime startTime = ZonedDateTime.now(taskScheduledTime.getZone());
 
                             if (isCallable)
                                 taskResult = ((Callable<T>) task).call();
                             else
                                 ((Runnable) task).run();
 
-                            long endTime = System.currentTimeMillis();
+                            ZonedDateTime endTime = ZonedDateTime.now(taskScheduledTime.getZone());
 
                             Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
                             String identityName;
@@ -432,6 +436,7 @@ public class ScheduledTask<T> implements Callable<T> {
                                 if (identityName == null)
                                     identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
                             }
+
                             lastExecution = new LastExecutionImpl(identityName, nextExecutionTime, startTime, endTime, taskResult);
                         }
                     } catch (Throwable x) {
@@ -450,14 +455,9 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (trigger == null)
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
-                            nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
+                            computedNextExecution = getNextRunTime(lastExecution, taskScheduledTime, trigger);
 
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
-                                         "taskScheduled " + Utils.toString(taskScheduledTime),
-                                         "nextRunTime = " + Utils.toString(nextExecutionDate));
-
-                            result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, nextExecutionDate == null));
+                            result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, computedNextExecution == null));
                         }
 
                         result.latch.countDown();
@@ -493,14 +493,10 @@ public class ScheduledTask<T> implements Callable<T> {
                         result.compareAndSet(status, skipped);
 
                     // calculate next execution
-                    nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
-                                 "taskScheduled " + Utils.toString(taskScheduledTime),
-                                 "nextRunTime = " + Utils.toString(nextExecutionDate));
+                    computedNextExecution = getNextRunTime(lastExecution, taskScheduledTime, trigger);
 
                     // No next execution
-                    if (nextExecutionDate == null)
+                    if (computedNextExecution == null)
                         result.compareAndSet(skipped, new Status<T>(Status.Type.SKIPPED, null, skipped.failure, true));
                 } finally {
                     result.latch.countDown();
@@ -525,31 +521,33 @@ public class ScheduledTask<T> implements Callable<T> {
             status = result.getStatus();
             Result nextResult;
             if (!status.finalExecutionIsComplete
-                            && (status.type == Status.Type.DONE || status.type == Status.Type.SKIPPED)
-                            && resultRef.compareAndSet(result, nextResult = new Result())) {
+                && (status.type == Status.Type.DONE || status.type == Status.Type.SKIPPED)
+                && resultRef.compareAndSet(result, nextResult = new Result())) {
                 result = nextResult;
                 done = false;
                 if (trace && tc.isEventEnabled())
                     Tr.event(this, tc, (status.type == Status.Type.DONE ? "DONE" : "SKIPPED") + "-->NONE (reset for next result)");
 
                 // compute the delay and estimate the next execution time
-                long delay;
+                Duration delay;
+                ZonedDateTime now = ZonedDateTime.now(taskScheduledTime.getZone());
                 if (fixedDelay != null) {
-                    delay = fixedDelay;
-                    nextExecutionTime = System.nanoTime() + unit.toNanos(delay);
+                    delay = Duration.of(fixedDelay, unit);
+                    nextExecutionTime = now.plus(delay);
                 } else if (fixedRate != null) {
                     // Time elapsed from when the task should have started for the first time
-                    long nanoTime = System.nanoTime();
-                    long elapsed = unit.convert(nanoTime - taskScheduledNanos, TimeUnit.NANOSECONDS) - initialDelay;
-                    delay = ((elapsed / fixedRate) + 1) * fixedRate - elapsed;
-                    nextExecutionTime = nanoTime + unit.toNanos(delay);
+                    Duration elapsed = Duration.between(taskScheduledTime, now).minus(initialDelay, unit);
+                    Duration rate = Duration.of(fixedRate, unit);
+                    long count = divide(elapsed, rate); // elapsed.dividedBy(rate); is not available in Java 8
+                    delay = rate.multipliedBy(count + 1).minus(elapsed);
+                    nextExecutionTime = now.plus(delay);
                 } else {
-                    nextExecutionTime = nextExecutionDate.getTime();
-                    delay = nextExecutionTime - System.currentTimeMillis();
+                    delay = Duration.between(now, computedNextExecution);
+                    nextExecutionTime = computedNextExecution;
                 }
 
-                if (delay < 0)
-                    delay = 0;
+                if (delay.isNegative())
+                    delay = Duration.ZERO;
 
                 // notify listener: taskSubmitted
                 if (listener != null)
@@ -566,8 +564,8 @@ public class ScheduledTask<T> implements Callable<T> {
                 status = result.getStatus();
                 if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "reschedule " + delay + ' ' + unit + " from now");
-                    ScheduledFuture<?> scheduledFuture = managedExecSvc.scheduledExecSvc.schedule(this, delay, unit);
+                        Tr.debug(this, tc, "reschedule " + delay + " from now");
+                    ScheduledFuture<?> scheduledFuture = managedExecSvc.scheduledExecSvc.schedule(this, delay.toNanos(), TimeUnit.NANOSECONDS);
                     future.scheduledFutureRef.set(scheduledFuture);
                 }
             }
@@ -626,6 +624,26 @@ public class ScheduledTask<T> implements Callable<T> {
     }
 
     /**
+     * Divide durations to work around the lack of Duration.divideBy in Java 8.
+     *
+     * @param numerator
+     * @param denominator
+     * @return quotient
+     */
+    @Trivial
+    private static final long divide(Duration numerator, Duration denominator) {
+        BigInteger num = BigInteger.valueOf(numerator.getSeconds()) //
+                        .multiply(BigInteger.valueOf(1000000000l)) //
+                        .add(BigInteger.valueOf(numerator.getNano()));
+
+        BigInteger denom = BigInteger.valueOf(denominator.getSeconds()) //
+                        .multiply(BigInteger.valueOf(1000000000l)) //
+                        .add(BigInteger.valueOf(denominator.getNano()));
+
+        return num.divide(denom).longValueExact();
+    }
+
+    /**
      * Returns the task name.
      *
      * @return the task name.
@@ -645,6 +663,54 @@ public class ScheduledTask<T> implements Callable<T> {
                     taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
             }
         return taskName == null ? task.toString() : taskName;
+    }
+
+    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
+    private ZonedDateTime getNextRunTime(LastExecution previous, ZonedDateTime taskScheduledTime, Trigger trigger) {
+        Date nextExecutionDate = trigger.getNextRunTime(previous, Date.from(taskScheduledTime.toInstant()));
+        ZonedDateTime nextExecutionTime = nextExecutionDate == null //
+                        ? null //
+                        : nextExecutionDate.toInstant().atZone(taskScheduledTime.getZone());
+        return nextExecutionTime;
+    }
+
+    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
+    @Trivial
+    private ZoneId getZoneId(Trigger trigger) {
+        return ZoneId.systemDefault();
+    }
+
+    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
+    private boolean skipRun(LastExecution previous, ZonedDateTime nextExecutionTime, Trigger trigger) {
+        return trigger.skipRun(previous, Date.from(nextExecutionTime.toInstant()));
+    }
+
+    /**
+     * Workaround for Java 8 lacking TimeUnit.toChronoUnit()
+     *
+     * @param timeunit
+     * @return ChronoUnit
+     */
+    @Trivial
+    private static final ChronoUnit toChronoUnit(TimeUnit timeunit) {
+        switch (timeunit) {
+            case DAYS:
+                return ChronoUnit.DAYS;
+            case HOURS:
+                return ChronoUnit.HOURS;
+            case MINUTES:
+                return ChronoUnit.MINUTES;
+            case SECONDS:
+                return ChronoUnit.SECONDS;
+            case MILLISECONDS:
+                return ChronoUnit.MILLIS;
+            case MICROSECONDS:
+                return ChronoUnit.MICROS;
+            case NANOSECONDS:
+                return ChronoUnit.NANOS;
+            default:
+                throw new IllegalArgumentException(timeunit.toString());
+        }
     }
 
     /**
@@ -741,10 +807,11 @@ public class ScheduledTask<T> implements Callable<T> {
             // so just match what we observe Java executor implementations doing (-1, 0, 1).
             int result;
             if (delayed instanceof ScheduledTask.FutureImpl) { // avoid checking current time if possible
-                long value1 = nextExecutionTime;
+                ZonedDateTime value1 = nextExecutionTime;
                 @SuppressWarnings("unchecked")
-                long value2 = ((FutureImpl) delayed).task.nextExecutionTime;
-                result = this == delayed || value1 == value2 ? 0 : value1 - value2 < 0 ? -1 : 1;
+                ZonedDateTime value2 = ((FutureImpl) delayed).task.nextExecutionTime;
+                result = this == delayed || value1 == value2 ? 0 : value1.compareTo(value2);
+                result = result < 0 ? -1 : result > 0 ? 1 : 0;
             } else {
                 long diff = getDelay(TimeUnit.MILLISECONDS) - delayed.getDelay(TimeUnit.MILLISECONDS);
                 // Because getDelay() compares with the current time, which will be slightly different between
@@ -880,11 +947,7 @@ public class ScheduledTask<T> implements Callable<T> {
          */
         @Override
         public long getDelay(TimeUnit unit) {
-            long delay;
-            if (trigger == null) // fixed rate, fixed delay, or one shot
-                delay = unit.convert(nextExecutionTime - System.nanoTime(), TimeUnit.NANOSECONDS);
-            else
-                delay = unit.convert(nextExecutionTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+            long delay = ZonedDateTime.now(taskScheduledTime.getZone()).until(nextExecutionTime, toChronoUnit(unit));
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(task, tc, "getDelay", unit, delay);
