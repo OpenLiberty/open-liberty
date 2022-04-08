@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jaxrsConcurrent-2.1
+symbolicName=com.ibm.websphere.appserver.jaxrsConcurrent-1.0.ee8
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
