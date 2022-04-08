@@ -16,6 +16,7 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,7 +60,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      */
     protected void activate(ComponentContext context) {
@@ -71,7 +72,8 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
      */
     @Override
     @Trivial
-    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {}
+    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
+    }
 
     /**
      * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataDestroyed(com.ibm.ws.container.service.metadata.MetaDataEvent)
@@ -90,17 +92,18 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
     /**
      * DS method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      */
-    protected void deactivate(ComponentContext context) {}
+    protected void deactivate(ComponentContext context) {
+    }
 
     /**
      * Returns the thread group to use for the specified application component.
-     * 
-     * @param jeeName name of the application component
+     *
+     * @param jeeName           name of the application component
      * @param threadFactoryName unique identifier for the thread factory
-     * @param parentGroup parent thread group
+     * @param parentGroup       parent thread group
      * @return child thread group for the application component. Null if the application component isn't active.
      * @throws IllegalStateException if the application component is not available.
      */
@@ -124,7 +127,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
 
     /**
      * Declarative Services method for setting the deferrable scheduled executor service
-     * 
+     *
      * @param svc the service
      */
     protected void setDeferrableScheduledExecutor(ScheduledExecutorService svc) {
@@ -133,7 +136,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
 
     /**
      * Declarative Services method for setting the metadata identifier service.
-     * 
+     *
      * @param svc the service
      */
     protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
@@ -143,7 +146,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
     /**
      * Invoke this method when destroying a ManagedThreadFactory in order to interrupt all managed threads
      * that it created.
-     * 
+     *
      * @param threadFactoryName unique identifier for the managed thread factory.
      */
     void threadFactoryDestroyed(String threadFactoryName, ThreadGroup parentGroup) {
@@ -159,7 +162,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
 
     /**
      * Declarative Services method for unsetting the deferrable scheduled executor service
-     * 
+     *
      * @param svc the service
      */
     protected void unsetDeferrableScheduledExecutor(ScheduledExecutorService svc) {
@@ -168,7 +171,7 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
 
     /**
      * Declarative Services method for unsetting the metadata service.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
@@ -188,10 +191,10 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
         /**
          * Construct a privileged action that creates a thread group if one doesn't already exist for the
          * combination of thread factory/application component.
-         * 
-         * @param parentGroup thread group for the managed thread factory
-         * @param threadFactoryName name of the managed thread factory
-         * @param jeeName name for the application component
+         *
+         * @param parentGroup                thread group for the managed thread factory
+         * @param threadFactoryName          name of the managed thread factory
+         * @param jeeName                    name for the application component
          * @param threadFactoryToThreadGroup map of thread factory names to thread groups (all of which correspond to the application component)
          */
         private CreateThreadGroupIfAbsentAction(ThreadGroup parentGroup, String threadFactoryName, String identifier,
@@ -246,8 +249,8 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
 
         /**
          * Construct a privileged action to destroy the specified thread groups.
-         * 
-         * @param groups thread groups to destroy.
+         *
+         * @param groups            thread groups to destroy.
          * @param scheduledExecutor executor that can schedule retries of thread group destroy if some threads haven't completed yet.
          */
         private InterruptAndDestroyThreadGroups(Collection<ThreadGroup> groups, ScheduledExecutorService scheduledExecutor) {
@@ -261,6 +264,18 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
         @FFDCIgnore(IllegalThreadStateException.class)
         @Override
         public Void run() {
+            // Interrupt individual managed ForkJoinWorkerThreads because we are unable to add these to the ThreadGroup
+            for (Iterator<Entry<ManagedForkJoinWorkerThread, ThreadGroup>> it = //
+                            ManagedForkJoinWorkerThread.ACTIVE_THREADS.entrySet().iterator(); //
+                            it.hasNext();) {
+                Entry<ManagedForkJoinWorkerThread, ThreadGroup> entry = it.next();
+                if (groups.contains(entry.getValue())) {
+                    entry.getKey().interrupt();
+                    it.remove();
+                }
+            }
+
+            // Interrupt threads in the ThreadGroup and destroy the ThreadGroup
             for (Iterator<ThreadGroup> it = groups.iterator(); it.hasNext();) {
                 ThreadGroup group = it.next();
                 boolean remove = true;
