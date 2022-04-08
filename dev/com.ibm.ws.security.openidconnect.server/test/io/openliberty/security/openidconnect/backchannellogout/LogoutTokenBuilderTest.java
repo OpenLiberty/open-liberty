@@ -1578,7 +1578,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         JwtContext resultContext = Jose4jUtil.parseJwtWithoutValidation(logoutTokenString);
         JsonWebStructure jsonWebStructure = resultContext.getJoseObjects().get(0);
         assertEquals("JWT alg header did not match expected value.", "HS256", jsonWebStructure.getAlgorithmHeaderValue());
-        assertEquals("JWT typ header did not match expected value.", "JWT", jsonWebStructure.getHeader("typ"));
 
         verifyLogoutTokenClaims(resultContext.getJwtClaims(), expectedAudiences, expectedSubject, expectedSid);
     }
@@ -1643,11 +1642,9 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 one(client).getClientSecret();
                 will(returnValue(clientSecret));
-                one(oidcServerConfig).getSignatureAlgorithm();
+                allowing(oidcServerConfig).getSignatureAlgorithm();
                 will(returnValue("HS256"));
                 one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(null));
-                one(oidcServerConfig).getPrivateKey();
                 will(returnValue(null));
                 one(oidcServerConfig).getKeyAliasName();
                 will(returnValue(null));

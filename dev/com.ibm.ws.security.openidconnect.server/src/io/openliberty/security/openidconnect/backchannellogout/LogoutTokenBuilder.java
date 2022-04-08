@@ -28,14 +28,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.jwt.utils.JwsSigner;
-import com.ibm.ws.security.jwt.utils.JwtData;
-import com.ibm.ws.security.jwt.utils.JwtDataConfig;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
+import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
+import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.server.plugins.IDTokenImpl;
@@ -322,11 +321,10 @@ public class LogoutTokenBuilder {
         JwtClaims logoutTokenClaims = populateLogoutTokenClaimsFromIdToken(client, idTokenClaims);
 
         String sharedKey = client.getClientSecret();
-        JwtDataConfig jwtDataConfig = new JwtDataConfig(oidcServerConfig.getSignatureAlgorithm(), oidcServerConfig.getJSONWebKey(), sharedKey, oidcServerConfig.getPrivateKey(), oidcServerConfig.getKeyAliasName(), oidcServerConfig.getKeyStoreRef(), JwtData.TYPE_JWT_TOKEN, oidcServerConfig.isJwkEnabled());
-        JwtData jwtData = new JwtData(jwtDataConfig);
+        JWTData jwtData = new JWTData(sharedKey, oidcServerConfig, JWTData.TYPE_JWT_TOKEN);
 
         // When we add support for JWE ID tokens, this will need to be updated to create a JWE logout token as well
-        return JwsSigner.getSignedJwt(logoutTokenClaims, jwtData);
+        return JwsSigner.getSignedJwt(logoutTokenClaims, oidcServerConfig, jwtData);
     }
 
     JwtClaims populateLogoutTokenClaimsFromIdToken(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException, LogoutTokenBuilderException {
