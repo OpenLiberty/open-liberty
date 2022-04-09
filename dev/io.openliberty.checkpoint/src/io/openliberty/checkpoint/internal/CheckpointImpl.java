@@ -71,6 +71,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
+    private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
     static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
@@ -110,7 +111,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              */
             this.criu = new ExecuteCRIU() {
                 @Override
-                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
                     prepare.run();
                     restore.run();
                 }
@@ -236,6 +237,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 debug(tc, () -> "ExecuteCRIU service does not support checkpoint: " + cpfe.getMessage());
                 throw cpfe;
             }
+            boolean unprivileged = Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_CRIU_UNPRIVILEGED));
             File imageDir = getImageDir();
             debug(tc, () -> "criu attempt dump to '" + imageDir + "' and exit process.");
 
@@ -243,7 +245,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                       () -> restore(singleThreadRestoreHooks),
                       imageDir, CHECKPOINT_LOG_FILE,
                       getLogsCheckpoint(),
-                      getEnvProperties());
+                      getEnvProperties(),
+                      unprivileged);
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {

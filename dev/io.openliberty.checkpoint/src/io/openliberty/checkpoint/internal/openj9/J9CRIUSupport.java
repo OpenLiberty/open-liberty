@@ -45,7 +45,7 @@ public class J9CRIUSupport {
         final CheckpointFailedException criuSupportException = new CheckpointFailedException(type, msg, null);
         return new ExecuteCRIU() {
             @Override
-            public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+            public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
                 throw criuSupportException;
             }
 
