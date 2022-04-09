@@ -567,6 +567,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String IDTOK_AT_HASH_KEY = "at_hash";
     public static final String IDTOK_REALM_KEY = "realmName";
     public static final String IDTOK_UNIQ_SEC_NAME_KEY = "uniqueSecurityName";
+    public static final String IDTOK_SESSION_ID = "sid";
 
     /* ********************** ACC_TOKEN ************************ */
 
