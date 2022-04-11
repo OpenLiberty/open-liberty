@@ -87,8 +87,7 @@ subprojects {
   }
 
   
-  tasks.withType(JavaCompile) {
-    doFirst {
+  tasks.withType(JavaCompile).configureEach({
       // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
       if (JavaVersion.current().isJava12Compatible()) {
         if ('1.6'.equals(sourceCompatibility)) {
@@ -103,10 +102,9 @@ subprojects {
           release = sourceCompatibility.substring(2);
         if('current'.equals(bnd('javac.args.release')))
           release = JavaVersion.current().getMajorVersion() 
-        options.compilerArgs.addAll([ '--release', release])
+        options.release = Integer.valueOf(release)
       }
-    }
-  }
+  })
 
   tasks.withType(Javadoc) {
     doFirst {
