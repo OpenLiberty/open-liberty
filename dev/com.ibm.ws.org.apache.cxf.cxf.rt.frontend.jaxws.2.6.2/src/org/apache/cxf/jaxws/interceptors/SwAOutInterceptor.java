@@ -342,6 +342,10 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         message.put(AttachmentOutInterceptor.WRITE_ATTACHMENTS, Boolean.TRUE);       
         
         Collection<Attachment> atts = message.getAttachments();
+        
+        // Please do not modify log message below, it's been used in PropertySettingTest
+        LOG.log(Level.FINE, "skipAttachmentOutput: getAttachments returned  " + atts);
+        
         if (atts == null) {
             atts = new ArrayList<Attachment>();
             message.setAttachments(atts);

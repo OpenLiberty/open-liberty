@@ -36,4 +36,13 @@
     <servlet-name>WSAEnabledWSDLServlet</servlet-name>
     <url-pattern>/wsaclient</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>WSAPropertyTestServlet</servlet-name>
+    <servlet-class>com.ibm.ws.test.wsfeatures.client.WSAPropertyTestServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WSAPropertyTestServlet</servlet-name>
+    <url-pattern>/wsapolicyskip</url-pattern>
+  </servlet-mapping>
  </web-app>
