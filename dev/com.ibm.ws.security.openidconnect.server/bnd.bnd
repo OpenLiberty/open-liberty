@@ -36,7 +36,9 @@ WS-TraceGroup: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 
--dsannotations: com.ibm.ws.security.openidconnect.web.OidcEndpointServices
+-dsannotations: com.ibm.ws.security.openidconnect.web.OidcEndpointServices,\
+    io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutService
+
 -dsannotations-inherit: true
 
 instrument.classesExcludes: com/ibm/ws/security/openidconnect/server/internal/resources/*.class

@@ -16,6 +16,7 @@ import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.security.auth.Subject;
@@ -24,6 +25,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -58,8 +66,11 @@ import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
+@Component
 public class AuthenticateApi {
     private static final TraceComponent tc = Tr.register(AuthenticateApi.class);
 
@@ -68,9 +79,9 @@ public class AuthenticateApi {
 
     private final SubjectManager subjectManager = new SubjectManager();
     private final SubjectHelper subjectHelper = new SubjectHelper();
-    private final SSOCookieHelper ssoCookieHelper;
+    private SSOCookieHelper ssoCookieHelper;
     private AuthCacheService authCacheService = null;
-    private final CollaboratorUtils collabUtils;
+    private CollaboratorUtils collabUtils;
     private AuthenticationService authService = null;
     private AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
     private ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRefs = null;
@@ -79,6 +90,28 @@ public class AuthenticateApi {
     protected static final WebReply DENY_AUTHN_FAILED = new DenyReply("AuthenticationFailed");
     private Subject logoutSubject = null;
     private final String SECURITY_CONTEXT = "SECURITY_CONTEXT";
+
+    private static final ConcurrentServiceReferenceSet<LogoutService> logoutServiceRef = new ConcurrentServiceReferenceSet<LogoutService>("logoutService");
+
+    @Reference(name = "logoutService", service = LogoutService.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+    protected void setLogoutService(ServiceReference<LogoutService> reference) {
+        logoutServiceRef.addReference(reference);
+    }
+
+    protected void unsetLogoutService(ServiceReference<LogoutService> reference) {
+        logoutServiceRef.removeReference(reference);
+    }
+
+    public void activate(ComponentContext cc) {
+        logoutServiceRef.activate(cc);
+    }
+
+    public void deactivate(ComponentContext cc) {
+        logoutServiceRef.deactivate(cc);
+    }
+
+    public AuthenticateApi() {
+    }
 
     public AuthenticateApi(SSOCookieHelper ssoCookieHelper,
                            AtomicServiceReference<SecurityService> securityServiceRef,
@@ -197,6 +230,8 @@ public class AuthenticateApi {
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
         }
 
+        callLogoutServices(req, res, config);
+
         removeEntryFromAuthCache(req, res, config);
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
@@ -225,6 +260,17 @@ public class AuthenticateApi {
         postLogout(req, res);
         subjectManager.clearSubjects();
 
+    }
+
+    void callLogoutServices(HttpServletRequest req, HttpServletResponse res, WebAppSecurityConfig config) {
+        Iterator<ServiceAndServiceReferencePair<LogoutService>> logoutServices = logoutServiceRef.getServicesWithReferences();
+        while (logoutServices.hasNext()) {
+            ServiceAndServiceReferencePair<LogoutService> serviceRef = logoutServices.next();
+            LogoutService logoutService = serviceRef.getService();
+            if (logoutService != null) {
+                logoutService.logout(req, res, config);
+            }
+        }
     }
 
     /**
