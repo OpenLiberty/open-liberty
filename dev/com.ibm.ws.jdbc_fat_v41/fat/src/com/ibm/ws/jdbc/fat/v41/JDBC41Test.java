@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class JDBC41Test extends FATServletClient {
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist
-                          "J2CA0045E", //expected from testMaxPoolSizeWithTLS          
+                          "J2CA0045E", //expected from testMaxPoolSizeWithTLS
                           "J2CA0079E"); // expected by testMBeanPurgeAbort
     }
 
