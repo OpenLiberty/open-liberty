@@ -12,11 +12,9 @@ package com.ibm.ws.concurrent.internal;
 
 import java.math.BigInteger;
 import java.time.Duration;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -42,6 +40,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
+import com.ibm.ws.concurrent.TriggerService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -292,13 +291,15 @@ public class ScheduledTask<T> implements Callable<T> {
     ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Trigger trigger) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
+        TriggerService triggerSvc = managedExecSvc.concurrencySvc.triggerSvc;
+
         this.fixedDelay = null;
         this.fixedRate = null;
         this.initialDelay = null;
         this.isCallable = isCallable;
         this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
-        this.taskScheduledTime = ZonedDateTime.now(getZoneId(trigger));
+        this.taskScheduledTime = ZonedDateTime.now(triggerSvc.getZoneId(trigger));
         this.trigger = trigger;
         this.unit = ChronoUnit.NANOS;
 
@@ -317,7 +318,7 @@ public class ScheduledTask<T> implements Callable<T> {
         }
 
         try {
-            nextExecutionTime = getNextRunTime(null, taskScheduledTime, trigger);
+            nextExecutionTime = triggerSvc.getNextRunTime(null, taskScheduledTime, trigger);
         } catch (Throwable x) {
             throw new RejectedExecutionException(x);
         }
@@ -369,6 +370,8 @@ public class ScheduledTask<T> implements Callable<T> {
             return null;
         }
 
+        TriggerService triggerSvc = managedExecSvc.concurrencySvc.triggerSvc;
+
         Result result = resultRef.get(), resultForThisExecution = result;
         Status<T> skipped = null;
         Status<T> status;
@@ -384,7 +387,7 @@ public class ScheduledTask<T> implements Callable<T> {
             // Determine if task should be skipped
             if (trigger != null)
                 try {
-                    if (skipRun(lastExecution, nextExecutionTime, trigger))
+                    if (triggerSvc.skipRun(lastExecution, nextExecutionTime, trigger))
                         skipped = new Status<T>(Status.Type.SKIPPED, null, null, false);
                 } catch (Throwable x) {
                     // spec requires skip when skipRun fails
@@ -455,7 +458,7 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (trigger == null)
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
-                            computedNextExecution = getNextRunTime(lastExecution, taskScheduledTime, trigger);
+                            computedNextExecution = triggerSvc.getNextRunTime(lastExecution, taskScheduledTime, trigger);
 
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, computedNextExecution == null));
                         }
@@ -493,7 +496,7 @@ public class ScheduledTask<T> implements Callable<T> {
                         result.compareAndSet(status, skipped);
 
                     // calculate next execution
-                    computedNextExecution = getNextRunTime(lastExecution, taskScheduledTime, trigger);
+                    computedNextExecution = triggerSvc.getNextRunTime(lastExecution, taskScheduledTime, trigger);
 
                     // No next execution
                     if (computedNextExecution == null)
@@ -663,26 +666,6 @@ public class ScheduledTask<T> implements Callable<T> {
                     taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
             }
         return taskName == null ? task.toString() : taskName;
-    }
-
-    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
-    private ZonedDateTime getNextRunTime(LastExecution previous, ZonedDateTime taskScheduledTime, Trigger trigger) {
-        Date nextExecutionDate = trigger.getNextRunTime(previous, Date.from(taskScheduledTime.toInstant()));
-        ZonedDateTime nextExecutionTime = nextExecutionDate == null //
-                        ? null //
-                        : nextExecutionDate.toInstant().atZone(taskScheduledTime.getZone());
-        return nextExecutionTime;
-    }
-
-    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
-    @Trivial
-    private ZoneId getZoneId(Trigger trigger) {
-        return ZoneId.systemDefault();
-    }
-
-    // TODO move to service that can use ZonedTrigger when concurrent-3.0 is enabled
-    private boolean skipRun(LastExecution previous, ZonedDateTime nextExecutionTime, Trigger trigger) {
-        return trigger.skipRun(previous, Date.from(nextExecutionTime.toInstant()));
     }
 
     /**
