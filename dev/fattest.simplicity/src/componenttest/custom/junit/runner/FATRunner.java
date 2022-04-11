@@ -52,6 +52,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.annotation.processor.TestServletProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
@@ -722,6 +724,26 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
     }
 
+    private static final String COMPONENTTEST = "componenttest-";
+
+    /**
+     * Check for a feature named "componenttest-". We don't care which version.
+     *
+     * @param  config The server config
+     * @return        true if the componenttest feature was found in the config
+     */
+    private static boolean componentTestFeatureConfigured(ServerConfiguration config) {
+        boolean result = false;
+        Set<String> features = config.getFeatureManager().getFeatures();
+        for (String feature : features) {
+            if (feature.toLowerCase().startsWith(COMPONENTTEST)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
     private void injectLibertyServers() {
         String method = "injectLibertyServers";
 
@@ -741,11 +763,23 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             Class<?> testClass = getTestClass().getJavaClass();
             try {
                 LibertyServer serv = LibertyServerFactory.getLibertyServer(serverName, testClass);
+                ServerConfiguration config = serv.getServerConfiguration();
+
+                //if either the TestServlet or TestServlets annotations are in use on the LibertyServer,
+                //check that the componenttest feature is configured on the server
+                TestServlet testServletAnno = serverField.getAnnotation(TestServlet.class);
+                TestServlets testServletsAnno = serverField.getAnnotation(TestServlets.class);
+                if (testServletAnno != null || testServletsAnno != null) {
+                    if (!componentTestFeatureConfigured(config)) {
+                        throw new RuntimeException("To use the @TestServlet annotation, the componenttest-x.x feature must be included in the server.xml for "
+                                                   + serv.getServerName());
+                    }
+                }
+
                 // Set the HTTP and IIOP ports for the LibertyServer instance
                 if (serv.getHttpDefaultPort() == 0) {
                     // Note that this case block only applies to running a FAT locally without Ant.
                     // Any builds using Ant to invoke JUnit will bypass this block completely.
-                    ServerConfiguration config = serv.getServerConfiguration();
                     HttpEndpoint http = config.getHttpEndpoints().getById("defaultHttpEndpoint");
                     IncludeElement include = config.getIncludes().getBy("location", "../fatTestPorts.xml");
                     if (http != null) {
