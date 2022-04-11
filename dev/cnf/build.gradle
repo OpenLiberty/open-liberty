@@ -130,7 +130,7 @@ def pluginsProject = project(':wlp-bndPlugins')
 task updatePluginClasses(type: Copy) {
     dependsOn ':wlp-bndPlugins:jar'
     dependsOn dependabotGenerate
-    from zipTree(bnd('build.bnd.plugins.jar'))
+    from zipTree(bnd.get('build.bnd.plugins.jar'))
     into project.file('bndplugins/classes')
     doLast {
         println 'Refresh bnd Projects after building bnd plugins in ' + project.name
@@ -368,7 +368,7 @@ task createGeneratedReplacementProjects {
     }
 }
 
-def releaserepo = file(bnd('releaserepo', 'release')) /* Release repository. */
+def releaserepo = file(bnd.get('releaserepo', 'release')) /* Release repository. */
 
 import aQute.bnd.gradle.Index
 
@@ -424,16 +424,16 @@ task libertyReleaseVersions {
   inputs.file('resources/bnd/liberty-release.props')
   outputs.file('build/liberty-versions.props')
   doLast {
-    def releaseVersion = bnd('libertyRelease') + '-' + rootProject.userProps.getProperty('version.qualifier')
+    def releaseVersion = bnd.get('libertyRelease') + '-' + rootProject.userProps.getProperty('version.qualifier')
     println 'releaseVersion = ' + releaseVersion
     def libertyVersionsProps = new Properties()
-    libertyVersionsProps.setProperty('libertyBaseVersion', bnd('libertyBaseVersion'))
-    libertyVersionsProps.setProperty('libertyFixpackVersion', bnd('libertyFixpackVersion'))
-    libertyVersionsProps.setProperty('libertyServiceVersion', bnd('libertyServiceVersion'))
-    libertyVersionsProps.setProperty('libertyBetaVersion', bnd('libertyBetaVersion'))
-    libertyVersionsProps.setProperty('libertyRelease', bnd('libertyRelease'))
-    libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd('libertyBundleMicroVersion'))
-    libertyVersionsProps.setProperty('buildID', bnd('buildID'))
+    libertyVersionsProps.setProperty('libertyBaseVersion', bnd.get('libertyBaseVersion'))
+    libertyVersionsProps.setProperty('libertyFixpackVersion', bnd.get('libertyFixpackVersion'))
+    libertyVersionsProps.setProperty('libertyServiceVersion', bnd.get('libertyServiceVersion'))
+    libertyVersionsProps.setProperty('libertyBetaVersion', bnd.get('libertyBetaVersion'))
+    libertyVersionsProps.setProperty('libertyRelease', bnd.get('libertyRelease'))
+    libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd.get('libertyBundleMicroVersion'))
+    libertyVersionsProps.setProperty('buildID', bnd.get('buildID'))
     libertyVersionsProps.setProperty('releaseVersion', releaseVersion)
     File libertyVersionsPropsFile = file('build/liberty-versions.props')
     libertyVersionsProps.store(libertyVersionsPropsFile.newWriter(), null)
