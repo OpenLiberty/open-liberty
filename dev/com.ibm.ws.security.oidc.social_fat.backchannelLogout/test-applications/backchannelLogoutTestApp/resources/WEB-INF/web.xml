@@ -16,16 +16,72 @@
   
   <!-- SERVLET DEFINITIONS -->
   <servlet id="Servlet_1">
-    <servlet-name>LogBackChannelLogout_logoutToken_Servlet</servlet-name>
-  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.LogBackChannelLogout_logoutToken_Servlet</servlet-class>
+    <servlet-name>BackChannelLogout_logoutToken_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_logoutToken_Servlet</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet id="Servlet_2">
+    <servlet-name>BackChannelLogout_Sleep_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_Sleep_Servlet</servlet-class>  	
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet id="Servlet_3">
+    <servlet-name>BackChannelLogout_400_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_400_Servlet</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet id="Servlet_4">
+    <servlet-name>BackChannelLogout_501_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_501_Servlet</servlet-class>  	
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet id="Servlet_5">
+    <servlet-name>BackChannelLogout_logMsg_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_logMsg_Servlet</servlet-class>  	
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet id="Servlet_6">
+    <servlet-name>BackChannelLogout_logJSessionId_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_logJSessionId_Servlet</servlet-class>  	
   	<load-on-startup>1</load-on-startup>
   </servlet>
 
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_1">
-    <servlet-name>LogBackChannelLogout_logoutToken_Servlet</servlet-name>
-    <url-pattern>/logBackChannelLogoutUri</url-pattern>
+    <servlet-name>BackChannelLogout_logoutToken_Servlet</servlet-name>
+    <url-pattern>/backChannelLogoutUri</url-pattern>
   </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>BackChannelLogout_Sleep_Servlet</servlet-name>
+    <url-pattern>/backChannelLogoutSleep</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_3">
+    <servlet-name>BackChannelLogout_400_Servlet</servlet-name>
+    <url-pattern>/backChannelLogout400</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_4">
+    <servlet-name>BackChannelLogout_501_Servlet</servlet-name>
+    <url-pattern>/backChannelLogout501</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_5">
+    <servlet-name>BackChannelLogout_logMsg_Servlet</servlet-name>
+    <url-pattern>/backChannelLogoutLogMsg</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_6">
+    <servlet-name>BackChannelLogout_logJSessionId_Servlet</servlet-name>
+    <url-pattern>/backChannelLogoutJSessionId</url-pattern>
+  </servlet-mapping>
+
 
 </web-app>
 

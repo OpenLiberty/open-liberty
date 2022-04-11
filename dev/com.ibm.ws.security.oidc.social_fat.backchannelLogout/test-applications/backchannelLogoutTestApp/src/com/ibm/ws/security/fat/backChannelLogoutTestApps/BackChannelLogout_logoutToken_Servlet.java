@@ -19,14 +19,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class LogBackChannelLogout_logoutToken_Servlet extends HttpServlet {
+public class BackChannelLogout_logoutToken_Servlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    //private final String servletName = "BackChannelLogoutServlet";
     private final String logoutTokenParm = "logout_token";
     private String logoutToken = null;
 
-    public LogBackChannelLogout_logoutToken_Servlet() {
+    public BackChannelLogout_logoutToken_Servlet() {
     }
 
     @Override
@@ -53,10 +52,10 @@ public class LogBackChannelLogout_logoutToken_Servlet extends HttpServlet {
             }
         }
         if (logoutToken == null) {
-            System.out.println("LogBackChannelLogout_logoutToken_Servlet - logout_token: NOT SET");
+            System.out.println("BackChannelLogout_logoutToken_Servlet - logout_token: NOT SET");
             writer.println("logout_token: NOT SET");
         } else {
-            System.out.println("LogBackChannelLogout_logoutToken_Servlet - logout_token: " + logoutToken);
+            System.out.println("BackChannelLogout_logoutToken_Servlet - logout_token: " + logoutToken);
             writer.println("logout_token: " + logoutToken);
         }
 

@@ -21,10 +21,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
         AlwaysPassesTest.class,
         HttpMethodsTests.class,
-        //        LogoutTokenCreationTests.class,    TODO - needs more runtime code
+        LogoutTokenCreationTests.class,
         LogoutTokenValidationTests.class,
-//        ClientConfigTests.class,
-//        ServerConfigTests.class
+        //        ClientConfigTests.class,
+        ServerConfigTests.class
 
 })
 /**
@@ -39,8 +39,7 @@ public class FATSuite {
      */
     //    @ClassRule
     //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new JakartaEE9Action().fullFATOnly());
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.withoutModification(); // adding no modification for now to enable the updates to test case naming
+    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+    //            .andWith(new SecurityTestFeatureEE9RepeatAction().alwaysAddFeature("servlet-5.0").notOnWindows().fullFATOnly());
 
 }

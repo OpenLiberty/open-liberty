@@ -19,7 +19,6 @@ import java.util.Map;
 
 import javax.json.JsonObject;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,12 +58,6 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
      * TODO - do we want to repeat this with different client stores?
      *
      */
-
-    @AfterClass
-    public static void afterClass() {
-        Log.info(thisClass, "afterClass", "Resetting useLdap to: " + defaultUseLdap);
-        useLdap = defaultUseLdap;
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -320,13 +313,13 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
         // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
         // it'll do this to retrieve the logout_token content
-        settings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+        settings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/backChannelLogoutUri");
         // update the end_session that the test will use (it needs the specific provider)
         settings.setEndSession(settings.getEndSession().replace("OidcConfigSample", provider));
 
         // Access a protected app - using a normal RP flow
         List<validationData> expectations = vData.addSuccessStatusCodes(); // this call will also add the successful status check for logout
-        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, clientServer.getHttpString() + "/backchannelLogoutTestApp/backChannelLogoutUri");
 
         Object response = genericRP(_testName, webClient, settings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
         // grab the id_token that was created and store its contents in a JwtTokenForTest object

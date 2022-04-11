@@ -13,7 +13,7 @@ bVersion=1.0
 
 src: \
   fat/src, \
-  test-applications/backchannelLogoutTestApp/src, \
+  test-applications/backchannelLogoutTestApp/src
 
 Import-Package: \
     !*.internal.*, \
@@ -58,5 +58,7 @@ tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
 	com.ibm.ws.security.fat.common.social;version=latest,\
-	com.ibm.ws.security.jwt;version=latest
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.webcontainer.security,\
+	com.ibm.ws.webcontainer.security
 

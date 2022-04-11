@@ -1,0 +1,91 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="bcl_defaultBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_defaultBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_otherDefaultBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_otherDefaultBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_shortBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_shortBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_otherShortBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_otherShortBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_invalidBCLUri_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_invalidBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_omittedBCLUri_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_omittedBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_returns400_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_returns400" />
+	</authFilter>
+
+	<authFilter id="bcl_returns501_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_returns501" />
+	</authFilter>
+
+	<authFilter id="bcl_logsMsg_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_logsMsg" />
+	</authFilter>
+
+	<authFilter id="loggerClient1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient1" />
+	</authFilter>
+
+	<authFilter id="loggerClient2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient2" />
+	</authFilter>
+
+	<authFilter id="loggerClient3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient3" />
+	</authFilter>
+
+	<authFilter id="loggerClient4_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient4" />
+	</authFilter>
+
+</server>

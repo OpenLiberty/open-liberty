@@ -12,11 +12,11 @@
 
 	<httpSession cookieHttpOnly="false" />
 
+<!-- set default client cookie name - test classes can set a new cookie name if needed -->
+ 	<variable name="clientCookieName" value="clientCookie"/>  
+
 	<webAppSecurity
 		httpOnlyCookies="false"
-		ssoCookieName="testOPCookie"
+		ssoCookieName="${clientCookieName}"
 		allowFailOverToBasicAuth="true" />
-		
-		<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:" />
-		
 </server>

@@ -219,6 +219,8 @@ public class Constants {
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
 
+    /* ********************** Cookies *********************** */
+    public static final String JSESSION_ID_COOKIE = "JSESSIONID";
     /* ****************** test apps ************************* */
     public static final String TESTMARKER_START_APP = "testmarker";
 

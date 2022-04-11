@@ -1,0 +1,275 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSample_defaultBCLTimeout"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample_defaultBCLTimeout" />
+
+	<oauthProvider
+		id="OAuthConfigSample_defaultBCLTimeout"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>bcl_defaultBCLTimeout</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_otherDefaultBCLTimeout</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="bcl_defaultBCLTimeout"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutSleep"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_defaultBCLTimeout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_defaultBCLTimeout"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_otherDefaultBCLTimeout"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutSleep"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_otherDefaultBCLTimeout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_otherDefaultBCLTimeout"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_shortBCLTimeout"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample_shortBCLTimeout"
+		backchannelLogoutRequestTimeout="5s" />
+
+	<oauthProvider
+		id="OAuthConfigSample_shortBCLTimeout"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>bcl_shortBCLTimeout</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_otherShortBCLTimeout</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="bcl_shortBCLTimeout"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutSleep"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_shortBCLTimeout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_shortBCLTimeout"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_otherShortBCLTimeout"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutSleep"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_otherShortBCLTimeout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_otherShortBCLTimeout"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_invalidBCL"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample_invalidBCL" />
+
+	<oauthProvider
+		id="OAuthConfigSample_invalidBCL"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>bcl_invalidBCLUri</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_omittedBCLUri</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_returns400</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_returns501</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_logsMsg</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="bcl_invalidBCLUri"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/invalidUri"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_invalidBCLUri,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_invalidBCLUri"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_omittedBCLUri"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_omittedBCLUri,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_omittedBCLUri"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_returns400"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogout400"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_returns400,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_returns400"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_returns501"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogout501"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_returns501,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_returns501"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_logsMsg"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutLogMsg"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_logsMsg,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_logsMsg"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+
+<!--	
+	<openidConnectProvider
+		id="OidcConfigSample"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client1</autoAuthorizeClient>
+		<autoAuthorizeClient>client2</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}//oidcclient/backchannel_logout/defaultClient1"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/defaultClient1,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/defaultClient1,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/defaultClient1,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/ibm/api/social-login/redirect/defaultClient1"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="client2"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutSleep"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutJSessionId"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_otherDefaultBCLTimeout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_otherDefaultBCLTimeout"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>	
+-->
+
+	<openidConnectProvider
+		id="OidcConfigSample_logger"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample_logger" />
+
+	<oauthProvider
+		id="OAuthConfigSample_logger"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>loggerClient1</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient2</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient3</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient4</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="loggerClient1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutLogMsg"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/loggerClient1,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/loggerClient1,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient1,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient1"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="loggerClient2"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutLogMsg"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/loggerClient2,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/loggerClient2,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient2,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient2"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="loggerClient3"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutLogMsg"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/loggerClient3,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/loggerClient3,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient3,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient3"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="loggerClient4"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutLogMsg"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/loggerClient4,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/loggerClient4,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient4,
+					https://localhost:${bvt.prop.security_3_HTTP_default.secure}/ibm/api/social-login/redirect/loggerClient4"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+</server>
