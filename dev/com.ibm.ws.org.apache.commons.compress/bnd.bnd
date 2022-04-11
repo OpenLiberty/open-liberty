@@ -10,9 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.commons:commons-compress;1.21}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-    @${repo;org.apache.commons:commons-compress;1.21}!/!META-INF/maven/*
-
 publish.wlp.jar.disabled: true
 
 -buildpath: org.apache.commons:commons-compress;version=1.21
