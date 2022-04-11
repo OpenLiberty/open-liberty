@@ -29,8 +29,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.BrokenBarrierException;
@@ -56,6 +58,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TransferQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -77,6 +81,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.SkippedException;
 import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -2161,6 +2166,74 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Schedule a repeating timer with a ZonedTrigger that rejects the deprecated methods of Trigger
+     * and implements only the ZonedTrigger methods that were added in Concurrency 3.0 / EE 10.
+     */
+    @Test
+    public void testRepeatingTimerWithZonedTrigger() throws Exception {
+        final AtomicLong counter = new AtomicLong();
+        final ZoneId USMountain = ZoneId.of("America/Denver");
+
+        ScheduledFuture<Long> future = executor6.schedule(() -> {
+            TimeUnit.MILLISECONDS.sleep(200);
+            return counter.incrementAndGet();
+        }, new ZonedTrigger() {
+            @Override
+            public Date getNextRunTime(LastExecution lastExecution, Date scheduledAt) {
+                throw new AssertionError("Deprecated getNextRunTime should not be used.");
+            }
+
+            // Run 1 second after the midpoint of the start and end of the previous execution.
+            @Override
+            public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime scheduledAt) {
+                if (lastExecution == null)
+                    return scheduledAt.plusSeconds(1);
+                else if (Long.valueOf(3).equals(lastExecution.getResult())) {
+                    return null;
+                } else {
+                    ZonedDateTime start = lastExecution.getRunStart(getZoneId());
+                    long lengthNS = start.until(lastExecution.getRunEnd(getZoneId()), ChronoUnit.NANOS);
+                    if (lengthNS < 0)
+                        throw new AssertionError(lengthNS);
+                    ZonedDateTime midpoint = start.plusNanos(lengthNS / 2);
+                    return midpoint.plusSeconds(1);
+                }
+            }
+
+            @Override
+            public ZoneId getZoneId() {
+                return USMountain;
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+                throw new AssertionError("Deprecated skipRun should not be used.");
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecutionInfo, ZonedDateTime scheduledRunTime) {
+                // skip if over an hour late
+                return scheduledRunTime.isBefore(ZonedDateTime.now(getZoneId()).minusHours(1));
+            }
+        });
+
+        try {
+            long result = 0;
+            long startNS = System.nanoTime();
+            do
+                result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            while (result < 3 && System.nanoTime() - startNS < TIMEOUT_NS);
+
+            assertEquals(3, result);
+            assertFalse(future.isCancelled());
+            assertTrue(future.isDone());
+        } finally {
+            if (!future.isDone())
+                future.cancel(true);
+        }
+    }
+
+    /**
      * Verify that the ManagedExecutorService runAsync runs the completion stage action
      * with context captured per the java:comp/DefaultContextService when the
      * ManagedExecutorDefinition does not specify any value for context.
@@ -2524,6 +2597,59 @@ public class ConcurrencyTestServlet extends FATServlet {
         if (result instanceof Throwable)
             throw new AssertionError("Task running on deserialized context failed lookup in application component namespace")
                             .initCause((Throwable) result);
+    }
+
+    /**
+     * Schedule a repeating timer that skips every other execution.
+     */
+    @Test
+    public void testSkipEveryOtherExecution() throws Exception {
+        final AtomicInteger counter = new AtomicInteger();
+        final AtomicInteger skipEveryOther = new AtomicInteger();
+
+        ScheduledFuture<Integer> future = executor6.schedule(counter::incrementAndGet, new ZonedTrigger() {
+            final ZoneId zone = ZoneId.of("Australia/Perth");
+
+            @Override
+            public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime scheduledAt) {
+                int previousResult = lastExecution == null ? 0 : (Integer) lastExecution.getResult();
+                return ZonedDateTime.now(zone).plus(previousResult * 100l, ChronoUnit.MILLIS);
+            }
+
+            @Override
+            public ZoneId getZoneId() {
+                return zone;
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecutionInfo, ZonedDateTime scheduledRunTime) {
+                return skipEveryOther.incrementAndGet() % 2 == 0;
+            }
+        });
+
+        try {
+            // await first 4 executions
+            long result = 0;
+            long startNS = System.nanoTime();
+            do {
+                try {
+                    result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                } catch (SkippedException x) {
+                    // expected due to skips
+                }
+                if (System.nanoTime() - startNS > TIMEOUT_NS * 2)
+                    fail("Timed out with most recent result of " + result);
+            } while (result < 4);
+        } finally {
+            future.cancel(false);
+        }
+
+        int s = skipEveryOther.get();
+        if (s < 7)
+            fail("skipRun was not invoked enough times (" + s + ") to have run 4 or more executions.");
+
+        assertEquals(true, future.isCancelled());
+        assertEquals(true, future.isDone());
     }
 
     /**
