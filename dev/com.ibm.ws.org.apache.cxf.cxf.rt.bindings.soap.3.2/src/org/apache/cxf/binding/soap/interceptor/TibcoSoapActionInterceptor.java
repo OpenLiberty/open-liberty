@@ -27,7 +27,7 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  * Tibco Business Works uses SoapAction instead of the standard spelling SOAPAction.
  * So this interceptor adds a SoapAction header if SOAPAction is set in protocol header
@@ -41,7 +41,7 @@ public class TibcoSoapActionInterceptor extends AbstractPhaseInterceptor<SoapMes
     }
 
     @SuppressWarnings("unchecked")
-    public void handleMessage(SoapMessage soapMessage) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage soapMessage) throws Fault {
         Map<String, Object> headers = (Map<String, Object>)soapMessage.get(Message.PROTOCOL_HEADERS);
         if (headers != null && headers.containsKey(SoapBindingConstants.SOAP_ACTION)) {
             //need to flip to a case sensitive map.  The default

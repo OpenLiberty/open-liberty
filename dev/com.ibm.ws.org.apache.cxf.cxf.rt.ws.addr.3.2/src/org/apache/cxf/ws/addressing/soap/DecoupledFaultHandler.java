@@ -33,6 +33,7 @@ import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.Names;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  * Utility interceptor for dealing with faults occurred during processing
  * the one way requests with WSA FaultTo EPR pointing to a decoupled destination.
@@ -50,14 +51,14 @@ public class DecoupledFaultHandler extends AbstractSoapInterceptor {
         addBefore(MAPCodec.class.getName());
     }
 
-    public void handleMessage(SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) {
         // complete
     }
 
     // Ideally, this code will instead be executed as part of the Fault chain
     // but at the moment PhaseInterceptorChain needs to be tricked that this is
     // a two way request for a fault chain be invoked
-    public void handleFault(SoapMessage message) {
+    public void handleFault(@Sensitive SoapMessage message) {
         if (!ContextUtils.isRequestor(message)) {
 
             Exchange exchange = message.getExchange();

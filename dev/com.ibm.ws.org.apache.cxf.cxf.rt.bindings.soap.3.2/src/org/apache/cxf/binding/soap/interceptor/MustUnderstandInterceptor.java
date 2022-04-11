@@ -46,6 +46,10 @@ import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.OneWayProcessorInterceptor;
 import org.apache.cxf.phase.Phase;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial // Liberty Change
 public class MustUnderstandInterceptor extends AbstractSoapInterceptor {
     public static final String UNKNOWNS = "MustUnderstand.UNKNOWNS";
 
@@ -62,7 +66,7 @@ public class MustUnderstandInterceptor extends AbstractSoapInterceptor {
         super(phase);
     }
 
-    public void handleMessage(SoapMessage soapMessage) {
+    public void handleMessage(@Sensitive SoapMessage soapMessage) {
         Set<QName> paramHeaders = HeaderUtil.getHeaderQNameInOperationParam(soapMessage);
 
         if (soapMessage.getHeaders().isEmpty() && paramHeaders.isEmpty()) {
@@ -96,7 +100,7 @@ public class MustUnderstandInterceptor extends AbstractSoapInterceptor {
         }
     }
     @Override
-    public void handleFault(SoapMessage msg) {
+    public void handleFault(@Sensitive SoapMessage msg) { //Liberty Change
         Set<QName> unknowns = CastUtils.cast((Set<?>)msg.get(MustUnderstandInterceptor.UNKNOWNS));
         if (msg.getExchange().getBindingOperationInfo() == null
             && unknowns != null && !unknowns.isEmpty()) {
@@ -228,7 +232,7 @@ public class MustUnderstandInterceptor extends AbstractSoapInterceptor {
             super(Phase.INVOKE);
             this.knownHeaders = knownHeaders;
         }
-        public void handleMessage(SoapMessage soapMessage) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage soapMessage) throws Fault { // Liberty Change
             SoapVersion soapVersion = soapMessage.getVersion();
             Set<QName> notFound = new HashSet<>();
             List<Header> heads = soapMessage.getHeaders();
@@ -266,7 +270,7 @@ public class MustUnderstandInterceptor extends AbstractSoapInterceptor {
             super(phase);
         }
 
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             // throws soapFault after the response code 202 is set in OneWayProcessorInterceptor
             if (message.get(MustUnderstandInterceptor.UNKNOWNS) != null) {
                 //we may not have known the Operation in the main interceptor and thus may not

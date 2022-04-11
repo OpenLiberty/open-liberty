@@ -72,6 +72,7 @@ import org.apache.cxf.ws.addressing.RelatesToType;
 import org.apache.cxf.ws.addressing.VersionTransformer.Names200408;
 
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  * SOAP interceptor responsible for {en|de}coding the Message Addressing
  * Properties for {outgo|incom}ing messages.
@@ -135,7 +136,7 @@ public class MAPCodec extends AbstractSoapInterceptor {
      *
      * @param message the messsage
      */
-    public void handleMessage(SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) {
         mediate(message);
     }
 

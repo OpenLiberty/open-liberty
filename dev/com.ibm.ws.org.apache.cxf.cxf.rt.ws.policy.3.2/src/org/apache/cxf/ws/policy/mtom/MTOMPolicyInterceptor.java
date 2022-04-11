@@ -29,12 +29,14 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class MTOMPolicyInterceptor extends AbstractPhaseInterceptor<Message> {
     public MTOMPolicyInterceptor() {
         super(Phase.POST_LOGICAL);
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
 
         // extract Assertion information

@@ -51,11 +51,13 @@ import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * 
  */
+@Trivial
 public class URLConnectionHTTPConduit extends HTTPConduit {
     public static final String HTTPURL_CONNECTION_METHOD_REFLECTION = "use.httpurlconnection.method.reflection";
     public static final String SET_REASON_PHRASE_NOT_NULL = "set.reason.phrase.not.null";
@@ -253,6 +255,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         return address != null ? address.getURI() : connection.getURL().toURI();
     }
     
+    @Trivial
     class URLConnectionWrappedOutputStream extends WrappedOutputStream {
         HttpURLConnection connection;
         URLConnectionWrappedOutputStream(Message message, HttpURLConnection connection,

@@ -34,6 +34,10 @@ import javax.wsdl.extensions.ExtensibilityElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.Soap12;
 import org.apache.cxf.binding.soap.SoapBinding;
@@ -87,6 +91,7 @@ import org.apache.cxf.ws.policy.AssertionInfoMap;
  * Logical Handler responsible for aggregating the Message Addressing
  * Properties for outgoing messages.
  */
+@Trivial // Liberty Change
 public class MAPAggregatorImpl extends MAPAggregator {
 
     private static final Logger LOG =
@@ -137,7 +142,7 @@ public class MAPAggregatorImpl extends MAPAggregator {
      *
      * @param message the current message
      */
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) { // Liberty Change
         if (!MessageUtils.getContextualBoolean(message, ADDRESSING_DISABLED, false)) {
             mediate(message, ContextUtils.isFault(message));
         } else {

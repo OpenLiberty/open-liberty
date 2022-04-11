@@ -111,6 +111,7 @@ import org.apache.cxf.wsdl.interceptors.WrappedOutInterceptor;
 import org.apache.cxf.wsdl11.WSDLServiceBuilder;
 
 import static org.apache.cxf.helpers.CastUtils.cast;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 
 @NoJSR250Annotations(unlessNull = { "bus" })
@@ -464,7 +465,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
         // matter on such small messages anyway) to make sure we pickup those
         // namespaces that are declared there.
         p.getOutInterceptors().add(new AbstractSoapInterceptor(Phase.POST_LOGICAL) {
-            public void handleMessage(SoapMessage message) throws Fault {
+            public void handleMessage(@Sensitive SoapMessage message) throws Fault {
                 AddressingProperties p = ContextUtils.retrieveMAPs(message, false, true);
                 if (p == null) {
                     return;

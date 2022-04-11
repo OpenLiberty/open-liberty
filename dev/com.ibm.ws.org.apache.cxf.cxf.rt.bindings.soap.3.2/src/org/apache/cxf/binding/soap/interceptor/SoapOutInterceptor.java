@@ -65,6 +65,8 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class SoapOutInterceptor extends AbstractSoapInterceptor {
     public static final String WROTE_ENVELOPE_START = "wrote.envelope.start";
 
@@ -81,7 +83,7 @@ public class SoapOutInterceptor extends AbstractSoapInterceptor {
         bus = b;
     }
 
-    public void handleMessage(SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) { // Liberty Change
         // Yes this is ugly, but it avoids us from having to implement any kind of caching strategy
         boolean wroteStart = PropertyUtils.isTrue(message.get(WROTE_ENVELOPE_START));
         if (!wroteStart) {
@@ -296,7 +298,7 @@ public class SoapOutInterceptor extends AbstractSoapInterceptor {
             super(SoapOutEndingInterceptor.class.getName(), Phase.WRITE_ENDING);
         }
 
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             try {
                 XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
                 if (xtw != null) {

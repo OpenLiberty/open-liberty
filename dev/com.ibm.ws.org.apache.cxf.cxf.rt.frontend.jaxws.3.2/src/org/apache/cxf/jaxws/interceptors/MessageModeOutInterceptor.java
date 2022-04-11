@@ -43,6 +43,8 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.cxf.attachment.AttachmentDeserializer;
 import org.apache.cxf.binding.soap.Soap12;
@@ -91,7 +93,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
         type = t;
         this.bindingName = bname;
     }
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop != null && !bindingName.equals(bop.getBinding().getName())) {
             return;
@@ -176,7 +178,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
     }
 
 
-    private void validatePossibleFault(Message message, BindingOperationInfo bop, Node ds) {
+    private void validatePossibleFault(@Sensitive Message message, BindingOperationInfo bop, Node ds) {
         Element el = DOMUtils.getFirstElement(ds);
         if (!"Fault".equals(el.getLocalName())) {
             return;
@@ -216,7 +218,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             }
         }
     }
-    private void validateFault(SoapMessage message, SOAPFault fault, BindingOperationInfo bop) {
+    private void validateFault(@Sensitive SoapMessage message, SOAPFault fault, BindingOperationInfo bop) {
         if (ServiceUtils.isSchemaValidationEnabled(SchemaValidationType.OUT, message)) {
             Schema schema = EndpointReferenceUtils.getSchema(message.getExchange().getService()
                                                              .getServiceInfos().get(0),
@@ -234,7 +236,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
     }
 
 
-    private void doSoap(Message message) {
+    private void doSoap(@Sensitive Message message) {
         MessageContentsList list = (MessageContentsList)message.getContent(List.class);
         if (list == null || list.isEmpty()) {
             return;
@@ -288,7 +290,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             addBefore(SAAJOutInterceptor.class.getName());
         }
 
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
             MessageContentsList list = (MessageContentsList)message.getContent(List.class);
             Object o = list.remove(0);
             SOAPMessage soapMessage = null;
