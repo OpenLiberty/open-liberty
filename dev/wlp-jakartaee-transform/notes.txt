@@ -34,11 +34,6 @@ Notes:
   dev/wlp-jakartaee-transform/notes.txt
   -- Notes (this file)
 
-  dev/com.ibm.ws.kernel.boot.core/src/com/ibm/ws/kernel/provisioning/ContentBasedLocalBundleRepository.java
-  -- Improved error reporting in the BundleInfo constructor.
-  dev/wlp-featureTasks/src/com/ibm/ws/wlp/feature/tasks/FeatureBnd.java
-  -- Improved error reporting.
-
   dev/fattest.simplicity/bnd.bnd
   -- Add dependency on org.eclipse.transformer.jakarta.
   -- Update transformer versions to 0.4.0.20220406.
@@ -70,6 +65,13 @@ Notes:
   dev/cnf/oss_ibm.maven
   -- Add dependency on org.eclipse.transformer.jakarta.
   -- Update transformer versions to 0.4.0.20220406.
+
+These are no longer included in the update:
+
+  dev/com.ibm.ws.kernel.boot.core/src/com/ibm/ws/kernel/provisioning/ContentBasedLocalBundleRepository.java
+  -- Improved error reporting in the BundleInfo constructor.
+  dev/wlp-featureTasks/src/com/ibm/ws/wlp/feature/tasks/FeatureBnd.java
+  -- Improved error reporting.
 
 ---
 
