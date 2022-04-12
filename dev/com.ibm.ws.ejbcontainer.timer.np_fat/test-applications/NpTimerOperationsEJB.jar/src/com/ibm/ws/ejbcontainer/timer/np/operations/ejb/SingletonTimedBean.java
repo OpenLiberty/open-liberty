@@ -458,12 +458,18 @@ public class SingletonTimedBean implements SingletonTimedLocal {
                                     timer[i]);
                     }
                     break;
+                case 2:
+                case 4:
+                    if (timeoutCounts[i] < 1) {
+                        successful = false;
+                        logger.info("Interval Timer[" + i + "] not executed at least once: " + timer[i]);
+                    }
+                    break;
 
                 default:
                     if (timeoutCounts[i] != 1) {
                         successful = false;
-                        logger.info("Timer[" + i + "] not executed once: " +
-                                    timer[i]);
+                        logger.info("Timer[" + i + "] not executed once: " + timer[i]);
                     }
                     break;
             }
@@ -1053,6 +1059,8 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         } catch (InterruptedException e) {
             e.printStackTrace(System.out);
         }
+        logger.info("Not all timers fired, countdownlatch.await() timed out");
+        logger.info("CDL remaining count: " + latch.getCount());
     }
 
     @Override
