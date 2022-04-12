@@ -8,19 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jakarta.jsonb.internal.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+configurations {
+  yasson
+}
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+dependencies {
+  yasson 'io.openliberty.org.eclipse:yasson:3.0.0-RC1'
+}
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class,
-                JsonBContainerTest.class,
-                JsonBTest.class,
-})
-public class FATSuite {
+task copyYasson(type: Copy) {
+  mustRunAfter jar
+  from configurations.yasson
+  into new File(autoFvtDir, 'publish/shared/resources/yasson/3.0.0')
+  rename 'yasson-.*.jar', 'yasson.jar'
+}
+
+addRequiredLibraries {
+  dependsOn copyYasson
 }
