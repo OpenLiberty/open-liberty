@@ -309,26 +309,31 @@ if ( parseBoolean( bnd.get('jakartaeeMe', 'false'))) {
 }
 
 compileJava {
-  if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
-    inputs.files { rasInstrumentationInputFiles() }
-    outputs.dir compileJava.destinationDir
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
-    doLast {
-      if (instrument.isEmpty())
-        return
-      rasInstrumentationTaskdef(ant)
-      ant.instrumentForTrace(ffdc: bnd.get('instrument.ffdc'), taskInjection: bnd.get('instrument.taskInjection')) {
-        fileset(dir: compileJava.destinationDir, includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
-      }
-    }
-  }
-
   if (parseBoolean(bnd.get('globalize', 'true'))) {
     dependsOn globalize
   }
 
   options.warnings = false
   options.fork = true
+}
+
+if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
+  task instrument {
+    dependsOn compileJava
+    inputs.files { rasInstrumentationInputFiles() }
+    outputs.dir compileJava.destinationDir
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
+    doLast {
+      if (!instrument.isEmpty()) {
+        rasInstrumentationTaskdef(ant)
+        ant.instrumentForTrace(ffdc: bnd.get('instrument.ffdc'), taskInjection: bnd.get('instrument.taskInjection')) {
+          fileset(dir: compileJava.destinationDir, includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
+        }
+      }
+    }
+  }
+
+  jar.dependsOn(instrument)
 }
 
 test {
