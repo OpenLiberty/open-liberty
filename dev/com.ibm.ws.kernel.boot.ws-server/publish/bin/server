@@ -1431,12 +1431,12 @@ restoreServer()
     value=${line#*=};
     key=${line%%=*};
     if [ "$value" != "$key" ]; then
-      envContent="$envContent\n$key=$value"
+      envContent="$envContent$key=$value$newline"
     fi
   done
   IFS=$saveIFS
 
-  echo -e "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  safeEcho "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?
