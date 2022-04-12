@@ -1425,7 +1425,18 @@ restoreServer()
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
   # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
-  env | grep -Ev "^INVOKED=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  saveIFS=$IFS
+  IFS=$newline
+  for line in `env | grep -Ev "^INVOKED="`; do
+    value=${line#*=};
+    key=${line%%=*};
+    if [ "$value" != "$key" ]; then
+      envContent="$envContent\n$key=$value"
+    fi
+  done
+  IFS=$saveIFS
+
+  echo -e "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?
