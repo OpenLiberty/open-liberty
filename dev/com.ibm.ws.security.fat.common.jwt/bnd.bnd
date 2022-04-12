@@ -29,8 +29,6 @@ Import-Package: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common
     
-Private-Package: \
-
 src: \
     src,\
     fat/src,\
@@ -68,7 +66,6 @@ generate.replacement: true
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.componenttest:public.api;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.json4j;version=latest,\

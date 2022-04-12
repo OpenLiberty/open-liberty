@@ -21,7 +21,7 @@ WS-TraceGroup: JAXRS
 Export-Package: com.ibm.ws.jaxrs20.tools;version="1.0"
 
 Private-Package: \
-   com.ibm.ws.jaxrs20.tools.* \
+   com.ibm.ws.jaxrs20.tools.*
 
 Include-Resource:\
  org/apache/cxf/tools/wadlto/jaxrs/jaxrs-toolspec.xml=src/org/apache/cxf/tools/wadlto/jaxrs/jaxrs-toolspec.xml

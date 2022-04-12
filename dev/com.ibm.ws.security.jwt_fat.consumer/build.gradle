@@ -34,7 +34,7 @@ dependencies {
       'xalan:xalan:2.7.2',
       project(':com.ibm.ws.org.apache.commons.io'),
       project(':io.openliberty.org.apache.xercesImpl'),
-      'org.slf4j:slf4j-api:1.7.7'
+      project(':com.ibm.ws.org.slf4j.api')
       
 }
 

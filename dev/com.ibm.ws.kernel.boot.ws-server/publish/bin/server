@@ -30,6 +30,15 @@
 #TODO need to reflect this to criu checkpoint
 #                  Set to 1-4 with 4 being max verbosity. Two "2" is the default.
 #
+# CRIU_UNPRIVILEGED - Use criu in unprivileged mode.
+#                     Set to one of true, True, TRUE, 1
+#                     or false, False, FALSE, 0 to continue
+#                     to use criu in privileged mode.
+#
+# CRIU_EXTRA_ARGS   - Pass extra arguments to `criu restore`. Extra arguments are
+#                     appended to the end of the list of arguments and can therefore
+#                     override existing arguments, if desired.
+#
 # PID_DIR    - The directory that should be used for server pid file(s).
 #              The default value is ${WLP_OUTPUT_DIR}/.pid
 #
@@ -295,6 +304,36 @@ JAVA_AGENT_QUOTED=-javaagent:${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-javaagent.ja
 if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
   JAVA_AGENT_QUOTED=
 fi
+
+##
+## Determine if CRIU supports unprivileged mode.
+## Determine which CRIU mode to use, based on current euid, whether or not criu supports unprivileged mode, and the value of the CRIU_UNPRIVILEGED env var.
+## Set DO_CRIU_UNPRIVILEGED based on the above.
+##
+checkCriuUnprivileged()
+{
+  if [ -n "$CRIU_UNPRIVILEGED" ]; then
+    if [ "${CRIU_UNPRIVILEGED}" = "true" -o "${CRIU_UNPRIVILEGED}" = "1" -o "${CRIU_UNPRIVILEGED}" = "TRUE" -o "${CRIU_UNPRIVILEGED}" = "True" ]; then
+      # Use unprivileged if explicitly requested; if CRIU doesn't support it we'll hit an error later that will be shown to the user
+      DO_CRIU_UNPRIVILEGED=true
+    else
+      DO_CRIU_UNPRIVILEGED=false
+    fi
+    return
+  fi
+
+  # Determine if CRIU supports unprivileged mode
+  criu --help | grep -q -e '--unprivileged' && CRIU_SUPPORTS_UNPRIVILEGED=true || CRIU_SUPPORTS_UNPRIVILEGED=false
+
+  # Determine which CRIU mode to use, based on current euid and value of CRIU_SUPPORTS_UNPRIVILEGED
+  DO_CRIU_UNPRIVILEGED=false
+  if [ "$(id -u)" != 0 ]; then
+    # Not root, unprivileged by default if CRIU supports it
+    if [ $CRIU_SUPPORTS_UNPRIVILEGED = true ]; then
+      DO_CRIU_UNPRIVILEGED=true
+    fi
+  fi
+}
 
 ##
 ## createServer: Function to launch server create
@@ -932,6 +971,11 @@ javaCmd()
     fi
 
     JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport $X_WLP_IMMUTABLE_VARS"
+
+    checkCriuUnprivileged
+    if [ $DO_CRIU_UNPRIVILEGED = true ]; then
+      JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
+    fi
   fi
   
 
@@ -1293,13 +1337,18 @@ criuRestore()
     CRIU_LOG_LEVEL=2
   fi  
 
+  checkCriuUnprivileged
+  if [ $DO_CRIU_UNPRIVILEGED = true ]; then
+    CRIU_EXTRA_ARGS="--unprivileged $CRIU_EXTRA_ARGS"
+  fi
+
   if $BACKGROUND_RESTORE
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
     criu restore --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log --pidfile ${X_PID_FILE} \
-      --restore-detached 
+      --restore-detached ${CRIU_EXTRA_ARGS}
     rc=$?
     PID=`cat ${X_PID_FILE}`
     if [ $rc = 0 ]; then
@@ -1326,7 +1375,7 @@ criuRestore()
     trap "killIfRunning $TAIL_PID" EXIT
 
     criu restore --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
-      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log
+      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 
     kill $TAIL_PID
@@ -1376,7 +1425,18 @@ restoreServer()
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
   # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
-  env | grep -Ev "^INVOKED=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+  saveIFS=$IFS
+  IFS=$newline
+  for line in `env | grep -Ev "^INVOKED="`; do
+    value=${line#*=};
+    key=${line%%=*};
+    if [ "$value" != "$key" ]; then
+      envContent="$envContent\n$key=$value"
+    fi
+  done
+  IFS=$saveIFS
+
+  echo -e "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   criuRestore $BACKGROUND_RESTORE
   rc=$?

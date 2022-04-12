@@ -46,7 +46,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.batch.runtime.BatchStatus;
-import javax.batch.runtime.JobExecution;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;

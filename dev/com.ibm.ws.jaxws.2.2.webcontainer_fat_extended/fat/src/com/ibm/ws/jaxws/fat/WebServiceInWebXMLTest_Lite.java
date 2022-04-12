@@ -29,9 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -160,10 +158,24 @@ public class WebServiceInWebXMLTest_Lite {
                    line.contains("xml version="));
     }
 
-    /*
-     * TODO: Fix jaxws-2.3 no longer printing message CWWKW0037E when WSDL is not generated (correct behavior no longer prints error).
+    /**
+     * TestDescription: This test verifies that the check added to our AbstractJaxWsWebEndpoint class properly
+     * verifies that the SEI or WebServiceProider publishes a WSDL according to the requirements in the JAX-WS 2.2 spec,
+     * if the check fails the code will add the LibertyJaxWsCompatibleWSDLGetInterceptor which overrides the default WSDLGetInterceptor
+     * from CXF, with the sole purpose of responding with a 404 response. See the following for the SPEC publishing rules:
+     *
+     * SEI-based Endpoints:
+     *
+     * - For publishing to succeed, a SEI-based endpoint MUST have an associated contract.
+     * - If the wsdlLocation annotation element is the empty string, then a JAX-WS implementation must obey the following rules, depending on the binding used by the endpoint:
+     * - SOAP 1.1/HTTP Binding A JAX-WS implementation MUST generate a WSDL description for the end- point based on the rules in section 5.2.5.3 below.
+     * - SOAP 1.2/HTTP Binding A JAX-WS implementation MUST NOT generate a WSDL description for the endpoint.
+     * - HTTP Binding A JAX-WS implementation MUST NOT generate a WSDL description for the endpoint.
+     *
+     * Provider-based Endpoints:
+     *
+     * If the wsdlLocation annotation element is the empty string, then a JAX-WS implementation MUST NOT generate a WSDL description for the endpoint.
      */
-    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
     @Test
     public void testSameWebServiceDiffBindingType_WSDL() throws Exception {
         String method = "testSameWebServiceDiffBindingType_WSDL";

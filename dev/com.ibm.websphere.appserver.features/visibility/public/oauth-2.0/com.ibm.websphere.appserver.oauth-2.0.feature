@@ -21,7 +21,7 @@ Subsystem-Name: OAuth 2.0
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.ldapRegistry-3.0
 -bundles=\
   com.ibm.ws.com.google.gson.2.2.4, \

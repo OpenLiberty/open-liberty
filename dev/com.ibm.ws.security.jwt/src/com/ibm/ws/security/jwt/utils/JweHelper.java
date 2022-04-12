@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.security.Key;
 import java.security.KeyStoreException;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jose4j.base64url.Base64;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
@@ -39,6 +41,10 @@ public class JweHelper {
 
     private static final TraceComponent tc = Tr.register(JweHelper.class);
 
+    private static final String NOT_PERIOD = "[^\\.]";
+    private static final Pattern JWS_PATTERN = Pattern.compile("^(" + NOT_PERIOD + "*\\.){2}" + NOT_PERIOD + "*$");
+    private static final Pattern JWE_PATTERN = Pattern.compile("^(" + NOT_PERIOD + "*\\.){4}" + NOT_PERIOD + "*$");
+
     @FFDCIgnore({ Exception.class })
     public static String createJweString(String jws, JwtData jwtData) throws Exception {
         JweHelper helper = new JweHelper();
@@ -60,16 +66,18 @@ public class JweHelper {
         if (jwtString == null || jwtString.isEmpty()) {
             return false;
         }
-        String notPeriod = "[^\\.]";
-        return jwtString.matches("^(" + notPeriod + "*\\.){2}" + notPeriod + "*$");
+
+        Matcher m = JWS_PATTERN.matcher(jwtString);
+        return m.matches();
     }
 
     public static boolean isJwe(String jwtString) {
         if (jwtString == null || jwtString.isEmpty()) {
             return false;
         }
-        String notPeriod = "[^\\.]";
-        return jwtString.matches("^(" + notPeriod + "*\\.){4}" + notPeriod + "*$");
+
+        Matcher m = JWE_PATTERN.matcher(jwtString);
+        return m.matches();
     }
 
     /**

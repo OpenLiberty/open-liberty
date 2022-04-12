@@ -30,5 +30,4 @@ Export-Package: com.ibm.ws.transaction.fat.util
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	fattest.simplicity;version=latest

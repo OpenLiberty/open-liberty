@@ -12,6 +12,7 @@ package com.ibm.ws.jaxws.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,9 @@ import org.apache.cxf.jaxws.ServiceImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
@@ -44,6 +48,8 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
 
 /**
@@ -145,6 +151,30 @@ public class LibertyServiceImpl extends ServiceImpl {
 
             if (null != portProps) {
                 requestContext.putAll(portProps);
+            }
+            
+            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+
+                Bus bus = this.getBus();
+                if(bus != null) {               
+                    
+                    // Get all the Features enabled on the CXF BUS
+                    Collection<Feature> featureList = bus.getFeatures();
+                    
+                    if( !featureList.contains(LoggingFeature.class)) {
+                        // Create a new LogginFeature instance
+                        LoggingFeature loggingFeature = new LoggingFeature();
+
+                        // Add new LoggingFeature instance to Feature list and set it back on the Bus
+                        if (!featureList.contains(loggingFeature)) {
+                            loggingFeature.setPrettyLogging(true);
+                            loggingFeature.initialize(bus);
+                            featureList.add(loggingFeature);
+                            bus.setFeatures(featureList);
+                        }
+                    }
+                }
+
             }
         }
 

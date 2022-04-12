@@ -383,7 +383,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         boolean sameMetaDataIdentity() {
             // Return false if our identity is null (even if the current component's metadata or metadata identity is also null).
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            return identifier == null ? false : identifier.equals(metadataIdentifierService.getMetaDataIdentifier(cData));
+            return identifier != null && metadataIdentifierService != null && identifier.equals(metadataIdentifierService.getMetaDataIdentifier(cData));
         }
     }
 }

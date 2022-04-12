@@ -55,7 +55,7 @@ Export-Package: \
 # Explicitly eliminate the Geronimo bundle activator (pulled in from spec api jar)
 Private-Package: \
   !org.apache.geronimo.*, \
-  *.jpa.* \
+  *.jpa.*
 
 Import-Package: \
  javax.persistence;version="[1.1.0, 2.3.0)", \

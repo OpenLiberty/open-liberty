@@ -27,8 +27,8 @@
     <library id="quartz">
       <file name="${server.config.dir}/quartz/quartz-2.3.2.jar"/>
       <file name="${server.config.dir}/quartz/quartz-extensions.jar"/>
-      <file name="${server.config.dir}/quartz/slf4j-api-1.7.30.jar"/>
-      <file name="${server.config.dir}/quartz/slf4j-simple-1.7.30.jar"/>
+      <file name="${server.config.dir}/quartz/com.ibm.ws.org.slf4j.api.jar"/>
+      <file name="${server.config.dir}/quartz/com.ibm.ws.org.slf4j.simple.jar"/>
     </library>
 
     <managedExecutorService jndiName="concurrent/quartzExecutor">
@@ -45,8 +45,8 @@
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.3.2.jar" className="java.net.SocketPermission" name="*" actions="resolve"/>
 
-    <javaPermission codebase="${server.config.dir}/quartz/slf4j-api-1.7.30.jar" className="java.util.PropertyPermission" name="slf4j.*" actions="read"/>
-    <javaPermission codebase="${server.config.dir}/quartz/slf4j-api-1.7.30.jar" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/com.ibm.ws.org.slf4j.api.jar" className="java.util.PropertyPermission" name="slf4j.*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/com.ibm.ws.org.slf4j.api.jar" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>
 
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.io.FilePermission" name="quartz.properties" actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.net.URLPermission" name="http://www.terracotta.org/kit/reflector" actions="GET:"/>

@@ -39,7 +39,7 @@ Import-Package: \
    *
 
 Private-Package: \
-    com.ibm.ws.security.mp.jwt.v11.config.resources.*,
+    com.ibm.ws.security.mp.jwt.v11.config.resources.*
     
 -dsannotations: com.ibm.ws.security.mp.jwt.v11.config.impl.MpConfigProxyServiceImpl
 

@@ -16,7 +16,7 @@ src: \
     test-applications/mpOpenTracing/src,\
     test-applications/inventory/src/java,\
     test-applications/system/src/java
-    
+
 -sub: *.bnd
 
 fat.project: true
@@ -51,5 +51,5 @@ tested.features: jaeger-1.0
     io.jaegertracing:jaeger-client;version=0.34.3,\
     io.jaegertracing:jaeger-tracerresolver;version=0.34.3,\
     org.apache.thrift:libthrift;version=0.13.0,\
-    org.slf4j:slf4j-simple;version=1.7.30,\
-    org.slf4j:slf4j-api;version=1.7.30
+    com.ibm.ws.org.slf4j.api;version=latest, \
+    com.ibm.ws.org.slf4j.simple;version=latest

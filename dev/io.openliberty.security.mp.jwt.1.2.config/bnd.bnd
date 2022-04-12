@@ -35,7 +35,7 @@ Import-Package: \
    *
 
 Private-Package: \
-    io.openliberty.security.mp.jwt.v12.config.resources.*,
+    io.openliberty.security.mp.jwt.v12.config.resources.*
     
 -dsannotations: io.openliberty.security.mp.jwt.v12.config.impl.MpConfigProxyServiceImpl, \
     io.openliberty.security.mp.jwt.osgi.v12.MpJwt12Runtime

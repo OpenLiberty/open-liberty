@@ -24,9 +24,10 @@ public interface ExecuteCRIU {
      * @param logFileName
      * @param workDir
      * @param envProps
+     * @param unprivileged
      * @throws CheckpointFailedException
      */
-    default void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+    default void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
         // do nothing
     };
 

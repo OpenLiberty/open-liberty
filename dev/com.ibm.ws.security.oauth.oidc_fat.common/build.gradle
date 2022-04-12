@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ dependencies {
      */
     collectedDeps 'org.mongodb:mongo-java-driver:2.13.3',
                   'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0',
-                  'org.apache.commons:commons-compress:1.20',
+                  'org.apache.commons:commons-compress:1.21',
                   project(':io.openliberty.org.apache.commons.codec'),
                   project(':io.openliberty.org.apache.commons.logging'),
                   project(':com.ibm.json4j'),
@@ -299,7 +299,7 @@ task testTokenEndpoint_ZIP (type: Zip, dependsOn: classes) {
   
   /* start of slf4j copy */
   /* copy contents of the slf4j jar into our test app - we don't have another way to get to the jar */
-  from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.1.7.7.jar")) {
+  from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.jar")) {
     exclude("META-INF/MANIFEST.MF")
     into "WEB-INF/classes"
   }
@@ -342,7 +342,7 @@ task testUserinfoEndpoint_ZIP (type: Zip, dependsOn: classes) {
   /* end of jose4j copy */
   /* start of slf4j copy */
   /* copy contents of the slf4j jar into our test app - we don't have another way to get to the jar */
-  from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.1.7.7.jar")) {
+  from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.jar")) {
     exclude("META-INF/MANIFEST.MF")
     into "WEB-INF/classes"
   }

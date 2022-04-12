@@ -48,4 +48,4 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0,
     org.testcontainers:jdbc;version=latest,\
     org.testcontainers:testcontainers;version=latest,\
     org.rnorth.duct-tape:duct-tape;version=latest,\
-    org.slf4j:slf4j-api;version=latest
+    com.ibm.ws.org.slf4j.api;version=latest

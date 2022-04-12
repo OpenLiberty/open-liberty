@@ -31,7 +31,7 @@ com.ibm.wsdl.spi.extensions.soap12;version="1.1.0", \
 com.ibm.wsdl.spi.util.xml;version="1.1.0", \
 com.ibm.wsdl.spi;version="1.1.0", \
 com.ibm.wsdl.xml;version="1.1.0", \
-com.ibm.wsdl;version="1.1.0", \
+com.ibm.wsdl;version="1.1.0"
 
 Import-Package: \
 javax.xml.namespace, \

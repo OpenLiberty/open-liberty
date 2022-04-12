@@ -50,6 +50,7 @@ import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.BeansXmlParser;
 import com.ibm.ws.cdi.internal.interfaces.BuildCompatibleExtensionFinder;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
+import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
@@ -118,6 +119,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile BuildCompatibleExtensionFinder bceFinder;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile CDIContainerEventManager cdiContainerEventManager;
 
     @Reference
     private CDIConfiguration cdiContainerConfig;
@@ -540,12 +544,28 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             Tr.debug(tc, Util.identity(this), "applicationStarted", appInfo);
         }
 
+        try {
+            Application application = this.runtimeFactory.newApplication(appInfo);
+            if (application != null) {
+                getCDIContainer().applicationStarted(application);
+            }
+        } catch (CDIException e) {
+            //FFDC and carry on
+        }
     }
 
     @Override
     public void applicationStopping(ApplicationInfo appInfo) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, Util.identity(this), "applicationStopping", appInfo);
+        }
+        try {
+            Application application = this.runtimeFactory.newApplication(appInfo);
+            if (application != null) {
+                getCDIContainer().applicationStopping(application);
+            }
+        } catch (CDIException e) {
+            //FFDC and carry on
         }
     }
 
@@ -659,6 +679,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public BeansXmlParser getBeansXmlParser() {
         return this.beansXmlParser;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CDIContainerEventManager getCDIContainerEventManager() {
+        return this.cdiContainerEventManager;
     }
 
     /** {@inheritDoc} */

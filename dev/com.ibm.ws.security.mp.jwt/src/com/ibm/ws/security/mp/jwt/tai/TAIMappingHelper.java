@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,6 @@ public class TAIMappingHelper {
     private static TraceComponent tc = Tr.register(TAIMappingHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     String INTERNAL_DISABLE_SSO_LTPA_CACHE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cache";
 
-    @Sensitive
-    String decodedTokenPayload = null;
     String username = null;
     String realm = null;
     JwtPrincipalMapping claimToPrincipalMapping = null;
@@ -49,26 +47,24 @@ public class TAIMappingHelper {
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
     //boolean addJwtPrincipalToSubject = false;
 
-    public TAIMappingHelper(@Sensitive String decodedPayload) throws MpJwtProcessingException {
-        decodedTokenPayload = decodedPayload;
+    public TAIMappingHelper(@Sensitive JwtToken jwtToken) throws MpJwtProcessingException {
         config = null;
         //addJwtPrincipalToSubject = true;
-        if (decodedTokenPayload != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, "upn", "groups", false);
+        if (jwtToken != null) {
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false);
             setUsername();
             setRealm();
         }
     }
 
-    public TAIMappingHelper(@Sensitive String decodedPayload, MicroProfileJwtConfig clientConfig) throws MpJwtProcessingException {
+    public TAIMappingHelper(@Sensitive JwtToken jwtToken, MicroProfileJwtConfig clientConfig) throws MpJwtProcessingException {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, decodedPayload, clientConfig);
+            Tr.entry(tc, methodName, jwtToken, clientConfig);
         }
-        decodedTokenPayload = decodedPayload;
         config = clientConfig;
-        if (decodedTokenPayload != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
+        if (jwtToken != null) {
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
             setUsername();
             setRealm();
         }

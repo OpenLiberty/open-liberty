@@ -727,7 +727,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     if (resource.tags) {
       var tags = resource.tags;
       if (tags.length > 0) {
-        tagIcon.set('content', imgUtils.getSVGSmall('metadata-tag'));
+        tagIcon.set('content', imgUtils.getSVGSmall('metadata-tag', null, i18n.TAGS, true));
       }
       for (var i=0; i < tags.length; i++) {
         tagPane.addChild(TagButton.createTagButton(['objectView', resource.type, resource.id, 'tag', tags[i]]));
@@ -735,13 +735,13 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
       tagPane.addChild(TagButton.createTagButton(['objectView', resource.type, resource.id, 'expand-tag', 'more']));
     }
     if (resource.owner) {
-      ownerIcon.set('content', imgUtils.getSVGSmall('metadata-user'));
+      ownerIcon.set('content', imgUtils.getSVGSmall('metadata-user', null, i18n.OWNER, true));
       ownerTagPane.addChild(TagButton.createTagButton(['objectView', resource.type, resource.id, 'owner', resource.owner]));
     }
     if (resource.contacts) {
       var contactTags = resource.contacts;
       if (contactTags.length > 0) {
-        contactIcon.set('content', imgUtils.getSVGSmall('metadata-contacts'));
+        contactIcon.set('content', imgUtils.getSVGSmall('metadata-contacts', null, i18n.CONTACTS, true));
       }
       for (var i=0; i < contactTags.length; i++) {
         contactTagPane.addChild(TagButton.createTagButton(['objectView', resource.type, resource.id, 'contact', contactTags[i]]));
@@ -750,7 +750,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     }
     if (resource.ports) {
       var ports = resource.ports;
-        portIcon.set('content', imgUtils.getSVGSmall('metadata-port'));
+        portIcon.set('content', imgUtils.getSVGSmall('metadata-port', null, i18n.PORTS, true));
         var list = formatPorts(resource, ports);
         serverPortsPane.set('content', list);
         serverPortsPane.set('aria-label', lang.replace(i18n.PORTS, [ports]));
@@ -758,7 +758,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/dom', 'dojo/has', 'jsExpl
     if (resource.note) {
       var exp = /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
       var note = resource.note;
-      notesIcon.set('content', imgUtils.getSVGSmall('metadata-notes'));
+      notesIcon.set('content', imgUtils.getSVGSmall('metadata-notes', null, i18n.NOTES, true));
       resourceNotePane.set('content', "<span dir='" + utils.getStringTextDirection(note) + "'>" + note.replace(exp,"<a href='$1' target=_blank' rel='noreferrer'>$1</a>") + "</span>");
       resourceNotePane.set('aria-label', lang.replace(i18n.NOTE_LABEL, [note]));
       resourceNotePane.domNode.style.display = 'inline-block';

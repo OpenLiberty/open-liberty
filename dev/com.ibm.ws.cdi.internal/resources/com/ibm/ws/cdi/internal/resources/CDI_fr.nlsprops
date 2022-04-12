@@ -93,9 +93,9 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: L'\u00e9l\u00e9ment de conf
 cdi12.element.type.superceded.CWOWB1015W.explanation=L'\u00e9l\u00e9ment de configuration cdi remplace l'\u00e9l\u00e9ment de configuration cdi12 et contient toutes les m\u00eames options, plus les nouvelles options.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Modifiez votre configuration server.xml pour utiliser l'\u00e9l\u00e9ment de configuration cdi \u00e0 la place de l'\u00e9l\u00e9ment de configuration cdi12.
 
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W=CWOWB1016W: L'attribut emptyBeansXMLExplicitArchive de l'\u00e9l\u00e9ment de configuration cdi est pris en charge uniquement sur CDI 4.0 ou ult\u00e9rieure. Cet attribut est ignor\u00e9.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.explanation=L'attribut emptyBeansXMLExplicitArchive n'a aucun effet lorsqu'il est utilis\u00e9 avec une version CDI inf\u00e9rieure \u00e0 4.0.
-cdiEmptyBeansXMLExplicitArchive.ignored.CWOWB1016W.useraction=Mettez \u00e0 jour votre configuration server.xml pour supprimer l'attribut ou utiliser CDI version 4.0 ou ult\u00e9rieure.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: L'attribut emptyBeansXMLExplicitBeanArchive de l'\u00e9l\u00e9ment de configuration cdi est pris en charge uniquement sur CDI 4.0 ou ult\u00e9rieure. Cet attribut est ignor\u00e9.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=L'attribut emptyBeansXMLExplicitBeanArchive n'a aucun effet lorsqu'il est utilis\u00e9 avec une version CDI inf\u00e9rieure \u00e0 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Mettez \u00e0 jour votre configuration server.xml pour supprimer l'attribut ou utiliser CDI version 4.0 ou ult\u00e9rieure.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: L'attribut enableImplicitBeanArchives a \u00e9t\u00e9 d\u00e9fini sur les \u00e9l\u00e9ments de configuration cdi12 et cdi. La valeur de l'\u00e9l\u00e9ment cdi est utilis\u00e9e et la valeur de l'\u00e9l\u00e9ment cdi12 est ignor\u00e9e.
 enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Bien que vous puissiez d\u00e9finir l'attribut enableImplicitBeanArchives sur les \u00e9l\u00e9ments de configuration des \u00e9l\u00e9ments de configuration cdi12 et cdi, vous ne devez pas d\u00e9finir cet attribut avec des valeurs diff\u00e9rentes dans la m\u00eame configuration de serveur.

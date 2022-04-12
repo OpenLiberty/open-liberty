@@ -1552,6 +1552,7 @@ public class CommonValidationTools {
         requiredKeys.add(Constants.IDTOK_AUDIENCE_KEY);
         requiredKeys.add(Constants.IDTOK_EXPIRE_KEY);
         requiredKeys.add(Constants.IDTOK_ISSUETIME_KEY);
+        requiredKeys.add(Constants.IDTOK_SESSION_ID); // we will now always include a sid
         if (!testSigAlg.equals(Constants.SIGALG_NONE)) {
             requiredKeys.add(Constants.IDTOK_AT_HASH_KEY);
         } else {

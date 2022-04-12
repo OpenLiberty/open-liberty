@@ -17,9 +17,9 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 
 - Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
   - Link the RFE with this issue
-- UFO: Link to Upcoming Feature Overview
+- UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - Set the Box link to be publicly accessible, with a long expiration (10 years)
-    - click "Share" > select "People with link" > click "Link Settings" > under "Link Experation" select "Disable Shared Link on" > set an experation date ~10 years into the future
+    - Click "Share" > select "People with link" > click "Link Settings" > under "Link Experation" select "Disable Shared Link on" > set an experation date ~10 years into the future
     - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue
 - Beta Blog: Link to Beta Blog Post GH Issue
@@ -65,7 +65,7 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
 
-Design preliminaries determine whether a formal design, which will be provided by an Upcoming Feature Overview (UFO) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.
+Design preliminaries determine whether a formal design, which will be provided by an [Upcoming Feature Overview (UFO)](https://ibm.box.com/v/UFO-Template) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.
 
 ### **Design Preliminaries**
 - [ ] UI requirements identified. (Owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))

@@ -40,7 +40,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
-import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
@@ -379,7 +378,6 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         }
 
         JwtToken jwtToken = null;
-        String decodedPayload = null;
 
         if (token != null) {
             // Create JWT from access token / id token
@@ -398,13 +396,11 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
                 }
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
-            String payload = JsonUtils.getPayload(jwtToken.compact());
-            decodedPayload = JsonUtils.decodeFromBase64String(payload);
         }
 
         TAIResult authnResult = null;
         try {
-            authnResult = createResult(res, clientConfig, jwtToken, decodedPayload, addJwtPrincipal);
+            authnResult = createResult(res, clientConfig, jwtToken, addJwtPrincipal);
         } catch (Exception e) {
             if (e instanceof MpJwtProcessingException) {
                 FFDCFilter.processException(e, MicroProfileJwtTAI.class.getName(), "387");
@@ -418,12 +414,12 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return authnResult;
     }
 
-    TAIResult createResult(HttpServletResponse res, MicroProfileJwtConfig clientConfig, @Sensitive JwtToken jwtToken, @Sensitive String decodedPayload, boolean addJwtPrincipal) throws WebTrustAssociationFailedException, MpJwtProcessingException {
+    TAIResult createResult(HttpServletResponse res, MicroProfileJwtConfig clientConfig, @Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws WebTrustAssociationFailedException, MpJwtProcessingException {
         String methodName = "createResult";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, res, clientConfig, jwtToken, decodedPayload);
+            Tr.entry(tc, methodName, res, clientConfig, jwtToken);
         }
-        TAIMappingHelper mappingHelper = new TAIMappingHelper(decodedPayload, clientConfig);
+        TAIMappingHelper mappingHelper = new TAIMappingHelper(jwtToken, clientConfig);
         mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwtToken, addJwtPrincipal);
         mappingHelper.addDisableSsoLtpaCacheProp();
         Subject subject = mappingHelper.createSubjectFromCustomProperties(addJwtPrincipal);

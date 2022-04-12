@@ -92,6 +92,6 @@ testsrc: test/src
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \
         org.glassfish:javax.json;version=1.0.4, \
-        org.slf4j:slf4j-api;version=1.7.7, \
-        org.slf4j:slf4j-jdk14;version=1.7.7, \
+        com.ibm.ws.org.slf4j.api;version=latest,\
+        com.ibm.ws.org.slf4j.jdk14;version=latest,\
         ./resources/;version=file

@@ -19,7 +19,7 @@ Subsystem-Name: Jakarta Batch 2.1
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.1, \
   io.openliberty.jakarta.xmlBinding-4.0, \
-  io.openliberty.jakarta.annotation-2.0, \
+  io.openliberty.jakarta.annotation-2.1, \
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.contextService-1.0, \

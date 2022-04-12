@@ -22,15 +22,15 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.websphere.simplicity.runtime.ProcessStatus;
 import com.ibm.ws.fat.util.Props;
+
 import componenttest.exception.TopologyException;
 
 public class WebServerControl {
     private static final Class<?> c = WebServerControl.class;
     private static Boolean webserverInFront = false;
     private static Machine machine = null;
-    private static ProcessStatus status = null;
+    private static volatile boolean running = false;
     private static String workdir = null;
     private static RemoteFile apacheInstallRoot;
     private static RemoteFile pluginInstallRoot;
@@ -73,11 +73,6 @@ public class WebServerControl {
 
     public static int getSecurePort() {
         return 443;
-    }
-
-    public static ProcessStatus getStatus() throws Exception {
-        getMachine();
-        return status;
     }
 
     public static RemoteFile getPluginInstallRoot() throws Exception {
@@ -150,8 +145,7 @@ public class WebServerControl {
             if (!keystorePath.equals("")) {
                 File keystore = new File(keystorePath);
                 connInfo = new ConnectionInfo(hostname, keystore, user, null);
-            }
-            else
+            } else
                 return null;
         } else
             connInfo = new ConnectionInfo(hostname, user, pass);
@@ -177,8 +171,7 @@ public class WebServerControl {
         apacheInstallRoot = new RemoteFile(machine, ihsDir);
         pluginInstallRoot = new RemoteFile(machine, plgDir);
 
-        //TODO: determine real process status
-        status = ProcessStatus.STOPPED;
+        running = false;
 
         return machine;
     }
@@ -200,7 +193,7 @@ public class WebServerControl {
 
     public static void startWebServer() throws Exception {
         String command;
-        if (!getStatus().equals(ProcessStatus.RUNNING)) {
+        if (!running) {
             if (getMachine().getOperatingSystem().equals(OperatingSystem.WINDOWS)) {
                 command = workdir + "\\apache -k start -n ihs";
             } else {
@@ -211,14 +204,13 @@ public class WebServerControl {
             Log.info(c, "startWebServer:stdout:", po.getStdout());
             Log.info(c, "startWebServer:stderr:", po.getStderr());
 
-            //TODO: check status
-            status = ProcessStatus.RUNNING;
+            running = true;
         }
     }
 
     public static void stopWebServer(String serverName) throws Exception {
         String command;
-        if (!getStatus().equals(ProcessStatus.STOPPED)) {
+        if (running) {
             if (getMachine().getOperatingSystem().equals(OperatingSystem.WINDOWS)) {
                 command = workdir + "\\apache -k stop -n ihs";
             } else {
@@ -229,9 +221,8 @@ public class WebServerControl {
             Log.info(c, "stopWebServer:stdout:", po.getStdout());
             Log.info(c, "stopWebServer:stderr:", po.getStderr());
 
-            status = ProcessStatus.STOPPED;
+            running = false;
 
-            //TODO: check status
             postStopServerArchive(serverName);
         }
     }
@@ -290,7 +281,8 @@ public class WebServerControl {
         //tidy
     }
 
-    private static void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+    private static void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives,
+                                                 boolean moveFile) throws Exception {
         String method = "recursivelyCopyDirectory";
         Log.entering(c, method);
         destination.mkdirs();
@@ -308,14 +300,14 @@ public class WebServerControl {
             } else {
                 try {
                     // We're only going to attempt to move log files. Because of ffdc log checking, we
-                    // can't move those. But we should move other log files.. 
+                    // can't move those. But we should move other log files..
                     boolean isLog = (toCopy.getAbsolutePath().contains("logs") && !toCopy.getAbsolutePath().contains("ffdc"));
 
                     if (moveFile && isLog) {
                         boolean copied = false;
                         boolean moved = false;
 
-                        // If we're local, try to rename the file instead.. 
+                        // If we're local, try to rename the file instead..
                         if (machine.isLocal() && toCopy.rename(toReceive)) {
                             moved = true; // well, we moved it, but it counts.
                             Log.info(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());

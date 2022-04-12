@@ -48,7 +48,7 @@ Import-Package: \
   org.osgi.framework, \
   org.osgi.service.cm, \
   org.osgi.util.tracker, \
-  org.w3c.dom, \
+  org.w3c.dom
 
 Private-Package: \
   schemas.wsdl

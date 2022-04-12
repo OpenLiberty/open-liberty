@@ -25,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
                 DatabaseRotationTest.class, //LITE
                 DockerfileTest.class, //FULL
                 ProgrammaticImageTest.class, //FULL
+                SyntheticImageTest.class //FULL
 })
 /**
  * Example FATSuite class to show how to setup suite level testcontainers and properties

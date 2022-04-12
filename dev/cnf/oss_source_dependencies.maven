@@ -116,9 +116,6 @@ org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.core:4.2.0
 org.shredzone.acme4j:acme4j-client:2.7
 org.shredzone.acme4j:acme4j-utils:2.7
-org.slf4j:slf4j-api:1.7.26
-org.slf4j:slf4j-api:1.7.7
-org.slf4j:slf4j-jdk14:1.7.7
 org.springframework:spring-aop:4.3.13.RELEASE
 org.springframework:spring-aop:5.0.4.RELEASE
 org.springframework:spring-context:4.3.13.RELEASE

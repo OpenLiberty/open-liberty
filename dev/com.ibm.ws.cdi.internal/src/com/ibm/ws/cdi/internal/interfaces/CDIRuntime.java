@@ -204,4 +204,10 @@ public interface CDIRuntime extends CDIService {
      * @return the BuildCompatibleExtensionFinder, or {@code null} if there is not one
      */
     public BuildCompatibleExtensionFinder getBuildCompatibleExtensionFinder();
+
+    /**
+     * @return the CDIContainerEventManager
+     */
+    public CDIContainerEventManager getCDIContainerEventManager();
+
 }

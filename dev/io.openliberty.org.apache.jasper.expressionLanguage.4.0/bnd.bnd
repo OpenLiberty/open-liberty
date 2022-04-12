@@ -19,7 +19,7 @@ Export-Package: org.apache.el;thread-context=true;version=${Implementation-Versi
    org.apache.el.lang;thread-context=true;version=${Implementation-Version}, \
    org.apache.el.parser;version=${Implementation-Version}, \
    org.apache.el.util;version=${Implementation-Version}, \
-   org.apache.el.stream;version=${Implementation-Version}, \
+   org.apache.el.stream;version=${Implementation-Version}
 
 Import-Package: \
     jakarta.el; version=4.0.0, \
@@ -31,7 +31,7 @@ Require-Capability: osgi.contract;
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;version=10.0.14,\
+    org.apache.tomcat:tomcat-jasper-el;version=10.0.18,\
     io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
     com.ibm.websphere.appserver.spi.logging;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest

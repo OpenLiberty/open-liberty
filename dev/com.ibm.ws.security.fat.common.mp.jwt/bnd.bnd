@@ -24,8 +24,6 @@ generate.replacement: true
     build.changeDetector,\
     com.ibm.ws.security.fat.common.jwt
 
-#Private-Package: \
-
 src: \
     src,\
     fat/src,\
@@ -66,7 +64,6 @@ com.ibm.websphere.security;version=latest,\
 com.ibm.ws.cdi.interfaces;version=latest,\
 com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
 com.ibm.ws.common.encoder,\
-com.ibm.ws.componenttest:public.api;version=latest,\
 com.ibm.ws.kernel.service;version=latest,\
 com.ibm.ws.logging.core;version=latest,\
 com.ibm.ws.logging;version=latest,\
@@ -77,7 +74,7 @@ com.ibm.ws.org.apache.httpcomponents;version=latest,\
 com.ibm.ws.org.glassfish.json.1.1,\
 com.ibm.ws.org.jose4j;version=latest,\
 com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+com.ibm.ws.org.slf4j.api;version=latest,\
 com.ibm.ws.security.fat.common.jwt;version=latest,\
 com.ibm.ws.security.fat.common;version=latest,\
 com.ibm.ws.security.jwt;version=latest,\

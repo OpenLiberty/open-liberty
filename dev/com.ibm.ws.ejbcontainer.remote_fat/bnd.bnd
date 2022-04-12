@@ -52,7 +52,7 @@ src: \
 	test-applications/StatelessMixIntf.jar/src, \
 	test-applications/StatelessMixMDCEJB.jar/src, \
 	test-applications/StatelessMixSCEJB.jar/src, \
-	test-applications/StatelessMixWeb.war/src, \
+	test-applications/StatelessMixWeb.war/src
 
 fat.project: true
 

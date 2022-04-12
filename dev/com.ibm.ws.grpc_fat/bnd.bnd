@@ -27,7 +27,6 @@ src: \
     test-applications/StoreApp.war/src
 
 fat.project: true
-fat.minimum.java.level: 1.8
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
@@ -57,7 +56,7 @@ tested.features:\
     com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest,\
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    com.ibm.ws.org.slf4j.api.1.7.7,\
+    com.ibm.ws.org.slf4j.api;version=latest,\
     io.grpc:grpc-api;version=${grpcVersion},\
     io.grpc:grpc-census;version=${grpcVersion},\
     io.grpc:grpc-context;version=${grpcVersion},\

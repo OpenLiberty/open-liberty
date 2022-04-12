@@ -21,7 +21,7 @@ Export-Package: \
   com.ibm.ws.management.security
 
 Private-Package: \
-  com.ibm.ws.management.security.internal.*, \
+  com.ibm.ws.management.security.internal.*
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

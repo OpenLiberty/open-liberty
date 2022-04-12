@@ -14,7 +14,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-application/demotimers/src,
+	test-application/demotimers/src
 
 fat.project: true
 fat.test.databases: true

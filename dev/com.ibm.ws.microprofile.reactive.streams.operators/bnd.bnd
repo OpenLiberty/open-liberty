@@ -75,8 +75,8 @@ testsrc: test/src
   org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
   org.jmock:jmock;strategy=exact;version=2.5.1, \
   org.glassfish:javax.json;version=1.0.4, \
-  org.slf4j:slf4j-api;version=1.7.7, \
-  org.slf4j:slf4j-jdk14;version=1.7.7, \
+  com.ibm.ws.org.slf4j.api;version=latest, \
+  com.ibm.ws.org.slf4j.jdk14;version=latest, \
   com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
   org.apache.commons:commons-lang3;version=3.8, \
   ./resources/;version=file

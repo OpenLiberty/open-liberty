@@ -215,6 +215,18 @@ public final class CRIUSupport {
 	}
 
 	/**
+	 * Controls whether CRIU will be invoked in privileged or unprivileged mode.
+	 * <p>
+	 * Default: false
+	 *
+	 * @param unprivileged
+	 * @return this
+	 */
+	public CRIUSupport setUnprivileged(boolean unprivileged) {
+		return this;
+	}
+
+	/**
 	 * Append new environment variables to the set returned by ProcessEnvironment.getenv(...) upon
 	 * restore. All pre-existing (environment variables from checkpoint run) env
 	 * vars are retained. All environment variables specified in the envFile are

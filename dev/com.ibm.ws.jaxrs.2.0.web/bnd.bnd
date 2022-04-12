@@ -23,7 +23,7 @@ Import-Package: \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \
    javax.ws.rs.*;version="[2.0,3)", \
-   org.apache.cxf.*;version="[3.0.2,4)", \
+   org.apache.cxf.jaxrs.*;version="[3.0.2,4)", \
    *
 
 Private-Package:\

@@ -1,0 +1,52 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-RS 2.1 Server
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.server
+Bundle-Description: IBM JAX-RS 2.1 Server; version=${bVersion}
+
+WS-TraceGroup: JAXRS
+
+
+Export-Package: \
+   com.ibm.websphere.jaxrs.server;version=1.0
+
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: \
+   com.ibm.ws.webcontainer.extension, \
+   javax.ws.rs.*;version="[2.0,3)", \
+   javax.validation;resolution:=optional, \
+   javax.validation.*;resolution:=optional, \
+   org.apache.cxf.*;version="[3.2,4)", \
+   org.apache.cxf.jaxrs.sse;resolution:=optional, \
+   org.apache.cxf.validation;resolution:=optional;version="[3.3,4)", \
+   !javax.xml.bind.*, \
+   com.ibm.ws.jaxrs20.metadata, \
+   javax.annotation;version=!,\
+   *
+
+Include-Resource: OSGI-INF=resources/OSGI-INF
+    
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Private-Package:\
+   com.ibm.ws.jaxrs20.server.*
+
+-dsannotations: com.ibm.ws.jaxrs20.server.component.*
+
+instrument.classesExcludes: com/ibm/ws/jaxrs20/server/internal/resources/*.class
+	
+-buildpath: \
+  com.ibm.ws.jaxrs.2.0.server;version=latest

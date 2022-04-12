@@ -22,7 +22,7 @@ Export-Package: com.ibm.ws.security.csiv2.server, \
   com.ibm.ws.transport.iiop.server.security
 
 Private-Package: com.ibm.ws.config.xml.internal.nester, \
-  com.ibm.ws.security.csiv2.server* \
+  com.ibm.ws.security.csiv2.server*
 
 Import-Package: \
 com.ibm.ejs.ras, \
