@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: JAX-RS 2.0 Server
-Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.server
-Bundle-Description: IBM JAX-RS 2.0 Server; version=${bVersion}
+Bundle-Name: JAX-RS 2.1 Server
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.server
+Bundle-Description: IBM JAX-RS 2.1 Server; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
@@ -29,9 +29,9 @@ Import-Package: \
    javax.ws.rs.*;version="[2.0,3)", \
    javax.validation;resolution:=optional, \
    javax.validation.*;resolution:=optional, \
-   org.apache.cxf.validation;resolution:=optional;version="[3.0.2,3.2)", \
-   org.apache.cxf.*;version="[3.0.2,3.2)", \
+   org.apache.cxf.*;version="[3.2,4)", \
    org.apache.cxf.jaxrs.sse;resolution:=optional, \
+   org.apache.cxf.validation;resolution:=optional;version="[3.3,4)", \
    !javax.xml.bind.*, \
    com.ibm.ws.jaxrs20.metadata, \
    javax.annotation;version=!,\
@@ -47,27 +47,6 @@ Private-Package:\
 -dsannotations: com.ibm.ws.jaxrs20.server.component.*
 
 instrument.classesExcludes: com/ibm/ws/jaxrs20/server/internal/resources/*.class
-
+	
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.18,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.18,\
-	com.ibm.ws.jaxrs.2.0.common;version=latest,\
-	com.ibm.ws.adaptable.module;version=latest,\
-	com.ibm.ws.anno;version=latest,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.injection;version=latest,\
-	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.ws.managedobject;version=latest,\
-	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	com.ibm.websphere.appserver.spi.logging,\
-	com.ibm.websphere.appserver.spi.kernel.service,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.jaxrs.2.0.server;version=latest
