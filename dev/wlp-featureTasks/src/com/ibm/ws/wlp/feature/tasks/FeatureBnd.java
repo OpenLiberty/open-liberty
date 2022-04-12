@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -424,8 +424,8 @@ public class FeatureBnd extends Task {
                 checkBuilder(builder);
             }
 
-            // I think this method isn't doing what is intended. This basically means output to both wlp/lib/features
-            // and build/subsystem.mf because this method is called twice. Once with createFor==buildType, and once without.
+            //I think this method isn't doing what is intended. This basically means output to both wlp/lib/features
+            //and build/subsystem.mf because this method is called twice. Once with createFor==buildType, and once without.
             
             File manifest;
             boolean saveJunitReport = false;
@@ -459,11 +459,11 @@ public class FeatureBnd extends Task {
             validateFeature(builder, suite);
 
             // if we upgrade BND we can do this instead of the code above
-            // builder.setProperty(Constants.MANIFEST_NAME, "OSGI-INF/SUBSYSTEM.MF");
+//			builder.setProperty(Constants.MANIFEST_NAME, "OSGI-INF/SUBSYSTEM.MF");
 
-            // Where we control what goes into which shipment type.
-            // For a GA release, we only want to build GA features.
-            // However, for a beta release we want GA and BETA features both.
+            //Where we control what goes into which shipment type.
+            //For a GA release, we only want to build GA features.
+            //However, for a beta release we want GA and BETA features both.
             if (createESA && (kind.equals(createFor) || "ga".equals(kind))) {
                 Jar jar = builder.build();
                 checksums.put("OSGI-INF/SUBSYSTEM.MF", MD5Utils.getFileMD5String(manifest));
@@ -485,13 +485,8 @@ public class FeatureBnd extends Task {
             } else {
                 log("No feature issues found");
             }
-
-        } catch ( Exception e1 ) {
-            System.out.println("******** FeatureBnd.execute [ " + e1.getClass().getName() + " ]: " + e1.getMessage() + " ]");
-            e1.printStackTrace(System.out);
-            System.out.println("********");
-
-            throw new BuildException( e1.getMessage(), e1 );
+        } catch (Exception e1) {
+            throw new BuildException(e1.getMessage(), e1);
         }
     }
 
