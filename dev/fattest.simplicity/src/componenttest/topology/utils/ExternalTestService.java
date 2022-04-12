@@ -62,15 +62,25 @@ public class ExternalTestService {
     private ExternalTestService(JsonObject data, Map<String, ServiceProperty> props) {
         JsonObject serviceData = data.getJsonObject("Service");
         JsonObject nodeData = data.getJsonObject("Node");
+        String networkLocationProp = getNetworkLocation()+"_address";
+        String address;
 
-        if (!serviceData.getString("Address", "").isEmpty()) {
+        if (props.get(networkLocationProp) != null) {
+            //The service has a private IP on the same network, so use that
+           try {
+                address = props.get(networkLocationProp).getStringValue();
+           } catch(Exception ex) {
+                address = nodeData.getString("Address");
+           }
+        } else if (!serviceData.getString("Address", "").isEmpty()) {
             //Use the service address
-            this.address = serviceData.getString("Address");
+            address = serviceData.getString("Address");
         } else {
             //No Service address so use the node address
-            this.address = nodeData.getString("Address");
+            address = nodeData.getString("Address");
         }
 
+        this.address = address;
         this.serviceName = serviceData.getString("Service");
         this.port = serviceData.getInt("Port", -1);
         this.props = props;
