@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,12 +154,13 @@ if ( parseBoolean( bnd.get('jakartaeeMe', 'false'))) {
   }
 
   dependencies {
-    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0',
-                            'commons-cli:commons-cli:1.4',
-                            'org.slf4j:slf4j-api:1.7.36',
-                            'org.slf4j:slf4j-simple:1.7.36',
-                            'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
-                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
+    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-M1',
+                           'commons-cli:commons-cli:1.5.0',
+                           'org.slf4j:slf4j-api:1.7.36',
+                           'org.slf4j:slf4j-simple:1.7.36',
+                           'org.eclipse.transformer:org.eclipse.transformer:0.5.0-A1',
+                           'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-A1',
+                           'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-A1'
   }
 
   task jakartaeeTransform {
@@ -298,7 +299,7 @@ if ( parseBoolean( bnd.get('jakartaeeMe', 'false'))) {
 
         javaexec {
             classpath configurations.jakartaeeTransformJars
-            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
+            main = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
             args = transformerArgs
         }
       }
@@ -456,7 +457,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 
         javaexec {
             classpath configurations.jakartaeeTransformJars
-            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
+            main = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
             args = transformerArgs
         }
       }

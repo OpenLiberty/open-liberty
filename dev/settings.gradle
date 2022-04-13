@@ -144,6 +144,13 @@ pluginManagement {
           artifact()
         }
       }
+      maven {
+        credentials {
+          username gradle.userProps.getProperty("artifactory.download.user")
+          password gradle.userProps.getProperty("artifactory.download.token")
+        }
+        url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      }
     } else {
       maven {
         url uri(bnd_repourl)
@@ -152,6 +159,7 @@ pluginManagement {
           artifact()
         }
       }
+      mavenCentral()
       maven {
         url "https://plugins.gradle.org/m2/"
         metadataSources {

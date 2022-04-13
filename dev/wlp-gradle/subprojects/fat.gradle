@@ -54,12 +54,14 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
 
-  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0',
-       'commons-cli:commons-cli:1.4',
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-M1',
+       'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
        project(':com.ibm.ws.org.slf4j.simple'),
-       'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
-       'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
+       'org.eclipse.transformer:org.eclipse.transformer:0.5.0-A1',
+       'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-A1',
+       'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-A1',
+       'org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0-A1'
 
   testcontainers project(':io.openliberty.org.testcontainers'),
         project(':com.ibm.ws.org.slf4j.api')
