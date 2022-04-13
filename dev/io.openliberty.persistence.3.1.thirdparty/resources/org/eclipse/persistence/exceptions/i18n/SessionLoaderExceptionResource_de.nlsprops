@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Es wurden mehrere [{0}] Ausnahmen vom Typ SessionLoaderExceptions ausgel\u00f6st:
+
+9001=Unbekannter Tagname: [{0}] im XML-Knoten: [{1}].
+
+9002=Die Projektklasse [{0}] kann nicht geladen werden.
+
+9003=Verarbeiten des XML-Tags [{0}] mit dem Wert [{1}] nicht m\u00f6glich.
+
+9004=Die project-xml-Datei [{0}] wurde weder im Klassenpfad noch im Dateisystem gefunden.
+
+9005=Es wurde eine Ausnahme beim Laden der project-xml-Datei [{0}] ausgel\u00f6st.
+
+9006=Beim Parsing der XML-Datei wurde eine Ausnahme ausgel\u00f6st: {0} Sie tritt auf in Zeile {1} und Spalte {2} im XML-Dokument.
+
+9007=Beim Parsing der XML-Datei wurde eine Ausnahme ausgel\u00f6st.
+
+9008=Nicht erwarteter Wert [{0}] im Tag [{1}].
+
+9009=Der Tag [{0}] hat ein unbekanntes Attribut.
+
+9010=Beim Parsing der XML-Datei anhand des XML-Schemas wurde eine Ausnahme ausgel\u00f6st: {0}.
+
+9011=Die Serverplattformklasse {0} wurde entfernt und die entsprechende Anwendungsserverversion wird nicht mehr unterst\u00fctzt.
+
+9012=Die session-xml-Datei konnte nicht geladen werden, weil sie ein ung\u00fcltiges Format enth\u00e4lt oder das XML-Format nicht unterst\u00fctzt wird.
+

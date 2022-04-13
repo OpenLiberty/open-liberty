@@ -1,0 +1,64 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Der JNDI-Kontext konnte nicht abgerufen werden. Vergewissern Sie sich, dass die Eigenschaften ordnungsgem\u00e4\u00df definiert sind.
+
+22102=Die Verbindung konnte nicht im lokalen Benennungsservice mit dem Namen {0} \u00fcbergeben werden.
+22103=Lookup der fernen Verbindung unter dem Namen {0} mit der URL {1} nicht m\u00f6glich.
+
+22104=Lookup des Hostnamen nicht m\u00f6glich.
+
+22105=Der Befehl konnte nicht an {0} weitergegeben werden.
+
+22106=Es konnte keine externe JMS-Verbindung mit Topic {0} und Topic-Factory {1} erstellt werden. Vergewissern Sie sich, dass die Kontexteigenschaften ordnungsgem\u00e4\u00df definiert sind.
+
+22107=Die lokale Verbindung konnte nicht aus dem lokalen Benennungsservice mit dem Namen {0} entfernt werden.
+
+22108=Der Befehl konnte nicht serialisiert oder entserialisiert werden.
+
+22109=Die JMS-Nachricht konnte nicht vom JMS-Provider empfangen werden.
+
+22110=Die IP-Adresse des lokalen Host wurde nicht erkannt.
+
+22111=ServerPlatform konnte nicht abgerufen werden. ServerPlatform muss entweder auf Session oder RemoteCommandManager gesetzt werden.
+
+22112=Es konnte keine lokale JMS-Verbindung mit dem Topic {0} und der Topic-Factory {1} erstellt werden. Vergewissern Sie sich, dass die Kontexteigenschaften ordnungsgem\u00e4\u00df definiert sind.
+
+22113=Erstellen der Oc4jJGroupsRemoteConnection-Service-ID {0}, Topic {1} mit der Factory {2} war nicht m\u00f6glich. Vergewissern Sie sich, dass die Kontexteigenschaften ordnungsgem\u00e4\u00df definiert sind.
+
+22114={0}: Die abgerufene Nachricht {1} konnte nicht entserialisiert werden.
+
+22115={0}: Fehler bei der Verarbeitung des fernen Befehls, abgerufen aus der Nachricht {1}, aus {2}, Befehlstyp {3}
+
+22116=Empfangene JMS-Nachricht ist null. Sie wird als Ausnahme vom Typ JMSException behandelt.
+
+22117=Der RemoteCommandManager der Sitzung wurde geschlossen oder er wurde bei der Verarbeitung der eingehenden Nachrichten noch nicht initialisiert.
+
+22118=Fehler beim Erstellen der JGroups-Verbindung mit der Konfigurationsdatei {0}
+

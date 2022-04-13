@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problema de reconocimiento de sintaxis al analizar la consulta [{0}]. El analizador ha devuelto lo siguiente [{1}].
+
+8002=Problema general al analizar la consulta [{0}]. El analizador ha devuelto lo siguiente [{1}].
+
+8003=No se ha encontrado la clase [{0}]. El analizador ha devuelto lo siguiente [{1}].
+
+8004=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: variable de identificaci\u00f3n desconocida [{3}]. La cl\u00e1usula FROM de la consulta no declara una variable de identificaci\u00f3n [{3}].
+
+8005=Error al compilar la consulta [{0}]. Se ha encontrado un problema al resolver el nombre de clase: no se ha encontrado la clase [{1}].
+
+8006=Error al compilar la consulta [{0}]. Se ha encontrado un problema al resolver el nombre de clase: no se ha encontrado el descriptor de [{1}].
+
+8007=Error al compilar la consulta [{0}]. Se ha encontrado un problema al resolver el nombre de clase: no se ha encontrado la correlaci\u00f3n de [{1}].
+
+8008=Error al compilar la consulta [{0}]. Se ha encontrado un problema al crear la expresi\u00f3n de b\u00fasqueda: no se ha encontrado el expressionBuilder de [{1}].
+
+8009=Problema al compilar la consulta [{0}]. La expresi\u00f3n [{1}] no est\u00e1 soportada actualmente.
+
+8010=Problema general al analizar la consulta [{0}].
+
+8011=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: declaraci\u00f3n de miembro de colecci\u00f3n no v\u00e1lida [{3}]; se esperaba un campo de asociaci\u00f3n con un valor de colecci\u00f3n.
+
+8012=Problema al compilar la consulta [{0}]. No se ha implementado todav\u00eda: {1}.
+
+8013=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: no se ha encontrado la clase de constructor [{3}].
+
+8014=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: el argumento SIZE no es v\u00e1lido [{3}]; se esperaba un campo de asociaci\u00f3n con un valor de colecci\u00f3n.
+
+8015=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: el literal de enumeraci\u00f3n no es v\u00e1lido; el tipo de enumeraci\u00f3n {3} no tiene un literal de enumeraci\u00f3n {4}.
+
+8016=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: la expresi\u00f3n SELECT no es v\u00e1lida [{3}] para la consulta con la agrupaci\u00f3n [{4}]. S\u00f3lo se permiten agregados, elementos GROUP BY o expresiones de constructor de estos en la cl\u00e1usula SELECT de una consulta GROUP BY.
+
+8017=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: la expresi\u00f3n HAVING no es v\u00e1lida [{3}] para la consulta con la agrupaci\u00f3n [{4}]. La cl\u00e1usula HAVING debe especificar condiciones de b\u00fasqueda en los elementos de agrupaci\u00f3n o las funciones de agregaci\u00f3n que se aplican a la agrupaci\u00f3n de elementos.
+
+8018=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: uso m\u00faltiple no v\u00e1lido del par\u00e1metro [{3}], suponiendo los tipos de par\u00e1metros diferentes [{4}] y [{5}].
+
+8019=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: declaraci\u00f3n m\u00faltiple de la variable de identificaci\u00f3n [{3}] declarada previamente como [{4} {3}].
+
+8020=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: argumento de funci\u00f3n {3} no v\u00e1lido [{4}], se esperaba un argumento de tipo [{5}].
+
+8021=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: elemento ORDER BY no v\u00e1lido [{3}] de tipo [{4}], se esperaba la expresi\u00f3n de un tipo ordenable.
+
+8022=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: argumento de expresi\u00f3n {3} no v\u00e1lido [{4}], se esperaba un argumento de tipo [{5}].
+
+8023=Error de sintaxis al analizar la consulta [{0}].
+
+8024=Error de sintaxis al analizar la consulta [{0}], l\u00ednea {1}, columna {2}: error de sintaxis en [{3}].
+
+8025=Error de sintaxis al analizar la consulta [{0}], l\u00ednea {1}, columna {2}: se\u00f1al inesperada [{3}].
+
+8026=Error de sintaxis al analizar la consulta [{0}], l\u00ednea {1}, columna {2}: car\u00e1cter inesperado [{3}].
+
+8027=Error de sintaxis al analizar la consulta [{0}], l\u00ednea {1}, columna {2}: car\u00e1cter esperado [{3}], se ha encontrado [{4}].
+
+8028=Error de sintaxis al analizar la consulta [{0}], l\u00ednea {1}, columna {2}: fin de consulta inesperado.
+
+8029=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: expresi\u00f3n de navegaci\u00f3n no v\u00e1lida [{3}]; no se puede navegar a una expresi\u00f3n [{4}] de tipo [{5}] dentro de una consulta.
+
+8030=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: estado desconocido o campo de asociaci\u00f3n [{3}] de la clase [{4}].
+
+8031=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: no se da soporte a {3} de la entidad incorporada {4}.
+
+8032=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: acceso no v\u00e1lido del atributo [{3}] en el destino de la cl\u00e1usula SET [{4}]; s\u00f3lo pueden actualizarse los campos de estado y los campos de asociaci\u00f3n con valor individuales en una cl\u00e1usula SET.
+
+8033=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: expresi\u00f3n de navegaci\u00f3n no v\u00e1lida [{3}]; no se puede navegar a un campo de asociaci\u00f3n [{4}] en el destino de la cl\u00e1usula SET.
+
+8034=Error al compilar la consulta [{0}]. Tipo de entidad desconocido [{1}].
+
+8035=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: expresi\u00f3n de igual de la enumeraci\u00f3n no v\u00e1lida; no se puede comparar un valor de enumeraci\u00f3n de tipo [{3}} con un valor que no es de enumeraci\u00f3n de tipo [{4}].
+
+8036=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: expresi\u00f3n de navegaci\u00f3n no v\u00e1lida [{3}]; no se puede navegar a un campo de asociaci\u00f3n con valor de colecci\u00f3n [{4}].
+
+8037=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: tipo de entidad desconocido [{3}].
+
+8038=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: se ha encontrado un problema al resolver el nombre de clase; no se ha encontrado la clase [{3}].
+
+8039=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: la variable {3} no es una correlaci\u00f3n y se ha solicitado una clave de correlaci\u00f3n.
+
+8040=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: el alias {3} se utiliza en la cl\u00e1usula ORDER BY, pero no se ha definido en la consulta.
+
+8041=Error al compilar la consulta [{0}], l\u00ednea {1}, columna {2}: el \u00edndice s\u00f3lo puede utilizarse en una variable y se est\u00e1 invocando en {3} que no es una variable.
+

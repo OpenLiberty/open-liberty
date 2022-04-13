@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=A(z) "[{0}]" f\u00e1jl nem tal\u00e1lhat\u00f3.
+
+47001=Nem tal\u00e1lhat\u00f3 a(z) [{0}] le\u00edr\u00f3 a(z) [{1}] m\u0171velethez az O-R projektben
+
+47002=Nem tal\u00e1lhat\u00f3 a(z) [{0}] lek\u00e9rdez\u00e9s a(z) [{1}] le\u00edr\u00f3hoz
+
+47003=Nem tal\u00e1lhat\u00f3 a(z) [{0}] lek\u00e9rdez\u00e9s a(z) [{1}] munkamenethez
+
+47004=A(z) [{1}] m\u0171velethez nem l\u00e9tezik a(z) [{0}] param\u00e9tert\u00edpus a s\u00e9m\u00e1ban
+
+47005=A(z) [{1}] m\u0171velethez tartoz\u00f3 [{0}] param\u00e9tert\u00edpus nem rendelkezik O-X lek\u00e9pez\u00e9ssel
+
+47006=A(z) [{1}] m\u0171velethez nem l\u00e9tezik a(z) [{0}] eredm\u00e9nyt\u00edpus a s\u00e9m\u00e1ban
+
+47007=A(z) [{1}] m\u0171velethez tartoz\u00f3 [{0}] eredm\u00e9nyt\u00edpus nem rendelkezik O-X lek\u00e9pez\u00e9ssel
+
+47008=Csak egyszer\u0171 XML form\u00e1tum\u00fa lek\u00e9rdez\u00e9sek t\u00e1mogatnak t\u00f6bb kimeneti argumentumot.
+
+47009=Az INOUT kurzor param\u00e9terek nem t\u00e1mogatottak
+
+47010=Nem tal\u00e1lhat\u00f3 O-R munkamenet a(z) [{0}] szolg\u00e1ltat\u00e1shoz
+
+47011=Nem tal\u00e1lhat\u00f3 O-X munkamenet a(z) [{0}] szolg\u00e1ltat\u00e1shoz
+
+47012=A DBWS f\u00e1jl nem \u00e9rtelmezhet\u0151
+

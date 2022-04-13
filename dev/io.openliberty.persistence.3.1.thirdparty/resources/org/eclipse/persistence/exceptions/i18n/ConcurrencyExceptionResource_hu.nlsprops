@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=A v\u00e1rakoz\u00e1s meg lett szak\u00edtva. {0}\u00dczenet: [{1}]
+
+2002=V\u00e1rakoz\u00e1si hiba a ServerSession eset\u00e9n.
+
+2003=V\u00e1rakoz\u00e1si hiba a ClientSession eset\u00e9n.
+
+2004=Jelz\u00e9s megk\u00eds\u00e9rl\u00e9se a wait() el\u0151tt a ConcurrencyManager eset\u00e9n. Ez norm\u00e1l esetben azt jelenti, hogy k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy tranzakci\u00f3 {0}v\u00e9gleges\u00edt\u00e9s\u00e9re vagy visszag\u00f6rget\u00e9s\u00e9re, vagy egy tranzakci\u00f3 k\u00e9tszeri visszag\u00f6rget\u00e9s\u00e9re.
+
+2005=V\u00e1rakoz\u00e1si hiba a DatabaseSession sorrendi kapcsolatkezel\u0151j\u00e9n\u00e9l.
+
+2006=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a sorrendi \u00e9rt\u00e9kek beszerz\u00e9s\u00e9re egy \u00f6n\u00e1ll\u00f3 Connection({0}) met\u00f3duson kereszt\u00fcl egyidej\u0171leg t\u00f6bb sz\u00e1lban
+
+2007=A(z) {0} objektum z\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rletek maxim\u00e1lis sz\u00e1m\u00e1nak t\u00fall\u00e9p\u00e9se.  Az objektum kl\u00f3noz\u00e1sa meghi\u00fasult.
+
+2008=A(z) {0} objektum z\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rletek maxim\u00e1lis sz\u00e1m\u00e1nak t\u00fall\u00e9p\u00e9se.  A tranzakci\u00f3 \u00f6sszef\u00e9s\u00fcl\u00e9se meghi\u00fasult.
+
+2009=Az objektum z\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rletek maxim\u00e1lis sz\u00e1m\u00e1nak t\u00fall\u00e9p\u00e9se.  Az objektum \u00f6ssze\u00e9p\u00edt\u00e9se meghi\u00fasult. A(z) {0} sz\u00e1l foganatos\u00edt egy z\u00e1rol\u00e1st az objektumon, azonban az objektumot a(z) {1} sz\u00e1l \u00e9p\u00edti \u00f6ssze.
+
+2010=A z\u00e1rol\u00e1s \u00e1tvitele egy k\u00e9sleltetett z\u00e1rol\u00e1sba m\u00e1r megt\u00f6rt\u00e9nt.  Az \u00f6sszef\u00e9s\u00fcl\u00e9s sor\u00e1n a(z) {0} sz\u00e1l egy m\u00e1sodik k\u00eds\u00e9rletet tett a z\u00e1rol\u00e1s \u00e1tvitel\u00e9re.
+

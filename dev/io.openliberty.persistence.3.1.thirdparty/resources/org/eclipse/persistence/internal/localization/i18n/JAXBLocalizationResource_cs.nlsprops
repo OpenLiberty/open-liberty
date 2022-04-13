@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=P\u0159id\u00e1v\u00e1n\u00ed vyhodnocovac\u00edch modul\u016f oboru n\u00e1zv\u016f
+
+create_descriptors=Vytv\u00e1\u0159en\u00ed deskriptor\u016f
+
+create_mappings=P\u0159id\u00e1v\u00e1n\u00ed mapov\u00e1n\u00ed do deskriptoru {0}
+
+error=Chyba: 
+
+generate_files=Z\u00e1pis XML implementace a konfigurace relac\u00ed
+
+generate_source=Generov\u00e1n\u00ed implementa\u010dn\u00edch t\u0159\u00edd
+
+impl_package_missing=N\u00e1zev bal\u00edku implementa\u010dn\u00ed t\u0159\u00eddy chyb\u00ed
+
+io_exception_error=Chyba: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka IOException
+
+malformed_url_error=Chyba: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka MalformedURLException
+
+missing_customization=Vstupn\u00ed soubor p\u0159izp\u016fsoben\u00ed chyb\u00ed
+
+missing_output_dir=N\u00e1zev v\u00fdstupn\u00edho adres\u00e1\u0159e TopLink chyb\u00ed
+
+missing_project_dir=N\u00e1zev adres\u00e1\u0159e projektu TopLink Workbench chyb\u00ed
+
+missing_schema_file=Vstupn\u00ed soubor sch\u00e9matu chyb\u00ed
+
+missing_src_dir=N\u00e1zev v\u00fdstupn\u00edho adres\u00e1\u0159e zdroje chyb\u00ed
+
+missing_target_package=N\u00e1zev c\u00edlov\u00e9ho bal\u00edku chyb\u00ed
+
+read_customization=\u010cten\u00ed souboru p\u0159izp\u016fsoben\u00ed
+
+setup_inheritance=Nastavov\u00e1n\u00ed d\u011bdi\u010dnosti
+
+start_mw_project=Vytv\u00e1\u0159en\u00ed projektu Mapping Workbench
+
+start_orajaxb=Vyvol\u00e1v\u00e1n\u00ed orajaxb
+
+start_toplink=Vyvol\u00e1v\u00e1n\u00ed generov\u00e1n\u00ed TopLink
+
+version=Verze: 
+

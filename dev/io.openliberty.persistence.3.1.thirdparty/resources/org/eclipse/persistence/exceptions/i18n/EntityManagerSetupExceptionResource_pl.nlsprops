@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=Zg\u0142oszono wyj\u0105tek ValidationException podczas pr\u00f3by utworzenia sesji: [{0}]. Najbardziej prawdopodobn\u0105 przyczyn\u0105 tego problemu jest to, \u017ce plik [{1}] nie jest dost\u0119pny w \u015bcie\u017cce klasy lub nie zawiera on sesji o nazwie: [{0}].
+
+28002=Oprogramowanie EclipseLink podejmuje pr\u00f3b\u0119 za\u0142adowania sesji ServerSession o nazwie [{0}] z [{1}] i nie uzyska\u0142o sesji ServerSession.
+
+28003=Oprogramowanie EclipseLink za\u0142adowa\u0142o sesj\u0119 [{0}] z [{1}] i albo nie zosta\u0142a okre\u015blona platforma serwera, albo zosta\u0142a okre\u015blona platforma serwera, kt\u00f3ra nie u\u017cywa zewn\u0119trznego kontrolera transakcji.  Okre\u015bl odpowiedni\u0105 platform\u0119 serwera, je\u015bli planujesz u\u017cycie interfejsu JTA.
+
+28004=B\u0142\u0105d w konfiguracji fabryki EntityManager: metoda JavaSECMPInitializer.initializeFromMain zwr\u00f3ci\u0142a warto\u015b\u0107 false.
+
+28005=Zg\u0142oszono wyj\u0105tek podczas konfigurowania fabryki EntityManager.
+
+28006=Klasa ClassNotFound: podano [{0}] we w\u0142a\u015bciwo\u015bci [{1}].
+
+28007=Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia instancji klasy ServerPlatform typu [{0}] okre\u015blonej we w\u0142a\u015bciwo\u015bci [{1}].
+
+28008=Nie znaleziono klasy: {0} podczas przetwarzania adnotacji.
+
+28009=Podj\u0119to pr\u00f3b\u0119 ponownego wdro\u017cenia sesji o nazwie {0} bez jej zamykania.
+
+28010=Klasa PersistenceUnitInfo {0} ma interfejs JTE transactionType, ale nie ma zdefiniowanego elementu jtaDataSource.
+
+28011=Sesja [{0}] zbudowana dla jednostki trwa\u0142o\u015bci nie by\u0142a dost\u0119pna w czasie wdra\u017cania.  Oznacza to, \u017ce w jaki\u015b spos\u00f3b sesja zosta\u0142a usuni\u0119ta z kontenera w \u015brodku procesu wdra\u017cania.
+
+28012=Warto\u015b\u0107 [{0}] jest niepoprawnego typu dla w\u0142a\u015bciwo\u015bci [{2}], typem warto\u015bci powinno by\u0107 [{1}].
+
+28013=Nie mo\u017cna wdro\u017cy\u0107 jednostki PersistenceUnit [{0}] w niepoprawnym stanie [{1}].
+
+28014=Zosta\u0142 zg\u0142oszony wyj\u0105tek podczas przetwarzania w\u0142a\u015bciwo\u015bci [{0}] o warto\u015bci [{1}].
+
+28015=Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia instancji klasy SessionLog typu [{0}] okre\u015blonej we w\u0142a\u015bciwo\u015bci [{1}].
+
+28016=Jednostka trwa\u0142o\u015bci o nazwie [{0}] nie istnieje.
+
+28017=Nie mo\u017cna wst\u0119pnie wdro\u017cy\u0107 jednostki PersistenceUnit [{0}] w niepoprawnym stanie [{1}].
+
+28018=Wst\u0119pne wdra\u017canie jednostki PersistenceUnit [{0}] zako\u0144czy\u0142o si\u0119 niepowodzeniem.
+
+28019=Wdra\u017canie jednostki PersistenceUnit [{0}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Zamknij wszystkie fabryki dla tej jednostki PersistenceUnit.
+
+28020=Sesja o nazwie [{0}] za\u0142adowana z [{1}] to [{2}], jednak musi by\u0107 sesj\u0105 ServerSession.
+
+28021=Jednostka PersistenceUnit [{0}] podejmuje pr\u00f3b\u0119 za\u0142adowania sesji z [{1}] bez podania nazwy sesji.  Nale\u017cy poda\u0107 nazw\u0119 sesji, definiuj\u0105c w\u0142a\u015bciwo\u015b\u0107 eclipselink.session-name.
+
+28022=Warto\u015b\u0107 [true] dla w\u0142a\u015bciwo\u015bci [eclipselink.weaving] jest niepoprawna, gdy instrumentacja globalna ma warto\u015b\u0107 NULL, warto\u015b\u0107 powinna wynosi\u0107 NULL, false lub static.
+
+28023=Wywo\u0142anie metody [{0}] dla obiektu [{1}] klasy [{2}] wyzwoli\u0142o wyj\u0105tek.
+
+28024=Nie mo\u017cna uzyska\u0107 w spos\u00f3b refleksyjny dost\u0119pu do metody [{0}] dla obiektu [{1}] klasy [{2}].
+
+28025=Jednostka trwa\u0142o\u015bci o nazwie [{0}] zwr\u00f3ci\u0142a tymczasowy obiekt classLoader o warto\u015bci [null] - przeplot zosta\u0142 wy\u0142\u0105czony dla tej sesji.  Mo\u017cna u\u017cy\u0107 przeplotu statycznego, kt\u00f3ry stanowi obej\u015bcie opcjonalne.
+
+28026=Klasa org.eclipse.persistence.jpa.osgi.PersistenceProvider nie obs\u0142uguje wdro\u017cenia kontenera (createContainerEntityManagerFactory).  Zamiast niej u\u017cyj klasy org.eclipse.persistence.jpa.PersistenceProvider.
+
+28027=Podj\u0119to pr\u00f3b\u0119 u\u017cycia jednostki PersistenceUnit [{0}], ale nie jest dost\u0119pny \u017caden pakunek, kt\u00f3ry definiuje t\u0119 jednostk\u0119 trwa\u0142o\u015bci.
+
+28028=Nie mo\u017cna utworzy\u0107 instancji klasy [{0}] dla w\u0142a\u015bciwo\u015bci jednostki trwa\u0142o\u015bci [{1}], upewnij si\u0119, \u017ce konstruktor jest poprawnie zdefiniowany.
+
+28029=Jednostka PersistenceUnit [{0}] pr\u00f3buje jednocze\u015bnie u\u017cy\u0107 pliku sessions.xml (okre\u015bla w\u0142a\u015bciwo\u015b\u0107 eclipselink.sessions-xml) i by\u0107 z\u0142o\u017cona (okre\u015bla warto\u015b\u0107 true w\u0142a\u015bciwo\u015bci eclipselink.composite-unit). Te tryby s\u0105 niezgodne.
+
+28030=Jednostka PersistenceUnit [{0}] okre\u015bla warto\u015b\u0107 true w\u0142a\u015bciwo\u015bci eclipselink.composite-unit.member. Oznacza to, \u017ce nie mo\u017ce zosta\u0107 u\u017cyta jako element autonomiczny, tylko jako element z\u0142o\u017cony.
+
+28031=Brak wymaganej w\u0142a\u015bciwo\u015bci [{0}].
+
+28032=Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia tymczasowego programu \u0142aduj\u0105cego klasy z w\u0142a\u015bciwo\u015bci\u0105 doPrivileged.
+

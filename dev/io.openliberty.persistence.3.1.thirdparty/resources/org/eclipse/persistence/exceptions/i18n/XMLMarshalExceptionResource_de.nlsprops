@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Ung\u00fcltige XPath-Zeichenfolge: {0}
+
+25002=Ein ganzzahliger Index konnte nicht \u00fcber die XPath-Zeichenfolge {0} geparst werden.
+
+25003=Beim Marshalling des Objekts ist ein Fehler aufgetreten
+
+25004=Beim Unmarshalling des Dokuments ist ein Fehler aufgetreten
+
+25005=Beim Validieren des Objekts ist ein Fehler aufgetreten
+
+25006=F\u00fcr den {0} zugeordneten XMLDescriptor wurde kein Standardstammelement angegeben.
+
+25007=Im Projekt wurde kein Deskriptor f\u00fcr die Klasse {0} gefunden. Wenn f\u00fcr JAXB das Bootstrapping f\u00fcr JAXBContext mit TypeMappingInfo[] durchgef\u00fchrt wurde, m\u00fcssen Sie eine marshal-Methode aufrufen, die TypeMappingInfo als Eingabeparameter akzeptiert.
+
+25008=Im Projekt wurd kein Deskriptor mit dem Standardstammelement {0} gefunden
+
+25010=F\u00fcr den {0} zugeordneten XML-Deskriptor wurde keine Schemareferenz angegeben.
+
+25011=Es wurde ein Nullargument gefunden.
+
+25012=Beim Aufl\u00f6sen des XML-Schemas ist ein Fehler aufgetreten.
+
+25013=Beim Versuch, die Schemas zu definieren, ist ein Fehler aufgetreten.
+
+25014=Beim Versuch, die Schemaplattform zu instanziieren, ist ein Fehler aufgetreten.
+
+25015=Beim Versuch, den Namespace-URI f\u00fcr {0} aufzul\u00f6sen, ist ein Fehler aufgetreten. Im Deskriptor wurde kein Namespace-Resolver angegeben.
+
+25016=Im Namespace-Resolver wurde kein Namespace f\u00fcr das Pr\u00e4fix {0} gefunden.
+
+25017=F\u00fcr JAXBTypesafeEnumConverter muss entweder enumClass oder enumClassName definiert werden.
+
+25018=Die Methode fromString f\u00fcr die Aufz\u00e4hlungsklasse {0} ist nicht vorhanden oder konnte nicht aufgerufen werden.
+
+25019=Die angegebene Aufz\u00e4hlungsklasse {0} wurde nicht gefunden.
+
+25020=Die Methode "getResult()" darf nicht aufgerufen werden, bevor das Ereignis "endDocument()" aufgerufen wurde.
+
+25021=Die Klasse {0} ist f\u00fcr SwaRef ung\u00fcltig. Sie muss javax.activation.DataHandler sein.
+
+25022=Das Marshalling f\u00fcr das Image ist nicht m\u00f6glich. F\u00fcr den MIME-Typ {0} ist kein Encoder verf\u00fcgbar.
+
+25023=Beim Unmarshalling des dem Attribut {0} zugeordneten Elements wurde kein Deskriptor gefunden.
+
+25024=Beim Instanziieren der UnmappedContentHandler-Klasse {0} ist ein Fehler aufgetreten.
+
+25025=Die UnmappedContentHandler-Klasse {0}, die f\u00fcr den XMLUnmarshaller definiert ist, muss org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler implementieren.
+
+25026=Der Knoten [{0}] konnte nicht aktualisiert werden. Das Objekt wurde nicht im Cache gefunden.
+
+25027=Der Anhang mit der CID {0} konnte nicht abgerufen werden, weil kein AttachmentUnmarshaller definiert wurde.
+
+25028=F\u00fcr die Zuordnung {1} wurde aufgrund eines unbekannten Werts f\u00fcr xsi:type kein Referenzdeskriptor gefunden: {0}.
+
+25029=F\u00fcr das Pr\u00e4fix [{0}] hat die Klasse [{1}] versucht, den Namespace-URI [{2}] zuzuordnen, aber die \u00fcbergeordnete Klasse [{3}] hat den Namespace-URI [{4}] bereits zugeordnet.
+
+25030=Beim Aufrufen der Methode {0} f\u00fcr den angepassten Namespacepr\u00e4fixmapper ist ein Fehler aufgetreten: {1}.
+
+25031=Beim Verarbeiten des Namespacepr\u00e4fixmappers ist ein Fehler aufgetreten: {1}. Die Methode {0} wurde nicht gefunden.
+
+25032=Beim Aufrufen der Methode {0} f\u00fcr den angepassten CharacterEscapeHandler ist ein Fehler aufgetreten: {1}.
+
+25033=Beim Verarbeiten des CharacterEscapeHandler ist ein Fehler aufgetreten: {1}. Die Methode {0} wurde nicht gefunden.
+
+25034=Beim Aufrufen der Methode {0} f\u00fcr den angepassten IDResolver ist ein Fehler aufgetreten: {1}.
+
+25035=Beim Verarbeiten des IDResolver ist ein Fehler aufgetreten: {1}. Die Methode {0} wurde nicht gefunden.
+
+25036=Der angepasste IDResolver {1} unterst\u00fctzt nicht mehrere XML-IDs {0}.  Angepasste IDResolver m\u00fcssen Unterklassen von org.eclipse.persistence.jaxb.IDResolver sein, wenn mehrere IDs verwendet werden.
+
+25037=Im Objektgraphen wurde ein Zyklus erkannt. Dies f\u00fchrt zu einer Endlosschleife: {0}
+
+25038=DOMPlatform wird mit dem Medientyp application/json nicht unterst\u00fctzt.
+
+25039=Beim Unmarshalling von {0} ist ein Fehler aufgetreten.
+
+25040=Es wurde kein Objekt vom Typ {0} mit der ID {1} gefunden.
+
+25041=Die angegebene Attributgruppe {0} ist nicht f\u00fcr die Klasse {1} definiert.
+
+25042=Der Wert der Variableneigenschaft {0} f\u00fcr die Klasse {1} darf nicht null sein.
+

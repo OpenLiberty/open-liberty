@@ -23,6 +23,7 @@ import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA22;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA22Hibernate;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA22OpenJPA312;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA30;
+import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA31;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.RepeatTests;
@@ -54,6 +55,7 @@ public class FATSuite {
                     .andWith(new RepeatWithJPA20())
                     .andWith(new RepeatWithJPA22Hibernate())
                     .andWith(new RepeatWithJPA22OpenJPA312())
-                    .andWith(new RepeatWithJPA30());
+                    .andWith(new RepeatWithJPA30())
+                    .andWith(new RepeatWithJPA31());
 
 }

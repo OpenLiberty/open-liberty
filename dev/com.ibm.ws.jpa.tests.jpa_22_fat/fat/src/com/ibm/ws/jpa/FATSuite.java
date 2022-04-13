@@ -43,5 +43,6 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat = RepeatTests
                     .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }

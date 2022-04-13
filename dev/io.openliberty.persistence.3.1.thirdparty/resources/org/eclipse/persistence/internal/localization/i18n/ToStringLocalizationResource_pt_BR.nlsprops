@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=Iniciar perfil de
+
+class=classe
+
+commit_depth=(consolida\u00e7\u00e3o em profundidade = {0})
+
+connected=conectado
+
+connector=conector
+
+context=Contexto:    
+
+database_name=nome do banco de dados
+
+datasource=datasource
+
+datasource_URL=URL de origem de dados
+
+datasource_name=nome da origem de dados
+
+depth_reset_key=(profundidade = {0}, chave de reconfigura\u00e7\u00e3o = {1}, vers\u00e3o de reconfigura\u00e7\u00e3o = {2})
+
+disconnected=desconectada
+
+empty_commit_order_dependency_node=CommitOrderDependencyNode vazio
+
+end_profile=Terminar perfil
+
+error_printing_expression=Erro na express\u00e3o de impress\u00e3o
+
+lazy=ocioso
+
+local_time=hor\u00e1rio local
+
+login=login
+
+longestTime=o tempo mais longo
+
+min_max=(m\u00ednimo de conex\u00f5es = {0}, m\u00e1ximo de conex\u00f5es = {1})
+
+mulitple_files=v\u00e1rios arquivos
+
+multiple_readers=v\u00e1rios leitores
+
+name=Nome: 
+
+nest_level=(n\u00edvel de aninhamento = {0})
+
+no_files=nenhum arquivo(s)
+
+no_streams=nenhum fluxo(s)
+
+node=N\u00f3 ({0})
+
+non_lazy=n\u00e3o ocioso
+
+not_instantiated=n\u00e3o instanciado
+
+number_of_objects=n\u00famero de objetos
+
+objects_second=objetos/segundo
+
+platform=plataforma
+
+pooled=em conjunto
+
+profile=Perfil
+
+profiling_time=tempo de cria\u00e7\u00e3o de perfil
+
+reader=leitor
+
+schema=Esquema: 
+
+sdo_classgenerator_usage_help_1of8={0} Uso: org.eclipse.persistence.sdo.helper.{0} [-options]
+
+sdo_classgenerator_usage_help_2of8=Op\u00e7\u00f5es:
+
+sdo_classgenerator_usage_help_3of8=    -help Imprime o texto da mensagem de ajuda
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName> O arquivo de esquema de entrada (obrigat\u00f3rio)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName> O diret\u00f3rio para gerar a origem Java (opcional)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <level int> Especifique o valor inteiro do n\u00edvel de cria\u00e7\u00e3o de log (8=OFF,7=GRAVE,6=AVISO,5=INFO,4=CONFIG,3=FINO,2=FINER(padr\u00e3o),1=FINEST,0=ALL).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces N\u00e3o gera classes de interface
+
+sdo_classgenerator_usage_help_8of8=    -noImpls N\u00e3o gera classes de impl
+
+sdo_classgenerator_usage_missing_sourcefile={0} O par\u00e2metro -sourceFile n\u00e3o foi especificado e \u00e9 obrigat\u00f3rio.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} O valor de -sourceFile n\u00e3o foi especificado.
+
+sdo_classgenerator_usage_missing_targetdir={0} O valor de -targetDirectory n\u00e3o foi especificado.
+
+server_name=nome do servidor
+
+shortestTime=tempo mais curto
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           Especifique o arquivo de cria\u00e7\u00e3o de log.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           Especifique o valor inteiro do n\u00edvel de cria\u00e7\u00e3o de log (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(default),1=FINEST,0=ALL).
+
+staticweave_commandline_help_message_14of19=    O caminho de classe deve conter todas as classes necess\u00e1rias para carregar as classes na origem.
+
+staticweave_commandline_help_message_15of19=    O weaving ser\u00e1 executado no lugar se a origem e o destino apontam para o mesmo local.  Weaving no local ser\u00e1 aplic\u00e1vel APENAS para origens baseadas em diret\u00f3rio.
+
+staticweave_commandline_help_message_16of19=  Exemplo:
+
+staticweave_commandline_help_message_17of19=    Para entrela\u00e7ar todas as entidades contidas em C:\\foo-source.jar com seu persistence.xml contido em C:\\foo-containing-persistence-xml.jar,
+
+staticweave_commandline_help_message_18of19=    e sa\u00edda para C:\\foo-target.jar:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  Uso: StaticWeave [op\u00e7\u00f5es] a origem de destino
+
+staticweave_commandline_help_message_2of19=  Op\u00e7\u00f5es:
+
+staticweave_commandline_help_message_3of19=    caminho de classe -classpath
+
+staticweave_commandline_help_message_4of19=           Configure o caminho de classe do usu\u00e1rio.  Use ";" como um delimitador no Windows e ":" no Unix.
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           Identifique explicitamente onde META-INF/persistence.xml est\u00e1 armazenado.  Ele deve ser a raiz de META-INF/persistence.xml.
+
+staticweave_commandline_help_message_7of19=           Esta op\u00e7\u00e3o geralmente \u00e9 usada para especificar o jar principal quando tran\u00e7ar arquivos referenciados por <jar-file> no arquivo persistence.xml.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           Identifique o local do persistence.xml relativo \u00e0 raiz da unidade de persist\u00eancia se estiver em algum outro lugar al\u00e9m de META-INF/persistence.xml
+
+staticweave_processor_dir_not_created=O diret\u00f3rio {0} n\u00e3o pode ser criado.
+
+staticweave_processor_file_not_created=O arquivo {0} n\u00e3o pode ser criado.
+
+staticweave_processor_unknown_outcome=O entrela\u00e7amento de classes armazenadas em um diret\u00f3rio e a sa\u00edda para um JAR muitas vezes leva a resultados inesperados.
+
+time_object=tempo/objeto
+
+total_time=tempo total
+
+unknown=desconhecido
+
+user_name=nome de usu\u00e1rio
+
+writer=gravador
+

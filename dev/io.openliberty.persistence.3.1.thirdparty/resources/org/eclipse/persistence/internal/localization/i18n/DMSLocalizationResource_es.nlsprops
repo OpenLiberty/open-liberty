@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Incluye el tiempo invertido en mantener el mecanismo del n\u00famero de secuencia y definir realmente el n\u00famero de secuencia de objetos
+
+cache_hits=El n\u00famero de veces que el objeto se ha encontrado en la cach\u00e9
+
+cache_misses=El n\u00famero de veces que el objeto no se ha encontrado en la cach\u00e9
+
+caching=Incluye el tiempo invertido a\u00f1adiendo, buscando y eliminando objetos en la memoria cach\u00e9
+
+change_set_not_processed=El n\u00famero de ObjectChangeSets lanzados porque el objeto NO se ha encontrado en la cach\u00e9
+
+change_set_processed=El n\u00famero de ObjectChangeSets que se han encontrado en la cach\u00e9
+
+client_session_count=El n\u00famero de ClientSession se ha registrado en
+
+connect_call=N\u00famero total de llamadas de conexi\u00f3n realizadas
+
+connection=Tiempo invertido en la gesti\u00f3n de conexiones incluyendo conexi\u00f3n, reconexi\u00f3n y desconexi\u00f3n de un origen de datos
+
+connection_in_used=N\u00famero de conexiones en uso por agrupaci\u00f3n para cualquier ConnectionPool exclusiva (Write, ExclusiveRead)
+
+connection_ping=Tiempo invertido en las pruebas de conexi\u00f3n de base de datos para determinar si se puede utilizar.
+
+database_execute=Tiempo invertido en llamadas a la sentencia de JDBC, que incluye el tiempo destinado a las llamadas para: cerrar, executeUpdate y executeQuery
+
+deleted_object=El objeto se debe eliminar de identityMap de ObjectChangeSet
+
+descriptor_event=Tiempo invertido en ejecutar DescriptorEvent
+
+disconnect_call=N\u00famero total de llamadas de desconexi\u00f3n realizadas
+
+distributed_merge=Tiempo invertido en fusionar cambios de transacci\u00f3n remota en cach\u00e9 compartida local. Aparece cuando se utiliza la sincronizaci\u00f3n de cach\u00e9.
+
+jts_aftercompletion=Tiempo invertido en el m\u00e9todo JTS afterCompletion(estado objeto)
+
+jts_beforecompletion=Tiempo invertido en m\u00e9todo JTS beforeCompletion()
+
+logging=Tiempo invertido en registrar actividades de TopLink
+
+merge_time=Tiempo invertido en fusionar cambios en la cach\u00e9 compartida.
+
+object_building=Tiempo invertido en crear objetos persistentes desde filas de base de datos
+
+optimistic_lock=N\u00famero de excepciones de bloqueo optimista que se han lanzado
+
+query=Tiempo total invertido en la operaci\u00f3n: {0}
+
+query_misc=Tiempo total invertido en la operaci\u00f3n: {0}.  Esto es para operaciones especiales no incluidas en ning\u00fan nombre, como escritura por lotes.
+
+query_prepareation=Tiempo para preparar la consulta
+
+rcm_message_received=N\u00famero de mensajes que se han recibido a trav\u00e9s del RCM
+
+rcm_message_sent=N\u00famero de mensajes que se han enviado a trav\u00e9s del RCM
+
+rcm_status=Uno de [no configurado, iniciado, detenido]
+
+remote_change_set=N\u00famero de conjuntos de cambios recibidos de m\u00e1quinas remotas y procesados
+
+row_fetch=Tiempo que se tarda en crear objetos de registro del conjunto de resultados de jdbc. Incluye llamadas SQL regulares y llamadas de procedimiento almacenadas.
+
+session_event=Tiempo invertido en la ejecuci\u00f3n de SessionEvent
+
+session_login_time=Hora cuando se registr\u00f3 la sesi\u00f3n
+
+session_name=El nombre de la sesi\u00f3n
+
+sql_generation=Tiempo invertido en generar SQL. En el caso de expresiones TopLink, tiempo invertido en convertir expresi\u00f3n a SQL
+
+sql_prepare=Tiempo invertido en JDBC preparando la sentencia. Tambi\u00e9n incluye el tiempo invertido en EIS creando una interacci\u00f3n asociada a una conexi\u00f3n y creando objetos de registro de entrada y salida.
+
+unitofwork_commit=Mide el proceso de confirmaci\u00f3n de la UnitOfWork
+
+unitofwork_commits=N\u00famero de confirmaciones de UnitOfWork
+
+unitofwork_count=Recuento del n\u00famero total de objetos UnitOfWork creados
+
+unitofwork_register=Incluye el tiempo invertido en registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=N\u00famero de confirmaciones de UnitOfWork que se han retrotra\u00eddo
+
+wrapping=Tiempo invertido en derivar ambos beans, CMP y BMP
+

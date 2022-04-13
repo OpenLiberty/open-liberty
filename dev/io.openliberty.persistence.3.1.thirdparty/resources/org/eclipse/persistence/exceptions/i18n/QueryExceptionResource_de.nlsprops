@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Cursorgesteuerte SQL-Abfragen m\u00fcssen eine zus\u00e4tzliche Abfrage zum Abrufen der Gr\u00f6\u00dfe des Ergebnissatzes enthalten.
+
+6002=Zusammengefasste Objekte k\u00f6nnen nicht unabh\u00e4ngig von Ihren Eignern geschrieben/gel\u00f6scht/abgefragt werden. {1}Deskriptor: [{0}]
+
+6003=Die Anzahl der in der Abfrage zur Ausf\u00fchrung angegebenen Argumente entspricht nicht der Anzahl der Argumente in der Abfragedefinition.
+
+6004=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hash-Code (System.identityHashCode()) [{2}] {3}stammt nicht aus diesem UnitOfWork-Objektbereich, sondern aus dem der \u00fcbergeordneten Sitzung. Das Objekt wurde nicht in dieser UnitOfWork registriert, {3}wurde aber aus der \u00fcbergeordneten Sitzung gelesen und zu einem in der UnitOfWork registrierten Objekt in Beziehung gesetzt. Vergewissern Sie sich, dass Ihre Objekte{3}ordnungsgem\u00e4\u00df registriert werden. Wenn weiterhin Probleme bestehen, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() verwenden, um {3}dort, wo der Fehler aufgetreten ist, das Debugging durchzuf\u00fchren. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
+
+6005=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hash-Code (System.identityHashCode()) [{2}] {3}ist das urspr\u00fcngliche Objekt eines registrierten neuen Objekts. Die UnitOfWork klont registrierte neue Objekte, deshalb m\u00fcssen Sie sicherstellen, dass ein Objekt {3}registriert ist, bevor es von einem anderen Objekt referenziert wird. Wenn Sie nicht m\u00f6chten, dass das neue Objekt geklont wird, verwenden Sie die {3}API UnitOfWork.registerNewObject(Object). Wenn weiterhin Probleme bestehen, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() {3}verwenden, um dort, wo der Fehler aufgetreten ist, das Debugging durchzuf\u00fchren. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
+
+6006=Die Zuordnung [{0}] unterst\u00fctzt das Lesen von Stapeln nicht
+
+6007=F\u00fcr [{0}] fehlt ein Deskriptor.
+
+6008=Der Deskriptor f\u00fcr [{0}] f\u00fcr die Abfrage mit dem Namen [{1}] fehlt.
+
+6013=An CursoredStream wurde eine falsche Gr\u00f6\u00dfenabfrage \u00fcbergeben.
+
+6014=Objekte k\u00f6nnen nicht w\u00e4hrend einer UnitOfWork geschrieben werden. Sie m\u00fcssen registriert werden.
+
+6015=Ung\u00fcltiger Abfrageschl\u00fcssel [{0}] im Ausdruck.
+
+6016=Objekte oder die Datenbank k\u00f6nnen nicht \u00fcber eine ServerSession ge\u00e4ndert werden. Alle \u00c4nderungen m\u00fcssen \u00fcber eine UnitOfWork der ClientSession erfolgen.
+
+6020=F\u00fcr den Typ in der Zeile [{0}] wurde keine konkrete Klasse angegeben.
+
+6021=Cursor werden f\u00fcr Schnittstellendeskriptoren oder mehrere Tabellendeskriptoren abstrakter Klassen mit Ausdr\u00fccken nicht unterst\u00fctzt. Ziehen Sie die Verwendung des angepassten SQL oder die Verwendung mehrerer Abfragen in Betracht.
+
+6023=Die Liste der in die Tabelle [{0}] einzuf\u00fcgenden Felder ist leer. Sie m\u00fcssen mindestens eine Zuordnung f\u00fcr diese Tabelle definieren.
+
+6024=\u00c4nderungsabfragen erfordern ein zu \u00e4nderndes Objekt.
+
+6026=Die Abfrage mit dem Namen [{0}] ist nicht definiert. Dom\u00e4nenklasse: [{1}]
+
+6027=Es wurde eine Abfrage an eine nicht aktivierte UnitOfWork gesendet.
+
+6028=Es wurde versucht, \u00fcber das Ende des Datenstroms hinweg zu lesen.
+
+6029=Es muss eine Referenzklasse angegeben werden.
+
+6030=Ist das Caching nicht aktiviert, ist keine Aktualisierung m\u00f6glich.
+
+6031=size() wird nur in Ausdrucksabfragen unterst\u00fctzt, wenn eine Gr\u00f6\u00dfenabfrage angegeben ist.
+
+6032=Die SQL-Anweisung wurde nicht ordnungsgem\u00e4\u00df definiert.
+
+6034=Ung\u00fcltiger Abfrageelementausdruck [{0}].
+
+6041=Das an eine ReadObjectQuery \u00fcbergebene Auswahlobjekt ist null.
+
+6042=F\u00fcr Abfragen, die nicht auf Objektebene stattfinden, muss ein Sitzungsname angegeben werden. Informationen hierzu finden Sie in der Beschreibung der Methode setSessionName(String).
+
+6043=ReportQueries ohne Prim\u00e4rschl\u00fcssel k\u00f6nnen readObject() nicht verwenden. {1}ReportQueryResult: [{0}].
+
+6044=Der aus der Zeile [{0}] w\u00e4hrend der Ausf\u00fchrung der Abfrage gelesene Prim\u00e4rschl\u00fcssel ist null. Prim\u00e4rschl\u00fcssel d\u00fcrfen nicht null sein.
+
+6045=F\u00fcr die in der Zeile w\u00e4hrend der Erstellung des Objekts angegebene Unterklasse [{0}] ist kein Deskriptor definiert.
+
+6046=Ein Objekt einer schreibgesch\u00fctzten Klasse kann nicht gel\u00f6scht werden. Die Klasse [{0}] ist in dieser UnitOfWork als schreibgesch\u00fctzt deklariert.
+
+6047=Ung\u00fcltiger Operator [{0}] im Ausdruck.
+
+6048=Unzul\u00e4ssige Verwendung von getField() [{0}] im Ausdruck.
+
+6049=Unzul\u00e4ssige Verwendung von getTable() [{0}] im Ausdruck.
+
+6050=Abweichung der Ergebnisgr\u00f6\u00dfe der ReportQuery. Erwartet wurde [{0}], aber empfangen wurde [{1}].
+
+6051=Teilobjektabfragen sind f\u00fcr die Verwaltung des Cache nicht zul\u00e4ssig und d\u00fcrfen nicht bearbeitet werden. Sie m\u00fcssen dontMaintainCache() verwenden.
+
+6052=Eine erweiterte Verkn\u00fcpfung (getAllowingNull oder anyOfAllowingNone) ist nur f\u00fcr OneToOne-, OneToMany-, ManyToMany-, AggregateCollection- und DirectCollection-Zuordnungen g\u00fcltig und kann nicht f\u00fcr die Zuordnung [{0}] verwendet werden.
+
+6054=Das Objekt [{0}] der Klasse [{1}] kann der Containerklasse [{2}] nicht mit der Richtlinie [{3}] hinzugef\u00fcgt werden.
+
+6055=Der Methodenaufruf der Methode [{0}] f\u00fcr das Objekt [{1}] der Klasse [{2}] hat eine Ausnahme ausgel\u00f6st.
+
+6056=Es kann kein Klon des Objekts [{0}] der Klasse [{1}] mit [{2}] erstellt werden.
+
+6057=Die Methode [{0}] ist f\u00fcr den Aufruf des Objekts [{1}] nicht g\u00fcltig.
+
+6058=Die Methode [{0}] wurde nicht in der Klasse [{1}] gefunden.
+
+6059=Die Klasse [{0}] darf nicht als Container f\u00fcr die Abfrageergebnisse verwendet werden, weil sie nicht instanziiert werden kann.
+
+6060=Das Objekt [{0}] vom Typ [{1}] konnte nicht als Schl\u00fcssel f\u00fcr [{2}] vom Typ [{3}] verwendet werden. Der Schl\u00fcssel kann nicht mit den aktuell in der Map enthaltenen Schl\u00fcsseln verglichen werden.
+
+6061=Auf die Methode [{0}] f\u00fcr das Objekt [{1}] der Klasse [{2}] kann nicht reflektiv zugegriffen werden.
+
+6062=Die Methode [{0}], die reflektiv f\u00fcr das Objekt [{1}] der Klasse [{2}] aufgerufen wurde, hat eine Ausnahme ausgel\u00f6st.
+
+6063=Ung\u00fcltige Operation [{0}] f\u00fcr den Cursor.
+
+6064=Das Objekt [{0}] der Klasse [{1}] kann nicht aus der Containerklasse [{2}] mit der Richtlinie [{3}] entfernt werden.
+
+6065=Das Objekt [{0}] der Klasse [{1}] kann dem Container [{2}] nicht hinzugef\u00fcgt werden.
+
+6066=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hash-Code (System.identityHashCode()) [{2}] {3}wurde gel\u00f6scht, hat aber immer noch Referenzen. Gel\u00f6schte Objekte k\u00f6nnen nicht mehr referenziert werden. {3}Vergewissern Sie sich, dass Ihre Objekte ordnungsgem\u00e4\u00df registriert werden. Wenn weiterhin Probleme bestehen, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() {3}verwenden, um dort, wo der Fehler aufgetreten ist, das Debugging durchzuf\u00fchren. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
+
+6067=Auf das Feld [{0}] f\u00fcr das Objekt [{1}] der Klasse [{2}] kann nicht reflektiv zugegriffen werden.
+
+6068=Die Tabellenreferenz kann im Ausdruck nicht mit [{0}] verglichen werden.
+
+6069=Das Feld [{0}] in diesem Ausdruck hat in diesem Kontext eine ung\u00fcltige Tabelle.
+
+6070=Ung\u00fcltige Verwendung eines Abfrageschl\u00fcssels ([{0}]), der eine Zu-viele-Beziehung in einem Ausdruck darstellt. Verwenden Sie anyOf() anstelle von get().
+
+6071=Ung\u00fcltige Verwendung von anyOf() f\u00fcr einen Abfrageschl\u00fcssel ([{0}]), der keine Zu-viele-Beziehung in einem Ausdruck darstellt. Verwenden Sie get() anstelle von anyOf().
+
+6072=Abfragen in VariableOneToOneMapping werden nicht unterst\u00fctzt. {2}Deskriptor: [{0}] {2} Zuordnung: [{1}]
+
+6073=Fehlerhafter Ausdruck in der Abfrage. Es wird versucht, eine Objektreferenz in einer SQL-Anweisung f\u00fcr den Abfrageschl\u00fcssel [{0}] auszugeben.
+
+6074=Dieser Ausdruck kann nicht ermitteln, ob das Objekt im Speicher konsistent ist. Sie m\u00fcssen die Abfrage definieren, um die Datenbank zu \u00fcberpr\u00fcfen.
+
+6075=In Objektvergleichen k\u00f6nnen nur die Operatoren equal() und notEqual() verwendet werden. Andere Vergleiche m\u00fcssen mit Abfrageschl\u00fcsseln oder als direkte Vergleiche auf Attributebene durchgef\u00fchrt werden. {1}Ausdruck: [{0}]
+
+6076=Objektvergleiche k\u00f6nnen nur mit OneToOneMappings verwendet werden. Weitere Zuordnungsvergleiche m\u00fcssen mit Abfrageschl\u00fcsseln oder als direkte Vergleiche auf Attributebene durchgef\u00fchrt werden. {2}Zuordnung: [{0}] {2}Ausdruck: [{1}]
+
+6077=Objektvergleiche k\u00f6nnen nicht in Parameterabfragen verwendet werden. Sie m\u00fcssen den Ausdruck dynamisch erstellen. {1}Ausdruck: [{0}]
+
+6078=Die Klasse des Arguments f\u00fcr den Objektvergleich ist falsch. {3}Ausdruck: [{0}] {3}Zuordnung: [{1}] {3}Argument: [{2}]
+
+6079=Ein Objektvergleich mit dem Wert NULL darf nicht f\u00fcr Zielfremdschl\u00fcsselbeziehungen verwendet werden. Fragen Sie stattdessen den Quellenprim\u00e4rschl\u00fcssel ab. {3}Ausdruck: [{0}] {3}Zuordnung: [{1}] {3}Argument: [{2}]
+
+6080=Ung\u00fcltiger Datenbankaufruf [{0}]. Der Aufruf muss eine Instanz von DatabaseCall sein.
+
+6081=Ung\u00fcltiges Datenbankzugriffsobjekt [{0}]. Das Zugriffsobjekt muss eine Instanz von DatabaseAccessor sein.
+
+6082=Die Methode [{0}] mit den Argumenttypen [{1}] darf nicht f\u00fcr Expression aufgerufen werden.
+
+6083=Abfragen, die in() verwenden, k\u00f6nnen nicht parametrisiert werden. Inaktivieren Sie die Abfragevorbereitung oder die -bindung.
+
+6084=Die Umleitungsabfrage wurde nicht ordnungsgem\u00e4\u00df konfiguriert. Der Klassen- oder Methodenname wurde nicht definiert.
+
+6085=Die Methode der Umleitungsabfrage ist nicht oder mit den falschen Argumenten definiert. Sie muss als "public static" deklariert werden und die Argumente (DatabaseQuery, Record, Session) oder (Session, Vector) haben. {2}Klasse: [{0}] {2}Methode: [{1}]
+
+6086=Der Methodenaufruf der Umleitungsabfrage hat eine Ausnahme ausgel\u00f6st.
+
+6087=Die Beispielobjektklasse [{0}] entspricht der Referenzobjektklasse [{1}] nicht.
+
+6088=F\u00fcr die ReportQuery gibt es keine Attribute.
+
+6089=Der Ausdruck wurde nicht ordnungsgem\u00e4\u00df initialisiert. F\u00fcr eine Abfrage darf nur ein einzelner ExpressionBuilder verwendet werden. {1}F\u00fcr parallele Ausf\u00fchrungen muss die Abfrageklasse dem Konstruktor des ExpressionBuilder bereitgestellt werden und der ExpressionBuilder der Abfrage muss {1}immer links im Ausdruck stehen. {1}Ausdruck: [{0}]
+
+6090=Die ReportQuery kann nicht auf "check cache only" gesetzt werden.
+
+6091=Der Typ der Konstanten [{0}], die f\u00fcr den Vergleich im Ausdruck verwendet wird, entspricht nicht dem Typ des Attributs [{1}].
+
+6092=Nicht instanziierter ValueHolder erkannt. Sie m\u00fcssen die relevanten ValueHolder instanziieren, um diese speicherinterne Abfrage ausf\u00fchren zu k\u00f6nnen.
+
+6093=Ung\u00fcltiger Typausdruck f\u00fcr [{0}]. Die Klasse hat keinen Deskriptor oder einen Deskriptor, der keine Vererbung oder aber einen Klassenextraktor f\u00fcr die Vererbung verwendet.
+
+6094=Der Parametername [{0}] in den Auswahlkriterien der Abfrage entspricht keinem in der Abfrage definierten Parameternamen.
+
+6095=\u00d6ffentliche Klonmethode erforderlich.
+
+6096=Auf die Klonmethode kann nicht zugegriffen werden.
+
+6097=Die Klonmethode hat eine Ausnahme ausgel\u00f6st: {0}.
+
+6098=Ausnahme aufgrund unerwarteten Aufrufs: {0}.
+
+6099=Die Verkn\u00fcpfung von Vererbungsklassen mit mehreren Tabellenunterklassen wird nicht unterst\u00fctzt: {0}, {1}
+
+6100=F\u00fcr eine Leseabfrage eines einzelnen Objekts wurden mehrere Werte gefunden.
+
+6101=Die Ausf\u00fchrung dieser Abfrage k\u00f6nnte die Integrit\u00e4t des globalen Sitzungscache beeintr\u00e4chtigen, der nur die neuesten Versionen von Objekten enthalten darf. Um eine Abfrage ausf\u00fchren zu k\u00f6nnen, die Objekte in einem fr\u00fcheren Zustand zur\u00fcckgibt, gehen Sie wie folgt vor: Verwenden Sie eine HistoricalSession (acquireSessionAsOf). Alle gelesenen Objekte werden zwischengespeichert und gleichzeitig automatisch gelesen. Dies gilt selbst beim Ausl\u00f6sen von Objektbeziehungen. Setzen Sie shouldMaintainCache auf false. Sie k\u00f6nnen einen Objektausdruck in einem fr\u00fcheren Zustand erstellen, vorausgesetzt, keines der zugeh\u00f6rigen Felder ist im Ergebnissatz enthalten (d. h. alleinige Verwendung in der WHERE-Klausel).
+
+6102=Zeitbezogene Abfragen funktionieren derzeit nur mit Datenbanken von Oracle 9R2 oder h\u00f6her, da dabei das Flashback-Feature von Oracle verwendet wird.
+
+6103=Sie k\u00f6nnen WriteQuery nicht innerhalb einer schreibgesch\u00fctzten HistoricalSession ausf\u00fchren. Zum Wiederherstellen von Objekten in einem fr\u00fcheren Zustand gehen Sie wie folgt vor: Lesen Sie dasselbe Objekt im derzeitigen Zustand mit einer UnitOfWork und schreiben Sie die UnitOfWork fest.
+
+6104=Das Objekt {0} ist nicht im Cache vorhanden.
+
+6105=Die Abfrage muss mit einer Cursordatenstromrichtlinie erneut initialisiert werden.
+
+6106=Das Objekt vom Typ [{0}] mit dem Prim\u00e4rschl\u00fcssel [{1}] ist nicht im Cache vorhanden.
+
+6107=Fehlende Aktualisierungsanweisungen in UpdateAllQuery.
+
+6108=Bei der Aktualisierung aller Abfragen wird keine Vererbung mit mehreren Tabellen unterst\u00fctzt.
+
+6109=Die angegebene Abrufgruppe ({0}) ist nicht auf Deskriptorebene definiert.
+
+6110=Die Leseabfrage kann dem nicht abgerufenen Attribut ({0}) des teilweise abgerufenen Objekts in der Identit\u00e4tsmap der Arbeitseinheit nicht entsprechen.
+
+6111=Das Abrufgruppenattribut ({0}) ist nicht definiert oder nicht zugeordnet.
+
+6112=Die Abrufgruppe kann f\u00fcr die Berichtsabfrage nicht definiert werden.
+
+6113=Die Abrufgruppe kann nicht beim Lesen von Teilattributen verwendet werden.
+
+6114=Sie m\u00fcssen einen Abrufgruppenmanager im Deskriptor ({0}) definieren, um f\u00fcr die Abfrage ({1}) eine Abrufgruppe zu definieren.
+
+6115=Abfragen isolierter Klassen oder Abfragen, die f\u00fcr die Verwendung exklusiver Verbindungen konfiguriert sind, d\u00fcrfen nicht in einer ServerSession bzw. in CMP nicht au\u00dferhalb einer Transaktion ausgef\u00fchrt werden.
+
+6116=F\u00fcr die versuchte Operation wurde kein Aufruf und keine Interaktion angegeben.
+
+6117=Es kann keine Abfrage definiert werden, die ein cursorgesteuertes Ergebnis verwendet, um Abfrageergebnisse zwischenzuspeichern.
+
+6118=Eine Abfrage einer isolierten Klasse darf keine Abfrageergebnisse in der Abfrage zwischenspeichern.
+
+6119=Der Verkn\u00fcpfungsausdruck {0} ist nicht g\u00fcltig oder f\u00fcr einen Zuordnungstyp vorgesehen, der keine Verkn\u00fcpfung unterst\u00fctzt.
+
+6120=Das Teilattribut {0} ist kein g\u00fcltiges Attribut der Klasse {1}.
+
+6121=Die Abfrage wurde nicht ordnungsgem\u00e4\u00df definiert. Das Ausdruckserstellungsprogramm fehlt. F\u00fcr Unterabfragen und parallele Abfragen m\u00fcssen Sie sicherstellen, dass sich das Abfrageerstellungsprogramm immer links befindet.
+
+6122=Der Ausdruck ist nicht g\u00fcltig. {0}
+
+6123=Die angegebene Containerklasse [{0}] kann nicht verwendet werden, weil der Container {1} implementieren muss.
+
+6124=Abfrage von {0} erforderlich, aber gefunden wurde {1}
+
+6125=ReadQuery.clearQueryResults() kann nicht mehr aufgerufen werden. Der Aufruf von clearQueryResults setzt jetzt voraus, dass die Sitzung angegeben wird. clearQueryResults(session) muss aufgerufen werden.
+
+6126=Es wird eine Abfrage ausgef\u00fchrt, die angepasste und zwischengespeicherte Abfrageergebnisse verwendet. Diese beiden Einstellungen sind nicht kompatibel.
+
+6127=Ein reflektiver Aufruf ist f\u00fcr die EclipseLink-Klasse {0} fehlgeschlagen. Ihre Umgebung muss so konfiguriert sein, dass Java-Reflexion zul\u00e4ssig ist.
+
+6128=Das Lesen von Stapeln wird nicht in Abfragen unterst\u00fctzt, die angepasste Aufrufe verwenden.
+
+6129=Es ist keine Aktualisierung m\u00f6glich, wenn die Abfrage nicht an die Datenbank geht.
+
+6130=Angepasstes SQL konnte die Diskriminatorspalte {0} nicht wie in SQLResultSetMapping definiert angeben: {1}.
+
+6131=Die Abfrage DeleteAllQuery, die Objekte definiert, die mit der Methode setObjects mit einem Argument ungleich null gel\u00f6scht werden sollen, muss auch die entsprechenden Auswahlkriterien definieren. {1}Objekte: [{2}]{1}Deskriptor: [{0}]
+
+6132=Das Abfrageargument {0} wurde nicht in der w\u00e4hrend der Abfrageausf\u00fchrung angegebenen Parameterliste gefunden.
+
+6133=Das erste Argument der Methode addUpdate definiert ein Feld, dem ein neuer Wert zugeordnet werden muss. Er darf nicht null sein.
+
+6134=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert kein Feld. {1}Attributname oder Ausdruck: [{2}]{1}Deskriptor: [{0}]
+
+6135=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert ein Feld aus einer Tabelle, die keinem Abfragedeskriptor zugeordnet ist. {1}Attributname oder Ausdruck: [{2}]{1}Falsches Feld: [{3}]{1}Deskriptor: [{0}]
+
+6136=Einer Vererbung mit mehreren Tabellen zugeordnete Klassen k\u00f6nnen keine ReportQuery-Elemente sein. Element: {0}, Ausdruck: {1}.
+
+6137=W\u00e4hrend der Ausf\u00fchrung einer ReportQuery mit einem Konstruktorausdruck wurde eine Ausnahme ausgel\u00f6st: {0}
+
+6138=Die Abfrage erfordert einen tempor\u00e4ren Speicher, aber {0} unterst\u00fctzt keine tempor\u00e4ren Tabellen.
+
+6139=Problem beim Finden der Zuordnung f\u00fcr {0}, die im Feldergebnis mit dem Namen {1} definiert ist.
+
+6140=Sie haben versucht, dem Berichtstelement {1} vom Typ {0} Verkn\u00fcpfungsausdr\u00fccke zuzuordnen. Verkn\u00fcpfungsausdr\u00fccke gelten nur f\u00fcr Elemente, die ein persistentes Objekt zur\u00fcckgeben.
+
+6141=Beim Versuch, {0} in eine Klasse in einem Abfragehinweis zu konvertieren, wurde eine ClassCastException ausgel\u00f6st.
+
+6142=Der Wert {1}, der im Abfragehinweis {0} angegeben wurde, hat eine unzul\u00e4ssige Beziehung angesteuert. Die Beziehung {2} ist keine OneToOne- oder OneToMany-Beziehung.
+
+6143=Der Wert {1}, der im Abfragehinweis {0} angegeben wurde, hat eine nicht vorhandene Beziehung angesteuert. Die Beziehung {2} ist nicht vorhanden.
+
+6144=Der Wert {1}, der im Abfragehinweis {0} angegeben wurde, enthielt nicht ausreichend Tokens. Die Verkn\u00fcpfung muss mit der Identifizierungsvariablen der Abfrage anfangen. Damit in der Abfrage "SELECT x from X x" beispielsweise auf ein zu "x" geh\u00f6rendes "y" Bezug genommen wird, m\u00fcssen Sie den Hinweis "x.y" verwenden.
+
+6145=Die Angabe einer zusammengesetzten Prim\u00e4rschl\u00fcsselklasse [{0}] wird nicht unterst\u00fctzt. Deskriptor [{1}] 
+
+6146=Der Wert {1}, der im Abfragehinweis {0} angegeben wurde, ist kein g\u00fcltiger Wert. G\u00fcltige Werte sind ganze Zahlen oder Zeichenfolgen, die in ganzzahlige Werte geparst werden k\u00f6nnen.
+
+6147=Der Ausdruck {0} ist f\u00fcr das Lesen von Teilattributen nicht g\u00fcltig.
+
+6148=Das Hinzuf\u00fcgen von {0} zu PLSQLStoredProcedureCall wird nicht unterst\u00fctzt.
+
+6149=PLSQLStoredProcedureCall darf kein nicht benanntes Argument verwenden.
+
+6150=In einem Container vom Typ [{1}] darf kein Nullwert als Schl\u00fcssel verwendet werden. Vergewissern Sie sich, dass Ihre Schl\u00fcsselwerte f\u00fcr die Objekte vom Typ [{0}] nicht null sein k\u00f6nnen.
+
+6151=Beim Versuch, einen Redirector {0} zu definieren, der \u00fcber einen JPA-Abfragehinweis ({1}) \u00fcbergeben wurde, ist eine Ausnahme eingetreten. Vergewissern Sie sich, dass der angegebene Redirector org.eclipse.persistence.queries.QueryRedirector implementiert.
+
+6152=Beim Versuch, die Klasse {0} zu instanziieren, die \u00fcber einen JPA-Abfragehinweis ({1}) \u00fcbergeben wurde, ist eine Ausnahme eingetreten. Vergewissern Sie sich, dass die Klasse einen Standardkonstruktor hat.
+
+6153=CompatibleType muss f\u00fcr den komplexen Typ {0} definiert sein.
+
+6154=TypeName muss f\u00fcr den komplexen Typ {0} definiert sein.
+
+6155=In {0} wurde keine Beziehungstabelle gefunden. {2}joinCriteria-Ausdruck: [{1}]
+
+6156=Beim Versuch, festzulegen, dass der Mapschl\u00fcssel f\u00fcr [{0}] gelesen wird, ist eine Ausnahme eingetreten: [{1}].
+
+6157=Das Element [{0}] wird einer Map ohne Schl\u00fcssel hinzugef\u00fcgt. Dies bedeutet gew\u00f6hnlich, dass die Datenbank keinen erwarteten Schl\u00fcssel enth\u00e4lt.
+
+6158=MapContainerPolicy wurde aufgefordert, das Wrapping des Elements [{0}], das kein Mapelement ist, aufzuheben. Das bedeutet, dass die falsche Containerrichtlinie verwendet wird.
+
+6159=Die Zuordnung f\u00fcr MapEntryExpression mit der Basis [{0}] konnte nicht gefunden werden.
+
+6160=MapEntryExpression mit der Basis [{0}] bezieht sich auf die Zuordnung [{1}], die keine Sammlungszuordnung ist. Maps k\u00f6nnen nur f\u00fcr Sammlungszuordnungen bestehen.
+
+6161=MapEntryExpression mit der Basis [{0}] bezieht sich auf die Zuordnung [{1}], die sich auf keine Map bezieht.
+
+6162=Die Listensortierspalte [{0}] enth\u00e4lt flasche Werte:{2}{1}
+
+6163=index() kann nicht auf [{0}] angewendet werden, weil daf\u00fcr QueryKeyExpression erforderlich ist.
+
+6164=index() erfordert QueryKeyExpression mit CollectionMapping mit einer Listensortierspalte ungleich null. [{1}] erf\u00fcllt diese Bedingung in [{0}] nicht.
+
+6165=Der Stapelabruf mit IN erfordert einen Singletonprim\u00e4rschl\u00fcssel.
+
+6166=Es wurde versucht, eine Umsetzung au\u00dferhalb der Vererbungshierarchie auszuf\u00fchren. [{0}] erscheint nicht in der Klassenhierarchie f\u00fcr [{1}]. Anmerkung: Diese Ausnahme k\u00f6nnte auch darauf hinweisen, dass Sie eine Table-Per-Class-Vererbungsbeziehung umsetzen, die f\u00fcr die Umsetzung nicht unterst\u00fctzt wird.
+
+6167=Es wurde eine Umsetzung in einem Ausdruck aufgerufen, bei der keine Vererbung verwendet wird: [{0}].
+
+6168=Die Abfrage konnte nicht vorbereitet werden. Es ist ein unerwarteter Fehler aufgetreten: [{0}].
+
+6169=Es wurde eine Zuordnung f\u00fcr die Verwendung von IN-Stapelabrufen konfiguriert, aber die urspr\u00fcngliche Abfrage wurde nicht f\u00fcr die Verwendung von IN-Stapelabrufen konfiguriert und muss Folgendes sein: [{0}].
+
+6171=Die Partitionierung wird f\u00fcr den Sitzungstyp [{0}] nicht unterst\u00fctzt. Es werden nur ServerSession und ClientSession unterst\u00fctzt.
+
+6172=Der Verbindungspool f\u00fcr die Partitionierung [{0}] fehlt.
+
+6173=Es konnte kein Failover des Verbindungspools [{0}] durchgef\u00fchrt werden. Alle Server sind inaktiv.
+
+6174=F\u00fcr die Sitzungseigenschaft [{0}] wurde kein Wert angegeben. Diese Ausnahme ist m\u00f6glich, wenn zus\u00e4tzliche Kriterien oder Tenantdiskriminatorspalten verwendet werden, ohne die zugeordnete Kontexteigenschaft anzugeben. Diese Eigenschaften m\u00fcssen mit EntityManager, EntityManagerFactory oder Persistenzeinheiteneigenschaften definiert werden. Wird natives EclipseLink verwendet, m\u00fcssen diese Eigenschaften direkt in der Sitzung definiert werden.
+
+6175=Native SQL-Abfragen wurden inaktiviert. Dies erfolgt durch Setzen der Persistenzeinheiteneigenschaft "eclipselink.jdbc.allow-native-sql-queries" auf false oder durch Definition mindestens einer Multitenantentit\u00e4t in Ihrer Persistenzeinheit. \u00dcberpr\u00fcfen Sie Ihre Persistenzeinheitenspezifikation. Damit native SQL-Abfragen m\u00f6glich sind, m\u00fcssen Sie diese Eigenschaften auf true setzen. Alternativ k\u00f6nnen einzelne Abfragen diese Einstellung umgehen, indem der Abfragehinweis "eclipselink.jdbc.allow-native-sql-query" auf true gesetzt wird.
+
+6176=W\u00e4hrend der Initialisierung des Konstruktors \u00fcber die Klasse [{0}] wurde eine Ausnahme ausgel\u00f6st: [{1}]
+
+6177=Das Spaltenergebnis [{0}] wurde nicht in den Ergebnissen der Abfrage gefunden.
+
+6178=Ist isResultSetAccessOptimizedQuery auf true gesetzt, f\u00fchrt dies zu Konflikten mit anderen Abfrageeinstellungen.
+
+6179=Die Deserialisierung von sopObject \u00fcber [{0}] in [{1}] ist fehlgeschlagen.
+
+6180=Es wurde kein serialisiertes sopOject in [{0}] in [{1}] gefunden.
+
+6181=sopObject hat eine falsche Version [{0}] in [{1}] in [{2}]
+
+6182=sopObject hat einen falschen Prim\u00e4rschl\u00fcssel [{0}] in [{1}] in [{2}]
+
+6183=Der Zuordnungstyp {1} f\u00fcr das Attribut {2} von {0} wird mit der Query-By-Example-Funktion nicht unterst\u00fctzt. Wenn das Attribut sicher ignoriert werden kann, f\u00fcgen Sie es der Liste zu ignorierender Attribute hinzu oder setzen Sie die Beispielvalidierung in der Richtlinie auf false.
+

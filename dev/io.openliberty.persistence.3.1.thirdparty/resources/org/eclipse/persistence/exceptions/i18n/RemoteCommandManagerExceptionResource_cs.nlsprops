@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Nelze z\u00edskat kontext rozhran\u00ed JNDI, zkontrolujte, zda jsou spr\u00e1vn\u011b nastaveny vlastnosti.
+
+22102=Nelze vystavit p\u0159ipojen\u00ed v lok\u00e1ln\u00ed slu\u017eb\u011b n\u00e1zv\u016f pod n\u00e1zvem {0}
+
+22103=Nelze vyhledat vzd\u00e1len\u00e9 p\u0159ipojen\u00ed pod n\u00e1zvem {0} s adresou URL {1}
+
+22104=Nelze vyhledat n\u00e1zev hostitele
+
+22105=Nelze \u0161\u00ed\u0159it p\u0159\u00edkaz do {0}
+
+22106=Nelze vytvo\u0159it extern\u00ed p\u0159ipojen\u00ed JMS s t\u00e9matem {0} a tov\u00e1rnou t\u00e9mat {1}. Zkontrolujte tak\u00e9, zda jsou spr\u00e1vn\u011b nastaveny vlastnosti kontextu.
+
+22107=Nelze odebrat p\u0159ipojen\u00ed v lok\u00e1ln\u00ed slu\u017eb\u011b n\u00e1zv\u016f pod n\u00e1zvem {0}
+
+22108=Nelze serializovat nebo deserializovat p\u0159\u00edkaz
+
+22109=Nezda\u0159ilo se p\u0159ijmout zpr\u00e1vu JMS od poskytovatele JMS
+
+22110=Nezda\u0159ilo se zjistit adresu IP lok\u00e1ln\u00edho hostitele.
+
+22111=Nezda\u0159ilo se z\u00edskat rozhran\u00ed ServerPlatform. Rozhran\u00ed ServerPlatform je t\u0159eba nastavit na t\u0159\u00eddu Session nebo RemoteCommandManager.
+
+22112=Nelze vytvo\u0159it lok\u00e1ln\u00ed p\u0159ipojen\u00ed JMS s t\u00e9matem {0} a tov\u00e1rnou t\u00e9mat {1}. Zkontrolujte tak\u00e9, zda jsou spr\u00e1vn\u011b nastaveny vlastnosti kontextu.
+
+22113=Pomoc\u00ed tov\u00e1rny {2} nelze vytvo\u0159it ID slu\u017eby Oc4jJGroupsRemoteConnection {0}, t\u00e9ma {1}. Zkontrolujte tak\u00e9, zda jsou spr\u00e1vn\u011b nastaveny vlastnosti kontextu.
+
+22114={0}: Nezda\u0159ilo se deserializovat na\u010dtenou zpr\u00e1vu {1}.
+
+22115={0}: Nezda\u0159ilo se zpracovat vzd\u00e1len\u00fd p\u0159\u00edkaz na\u010dten\u00fd ze zpr\u00e1vy {1}, od {2}, typ p\u0159\u00edkazu {3}
+
+22116=P\u0159ijat\u00e1 zpr\u00e1va JMS m\u00e1 hodnotu null. Je pova\u017eov\u00e1na za v\u00fdjimku JMSException.
+
+22117=T\u0159\u00edda RemoteCommandManager relace je zav\u0159en\u00e1 nebo nebyla p\u0159i zpracov\u00e1n\u00ed p\u0159\u00edchoz\u00edch zpr\u00e1v inicializov\u00e1na.
+
+22118=Nezda\u0159ilo se vytvo\u0159it p\u0159ipojen\u00ed JGroups pomoc\u00ed konfigura\u010dn\u00edho souboru: {0}
+

@@ -43,7 +43,8 @@ public class FATSuite {
                     .andWith(new RepeatWithJPA22())
                     .andWith(new RepeatWithJPA20())
                     .andWith(new RepeatWithJPA22Hibernate())
-                    .andWith(new RepeatWithJPA30());
+                    .andWith(new RepeatWithJPA30())
+                    .andWith(new RepeatWithJPA31());
 
     public static String repeatPhase = "";
 }

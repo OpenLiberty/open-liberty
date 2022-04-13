@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Errore di configurazione.  Classe [{0}] non trovata.
+
+4005=DatabaseAccessor non connesso.
+
+4006=Errore durante la lettura dei dati del BLOB dal flusso in getObject().
+
+4007=Impossibile convertire il tipo di oggetto a causa di un errore interno. {0}java.sql.TYPES: [{1}]
+
+4008=Impossibile eseguire il logout mentre \u00e8 in corso una transazione.
+
+4009=Le informazioni della tabella di sequenza non sono complete.
+
+4011=Errore di preallocazione dei numeri di sequenza.  Le informazioni della tabella di sequenza non sono complete.
+
+4014=Impossibile registrare SynchronizationListener.
+
+4015=L''unit\u00e0 di lavoro (o UOW) sincronizzata non supporta l''operazione commitAndResume().
+
+4016=Errore di configurazione.  Impossibile creare un''istanza del driver [{0}].
+
+4017=Errore di configurazione.  Impossibile accedere al driver [{0}].
+
+4018=TransactionManager non \u00e8 stato impostato per il driver JTS.
+
+4019=Errore durante l''ottenimento delle informazioni sul database. Fare riferimento all''eccezione nidificata per ulteriori dettagli.
+
+4020=Impossibile trovare il campo database corrispondente per il campo blocco ottimistico specificato [{0}]. Notare che la corrispondenza \u00e8 sensibile al maiuscolo/minuscolo, quindi, se \u00e8 stato permesso il valore predefinito per il nome colonna sul metodo getter, il nome verr\u00e0 convertito in maiuscolo.
+
+4021=Impossibile acquisire una connessione dal driver [{0}], utente [{1}] e URL [{2}].  Verificare di avere impostato l''URL e la classe driver previsti.  Verificare il login, la risorsa persistence.xml o sessions.xml.  La propriet\u00e0\u00a0jdbc.driver deve essere impostata su una classe compatibile con la piattaforma database
+
+4022=L''accessor, o la relativa connessione, \u00e8 stato impostato su null.  Ci\u00f2 pu\u00f2 verificarsi se ClientSession o UnitOfWork sono stati rilasciati in un thread separato, ad esempio se si \u00e8 verificato un timeout.
+

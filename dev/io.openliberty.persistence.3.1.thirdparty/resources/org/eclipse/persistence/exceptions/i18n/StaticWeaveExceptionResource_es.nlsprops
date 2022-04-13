@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=Se ha generado una excepci\u00f3n al intentar abrir un archivado desde el URL: {0}.
+
+40002=No se ha especificado ning\u00fan origen para el entrelazado
+
+40003=No se ha especificado ning\u00fan destino para el entrelazado
+
+40004=No se permite ejecutar el entrelazado aplicable para el archivo JAR
+
+40005=Se ha generado una excepci\u00f3n al intentar abrir un archivo de registro: {0}.
+
+40006=El nivel registro se ha especificado con el valor incorrecto. Debe ser uno de los siguientes (OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST)
+
+40007=Se ha generado una excepci\u00f3n al entrelazar: {0}.
+

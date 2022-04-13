@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Die Datei "[{0}]" wurde nicht gefunden.
+
+47001=Der Deskriptor [{0}] f\u00fcr die Operation [{1}] im O-R-Projekt konnte nicht lokalisiert werden.
+
+47002=Die Abfrage [{0}] f\u00fcr den Deskriptor [{1}] konnte nicht lokalisiert werden.
+
+47003=Die Abfrage [{0}] f\u00fcr die Sitzung [{1}] konnte nicht lokalisiert werden.
+
+47004=Der Parametertyp [{0}] f\u00fcr die Operation [{1}] ist nicht im Schema vorhanden.
+
+47005=Der Parametertyp [{0}] f\u00fcr die Operation [{1}] hat keine O-X-Zuordnung.
+
+47006=Der Ergebnistyp [{0}] f\u00fcr die Operation [{1}] ist nicht im Schema vorhanden.
+
+47007=Der Ergebnistyp [{0}] f\u00fcr die Operation [{1}] hat keine O-X-Zuordnung.
+
+47008=Nur Abfragen vom Typ ''Simple XML Format'' unterst\u00fctzen mehrere Ausgabeargumente.
+
+47009=INOUT-Cursorparameter werden nicht unterst\u00fctzt.
+
+47010=Die O-R-Sitzung f\u00fcr den Service [{0}] konnte nicht lokalisiert werden.
+
+47011=Die O-X-Sitzung f\u00fcr den Service [{0}] konnte nicht lokalisiert werden.
+
+47012=Die DBWS-Datei konnte nicht geparst werden.
+

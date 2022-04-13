@@ -31,5 +31,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests
-                    .with(FeatureReplacementAction.EE9_FEATURES());
+                    .with(FeatureReplacementAction.EE9_FEATURES())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }

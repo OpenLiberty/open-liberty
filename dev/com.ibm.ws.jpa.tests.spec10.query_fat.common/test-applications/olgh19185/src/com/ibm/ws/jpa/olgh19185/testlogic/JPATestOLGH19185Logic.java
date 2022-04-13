@@ -59,7 +59,7 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if (isUsingJPA30Feature() && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
@@ -189,7 +189,7 @@ public class JPATestOLGH19185Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if (isUsingJPA30Feature() && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 

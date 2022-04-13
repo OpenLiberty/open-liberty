@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DiscoveryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22001=\u30de\u30eb\u30c1\u30ad\u30e3\u30b9\u30c8\u30fb\u30b0\u30eb\u30fc\u30d7\u3092\u7d50\u5408\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f
+
+22002=\u30b5\u30fc\u30d3\u30b9\u544a\u77e5\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f
+
+22003=\u30ed\u30fc\u30ab\u30eb\u30fb\u30db\u30b9\u30c8\u306e\u30eb\u30c3\u30af\u30a2\u30c3\u30d7\u5b9f\u884c\u4e2d\u306b\u5931\u6557\u3057\u307e\u3057\u305f
+
+22004=\u30ea\u30e2\u30fc\u30c8\u30fb\u30b5\u30fc\u30d3\u30b9\u304b\u3089\u306e\u30b5\u30fc\u30d3\u30b9\u544a\u77e5\u306e\u53d7\u4fe1\u8a66\u884c\u4e2d\u306b\u5931\u6557\u3057\u307e\u3057\u305f
+
