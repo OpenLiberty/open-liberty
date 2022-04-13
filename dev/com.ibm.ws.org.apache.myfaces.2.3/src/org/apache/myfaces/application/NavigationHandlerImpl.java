@@ -77,20 +77,19 @@ import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
 /**
- * @author Thomas Spiegl (latest modification by $Author: lu4242 $)
+ * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
- * @version $Revision: 1570052 $ $Date: 2014-02-20 01:58:02 +0000 (Thu, 20 Feb 2014) $
+ * @version $Revision$ $Date$
  */
 public class NavigationHandlerImpl
     extends ConfigurableNavigationHandler
 {
-    //private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
     
     private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet(
-            EnumSet.of(VisitHint.SKIP_ITERATION));   
+            EnumSet.of(VisitHint.SKIP_ITERATION));    
     
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
@@ -177,7 +176,61 @@ public class NavigationHandlerImpl
                 //But since the introduction of portlet bridge and the 
                 //removal of portlet code in myfaces core 2.0, this condition
                 //no longer applies
+
+                // Need to add the FlowHandler parameters here.
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(facesContext, flowHandler);
+                Flow currentFlow = flowHandler.getCurrentFlow(facesContext);
+                Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, 
+                                                      activeFlows, toFlowDocumentId);
                 
+                Map<String,List<String>> navigationCaseParameters = navigationCase.getParameters();
+                
+                // Spec: If this navigation is a flow transition (where current flow is not the same as the new flow)
+                // sourceFlow and targetFlow could both be null so need to have multiple checks here
+                if (currentFlow != targetFlow)
+                { 
+                    // Ensure that at least one has a value and check for equality
+                    if ((currentFlow != null && !currentFlow.equals(targetFlow)) ||
+                                    (targetFlow != null && !targetFlow.equals(currentFlow)))
+                    {
+                        if (navigationCaseParameters == null)
+                        {
+                            navigationCaseParameters = new HashMap<>();
+                        }
+                        // If current flow (sourceFlow) is not null and new flow (targetFlow) is null,
+                        // include the following entries:
+                        if (currentFlow != null && targetFlow == null)
+                        {
+                            // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
+                            List<String> list = new ArrayList<String>(1);
+                            list.add(FlowHandler.NULL_FLOW);
+                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                    
+                            // Set the FLOW_ID_REQUEST_PARAM_NAME
+                            List<String> list2 = new ArrayList<String>(1);
+                            list2.add("");
+                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                        }
+                        else
+                        {
+                            // If current flow (sourceFlow) is null and new flow (targetFlow) is not null,
+                            // include the following entries:
+                            // If we make it this far we know the above statement is true due to the other
+                            // logical checks we have hit to this point.
+                            // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
+                            List<String> list = new ArrayList<String>(1);
+                            list.add((toFlowDocumentId == null ? "" : toFlowDocumentId));
+                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                            
+                            // Set the FLOW_ID_REQUEST_PARAM_NAME
+                            List<String> list2 = new ArrayList<String>(1);
+                            list2.add(targetFlow.getId());
+                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                        }
+                    }
+                }            
+
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String toViewId = navigationCase.getToViewId(facesContext);
@@ -185,7 +238,7 @@ public class NavigationHandlerImpl
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
                         NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                        navigationCase.getParameters()) ,
+                        navigationCaseParameters) ,
                         navigationCase.isIncludeViewParams());
                 
                 // The spec doesn't say anything about how to handle redirect but it is
@@ -565,7 +618,7 @@ public class NavigationHandlerImpl
                     if (startFlow)
                     {
                         if (flowHandler.isActive(facesContext, targetFlow.getDefiningDocumentId(), targetFlow.getId())
-                                        && targetFlowCallNode == null)
+                            && targetFlowCallNode == null)
                         {
                             // Add the transition to exit from the flow
                             Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
@@ -1003,7 +1056,7 @@ public class NavigationHandlerImpl
         {
             if (viewId != null)
             {
-                index = viewId.lastIndexOf(".");
+                index = viewId.lastIndexOf('.');
 
                 if (index != -1)
                 {
@@ -1024,7 +1077,7 @@ public class NavigationHandlerImpl
                 String tempViewId = getNavigationHandlerSupport().calculateViewId(facesContext);
                 if (tempViewId != null)
                 {
-                    index = tempViewId.lastIndexOf(".");
+                    index = tempViewId.lastIndexOf('.');
                     if(index != -1)
                     {
                         viewIdToTest.append(tempViewId.substring (index));
@@ -1051,7 +1104,7 @@ public class NavigationHandlerImpl
             index = -1;
             if( viewId != null )
             {
-               index = viewId.lastIndexOf ("/");
+               index = viewId.lastIndexOf('/');
             }
             
             if (index == -1)
