@@ -6,7 +6,7 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-4.0)(osgi.identity=io.openliberty.cdi-3.0)))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.concurrent-3.0))"
 -bundles=\
-  io.openliberty.concurrent.internal.cdi.jakarta
+  io.openliberty.concurrent.internal.cdi
 IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core

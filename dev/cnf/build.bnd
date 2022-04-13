@@ -81,3 +81,7 @@ build.bnd.plugins.path: \
 build.bnd.plugins: \
   com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor;path:="${build.bnd.plugins.path}",\
   com.ibm.ws.build.bnd.plugins.BundleManifestValidator;path:="${build.bnd.plugins.path}"
+
+-plugin.transformer.verifier: aQute.bnd.service.verifier.VerifierPlugin;\
+ name=Transformer;\
+ command:="-transformer"
