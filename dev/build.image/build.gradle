@@ -812,7 +812,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
             from 'packaging'
             include 'rules.template'
             into 'packaging/debuild/openliberty/debian'
-            filter { line -> line.replaceAll('@VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+            filter { line -> line.replaceAll('@VERSION@', bnd.get('libertyServiceVersion', 'Unknown')) }
             rename { it.replace(".template", "") }
         }
 
@@ -826,8 +826,8 @@ if (isAutomatedBuild && !isIFIXBuild) {
             environment "GPG_PASS", rootProject.userProps.getProperty('gpgPassphrase')
             mkdir("packaging/tempPackagingDir/tempTar")
 
-            def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
-            def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+            def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd.get('libertyServiceVersion') + "-1.noarch.rpm")
+            def debs = file("./packaging/debuild/openliberty_" + bnd.get('libertyServiceVersion') + "-1ubuntu1_all.deb")
             def packageDate = new Date()
             def formattedRPMDate = packageDate.format("E MMM d y")
             def formattedDEBDate = packageDate.format("E, d MMM y hh:mm:ss Z")
@@ -838,7 +838,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
             errorOutput = new ByteArrayOutputStream()
 
-            commandLine 'sh', './buildOsNativePackages.sh', bnd('libertyServiceVersion'), isRelease, formattedRPMDate, formattedDEBDate
+            commandLine 'sh', './buildOsNativePackages.sh', bnd.get('libertyServiceVersion'), isRelease, formattedRPMDate, formattedDEBDate
 
             ignoreExitValue true
 

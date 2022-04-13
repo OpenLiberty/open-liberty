@@ -10,7 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;commons-logging:commons-logging;1.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-   @${repo;commons-logging:commons-logging;1.2;EXACT}!/!META-INF/maven/*
-
 -buildpath: commons-logging:commons-logging;version=1.2

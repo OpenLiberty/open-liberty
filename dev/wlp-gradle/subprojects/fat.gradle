@@ -54,7 +54,7 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
 
-  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0',
        'commons-cli:commons-cli:1.4',
        project(':com.ibm.ws.org.slf4j.api'),
        project(':com.ibm.ws.org.slf4j.simple'),
@@ -212,9 +212,9 @@ task autoFVT {
     }
 
     // Check for minimum java level for test execution:
-    def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
+    def minJavaLevel = bnd.get('fat.minimum.java.level', bnd.get('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
-    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
+    bndProps.setProperty('micro.version', bnd.get('libertyBundleMicroVersion'))
 
     File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def bndWriter = new FileWriter(bndPropsFile)
@@ -308,7 +308,7 @@ task autoFVT {
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
     // Include features added explictly via bnd.bnd
-    def testedFeatures = bnd('tested.features')
+    def testedFeatures = bnd.get('tested.features')
     if(testedFeatures != null)
       testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
     // Scan publish/ dir for features

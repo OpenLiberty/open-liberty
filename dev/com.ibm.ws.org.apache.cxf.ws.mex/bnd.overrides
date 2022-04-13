@@ -31,17 +31,6 @@ Import-Package: \
 DynamicImport-Package: org.apache.cxf.bus, \
  org.apache.cxf.*
 
-Include-Resource:\
- @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/cxf/**, \
- @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/DEPENDENCIES, \
- @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/LICENSE, \
- @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/NOTICE, \
- build/tmp/bnd/cxf-rt-ws-mex-2.6.2
-
--outputmask: com.ibm.ws.org.apache.cxf-rt-ws-mex.2.6.2.jar
-
-publish.wlp.jar.include: com.ibm.ws.org.apache.cxf-rt-ws-mex.2.6.2.jar
-
 Archiver-Version:
 Build-Jdk:
 Built-By:

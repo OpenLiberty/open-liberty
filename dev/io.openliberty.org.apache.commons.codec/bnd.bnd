@@ -10,7 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;commons-codec:commons-codec;1.15}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-   @${repo;commons-codec:commons-codec;1.15;EXACT}!/!META-INF/maven/*
-
 -buildpath: commons-codec:commons-codec;version=1.15

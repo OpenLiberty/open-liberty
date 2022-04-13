@@ -10,7 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.commons:commons-lang3;3.8;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-   @${repo;org.apache.commons:commons-lang3;3.8;EXACT}!/!META-INF/maven/*
-
 -buildpath: org.apache.commons:commons-lang3;version=3.8
