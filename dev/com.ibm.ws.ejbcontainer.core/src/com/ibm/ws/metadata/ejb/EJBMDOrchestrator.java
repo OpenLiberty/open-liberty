@@ -1296,6 +1296,9 @@ public abstract class EJBMDOrchestrator {
                                                                               methodInterface); //d599046
         }
 
+        //Set a flag if any method is annotated with the concurrency Asychronous annotation.
+        bmd.ivHasConcurrentAsynchMethod |= MethodAttribUtils.getConcurrentAsynchronousMethods(ejbMethods);
+
         // F743-1752.1 start
         // Get Lock and AccessTimeout metadata if EJB is a Singleton session bean and
         // it uses container managed concurrency control.
@@ -6846,6 +6849,8 @@ public abstract class EJBMDOrchestrator {
             AppConfigChecker.validateStatefulTimeoutOnInterfaces(bmd.ivBusinessLocalInterfaceClasses, tc); // F743-6605
             AppConfigChecker.validateStatefulTimeoutOnInterfaces(bmd.ivBusinessRemoteInterfaceClasses, tc); // F743-6605
             AppConfigChecker.validateStatefulTimeoutOnSFSB(bmd, tc); // F743-6605
+            AppConfigChecker.validateCorrectAsycOnMethods(bmd.ivBusinessLocalInterfaceClasses, tc);
+            AppConfigChecker.validateCorrectAsycOnMethods(bmd.ivBusinessRemoteInterfaceClasses, tc);
         }
 
         // ----------------------------------------------------------------------

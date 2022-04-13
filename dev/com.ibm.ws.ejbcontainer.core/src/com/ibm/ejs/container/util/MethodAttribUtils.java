@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ejs.container.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -339,6 +340,53 @@ public class MethodAttribUtils {
         return (asynchMethodFound);
 
     } // getAsynchronousMethods
+
+    /**
+     * <code>getConcurrentAsynchronousMethods<code> checks all beanMethods to determine
+     * if any beans are annotated with the Jakarta Concurrent Asynchronous annotation.
+     * Returns true when found, or false otherwise.
+     *
+     * @param beanMethods Input array of Method objects representing the methods of this EJB.
+     *
+     * @return True if at least one method was found on this bean to have the Concurrent Asynchronous annotation.
+     */
+    public static boolean getConcurrentAsynchronousMethods(Method[] beanMethods) {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "getConcurrentAsynchronousMethods");
+
+        boolean asynchMethodFound = false;
+        Annotation[] asynchMethodAnnotations = null;
+
+        for (Method beanMethod : beanMethods) {
+            if (beanMethod == null)
+                continue; //onto next method
+
+            asynchMethodAnnotations = beanMethod.getAnnotations();
+
+            if (asynchMethodAnnotations == null)
+                continue; //onto next method
+
+            for (Annotation beanAnno : asynchMethodAnnotations) {
+                if (beanAnno.annotationType().getName().contains("jakarta.enterprise.concurrent.Asynchronous")) {
+                    asynchMethodFound = true;
+                    break; //stop looking at annotations
+                }
+            }
+
+            if (asynchMethodFound) {
+                break; //stop looking at methods
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getConcurrentAsynchronousMethods", asynchMethodFound);
+        }
+
+        return (asynchMethodFound);
+
+    } // getConcurrentAsynchronousMethods
 
     /**
      * Check all methods for method-level Security annotations. Specifically

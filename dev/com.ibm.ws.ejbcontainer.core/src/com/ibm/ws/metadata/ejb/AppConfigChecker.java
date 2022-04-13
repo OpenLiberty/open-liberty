@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.StatefulTimeout;
@@ -73,6 +75,46 @@ final class AppConfigChecker
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Logs an warning message (via the passed-in trace component) if any of the
+     * passed-in interfaces' methods contain an <code>@Asynchronous</code>
+     * annotation for jakarta.enterprise.concurrent.Asychronous.
+     * It will only log one message per class no matter how many annotations may exist in methods.
+     * Note: This method will always log the message - make sure to gate this
+     * method by calling {@link isValidationLoggable}.
+     *
+     * @param ifaces - array of interface classes to scan for async annotations
+     * @param tc     - the trace component to log if any async annotations are detected - must be non-null
+     */
+    static void validateCorrectAsycOnMethods(Class<?>[] ifaces, TraceComponent tc) {
+        if (ifaces == null) {
+            return; //Ignore if no classes exist
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "validateCorrectAsycOnMethods", Arrays.asList(ifaces).toString());
+
+        try {
+            for (Class<?> iface : ifaces) {
+                if (iface == null || !iface.isInterface()) {
+                    continue; //onto next interface
+                }
+
+                for (Method m : iface.getMethods()) {
+                    for (Annotation anno : m.getAnnotations()) {
+                        if (anno.annotationType().getName() == "jakarta.enterprise.concurrent.Asynchronous") {
+                            Tr.warning(tc, "CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE", iface.getName());
+                            return;
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.entry(tc, "validateCorrectAsycOnMethods");
         }
     }
 

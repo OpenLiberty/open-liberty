@@ -1130,6 +1130,12 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
     public boolean ivHasAsynchMethod = false;
 
     /**
+     * Set to true when this bean has one or more methods annotated with the Concurrent asynchronous annotation.
+     * Default is false.
+     */
+    public boolean ivHasConcurrentAsynchMethod = false;
+
+    /**
      * Stateful AfterBegin session synchronization method when bean does
      * not implement the SessionSynchronization interface.
      */
@@ -1614,7 +1620,8 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
                                               "ExPC Ids                    = " + Arrays.toString(ivExPcPuIds), // F743-30682
                                               "WebService Endpoint Created = " + ivWebServiceEndpointCreated, // d497921
                                               "Component NameSpace :  nsid = " + getJavaNameSpaceID(), // d508455
-                                              "Has aysnchronous method(s)  = " + ivHasAsynchMethod,
+                                              "Has asynchronous method(s)  = " + ivHasAsynchMethod,
+                                              "Has concurr asych method(s) = " + ivHasConcurrentAsynchMethod,
                                               "Singleton Concurrency Type  = " + singletonConcurrency, //F743-1752CodRev
                                               "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
                                               "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
@@ -2448,6 +2455,17 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
             }
 
         } // Validation of asynchronous methods
+
+        if (ivHasConcurrentAsynchMethod) {
+
+            // Concurrent Asynch methods are not allowed on EJBs
+            Tr.error(tc, "CNTR9426E_INCORRECT_ASYNC_ANNO",
+                     new Object[] { j2eeName.getComponent(), j2eeName.getModule(), j2eeName.getApplication() });
+
+            throw new EJBConfigurationException( //
+                            Tr.formatMessage(tc, "CNTR9426E_INCORRECT_ASYNC_ANNO", new Object[] { j2eeName.getComponent(), j2eeName.getModule(), j2eeName.getApplication() }));
+
+        } // Validation of Concurrent asynchronous methods
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "validate");
