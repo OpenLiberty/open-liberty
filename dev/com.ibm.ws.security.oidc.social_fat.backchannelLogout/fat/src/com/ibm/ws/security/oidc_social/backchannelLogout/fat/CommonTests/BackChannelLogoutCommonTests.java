@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.ibm.websphere.simplicity.log.Log;
 import org.junit.AfterClass;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
@@ -26,7 +27,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Variable;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
@@ -691,7 +691,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         }
 
         int start = respReceived.indexOf(tokenName);
-        String theValue = respReceived.substring(start + tokenName.length(), respReceived.length() - 1);
+        String theValue = respReceived.substring(start + tokenName.length(), respReceived.length() - 1).split(System.getProperty("line.separator"))[0];
         Log.info(thisClass, thisMethod, tokenName + " " + theValue);
         if (!theValue.isEmpty()) {
             return theValue;

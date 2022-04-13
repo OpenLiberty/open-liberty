@@ -81,11 +81,22 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    public void restoreAppMap(String client) throws Exception {
+        genericInvokeEndpoint(_testName, getAndSaveWebClient(true), null, clientServer.getHttpsString() + "/backchannelLogoutTestApp/backChannelLogoutUri/" + client,
+                Constants.PUTMETHOD, "resetBCLLogoutTokenMap", null, null, vData.addSuccessStatusCodes(), testSettings);
+    }
+
     /**
+     * Validate the content of the logout_token - use the content of the id_token from the client login request
      *
      * @param idTokenData
-     * @param logoutToken
-     * @param updatedTestSettings
+     *            the content of the id_token from the login request
+     * @param logoutTokenData
+     *            the content of the logout_token from the end_session request (for the client of the test's login request)
+     * @param sidRequired
+     *            flag indicating if the the config used by the calling test case requires a sid (if true, a sid must be in the
+     *            token, if false, either sid or sub will need to be in the token - our OP always puts both in, so, it's sort of a
+     *            moot point, but, testing to spec)
      * @throws Exception
      */
     public void validateLogoutTokenContent(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData, boolean sidRequired) throws Exception {
@@ -96,6 +107,15 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         validateLogoutTokenClaims(idTokenData, logoutTokenData, sidRequired);
     }
 
+    /**
+     * Validate the header content of the logout_token against the id_token from the client login request
+     *
+     * @param idTokenData
+     *            the content of the id_token from the login request
+     * @param logoutTokenData
+     *            the content of the logout_token from the end_session request (for the client of the test's login request)
+     * @throws Exception
+     */
     public void validateLogoutTokenHeader(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData) throws Exception {
 
         Map<String, Object> idTokenDataClaims = idTokenData.getMapHeader();
@@ -105,6 +125,19 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate the payload content of the logout_token - use the content of the id_token from the client login request
+     *
+     * @param idTokenData
+     *            the content of the id_token from the login request
+     * @param logoutTokenData
+     *            the content of the logout_token from the end_session request (for the client of the test's login request)
+     * @param sidRequired
+     *            flag indicating if the the config used by the calling test case requires a sid (if true, a sid must be in the
+     *            token, if false, either sid or sub will need to be in the token - our OP always puts both in, so, it's sort of a
+     *            moot point, but, testing to spec)
+     * @throws Exception
+     */
     public void validateLogoutTokenClaims(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData, boolean sidRequired) throws Exception {
 
         Map<String, Object> idTokenDataClaims = idTokenData.getMapPayload();
@@ -128,6 +161,21 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate that the string value for key/claim in the logout_token matches the string value of key/claim from the id_token
+     *
+     * @param key
+     *            the key/claim whose value is to be validated
+     * @param idTokenDataClaims
+     *            the claims from the payload of the id_token from the login request
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @param mustBeInIdToken
+     *            flag indicating if the key to be validated should exist in the id_token - if it should, we'll compare the value,
+     *            if not, we just need to make sure that the key exists in the logout_token (this is the case with claims like
+     *            jti)
+     * @throws Exception
+     */
     protected void mustHaveString(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims, boolean mustBeInIdToken) throws Exception {
 
         Object logoutTokenValue = logoutClaims.get(key);
@@ -136,7 +184,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         if (logoutTokenValue == null) {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
-            // all of the required keys should be in the id_token, so we should be able to compare the value,
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value,
             // but check for a null in the idToken - just in case...
             if (idTokenValue == null) {
                 if (mustBeInIdToken) {
@@ -157,6 +205,21 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate that the long value for key/claim in the logout_token matches the long value of key/claim from the id_token
+     *
+     * @param key
+     *            the key/claim whose value is to be validated
+     * @param idTokenDataClaims
+     *            the claims from the payload of the id_token from the login request
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @param mustBeInIdToken
+     *            flag indicating if the key to be validated should exist in the id_token - if it should, we'll compare the value,
+     *            if not, we just need to make sure that the key exists in the logout_token (this is the case with claims like
+     *            jti)
+     * @throws Exception
+     */
     protected void mustHaveLong(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims, boolean mustBeInIdToken) throws Exception {
 
         Object rawLogoutTokenValue = logoutClaims.get(key);
@@ -166,7 +229,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
             Long logoutTokenValue = Long.valueOf((String) rawLogoutTokenValue).longValue();
-            // all of the required keys should be in the id_token, so we should be able to compare the value
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value
             if (rawIdTokenValue == null) {
                 if (mustBeInIdToken) {
                     fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
@@ -183,6 +246,17 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate that the array values for key/claim in the logout_token matches the array values of key/claim from the id_token
+     *
+     * @param key
+     *            the key/claim whose value is to be validated
+     * @param idTokenDataClaims
+     *            the claims from the payload of the id_token from the login request
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @throws Exception
+     */
     protected void mustHaveArray(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims) throws Exception {
 
         Object rawLogoutTokenValue = logoutClaims.get(key);
@@ -193,7 +267,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         } else {
             Log.info(thisClass, "mustHaveArray", "array type: " + rawLogoutTokenValue.getClass());
 
-            // all of the required keys should be in the id_token, so we should be able to compare the value,
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value,
             // but check for a null in the idToken - just in case...
             if (rawIdTokenValue == null) {
                 fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
@@ -229,6 +303,19 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate that the string value for "oneKey" OR "otherKey" in the logout_token matches the string values from the id_token
+     *
+     * @param oneKey
+     *            one of the keys/claims that must be in the logout_token
+     * @param otherKey
+     *            one of the keys/claims that must be in the logout_token
+     * @param idTokenDataClaims
+     *            the claims from the payload of the id_token from the login request
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @throws Exception
+     */
     protected void mustHaveOneOrTheOtherString(String oneKey, String otherKey, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims) throws Exception {
 
         Object oneLogoutTokenValue = logoutClaims.get(oneKey);
@@ -266,6 +353,15 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Validate that the key/claim is NOT found in the claims of the payload
+     *
+     * @param key
+     *            the key/claim whose value is to be validated
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @throws Exception
+     */
     protected void mustNotHave(String key, Map<String, Object> logoutClaims) throws Exception {
 
         Object logoutTokenValue = logoutClaims.get(key);
@@ -274,6 +370,13 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         }
     }
 
+    /**
+     * Validate that the logout_token contains the events claim with the content specified in the spec
+     *
+     * @param logoutClaims
+     *            the claims from the payload of the logout_token from the end_sesssion request
+     * @throws Exception
+     */
     protected void mustHaveEvents(Map<String, Object> logoutClaims) throws Exception {
 
         Object rawLogoutTokenValue = logoutClaims.get(Constants.PAYLOAD_EVENTS);
@@ -307,13 +410,36 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         }
     }
 
-    public void generic_logoutTokenCreationValidation(TestSettings settings, String provider, boolean sidRequired) throws Exception {
+    /**
+     * This method provides the "generic" steps that each of the test cases in this class needs to perform
+     * - clear the response string in the test bcl endpoint
+     * - Update the test settings based on the provider and client info passed
+     * - Login to access a protected app
+     * - gather the id_token, parse and save it in JwtTokenForTest format
+     * - invoke end_session
+     * - gather the logout_token and save it in JwtTokenForTest format
+     * - validate the content of the logout_token against what was in the id_token
+     *
+     * @param provider
+     *            the OP Provider that the test case is using - used to build the end_session endpoint
+     * @param client
+     *            the client that the test case is using - used to build the app name, post redirect uri and search for the
+     *            logout_token in the post logout response
+     * @param sidRequired
+     *            flag inidicating if the sid is required by the config (used when validating the logout_token)
+     * @throws Exception
+     */
+    public void generic_logoutTokenCreationValidation(String provider, String client, boolean sidRequired) throws Exception {
 
+        restoreAppMap(client);
         WebClient webClient = getAndSaveWebClient(true);
 
+        TestSettings settings = testSettings.copyTestSettings();
         // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
         // it'll do this to retrieve the logout_token content
-        settings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/backChannelLogoutUri");
+        settings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/backChannelLogoutUri/" + client + "_postLogout");
+        settings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/" + client);
+
         // update the end_session that the test will use (it needs the specific provider)
         settings.setEndSession(settings.getEndSession().replace("OidcConfigSample", provider));
 
@@ -329,7 +455,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
         // invoke logout/end_session which will invoke the backchannel uri - which we've configured to use our test app that will print/log the logout_token
         Object logoutResponse = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, expectations, response, null);
-        String logoutToken = getLogoutTokenFromOutput(Constants.LOGOUT_TOKEN, logoutResponse);
+        String logoutToken = getLogoutTokenFromOutput(client + " - " + Constants.LOGOUT_TOKEN + ": ", logoutResponse);
         Log.info(thisClass, _testName, "Logout token: " + logoutToken);
 
         JwtTokenForTest logoutTokenData = gatherDataFromToken(logoutToken, settings);
@@ -338,21 +464,18 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     }
 
     /**
-     * Test that the logout_token is does not contain the session id
+     * Test that the logout_token does not require the session id
      *
      * @throws Exception
      */
     @Test
     public void LogoutTokenCreationTests_sessionNotRequired() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionNotRequired");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigSample", "client_sessionNotRequired", sidIsNotRequired);
     }
 
     /**
-     * Test that the logout_token is does contain the session id
+     * Test that the logout_token does contain the session id
      *
      * @throws Exception
      */
@@ -360,15 +483,12 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_sessionRequired() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionRequired");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsRequired);
+        generic_logoutTokenCreationValidation("OidcConfigSample", "client_sessionRequired", sidIsRequired);
 
     }
 
     /**
-     * Test that the logout_token constains a jti claim that does NOT match the jti that is contained in the id_token
+     * Test that the logout_token contains a jti claim that does NOT match the jti that is contained in the id_token
      *
      * @throws Exception
      */
@@ -376,10 +496,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_jtiEnabledInOP() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_jtiInOP");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigJtiSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigJtiSample", "client_jtiInOP", sidIsNotRequired);
 
     }
 
@@ -391,10 +508,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultIssuer() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultIssuer");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigIssuerSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigIssuerSample", "client_nonDefaultIssuer", sidIsNotRequired);
 
     }
 
@@ -406,10 +520,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_All() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceAll");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceSample", "client_nonDefaultAudienceAll", sidIsNotRequired);
 
     }
 
@@ -421,10 +532,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_one() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceOne");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceSample", "client_nonDefaultAudienceOne", sidIsNotRequired);
 
     }
 
@@ -433,13 +541,11 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
+    // TODO enable after 20799 is resolved @Test
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_multiple() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceMultiple");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceSample", "client_nonDefaultAudienceOne", sidIsNotRequired);
 
     }
 
@@ -452,10 +558,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonceEnabledInOP() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonceInOP");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigNonceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigNonceSample", "client_nonceInOP", sidIsNotRequired);
 
     }
 
@@ -465,13 +568,10 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
-    @Test
+    // TODO enable after 20799 is resolved @Test
     public void LogoutTokenCreationTests_sign_HS256() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionNotRequired");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigSample", "client_sessionNotRequired", sidIsNotRequired);
 
     }
 
@@ -497,10 +597,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_sign_RS256() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_rs256");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigRs256Sample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigRs256Sample", "client_rs256", sidIsNotRequired);
 
     }
 

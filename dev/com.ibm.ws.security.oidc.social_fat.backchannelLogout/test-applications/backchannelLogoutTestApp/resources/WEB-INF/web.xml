@@ -54,7 +54,7 @@
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_1">
     <servlet-name>BackChannelLogout_logoutToken_Servlet</servlet-name>
-    <url-pattern>/backChannelLogoutUri</url-pattern>
+    <url-pattern>/backChannelLogoutUri/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping id="ServletMapping_2">

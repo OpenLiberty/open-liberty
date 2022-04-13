@@ -15,16 +15,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysPassesTest.class,
-        HttpMethodsTests.class,
+        //        AlwaysPassesTest.class,
+        //        HttpMethodsTests.class,
         LogoutTokenCreationTests.class,
-        LogoutTokenValidationTests.class,
-        //        ClientConfigTests.class,
-        ServerConfigTests.class
+//        LogoutTokenValidationTests.class,
+//        //        ClientConfigTests.class,
+//        ServerConfigTests.class
 
 })
 /**
