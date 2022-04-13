@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConsumerTest_JPA21.class,
                 ConsumerTest_JPA22.class,
                 ConsumerTest_JPA30.class,
+                ConsumerTest_JPA31.class,
 })
 public class FATSuite {
 }
