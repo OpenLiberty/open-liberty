@@ -135,35 +135,53 @@ public class FailoverServlet extends FATServlet {
                                      int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupTestParameters");
 
-        try {
-            Connection con = getConnection();
-            // Set up statement to use for table delete/recreate
-            Statement stmt = con.createStatement();
-
+        int retries = 0;
+        boolean setupDone = false;
+        Exception exToThrow = null;
+        // Allow a retry if the first attempt to set up the table fails.
+        while (!setupDone && retries < 2) {
             try {
-                System.out.println("FAILOVERSERVLET: drop hatable");
-                stmt.executeUpdate("drop table hatable");
-            } catch (SQLException x) {
-                // didn't exist
+                setupHATable(request, response, testType, thesqlcode, operationToFail, numberOfFailures);
+                setupDone = true;
+            } catch (Exception ex) {
+                System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
+                exToThrow = ex;
+                retries++;
             }
-            System.out.println("FAILOVERSERVLET: create hatable");
-            stmt.executeUpdate(
-                               "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
-            // was col2 varchar(20)
-            System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
-                               + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
-            stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
-                               + thesqlcode + ")"); // was -4498
-
-            // UserTransaction Commit
-            con.setAutoCommit(false);
-
-            System.out.println("FAILOVERSERVLET: commit changes to database");
-            con.commit();
-        } catch (Exception ex) {
-            System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
-            throw ex;
         }
+        if (!setupDone && exToThrow != null)
+            throw exToThrow;
+    }
+
+    private void setupHATable(HttpServletRequest request, HttpServletResponse response, TestType testType,
+                              int thesqlcode, int operationToFail, int numberOfFailures) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupHATable");
+
+        Connection con = getConnection();
+        // Set up statement to use for table delete/recreate
+        Statement stmt = con.createStatement();
+
+        try {
+            System.out.println("FAILOVERSERVLET: drop hatable");
+            stmt.executeUpdate("drop table hatable");
+        } catch (SQLException x) {
+            // didn't exist
+        }
+        System.out.println("FAILOVERSERVLET: create hatable");
+        stmt.executeUpdate(
+                           "create table hatable (testtype int not null primary key, failingoperation int, numberoffailures int, simsqlcode int)");
+        // was col2 varchar(20)
+        System.out.println("FAILOVERSERVLET: insert row into hatable - type" + testType.ordinal()
+                           + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
+        stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
+                           + thesqlcode + ")"); // was -4498
+
+        // UserTransaction Commit
+        con.setAutoCommit(false);
+
+        System.out.println("FAILOVERSERVLET: commit changes to database");
+        con.commit();
+
     }
 
     /**
