@@ -39,11 +39,10 @@ DynamicImport-Package: \
  org.apache.wss4j.common.crypto,\
  org.apache.wss4j.common.saml
  
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*,\
- @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/templates/**,\
- @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/schemas/**,\
- @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
- @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+-includeresource: \
+   @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/maven/*, \
+   messages/wss4j_errors.properties=resources/wss4j_errors.properties, \
+   org/apache/wss4j=${bin}/org/apache/wss4j
+ 
 
 jakartaeeMe: true

@@ -15,17 +15,15 @@ Bundle-Name: OpenTracing API 0.33.0
 Bundle-SymbolicName: io.openliberty.io.opentracing.opentracing-api.0.33.0
 Bundle-Description: OpenTracing Java API, version 0.33.0
 
+# no notice file in source jar
 -includeresource: \
-  @${repo;io.opentracing:opentracing-api;0.33.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
+  @${repo;io.opentracing:opentracing-api;0.33.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*, \
+  META-INF/LICENSE.txt=resources/META-INF/LICENSE.txt
 
 Export-Package: io.opentracing;version=0.33.0, \
   io.opentracing.log;version=0.33.0, \
   io.opentracing.propagation;version=0.33.0, \
   io.opentracing.tag;version=0.33.0
-
-# no notice file in source jar
-Include-Resource: \
-  META-INF/LICENSE.txt=resources/META-INF/LICENSE.txt
 
 publish.wlp.jar.disabled: true
 

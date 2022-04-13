@@ -9,11 +9,9 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
--includeresource: \
-   @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/maven/*, \
-   messages/wss4j_errors.properties=resources/wss4j_errors.properties, \
-   org/apache/wss4j=${bin}/org/apache/wss4j
+
 instrument.classesExcludes: org/apache/wss4j/common/cache/*.class
+
 -buildpath: org.apache.wss4j:wss4j-ws-security-common;version=2.3.0, \
    com.ibm.ws.org.slf4j.api;version=latest, \
    com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \

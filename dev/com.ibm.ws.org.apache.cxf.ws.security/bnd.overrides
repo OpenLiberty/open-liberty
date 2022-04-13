@@ -28,12 +28,21 @@ Import-Package:  \
   com.ibm.ws.ffdc, \
   *
 
-Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/cxf/*,\
-  cxf-ehcache.xml=resources/cxf-ehcache.xml
+-includeresource: \
+    @${repo;org.apache.cxf:cxf-rt-ws-security;2.6.2.ibm-s20180529-1900;EXACT}!/!META-INF/maven/*|\
+        org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/AbstractUsernameTokenAuthenticatingInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/AbstractWSS4JInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JInInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/PolicyBasedWSS4JOutInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/WSS4JInInterceptor.class|\
+        org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class, \
+    META-INF/cxf/bus-extensions.txt=override/META-INF/cxf/bus-extensions.txt, \
+    cxf-ehcache.xml=resources/cxf-ehcache.xml, \
+    org/apache/cxf/ws/security/policy/interceptors/Messages.properties=resources/org/apache/cxf/ws/security/policy/interceptors/Messages.nlsprops, \
+    org/apache/cxf/ws/security/policy/model/Messages.properties=resources/org/apache/cxf/ws/security/policy/model/Messages.nlsprops, \
+    org/apache/cxf/ws/security/trust/Messages.properties=resources/org/apache/cxf/ws/security/trust/Messages.nlsprops, \
+    org/apache/cxf/ws/security/wss4j/Messages.properties=resources/org/apache/cxf/ws/security/wss4j/Messages.nlsprops
 
 Archiver-Version:
 Build-Jdk:
