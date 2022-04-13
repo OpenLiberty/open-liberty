@@ -10,13 +10,5 @@
 	</env-entry>
 	
 	  <display-name>JAX-RS Basic Jaxrs-2.0 with CDI-1.0 Sample</display-name>
- 
-  <!-- SERVLET DEFINITIONS 
-        <servlet>
-                <servlet-name>javax.ws.rs.core.Application</servlet-name>
-        </servlet>
-        <servlet-mapping>
-                <servlet-name>javax.ws.rs.core.Application</servlet-name>
-                <url-pattern>/rest/*</url-pattern>
-        </servlet-mapping>-->
+
 </web-app>

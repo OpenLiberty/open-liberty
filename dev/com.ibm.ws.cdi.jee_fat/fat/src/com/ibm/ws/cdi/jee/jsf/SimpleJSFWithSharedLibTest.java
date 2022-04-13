@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,9 +55,9 @@ public class SimpleJSFWithSharedLibTest {
         WebArchive simpleJSFWithSharedLib = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         simpleJSFWithSharedLib.addClass(com.ibm.ws.cdi.jee.jsf.shared.war.SimpleJsfBean.class);
         Package pkg = com.ibm.ws.cdi.jee.jsf.shared.war.SimpleJsfBean.class.getPackage();
-        ShrinkHelper.addResource(simpleJSFWithSharedLib, pkg, "WEB-INF/faces-config.xml");
-        ShrinkHelper.addResource(simpleJSFWithSharedLib, pkg, "WEB-INF/web.xml");
-        ShrinkHelper.addResource(simpleJSFWithSharedLib, pkg, "testBasicJsf.xhtml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFWithSharedLib, pkg, "WEB-INF/faces-config.xml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFWithSharedLib, pkg, "WEB-INF/web.xml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFWithSharedLib, pkg, "testBasicJsf.xhtml");
         CDIArchiveHelper.addBeansXML(simpleJSFWithSharedLib, DiscoveryMode.ALL);
 
         ShrinkHelper.exportToServer(server, "/InjectionSharedLibrary", sharedLibrary, DeployOptions.SERVER_ONLY);

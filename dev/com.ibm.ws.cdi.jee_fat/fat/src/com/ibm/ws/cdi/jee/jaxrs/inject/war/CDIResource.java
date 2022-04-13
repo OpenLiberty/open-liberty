@@ -22,13 +22,13 @@ import javax.ws.rs.core.Response;
 @Path("cdiresource")
 public class CDIResource {
 
-    private HelloWorldBean classA;
+    private HelloWorldBean helloWorldBean;
 
     public CDIResource() {}
 
     @Inject
-    public CDIResource(HelloWorldBean classA) {
-        this.classA = classA;
+    public CDIResource(HelloWorldBean helloWorldBean) {
+        this.helloWorldBean = helloWorldBean;
     }
 
     @GET
@@ -36,8 +36,8 @@ public class CDIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response get() {
         System.out.println("GET!");
-        System.out.println(classA.message());
-        return Response.ok().type(MediaType.TEXT_PLAIN).entity(classA.message()).build();
+        System.out.println(helloWorldBean.message());
+        return Response.ok().type(MediaType.TEXT_PLAIN).entity(helloWorldBean.message()).build();
     }
 
     @POST

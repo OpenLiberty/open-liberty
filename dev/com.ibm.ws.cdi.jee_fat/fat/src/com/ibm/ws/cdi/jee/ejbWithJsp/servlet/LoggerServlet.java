@@ -152,10 +152,10 @@ public class LoggerServlet extends FATServlet {
         int index = index(strings, regex);
         Assert.assertTrue("Process Injection Target Event not found for " + bean + "\n" + debugString(strings), index != -1);
         if (before != -1) {
-            Assert.assertTrue("Process Injection Target Event for " + bean + " occurred too soon", index > before);
+            Assert.assertTrue("Process Injection Target Event for " + bean + " occurred too soon\n" + debugString(strings), index > before);
         }
         if (after != -1) {
-            Assert.assertTrue("Process Injection Target Event for " + bean + " occurred too late", index < after);
+            Assert.assertTrue("Process Injection Target Event for " + bean + " occurred too late\n" + debugString(strings), index < after);
         }
     }
 

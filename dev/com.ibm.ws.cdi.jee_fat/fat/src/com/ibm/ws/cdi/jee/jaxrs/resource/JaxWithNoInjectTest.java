@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,8 +51,8 @@ public class JaxWithNoInjectTest {
         WebArchive jaxrsResourceInjectionApp = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         Package pkg = com.ibm.ws.cdi.jee.jaxrs.resource.war.MyApplication.class.getPackage();
         jaxrsResourceInjectionApp.addPackage(pkg);
-        ShrinkHelper.addResource(jaxrsResourceInjectionApp, pkg, "WEB-INF/ibm-web-bnd.xml");
-        ShrinkHelper.addResource(jaxrsResourceInjectionApp, pkg, "WEB-INF/web.xml");
+        ShrinkWrapUtils.addAsRootResource(jaxrsResourceInjectionApp, pkg, "WEB-INF/ibm-web-bnd.xml");
+        ShrinkWrapUtils.addAsRootResource(jaxrsResourceInjectionApp, pkg, "WEB-INF/web.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, jaxrsResourceInjectionApp, DeployOptions.SERVER_ONLY);
         server.startServer();

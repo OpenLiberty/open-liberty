@@ -22,6 +22,7 @@ import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -49,9 +50,9 @@ public class SimpleJSFTest {
         WebArchive simpleJSFApp = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         Package pkg = com.ibm.ws.cdi.jee.jsf.simple.SimpleJsfBean.class.getPackage();
         simpleJSFApp.addPackage(pkg);
-        ShrinkHelper.addResource(simpleJSFApp, pkg, "WEB-INF/faces-config.xml");
-        ShrinkHelper.addResource(simpleJSFApp, pkg, "WEB-INF/web.xml");
-        ShrinkHelper.addResource(simpleJSFApp, pkg, "testBasicJsf.xhtml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFApp, pkg, "WEB-INF/faces-config.xml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFApp, pkg, "WEB-INF/web.xml");
+        ShrinkWrapUtils.addAsRootResource(simpleJSFApp, pkg, "testBasicJsf.xhtml");
         CDIArchiveHelper.addBeansXML(simpleJSFApp, DiscoveryMode.ALL);
 
         ShrinkHelper.exportDropinAppToServer(server, simpleJSFApp, DeployOptions.SERVER_ONLY);

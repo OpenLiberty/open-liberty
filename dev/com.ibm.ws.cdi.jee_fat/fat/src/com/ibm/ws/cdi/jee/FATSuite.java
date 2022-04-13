@@ -22,7 +22,7 @@ import com.ibm.ws.cdi.jee.jsp.SimpleJSPTest;
 import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
 
 /**
- * Tests specific to cdi-1.2
+ * Tests specific to JEE integration
  */
 @RunWith(Suite.class)
 @SuiteClasses({
