@@ -50,6 +50,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryAgent;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This class manages information required for recovery, and also general
@@ -703,10 +704,13 @@ public class RecoveryManager implements Runnable {
                 _leaseLog.deleteServerLease(recoveryIdentity);
             }
         } catch (Exception e) {
-            // FFDC exception but allow processing to continue
-            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "deleteServerLease caught exception ", e);
+            // Unless server is stopping, FFDC exception but allow processing to continue
+            if (FrameworkState.isStopping()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Ignoring exception: ", e);
+            } else {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+            }
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteServerLease");

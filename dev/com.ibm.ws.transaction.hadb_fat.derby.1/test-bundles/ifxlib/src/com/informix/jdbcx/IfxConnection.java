@@ -37,34 +37,34 @@ import com.informix.database.ConnectionManager;
 public class IfxConnection implements Connection {
     Connection wrappedConn = null;
 
-    private static int _failoverValue = 0;
-    private static int _failoverCounter = 0;
-    private static boolean _failoverEnabled = false;
+    private static int _failoverValue;
+    private static int _failoverCounter;
+    private static boolean _failoverEnabled;
 
-    private static int _queryFailoverValue = 0;
+    private static int _queryFailoverValue;
 
-    private static int _queryFailoverCounter = 0;
-    private static boolean _queryFailoverEnabled = false;
+    private static int _queryFailoverCounter;
+    private static boolean _queryFailoverEnabled;
 
-    private static int _duplicateCounter = 0;
-    private static boolean _duplicationEnabled = false;
-    private static boolean _duplicateNow = false;
-    private static boolean _isDuplicateInfraEnabled = false;
+    private static int _duplicateCounter;
+    private static boolean _duplicationEnabled;
+    private static boolean _duplicateNow;
+    private static boolean _isDuplicateInfraEnabled;
 
-    private static int _haltCounter = 0;
-    private static boolean _haltEnabled = false;
+    private static int _haltCounter;
+    private static boolean _haltEnabled;
 
-    private static int _failingRetries = 0;
-    private static int _failingRetryCounter = 0;
+    private static int _failingRetries;
+    private static int _failingRetryCounter;
 
-    private static int simSQLCode = 0;
-    private static boolean _testingLeaselogUpdateFlag = false;
-    private static boolean _testingLeaselogDeleteFlag = false;
-    private static boolean _testingLeaselogClaimFlag = false;
-    private static boolean _testingLeaselogGetFlag = false;
+    private static int simSQLCode;
+    private static boolean _testingLeaselogUpdateFlag;
+    private static boolean _testingLeaselogDeleteFlag;
+    private static boolean _testingLeaselogClaimFlag;
+    private static boolean _testingLeaselogGetFlag;
 
     IfxConnection(Connection realConn) {
-        System.out.println("SIMHADB: construct wrapped connection using - " + realConn);
+        System.out.println("IfxConnection(" + wrappedConn + "): construct wrapped connection using - " + realConn);
         wrappedConn = realConn;
     }
 
@@ -118,7 +118,7 @@ public class IfxConnection implements Connection {
      */
     @Override
     public void commit() throws SQLException {
-        System.out.println("SIMHADB: COMMIT");
+        System.out.println("IfxConnection(" + wrappedConn + "): COMMIT");
         wrappedConn.commit();
     }
 
@@ -129,11 +129,11 @@ public class IfxConnection implements Connection {
      */
     @Override
     public Statement createStatement() throws SQLException {
-        System.out.println("SIMHADB: createStatement, no param, failoverCounter: "); // +
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement, no param, failoverCounter: "); // +
 
         Statement theS = wrappedConn.createStatement();
         IfxStatement uts = new IfxStatement(theS, this);
-        System.out.println("SIMHADB: createStatement ret - " + uts);
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement ret - " + uts);
         return uts;
     }
 
@@ -144,11 +144,11 @@ public class IfxConnection implements Connection {
      */
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        System.out.println("SIMHADB: createStatement, rst: " + resultSetType + ", rsc:" + resultSetConcurrency); // +
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement, rst: " + resultSetType + ", rsc:" + resultSetConcurrency); // +
 
         Statement theS = wrappedConn.createStatement(resultSetType, resultSetConcurrency);
         IfxStatement uts = new IfxStatement(theS, this);
-        System.out.println("SIMHADB: createStatement ret - " + uts);
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement ret - " + uts);
         return uts;
     }
 
@@ -159,11 +159,11 @@ public class IfxConnection implements Connection {
      */
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        System.out.println("SIMHADB: createStatement, rst: " + resultSetType + ", rsc:" + resultSetConcurrency
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement, rst: " + resultSetType + ", rsc:" + resultSetConcurrency
                            + ", rsh:" + resultSetHoldability);
         Statement theS = wrappedConn.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
         IfxStatement uts = new IfxStatement(theS, this);
-        System.out.println("SIMHADB: createStatement ret - " + uts);
+        System.out.println("IfxConnection(" + wrappedConn + "): createStatement ret - " + uts);
         return uts;
     }
 
@@ -207,9 +207,9 @@ public class IfxConnection implements Connection {
      */
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        System.out.println("SIMHADB: getMetaData");
+        System.out.println("IfxConnection(" + wrappedConn + "): getMetaData");
         DatabaseMetaData ret = new IfxDatabaseMetaData(); // wrappedConn.getMetaData();
-        System.out.println("SIMHADB: getMetaData ret - " + ret);
+        System.out.println("IfxConnection(" + wrappedConn + "): getMetaData ret - " + ret);
         return ret;
     }
 
@@ -320,19 +320,19 @@ public class IfxConnection implements Connection {
      */
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement1 - " + sql + " duplicateNow - " + _duplicateNow);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement1 - " + sql + " duplicateNow - " + _duplicateNow);
         PreparedStatement ret = wrappedConn.prepareStatement(sql);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -346,19 +346,19 @@ public class IfxConnection implements Connection {
      */
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement2 - " + sql);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement2 - " + sql);
         PreparedStatement ret = wrappedConn.prepareStatement(sql, autoGeneratedKeys);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -372,19 +372,19 @@ public class IfxConnection implements Connection {
      */
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement3 - " + sql);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement3 - " + sql);
         PreparedStatement ret = wrappedConn.prepareStatement(sql, columnIndexes);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -398,19 +398,19 @@ public class IfxConnection implements Connection {
      */
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement4 - " + sql);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement4 - " + sql);
         PreparedStatement ret = wrappedConn.prepareStatement(sql, resultSetType, resultSetConcurrency);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -426,20 +426,20 @@ public class IfxConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
                                               int resultSetHoldability) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement5 - " + sql);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement5 - " + sql);
         PreparedStatement ret = wrappedConn.prepareStatement(sql, resultSetType, resultSetConcurrency,
                                                              resultSetHoldability);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -454,19 +454,19 @@ public class IfxConnection implements Connection {
      */
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        System.out.println("SIMHADB: prepareStatement6 - " + sql);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement6 - " + sql);
         PreparedStatement ret = wrappedConn.prepareStatement(sql, columnNames);
         IfxPreparedStatement utps = new IfxPreparedStatement(ret);
-        System.out.println("SIMHADB: prepareStatement - " + utps);
+        System.out.println("IfxConnection(" + wrappedConn + "): prepareStatement - " + utps);
         if (sql.contains("INSERT INTO WAS_TRAN_LOG")) {
-            System.out.println("SIMHADB: This is a tranlog insert statement");
+            System.out.println("IfxConnection(" + wrappedConn + "): This is a tranlog insert statement");
             utps.setTranlogInsertFlag();
         } else if (sql.contains("UPDATE WAS_LEASES_LOG SET LEASE_TIME")) {
             if (sql.contains("cloudstale")) {
-                System.out.println("SIMHADB: This is a leaselog claim statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog claim statement");
                 utps.setLeaselogClaimFlag();
             } else {
-                System.out.println("SIMHADB: This is a leaselog update statement");
+                System.out.println("IfxConnection(" + wrappedConn + "): This is a leaselog update statement");
                 utps.setLeaselogUpdateFlag();
             }
         }
@@ -574,7 +574,7 @@ public class IfxConnection implements Connection {
      */
     @Override
     public void setTransactionIsolation(int level) throws SQLException {
-        System.out.println("SIMHADB: setTransactionIsolation level - " + level);
+        System.out.println("IfxConnection(" + wrappedConn + "): setTransactionIsolation level - " + level);
         level = ConnectionManager.resetTransactionIsolationLevel(level);
         wrappedConn.setTransactionIsolation(level);
     }
@@ -712,7 +712,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setFailoverValue(int failValue) {
-        System.out.println("SIMHADB: setFailoverValue called with value - " + failValue + ", on connection");
+        System.out.println("IfxConnection: setFailoverValue called with value - " + failValue + ", on connection");
         IfxConnection._failoverValue = failValue;
     }
 
@@ -789,7 +789,7 @@ public class IfxConnection implements Connection {
     }
 
     public static boolean isDuplicateNow() {
-        System.out.println("SIMHADB: isDuplicateNow? - " + IfxConnection._duplicateNow);
+        System.out.println("IfxConnection: isDuplicateNow? - " + IfxConnection._duplicateNow);
         return IfxConnection._duplicateNow;
 
     }
@@ -915,7 +915,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setFailingRetries(int retries) {
-        System.out.println("SIMHADB: setFailingRetries called with value - " + retries + ", on connection");
+        System.out.println("IfxConnection: setFailingRetries called with value - " + retries + ", on connection");
         IfxConnection._failingRetries = retries;
     }
 
@@ -936,7 +936,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setTestingLeaselogUpdateFlag(boolean newFlag) {
-        System.out.println("SIMHADB: setTestingLeaselogUpdateFlag - " + newFlag);
+        System.out.println("IfxConnection: setTestingLeaselogUpdateFlag - " + newFlag);
         _testingLeaselogUpdateFlag = newFlag;
     }
 
@@ -945,7 +945,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setTestingLeaselogDeleteFlag(boolean newFlag) {
-        System.out.println("SIMHADB: setTestingLeaselogDeleteFlag - " + newFlag);
+        System.out.println("IfxConnection: setTestingLeaselogDeleteFlag - " + newFlag);
         _testingLeaselogDeleteFlag = newFlag;
     }
 
@@ -954,7 +954,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setTestingLeaselogClaimFlag(boolean newFlag) {
-        System.out.println("SIMHADB: setTestingLeaselogClaimFlag - " + newFlag);
+        System.out.println("IfxConnection: setTestingLeaselogClaimFlag - " + newFlag);
         _testingLeaselogClaimFlag = newFlag;
     }
 
@@ -963,7 +963,7 @@ public class IfxConnection implements Connection {
     }
 
     public static void setTestingLeaselogGetFlag(boolean newFlag) {
-        System.out.println("SIMHADB: setTestingLeaselogGetFlag - " + newFlag);
+        System.out.println("IfxConnection: setTestingLeaselogGetFlag - " + newFlag);
         _testingLeaselogGetFlag = newFlag;
     }
 

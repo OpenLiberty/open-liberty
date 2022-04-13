@@ -38,7 +38,7 @@ public class IfxStatement implements Statement {
     IfxStatement(Statement realStmt, IfxConnection ifxConnection) throws SQLException {
         wrappedStmt = realStmt;
         wrappedStmt.setQueryTimeout(QUERY_TIMEOUT);
-        System.out.println("SIMHADB: query timeout is " + wrappedStmt.getQueryTimeout());
+        System.out.println("IfxStatement(" + wrappedStmt + "): query timeout is " + wrappedStmt.getQueryTimeout());
         ifxConn = ifxConnection;
     }
 
@@ -95,30 +95,30 @@ public class IfxStatement implements Statement {
     public int[] executeBatch() throws SQLException {
         int[] ret = null;
         boolean failOver = false;
-        System.out.println("SIMHADB: executeBatch, this - " + this + ", wrapped - " + wrappedStmt);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeBatch, this - " + this + ", wrapped - " + wrappedStmt);
 
         if (IfxConnection.isFailoverEnabled()) {
-            System.out.println("SIMHADB: executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
+            System.out.println("IfxStatement(" + wrappedStmt + "): executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
             IfxConnection.incrementFailoverCounter();
             if (IfxConnection.getFailoverCounter() == IfxConnection.getFailoverValue())
                 failOver = true;
         }
 
         if (failOver) {
-            System.out.println("SIMHADB: Feigning query failover, close connection");
+            System.out.println("IfxStatement(" + wrappedStmt + "): Feigning query failover, close connection");
             IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
             Connection myconn = getConnection();
             try {
                 myconn.rollback();
             } catch (Exception ex) {
-                System.out.println("SIMHADB: on close connection, caught exc: " + ex);
+                System.out.println("IfxStatement(" + wrappedStmt + "): on close connection, caught exc: " + ex);
             }
             String sqlReason = "Generated internally";
             String sqlState = "Generated reason";
             int reasonCode = IfxConnection.getSimSQLCode(); // FOR DB2 should be
                                                             // -4498, Oracle
                                                             // 17410
-            System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
+            System.out.println("IfxStatement(" + wrappedStmt + "): sqlcode set to: " + reasonCode);
             // if reason code is "-3" then exception is non-transient, otherwise it is transient
             SQLException sqlex;
             if (reasonCode == -3) {
@@ -137,102 +137,90 @@ public class IfxStatement implements Statement {
             }
             throw sqlex;
         } else {
-            System.out.println("SIMHADB: ExecuteBatch");
+            System.out.println("IfxStatement(" + wrappedStmt + "): ExecuteBatch");
             ret = wrappedStmt.executeBatch();
         }
 
-        System.out.println("SIMHADB: executeBatch - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeBatch - " + ret);
         return ret;
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        System.out.println("SIMHADB: executeQuery, this - " + this + ", sql - " + sql); // +
-                                                                                        // ",
-                                                                                        // fail
-                                                                                        // Counter
-                                                                                        // -"
-                                                                                        // +
-                                                                                        // failoverCounter
-                                                                                        // +
-                                                                                        // ",
-                                                                                        // wrapped
-                                                                                        // -
-                                                                                        // "
-                                                                                        // +
-                                                                                        // wrappedStmt);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeQuery, this - " + this + ", sql - " + sql);
+
         if (sql.contains("SELECT SERVER_IDENTITY, LEASE_TIME FROM WAS_LEASES_LOG")) {
-            System.out.println("SIMHADB: This is a leaselog get statement");
+            System.out.println("IfxStatement(): This is a leaselog get statement");
             _leaselogGetFlag = true;
         }
 
         simQueryFailover();
 
         ResultSet ret = wrappedStmt.executeQuery(sql);
-        System.out.println("SIMHADB: executeQuery exit, ret - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeQuery exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate, this - " + this + ", sql: " + sql);
 
         if (sql.contains("DELETE FROM WAS_LEASES_LOG")) {
-            System.out.println("SIMHADB: This is a leaselog delete statement");
+            System.out.println("IfxStatement(): This is a leaselog delete statement");
             _leaselogDeleteFlag = true;
         }
 
         simQueryFailover();
 
         int ret = wrappedStmt.executeUpdate(sql);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", keys: " + autoGeneratedKeys);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate, this - " + this + ", sql: " + sql + ", keys: " + autoGeneratedKeys);
 
         if (sql.contains("DELETE FROM WAS_LEASES_LOG")) {
-            System.out.println("SIMHADB: This is a leaselog delete statement");
+            System.out.println("IfxStatement(" + wrappedStmt + "): This is a leaselog delete statement");
             _leaselogDeleteFlag = true;
         }
 
         simQueryFailover();
 
         int ret = wrappedStmt.executeUpdate(sql, autoGeneratedKeys);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", columnindexes");
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate, this - " + this + ", sql: " + sql + ", columnindexes");
 
         if (sql.contains("DELETE FROM WAS_LEASES_LOG")) {
-            System.out.println("SIMHADB: This is a leaselog delete statement");
+            System.out.println("IfxStatement(" + wrappedStmt + "): This is a leaselog delete statement");
             _leaselogDeleteFlag = true;
         }
 
         simQueryFailover();
 
         int ret = wrappedStmt.executeUpdate(sql, columnIndexes);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, String[] columnNames) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", columnnames");
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate, this - " + this + ", sql: " + sql + ", columnnames");
 
         if (sql.contains("DELETE FROM WAS_LEASES_LOG")) {
-            System.out.println("SIMHADB: This is a leaselog delete statement");
+            System.out.println("IfxStatement(" + wrappedStmt + "): This is a leaselog delete statement");
             _leaselogDeleteFlag = true;
         }
 
         simQueryFailover();
         int ret = wrappedStmt.executeUpdate(sql, columnNames);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxStatement(" + wrappedStmt + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
@@ -394,14 +382,14 @@ public class IfxStatement implements Statement {
         boolean failOver = false;
 
         if (IfxConnection.getTestingLeaselogDeleteFlag() && _leaselogDeleteFlag) {
-            System.out.println("SIMHADB: simQueryFailover, for Lease Log Delete");
+            System.out.println("IfxStatement(" + wrappedStmt + "): simQueryFailover, for Lease Log Delete");
             _leaselogDeleteFlag = false;
             IfxConnection.setTestingLeaselogDeleteFlag(false);
             failOver = true;
         }
 
         if (IfxConnection.getTestingLeaselogGetFlag() && _leaselogGetFlag) {
-            System.out.println("SIMHADB: simQueryFailover, for Lease Log Get");
+            System.out.println("IfxStatement(" + wrappedStmt + "): simQueryFailover, for Lease Log Get");
             _leaselogGetFlag = false;
             IfxConnection.setTestingLeaselogGetFlag(false);
             failOver = true;
@@ -419,7 +407,7 @@ public class IfxStatement implements Statement {
 
         if (failOver) {
 
-            System.out.println("SIMHADB: Feigning executequery failover, rollback on connection");
+            System.out.println("IfxStatement(" + wrappedStmt + "): Feigning executequery failover, rollback on connection");
             IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
             Connection myconn = getConnection();
             try {
@@ -427,7 +415,7 @@ public class IfxStatement implements Statement {
                 // myconn.close();
 
             } catch (Exception ex) {
-                System.out.println("SIMHADB: on close connection, caught exc: " + ex);
+                System.out.println("IfxStatement(" + wrappedStmt + "): on close connection, caught exc: " + ex);
             }
             String sqlReason = "Generated internally";
             String sqlState = "Generated reason";

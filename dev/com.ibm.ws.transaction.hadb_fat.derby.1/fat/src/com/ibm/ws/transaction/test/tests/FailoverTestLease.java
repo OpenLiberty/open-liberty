@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,8 +157,15 @@ public class FailoverTestLease extends FATServletClient {
         }
     };
 
+    @Before
+    public void startUp() throws Exception {
+        FATUtils.startServers(runner, retriableCloudServer);
+    }
+
     @After
     public void cleanup() throws Exception {
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
         // Clean up XA resource files
         retriableCloudServer.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -175,7 +183,7 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseUpdateFailover() throws Exception {
         final String method = "testHADBLeaseUpdateFailover";
         StringBuilder sb = null;
-        FATUtils.startServers(runner, retriableCloudServer);
+
         Log.info(this.getClass(), method, "Call setupForLeaseUpdate");
 
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseUpdate");
@@ -198,9 +206,6 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when updating server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when updating server lease"));
-        Log.info(this.getClass(), method, "call stopserver");
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-        Log.info(this.getClass(), method, "Complete");
     }
 
     /**
@@ -212,7 +217,7 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseDeleteFailover() throws Exception {
         final String method = "testHADBLeaseDeleteFailover";
         StringBuilder sb = null;
-        FATUtils.startServers(runner, retriableCloudServer);
+
         Log.info(this.getClass(), method, "Call setupForLeaseDelete");
 
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseDelete");
@@ -235,11 +240,6 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
-
-        Log.info(this.getClass(), method, "call stopserver");
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-
-        Log.info(this.getClass(), method, "Complete");
     }
 
     /**
@@ -251,7 +251,7 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseClaimFailover() throws Exception {
         final String method = "testHADBLeaseClaimFailover";
         StringBuilder sb = null;
-        FATUtils.startServers(runner, retriableCloudServer);
+
         Log.info(this.getClass(), method, "Call setupForLeaseClaim");
 
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseClaim");
@@ -274,11 +274,6 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
-
-        Log.info(this.getClass(), method, "call stopserver");
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-
-        Log.info(this.getClass(), method, "Complete");
     }
 
     /**
@@ -290,7 +285,7 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseGetFailover() throws Exception {
         final String method = "testHADBLeaseGetFailover";
         StringBuilder sb = null;
-        FATUtils.startServers(runner, retriableCloudServer);
+
         Log.info(this.getClass(), method, "Call setupForLeaseGet");
 
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "setupForLeaseGet");
@@ -313,10 +308,5 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
-
-        Log.info(this.getClass(), method, "call stopserver");
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-
-        Log.info(this.getClass(), method, "Complete");
     }
 }
