@@ -141,7 +141,7 @@ public class TAIJwtUtils {
         //        }
         //        jwtclaims.setStringClaim(org.eclipse.microprofile.jwt.Claims.raw_token.name(), compact);
         //        fixJoseTypes(jwtclaims);
-        DefaultJsonWebTokenImpl token = new DefaultJsonWebTokenImpl(compact, type, username);
+        DefaultJsonWebTokenImpl token = new DefaultJsonWebTokenImpl(compact, type, username, jwtToken);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, token);
         }

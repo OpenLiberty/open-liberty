@@ -28,7 +28,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
 
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
-    public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps) throws CheckpointFailedException {
+    public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
         criuSupport.registerPreSnapshotHook(prepare);
         criuSupport.registerPostRestoreHook(restore);
@@ -38,6 +38,13 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         criuSupport.setWorkDir(workDir.toPath());
         criuSupport.setTCPEstablished(true);
         criuSupport.registerRestoreEnvFile(envProps.toPath());
+        if (unprivileged) {
+            try {
+                criuSupport.setUnprivileged(true);
+            } catch (NoSuchMethodError e) {
+                throw new CheckpointFailedException(Type.UNKNOWN, "JVM does not support CRIU unprivileged mode", e);
+            }
+        }
         try {
             criuSupport.checkpointJVM();
         } catch (JVMCheckpointException e) {

@@ -35,9 +35,6 @@ WS-TraceGroup: METRICS
     io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler, \
     io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl
 
-
-Service-Component: \
-
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -344,6 +344,10 @@
   margin: 8%;
 }
 
+#breadcrumbController-mainDashboard_label {
+    display: none; /* new accessibility rule fix */
+}
+
 @media screen and (max-device-width : 480px) {
 
     .breadcrumbPane {
@@ -439,3 +443,60 @@
 	padding-bottom:0px;
 }
 
+/* high contrast mode css */
+.dj_a11y .dijitIcon {
+    display: none !important;
+}
+
+.dj_a11y .dijitButtonNode {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    display: inline-block;
+}
+
+.dj_a11y .dijitButtonContents {
+    display: inline;
+}
+
+.dj_a11y .dijitButtonContents .dijitButtonText {
+    display: inline !important;
+}
+
+.dj_a11y .breadcrumbPane {
+    left: 8px !important
+}
+
+.dj_a11y #breadcrumbStackContainer-id {
+    border-bottom: 2px solid;
+}
+
+.dj_a11y #breadcrumbContainer-id {
+    top: 46px;
+}
+
+.dj_a11y .breadcrumbController {
+    border: 0;
+}
+/*
+.dj_a11y .breadcrumbTextOnly .dijitButtonContents {
+    padding: 0px !important;
+} */
+
+.dj_a11y #searchDiv {
+    right: 8px;
+}
+
+.dj_a11y .breadcrumbSeparatorButton {
+    display: none;
+}
+
+.dj_a11y .breadcrumb .dijitButtonContents:focus {
+  outline: 1px solid !important;
+  cursor: pointer;
+}
+
+.d1_ally .breadcrumbTextOnlyFocused .dijitButtonNode, .d1_ally .breadcrumbTextOnlyHover .dijitButtonNode,
+.d1_ally .breadcrumbTextOnlyFocused .dijitButtonContents, .d1_ally .breadcrumbTextOnlyHover .dijitButtonContents,
+.d1_ally .breadcrumbTextOnlyFocused .dijitButtonText, .d1_ally .breadcrumbTextOnlyHover .dijitButtonText {
+    cursor: text;
+}

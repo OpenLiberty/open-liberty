@@ -64,7 +64,7 @@ subprojects {
           mkdir targetDir
           ant.taskdef(name: 'junitreport', 
                       classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator', 
-                      classpath: bnd('repo.junitReportTask.path'))
+                      classpath: bnd.get('repo.junitReportTask.path'))
 
           ant.junitreport(todir: targetDir) {
               fileset(dir: resultsDir, includes: 'TEST-*.xml')
@@ -87,8 +87,7 @@ subprojects {
   }
 
   
-  tasks.withType(JavaCompile) {
-    doFirst {
+  tasks.withType(JavaCompile).configureEach({
       // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
       if (JavaVersion.current().isJava12Compatible()) {
         if ('1.6'.equals(sourceCompatibility)) {
@@ -97,16 +96,15 @@ subprojects {
         }
       }
       // For Java 9+ builds, set the --release compiler flag to keep bootclasspath in sync/ 
-      if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd('javac.args.release'))) {
+      if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd.get('javac.args.release'))) {
         def release = sourceCompatibility
         if(sourceCompatibility.startsWith('1.'))
           release = sourceCompatibility.substring(2);
-        if('current'.equals(bnd('javac.args.release')))
+        if('current'.equals(bnd.get('javac.args.release')))
           release = JavaVersion.current().getMajorVersion() 
-        options.compilerArgs.addAll([ '--release', release])
+        options.release = Integer.valueOf(release)
       }
-    }
-  }
+  })
 
   tasks.withType(Javadoc) {
     doFirst {

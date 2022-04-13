@@ -22,7 +22,7 @@ Import-Package: \
     *
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.sip.container.was.servlet31.SipMessageFactory31, \
-				com.ibm.ws.sip.container.was.servlet31.converged.SessionContextRegistryImplFactoryImpl31Converged, \
+				com.ibm.ws.sip.container.was.servlet31.converged.SessionContextRegistryImplFactoryImpl31Converged
 
 -buildpath: \
 	com.ibm.websphere.appserver.api.servlet;version=latest,\

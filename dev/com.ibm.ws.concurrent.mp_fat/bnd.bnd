@@ -41,5 +41,5 @@ tested.features: mpConfig-2.0, appsecurity-3.0, el-3.0
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.concurrent;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

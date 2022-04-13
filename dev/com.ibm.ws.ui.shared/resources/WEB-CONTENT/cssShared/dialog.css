@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -384,4 +384,14 @@ svg.yesNoDescriptionIcon {
     font-size: 14px;
     display: inline-block;
   }
+}
+
+/* high contrast mode css */
+.dj_a11y .acDialog, .dj_a11y .dijitDialog, .dj_a11y .yesNoButton,
+.dj_a11y .confirmOkButton, .dj_a11y .messageDialog, .dj_a11y .messageOKButton {
+  border: 1px solid !important;
+}
+
+.dj_a11y .dijitDialog .closeText {
+  display: none !important;
 }

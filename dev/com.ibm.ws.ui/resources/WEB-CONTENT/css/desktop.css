@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -224,4 +224,77 @@
 svg.confirmDescriptionIcon {
     height: 32px;
     width: 32px;
+}
+
+input.dijitOffScreen {
+    display: none; /* latest accessibility checker fix */
+}
+
+.dj_a11y .dijitIcon {
+    display: none !important;
+}
+
+.dj_a11y .idxHeaderSecondaryTrailing .dijitArrowButtonChar,
+.dj_a11y .leftSecondaryHeader .dijitArrowButtonChar {  /* not showing the arrow for menu expansion in the header */
+    display: none !important;
+}
+
+.dj_a11y .dijitButtonNode {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    display: inline-block;
+}
+
+.dj_a11y .dijitButtonContents  {
+    display: inline;
+}
+
+.dj_a11y .dijitButtonContents .dijitButtonText {
+    display: inline !important;
+}
+
+.dj_a11y .idxHeaderContainer .idxHeaderSecondaryTrailing {
+    margin-right: 8px;
+}
+
+.dj_a11y .idxHeaderContainer #editHeaderWidgetRightTrailingDiv {
+    width: 310px !important;  /* to accomodate more text */
+}
+
+.dj_a11y .idxHeaderSecondary .idxHeaderSecondaryTitleContainer .idxHeaderSecondaryTitle {
+    display: inline !important; /* to fix the broken border */
+}
+
+.dj_a11y .idxHeaderSecondary .dijitButtonNode {
+    padding-top: 16px !important;
+    height: 38px; /* to compensate for the padding-top */
+    width: 80px;
+    margin-right: 8px;
+}
+
+.dj_a11y .idxHeaderContainer .leftSecondaryHeader .dijitButtonNode {
+    margin-left: 8px;
+}
+
+.dj_a11y #modifyButtonWidgetDiv .dijitButtonText {
+    padding-right: 8px; /* to override the 30px causing unnecessary text overflow */
+}
+
+.dj_a11y #bgTaskButtonDiv .dijitButtonNode .dijitButtonContents .dijitButtonText,
+.dj_a11y #profileButtonWidgetDiv_toolboxContainer .dijitButtonNode .dijitButtonContents .dijitButtonText {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right: 8px;
+}
+
+.dj_a11y .profileMenuPopup:after {
+    right: 125px;
+}
+
+.dj_a11y .profileMenuPopup:before {
+    right: 125px;
+}
+
+.dj_a11y .toolContentContainerDiv {
+    top: 55px; /* to show the header border-bottom */
 }

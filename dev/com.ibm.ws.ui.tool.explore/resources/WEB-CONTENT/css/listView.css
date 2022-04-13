@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -230,7 +230,7 @@
     width: 26px;
 }
 
-.listViewSettings:hover {
+.listViewSettings:hover, .listViewSettings:focus, .listViewSettingsFocused {
     cursor: pointer;
     box-shadow: #7CC7FF 0 0 2px 1px;
     background-color: #C0E6FF;
@@ -324,3 +324,84 @@
     background-color: #ddf2f9
 }
 */
+
+/* high contrast mode css */
+.dj_a11y .listViewActionDropDown {
+    border: 0;
+}
+
+.dj_a11y .listViewActionDropDown .dijitButtonNode {
+    border: 0 !important;
+}
+
+/* show both the drop down image and the arrow button char for actions column in each row for maxiumum contrast
+   as the down arrow in the image doesn't show well in the white on black theme */
+.dj_a11y .listViewActionDropDown .dijitButtonText img {
+    height: 18px;
+    width: 18px;
+}
+
+/* .dj_a11y .listViewActionDropDown .dijitArrowButtonChar {
+    display: none !important;
+} */
+
+.dj_a11y .searchViewMetaDataButton {
+    border: 0;
+}
+
+.dj_a11y .listViewHeaderMenuItem_checked, .dj_a11y .listViewHeaderMenuItem_unchecked {
+    display: inline-block !important;
+    width: 12px;
+    height: 12px;
+}
+
+.dj_a11y .listViewHeaderMenuItem_checked {
+    background-image: url(../images/monitoring-added-check-DT.png);
+}
+
+.dj_a11y .listViewMultiSelect .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .listViewMultiSelectChecked, .dj_a11y .listViewMultiSelectUnchecked {
+    display: inline-block !important;
+}
+
+.dj_a11y .dijitMenuItemSelected .dijitMenuItemIconCell {
+    border: 1px solid !important;
+    border-right: none !important;
+}
+
+.dj_a11y .dijitMenuItemSelected .dijitMenuItemLabel {
+    border: 1px solid !important;
+    border-left: none !important;
+}
+
+.dj_a11y .listViewSettings .dijitButtonNode {
+    border: none !important;
+}
+
+.dj_a11y .listViewSettings .dijitIcon {
+    display: inline-block !important;
+}
+
+.dj_a11y .listViewSettings .dijitButtonText, .dj_a11y .listViewSettings .dijitArrowButtonChar,
+.dj_a11y .listViewMultiSelect .dijitToggleButtonIconChar {
+    display: none !important;
+}
+
+.dj_a11y .listViewSettings:hover, .dj_a11y .listViewSettingsFocused {
+    outline: 1px solid;
+}
+
+.dj_a11y .listViewRowSelect .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .listViewRowSelect  .dijitIcon {
+    display: inline-block !important;
+}
+
+.dj_a11y .listViewRowSelect  .dijitToggleButtonIconChar, .dj_a11y .listViewRowSelect .dijitButtonText {
+    display: none !important;
+}

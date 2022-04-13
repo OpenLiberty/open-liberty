@@ -23,7 +23,7 @@ Bundle-Description: WAS Class Loading Configuration Service
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-  com.ibm.ws.classloading.configuration;provide:=true, \
+  com.ibm.ws.classloading.configuration;provide:=true
 
 Import-Package: \
   !com.ibm.ws.classloading.configuration, \

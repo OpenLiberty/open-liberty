@@ -146,6 +146,6 @@ Include-Resource: \
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
-	com.ibm.ws.injection.core;version=latest,\
+	com.ibm.ws.injection.core;version=latest
 
 instrument.classesExcludes: com/ibm/ws/security/openidconnect/client/internal/resources/OidcClientMessages*.class

@@ -4,3 +4,4 @@ com.ibm.ws.webcontainer.servlet.4.0_fat
 com.ibm.ws.webserver.plugin.utility_fat
 io.openliberty.transport.http_fat
 io.openliberty.wsoc.internal_fat
+io.openliberty.webcontainer.servlet.6.0_fat

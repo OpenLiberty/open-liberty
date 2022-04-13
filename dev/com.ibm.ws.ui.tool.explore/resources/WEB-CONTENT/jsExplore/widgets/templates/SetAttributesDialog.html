@@ -1,6 +1,6 @@
 <div title="${title}" class="setAttrsDlg" role="dialog" aria-labelledby="${id}_title">
   <!--
-    Copyright (c) 2016 IBM Corporation and others.
+    Copyright (c) 2016, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  	-->
 	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
 		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title"
-				role="heading"></span>
+				role="heading" aria-level="1"></span>
 		<span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon"  id="${id}_close"
 		        data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button">
 		</span>
@@ -23,7 +23,7 @@
   		<div class="attrsWrapper">  
   		  <span data-dojo-attach-point="resourceIconNode" class="setAttResourceIcon"></span>
   		  <span data-dojo-attach-point="resourceNameNode" class="setAttrResourceLabel ${resourceNameClass}" id=${id}_name
-  		         role="heading" >${!name}</span>
+  		         role="heading" aria-level="2">${!name}</span>
   		</div>
 	    <div id="clusteredMetadataMsgContainer" class="attrsWrapper noteAttrArea"></div>
   

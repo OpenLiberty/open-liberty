@@ -41,7 +41,6 @@ import org.apache.directory.kerberos.client.TgTicket;
 import org.apache.directory.kerberos.client.TgtRequest;
 import org.apache.directory.kerberos.credentials.cache.Credentials;
 import org.apache.directory.kerberos.credentials.cache.CredentialsCache;
-import org.apache.directory.server.core.api.CoreSession;
 import org.apache.directory.server.core.api.DirectoryService;
 import org.apache.directory.server.core.api.partition.Partition;
 import org.apache.directory.server.core.factory.DefaultDirectoryServiceFactory;
@@ -85,15 +84,13 @@ public class ApacheDSandKDC {
 
     public static String WHICH_FAT = "LDAP"; // default, override in extending class. options: {LDAP, SPNEGO}
 
-    protected static CoreSession session;
-
-    private static KdcConnection conn;
-
     protected static String bindPassword = LdapKerberosUtils.BIND_PASSWORD; // default, override in extending class
 
     protected static String bindUserName = LdapKerberosUtils.BIND_USER; // default, override in extending class
 
-    public static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME; // default, override in extending class
+    protected static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME; // default, override in extending class
+
+    private static KdcConnection conn;
 
     private static String serverPrincipal;
 
@@ -119,21 +116,18 @@ public class ApacheDSandKDC {
 
     public static long MIN_LIFE = 6 * 60000;
 
-    static int LDAP_PORT = -1;
-    static int KDC_PORT = -1;
-
     static int DEFAULT_KDC_PORT = 88;
 
-    private static final String DIRECTORY_NAME = c.toString();
     private static boolean initialised;
+    private static int savedKdcPort = -1;
 
-    protected static DirectoryService directoryService;
+    private static DirectoryService directoryService;
     private static LdapServer ldapServer;
-    protected static KdcServer kdcServer;
+    private static KdcServer kdcServer;
 
     private static void startLdapServer() throws Exception {
         DirectoryServiceFactory dsf = new DefaultDirectoryServiceFactory();
-        dsf.init(DIRECTORY_NAME);
+        dsf.init(c.toString());
         directoryService = dsf.getDirectoryService();
         directoryService.addLast(new KeyDerivationInterceptor()); // Required for Kerberos
         directoryService.getChangeLog().setEnabled(false);
@@ -144,11 +138,11 @@ public class ApacheDSandKDC {
 
         directoryService.startup();
 
-        LDAP_PORT = getOpenPort(-1);
+        int ldapPort = getOpenPort(-1);
 
         ldapServer = new LdapServer();
         ldapServer.setServiceName("DefaultLDAP");
-        Transport ldap = new TcpTransport(ldapServerHostName, LDAP_PORT, 3, 5);
+        Transport ldap = new TcpTransport(ldapServerHostName, ldapPort, 3, 5);
         ldapServer.addTransports(ldap);
         ldapServer.setDirectoryService(directoryService);
         ldapServer.setSearchBaseDn(BASE_DN);
@@ -165,9 +159,11 @@ public class ApacheDSandKDC {
 
     private static void createPartition(final DirectoryServiceFactory dsf, final SchemaManager schemaManager, final String id,
                                         final String suffix) throws Exception {
-        Log.info(c, "createPartition", "Creating partition for " + suffix);
+        final String methodName = "createPartition";
+
+        Log.info(c, methodName, "Creating partition for " + suffix);
         PartitionFactory pf = dsf.getPartitionFactory();
-        Log.info(c, "setUp", "workingDir " + directoryService.getInstanceLayout().getPartitionsDirectory());
+        Log.info(c, methodName, "workingDir " + directoryService.getInstanceLayout().getPartitionsDirectory());
         Partition p = pf.createPartition(schemaManager, directoryService.getDnFactory(), id, suffix, 1000,
                                          new File(directoryService.getInstanceLayout().getPartitionsDirectory(), "example"));
         pf.addIndex(p, "krb5PrincipalName", 10);
@@ -175,7 +171,7 @@ public class ApacheDSandKDC {
         try {
             directoryService.addPartition(p);
         } catch (Exception e) {
-            Log.error(c, "createPartition", e, "Partition creation failed, trying a second time");
+            Log.error(c, methodName, e, "Partition creation failed, trying a second time");
             Thread.sleep(5000);
             directoryService.addPartition(p);
         }
@@ -186,19 +182,23 @@ public class ApacheDSandKDC {
         entry.add("dc", "example");
         directoryService.getAdminSession().add(entry);
 
-        Log.info(c, "createPartition", "Created partition for " + suffix);
+        Log.info(c, methodName, "Created partition for " + suffix);
     }
 
     private static void startKDC() throws Exception {
-        KDC_PORT = getOpenPort(DEFAULT_KDC_PORT); // attempt to get the normal default KDC port
+        final String methodName = "startKDC";
 
-        Log.info(c, "startKDC", "Creating krb.conf file");
+        if (savedKdcPort == -1) {
+            savedKdcPort = getOpenPort(DEFAULT_KDC_PORT); // attempt to get the normal default KDC port
+        }
 
-        configFile = createDefaultConfigFile();
+        Log.info(c, methodName, "Creating krb.conf file");
+
+        configFile = createConfigFile(bindUserName + "krb5-", savedKdcPort, true, false); // Default config file.
         System.setProperty("java.security.krb5.conf", configFile);
-        Log.info(c, "startKDC", "krb.conf file: " + configFile);
+        Log.info(c, methodName, "krb.conf file: " + configFile);
 
-        Log.info(c, "startKDC", "Starting KDC");
+        Log.info(c, methodName, "Starting KDC");
 
         kdcServer = new KdcServer();
         kdcServer.setServiceName("Test KDC");
@@ -210,17 +210,18 @@ public class ApacheDSandKDC {
         config.setPaEncTimestampRequired(false); // Required to avoid GSSAPI errors
         config.setBodyChecksumVerified(false); // Required to avoid GSSAPI errors
 
-        TcpTransport udp = new TcpTransport(ldapServerHostName, KDC_PORT);
-        kdcServer.addTransports(udp);
-
+        TcpTransport tcpTransport = new TcpTransport(ldapServerHostName, savedKdcPort);
+        kdcServer.addTransports(tcpTransport);
         kdcServer.setDirectoryService(directoryService);
         kdcServer.start();
 
-        Log.info(c, "startKDC", "Started KDC");
+        Log.info(c, methodName, "Started KDC");
     }
 
     //  @BeforeClass
     public static void setupService() throws Exception {
+        final String methodName = "setupService";
+
         // Uncomment to add more logging, will log a ton to output.txt, use only when needed
 //        Logger root = Logger.getLogger("");
 //        root.setLevel(Level.FINEST);
@@ -236,7 +237,7 @@ public class ApacheDSandKDC {
         krbtgtPrincipal = krbtgtUser + "/" + DOMAIN + "@" + DOMAIN;
 
         if (initialised) {
-            Log.info(c, "start", "ApacheDS already marked as started.");
+            Log.info(c, methodName, "ApacheDS already marked as started.");
             return;
         }
         startLdapServer();
@@ -263,7 +264,7 @@ public class ApacheDSandKDC {
 
         createKeyTabFile();
 
-        Log.info(c, "setup ", "Ports: " + kdcServer.getTcpPort() + " " + ldapServer.getPort());
+        Log.info(c, methodName, "KDC Port: " + kdcServer.getTcpPort() + ", LDAP Port: " + ldapServer.getPort());
 
     }
 
@@ -278,7 +279,9 @@ public class ApacheDSandKDC {
      * @throws Exception
      */
     public static void createTicketCacheFile() throws Exception {
-        Log.info(c, "createTicketCacheFile", "Creating ticket cache for " + bindPrincipalName);
+        final String methodName = "createTicketCacheFile";
+
+        Log.info(c, methodName, "Creating ticket cache for " + bindPrincipalName);
         File ccFile = File.createTempFile(bindUserName + "Cache-", ".cc");
         if (!FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
@@ -293,8 +296,8 @@ public class ApacheDSandKDC {
 
         ticketCacheFile = ccFile.getAbsolutePath();
 
-        Log.info(c, "createTicketCacheFile", "Created ticket cache: " + ticketCacheFile);
-        Log.info(c, "createTicketCacheFile", "Ticket cache contents: " + FileUtils.readFile(ticketCacheFile));
+        Log.info(c, methodName, "Created ticket cache: " + ticketCacheFile);
+        Log.info(c, methodName, "Ticket cache contents: " + FileUtils.readFile(ticketCacheFile));
     }
 
     /**
@@ -307,8 +310,10 @@ public class ApacheDSandKDC {
      * @throws Exception
      */
     public static String createPrincipal(String krb5User, String krb5UserPwd) throws Exception {
+        final String methodName = "createPrincipal";
+
         String principalName = krb5User + "@" + DOMAIN;
-        Entry entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
+        Entry entry = new DefaultEntry(directoryService.getSchemaManager());
         entry.add("userPassword", krb5UserPwd);
         entry.add("krb5PrincipalName", principalName);
         entry.add("krb5KeyVersionNumber", "0");
@@ -320,13 +325,13 @@ public class ApacheDSandKDC {
         entry.add("sn", krb5User);
         entry.add("uid", krb5User);
 
-        session.add(entry);
+        directoryService.getAdminSession().add(entry);
 
         if ("LDAP".equals(WHICH_FAT)) {
-            Log.info(c, "createPrincipal", "Created " + entry.getDn());
+            Log.info(c, methodName, "Created " + entry.getDn());
         } else {
             //SPNEGO FAT
-            Log.info(c, "createPrincipal", "Created " + entry.get("krb5PrincipalName"));
+            Log.info(c, methodName, "Created " + entry.get("krb5PrincipalName"));
         }
 
         return entry.getDn().getName();
@@ -340,9 +345,7 @@ public class ApacheDSandKDC {
     public static void createKerberosUserEntries() throws Exception {
         Log.info(c, "startAllServers", "Creating KDC user entries");
 
-        session = kdcServer.getDirectoryService().getAdminSession();
-
-        Entry entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
+        Entry entry = new DefaultEntry(directoryService.getSchemaManager());
         entry.setDn(krbtgtUserDN);
         entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
         entry.add("cn", "KDC Service");
@@ -351,12 +354,12 @@ public class ApacheDSandKDC {
         entry.add("userPassword", "secret");
         entry.add("krb5PrincipalName", krbtgtPrincipal);
         entry.add("krb5KeyVersionNumber", "0");
-        session.add(entry);
+        directoryService.getAdminSession().add(entry);
 
         Log.info(c, "createPrincipal", "Created " + entry.getDn());
 
         // app service
-        entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
+        entry = new DefaultEntry(directoryService.getSchemaManager());
         entry.setDn(ldapUserDN);
         entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
         entry.add("cn", ldapUser.toUpperCase());
@@ -365,7 +368,7 @@ public class ApacheDSandKDC {
         entry.add("userPassword", "secret");
         entry.add("krb5PrincipalName", ldapPrincipal);
         entry.add("krb5KeyVersionNumber", "0");
-        session.add(entry);
+        directoryService.getAdminSession().add(entry);
 
         Log.info(c, "createPrincipal", "Created " + entry.getDn());
 
@@ -425,6 +428,7 @@ public class ApacheDSandKDC {
         if (directoryService != null) {
             directoryService.shutdown();
         }
+
         Log.info(c, methodName, "Stopped all ApacheDS servers, double checking ports");
 
         // Having some weird issues on Windows where servers fail to start, HTTP team suspects artifacts from this class
@@ -432,7 +436,8 @@ public class ApacheDSandKDC {
         for (int i = 0; i <= 3; i++) {
             try {
                 Log.info(c, methodName, "Checking if KDC port is freed.");
-                s = new ServerSocket(KDC_PORT);
+                s = new ServerSocket(kdcServer.getTcpPort());
+                s.setReuseAddress(true);
                 Log.info(c, methodName, "KDC port is free.");
                 break;
             } catch (Throwable t) {
@@ -449,7 +454,8 @@ public class ApacheDSandKDC {
         for (int i = 0; i <= 3; i++) {
             try {
                 Log.info(c, methodName, "Checking if LdapServer port is freed.");
-                s = new ServerSocket(LDAP_PORT);
+                s = new ServerSocket(ldapServer.getPort());
+                s.setReuseAddress(true);
                 Log.info(c, methodName, "LdapServer port is free.");
                 break;
             } catch (Throwable t) {
@@ -461,7 +467,6 @@ public class ApacheDSandKDC {
                 }
             }
         }
-
     }
 
     /**
@@ -488,16 +493,19 @@ public class ApacheDSandKDC {
      * @throws IOException If a free port could not be found.
      */
     private static int getOpenPort(int preferredPort) throws IOException {
-        Log.info(c, "getOpenPort", "Entry.");
+        final String methodName = "getOpenPort";
+
+        Log.info(c, methodName, "Preferred port: " + preferredPort);
         ServerSocket s = null;
         if (preferredPort > 0) {
             try {
                 s = new ServerSocket(preferredPort);
-                Log.info(c, "getOpenPort", "Got preferred port " + s);
+                s.setReuseAddress(true);
+                Log.info(c, methodName, "Got preferred port " + s);
                 return preferredPort;
             } catch (Throwable t) {
                 // get a random port instead
-                Log.info(c, "getOpenPort", "Unabled to get preferred port, get a random port.");
+                Log.info(c, methodName, "Unabled to get preferred port, get a random port.");
             } finally {
                 if (s != null) {
                     s.close();
@@ -505,26 +513,22 @@ public class ApacheDSandKDC {
             }
         }
         s = new ServerSocket(0);
-        Log.info(c, "getOpenPort", "Got socket.");
+        s.setReuseAddress(true);
+        Log.info(c, methodName, "Got socket.");
         int port = s.getLocalPort();
-        Log.info(c, "getOpenPort", "Got port " + s);
+        Log.info(c, methodName, "Got port " + port);
         s.close();
-        Log.info(c, "getOpenPort", "Close socket");
+        Log.info(c, methodName, "Close socket");
         return port;
     }
 
+    /**
+     * Get the {@link DirectoryService} for the LDAP server.
+     *
+     * @return the {@link DirectoryService}.
+     */
     public static DirectoryService getDirectoryService() {
         return directoryService;
-    }
-
-    /**
-     * Create the default krb config file.
-     *
-     * @return
-     * @throws IOException
-     */
-    public static String createDefaultConfigFile() throws IOException {
-        return createConfigFile(bindUserName + "krb5-", KDC_PORT, true, false);
     }
 
     /**
@@ -534,14 +538,16 @@ public class ApacheDSandKDC {
      * @throws IOException
      */
     public static String createConfigFile(String name, int port, boolean includeRealm, boolean includeKeytab) throws IOException {
-        Log.info(c, "createConfigFile", "Creating config file: " + name);
+        final String methodName = "createConfigFile";
+
+        Log.info(c, methodName, "Creating config file: " + name);
         File configFile = File.createTempFile(name, ".conf");
         if (!FAT_TEST_LOCALRUN) {
             configFile.deleteOnExit();
         }
 
         Path outputPath = Paths.get(configFile.getAbsolutePath());
-        Log.info(c, "createConfigFile", "Created krb.conf file: " + configFile.getAbsolutePath());
+        Log.info(c, methodName, "Created krb.conf file: " + configFile.getAbsolutePath());
         String conf = "[libdefaults]\n" +
                       "        rdns = false\n" +
                       "        dns_lookup_realm = false\n" +
@@ -554,7 +560,7 @@ public class ApacheDSandKDC {
         }
         if (includeKeytab) {
             if (keytabFile == null) {
-                Log.info(c, "createConfigFile", "Default keytab is null, test may fail with default_keytab_name set to null.");
+                Log.info(c, methodName, "Default keytab is null, test may fail with default_keytab_name set to null.");
             }
             conf = conf + "        default_keytab_name = " + keytabFile + "\n";
         }
@@ -571,7 +577,7 @@ public class ApacheDSandKDC {
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
 
-        Log.info(c, "createConfigFile", "krb.conf file contents: " + conf);
+        Log.info(c, methodName, "krb.conf file contents: \n\n" + conf);
         return configFile.getAbsolutePath();
     }
 
@@ -582,14 +588,16 @@ public class ApacheDSandKDC {
      * @throws IOException
      */
     public static String createInvalidConfigFile(String name, int port) throws IOException {
-        Log.info(c, "createInvalidConfigFile", "Creating invalid config file: " + name);
+        final String methodName = "createInvalidConfigFile";
+
+        Log.info(c, methodName, "Creating invalid config file: " + name);
         File ccFile = File.createTempFile(name, ".conf");
         if (!FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
         }
 
         Path outputPath = Paths.get(ccFile.getAbsolutePath());
-        Log.info(c, "generateConf", "creating krb.conf file.");
+        Log.info(c, methodName, "creating krb.conf file.");
         String conf = "[libdefaults]\n" +
                       "        default_realm = NOT.REALM" + "\n" +
                       "\n" +
@@ -604,7 +612,7 @@ public class ApacheDSandKDC {
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
 
-        Log.info(c, "createInvalidConfigFile", "krb.conf file contents: " + conf);
+        Log.info(c, methodName, "krb.conf file contents: " + conf);
         return ccFile.getAbsolutePath();
     }
 
@@ -616,7 +624,9 @@ public class ApacheDSandKDC {
      * @throws Exception
      */
     public static String createTicketCacheShortLife(boolean renew) throws Exception {
-        Log.info(c, "createTicketCacheShortLife", "Creating short life ticket cache. Renew: " + renew);
+        final String methodName = "createTicketCacheShortLife";
+
+        Log.info(c, methodName, "Creating short life ticket cache. Renew: " + renew);
         KerberosConfig kdcConfig = kdcServer.getConfig();
         long prevMaxTicket = kdcConfig.getMaximumTicketLifetime();
         long prevMin = kdcConfig.getMinimumTicketLifetime();
@@ -626,7 +636,7 @@ public class ApacheDSandKDC {
             kdcConfig.setMaximumTicketLifetime(MIN_LIFE); // Though forever, this is the minimum max allowed by ApacheDS
             kdcConfig.setRenewableAllowed(renew);
             kdcConfig.setMinimumTicketLifetime(1);
-            Log.info(c, "createTicketCacheShortLife", "Creating ticket cache for " + bindPrincipalName);
+            Log.info(c, methodName, "Creating ticket cache for " + bindPrincipalName);
             ccFile = File.createTempFile("credCacheShortLife-", ".cc");
             if (!FAT_TEST_LOCALRUN) {
                 ccFile.deleteOnExit();
@@ -668,7 +678,7 @@ public class ApacheDSandKDC {
             kdcConfig.setMinimumTicketLifetime(prevMin);
         }
 
-        Log.info(c, "createTicketCacheShortLife", "Created ticket cache: " + ticketCacheFile);
+        Log.info(c, methodName, "Created ticket cache: " + ticketCacheFile);
 
         return ccFile.getAbsolutePath();
 
@@ -677,26 +687,42 @@ public class ApacheDSandKDC {
     /**
      * Create a keytab file with the default bindUser and password
      *
-     * @throws Exception
+     * @throws Exception If there was an error creating the keytab file.
      */
     public static void createKeyTabFile() throws Exception {
-        Log.info(c, "createKeyTabFile", "Creating keytab for " + bindPrincipalName);
-        File keyTabTemp = File.createTempFile(bindUserName + "-", ".keytab");
+        keytabFile = createKeyTabFile(bindUserName, bindPrincipalName, bindPassword);
+    }
+
+    /**
+     * Create a keytab file with the specified userName, principal name and password.
+     *
+     * @param userName      The user name that will be used to create a unique file name.
+     * @param principalName The principal name that will inserted into the keytab.
+     * @param password      The password that will be inserted into the keytab.
+     * @return The path to the newly created keytab file.
+     * @throws Exception If there was an error creating the keytab file.
+     */
+    public static String createKeyTabFile(String userName, String principalName, String password) throws Exception {
+        final String methodName = "createKeyTabFile";
+
+        Log.info(c, methodName, "Creating keytab for " + principalName);
+        File keyTabTemp = File.createTempFile(userName + "-", ".keytab");
         if (!FAT_TEST_LOCALRUN) {
             keyTabTemp.deleteOnExit();
         }
 
         Keytab keytab = Keytab.getInstance();
 
-        List<KeytabEntry> entries = addKerberosKeysToKeytab(bindPrincipalName, bindPassword);
+        List<KeytabEntry> entries = addKerberosKeysToKeytab(principalName, password);
 
         keytab.setEntries(entries);
         keytab.write(keyTabTemp);
 
-        keytabFile = keyTabTemp.getAbsolutePath();
+        String file = keyTabTemp.getAbsolutePath();
 
-        Log.info(c, "createKeyTabFile", "Created keytab: " + keytabFile);
-        Log.info(c, "createKeyTabFile", "Keytab actual contents: " + FileUtils.readFile(keytabFile));
+        Log.info(c, methodName, "Created keytab: " + keytabFile);
+        Log.info(c, methodName, "Keytab actual contents: " + FileUtils.readFile(file));
+        return file;
     }
 
     /**
@@ -736,5 +762,82 @@ public class ApacheDSandKDC {
             final byte keyVersion = (byte) key.getKeyVersion();
             entries.add(new KeytabEntry(principalName, principalType, timeStamp, keyVersion, key));
         }
+    }
+
+    /**
+     * Create the Spnego(HTTP) SPN service/user in the KDCServer DS
+     *
+     * @param dn          The distinguished name for the entry.
+     * @param spn         The SPN, or krb5 principal name.
+     * @param spnPassword The pasword.
+     * @throws Exception If there was an error creating the SPN entry.
+     */
+    public static void createSpnegoSPNEntry(String dn, String spn, String spnPassword) throws Exception {
+        String methodName = "createSpnegoSPNEntry";
+        Log.info(c, methodName, "Creating KDC user entries");
+
+        // spnego HTTP service
+        Entry entry = new DefaultEntry(directoryService.getSchemaManager());
+        entry.setDn(dn);
+        entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
+        entry.add("cn", "HTTP");
+        entry.add("sn", "Service");
+        entry.add("uid", "HTTP");
+        entry.add("userPassword", spnPassword);
+        entry.add("krb5PrincipalName", spn);
+        entry.add("krb5KeyVersionNumber", "0");
+        directoryService.getAdminSession().add(entry);
+
+        Log.info(c, methodName, "Created " + entry.getDn());
+    }
+
+    /**
+     * Create a SPNEGO SPN keytab.
+     *
+     * @param canonicalHostname The canonical hostname.
+     * @param spn               The SPN.
+     * @param spnPassword       The SPN password.
+     * @return The path to the keytab file.
+     * @throws Exception If there was an error creating the keytab.
+     */
+    public static String createSpnegoSPNKeytab(String canonicalHostname, String spn, String spnPassword) throws Exception {
+        String methodName = "createSpnegoSPNKeytab";
+        Log.info(c, methodName, "Creating keytab for " + spn);
+
+        File keyTabTemp = File.createTempFile(canonicalHostname + "_http", ".keytab");
+        if (!FAT_TEST_LOCALRUN) {
+            keyTabTemp.deleteOnExit();
+        }
+
+        Keytab keytab = Keytab.getInstance();
+
+        List<KeytabEntry> entries = addKerberosKeysToKeytab(spn, spnPassword);
+
+        keytab.setEntries(entries);
+        keytab.write(keyTabTemp);
+
+        String keytabFile = keyTabTemp.getAbsolutePath();
+
+        Log.info(c, methodName, "Created keytab: " + keytabFile);
+        Log.info(c, methodName, "Keytab actual contents: " + FileUtils.readFile(keytabFile));
+        return keytabFile;
+    }
+
+    /**
+     * Get the KDC port. This should be called after the KDC is started / initialized.
+     *
+     * @return The KDC port or -1 is the KDC server is not started.
+     */
+    public static int getKdcPort() {
+        return (kdcServer != null) ? kdcServer.getTcpPort() : -1;
+    }
+
+    /**
+     * Get the LDAP port. This sould be called after the LDAP server is started / initialized.
+     *
+     * @return The LDAP port or -1 if the LDAP server is not started.
+     */
+    public static int getLdapPort() {
+        return (ldapServer != null) ? ldapServer.getPort() : -1;
     }
 }

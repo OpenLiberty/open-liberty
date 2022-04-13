@@ -24,7 +24,7 @@ bVersion=1.0
   @${repo;io.smallrye.common:smallrye-common-expression;1.6.0},\
   @${repo;io.smallrye.common:smallrye-common-constraint;1.6.0},\
   @${repo;io.smallrye.common:smallrye-common-function;1.6.0},\
-  @${repo;io.smallrye.common:smallrye-common-classloader;1.6.0},\
+  @${repo;io.smallrye.common:smallrye-common-classloader;1.6.0}
 
 -buildpath: \
   io.smallrye.common:smallrye-common-annotation;version=1.6.0, \

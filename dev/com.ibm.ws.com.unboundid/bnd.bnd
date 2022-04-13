@@ -24,6 +24,6 @@ Include-Resource: \
   
 -buildpath: \
 	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
+	fattest.simplicity;version=latest,\
 	org.apache.commons.io
     

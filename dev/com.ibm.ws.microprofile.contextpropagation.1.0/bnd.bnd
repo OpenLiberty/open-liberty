@@ -37,7 +37,7 @@ instrument.classesExcludes: com/ibm/ws/microprofile/context/resources/*.class
 
 -dsannotations: \
   com.ibm.ws.microprofile.contextpropagation.ContextManagerProviderImpl,\
-  com.ibm.ws.microprofile.contextpropagation.MPConfigAccessorImpl,\
+  com.ibm.ws.microprofile.contextpropagation.MPConfigAccessorImpl
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\

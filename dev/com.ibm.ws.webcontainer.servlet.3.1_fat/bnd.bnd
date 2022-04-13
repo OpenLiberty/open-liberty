@@ -43,7 +43,7 @@ src:\
     test-applications/TestServlet31AltVHost1.war/src,\
     test-applications/TestServlet31AltVHost2.war/src,\
     test-applications/TestServletMapping.war/src,\
-    test-applications/TestServletMappingAnno.war/src,\
+    test-applications/TestServletMappingAnno.war/src
 
 fat.project: true
 

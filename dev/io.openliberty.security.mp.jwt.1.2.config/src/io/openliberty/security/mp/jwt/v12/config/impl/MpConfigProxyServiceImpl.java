@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.mp.jwt.v12.config.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,19 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.2";
+
+    private static final Set<String> acceptableMpConfigPropNames12;
+
+    static {
+        Set<String> mpConfigPropNames = new HashSet<>();
+        mpConfigPropNames.addAll(com.ibm.ws.security.mp.jwt.v11.config.impl.MpConfigProxyServiceImpl.acceptableMpConfigPropNames);
+        mpConfigPropNames.add(MpConstants.PUBLIC_KEY_ALG);
+        mpConfigPropNames.add(MpConstants.DECRYPT_KEY_LOCATION);
+        mpConfigPropNames.add(MpConstants.VERIFY_AUDIENCES);
+        mpConfigPropNames.add(MpConstants.TOKEN_HEADER);
+        mpConfigPropNames.add(MpConstants.TOKEN_COOKIE);
+        acceptableMpConfigPropNames12 = Collections.unmodifiableSet(mpConfigPropNames);
+    }
 
     @Override
     @Activate
@@ -60,15 +74,7 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        Set<String> allSupportedProps = super.getSupportedConfigPropertyNames();
-        Set<String> acceptableMpConfigPropNames12 = new HashSet<String>();
-        acceptableMpConfigPropNames12.add(MpConstants.PUBLIC_KEY_ALG);
-        acceptableMpConfigPropNames12.add(MpConstants.DECRYPT_KEY_LOCATION);
-        acceptableMpConfigPropNames12.add(MpConstants.VERIFY_AUDIENCES);
-        acceptableMpConfigPropNames12.add(MpConstants.TOKEN_HEADER);
-        acceptableMpConfigPropNames12.add(MpConstants.TOKEN_COOKIE);
-        allSupportedProps.addAll(acceptableMpConfigPropNames12);
-        return allSupportedProps;
+        return acceptableMpConfigPropNames12;
     }
 
 }

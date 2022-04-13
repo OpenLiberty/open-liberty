@@ -1,6 +1,6 @@
-biz.aQute.bnd:biz.aQute.bnd.annotation:5.3.0
-biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0
-biz.aQute.bnd:biz.aQute.bnd:5.3.0
+biz.aQute.bnd:biz.aQute.bnd.annotation:6.2.0
+biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0
+biz.aQute.bnd:biz.aQute.bnd:6.2.0
 cglib:cglib-nodep:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 ch.qos.logback:logback-core:1.2.3
@@ -33,14 +33,8 @@ com.graphql-java:graphql-java:16.2
 com.graphql-java:java-dataloader:2.2.3
 com.ibm.async:asyncutil:0.1.0
 com.ibm.db2:jcc:11.1.4.4
-com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
-com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
-com.ibm.ws.componenttest:fat.harness:1.0.0
-com.ibm.ws.componenttest:fat.util:1.0.0
 com.ibm.ws.componenttest:mantis-collections:2.5.0
 com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
-com.ibm.ws.componenttest:provider.api:1.0.0
-com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
 com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
@@ -324,8 +318,8 @@ org.apache.sshd:sshd-scp:2.5.1
 org.apache.thrift:libthrift:0.13.0
 org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
-org.apache.tomcat:tomcat-el-api:10.0.14
-org.apache.tomcat:tomcat-jasper-el:10.0.14
+org.apache.tomcat:tomcat-el-api:10.0.18
+org.apache.tomcat:tomcat-jasper-el:10.0.18
 org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4

@@ -15,17 +15,23 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
+import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -35,6 +41,7 @@ import javax.naming.InitialContext;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.concurrent.cache.TestCache;
 import test.concurrent.sim.context.zos.wlm.Enclave;
 
 @ContextServiceDefinition(name = "java:app/concurrent/ThreadNameContext",
@@ -109,6 +116,55 @@ public class SimZOSContextTestServlet extends FATServlet {
             assertEquals("TX_CLASS_1", Enclave.getTransactionClass());
         } finally {
             Enclave.clear();
+        }
+    }
+
+    /**
+     * First part of test case for deactivate of a managedThreadFactory implicitly interrupting
+     * a managed ForkJoinWorkerThread that the managed thread factory created.
+     * This part of the test case starts the thread and ensures it is running.
+     */
+    public void testInterruptOnDeactivate_threadStart() throws Exception {
+        ManagedThreadFactory threadFactory = InitialContext.doLookup("concurrent/testInterruptOnDeactivate-threadFactory");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch running = new CountDownLatch(1);
+
+        ForkJoinPool pool = new ForkJoinPool(2, threadFactory, null, false);
+        pool.submit(() -> {
+            ForkJoinTask<Integer> task = pool.submit(new RecursiveTask<Integer>() {
+                @Override
+                protected Integer compute() {
+                    running.countDown();
+                    try {
+                        return blocker.await(TIMEOUT_NS * 5, TimeUnit.NANOSECONDS) ? 1 : 0;
+                    } catch (InterruptedException x) {
+                        // expected
+                        return 100;
+                    }
+                }
+            });
+            TestCache.instance.put("testInterruptOnDeactivate-pool", pool);
+            TestCache.instance.put("testInterruptOnDeactivate-task", task);
+        });
+
+        assertTrue(running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Second part of test case for deactivate of a managedThreadFactory implicitly interrupting
+     * a managed ForkJoinWorkerThread that the managed thread factory created.
+     * This part of the test case waits for the thread to be interrupted.
+     */
+    public void testInterruptOnDeactivate_waitForInterrupt() throws Exception {
+        @SuppressWarnings("unchecked")
+        ForkJoinTask<Integer> task = (ForkJoinTask<Integer>) TestCache.instance.get("testInterruptOnDeactivate-task");
+        ForkJoinPool pool = (ForkJoinPool) TestCache.instance.get("testInterruptOnDeactivate-pool");
+
+        try {
+            assertEquals(Integer.valueOf(100), task.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            pool.shutdown();
         }
     }
 

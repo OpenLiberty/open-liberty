@@ -23,7 +23,7 @@ WS-TraceGroup: JAXRS
    !org.apache.cxf.validation, \
    !org.apache.cxf.jaxrs.validation, \
    !org.apache.cxf.databinding;version=3.1.18, \
-   org.apache.cxf.*;version=3.1.18, \
+   org.apache.cxf.*;version=3.1.18
 
 Export-Package: \
 	com.ibm.ws.jaxrs20,\
@@ -129,7 +129,7 @@ DynamicImport-Package: \
  javax.json.*
 
 Private-Package:\
-   com.ibm.ws.jaxrs20.*, \
+   com.ibm.ws.jaxrs20.*
 
 Include-Resource: \
   @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.9.13}, \

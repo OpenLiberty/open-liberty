@@ -162,8 +162,8 @@ public class JsonUtils {
     }
 
     // assuming payload not the whole token string
-    public static Map claimsFromJsonObject(String jsonFormattedString) throws JoseException {
-        Map claimsMap = new ConcurrentHashMap<String, Object>();
+    public static Map<String, Object> claimsFromJsonObject(String jsonFormattedString) throws JoseException {
+        Map<String, Object> claimsMap = new ConcurrentHashMap<>();
         if (jsonFormattedString == null) {
             return claimsMap;
         }

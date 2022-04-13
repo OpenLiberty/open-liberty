@@ -83,14 +83,13 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    private boolean _checkingLeases = true;
-
     /**
      * Flag to indicate whether the server is stopping.
      */
     volatile private boolean _serverStopping;
 
-    protected TxRecoveryAgentImpl() {}
+    protected TxRecoveryAgentImpl() {
+    }
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -134,7 +133,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -1184,25 +1184,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setReplayThread");
         _replayThread.set(Boolean.TRUE);
-    }
-
-    @Override
-    public boolean checkingLeases() {
-        return _checkingLeases;
-    }
-
-    @Override
-    public void setCheckingLeases(boolean b) {
-        if (tc.isDebugEnabled()) {
-            if (b != _checkingLeases) {
-                if (b) {
-                    Tr.debug(tc, "Enabling lease checking");
-                } else {
-                    Tr.debug(tc, "Disabling lease checking");
-                }
-            }
-        }
-        _checkingLeases = b;
     }
 
     @Override

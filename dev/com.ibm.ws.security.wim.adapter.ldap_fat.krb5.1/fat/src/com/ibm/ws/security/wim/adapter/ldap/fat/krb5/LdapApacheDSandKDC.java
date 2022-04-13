@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,18 +66,18 @@ public class LdapApacheDSandKDC extends ApacheDSandKDC {
      */
     public static void addApplicationUserAndGroup() throws Exception {
         Log.info(c, "addApplicationUserAndGroup", "Adding basic user and group");
-        Entry entry = directoryService.newEntry(new Dn(vmmUser1DN));
+        Entry entry = getDirectoryService().newEntry(new Dn(vmmUser1DN));
         entry.add("objectclass", "inetorgperson");
         entry.add("uid", vmmUser1);
         entry.add("sn", "user1");
         entry.add("cn", "user1");
         entry.add("userPassword", vmmUser1pwd);
-        session.add(entry);
+        getDirectoryService().getAdminSession().add(entry);
 
-        entry = directoryService.newEntry(new Dn(vmmGroup1DN));
+        entry = getDirectoryService().newEntry(new Dn(vmmGroup1DN));
         entry.add("objectclass", "groupOfNames");
         entry.add("member", vmmUser1DN);
-        session.add(entry);
+        getDirectoryService().getAdminSession().add(entry);
         Log.info(c, "addApplicationUserAndGroup", "Adding basic user and group");
     }
 

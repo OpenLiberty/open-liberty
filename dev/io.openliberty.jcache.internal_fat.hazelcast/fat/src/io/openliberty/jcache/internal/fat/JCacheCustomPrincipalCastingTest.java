@@ -13,6 +13,7 @@ package io.openliberty.jcache.internal.fat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.junit.After;
@@ -30,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
@@ -45,6 +47,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SuppressWarnings("restriction")
 public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
@@ -73,6 +76,14 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
             SERVER2_ORIGINAL_CONFIG = server2.getServerConfiguration().clone();
         } catch (Exception e) {
             fail("Failed to clone the server configurations: " + e);
+        }
+
+        /*
+         * Transform apps for EE9+.
+         */
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/subjectcast.war"));
+            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/subjectcast.war"));
         }
     }
 

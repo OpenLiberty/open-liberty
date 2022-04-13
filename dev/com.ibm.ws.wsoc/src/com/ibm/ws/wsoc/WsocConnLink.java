@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,8 @@ public class WsocConnLink {
     private final int WAIT_ON_WRITE_TO_CLOSE = 5500; // watchdog timer on waiting to write a close frame once a close has been initiated.
     private final int WAIT_ON_READ_TO_CLOSE = 8500; // watchdog timer on waiting to cancel a read once a close has been initiated.
 
-    public Object linkSync = new Object() {};
+    public Object linkSync = new Object() {
+    };
     public boolean readNotifyTriggered = false;
     public boolean writeNotifyTriggered = false;
 
@@ -802,14 +803,21 @@ public class WsocConnLink {
                     try {
                         readNotifyTriggered = false;
                         linkRead.cancelRead();
+
+                        // PH42468 Add a timeout to the wait, in case notifyAll() isn't called
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "linkSync.wait().  waiting on Read to clear");
+                            Tr.debug(tc, "linkSync.wait(WAIT_ON_READ_TO_CLOSE).  waiting on Read to clear");
+                        }
+                        linkSync.wait(WAIT_ON_READ_TO_CLOSE);
+
+                        if (readNotifyTriggered == false) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "linkSync.wait() timed out, continue closing");
+                            }
                         }
 
-                        while (readNotifyTriggered == false) {
-                            linkSync.wait();
-                        }
                         done = true;
+
                     } catch (InterruptedException e) {
                         // do NOT allow instrumented FFDC to be used here
                         if (tc.isDebugEnabled()) {

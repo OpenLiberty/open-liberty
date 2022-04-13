@@ -19,7 +19,7 @@ WS-TraceGroup: JAXRS
 
 
 Export-Package: \
-   com.ibm.websphere.jaxrs.server
+   com.ibm.websphere.jaxrs.server;version=1.0
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
@@ -29,8 +29,8 @@ Import-Package: \
    javax.ws.rs.*;version="[2.0,3)", \
    javax.validation;resolution:=optional, \
    javax.validation.*;resolution:=optional, \
-   org.apache.cxf.validation;resolution:=optional;version="[3.0.2,4)", \
-   org.apache.cxf.*;version="[3.0.2,4)", \
+   org.apache.cxf.validation;resolution:=optional;version="[3.0.2,3.2)", \
+   org.apache.cxf.*;version="[3.0.2,3.2)", \
    org.apache.cxf.jaxrs.sse;resolution:=optional, \
    !javax.xml.bind.*, \
    com.ibm.ws.jaxrs20.metadata, \

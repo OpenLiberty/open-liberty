@@ -19,6 +19,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+                JsonBContainerTest.class,
                 JsonBTest.class,
 })
 public class FATSuite {

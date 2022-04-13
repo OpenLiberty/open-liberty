@@ -12,10 +12,12 @@ package io.openliberty.jcache.internal.fat;
 
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +30,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
@@ -46,6 +49,17 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
 
     private static FormLoginClient formLoginClient1;
     private static FormLoginClient formLoginClient2;
+
+    @BeforeClass
+    public static void beforeClass() {
+        /*
+         * Transform apps for EE9+.
+         */
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/formlogin.war"));
+            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/formlogin.war"));
+        }
+    }
 
     @Before
     public void before() throws Exception {

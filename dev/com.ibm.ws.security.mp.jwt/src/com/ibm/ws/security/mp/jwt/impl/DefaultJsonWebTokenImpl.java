@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.impl.utils.ClaimsUtils;
@@ -57,23 +58,27 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
     };
 
     public static final char SERVICE_NAME_SEPARATOR = ';';
+    private static final JwtClaims NOT_SET = new JwtClaims();
     private transient String principal;
     private transient String jwt;
     private transient String type;
-    private JwtClaims claimsSet;
-
-    private ClaimsUtils claimsUtils = new ClaimsUtils();
+    private volatile JwtClaims claimsSet = NOT_SET;
 
     public DefaultJsonWebTokenImpl(String jwt, String type, String name) {
+        this(jwt, type, name, null);
+    }
+
+    public DefaultJsonWebTokenImpl(String jwt, String type, String name, JwtToken jwtToken) {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jwt, type, name);
+            Tr.entry(tc, methodName, jwt, type, name, jwtToken);
         }
         this.jwt = jwt;
         this.type = type;
-        //this.claimsSet = claimsSet;
         principal = name;
-        handleClaims(jwt);
+        if (jwtToken != null) {
+            claimsSet = ClaimsUtils.getJwtClaims(jwtToken);
+        }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
@@ -89,15 +94,20 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
      * @return
      *
      */
-    private void handleClaims(String jwt) {
-        try {
-            if (claimsUtils == null) {
-                claimsUtils = new ClaimsUtils();
+    private JwtClaims getClaimsSet() {
+        if (claimsSet == NOT_SET) {
+            synchronized (this) {
+                if (claimsSet == NOT_SET) {
+                    try {
+                        this.claimsSet = ClaimsUtils.getJwtClaims(jwt);
+                    } catch (JoseException e) {
+                        Tr.error(tc, "ERROR_GETTING_CLAIMS_FROM_JWT_STRING", new Object[] { e.getLocalizedMessage() });
+                        claimsSet = null;
+                    }
+                }
             }
-            this.claimsSet = claimsUtils.getJwtClaims(jwt);
-        } catch (JoseException e) {
-            Tr.error(tc, "ERROR_GETTING_CLAIMS_FROM_JWT_STRING", new Object[] { e.getLocalizedMessage() });
         }
+        return claimsSet;
     }
 
     @Override
@@ -131,7 +141,7 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
         case nbf:
         case updated_at:
             try {
-                claim = claimsSet.getClaimValue(claimType.name(), Long.class);
+                claim = getClaimsSet().getClaimValue(claimType.name(), Long.class);
                 if (claim == null) {
                     claim = new Long(0);
                 }
@@ -145,23 +155,23 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
             claim = getAudience();
             break;
         case UNKNOWN:
-            claim = claimsSet.getClaimValue(claimName);
+            claim = getClaimsSet().getClaimValue(claimName);
             break;
         default:
-            claim = claimsSet.getClaimValue(claimType.name());
+            claim = getClaimsSet().getClaimValue(claimType.name());
         }
         return claim;
     }
 
     @Override
     public String toString() {
-        return claimsSet.toJson();
+        return getClaimsSet().toJson();
     }
 
     /** {@inheritDoc} */
     @Override
     public Set<String> getClaimNames() {
-        return new HashSet<String>(claimsSet.getClaimNames());
+        return new HashSet<String>(getClaimsSet().getClaimNames());
     }
 
     /** {@inheritDoc} */
@@ -175,13 +185,13 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
     public Set<String> getAudience() {
         Set<String> audSet = new HashSet<String>();
         try {
-            List<String> audList = claimsSet.getStringListClaimValue("aud");
+            List<String> audList = getClaimsSet().getStringListClaimValue("aud");
             if (audList != null) {
                 audSet.addAll(audList);
             }
         } catch (MalformedClaimException e) {
             try {
-                String aud = claimsSet.getStringClaimValue("aud");
+                String aud = getClaimsSet().getStringClaimValue("aud");
                 audSet.add(aud);
             } catch (MalformedClaimException e1) {
                 Tr.warning(tc, "CLAIM_MALFORMED", new Object[] { "aud", e.getLocalizedMessage() });
@@ -194,7 +204,7 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
     public Set<String> getGroups() {
         HashSet<String> groups = new HashSet<String>();
         try {
-            List<String> globalGroups = claimsSet.getStringListClaimValue("groups");
+            List<String> globalGroups = getClaimsSet().getStringListClaimValue("groups");
             if (globalGroups != null) {
                 groups.addAll(globalGroups);
             }
@@ -218,7 +228,7 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
         principal = (String) fields.get(PRINCIPAL, null);
         jwt = (String) fields.get(JWT, null);
         type = (String) fields.get(TYPE, null);
-        handleClaims(jwt);
+        claimsSet = NOT_SET;
     }
 
     /**

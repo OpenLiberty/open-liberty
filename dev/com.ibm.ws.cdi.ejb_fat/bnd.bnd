@@ -14,7 +14,7 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
+	fat/src
 
 tested.features:\
 	cdi-2.0,\

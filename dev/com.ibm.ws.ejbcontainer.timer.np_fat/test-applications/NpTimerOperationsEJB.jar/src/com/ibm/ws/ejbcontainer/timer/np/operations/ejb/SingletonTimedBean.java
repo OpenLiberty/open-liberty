@@ -56,7 +56,6 @@ public class SingletonTimedBean implements SingletonTimedLocal {
     private static int timeoutCounts[] = null;
     private static CountDownLatch timerLatch = new CountDownLatch(1);
     private static CountDownLatch timerIntervalLatch = new CountDownLatch(1);
-    private static CountDownLatch timerIntervalWaitLatch = new CountDownLatch(1);
     private static CountDownLatch testOpsInTimeoutLatch = new CountDownLatch(1);
 
     // The time for the container to run post invoke processing for @Timeout.
@@ -72,6 +71,8 @@ public class SingletonTimedBean implements SingletonTimedLocal {
     private Object setSessionContextResults;
     private Object ejbCreateResults;
     private Object ejbTimeoutResults;
+
+    private static boolean cancelTimer = false;
 
     /**
      * Test getTimerService()/TimerService access from setSessionContext on a
@@ -220,8 +221,8 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         timer = new Timer[6];
         timeoutCounts = new int[timer.length];
         timerLatch = new CountDownLatch(timer.length - 1); // one timer cancelled
-        timerIntervalWaitLatch = new CountDownLatch(1); // block interval timer until ready
         timerIntervalLatch = new CountDownLatch(2);
+        cancelTimer = false;
 
         // -------------------------------------------------------------------
         // 1 - Verify getTimerService() returns a valid TimerService
@@ -519,15 +520,6 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         }
 
         // -------------------------------------------------------------------
-        // Wait up to MAX_TIMER_WAIT for interval timers to expire
-        // -------------------------------------------------------------------
-        timerIntervalWaitLatch.countDown(); // allow 2nd interval to run
-        waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
-        timerIntervalWaitLatch = new CountDownLatch(1);
-        timerIntervalLatch = new CountDownLatch(2);
-        FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
-
-        // -------------------------------------------------------------------
         // 20 - Verify Timer.getNextTimeout() on repeating Timer works
         // -------------------------------------------------------------------
         logger.info("testTimerService: Calling Timer.getNextTimeout()");
@@ -549,7 +541,7 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         // -------------------------------------------------------------------
         // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
         // -------------------------------------------------------------------
-        timerIntervalWaitLatch.countDown(); // allow 3rd interval to run
+        timerIntervalLatch = new CountDownLatch(2);
         waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
         FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
 
@@ -564,10 +556,9 @@ public class SingletonTimedBean implements SingletonTimedLocal {
             switch (i) {
                 case 2:
                 case 4:
-                    if (timeoutCounts[i] != 3) {
+                    if (timeoutCounts[i] <= 1) {
                         successful = false;
-                        logger.info("Timer[" + i + "] not executed thrice: " +
-                                    timer[i]);
+                        logger.info("Repeating timer[" + i + "] not executed multiple times: " + timer[i]);
                     }
                     break;
 
@@ -596,6 +587,11 @@ public class SingletonTimedBean implements SingletonTimedLocal {
         // 22 - Verify NoSuchObjectLocalException occurs accessing self
         //      cancelled timer
         // -------------------------------------------------------------------
+        timerIntervalLatch = new CountDownLatch(2);
+        cancelTimer = true;
+        waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
+        FATHelper.sleep(POST_INVOKE_DELAY); // wait for timer method postInvoke to complete
+
         try {
             logger.info("testTimerService: Calling Timer.getInfo() " +
                         "on self cancelled Timer");
@@ -730,15 +726,6 @@ public class SingletonTimedBean implements SingletonTimedLocal {
 
         if (timerIndex >= 0) {
 
-            if (timeoutCounts[timerIndex] > 0) {
-                // Don't run the 2nd & 3rd interval until test is ready
-                try {
-                    timerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace(System.out);
-                }
-            }
-
             timeoutCounts[timerIndex]++;
 
             System.out.println("Timer " + timerIndex + " expired " +
@@ -746,11 +733,13 @@ public class SingletonTimedBean implements SingletonTimedLocal {
 
             if (timeoutCounts[timerIndex] == 1) {
                 timerLatch.countDown();
-            } else if (timeoutCounts[timerIndex] > 2) {
-                timer.cancel();
-                timerIntervalLatch.countDown();
             } else if (timeoutCounts[timerIndex] > 1) {
                 timerIntervalLatch.countDown();
+            }
+
+            if (cancelTimer) {
+                System.out.println("Timer " + timerIndex + "self cancelling ");
+                timer.cancel();
             }
 
             return;

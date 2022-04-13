@@ -18,8 +18,7 @@ addRequiredLibraries {
 }
 
 dependencies { 
-  requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
-    project(':io.openliberty.org.apache.commons.logging'),
+  requiredLibs project(':io.openliberty.org.apache.commons.logging'),
     project(':io.openliberty.org.apache.commons.codec'),
     'org.apache.httpcomponents:httpclient:4.1.2',
     'org.apache.httpcomponents:httpcore:4.1.2',

@@ -15,7 +15,8 @@ Bundle-Name: fake z/OS WLM context provider bundle
 Bundle-SymbolicName: test.concurrent.sim.zos.wlm
 Bundle-Description: Provides a fake context provider that is configured similarly to z/OS WLM context.
 
-Export-Package: test.concurrent.sim.context.zos.wlm.*
+Export-Package: test.concurrent.sim.context.zos.wlm.*,\
+  test.concurrent.cache.*
 
 Include-Resource:\
  OSGI-INF/metatype/metatype.xml=test-bundles/zosWLMContext/resources/OSGI-INF/metatype/metatype.xml

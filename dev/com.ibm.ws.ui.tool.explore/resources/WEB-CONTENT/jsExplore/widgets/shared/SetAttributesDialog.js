@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -402,7 +402,7 @@ define([
         icon = icon + "-selected";
       }
 
-      return imgUtils.getSVGSmall(icon);
+      return imgUtils.getSVGWithAriaLabelledBy(icon, 'small', this.id + "_name");
     },
 
     /** 
@@ -418,7 +418,7 @@ define([
       // Add the new tag field
       this.tagNewEditBox = this._createEditField(this.TYPE_TAG);
       this.tagAttrsPane.addChild(this.tagNewEditBox);
-      this.attributeTagsIcon.innerHTML = imgUtils.getSVGSmall('metadata-tag');
+      this.attributeTagsIcon.innerHTML = imgUtils.getSVGSmall('metadata-tag', null, i18n.TAGS, true);
             
       // After completing editing in the new Tag Edit field,
       // create a pill for the new value.
@@ -467,6 +467,12 @@ define([
         // Reset the pillSelection
         this.pillSelection.widget = null;
       }));
+
+      var newTagComboxBoxWidget = dom.byId("widget_newTagEditField");
+      if (newTagComboxBoxWidget) {
+        newTagComboxBoxWidget.setAttribute('aria-label', i18n.TAGS_LABEL);
+        newTagComboxBoxWidget.setAttribute('aria-expanded', 'false');
+      }
       
 
       // *****************
@@ -475,7 +481,7 @@ define([
       // Add the new owner field.
       this.ownerNewEditBox = this._createEditField(this.TYPE_OWNER); 
       this.ownerAttrsPane.addChild(this.ownerNewEditBox);
-      this.attributeOwnerIcon.innerHTML = imgUtils.getSVGSmall('metadata-user');
+      this.attributeOwnerIcon.innerHTML = imgUtils.getSVGSmall('metadata-user', null, i18n.OWNER, true);
 
       // After completing editing in the new Owner Edit field, 
       // create a pill for the new value.
@@ -532,7 +538,7 @@ define([
       // Add the new contact field
       this.contactNewEditBox = this._createEditField(this.TYPE_CONTACT);
       this.contactAttrsPane.addChild(this.contactNewEditBox);
-      this.attributeContactsIcon.innerHTML = imgUtils.getSVGSmall('metadata-contacts');
+      this.attributeContactsIcon.innerHTML = imgUtils.getSVGSmall('metadata-contacts', null, i18n.CONTACTS, true);
       
       // After completing editing in the new Contact Edit field, 
       // create a pill for the new value.
@@ -581,11 +587,18 @@ define([
         // Reset the pillSelection
         this.pillSelection.widget = null;
       }));
+
+      // new accessibility requirement
+      var newContactComboxBoxWidget = dom.byId("widget_newContactEditField");
+      if (newContactComboxBoxWidget) {
+        newContactComboxBoxWidget.setAttribute('aria-label', i18n.CONTACTS);
+        newContactComboxBoxWidget.setAttribute('aria-expanded', 'false');
+      }
       
       // *****************
       // Notes section
       // *****************
-      this.attributeNotesIcon.innerHTML = imgUtils.getSVGSmall('metadata-notes');
+      this.attributeNotesIcon.innerHTML = imgUtils.getSVGSmall('metadata-notes', null, i18n.NOTES, true);
       on(this.notesAttrsPane, "click", lang.hitch(this, function(e) {
         // Remove any 'selected' indication on pills
         query(".selectedAttribute").forEach(function(selectedPillNode) {
@@ -723,7 +736,6 @@ define([
            }
          }
       );
-            
       return newEditBox;
     }, 
     
