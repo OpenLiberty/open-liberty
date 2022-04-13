@@ -1,14 +1,16 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jaxws-2.2
+symbolicName=com.ibm.websphere.appserver.jaxws.common-2.2
+Subsystem-Name: Java Web Services Common 2.2
 WLP-DisableAllFeatures-OnConflict: false
-visibility=public
-singleton=true
 WLP-Activation-Type: parallel
+visibility=private
+singleton=true
+IBM-Process-Types: client, \
+ server
 IBM-App-ForceRestart: uninstall, \
  install
-IBM-ShortName: jaxws-2.2
-IBM-SPI-Package: com.ibm.wsspi.webservices.handler
-IBM-API-Package:  \
+IBM-API-Package:\
+ javax.jws; type="spec"; require-java:="9", \
  javax.jws.soap; type="spec"; require-java:="9", \
  javax.wsdl; type="spec", \
  javax.wsdl.extensions; type="spec", \
@@ -27,15 +29,8 @@ IBM-API-Package:  \
  javax.xml.ws.soap; type="spec", \
  javax.xml.ws.spi; type="spec", \
  javax.xml.ws.spi.http; type="spec", \
- javax.xml.ws.wsaddressing; type="spec", \
- org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
- org.apache.cxf.databinding;type="internal", \
- javax.jws; type="spec"; require-java:="9"
-Subsystem-Name: Java Web Services 2.2
--features=\
-  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0", \
-  com.ibm.websphere.appserver.globalhandler-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
+ javax.xml.ws.wsaddressing; type="spec"
+-features=com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
@@ -45,10 +40,6 @@ Subsystem-Name: Java Web Services 2.2
   com.ibm.websphere.appserver.internal.optional.jaxws-2.2, \
   com.ibm.websphere.appserver.javax.mail-1.5
 -bundles=\
- com.ibm.ws.javaee.ddmodel.ws, \
- com.ibm.ws.jaxws.2.3.wsat, \
- com.ibm.ws.jaxws.2.3.common; start-phase:=CONTAINER_LATE, \
- com.ibm.ws.webservices.javaee.common, \
  com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1", \
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \

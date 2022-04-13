@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken5.common;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,14 +23,10 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.SkipForRepeat;
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import componenttest.rules.repeater.EmptyAction;
 
 
 /**
@@ -115,7 +113,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
  
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
 
@@ -180,7 +178,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
 
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
 
@@ -239,7 +237,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
 
@@ -272,7 +270,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
 

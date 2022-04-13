@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
@@ -92,9 +91,7 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
         //issue 18363
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
 		if (features.contains("jaxws-2.2")) {
-            setFeatureVersion("EE7");
-        } else if (features.contains("jaxws-2.3")) {
-            setFeatureVersion("EE8");
+			setFeatureVersion("EE8");
         } else if (features.contains("xmlWS-3.0")) {
             setFeatureVersion("EE9");
         }// End of 18363

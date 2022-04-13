@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,13 @@
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
@@ -114,7 +112,6 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
     
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @Test
     public void CxfSAMLBasicTests_noUserPw_test() throws Exception {
 
