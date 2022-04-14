@@ -694,6 +694,7 @@ serverEnvDefaults()
 ## serverEnv: Set variables for an existing server.
 serverEnv()
 {
+  echo "serverEnv()" "${WLP_INSTALL_DIR}/etc/server.env"
   readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
   installEnvDefaults
 
@@ -835,6 +836,7 @@ readServerEnv()
               # accessible to child processes, they need to be exported.
               if [ $variableExpansionEnabled = 1 ]
               then
+	         echo eval "export ${var}"
                  eval "export ${var}"
               else
                  # Variable expansion is not enabled.  Just set the variable to whatever is on the right side 
