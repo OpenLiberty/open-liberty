@@ -369,7 +369,7 @@ public class MethodAttribUtils {
                 continue; //onto next method
 
             for (Annotation beanAnno : asynchMethodAnnotations) {
-                if (beanAnno.annotationType().getName().contains("jakarta.enterprise.concurrent.Asynchronous")) {
+                if ("jakarta.enterprise.concurrent.Asynchronous".equals(beanAnno.annotationType().getName())) {
                     asynchMethodFound = true;
                     break; //stop looking at annotations
                 }

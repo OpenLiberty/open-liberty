@@ -2223,10 +2223,10 @@ CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: The embeddable Enterprise JavaBeans (
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=The properties that the embeddable Enterprise JavaBeans (EJB) container uses contain a URL resource with no specification specified.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Add a specification property for this URL resource to the properties file.
 
-CNTR9426E_INCORRECT_ASYNC_ANNO=CNTR9426E: The {0} bean in the {1} module of the {2} application has one or more methods with the Jakarta Concurrent Asynchronous annotation.
-CNTR9426E_INCORRECT_ASYNC_ANNO.explanation=Jakarta Concurrent Asynchronous annotations are only valid for CDI beans, not EJBs.
-CNTR9426E_INCORRECT_ASYNC_ANNO.useraction=Remove the Jakarta Concurrent Asynchronous annotation from method.
+CNTR9426E_INCORRECT_ASYNC_ANNO=CNTR9426E: The {0} bean in the {1} module of the {2} application has one or more methods with the Jakarta Concurrency Asynchronous annotation, which must only be used on CDI beans and is not valid on Jakarta Enterprise Beans.
+CNTR9426E_INCORRECT_ASYNC_ANNO.explanation=Jakarta Concurrency Asynchronous annotations are only valid for CDI beans, not Jakarta Enterprise Beans.
+CNTR9426E_INCORRECT_ASYNC_ANNO.useraction=Remove the Jakarta Concurrency Asynchronous annotation from the method.
 
-CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR9427W: The {0} interface has one or more methods with the Jakarta Concurrent Asynchronous annotation.
-CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Jakarta Concurrent Asynchronous annotations are only valid for CDI beans, not EJBs or Interfaces.
-CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remove the Jakarta Concurrent Asynchronous annotation from interface method.
+CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR9427W: The Jakarta Concurrency Asynchronous annotation must only be used on CDI beans. It is not valid on the {0} interface.
+CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Jakarta Concurrency Asynchronous annotations are only valid for CDI beans, not Jakarta Enterprise Beans or Interfaces.
+CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remove the Jakarta Concurrency Asynchronous annotation from the interface method.

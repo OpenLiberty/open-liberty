@@ -95,7 +95,8 @@ public class ConcurrencyErrorTest extends FATServletClient {
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
             server.stopServer("CNTR9427W", //Warning Jakarta Concurrent Asynchronous on EJB Interface method
-                              "CNTR9426E" //Error Jakarta Concurrent Asynchronous on EJB method
+                              "CNTR9426E", //Error Jakarta Concurrent Asynchronous on EJB method
+                              "CNTR0020E" //Generic EJB threw an exception
             );
         }
     }
