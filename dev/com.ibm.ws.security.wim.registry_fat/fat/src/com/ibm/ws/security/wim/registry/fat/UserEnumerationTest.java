@@ -250,7 +250,12 @@ public class UserEnumerationTest {
         final int allowedRatioMax = 130;
 
         final int validityCheckRounds = 10;
-        final int loopTries = 3;
+
+        /*
+         * Since I switched to the CustomRepo instead of LDAP, we were sometimes
+         * sampling ourselves to extra average. Try 1 to 1 comparison.
+         */
+        final int loopTries = 1;
 
         for (int j = 0; j < validityCheckRounds; j++) {
             /*
