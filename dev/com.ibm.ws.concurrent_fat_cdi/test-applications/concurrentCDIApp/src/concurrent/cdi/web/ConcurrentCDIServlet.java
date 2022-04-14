@@ -377,7 +377,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
         long curThreadId = Thread.currentThread().getId();
 
         assertTrue("Asynchronous method must not run on current thread " + curThreadId,
-                   Thread.currentThread().getId() != asyncMethodThreadId);
+                   curThreadId != asyncMethodThreadId);
     }
 
     /**
