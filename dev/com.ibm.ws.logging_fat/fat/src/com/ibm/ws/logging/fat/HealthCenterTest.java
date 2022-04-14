@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,8 @@ public class HealthCenterTest {
     public static void beforeClass() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.healthcenter");
         ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
-        // IBM JDK supports Health Center except IBM Java 11
-        Assume.assumeTrue((JavaInfo.forServer(server).vendor().equals(JavaInfo.Vendor.IBM)) &&
-                          (JavaInfo.forServer(server).majorVersion() < 11));
+        // Only IBM JDK supports Health Center, check if the runtime JDK contains the Health Check API, else skip the tests.
+        Assume.assumeTrue(JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
 
         if (!server.isStarted())
             server.startServer();
