@@ -20,6 +20,10 @@ on:
 env:
   LANG: en_US.UTF-8
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
