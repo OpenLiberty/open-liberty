@@ -18,6 +18,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
@@ -30,7 +31,7 @@ public class AccessTokenCacheHelper {
 
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
-    public AccessTokenCacheKey getCacheKey(String accessToken, String configId) {
+    public AccessTokenCacheKey getCacheKey(@Sensitive String accessToken, String configId) {
         return new AccessTokenCacheKey(accessToken, configId);
     }
 
@@ -66,7 +67,7 @@ public class AccessTokenCacheHelper {
                 uniqueID = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
             }
             AccessTokenCacheKey cacheKey = getCacheKey(token, clientConfig.getId());
-            cache.put(cacheKey, new AccessTokenCacheValue(uniqueID, result));
+            cache.put(cacheKey, new AccessTokenCacheValue(uniqueID, result), clientConfig.getClockSkew());
         }
     }
 

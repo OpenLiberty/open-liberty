@@ -12,16 +12,20 @@ package com.ibm.ws.security.jwt.internal;
 
 import java.util.Objects;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class JwtCacheKey {
 
+    @Sensitive
     private final String jwt;
     private final String configId;
 
-    public JwtCacheKey(String jwt, String configId) {
+    public JwtCacheKey(@Sensitive String jwt, String configId) {
         this.jwt = jwt;
         this.configId = configId;
     }
 
+    @Sensitive
     public String getJwt() {
         return jwt;
     }

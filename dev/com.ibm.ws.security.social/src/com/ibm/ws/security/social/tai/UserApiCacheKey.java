@@ -12,16 +12,20 @@ package com.ibm.ws.security.social.tai;
 
 import java.util.Objects;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class UserApiCacheKey {
 
+    @Sensitive
     private final String token;
     private final String configId;
 
-    public UserApiCacheKey(String token, String configId) {
+    public UserApiCacheKey(@Sensitive String token, String configId) {
         this.token = token;
         this.configId = configId;
     }
 
+    @Sensitive
     public String getToken() {
         return token;
     }

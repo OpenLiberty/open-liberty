@@ -12,16 +12,20 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.util.Objects;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class AccessTokenCacheKey {
 
+    @Sensitive
     private final String accessToken;
     private final String configId;
 
-    public AccessTokenCacheKey(String accessToken, String configId) {
+    public AccessTokenCacheKey(@Sensitive String accessToken, String configId) {
         this.accessToken = accessToken;
         this.configId = configId;
     }
 
+    @Sensitive
     public String getAccessToken() {
         return accessToken;
     }
