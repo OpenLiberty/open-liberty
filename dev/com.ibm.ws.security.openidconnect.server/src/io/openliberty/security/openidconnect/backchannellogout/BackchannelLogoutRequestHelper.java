@@ -32,6 +32,7 @@ import org.jose4j.jwt.consumer.JwtContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -58,10 +59,7 @@ public class BackchannelLogoutRequestHelper {
      * also created for all RPs that the OP is aware of having active or recently valid sessions.
      */
     public void sendBackchannelLogoutRequests(String user, String idTokenString) {
-        if ((user == null || user.isEmpty()) && (idTokenString == null || idTokenString.isEmpty())) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Neither a user name nor an ID token string was provided, so back-channel logout will not be performed.");
-            }
+        if (!shouldSendLogoutRequests(user, idTokenString)) {
             return;
         }
         Map<OidcBaseClient, Set<String>> logoutTokens = null;
@@ -77,6 +75,22 @@ public class BackchannelLogoutRequestHelper {
             return;
         }
         sendBackchannelLogoutRequestsToClients(logoutTokens);
+    }
+
+    boolean shouldSendLogoutRequests(String user, String idTokenString) {
+        if (!ProductInfo.getBetaEdition()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Beta mode is not enabled; back-channel logout will not be performed");
+            }
+            return false;
+        }
+        if ((user == null || user.isEmpty()) && (idTokenString == null || idTokenString.isEmpty())) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Neither a user name nor an ID token string was provided, so back-channel logout will not be performed.");
+            }
+            return false;
+        }
+        return true;
     }
 
     void sendBackchannelLogoutRequestsToClients(Map<OidcBaseClient, Set<String>> clientsAndLogoutTokens) {
@@ -130,7 +144,6 @@ public class BackchannelLogoutRequestHelper {
     void processLogoutRequestFuture(BackchannelLogoutRequest originalRequest, Future<BackchannelLogoutRequest> future) {
         try {
             BackchannelLogoutRequest result = future.get();
-            JwtClaims logoutTokenClaims = getLogoutTokenClaims(result);
             HttpResponse response = result.getResponse();
             if (response == null) {
                 if (tc.isDebugEnabled()) {
@@ -141,6 +154,7 @@ public class BackchannelLogoutRequestHelper {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 200) {
                 String responseBody = readResponseBody(response);
+                JwtClaims logoutTokenClaims = getLogoutTokenClaims(result);
                 Tr.error(tc, "BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL", oidcServerConfig.getProviderId(), result.getUrl(), logoutTokenClaims, statusCode, responseBody);
             }
         } catch (Exception e) {

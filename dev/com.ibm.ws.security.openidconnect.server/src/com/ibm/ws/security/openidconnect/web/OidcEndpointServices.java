@@ -518,13 +518,20 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
         //@AV999-092821
         request.setAttribute("OIDC_END_SESSION_REDIRECT", redirectUri);
-        if (continueLogoff && user != null) {
-            // logout deletes ltpatoken cookie and oidc_bsc cookie.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "save  OIDC_END_SESSION_REDIRECT uri in op end_session : " + redirectUri);
+        if (continueLogoff) {
+            if (user != null) {
+                // logout deletes ltpatoken cookie and oidc_bsc cookie.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "save  OIDC_END_SESSION_REDIRECT uri in op end_session : " + redirectUri);
+                }
+                //if during the servlet request logout, if the other logouts are in play, then we may not want to redirect here in that case
+                request.logout();
+            } else {
+                // request.logout() will send back-channel logout requests via the LogoutService OSGi service. Since request.logout()
+                // is only called in the above block if user != null, we need to make sure back-channel logout requests are still sent
+                // based on the id_token_hint if a user Principal isn't available
+                sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
             }
-            //if during the servlet request logout, if the other logouts are in play, then we may not want to redirect here in that case       
-            request.logout();
         }
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             request.removeAttribute("OIDC_END_SESSION_REDIRECT");
@@ -532,10 +539,6 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri + "]");
             }
             response.sendRedirect(redirectUri);
-        }
-
-        if (continueLogoff) {
-            sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
         }
     }
 
@@ -545,9 +548,6 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     }
 
     void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
-        if (!ProductInfo.getBetaEdition()) {
-            return;
-        }
         BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
         bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
