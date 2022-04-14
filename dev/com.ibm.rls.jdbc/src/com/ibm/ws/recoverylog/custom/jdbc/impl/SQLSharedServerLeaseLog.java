@@ -167,7 +167,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease delete failed with exception: " + sqlex);
+                Tr.debug(tc, "Lease retrieval failed with exception: " + sqlex);
             Tr.audit(tc, "WTRN0107W: " +
                          "Caught SQLException when retrieving peer leases, exc: " + sqlex);
             // Set the exception that will be reported
@@ -186,8 +186,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         _peerLockingRS.close();
                     if (_peerLockingStmt != null && !_peerLockingStmt.isClosed())
                         _peerLockingStmt.close();
-                    if (conn != null)
+                    if (conn != null) {
+                        conn.rollback();
                         conn.close();
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
@@ -432,8 +434,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         _updatelockingRS.close();
                     if (_lockingStmt != null && !_lockingStmt.isClosed())
                         _lockingStmt.close();
-                    if (conn != null)
+                    if (conn != null) {
+                        conn.rollback();
                         conn.close();
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
@@ -972,8 +976,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 try {
                     if (_deleteStmt != null && !_deleteStmt.isClosed())
                         _deleteStmt.close();
-                    if (conn != null)
+                    if (conn != null) {
+                        conn.rollback();
                         conn.close();
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
@@ -1126,8 +1132,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         _claimPeerlockingStmt.close();
                     if (_claimPeerUpdateStmt != null && !_claimPeerUpdateStmt.isClosed())
                         _claimPeerUpdateStmt.close();
-                    if (conn != null)
+                    if (conn != null) {
+                        conn.rollback();
                         conn.close();
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
