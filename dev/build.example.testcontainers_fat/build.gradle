@@ -11,7 +11,7 @@
 
  // Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
  // This bundle is required both at compiletime and runtime.
-  addRequiredLibraries.dependsOn copyTestContainers
+ addRequiredLibraries.dependsOn copyTestContainers
  
  // If you are preforming database testing use the copyJdbcDrivers
  // task to copy the common JDBC drivers into the
