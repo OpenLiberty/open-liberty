@@ -39,6 +39,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 
 import static org.apache.cxf.message.Message.MIME_HEADERS;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 /**
  * This interceptor is responsible for setting up the SOAP version
  * and header, so that this is available to any pre-protocol interceptors
@@ -56,7 +58,7 @@ public class SoapPreProtocolOutInterceptor extends AbstractSoapInterceptor {
      * @param message the current message
      * @throws Fault
      */
-    public void handleMessage(SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
         ensureVersion(message);
         ensureMimeHeaders(message);
         if (isRequestor(message)) {

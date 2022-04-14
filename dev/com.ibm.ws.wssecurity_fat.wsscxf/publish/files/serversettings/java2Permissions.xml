@@ -37,6 +37,9 @@
         <javaPermission className="javax.security.auth.AuthPermission" name="getSubject"/>
 	    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
 	    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.jaxp"/>
-	    <javaPermission clasSName="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.activation.registries"/>
+	    <javaPermission clasSName="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.activation.registries"/>    
 	    <javaPermission className="java.util.PropertyPermission" name="javax.activation.debug" actions="read"/>
+	    <javaPermission className="java.util.PropertyPermission" name="saaj.mime.optimization" actions="read"/>
+	    <javaPermission className="java.util.PropertyPermission" name="saaj.lazy.mime.optimization" actions="read"/>
+	    <javaPermission className="java.util.PropertyPermission" name="saaj.use.mimepull" actions="read"/>
 </server>

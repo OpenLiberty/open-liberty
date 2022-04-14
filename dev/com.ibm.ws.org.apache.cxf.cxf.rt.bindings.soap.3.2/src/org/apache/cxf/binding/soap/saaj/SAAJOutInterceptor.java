@@ -59,7 +59,7 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamReader;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 
-
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
  * Sets up the outgoing chain to build a SAAJ tree instead of writing
@@ -96,7 +96,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
         }
         return SAAJFactoryResolver.createMessageFactory(null);
     }
-    public void handleMessage(SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
         SOAPMessage saaj = message.getContent(SOAPMessage.class);
 
         try {
@@ -158,7 +158,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
         message.getInterceptorChain().add(SAAJOutEndingInterceptor.INSTANCE);
     }
     @Override
-    public void handleFault(SoapMessage message) {
+    public void handleFault(@Sensitive SoapMessage message) {
         super.handleFault(message);
         //need to clear these so the fault writing will work correctly
         message.removeContent(SOAPMessage.class);
@@ -178,7 +178,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
             super(SAAJOutEndingInterceptor.class.getName(), Phase.PRE_PROTOCOL_ENDING);
         }
 
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
             SOAPMessage soapMessage = message.getContent(SOAPMessage.class);
 
             if (soapMessage != null) {

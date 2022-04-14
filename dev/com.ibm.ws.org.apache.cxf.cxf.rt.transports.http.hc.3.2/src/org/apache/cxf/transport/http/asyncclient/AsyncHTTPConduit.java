@@ -95,12 +95,14 @@ import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.IOSession;
 import org.apache.http.nio.util.HeapByteBufferAllocator;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
  */
+@Trivial
 public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
     public static final String USE_ASYNC = "use.async.http.conduit";
 
@@ -273,7 +275,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         return super.createOutputStream(message, needToCacheRequest, isChunking, chunkThreshold);
     }
 
-
+    @Trivial
     public class AsyncWrappedOutputStream extends WrappedOutputStream
         implements CopyingOutputStream, WritableByteChannel {
         final HTTPClientPolicy csPolicy;

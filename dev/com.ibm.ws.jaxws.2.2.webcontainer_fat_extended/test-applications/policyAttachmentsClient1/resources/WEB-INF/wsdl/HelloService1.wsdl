@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://service1.policyattachments.ws.ibm.com/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="HelloService" targetNamespace="http://service1.policyattachments.ws.ibm.com/">
+   <wsdl:types>
+      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" targetNamespace="http://service1.policyattachments.ws.ibm.com/" version="1.0">
+         <xs:element name="helloWithOptionalPolicy" type="tns:helloWithOptionalPolicy" />
+         <xs:element name="helloWithOptionalPolicyResponse" type="tns:helloWithOptionalPolicyResponse" />
+         <xs:element name="helloWithPolicy" type="tns:helloWithPolicy" />
+         <xs:element name="helloWithPolicyResponse" type="tns:helloWithPolicyResponse" />
+         <xs:element name="helloWithYouWant" type="tns:helloWithYouWant" />
+         <xs:element name="helloWithYouWantResponse" type="tns:helloWithYouWantResponse" />
+         <xs:element name="helloWithoutPolicy" type="tns:helloWithoutPolicy" />
+         <xs:element name="helloWithoutPolicyResponse" type="tns:helloWithoutPolicyResponse" />
+         <xs:complexType name="helloWithOptionalPolicy">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="helloWithOptionalPolicyResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="return" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="helloWithYouWant">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="helloWithYouWantResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="return" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="helloWithoutPolicy">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="helloWithoutPolicyResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="return" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="helloWithPolicy">
+            <xs:sequence />
+         </xs:complexType>
+         <xs:complexType name="helloWithPolicyResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="return" type="xs:string" />
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="helloWithOptionalPolicy">
+      <wsdl:part element="tns:helloWithOptionalPolicy" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithYouWant">
+      <wsdl:part element="tns:helloWithYouWant" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithoutPolicyResponse">
+      <wsdl:part element="tns:helloWithoutPolicyResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithOptionalPolicyResponse">
+      <wsdl:part element="tns:helloWithOptionalPolicyResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithPolicy">
+      <wsdl:part element="tns:helloWithPolicy" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithPolicyResponse">
+      <wsdl:part element="tns:helloWithPolicyResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithoutPolicy">
+      <wsdl:part element="tns:helloWithoutPolicy" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="helloWithYouWantResponse">
+      <wsdl:part element="tns:helloWithYouWantResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:portType name="HelloService1">
+      <wsdl:operation name="helloWithOptionalPolicy">
+         <wsdl:input message="tns:helloWithOptionalPolicy" name="helloWithOptionalPolicy" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithOptionalPolicyRequest" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithOptionalPolicyRequest" />
+         <wsdl:output message="tns:helloWithOptionalPolicyResponse" name="helloWithOptionalPolicyResponse" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithOptionalPolicyResponse" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithOptionalPolicyResponse" />
+      </wsdl:operation>
+      <wsdl:operation name="helloWithYouWant">
+         <wsdl:input message="tns:helloWithYouWant" name="helloWithYouWant" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithYouWantRequest" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithYouWantRequest" />
+         <wsdl:output message="tns:helloWithYouWantResponse" name="helloWithYouWantResponse" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithYouWantResponse" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithYouWantResponse" />
+      </wsdl:operation>
+      <wsdl:operation name="helloWithoutPolicy">
+         <wsdl:input message="tns:helloWithoutPolicy" name="helloWithoutPolicy" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithoutPolicyRequest" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithoutPolicyRequest" />
+         <wsdl:output message="tns:helloWithoutPolicyResponse" name="helloWithoutPolicyResponse" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithoutPolicyResponse" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithoutPolicyResponse" />
+      </wsdl:operation>
+      <wsdl:operation name="helloWithPolicy">
+         <wsdl:input message="tns:helloWithPolicy" name="helloWithPolicy" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithPolicyRequest" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithPolicyRequest" />
+         <wsdl:output message="tns:helloWithPolicyResponse" name="helloWithPolicyResponse" wsam:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithPolicyResponse" wsaw:Action="http://service1.policyattachments.ws.ibm.com/HelloService1/helloWithPolicyResponse" />
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="HelloServiceSoapBinding" type="tns:HelloService1">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="helloWithOptionalPolicy">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="helloWithOptionalPolicy">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="helloWithOptionalPolicyResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="helloWithYouWant">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="helloWithYouWant">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="helloWithYouWantResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="helloWithoutPolicy">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="helloWithoutPolicy">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="helloWithoutPolicyResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="helloWithPolicy">
+         <soap:operation soapAction="" style="document" />
+         <wsdl:input name="helloWithPolicy">
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output name="helloWithPolicyResponse">
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="HelloService">
+      <wsdl:port binding="tns:HelloServiceSoapBinding" name="HelloService1Port">
+         <soap:address location="http://localhost:8010/policyAttachmentsClient1/HelloService" />
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

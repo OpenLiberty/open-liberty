@@ -31,7 +31,8 @@ import componenttest.rules.repeater.RepeatTests;
                 PortComponentRefTest.class,
                 WebServiceInWebXMLTest.class,
                 WsBndEndpointOverrideTest.class,
-                WsBndServiceRefOverrideTest.class
+                WsBndServiceRefOverrideTest.class,
+                ColocatedDynamicPolicyAttachmentsTest.class
 })
 public class FATSuite {
 
