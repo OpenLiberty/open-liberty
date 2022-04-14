@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 			throw new ServletException("There are " + txCount + " global transactions still running!");
 		} else {
 			System.out.println("There are " + txCount + " global transactions still running!");
+		}
+
+		if (!XAResourceImpl.allInState(XAResourceImpl.RECOVERED)) {
+			output = "Rec" + number + " failed: resources are not all recovered";
 		}
 
 		switch (number) {
@@ -162,8 +166,8 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=2";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not COMMITTED";
+			if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+				output = "Rec" + number + " failed: resources are not all committed";
 			}
 			break;
 		case 42:
@@ -171,8 +175,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not ROLLEDBACK";
+			for (int resource = 1; resource < 2; resource++) {
+				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+				}
 			}
 			break;
 		case 43:
@@ -180,29 +186,19 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=4";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(3).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 3 is not ROLLEDBACK";
+			for (int resource = 1; resource < 3; resource++) {
+				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+				}
 			}
 			break;
 		case 44:
 			if (XAResourceImpl.resourceCount() != 4) {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
-						+ " resources!=3";
+						+ " resources!=4";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(3).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 3 is not COMMITTED";
+			if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+				output = "Rec" + number + " failed: resources are not all committed";
 			}
 			break;
 		case 45:
@@ -210,14 +206,8 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(0).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 3 is not COMMITTED";
+			if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+				output = "Rec" + number + " failed: resources are not all committed";
 			}
 			break;
 		case 46:
@@ -225,32 +215,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=10";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(3).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 3 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(4).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 4 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(5).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 5 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(6).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 6 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(7).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 7 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(8).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 8 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(9).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 9 is not ROLLEDBACK";
+			for (int resource = 1; resource < 10; resource++) {
+				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+				}
 			}
 			break;			
 		case 47:
@@ -258,32 +226,8 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=10";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(3).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 3 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(4).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 4 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(5).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 5 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(6).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 6 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(7).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 7 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(8).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 8 is not COMMITTED";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(9).inState(XAResourceImpl.COMMITTED)) {
-				output = "Rec" + number + " failed: XAResourceImpl 9 is not COMMITTED";
+			if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
+				output = "Rec" + number + " failed: resources are not all committed";
 			}
 			break;
 		case 48:
@@ -291,11 +235,10 @@ public class RecoveryCheckServlet extends HttpServlet {
 				output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
 						+ " resources!=3";
 			}
-			if (!XAResourceImpl.getXAResourceImpl(1).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 1 is not ROLLEDBACK";
-			}
-			if (!XAResourceImpl.getXAResourceImpl(2).inState(XAResourceImpl.ROLLEDBACK)) {
-				output = "Rec" + number + " failed: XAResourceImpl 2 is not ROLLEDBACK";
+			for (int resource = 1; resource < 2; resource++) {
+				if (!XAResourceImpl.getXAResourceImpl(resource).inState(XAResourceImpl.ROLLEDBACK)) {
+					output = "Rec" + number + " failed: XAResourceImpl " + resource + " is not ROLLEDBACK";
+				}
 			}
 			break;
 		}
