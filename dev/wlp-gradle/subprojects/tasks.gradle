@@ -158,9 +158,10 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
         'commons-cli:commons-cli:1.5.0',
         project(':com.ibm.ws.org.slf4j.api'),
         project(':com.ibm.ws.org.slf4j.simple'),
-        'org.eclipse.transformer:org.eclipse.transformer:0.4.0.20220406',
-        'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.4.0.20220406',
-        'org.eclipse.transformer:org.eclipse.transformer.cli:0.4.0.20220406'
+        'org.eclipse.transformer:org.eclipse.transformer:0.5.0-20220411',
+        'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-20220411',
+        'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-20220411',
+        'org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0-20220411'
   }
 
   task jakartaeeTransform {

@@ -1,4 +1,166 @@
+  -- Add dependency on org.eclipse.transformer.bnd.analyzer
+  -- Update transformer versions to 0.5.0-20220411
+
+0.4.0.20220406
+0.5.0-20220411
+
+  dev/wlp-jakartaee-transform/notes.txt
+  dev/fattest.simplicity/bnd.bnd
+  dev/wlp-gradle/subprojects/fat.gradle
+  dev/wlp-gradle/subprojects/tasks.gradle
+  dev/wlp-jakartaee-transform/bnd.bnd
+  dev/cnf/oss_ibm.maven
+
+sftp bitonti@us.ibm.com@w3-transfer.boulder.ibm.com:/www/stage/export/pub/software/olrepo
+
+org/
+  eclipse/
+  transformer/
+    org.eclipse.transformer/
+      0.5.0-20220411/
+        org.eclipse.transformer-0.5.0-20220411.jar
+        org.eclipse.transformer-0.5.0-20220411.pom
+    org.eclipse.transformer.bnd.analyzer/
+      0.5.0-20220411/
+        org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.jar
+        org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.pom
+    org.eclipse.transformer.cli/
+      0.5.0-20220411/
+        org.eclipse.transformer.cli-0.5.0-20220411.jar
+        org.eclipse.transformer.cli-0.5.0-20220411.pom
+    org.eclipse.transformer.jakarta/
+      0.5.0-20220411/
+        org.eclipse.transformer.jakarta-0.5.0-20220411.jar
+        org.eclipse.transformer.jakarta-0.5.0-20220411.pom
+
+mvnw install:install-file \
+    -Dfile=0.5.0/org.eclipse.transformer-0.5.0-20220411.jar \
+    -DartifactId=org.eclipse.transformer \
+    -DgroupId=org.eclipse.transformer \
+    -Dversion=0.5.0-20220411 \
+    -Dpackaging=jar \
+    -DlocalRepositoryPath=C:\dev\repos-pub\lib\updated\mvn_repo
+
+./mvnw install:install-file \
+    -Dfile=0.5.0/org.eclipse.transformer-0.5.0-20220411.jar \
+    -DartifactId=org.eclipse.transformer \
+    -DgroupId=org.eclipse.transformer \
+    -Dversion=0.5.0-20220411 \
+    -Dpackaging=jar \
+    -DlocalRepositoryPath=/C/dev/repos-pub/lib/updated/mvn_repo
+
+./mvnw install:install-file \
+    -Dfile=0.5.0/org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.jar \
+    -DartifactId=org.eclipse.transformer.bnd.analyzer \
+    -DgroupId=org.eclipse.transformer \
+    -Dversion=0.5.0-20220411 \
+    -Dpackaging=jar \
+    -DlocalRepositoryPath=/C/dev/repos-pub/lib/updated/mvn_repo
+
+./mvnw install:install-file \
+    -Dfile=0.5.0/org.eclipse.transformer.cli-0.5.0-20220411.jar \
+    -DartifactId=org.eclipse.transformer.cli \
+    -DgroupId=org.eclipse.transformer \
+    -Dversion=0.5.0-20220411 \
+    -Dpackaging=jar \
+    -DlocalRepositoryPath=/C/dev/repos-pub/lib/updated/mvn_repo
+
+./mvnw install:install-file \
+    -Dfile=0.5.0/org.eclipse.transformer.jakarta-0.5.0-20220411.jar \
+    -DartifactId=org.eclipse.transformer.jakarta \
+    -DgroupId=org.eclipse.transformer \
+    -Dversion=0.5.0-20220411 \
+    -Dpackaging=jar \
+    -DlocalRepositoryPath=/C/dev/repos-pub/lib/updated/mvn_repo
+
+0.5.0/org.eclipse.transformer-0.5.0-20220411.jar \
+0.5.0/org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.jar \
+0.5.0/org.eclipse.transformer.cli-0.5.0-20220411.jar \
+0.5.0/org.eclipse.transformer.jakarta-0.5.0-20220411.jar \
+
+Transformer Prerequisite Update Notes:
+
+Instructions:
+
+https://github.ibm.com/websphere/WS-CD-Open/wiki/Artifactory-for-Liberty-Development
+
+Key Links:
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer
+https://paddleandroll1.fyre.ibm.com:9443/uploader/
+https://na.artifactory.swg-devops.com/ui/native/wasliberty-open-liberty/org/eclipse/transformer/
+
+---
+
 Uploads:
+
+Updated transformer version: 0.5.0-20220411.184639-3
+-- Renamed to "0.5.0-20220411"
+
+---
+
+Downloads:
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer/org.eclipse.transformer.bnd.analyzer/0.5.0-SNAPSHOT/org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.184639-3.jar
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer/org.eclipse.transformer.cli/0.5.0-SNAPSHOT/org.eclipse.transformer.cli-0.5.0-20220411.184639-5.jar
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer/org.eclipse.transformer.jakarta/0.5.0-SNAPSHOT/org.eclipse.transformer.jakarta-0.5.0-20220411.184639-5.jar
+
+https://oss.sonatype.org/content/repositories/snapshots/org/eclipse/transformer/org.eclipse.transformer/0.5.0-SNAPSHOT/org.eclipse.transformer-0.5.0-20220411.184639-5.jar
+
+Uploads:
+
+Version: 0.5.0-20220411
+
+org.eclipse.transformer-0.5.0-20220411.jar
+org.eclipse.transformer.bnd.analyzer-0.5.0-20220411.jar
+org.eclipse.transformer.cli-0.5.0-20220411.jar
+org.eclipse.transformer.jakarta-0.5.0-20220411.jar
+
+https://paddleandroll1.fyre.ibm.com:9443/uploader/
+
+https://na.artifactory.swg-devops.com/ui/native/wasliberty-open-liberty/org/eclipse/transformer/
+
+---
+
+  dev/wlp-jakartaee-transform/notes.txt
+  -- Notes (this file)
+
+  dev/fattest.simplicity/bnd.bnd
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/fattest.simplicity/src/componenttest/rules/repeater/JakartaEE9Action.java
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+
+  dev/wlp-gradle/subprojects/fat.gradle
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/wlp-gradle/subprojects/tasks.gradle
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+  -- Add overwrite option.
+
+  dev/wlp-jakartaee-transform/bnd.bnd
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+  -- Update commons-cli version from 1.4 to 1.5.0
+
+  dev/wlp-jakartaee-transform/bnd.overrides
+  -- Update main class to "org.eclipse.transformer.cli.JakartaTransformerCLI".
+
+  dev/cnf/oss_ibm.maven
+  -- Add dependency on org.eclipse.transformer.jakarta.
+  -- Update transformer versions to 0.4.0.20220406.
+
+
+---
 
 https://paddleandroll1.fyre.ibm.com:9443/uploader/
 

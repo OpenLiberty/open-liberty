@@ -68,9 +68,10 @@ test.project: true
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
-	org.eclipse.transformer:org.eclipse.transformer.cli;version=0.4.0.20220406,\
-	org.eclipse.transformer:org.eclipse.transformer.jakarta;version=0.4.0.20220406,\
-	org.eclipse.transformer:org.eclipse.transformer;version=0.4.0.20220406,\
+	org.eclipse.transformer:org.eclipse.transformer.cli;version=0.5.0-20220411,\
+	org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer;version=0.5.0-20220411,\
+	org.eclipse.transformer:org.eclipse.transformer.jakarta;version=0.5.0-20220411,\
+	org.eclipse.transformer:org.eclipse.transformer;version=0.5.0-20220411,\
 	biz.aQute.bnd:biz.aQute.bnd.transform;version=5.3.0,\
 	commons-cli:commons-cli;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
