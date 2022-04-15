@@ -17,6 +17,7 @@
         <feature>wasJmsClient-2.0</feature>
         <feature>wasJmsServer-1.0</feature>
         <feature>websocket-1.1</feature>
+        <feature>componenttest-1.0</feature>
         </featureManager>
 
 <messagingEngine>
