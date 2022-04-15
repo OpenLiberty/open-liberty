@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019,2021 IBM Corporation and others.
+# Copyright (c) 2019,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,12 +9,12 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
           
 bVersion=1.0
 
-Bundle-Name: JAX-WS EJB
-Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.ejb
-Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
 
 Service-Component: \
   com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
@@ -82,4 +82,3 @@ Private-Package:\
   com.ibm.ws.jaxws.2.3.common;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
-jakartaeeMe: true

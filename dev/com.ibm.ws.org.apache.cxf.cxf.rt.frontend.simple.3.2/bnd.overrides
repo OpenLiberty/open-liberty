@@ -12,7 +12,6 @@
 bVersion=1.0
 cxfVersion=3.4.3
 
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2
 
 
 Import-Package: \

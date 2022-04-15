@@ -9,17 +9,16 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: MicroProfile OpenAPI
-Bundle-SymbolicName: io.openliberty.microprofile.openapi.2.0.internal
-Bundle-Description: MicroProfile OpenAPI 2.0, version ${bVersion}
 
 IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: /openapi
 
-jakartaeeMe: true
 
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\

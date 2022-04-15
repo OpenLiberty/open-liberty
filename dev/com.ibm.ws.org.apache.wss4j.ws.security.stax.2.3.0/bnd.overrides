@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: org.apache.wss4j.wss4j.ws.secuity.stax
-Bundle-Description: org.apache.wss4j.wss4j.ws.security.stax; version=2.3.0
-Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0
 
 WS-TraceGroup: WSS4J
 
@@ -28,4 +25,3 @@ DynamicImport-Package: \
  org.glassfish.jaxb.runtime.v2, \
  org.glassfish.jaxb.runtime.v2.*
 
-jakartaeeMe: true

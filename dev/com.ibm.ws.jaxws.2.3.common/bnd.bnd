@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
+-sub: *.bnd
+
+
 bVersion=1.0
 
 exportVer=2.3
 
-Bundle-Name: JAX-WS 2.3 Common
-Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
-Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
@@ -227,4 +227,3 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
 	
-jakartaeeMe: true

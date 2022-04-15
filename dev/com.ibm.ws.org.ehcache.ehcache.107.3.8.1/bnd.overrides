@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: org.ehcache.modules.ehcache-107
-Bundle-Description: org.ehcache.modules.ehcache-107; version=3.8.1
-Bundle-SymbolicName: com.ibm.ws.org.ehcache.ehcache.107.3.8.1
 
 WS-TraceGroup: WSS4J
 
@@ -48,4 +45,3 @@ DynamicImport-Package: \
   org.apache.wss4j.common.cache   
 
 
-jakartaeeMe: true

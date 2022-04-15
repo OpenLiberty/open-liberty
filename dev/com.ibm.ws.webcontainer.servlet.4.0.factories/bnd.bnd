@@ -9,12 +9,12 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
 
-Bundle-Name: WAS WebContainer
-Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0.factories
-Bundle-Description: WAS WebContainer 8.1 with object factories for Servlet 4.0 support
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
@@ -77,7 +77,6 @@ Import-Package: \
     *
 
 
-jakartaeeMe: true
 
 -buildpath: \
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\

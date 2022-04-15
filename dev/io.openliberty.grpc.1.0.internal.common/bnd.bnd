@@ -9,14 +9,13 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 grpcVersion=1.43.2
 
-Bundle-Name: gRPC Common Components
-Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.common
-Bundle-Description: gRPC Common Components, version ${bVersion}
 
-jakartaeeMe: true
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

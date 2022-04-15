@@ -9,12 +9,12 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
 
-Bundle-Name: Transactions CDI 2.0 Integration
-Bundle-SymbolicName: io.openliberty.transaction.internal.cdi20
-Bundle-Description: Transactions CDI 2.0 Integration, version ${bVersion}
 
 Include-Resource: META-INF=resources/META-INF
 
@@ -52,4 +52,3 @@ Private-Package: \
         com.ibm.ws.cdi.interfaces;version=latest, \
         com.ibm.ws.transaction.cdi;version=latest
 
-jakartaeeMe: true

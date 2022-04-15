@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Messaging Msgstore
-Bundle-SymbolicName: com.ibm.ws.messaging.msgstore
-Bundle-Description: Messaging Msgstore ; version=${bVersion}
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: OSGI-INF=resources/OSGI-INF
@@ -69,4 +69,3 @@ instrument.disabled: true
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.kernel.security.thread;version=latest
 
-jakartaeeMe: true

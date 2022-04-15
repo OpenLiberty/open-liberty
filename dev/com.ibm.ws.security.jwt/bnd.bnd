@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2020 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WebSphere Security JWT Builder and Consumer
-Bundle-SymbolicName: com.ibm.ws.security.jwt
-Bundle-Description: WebSphere Security JWT Builder and Consumer, version=${bVersion}
 
 #
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.jwt.internal.jar
-jakartaFinalBundleName: Liberty Security JWT Builder and Consumer
-jakartaFinalBundleId: io.openliberty.security.jwt.internal
-jakartaFinalBundleDescription: Liberty Security JWT Builder and Consumer; Jakarta Enabled
 
 Web-ContextPath: /jwt
 WS-TraceGroup: \

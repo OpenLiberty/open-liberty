@@ -1,14 +1,13 @@
 -include= ~../cnf/resources/bnd/bundle.props, \
           ~../cnf/resources/bnd/app-resources.bnd
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WAS JSF 2.2/2.3 Shared
-Bundle-SymbolicName: com.ibm.ws.jsf.shared
-Bundle-Description: WAS JSF 2.2/2.3 Shared, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
-jakartaeeMe:true
 
 Service-Component: 
 

@@ -9,16 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
 javac.source: 11
 javac.target: 11
 
-Bundle-Name: Database Connectivity
-Bundle-SymbolicName: com.ibm.ws.jdbc.4.3
-Bundle-Description: Database connectivity infrastructure, version ${bVersion}
 
-jakartaeeMe: true
 
 WS-TraceGroup: RRA
 

@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Security Common
-Bundle-SymbolicName: com.ibm.ws.security.common
-Bundle-Description: Common code for security bundles; version=${bVersion}
 
 #
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.common.internal.jar
-jakartaFinalBundleName: Security Common
-jakartaFinalBundleId: io.openliberty.security.common.internal
-jakartaFinalBundleDescription: Common code for security bundles; Jakarta Enabled
 
 WS-TraceGroup: SecurityCommon
 

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Database Store for HTTP Sessions
-Bundle-SymbolicName: com.ibm.ws.session.db
-Bundle-Description: Allows persistence of sessions to a database, version ${bVersion}
 
 Private-Package: \
    	com.ibm.ws.session.store.db, \
@@ -56,4 +56,3 @@ instrument.disabled: true
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
-jakartaeeMe: true

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WAS Security SPNEGO 1.0
-Bundle-SymbolicName: com.ibm.ws.security.spnego
-Bundle-Description: WAS Security SPNEGO 1.0, version=${bVersion}
 
 #
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.spnego.internal.jar
-jakartaFinalBundleName: SPNEGO 1.0
-jakartaFinalBundleId: io.openliberty.security.spnego.internal
-jakartaFinalBundleDescription: SPNEGO 1.0; Jakarta Enabled
 
 
 WS-TraceGroup: SPNEGO

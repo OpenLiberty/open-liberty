@@ -9,13 +9,10 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
-
-Bundle-Name: Trigger interoperability for Concurrency 1.0 and 2.0
-Bundle-SymbolicName: io.openliberty.concurrent.internal.basictrigger
-Bundle-Description: Trigger interoperability for Java EE Concurrency 1.0 and Jakarta Concurrency 2.0; version=${bVersion}
-
-jakartaeeMe: true
 
 WS-TraceGroup: concurrent
 

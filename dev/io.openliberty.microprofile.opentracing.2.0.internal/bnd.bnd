@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,12 +9,12 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
 
-Bundle-Name: io.openliberty.microprofile.opentracing.2.0.internal
-Bundle-SymbolicName: io.openliberty.microprofile.opentracing.2.0.internal
-Bundle-Description: MicroProfile.OpenTracing, version 2.0
 
 WS-TraceGroup: OPENTRACING
 
@@ -40,7 +40,6 @@ Export-Package: \
 Include-Resource: \
   META-INF=resources/META-INF
 
-jakartaeeMe: true
 
 -buildpath: \
     io.openliberty.opentracing.2.0.internal;version=latest, \
