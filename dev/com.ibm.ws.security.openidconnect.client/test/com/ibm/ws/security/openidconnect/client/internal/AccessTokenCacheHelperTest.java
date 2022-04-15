@@ -190,14 +190,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     @Test
     public void test_cacheTokenAuthenticationResult_emptyCache() {
         SingleTableCache cache = getCache();
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+
+        cacheEnabledExpectations(cache);
 
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
@@ -220,14 +214,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
         AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey("otherEntry", CONFIG_ID);
         cache.put(cacheKey, new AccessTokenCacheValue("unique id", cachedResult));
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+
+        cacheEnabledExpectations(cache);
 
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
@@ -249,14 +237,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
         AccessTokenCacheKey cacheKey = cacheHelper.getCacheKey(ACCESS_TOKEN, CONFIG_ID);
         cache.put(cacheKey, new AccessTokenCacheValue("unique id", cachedResult));
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+
+        cacheEnabledExpectations(cache);
 
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
@@ -273,14 +255,8 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     @Test
     public void test_cacheTokenAuthenticationResult_cachesUniqueID() {
         SingleTableCache cache = getCache();
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
-            }
-        });
+
+        cacheEnabledExpectations(cache);
 
         String uniqueID = "unique id";
         ProviderAuthenticationResult resultToCache = createProviderAuthenticationResult(System.currentTimeMillis());
@@ -654,6 +630,19 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         customProperties.put(Constants.ACCESS_TOKEN_INFO, accessTokenInfo);
         ProviderAuthenticationResult result = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, GOOD_USER, new Subject(), customProperties, HTTPS_URL);
         return result;
+    }
+
+    private void cacheEnabledExpectations(SingleTableCache cache) {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+                one(clientConfig).getClockSkew();
+                will(returnValue(0L));
+            }
+        });
     }
 
 }

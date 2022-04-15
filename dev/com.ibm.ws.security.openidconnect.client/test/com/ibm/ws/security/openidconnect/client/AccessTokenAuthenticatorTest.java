@@ -928,6 +928,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 {
                     allowing(clientConfig).getCache();
                     will(returnValue(cache));
+                    allowing(clientConfig).getClockSkew();
+                    will(returnValue(0L));
                 }
             });
             withConfigId();

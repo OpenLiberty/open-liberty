@@ -26,7 +26,7 @@ public class CacheValue {
         this.createdAt = System.currentTimeMillis();
         if (clockSkew > 0) {
             // Take the clock skew into account up front
-            this.createdAt -= clockSkew;
+            this.createdAt += clockSkew;
         }
     }
 

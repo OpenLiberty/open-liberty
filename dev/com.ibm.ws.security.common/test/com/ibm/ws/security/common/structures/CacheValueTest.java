@@ -13,7 +13,7 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
 
-public class CacheEntryTest extends CommonTestClass {
+public class CacheValueTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.common.*=all");
 
@@ -114,6 +114,60 @@ public class CacheEntryTest extends CommonTestClass {
             boolean result = cacheValue.isExpired(timeout);
 
             assertFalse("Value should not have been considered expired yet, but was. Value created at [" + cacheValue.getCreatedAt() + "]. Current time: [" + System.currentTimeMillis() + "].", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpired_clockSkew2s_timeoutZero() {
+        try {
+            String value = "value";
+            long clockSkew = 2 * 1000;
+            CacheValue cacheValue = new CacheValue(value, clockSkew);
+            long timeout = 0;
+
+            Thread.sleep(10);
+
+            boolean result = cacheValue.isExpired(timeout);
+
+            assertFalse("Value should not have been considered expired, but was. Value created at [" + cacheValue.getCreatedAt() + "] (includes clock skew). Current time: [" + System.currentTimeMillis() + "].", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpired_clockSkew1s_timeout1s_waitBeyondTimeout_beforeClockSkew() {
+        try {
+            String value = "value";
+            long clockSkew = 1000;
+            CacheValue cacheValue = new CacheValue(value, clockSkew);
+            long timeout = 1000;
+
+            Thread.sleep(1050);
+
+            boolean result = cacheValue.isExpired(timeout);
+
+            assertFalse("Value should not have been considered expired, but was. Value created at [" + cacheValue.getCreatedAt() + "] (includes clock skew). Current time: [" + System.currentTimeMillis() + "].", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpired_clockSkew1s_timeout1s_waitBeyondTimeoutAndClockSkew() {
+        try {
+            String value = "value";
+            long clockSkew = 1000;
+            CacheValue cacheValue = new CacheValue(value, clockSkew);
+            long timeout = clockSkew;
+
+            Thread.sleep(clockSkew + timeout + 100);
+
+            boolean result = cacheValue.isExpired(timeout);
+
+            assertTrue("Value should have been considered expired, but wasn't. Value created at [" + cacheValue.getCreatedAt() + "] (includes clock skew). Current time: [" + System.currentTimeMillis() + "].", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
