@@ -81,6 +81,18 @@ public class JDBC41Test extends FATServletClient {
     }
 
     @Test
+    public void testAgedTimeoutWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutWithTLS");
+    }
+
+    @Test
+    public void testAgedTimeout90mWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeout90mWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeout90mWithTLS");
+    }
+
+    @Test
     public void testAgedTimeoutDisabledWithTLS() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutDisabledWithTLS");
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutDisabledWithTLS");
@@ -96,6 +108,12 @@ public class JDBC41Test extends FATServletClient {
     public void testMinPoolSizeMettWithTLS() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeMettWithTLS");
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeMettWithTLS");
+    }
+
+    @Test
+    public void testMinPoolSizeNotMettWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeNotMettWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeNotMettWithTLS");
     }
 
     @Test

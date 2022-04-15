@@ -72,6 +72,18 @@
       <connectionManager agedTimeout="-1" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1"/>
     </dataSource>
     
+    <dataSource id="dsfat22ctls" fat.modify="true" jndiName="jdbc/dsfat22ctls">
+      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager agedTimeout="1s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
+    </dataSource>
+    
+    <dataSource id="dsfat22dtls" fat.modify="true" jndiName="jdbc/dsfat22dtls">
+      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager agedTimeout="90m" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
+    </dataSource>
+    
     <dataSource id="dsfat22etls" fat.modify="true" jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
@@ -100,6 +112,12 @@
       <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
       <connectionManager agedTimeout="-1" maxIdleTime="1s" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
+    </dataSource>
+    
+    <dataSource id="dsfat22ktls" fat.modify="true" jndiName="jdbc/dsfat22ktls">
+      <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager agedTimeout="-1" maxIdleTime="90m" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="dsfat22ltls" fat.modify="true" jndiName="jdbc/${id}">

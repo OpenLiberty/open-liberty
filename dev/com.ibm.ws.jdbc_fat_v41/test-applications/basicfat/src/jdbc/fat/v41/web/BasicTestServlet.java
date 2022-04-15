@@ -107,6 +107,12 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Resource(name = "jdbc/dsfat22btls")
     DataSource dsfat22btls;
 
+    @Resource(name = "jdbc/dsfat22ctls")
+    DataSource dsfat22ctls;
+
+    @Resource(name = "jdbc/dsfat22dtls")
+    DataSource dsfat22dtls;
+
     @Resource(name = "jdbc/dsfat22etls")
     DataSource dsfat22etls;
 
@@ -121,6 +127,9 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/dsfat22jtls")
     DataSource dsfat22jtls;
+
+    @Resource(name = "jdbc/dsfat22ktls")
+    DataSource dsfat22ktls;
 
     @Resource(name = "jdbc/dsfat22ltls")
     DataSource dsfat22ltls;
@@ -1060,6 +1069,60 @@ public class BasicTestServlet extends FATDatabaseServlet {
     }
 
     /**
+     * Test if a aged timeout value of 1s causes connections to be discarded correctly with thread local storage.
+     */
+    public void testAgedTimeoutWithTLS() throws Throwable {
+        Connection cnt = dsfat22ctls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeoutWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeoutWithTLS() throws Exception {
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22ctls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 0)
+            throw new Exception("Expected pool to be 0 when testAgedTimeoutWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Test if a aged timeout value of 90m causes connections to be maintained with thread local storage.
+     */
+    public void testAgedTimeout90mWithTLS() throws Throwable {
+        Connection cnt = dsfat22dtls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeout190mWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeout90mWithTLS() throws Exception {
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22dtls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 1)
+            throw new Exception("Expected pool to be 1 when testAgedTimeout90mWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
+    }
+
+    /**
      * Test if reapTime=-1 causes connections to be maintained with thread local storage.
      */
     public void testReapDisabledWithTLS() throws Throwable {
@@ -1175,6 +1238,41 @@ public class BasicTestServlet extends FATDatabaseServlet {
             throw new Exception("Expected pool to be 2 when testMinPoolSizeMettWithTLS was called after 3s, but it was " + size);
 
         checkTLSPoolSize(dsJndiName, 2, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Ensure connections are not removed before maxIdleTime is met with thread local storage.
+     */
+    public void testMinPoolSizeNotMettWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22ktls.getConnection();
+        try {
+            Connection con2 = dsfat22ktls.getConnection();
+            try {
+                Connection con3 = dsfat22ktls.getConnection();
+                con1.close();
+                con2.close();
+                con3.close();
+            } finally {
+                con2.close();
+            }
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testMinPoolSizeNotMettWithTLS
+     */
+    public void checkPoolAfterTestMinPoolSizeNotMettWithTLS() throws Exception {
+        //after 3000ms, the connection should not have reached maxIdleTime=90m and should still be present
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22ktls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 3)
+            throw new Exception("Expected pool to be 3 when testMinPoolSizeNotMettWithTLS was called after 3s, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
     }
 
     /**
