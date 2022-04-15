@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,14 +9,13 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
 Include-Resource:\
   META-INF=resources/META-INF
-
-Bundle-Name: JAX-RS 2.X Monitor
-Bundle-SymbolicName: com.ibm.ws.jaxrs.2.x.monitor
-Bundle-Description: IBM JAX-RS 2.x monitor; version=${bVersion}
 
 src: src, resources
 
@@ -65,8 +64,6 @@ Liberty-Monitoring-Components:
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.jaxrs.2.0.common
-
-jakartaeeMe: true
 
 # Only publish the Jakarta one
 publish.wlp.jar.include: com.ibm.ws.jaxrs.2.x.monitor.jakarta.jar

@@ -12,7 +12,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0
   io.openliberty.restfulWSClient-3.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
- io.openliberty.org.jboss.resteasy.cdi.jakarta, \
+ io.openliberty.org.jboss.resteasy.cdi, \
  io.openliberty.org.jboss.resteasy.server.jakarta
 kind=ga
 edition=core

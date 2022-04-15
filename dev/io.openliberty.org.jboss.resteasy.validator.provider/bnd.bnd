@@ -8,13 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.validator.provider
-
-# Only publish the Jakarta one
-publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.validator.provider.jakarta.jar
 
 resteasy-version=4.7.2.Final
 
@@ -59,7 +56,5 @@ org/jboss/resteasy=${bin}/org/jboss/resteasy
 	io.openliberty.org.jboss.resteasy.common,\
 	io.openliberty.org.jboss.resteasy.server,\
 	com.ibm.ws.com.fasterxml.classmate;version=latest
- 
-jakartaeeMe: true
 
 instrument.ffdc: false
