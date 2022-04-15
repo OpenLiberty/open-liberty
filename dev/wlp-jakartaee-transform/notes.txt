@@ -5,10 +5,10 @@
 0.5.0-20220411
 
   dev/wlp-jakartaee-transform/notes.txt
-  dev/fattest.simplicity/bnd.bnd
+  dev/fattest.simplicity/bnd.bnd (use "." instead of "-")
   dev/wlp-gradle/subprojects/fat.gradle
   dev/wlp-gradle/subprojects/tasks.gradle
-  dev/wlp-jakartaee-transform/bnd.bnd
+  dev/wlp-jakartaee-transform/bnd.bnd (use "." instead of "-")
   dev/cnf/oss_ibm.maven
 
 sftp bitonti@us.ibm.com@w3-transfer.boulder.ibm.com:/www/stage/export/pub/software/olrepo
