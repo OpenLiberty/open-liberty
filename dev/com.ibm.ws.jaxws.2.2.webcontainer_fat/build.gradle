@@ -44,7 +44,7 @@ dependencies {
   'org.apache.cxf.xjc-utils:cxf-xjc-runtime:2.6.0',
   'org.apache.neethi:neethi:3.1.1',
   project(':com.ibm.ws.org.slf4j.api'),
-//  project(':com.ibm.ws.org.slf4j.jdk14'), // Uncomment before committing!
+  project(':com.ibm.ws.org.slf4j.jdk14'),
   'org.springframework:spring-aop:5.2.17.RELEASE',
   'org.springframework:spring-beans:5.2.17.RELEASE',
   'org.springframework:spring-context:5.2.17.RELEASE',
