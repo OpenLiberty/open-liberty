@@ -34,7 +34,8 @@ use.options=Options:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=A file name containing a list of pids to ignore.
 option-key.encoding=--encoding
-option-desc.encoding=The character encoding to use for the output.
+option-desc.encoding=The character encoding to use for the output.     \n\
+The default encoding is "UTF-8".
 option-key.locale=--locale
 option-desc.locale=The language to use when you are creating the output\n\
 file. This string consists of the ISO-639 two-letter lowercase language\n\
