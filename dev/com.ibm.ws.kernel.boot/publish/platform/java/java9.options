@@ -55,3 +55,6 @@ java.base/java.net=ALL-UNNAMED
 # for com.ibm.ws.clientcontainer.javacolon.fat.* tests (yoko accessible calls)
 --add-opens
 java.base/java.text=ALL-UNNAMED
+# For https://github.com/OpenLiberty/open-liberty/issues/20818
+--add-opens
+java.base/sun.net.www.protocol.https=ALL-UNNAMED
