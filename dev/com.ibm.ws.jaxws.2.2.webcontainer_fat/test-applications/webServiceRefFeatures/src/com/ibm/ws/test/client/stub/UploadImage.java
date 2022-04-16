@@ -13,6 +13,7 @@ package com.ibm.ws.test.client.stub;
 import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -44,6 +45,8 @@ import javax.xml.bind.annotation.XmlType;
 public class UploadImage {
 
     protected String arg0;
+
+    @XmlAttachmentRef
     @XmlMimeType("application/octet-stream")
     protected DataHandler arg1;
 

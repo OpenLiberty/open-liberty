@@ -362,6 +362,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
 
         Collection<Attachment> atts = message.getAttachments();
+        
+        LOG.log(Level.FINE, "setupAttachmentOutput: getAttachments returned  " + atts);
+        
         if (atts == null) {
             atts = new ArrayList<>();
             message.setAttachments(atts);
@@ -374,6 +377,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
         Collection<Attachment> atts = message.getAttachments();
         
+        // Please do not modify log message below, it's been used in PropertySettingTest
         LOG.log(Level.FINE, "skipAttachmentOutput: getAttachments returned  " + atts);
         
         if (atts != null) {
