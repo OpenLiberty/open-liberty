@@ -1,0 +1,15 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/transform.props
+
+Bundle-Name: Open Liberty gRPC Client Third Party API
+Bundle-SymbolicName: io.openliberty.grpc.client.1.0.jakarta.thirdparty
+Bundle-Description: Open Liberty gRPC Client Third Party API; Jakarta enabled

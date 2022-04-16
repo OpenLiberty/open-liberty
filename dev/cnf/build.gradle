@@ -235,20 +235,7 @@ task createGradleBootstrap {
                     try {
                         version = getVersionFromReleaseRepo(org, bsn)
                     } catch (GradleException e) {
-                        if (bsn.endsWith(".javaee")) {
-                            try {
-                                bsn = bsn.substring(0, bsn.length() - 7) + ".jakarta"
-                                version = getVersionFromReleaseRepo(org, bsn)
-                            } catch (GradleException e2) {
-                                bsn = bsn.substring(0, bsn.length() - 8)
-                                version = getVersionFromReleaseRepo(org, bsn)
-                            }
-                        } else if (bsn.endsWith(".javaee.thirdparty")){
-                            bsn = bsn.substring(0, bsn.length() - 18) + ".jakarta.thirdparty"
-                            version = getVersionFromReleaseRepo(org, bsn)
-                        } else {
-                            throw e
-                        }
+                        throw e
                     }
                     depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
                     depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
@@ -338,7 +325,25 @@ task createGeneratedReplacementProjects {
             if (bsnCount > 0) {
                 String classpathEntries = ""
                 String suffix = ""
+                File transformedBnd = bndProject.getFile('transformed.bnd')
+                String excludeBsn = null
+                if (transformedBnd != null && transformedBnd.exists()) {
+                    Properties p = new Properties();
+                    p.load(new FileInputStream(transformedBnd))
+                    excludeBsn = p.getProperty("Bundle-SymbolicName")
+                    if (excludeBsn != null) {
+                        int index = excludeBsn.indexOf(";")
+                        if (index != -1) {
+                            excludeBsn = excludeBsn.substring(0, index).trim()
+                        }
+                    }
+                }
+
                 for (String bsn : bsns) {
+                    // Do not include the transformed bsn in the replacement
+                    if (bsn.equals(excludeBsn)) {
+                        continue;
+                    }
                     String artifact = bsn + '.jar'
                     classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
                     suffix = '\n	'

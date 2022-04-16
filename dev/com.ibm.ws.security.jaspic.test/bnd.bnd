@@ -14,16 +14,6 @@
 
 bVersion=1.0
 
-
-#
-# Generate an Jakarta EE compliant JAR for the bundle.
-#
-#jakartaFinalJarName: com.ibm.ws.security.jaspic.test.jar
-#jakartaFinalBundleName: JASPI Provider User Defined Feature 
-#jakartaFinalBundleId: com.ibm.ws.security.jaspic.test
-#jakartaFinalBundleDescription: JASPI Provider User Defined Feature, version ${bVersion}. 
-#jakartaFinalBundleVersion: 2.0
-
 test.project: true
 
 Export-Package: \

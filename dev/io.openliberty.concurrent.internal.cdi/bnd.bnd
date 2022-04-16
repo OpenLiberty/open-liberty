@@ -22,7 +22,7 @@ Bundle-Description: Provides interceptors for Jakarta Concurrency; version=${bVe
 
 WS-TraceGroup: concurrent
 
-Import-Package: !jakarta.interceptor,*
+Import-Package: *
 
 Private-Package: \
   io.openliberty.concurrent.internal.cdi.*,\
@@ -34,6 +34,7 @@ Private-Package: \
 
 instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.class
 
+# TODO: switch to cdi 4.0, interceptor 2.1 and annotation 2.1 once no longer allow with EE9
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
@@ -44,8 +45,8 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.c
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.concurrent,\
   com.ibm.ws.threading,\
-  io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.annotation.2.0,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
-  io.openliberty.jakarta.interceptor.2.1,\
+  io.openliberty.jakarta.interceptor.2.0,\
   io.openliberty.jakarta.transaction.2.0

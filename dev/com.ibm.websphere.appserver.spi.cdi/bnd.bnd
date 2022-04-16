@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,11 +9,10 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
 
-Bundle-Name: WebSphere CDI Extension SPI
-Bundle-Description: WebSphere CDI Extension SPI, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.spi.cdi
+-sub: *.bnd
+
+bVersion: 1.1
 
 Import-Package: io.openliberty.cdi.spi,*
 

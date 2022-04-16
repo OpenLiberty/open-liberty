@@ -20,9 +20,6 @@ def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'tru
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
         dependsOn jar
-        if ( parseBoolean( bnd.get('jakartaeeMe', 'true'))) {
-            dependsOn jakartaeeTransform
-        }
         from project.buildDir
         into buildImage.file('wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
         include bnd.get('publish.wlp.jar.include', '*.jar')
@@ -75,7 +72,7 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
                         // This logic stores the correctly full bundle version
                         // for sub bundles in a project.
                         def subBVersion = subBndProperties.getProperty('bVersion')
-                        if (outerVersion.equals(subBVersion)) {
+                        if (subBVersion == null || outerVersion.equals(subBVersion)) {
                             fullVersions.put(symbolicName, outerFullVersion)
                         } else {
                             fullVersions.put(symbolicName, subBVersion + outerFullVersion.substring(outerVersion.length()))
@@ -94,10 +91,6 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
                 }
 
                 def selectedSymbolicName = symbolicName
-                // If the jar is jakartaee transformed, then see if the pre-transformed bundle has iFix headers.
-                if (it.getSourceName().equals(bnd.get('jakartaFinalJarName', '')) || symbolicName.endsWith(".jakarta")) {
-                    selectedSymbolicName = outerSymbolicName
-                }
                     
                 if (!hasIFIXHeaders.get(selectedSymbolicName)) {
                     it.setName(symbolicName + "_" + fullVersion + ".jar")

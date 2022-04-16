@@ -10,10 +10,11 @@
 # This wraps the external JAR.
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 grpcVersion=1.43.2
-
-Bundle-SymbolicName: io.openliberty.io.grpc.1.0; singleton:=true
 
 Import-Package: \
   *
