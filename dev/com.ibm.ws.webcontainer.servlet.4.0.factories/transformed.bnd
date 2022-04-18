@@ -13,3 +13,6 @@
 Bundle-Name: WAS WebContainer Jakarta
 Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0.factories.jakarta
 Bundle-Description: WAS WebContainer 8.1 with object factories for Servlet 4.0 support; Jakarta Enabled
+
+-includeresource: \
+  com/ibm/ws/webcontainer/speclevel=resources/50
