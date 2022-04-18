@@ -48,6 +48,7 @@ import com.ibm.ejs.container.activator.ActivationStrategy;
 import com.ibm.ejs.container.lock.LockManager;
 import com.ibm.ejs.container.lock.LockStrategy;
 import com.ibm.ejs.container.util.ExceptionUtil;
+import com.ibm.ejs.csi.EJBApplicationMetaData;
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.cpi.Finder;
 import com.ibm.websphere.cpi.Persister;
@@ -523,22 +524,44 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
                                                     pmiBean,
                                                     this);
 
-            if (beanMetaData.ivInitialPoolSize != 0) {
+            // For server checkpoint, preload stateless bean pools during application start
+            EJBApplicationMetaData ejbAMD = beanMetaData._moduleMetaData.getEJBApplicationMetaData();
+            if (statelessSessionHome &&
+                beanMetaData.ivInitialPoolSize == 0 &&
+                beanMetaData.minPoolSize > 0 &&
+                !ejbAMD.isStarted() &&
+                container.getEJBRuntime().isCheckpointApplications()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Pre-loading BeanPool with " + beanMetaData.ivInitialPoolSize);
+                    Tr.debug(tc, "Enabling BeanPool Pre-Load for Checkpoint : " + beanMetaData.j2eeName + ", size = " + beanMetaData.minPoolSize);
+                beanMetaData.ivInitialPoolSize = beanMetaData.minPoolSize;
+            }
 
-                // d648522 - Pre-load the bean pool on a separate thread to avoid
-                // wrapper locking issues during deferred initialization.
-                container.getEJBRuntime().getScheduledExecutorService().schedule(new Runnable() {
+            if (beanMetaData.ivInitialPoolSize != 0) {
+                // Preload the bean pool on a separate thread to avoid wrapper locking issues during deferred initialization.
+                Runnable preloadBeanPool = new Runnable() {
                     @Override
                     public void run() {
-                        // d664917.1 - We already have a reference to the
-                        // EJSHome, but we call through HomeRecord to ensure
-                        // the deferred init thread has finished before we
-                        // begin preloading.
+                        // We already have a reference to the EJSHome, but we call through HomeRecord to ensure
+                        // the deferred initialization thread has finished before we begin preloading.
                         homeRecord.getHomeAndInitialize().preLoadBeanPool();
                     }
-                }, 0, TimeUnit.MILLISECONDS); // F73234
+                };
+
+                if (ejbAMD.isStarted()) {
+                    // Deferred initialization - schedule the bean pool to be preloaded immediately, but
+                    // on a separate thread to avoid wrapper locking issues during deferred initialization.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Pre-loading BeanPool with " + beanMetaData.ivInitialPoolSize);
+                    container.getEJBRuntime().getScheduledExecutorService().schedule(preloadBeanPool, 0, TimeUnit.MILLISECONDS);
+                } else {
+                    // Initialize on start - schedule the bean pool to be preloaded at the end of application
+                    // start, after all beans in the application have been identified and all the startup
+                    // beans have been initialized. Also preload the bean pool on a separate thread to avoid
+                    // wrapper locking issues.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Defer Pre-loading BeanPool with " + beanMetaData.ivInitialPoolSize);
+                    ejbAMD.addPreloadBeanPool(preloadBeanPool);
+                }
             }
         }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+
+  <display-name>CheckpointApp</display-name>
+  <module>
+    <ejb>CheckpointEJB.jar</ejb>
+  </module>
+  <module>
+    <ejb>CheckpointOtherEJB.jar</ejb>
+  </module>
+  <module>
+    <web>
+      <web-uri>CheckpointWeb.war</web-uri>
+      <context-root>CheckpointWeb</context-root>
+    </web>
+  </module>
+  <module>
+    <web>
+      <web-uri>CheckpointOtherWeb.war</web-uri>
+      <context-root>CheckpointOtherWeb</context-root>
+    </web>
+  </module>
+</application>
