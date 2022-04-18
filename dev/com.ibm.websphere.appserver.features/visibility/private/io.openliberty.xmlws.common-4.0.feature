@@ -29,7 +29,6 @@ IBM-API-Package:\
   com.ibm.websphere.appserver.internal.slf4j-1.7
 -bundles=\
  io.openliberty.org.osgi.service.http; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cxf.client, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2.jakarta, \
  com.ibm.ws.org.apache.cxf.cxf.core.3.2.jakarta, \

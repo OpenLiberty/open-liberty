@@ -42,7 +42,9 @@ Export-Package: \
 	com.ibm.ws.jaxrs20.clientconfig,\
 	org.apache.cxf.feature,\
 	org.apache.cxf.jaxrs.client;version=3.1.18,\
-	com.ibm.ws.cxf.exceptions;version=3.1.18
+	com.ibm.ws.cxf.exceptions;version=3.1.18,\
+    com.ibm.ws.cxf.client, \
+    com.ibm.ws.cxf.client.component
 
 Import-Package: \
  !com.wordnik.swagger.jaxrs.config, \
@@ -150,7 +152,8 @@ Include-Resource: \
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
  	com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
  	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
- 	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister
+ 	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister, \
+ 	com.ibm.ws.cxf.client.component.*
 
 -dependson: com.ibm.ws.org.codehaus.jackson
 
