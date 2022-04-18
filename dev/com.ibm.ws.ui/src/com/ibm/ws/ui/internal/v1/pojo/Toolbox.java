@@ -270,11 +270,52 @@ public class Toolbox implements IToolbox {
     private void validatePreferences(Map<String, Object> preferences) {
         List<String> keysToRemove = new ArrayList<String>();
         for (Entry<String, Object> entry : preferences.entrySet()) {
-            if (containsXSS(entry.getKey()) || containsXSS(entry.getValue())) {
-                if (tc.isEventEnabled()) {
-                    Tr.event(tc, "The preferences entry '" + entry.getKey() + "' contains malicious content. Removing this entry from preferences.");
+            String prefKey = (String) entry.getKey();
+
+            // Validation strategy:
+            // - accept known keys (bidiEnabled, BidiTextDirection) and values (true/false, ltr/rtl/contextual)
+            // - if known key but invalid value, map to the default value (false, ltr)
+            // - otherwise remove any invalid key
+            if (prefKey.equals("bidiEnabled")) {
+                Object prefValueObject = entry.getValue();
+                boolean useDefaultValue = false;
+                if (prefValueObject instanceof String) {
+                    if (((String) prefValueObject).equals("true")) {
+                        entry.setValue(true);
+                    } else {
+                        useDefaultValue = true;
+                    }
+                } else if (!(prefValueObject instanceof Boolean)) {
+                    useDefaultValue = true;
                 }
-                // Remove key
+                if (useDefaultValue) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Map perfereneces bidiEnabled to its default false value");
+                    }
+                    entry.setValue(false);
+                }
+            } else if (prefKey.equals("bidiTextDirection")) {
+                Object prefValueObject = entry.getValue();
+                boolean useDefaultValue = false;
+                if (prefValueObject instanceof String) {
+                    String prefValue = (String) prefValueObject;
+                    if (!prefValue.equals("ltr") && !prefValue.equals("rtl") && !prefValue.equals("contextual")) {
+                        useDefaultValue = true;
+                    }
+                } else {
+                    useDefaultValue = true;
+                }
+                if (useDefaultValue) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Map perfereneces bidiTextDirection to its default ltr value");
+                    }
+                    entry.setValue("ltr");
+                }
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The preferences entry '" + entry.getKey() + "' is invalid. Removing this entry from preferences.");
+                }
+                // Remove unknown key
                 keysToRemove.add(entry.getKey());
             }
         }
