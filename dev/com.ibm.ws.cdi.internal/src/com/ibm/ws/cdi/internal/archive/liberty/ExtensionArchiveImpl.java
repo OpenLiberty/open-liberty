@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import javax.enterprise.inject.spi.Extension;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
@@ -70,18 +72,23 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     }
 
     @Override
-    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+    public Set<Supplier<Extension>> getSPIExtensionSuppliers() {
         if (spiExtensions.isEmpty()) {
             return Collections.emptySet();
         }
 
-        Set<Supplier<Object>> result = new HashSet<>();
+        Set<Supplier<Extension>> result = new HashSet<>();
         for (String className : spiExtensions) {
             result.add(() -> {
                 try {
                     Class<?> clazz = getClassLoader().loadClass(className);
                     Constructor<?> constructor = clazz.getConstructor();
-                    return constructor.newInstance();
+                    Object extension = constructor.newInstance();
+                    if (!(extension instanceof Extension)) {
+                        throw new IllegalArgumentException(extension.getClass().getCanonicalName()
+                                                           + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
+                    }
+                    return (Extension) extension;
                 } catch (Exception e) {
                     Tr.error(tc, "spi.extension.failed.to.construct.CWOWB1010E", className, e.toString());
                     throw new CDIRuntimeException(Tr.formatMessage(tc, "spi.extension.failed.to.construct.CWOWB1010E", className, e.toString()), e);

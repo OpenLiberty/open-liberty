@@ -50,8 +50,8 @@ WS-TraceGroup: JCDI
 	org.eclipse.osgi,\
 	io.openliberty.jakarta.cdi.4.0,\
 	io.openliberty.org.jboss.weld5,\
-	com.ibm.ws.cdi.internal,\
-	com.ibm.ws.cdi.interfaces,\
+	com.ibm.ws.cdi.internal.jakarta,\
+	com.ibm.ws.cdi.interfaces.jakarta,\
 	com.ibm.ws.context,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.injection.core
