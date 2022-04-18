@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -32,6 +33,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh17376.web.TestOLGH17376Servlet;
 import com.ibm.ws.jpa.tests.spec10.query.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.spec10.query.tests.JPAFATServletClient;
+import com.ibm.ws.jpa.tests.spec10.query.tests.SkipRule;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -47,6 +51,10 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH17376_Web extends JPAFATServletClient {
+
+    @Rule
+    public static SkipRule skipRule = new SkipRule();
+
     private final static String CONTEXT_ROOT = "olgh17376Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh17376/";
     private final static String appFolder = "web";
@@ -60,9 +68,9 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA_OLGH17376_DROP_${dbvendor}.ddl");
-        createSet.add("JPA_OLGH17376_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA_OLGH17376_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA_OLGH17376_${provider}_DROP_${dbvendor}.ddl");
+        createSet.add("JPA_OLGH17376_${provider}_CREATE_${dbvendor}.ddl");
+        populateSet.add("JPA_OLGH17376_${provider}_POPULATE_${dbvendor}.ddl");
     }
 
     @Server("JPA10QueryServer")
@@ -89,6 +97,8 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
             server.setConfigUpdateTimeout(120 * 1000);
         }
 
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -103,25 +113,31 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
 
         System.out.println(TestOLGH17376_Web.class.getName() + " Setting up database tables...");
 
+        DatabaseVendor database = getDbVendor();
+        JPAPersistenceProvider provider = AbstractFATSuite.provider;
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
         ddlSet.clear();
         for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipRule.setDatabase(database);
+        skipRule.setProvider(provider);
     }
 
     private static void setupTestApplication() throws Exception {
@@ -133,6 +149,15 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
+
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            webApp.move("/WEB-INF/classes/META-INF/persistence-oracle-21.xml", "/WEB-INF/classes/META-INF/persistence.xml");
+        }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
@@ -154,10 +179,19 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-        ClassloaderElement loader = new ClassloaderElement();
-        loader.setApiTypeVisibility("+third-party");
-        cel.add(loader);
+
+        // setup the thirdparty classloader for Hibernate and OpenJPA
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
+        }
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -175,9 +209,10 @@ public class TestOLGH17376_Web extends JPAFATServletClient {
         try {
             // Clean up database
             try {
+                JPAPersistenceProvider provider = AbstractFATSuite.provider;
                 final Set<String> ddlSet = new HashSet<String>();
                 for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                    ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
                 }
                 executeDDL(server, ddlSet, true);
             } catch (Throwable t) {

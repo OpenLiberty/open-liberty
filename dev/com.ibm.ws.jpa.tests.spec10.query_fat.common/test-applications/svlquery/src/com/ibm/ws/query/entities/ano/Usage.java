@@ -34,10 +34,10 @@ public class Usage implements IUsage {
     protected PartComposite parent;
 
     public Usage(PartComposite p, int quantity, Part subpart) {
-        id = p.getPartno() * 10000 + subpart.getPartno();
-        parent = p;
+        this.id = p.getPartno() * 10000 + subpart.getPartno();
         this.quantity = quantity;
-        parent.getPartsUsed().add(this);
+        setParent(p);
+        p.getPartsUsed().add(this);
         setChild(subpart);
         subpart.getUsedIn().add(this);
     }

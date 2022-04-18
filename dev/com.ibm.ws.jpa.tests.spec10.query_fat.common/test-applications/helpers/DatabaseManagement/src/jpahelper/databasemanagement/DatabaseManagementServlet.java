@@ -46,7 +46,7 @@ public class DatabaseManagementServlet extends HttpServlet {
     @Resource(lookup = "jdbc/JPA_DS")
     private DataSource dsJta;
 
-    @Resource(lookup = "jdbc/JPA_NJTADS")
+    @Resource(lookup = "jdbc/JPA_NJTA_DS")
     private DataSource dsRl;
 
     /*

@@ -29,7 +29,7 @@ import com.ibm.ws.query.entities.interfaces.IPerson;
 @SqlResultSetMapping(name = "PersonSQLMapping",
                      entities = @EntityResult(entityClass = Person.class))
 @Entity
-@Table(name = "Jpa2Person")
+@Table(name = "JPA2Person")
 public class Person implements IPerson, Serializable {
     /**
      * @param args

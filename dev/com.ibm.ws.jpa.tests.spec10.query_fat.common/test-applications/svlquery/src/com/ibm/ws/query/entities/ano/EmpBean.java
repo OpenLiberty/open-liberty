@@ -62,7 +62,7 @@ public class EmpBean implements IEmpBean, Serializable {
     @Transient
     private Calendar calendar = new GregorianCalendar();
     @Transient
-    private long pdtOffset = -(calendar.get(calendar.ZONE_OFFSET)) - 8 * (60 * 60 * 1000);
+    private long pdtOffset = -(calendar.get(Calendar.ZONE_OFFSET)) - 8 * (60 * 60 * 1000);
 
     @ManyToOne()
     public DeptBean dept;
@@ -116,10 +116,11 @@ public class EmpBean implements IEmpBean, Serializable {
         work = null;
     }
 
-    public EmpBean(int id, String nam, double sal, DeptBean dept) {
+    public EmpBean(int id, String nam, double sal, DeptBean dept, int rating, boolean isManager, IAddressBean home, IAddressBean work) {
         empid = id;
         name = nam;
         salary = sal;
+        this.rating = rating;
         bonus = 0.0;
         hireDate = new java.sql.Date(0 + pdtOffset);
         hireTime = new Time(0 + pdtOffset);
@@ -128,10 +129,10 @@ public class EmpBean implements IEmpBean, Serializable {
         if (dept != null)
             dept.getEmps().add(this);
         execLevel = 'A';
-        isManager = true;
+        this.isManager = isManager;
         tasks = new ArrayList<TaskBean>();
-        home = null;
-        work = null;
+        this.home = (AddressBean) home;
+        this.work = (AddressBean) work;
     }
 
     public EmpBean(String nam, double sal, DeptBean dept) {

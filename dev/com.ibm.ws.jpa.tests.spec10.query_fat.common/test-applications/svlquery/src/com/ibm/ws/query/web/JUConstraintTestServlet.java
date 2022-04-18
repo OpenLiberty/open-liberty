@@ -4,6 +4,7 @@
 package com.ibm.ws.query.web;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Test;
 
 import com.ibm.ws.query.testlogic.JUConstraintTest;
-import com.ibm.ws.query.utils.SetupQueryTestCase;
+import com.ibm.ws.query.testlogic.enums.TestEntityTypeEnum;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -38,8 +39,6 @@ public class JUConstraintTestServlet extends JPATestServlet {
     // Application Managed Resource-Local
     @PersistenceUnit(unitName = "QUERY_RL")
     private EntityManagerFactory amrlEmf;
-
-    private SetupQueryTestCase setup = null;
 
     @PostConstruct
     private void initFAT() {
@@ -84,45 +83,49 @@ public class JUConstraintTestServlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_svlquery_juconstrainttest_testSelectAllParts_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_juconstrainttest_testSelectAllParts_AMJTA_Web";
         final String testMethod = "testSelectAllParts";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_juconstrainttest_testSelectExpensiveParts_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_juconstrainttest_testSelectExpensiveParts_AMJTA_Web";
         final String testMethod = "testSelectExpensiveParts";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_juconstrainttest_testCheckCompositePartAssemblyForCycle_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_juconstrainttest_testCheckCompositePartAssemblyForCycle_AMJTA_Web";
         final String testMethod = "testCheckCompositePartAssemblyForCycle";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_juconstrainttest_testCalculateCompositePartAssemblyTotalCostAndTotalMass_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_juconstrainttest_testCalculateCompositePartAssemblyTotalCostAndTotalMass_AMJTA_Web";
         final String testMethod = "testCalculateCompositePartAssemblyTotalCostAndTotalMass";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

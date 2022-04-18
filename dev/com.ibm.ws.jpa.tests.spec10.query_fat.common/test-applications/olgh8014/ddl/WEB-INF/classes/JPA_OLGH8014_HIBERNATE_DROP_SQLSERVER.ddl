@@ -1,0 +1,2 @@
+DROP TABLE NoResultEntityOLGH8014;
+DROP TABLE SimpleEntityOLGH8014;

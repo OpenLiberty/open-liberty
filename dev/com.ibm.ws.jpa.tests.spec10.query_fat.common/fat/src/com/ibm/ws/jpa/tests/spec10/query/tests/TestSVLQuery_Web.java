@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -31,6 +32,8 @@ import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.query.web.JUConstraintTestServlet;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -47,6 +50,11 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestSVLQuery_Web extends JPAFATServletClient {
+
+    @Rule
+    public static SkipRule skipRule = new SkipRule();
+
+    private final static String CONTEXT_ROOT = "svlquery";
     private final static String RESOURCE_ROOT = "test-applications/svlquery/";
     private final static String appFolder = "web";
     private final static String appName = "svlquery";
@@ -54,19 +62,19 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
+//    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA_SVLQUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA_SVLQUERY_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA_SVLQUERY_${provider}_DROP_${dbvendor}.ddl");
+        createSet.add("JPA_SVLQUERY_${provider}_CREATE_${dbvendor}.ddl");
+//        populateSet.add("JPA_SVLQUERY_${provider}_POPULATE_${dbvendor}.ddl");
     }
 
     @Server("JPA10SVLQueryServer")
     @TestServlets({
-                    @TestServlet(servlet = JUConstraintTestServlet.class, path = "svlquery" + "/" + "JUConstraintTestServlet"),
+                    @TestServlet(servlet = JUConstraintTestServlet.class, path = CONTEXT_ROOT + "/" + "JUConstraintTestServlet")
     })
     public static LibertyServer server;
 
@@ -88,6 +96,8 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
             server.setConfigUpdateTimeout(120 * 1000);
         }
 
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -102,25 +112,31 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
 
         System.out.println(TestSVLQuery_Web.class.getName() + " Setting up database tables...");
 
+        DatabaseVendor database = getDbVendor();
+        JPAPersistenceProvider provider = AbstractFATSuite.provider;
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
         }
         executeDDL(server, ddlSet, false);
 
 //        ddlSet.clear();
 //        for (String ddlName : populateSet) {
-//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+//            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", database.name()));
 //        }
 //        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipRule.setDatabase(database);
+        skipRule.setProvider(provider);
 
         final String pathAndQuery = "svlquery" + "/" + "JUConstraintTestServlet" + "?setupDB=true";
         final HttpURLConnection con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, pathAndQuery);
@@ -131,10 +147,6 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
             System.out.println("Database NOT populated successfully.");
         }
         con.disconnect();
-    }
-
-    private void populate(String servletName) {
-
     }
 
     private static void setupTestApplication() throws Exception {
@@ -149,6 +161,15 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
+
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            webApp.move("/WEB-INF/classes/META-INF/persistence-oracle-21.xml", "/WEB-INF/classes/META-INF/persistence.xml");
+        }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
@@ -170,10 +191,24 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-        ClassloaderElement loader = new ClassloaderElement();
-        loader.setApiTypeVisibility("+third-party");
-        cel.add(loader);
+
+        // setup the thirdparty classloader for Hibernate and OpenJPA
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
+        } else {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.setApiTypeVisibility("+third-party");
+            cel.add(loader);
+        }
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -191,9 +226,10 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
         try {
             // Clean up database
             try {
+                JPAPersistenceProvider provider = AbstractFATSuite.provider;
                 final Set<String> ddlSet = new HashSet<String>();
                 for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                    ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
                 }
                 executeDDL(server, ddlSet, true);
             } catch (Throwable t) {

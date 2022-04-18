@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.junit.Assert;
 
@@ -59,6 +60,11 @@ public class JPATestOLGH19342Logic extends AbstractTestLogic {
         if (isUsingJPA30Feature() && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
+        //TODO: Hibernate expects Boolean type instead of Integer type
+        if (JPAPersistenceProvider.HIBERNATE.equals(provider)
+            && (isUsingJPA21ContainerFeature(true) || isUsingJPA22ContainerFeature(true))) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -77,15 +83,22 @@ public class JPATestOLGH19342Logic extends AbstractTestLogic {
 
                         EntityManager em = jpaResource.getEmf().createEntityManager();
                         try {
-                            // Executing the Query
-                            em.createNamedQuery("CONCURR_CASE_QUERY", Integer.class).setParameter("id", "Key30").getSingleResult();
+                            Query query = null;
+                            // EclipseLink converts the result to an Integer value
+                            if (JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+                                query = em.createNamedQuery("CONCURR_CASE_QUERY", Integer.class);
+                            } else {
+                                query = em.createNamedQuery("CONCURR_CASE_QUERY", Boolean.class);
+                            }
+                            query.setParameter("id", "Key30");
+                            query.getSingleResult();
                         } catch (Exception e) {
                             error.incrementAndGet();
                             System.out.println(e.getMessage());
                         } finally {
                             if (em != null) {
-                                if (em.getTransaction().isActive()) {
-                                    em.getTransaction().rollback();
+                                if (jpaResource.getTj().isTransactionActive()) {
+                                    jpaResource.getTj().rollbackTransaction();
                                 }
                                 em.close();
                             }

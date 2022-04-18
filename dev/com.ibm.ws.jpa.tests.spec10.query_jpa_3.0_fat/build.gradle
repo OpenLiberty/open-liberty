@@ -10,12 +10,21 @@
  *******************************************************************************/
 
 configurations {
+  hibernateJPA30
   jpaFatTools
 }
 
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.spec10.query_fat.common")
+
+  hibernateJPA30 'org.hibernate:hibernate-core-jakarta:5.6.2.Final'
+  hibernateJPA30 'org.jboss.logging:jboss-logging:3.4.2.Final'
+  hibernateJPA30 'antlr:antlr:2.7.7'
+  hibernateJPA30 'org.jboss:jandex:2.2.3.Final'
+  hibernateJPA30 'com.fasterxml:classmate:1.5.1'
+  hibernateJPA30 'org.hibernate.common:hibernate-commons-annotations:5.1.2.Final'
+  hibernateJPA30 'net.bytebuddy:byte-buddy:1.11.20'
 }
 
 task addJPAFATTools (type: Copy) {
@@ -24,6 +33,12 @@ task addJPAFATTools (type: Copy) {
   include "**/com.ibm.ws.jpa_testframework*.jar"
   into new File(autoFvtDir, 'lib')
   rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
+
+task addHibernate_JPA30(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA30
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_query_fat_jpa30_hibernate')
 }
 
 task copyFAT {
@@ -57,6 +72,7 @@ task copyCommonFiles {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
+  dependsOn addHibernate_JPA30
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
   dependsOn copyFAT
@@ -76,8 +92,8 @@ clean.doLast {
   if (file('build').exists()) {
     file('build').deleteDir()
   }
-  if (file('publish').exists()) {
-    file('publish').deleteDir()
+  if (file('publish/servers').exists()) {
+    file('publish/servers').deleteDir()
   }
   if (file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests').exists()) {
     file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests').deleteDir()

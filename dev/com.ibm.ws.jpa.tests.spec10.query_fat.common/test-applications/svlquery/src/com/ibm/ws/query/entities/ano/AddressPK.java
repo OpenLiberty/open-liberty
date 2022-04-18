@@ -14,8 +14,10 @@ package com.ibm.ws.query.entities.ano;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.ibm.ws.query.entities.interfaces.IAddressPK;
+
 @Embeddable
-public class AddressPK implements java.io.Serializable {
+public class AddressPK implements java.io.Serializable, IAddressPK {
     @Column(name = "street", length = 40)
     private String name;
 
@@ -26,11 +28,13 @@ public class AddressPK implements java.io.Serializable {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public void setName(String empid) {
+    @Override
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -55,7 +59,6 @@ public class AddressPK implements java.io.Serializable {
 
     @Override
     public String toString() {
-        int deptno = 0;
         return name;
     }
 

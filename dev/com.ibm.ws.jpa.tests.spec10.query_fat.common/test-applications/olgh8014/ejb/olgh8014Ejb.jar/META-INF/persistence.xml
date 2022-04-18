@@ -19,10 +19,19 @@
 
     <persistence-unit name="OLGH8014_JTA">
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
+            <!-- OpenJPA Support Properties -->
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Runtime=TRACE, Tool=TRACE, SQL=TRACE, JDBC=TRACE"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
+
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
 
              <!-- This property is set to "false" by default in the JPA Container
              In order to test the specification, we must override this for EclipseLink -->
@@ -31,10 +40,19 @@
     </persistence-unit>
 
     <persistence-unit name="OLGH8014_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
+            <!-- OpenJPA Support Properties -->
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Runtime=TRACE, Tool=TRACE, SQL=TRACE, JDBC=TRACE"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
+
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
 
              <!-- This property is set to "false" by default in the JPA Container
              In order to test the specification, we must override this for EclipseLink -->
