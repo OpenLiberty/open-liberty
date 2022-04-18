@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,9 +70,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.support.version20.test.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION = "com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_21_APP_BASE = "com.ibm.ws.springboot.support.version21.test.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_22_APP_BASE = "com.ibm.ws.springboot.support.version22.test.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_23_APP_BASE = "com.ibm.ws.springboot.support.version23.test.app-0.0.1-SNAPSHOT.jar";
+
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
@@ -276,6 +274,8 @@ public abstract class AbstractSpringTests {
                                         .waitForStringInLog("CWWKT0016I:.*"));
                     }
                 }
+                assertNotNull("Server is not ready to run", server
+                                .waitForStringInLog("CWWKF0011I:.*"));
             }
         }
     }
