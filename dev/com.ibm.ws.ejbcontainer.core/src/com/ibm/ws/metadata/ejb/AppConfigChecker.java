@@ -104,7 +104,7 @@ final class AppConfigChecker {
                 for (Method m : iface.getMethods()) {
                     for (Annotation anno : m.getAnnotations()) {
                         if ("jakarta.enterprise.concurrent.Asynchronous".equals(anno.annotationType().getName())) {
-                            Tr.warning(tc, "CNTR9427W_INCORRECT_ASYNC_ANNO_INTERFACE", iface.getName());
+                            Tr.warning(tc, "CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE", iface.getName());
                             return;
                         }
                     }

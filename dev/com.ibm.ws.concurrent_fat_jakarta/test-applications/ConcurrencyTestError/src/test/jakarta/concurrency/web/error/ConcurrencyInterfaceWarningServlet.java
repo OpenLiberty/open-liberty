@@ -20,9 +20,10 @@ import jakarta.servlet.annotation.WebServlet;
 import componenttest.app.FATServlet;
 import test.jakarta.concurrency.ejb.error.AsynchInterfaceLocal;
 
+//This servlet should never be installed as it uses a mis-configured EJB.
 @SuppressWarnings("serial")
 @WebServlet("/*")
-public class ConcurrentInterfaceWarningServlet extends FATServlet {
+public class ConcurrencyInterfaceWarningServlet extends FATServlet {
 
     @EJB
     AsynchInterfaceLocal ejb;
