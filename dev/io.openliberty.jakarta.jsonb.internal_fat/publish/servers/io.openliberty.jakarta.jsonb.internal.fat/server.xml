@@ -20,6 +20,14 @@
     <application location="jsonbtestapp.war" />
 
     <javaPermission className="java.util.PropertyPermission" actions="read" name="jsonb.creator-parameters-required"/>
+    
+    <!-- FIXME The next permission should not be needed as the jsonp-2.1 feature auto enables
+               <javaPermission className="java.util.PropertyPermission" name="jakarta.json.provider" actions="read"/>
+         This permission doesn't seem to be honored by the security component. 
+         Is this due to the different classloaders used for applications vs API? 
+     -->
+     <javaPermission codebase="${server.config.dir}/apps/jsonbtestapp.war" 
+    				className="java.util.PropertyPermission" name="jakarta.json.provider" actions="read"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

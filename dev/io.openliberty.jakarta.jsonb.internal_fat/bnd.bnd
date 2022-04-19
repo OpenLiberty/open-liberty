@@ -30,5 +30,5 @@ fat.project: true
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
-	io.openliberty.jakarta.jsonp.2.0;version=latest,\
+	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest

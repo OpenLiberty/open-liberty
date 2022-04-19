@@ -747,6 +747,11 @@
       <version>2.0.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.jws</groupId>
       <artifactId>jakarta.jws-api</artifactId>
       <version>3.0.0</version>
@@ -2150,6 +2155,11 @@
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
       <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.parsson</groupId>
+      <artifactId>parsson</artifactId>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>

@@ -34,6 +34,16 @@
                     className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission codebase="${server.config.dir}/providers/fake-json-b.jar"
                     className="java.util.PropertyPermission" name="jsonb.creator-parameters-required" actions="read"/>
+                    
+    <!-- FIXME The next two permissions should not be needed as the jsonp-2.1 feature auto enables
+               <javaPermission className="java.util.PropertyPermission" name="jakarta.json.provider" actions="read"/>
+         This permission doesn't seem to be honored by the security component. 
+         Is this due to the different classloaders used for applications vs API? 
+     -->
+    <javaPermission codebase="${server.config.dir}/apps/jsonbcontainertestapp.war" 
+    				className="java.util.PropertyPermission" name="jakarta.json.provider" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/providers/fake-json-b.jar" 
+    				className="java.util.PropertyPermission" name="jakarta.json.provider" actions="read"/>
 
     <variable name="onError" value="FAIL"/>
 </server>
