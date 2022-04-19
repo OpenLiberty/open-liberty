@@ -60,6 +60,7 @@ public class CheckpointImplTest {
         final List<CheckpointHook> singleThreadedHooks;
         final List<CheckpointHook> multiThreadedHooks;
         final AtomicReference<ClassFileTransformer> transformer = new AtomicReference<>();
+        final AtomicReference<Condition> runningCondition = new AtomicReference<>();
 
         public Hooks(List<CheckpointHook> singleThreadedHooks, List<CheckpointHook> multiThreadedHooks) {
             super();
@@ -86,6 +87,9 @@ public class CheckpointImplTest {
                         if (Condition.class.equals(a[0]) || ClassFileTransformer.class.equals(a[0])) {
                             if (ClassFileTransformer.class.equals(a[0])) {
                                 transformer.set((ClassFileTransformer) a[1]);
+                            }
+                            if (Condition.class.equals(a[0])) {
+                                runningCondition.set((Condition) a[1]);
                             }
                             return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ServiceRegistration.class }, (p1, m1, a1) -> {
                                 if ("unregister".equals(m1.getName())) {
@@ -368,9 +372,12 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        Hooks hooks = new Hooks(asList(hook), emptyList());
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         checkpoint.check();
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertNotNull("Should have running condition now", hooks.runningCondition.get());
     }
 
     @Test
@@ -378,13 +385,16 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.FEATURES);
+        Hooks hooks = new Hooks(asList(hook), emptyList());
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
+        assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         RuntimeUpdateNotification trn = createRuntimeUpdateNotification();
         checkpoint.notificationCreated(null, trn);
         CompletionListener<Boolean> cl = getCompletionListener();
         assertNotNull("Expected to have called onCompletion", cl);
         cl.successfulCompletion(createTestFuture(), Boolean.TRUE);
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertNotNull("Should have running condition now", hooks.runningCondition.get());
     }
 
     public void testCheckpointDeployment() throws CheckpointFailedException, IllegalClassFormatException {
@@ -393,10 +403,12 @@ public class CheckpointImplTest {
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(asList(hook), emptyList());
         new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.DEPLOYMENT);
+        assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         ClassFileTransformer transformer = hooks.transformer.get();
         assertNotNull("Null transformer", transformer);
         transformer.transform(getClass().getClassLoader(), "test", getClass(), null, new byte[] {});
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertNotNull("Should have running condition now", hooks.runningCondition.get());
     }
 
     @Test
