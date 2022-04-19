@@ -42,7 +42,7 @@ Export-Package: \
 	com.ibm.ws.jaxrs20.clientconfig,\
 	org.apache.cxf.feature,\
 	org.apache.cxf.jaxrs.client;version=3.1.18,\
-	com.ibm.ws.cxf.exceptions;version=3.1.18,\
+    com.ibm.ws.cxf.exceptions;version=3.1.18,\
     com.ibm.ws.cxf.client, \
     com.ibm.ws.cxf.client.component
 

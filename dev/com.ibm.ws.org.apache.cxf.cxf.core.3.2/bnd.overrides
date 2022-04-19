@@ -138,7 +138,7 @@ Import-Package: \
   *
 
 -dsannotations: \
- 	com.ibm.ws.cxf.client.component.*
+  com.ibm.ws.cxf.client.component.*
  	
 DynamicImport-Package: \
   com.ctc.wstx.*,\
