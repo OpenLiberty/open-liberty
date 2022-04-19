@@ -58,3 +58,9 @@ java.base/java.text=ALL-UNNAMED
 # For https://github.com/OpenLiberty/open-liberty/issues/20818
 --add-opens
 java.base/sun.net.www.protocol.https=ALL-UNNAMED
+# For https://github.com/OpenLiberty/open-liberty/issues/20858
+--add-exports
+jdk.management.agent/jdk.internal.agent=ALL-UNNAMED
+# Also for https://github.com/OpenLiberty/open-liberty/issues/20858
+--add-exports
+java.base/jdk.internal.vm=ALL-UNNAMED

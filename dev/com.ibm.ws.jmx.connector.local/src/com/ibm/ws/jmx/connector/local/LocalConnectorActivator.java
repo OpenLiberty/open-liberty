@@ -70,13 +70,17 @@ public final class LocalConnectorActivator {
                         String localConnectorAddress = null;
                         // Start the JMX agent and retrieve the local connector address.
                         if (JavaInfo.majorVersion() < 9 ||
-                            (JavaInfo.majorVersion() >= 9 && !Boolean.getBoolean("jdk.attach.allowAttachSelf"))) {
+                            (JavaInfo.majorVersion() >= 9 && (!Boolean.getBoolean("jdk.attach.allowAttachSelf") ||
+                                                              System.getProperty("com.ibm.tools.attach.enable", "yes").equalsIgnoreCase("no")))) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(tc, "Using old code path for self attach using JDK internal APIs",
                                          JavaInfo.majorVersion(),
+                                         System.getProperty("com.ibm.tools.attach.enable", "yes"),
                                          Boolean.getBoolean("jdk.attach.allowAttachSelf"));
-                            // Use JDK internal APIs for Java 8 and older OR if the server was launched in a way that bypassed
-                            // the wlp/bin/server script and therefore did not get the -Djdk.attach.allowAttachSelf=true prop set
+                            // Use JDK internal APIs for Java 8 and older
+                            // OR
+                            // if the server was launched in a way that bypassed the wlp/bin/server script and therefore did not get
+                            // the -Djdk.attach.allowAttachSelf=true prop set or com.ibm.tools.attach.enable was set to no.
                             // TODO: Also go down this path if j2sec is enabled, because the proper API path has permission issues
                             //       which are being looked at under https://github.com/eclipse/openj9/issues/6119
 
