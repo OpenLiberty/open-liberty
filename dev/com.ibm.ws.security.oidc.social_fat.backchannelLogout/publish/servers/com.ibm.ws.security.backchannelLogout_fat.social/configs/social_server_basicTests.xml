@@ -13,9 +13,8 @@
 
 	<include location="${server.config.dir}/imports/socialClientFeatures.xml" />
 
-	<include location="${server.config.dir}/imports/socialClient_logoutTokenValidation.xml" />
-	<include location="${server.config.dir}/imports/client_logoutTokenValidation_filters.xml" />
-	<include location="${server.config.dir}/imports/client_logoutTokenValidation_variables.xml" />
+	<include location="${server.config.dir}/imports/socialClient_configTests.xml" />
+	<include location="${server.config.dir}/imports/client_configTests_filters.xml" />
 
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 
@@ -23,6 +22,7 @@
 	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
 
 	<include location="${server.config.dir}/imports/formlogin_1.xml" />
+	<include location="${server.config.dir}/imports/backchannelLogoutTestApp.xml" />
 
 	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
 	

@@ -13,7 +13,6 @@
 	<openidConnectProvider
 		id="OidcConfigSample"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigSample" />
 
 	<oauthProvider
@@ -56,7 +55,6 @@
 		id="OidcConfigJtiSample"
 		jtiClaimEnabled="true"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigJtiSample" />
 
 	<oauthProvider
@@ -85,7 +83,6 @@
 	<openidConnectProvider
 		id="OidcConfigIssuerSample"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		issuerIdentifier="someIssuer"
 		oauthProviderRef="OAuthConfigIssuerSample" />
 
@@ -118,7 +115,6 @@
 		id="OidcConfigAudienceSample"
 		signatureAlgorithm="HS256"
 		audience="aud1"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigAudienceSample" />
 
 	<oauthProvider
@@ -206,7 +202,6 @@
 		id="OidcConfigNonceSample"
 		nonceEnabled="true"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigNonceSample" />
 
 	<oauthProvider

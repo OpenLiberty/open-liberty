@@ -13,7 +13,6 @@
 	<openidConnectProvider
 		id="OidcConfigSample_hs"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigSample_hs" />
 
 	<oauthProvider

@@ -25,7 +25,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="false"
 		authFilterRef="myClientBackChannelLogoutNotSupportedAuthFilter"
 	>
 	</openidConnectClient>
@@ -44,8 +43,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="false"
-		backchannelLogoutSessionRequired="true"
 		authFilterRef="myClientBackChannelLogoutNotSupportedRequiresSidAuthFilter"
 	>
 	</openidConnectClient>
@@ -64,8 +61,6 @@
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
-		backchannelLogoutSupported="true"
-		backchannelLogoutSessionRequired="true"
 		authFilterRef="myClientRequiresSidAuthFilter"
 	>
 	</openidConnectClient>

@@ -19,10 +19,11 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         //        AlwaysPassesTest.class,
         //        HttpMethodsTests.class,
-        LogoutTokenCreationTests.class,
-//        LogoutTokenValidationTests.class,
-//        //        ClientConfigTests.class,
-//        ServerConfigTests.class
+        //        LogoutTokenCreationTests.class,
+        //        LogoutTokenValidationTests.class,
+        //        //        ClientConfigTests.class,
+        BasicBCLTests.class,
+//        HttpSessionLogoutTests.class
 
 })
 /**

@@ -10,6 +10,7 @@
  -->
 <server>
 
+<!--
 	<oidcLogin
 		id="clientBackChannelLogoutNotSupported"
 		scope="profile email openid"
@@ -62,7 +63,7 @@
 		authFilterRef="myClientRequiresSidAuthFilter"
 	>
 	</oidcLogin>
-
+--
 	<oidcLogin
 		id="clientSignHS256"
 		scope="profile email openid"
@@ -75,7 +76,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS256AuthFilter"
 	>
 	</oidcLogin>
@@ -92,7 +92,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS384AuthFilter"
 	>
 	</oidcLogin>
@@ -109,7 +108,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_hs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		authFilterRef="myClientSignHS512AuthFilter"
 	>
 	</oidcLogin>
@@ -127,7 +125,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignRS256AuthFilter"
 	>
@@ -146,7 +143,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignRS384AuthFilter"
 	>
@@ -165,7 +161,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignRS512AuthFilter"
 	>
@@ -184,7 +179,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignES256AuthFilter"
 	>
@@ -203,7 +197,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignES384AuthFilter"
 	>
@@ -222,7 +215,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignES512AuthFilter"
 	>
@@ -241,7 +233,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS256_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS256AuthFilter"
@@ -261,7 +252,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS384_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS384AuthFilter"
@@ -281,7 +271,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${RS512_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptRS512AuthFilter"
@@ -301,7 +290,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES256_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES256AuthFilter"
@@ -321,7 +309,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES384_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES384AuthFilter"
@@ -341,7 +328,6 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_rs/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		keyManagementKeyAlias="${ES512_keyMgmtAlias}"
 		sslRef="ssl_allSigAlg"
 		authFilterRef="myClientSignEncryptES512AuthFilter"

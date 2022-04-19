@@ -24,7 +24,6 @@
 		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		issuerIdentifier="testIssuer"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 

@@ -94,8 +94,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1625E_FAILED_TO_VALIDATE_ID_TOKEN = "CWWKS1625E";
     public static final String CWWKS1631I_OIDC_ENDPOINT_SERVICE_ACTIVATED = "CWWKS1631I";
     public static final String CWWKS1633E_USERINFO_UNSUPPORTED_PARAM = "CWWKS1633E";
-    public static final String CWWKS1648E_BACK_CHANNEL_LOGOUT_TIMEOUT = "CWWKS1648E";
-    public static final String CWWKS1647E_BACK_CHANNEL_LOGOUT_INVALID_URI = "CWWKS1647E";
+    public static final String CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI = "CWWKS1648E";
+    public static final String CWWKS1649E_BACK_CHANNEL_LOGOUT_TIMEOUT = "CWWKS1649E";
 
     public static final String CWWKS1703E_CLIENT_REQUIRES_HTTPS = "CWWKS1703E";
     public static final String CWWKS1704E_STATE_MISMATCH = "CWWKS1704E";

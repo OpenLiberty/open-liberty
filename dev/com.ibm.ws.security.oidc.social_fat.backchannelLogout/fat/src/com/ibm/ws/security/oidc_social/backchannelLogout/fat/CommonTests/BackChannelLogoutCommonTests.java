@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ibm.websphere.simplicity.log.Log;
 import org.junit.AfterClass;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
@@ -27,6 +26,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Variable;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
@@ -61,6 +61,8 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     protected static final String logoutEventKey = "http://schemas.openid.net/event/backchannel-logout";
     protected static final String defaultLogoutPage = "/oidc/end_session_logout.html";
     protected static final String postLogoutJSessionIdApp = "/backchannelLogoutTestApp/backChannelLogoutJSessionId";
+    protected static final String simpleLogoutApp = "simpleLogoutTestApp";
+
     protected static final boolean sidIsRequired = true;
     protected static final boolean sidIsNotRequired = false;
     protected static final boolean doNotNeedToLogin = true;
@@ -69,6 +71,8 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     protected static final boolean unsuccessfulOPLogout = false;
     protected static final boolean successfulRPLogout = true;
     protected static final boolean unsuccessfulRPLogout = false;
+    protected static final boolean refreshTokenValid = true;
+    protected static final boolean refreshTokenInvalid = false;
 
     public String testClient = null;
     public static TestServer clientServer = null;
@@ -76,6 +80,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     protected static String opCookieName = "testOPCookie";
     protected static String clientCookieName = null;
     protected static String client2CookieName = null;
+    protected static String logoutMethodTested = Constants.END_SESSION;
 
     @AfterClass
     public static void afterClass() {
@@ -414,14 +419,14 @@ public class BackChannelLogoutCommonTests extends CommonTest {
             // try to access the protected app using the existing session
             // the logout steps on both the OP and RP succeeded, so, we should have to login again
             accessAppAfterLogout(webClient, settings, false);
-            refreshTokens(webClient, settings, refresh_token, false);
+            refreshTokens(webClient, settings, refresh_token, refreshTokenInvalid);
         } else {
             // either the OP or RP logout did not complete, so, we should still have access to the app
             accessAppAfterLogout(webClient, settings, true);
-            if (wasOPLogoutSuccessfull) {
-                refreshTokens(webClient, settings, refresh_token, true);
+            if (wasOPLogoutSuccessfull && logoutMethodTested.equals(Constants.END_SESSION)) {
+                refreshTokens(webClient, settings, refresh_token, refreshTokenInvalid);
             } else {
-                refreshTokens(webClient, settings, refresh_token, false);
+                refreshTokens(webClient, settings, refresh_token, refreshTokenValid);
             }
         }
 
@@ -442,19 +447,20 @@ public class BackChannelLogoutCommonTests extends CommonTest {
      * @throws Exception
      */
     // TODO - do we need to make sure that the new access_token is valid?  we've already tested that
-    public void refreshTokens(WebClient webClient, TestSettings settings, String refresh_token, boolean refreshTokenInvalid) throws Exception {
+    public void refreshTokens(WebClient webClient, TestSettings settings, String refresh_token, boolean isRefreshTokenValid) throws Exception {
 
         List<validationData> refreshLogoutExpectations = null;
 
-        if (refreshTokenInvalid) {
+        if (isRefreshTokenValid) {
+            refreshLogoutExpectations = vData.addSuccessStatusCodes();
+            refreshLogoutExpectations = vData.addExpectation(refreshLogoutExpectations, Constants.INVOKE_REFRESH_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive access token", null, Constants.RECV_FROM_TOKEN_ENDPOINT);
+        } else {
             // set expectations for refresh token no longer valid
             refreshLogoutExpectations = vData.addSuccessStatusCodes(null, Constants.INVOKE_REFRESH_ENDPOINT);
             refreshLogoutExpectations = vData.addExpectation(refreshLogoutExpectations, Constants.INVOKE_REFRESH_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not receive error message trying to refresh token", null, ".*" + Constants.ERROR_RESPONSE_DESCRIPTION + ".*" + MessageConstants.CWOAU0029E_TOKEN_NOT_IN_CACHE);
-        } else {
-            refreshLogoutExpectations = vData.addSuccessStatusCodes();
-            refreshLogoutExpectations = vData.addExpectation(refreshLogoutExpectations, Constants.INVOKE_REFRESH_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive access token", null, Constants.RECV_FROM_TOKEN_ENDPOINT);
         }
         invokeGenericForm_refreshToken(_testName, webClient, settings, refresh_token, refreshLogoutExpectations);
+
     }
 
     /**
@@ -532,7 +538,11 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         if (logoutPage.equals(postLogoutJSessionIdApp)) {
             expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the post back channel logout test app", null, postLogoutJSessionIdApp);
         } else {
-            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, testOPServer.getHttpsString() + defaultLogoutPage);
+            if (logoutPage.equals(simpleLogoutApp)) {
+                expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the simple logout test app", null, simpleLogoutApp);
+            } else {
+                expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, testOPServer.getHttpsString() + defaultLogoutPage);
+            }
         }
 
         return expectations;
@@ -672,7 +682,12 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     public String getRefreshToken(Object response) throws Exception {
 
-        String refreshToken = validationTools.getTokenFromResponse(response, Constants.REFRESH_TOKEN_KEY);
+        String refreshKey = Constants.REFRESH_TOKEN_KEY;
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(SocialConstants.SOCIAL)) {
+            refreshKey = "refresh token";
+        }
+
+        String refreshToken = validationTools.getTokenFromResponse(response, refreshKey);
         Log.info(thisClass, "getRefreshToken", "Refresh Token: " + refreshToken);
         return refreshToken;
 
@@ -708,9 +723,18 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         Log.info(thisClass, thisMethod, " Searching for key:  " + tokenName);
 
         String searchResult = server.getServer().waitForStringInLogUsingMark(tokenName, server.getServer().getMatchingLogFile(Constants.MESSAGES_LOG));
+        Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
+        Log.info(thisClass, thisMethod, searchResult);
+        Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
         if (searchResult != null) {
             int start = searchResult.indexOf(tokenName);
-            String theValue = searchResult.substring(start + tokenName.length(), searchResult.length() - 1);
+            int len = tokenName.length();
+            if (start == -1) {
+                start = searchResult.indexOf("logout_token: ");
+                len = "logout_token: ".length();
+            }
+            Log.info(thisClass, thisMethod, "start: " + start + " length: " + searchResult.length());
+            String theValue = searchResult.substring(start + len, searchResult.length() - 1);
             Log.info(thisClass, thisMethod, tokenName + " " + theValue);
             if (!theValue.isEmpty()) {
                 return theValue;

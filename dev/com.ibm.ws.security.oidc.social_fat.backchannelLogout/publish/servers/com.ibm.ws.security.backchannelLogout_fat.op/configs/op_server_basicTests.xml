@@ -26,4 +26,6 @@
 
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 
+	<include location="${server.config.dir}/imports/simpleLogoutTestApp.xml" />
+
 </server>

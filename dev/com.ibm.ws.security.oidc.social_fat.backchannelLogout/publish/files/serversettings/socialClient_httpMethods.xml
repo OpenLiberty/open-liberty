@@ -23,7 +23,6 @@
 		userInfoEndpointEnabled="true" 
 		issuer="testIssuer"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		>
 	</oidcLogin>
 

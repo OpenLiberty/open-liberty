@@ -74,7 +74,7 @@
 
   <servlet-mapping id="ServletMapping_5">
     <servlet-name>BackChannelLogout_logMsg_Servlet</servlet-name>
-    <url-pattern>/backChannelLogoutLogMsg</url-pattern>
+    <url-pattern>/backChannelLogoutLogMsg/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping id="ServletMapping_6">

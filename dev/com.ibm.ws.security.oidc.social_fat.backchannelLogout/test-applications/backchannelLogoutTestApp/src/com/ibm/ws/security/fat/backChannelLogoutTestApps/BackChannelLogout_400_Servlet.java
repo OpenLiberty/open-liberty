@@ -12,6 +12,8 @@ package com.ibm.ws.security.fat.backChannelLogoutTestApps;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,13 +23,17 @@ import javax.servlet.http.HttpServletResponse;
 public class BackChannelLogout_400_Servlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    int count = 0;
+    PrintWriter writer = null;
+    private final Lock lock = new ReentrantLock(true);
 
     public BackChannelLogout_400_Servlet() {
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleRequest(resp);
+        System.out.println("Resetting 400 servlet counter");
+        count = 0;
     }
 
     @Override
@@ -36,15 +42,25 @@ public class BackChannelLogout_400_Servlet extends HttpServlet {
     }
 
     private void handleRequest(HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter writer = resp.getWriter();
+        lock.lock();
+        try {
+            writer = resp.getWriter();
 
-        System.out.println("BackChannelLogout_400_Servlet - returning status code of 400 ");
-        writer.println("BackChannelLogout_400_Servlet - returning status code of 400 ");
+            count = count + 1;
 
-        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println("BackChannelLogout_400_Servlet - " + count + " returning status code of 400 ");
+            writer.println("BackChannelLogout_400_Servlet - " + count + " returning status code of 400 ");
 
-        writer.flush();
-        writer.close();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        } catch (Exception e) {
+            System.out.println("Post exception: " + e.getMessage());
+        } finally {
+            if (writer != null) {
+                writer.flush();
+                writer.close();
+            }
+            lock.unlock();
+        }
     }
-
 }
