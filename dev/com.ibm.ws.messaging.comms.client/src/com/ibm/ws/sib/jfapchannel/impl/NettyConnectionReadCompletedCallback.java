@@ -10,21 +10,26 @@ import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.netty.jfapchannel.NettyIOConnectionContext;
 import com.ibm.ws.netty.jfapchannel.NettyIOReadRequestContext;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
-import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
-import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
 
+import io.openliberty.netty.internal.exception.NettyException;
+
+/**
+ * Callback used to notify a Netty connection that a read operation has completed.
+ * Each connection should have exactly one of these callbacks. Based on com.ibm.ws.sib.jfapchannel.impl.ConnectionReadCompletedCallback
+ */
 public class NettyConnectionReadCompletedCallback implements IOReadCompletedCallback{
 
 	private static final TraceComponent tc = SibTr.register(NettyConnectionReadCompletedCallback.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
@@ -47,10 +52,8 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 		
 	   private ConversationImpl conversation;
 
-	//   private TCPConnectionContext tcpCtx;                                 // F184828
-	   private NettyIOConnectionContext tcpCtx;
-	//   private TCPReadRequestContext readCtx;                               // F184828
-	   private NettyIOReadRequestContext readCtx;
+	   private NettyIOConnectionContext tcpCtx;                                 // F184828
+	   private NettyIOReadRequestContext readCtx;                                 // F184828
 
 	   // The packet number we are expecting on the next transmission.
 	//   private byte expectedPacketNumber = (short) 0;                       // F173152
@@ -70,7 +73,7 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 
 	   // Set when the connection we are reading from is closing and we should
 	   // not issue any further read requests.  Anyone testing or setting this
-	   // flag should synchronise on the connectionClosingLock object to
+	   // flag should synchronize on the connectionClosingLock object to
 	   // prevent problems with concurrency.
 	   private boolean connectionClosing = false;                           // F183461
 
@@ -80,9 +83,6 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 
 	   // Parser for inbound transmissions.
 	   private InboundTransmissionParser xmitParser;                        // F181603.2
-
-	   // Is this the first ever invocation of this classes complete method?
-	   private boolean isFirstCompleteInvocation = true;                    // F181603.2
 
 	   // This object is synchronized on when updating the invocation count
 	   private Object invocationCountLock = new Object();
@@ -128,7 +128,7 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	   }
 	   
 	   // Netty Specific read complete method
-	   public void readCompleted(WsByteBuffer buff) {
+	   public void readCompleted(WsByteBuffer buff, IOReadRequestContext rctx, NettyNetworkConnection vc) {
 		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "readCompleted", new Object[] {buff});
 
 		      // First update the invocation count. If we are being called back on the same thread as
@@ -151,26 +151,106 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 		         synchronized(this)
 		         {
 		            
-		               WsByteBuffer contextBuffer = buff;
+		        	 boolean done = false;
+		             do
+		             {
+		                done = true;
+		                WsByteBuffer contextBuffer = buff;
 
-		               contextBuffer.flip();
+		                contextBuffer.flip();
 
-		               // Notify PMI that read has completed.
-		               if (conversation.getConversationType() == Conversation.CLIENT)
-		               {
-		                  xmitParser.setType(Conversation.CLIENT);
-		               }
-		               else if (conversation.getConversationType() == Conversation.ME)
-		               {
-		                  xmitParser.setType(Conversation.ME);
-		               }
+		                // Notify PMI that read has completed.
+		                if (conversation.getConversationType() == Conversation.CLIENT)
+		                {
+		                   xmitParser.setType(Conversation.CLIENT);
+		                }
+		                else if (conversation.getConversationType() == Conversation.ME)
+		                {
+		                   xmitParser.setType(Conversation.ME);
+		                }
 
-		               if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) JFapUtils.debugTraceWsByteBuffer(this, tc, contextBuffer, 16, "data received");
+		                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) JFapUtils.debugTraceWsByteBuffer(this, tc, contextBuffer, 16, "data received");
 
-		               xmitParser.parse(contextBuffer);
+		                xmitParser.parse(contextBuffer);
 
-//	                     contextBuffer.clear();
+		          		if ((rctx != null) && (!receivePhysicalCloseRequest))
+		          		{
+		                   // Calculate the amount of time before the request times out
+		                   // This is the mechanism by which we implement heartbeat
+		                   // intervals and time outs.
+		                   int timeout;
+		                   if (awaitingHeartbeatResponse.isSet())
+		                   {
+		                      // We can only reach this point in the code if we have
+		                      // made a heartbeat request but this callback was driven
+		                      // because of a non-heartbeat response.  In previous versions
+		                      // of the code we were careful to calculate the remaining time and
+		                      // make another read request.  This caused timeouts ala defect
+		                      // 363463.  So, now the code is more generous and resets its
+		                      // timer to the full heartbeat timeout value every time any
+		                      // non-heartbeat trasmission is received from our peer.  This isn't
+		                      // unreasonable as the fact we are receiving data indicates that the
+		                      // peer is probably still healthy.
+		                      timeout = currentHeartbeatTimeout;
+		                      if (timeout < 1) timeout = 1;
+		                   }
+		                   else
+		                   {
+		                      // We are not awaiting a heartbeat response, use the
+		                      // heartbeat interval as our timeout.
+		                      timeout = thisConnection.getHeartbeatInterval();
+		                   }
 
+		                   if (timeout > 0)
+		                   {
+		                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "setting heartbeat timeout to: "+(timeout*1000)+" milliseconds");
+		                   }
+		                   else
+		                   {
+		                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "not using a heartbeat timeout");
+		                      timeout = 0;
+		                      
+		                   }
+
+		                   boolean closing = false;
+		                   synchronized(connectionClosingLock)
+		                   {
+		                      closing = connectionClosing;
+		                   }
+
+		                   //If the connection is closing/closed our buffers will have been released, so make sure we don't use them again.
+		                   if (!closing)
+		                   {
+		                      // Crude way to ensure we end up with the right sized read buffer.
+		                      
+		                	   //TODO: Check if we need this
+//		                      contextBuffer.clear();
+
+		                      // Decide whether to explicitly request a thread switch. We'll do this if we
+		                      // have been recursively called more than MAX_INVOCATIONS_BEFORE_THREAD_SWITCH
+		                      // TODO: Everything will be async. Check how to make this better since this is not needed I think
+		                	  boolean forceQueue = false;
+		                      synchronized (invocationCountLock)
+		                      {
+		                         if (invocationCount > MAX_INVOCATIONS_BEFORE_THREAD_SWITCH)
+		                         {
+		                            forceQueue = true;
+		                            lastInvokedOnThread = null;
+		                         }
+		                      }
+
+		                      if (thisConnection.isLoggingIOEvents()) thisConnection.getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(rctx)+" with a timeout of "+timeout);
+		                      try {
+	                    		vc.setHearbeatInterval(timeout);
+								done = (rctx.read(1, this, forceQueue, timeout) == null);
+							} catch (NettyException e) {
+								throw new RuntimeException(e);
+							}
+		                    
+		                   }
+		          		}
+		             }
+		             while(!done);
 		         }
 		      }
 		      catch(Error error)
@@ -205,7 +285,7 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 		         // Don't throw the RuntimeException on as we risk blowing away part of the TCP channel.
 		      }
 
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "complete");
+				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "readCompleted");
 	   }
 
 	   /**
@@ -217,13 +297,24 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	   public void complete(NetworkConnection vc, IOReadRequestContext rctx)
 	   {	
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "complete", new Object[] {vc, rctx});
-	      SibTr.error(tc, "Can't call this method for Netty specfics", rctx);
+	      if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) SibTr.error(tc, "Can't call this method for Netty specifics", rctx);
+	      RuntimeException runtimeException = new RuntimeException("Invalid method called for Netty");
+	      FFDCFilter.processException
+         (runtimeException, "com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback", JFapChannelConstants.CONNREADCOMPCALLBACK_COMPLETE_02, thisConnection.getDiagnostics(true));
+         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) SibTr.exception(this, tc, runtimeException);
+
+         // We can reasonably try to recover from a runtime exception by invalidating the associated
+         // connection.  This should drive the underlying TCP/IP socket to be closed.
+         thisConnection.invalidate(false, runtimeException, "RuntimeException caught in NettyConnectionReadCompletedCallback.complete");
+
+         // Don't throw the RuntimeException on as we risk blowing away part of the TCP channel.
+         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "complete");
 		}
 
 
 	   /**
 	    * Part of the read completed callback interface.  Notified when an error
-	    * occurres during a read operation.
+	    * occurs during a read operation.
 	    */
 	   public void error(NetworkConnection vc,
 	                     IOReadRequestContext rrc,
@@ -253,7 +344,7 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 
 	               // We should only enter this arm of the if statement
 	               // if we have timed out on a previous request.  This
-	               // must be heartbeat realted.
+	               // must be heartbeat related.
 	               if (awaitingHeartbeatResponse.isSet())
 	               {
 	                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "timed out waiting for heartbeat response");  // F177053
@@ -330,18 +421,20 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "timed out but heartbeating now switched off");
 
 	                  // begin D183461
-	                  NetworkConnection rvc = null;
 	                  synchronized(connectionClosingLock)
 	                  {
 	                     if (!connectionClosing)
 	                     {
 	                        if (thisConnection.isLoggingIOEvents()) thisConnection.getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(readCtx)+" with no timeout");
-	                        rvc = readCtx.read(1, this, false, IOReadRequestContext.NO_TIMEOUT);      // F184828
+	                        try {
+								((NettyNetworkConnection)vc).setHearbeatInterval(0);
+		                        readCtx.read(1, this, false, IOReadRequestContext.NO_TIMEOUT);      // F184828
+							} catch (NettyException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 	                     }
 	                  }
-	                  // end D183461
-	                  if (rvc != null)
-	                     complete(rvc, readCtx);
 	                 
 	               }
 	               // end F177053
@@ -390,17 +483,20 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "setting heartbeat timeout to: "+timeout+" milliseconds");   // F177053
 
 	                     // begin F177053, D183461
-	                     NetworkConnection rvc = null;
 	                     synchronized(connectionClosingLock)
 	                     {
 	                        if (!connectionClosing)
 	                        {
 	                           if (thisConnection.isLoggingIOEvents()) thisConnection.getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(readCtx)+" with a timeout of "+timeout);
-	                           rvc = readCtx.read(1, this, false, timeout);    // F184828
+	                           try {
+	                        		((NettyNetworkConnection)vc).setHearbeatInterval(currentHeartbeatTimeout);
+									readCtx.read(1, this, false, timeout);    // F184828
+								} catch (NettyException e) {
+									// We failed to send a heartbeat request to our peer.
+				                     thisConnection.invalidate(false, e, "exception caught while attempting to send heartbeat");  // D224570
+								}
 	                        }
 	                     }
-	                     if (rvc != null)
-	                        complete(rvc, readCtx);
 	                     // end F177053, D183461
 	                  }
 	                  else
@@ -408,7 +504,6 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	                     // We failed to send a heartbeat request to our peer.
 	                     thisConnection.invalidate(false, sendException, "exception caught while attempting to send heartbeat");  // D224570
 
-	                  
 	                  }
 	                  // end D221868
 	               }
@@ -426,6 +521,7 @@ public class NettyConnectionReadCompletedCallback implements IOReadCompletedCall
 	               // end F176003
 	             
 	               //Note that this also deals with the buffer returned by getBuffer.
+	               // TODO: Think we can remove this not necessary for Netty
 	         		final IOReadRequestContext req = readCtx;
 	               final WsByteBuffer[] buffers = req.getBuffers();
 	         		if (buffers != null)

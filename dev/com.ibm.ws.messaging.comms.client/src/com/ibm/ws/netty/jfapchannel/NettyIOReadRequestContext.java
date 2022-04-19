@@ -1,25 +1,14 @@
 package com.ibm.ws.netty.jfapchannel;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
-import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
-import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
-import com.ibm.ws.sib.jfapchannel.richclient.buffer.impl.RichByteBufferPool;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOReadRequestContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.channelfw.VirtualConnection;
-import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
-import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
-
-import io.netty.channel.Channel;
-import io.openliberty.netty.internal.exception.NettyException;
 
 public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOReadRequestContext{
 
@@ -55,7 +44,7 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setBuffer", buffer);
 	      
-	      //TODO: Figure out what to do here
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 	      
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setBuffer");
 	   }
@@ -68,7 +57,7 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setBuffers", Arrays.toString(buffers));
 
-	      // TODO: Figure out what to do here
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 	         
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setBuffers");
 	   }
@@ -80,9 +69,8 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 	   public WsByteBuffer getBuffer()
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getBuffer");
-//	      WsByteBuffer jfapByteBuffer = ((RichByteBufferPool) WsByteBufferPool.getInstance()).wrap(readCtx.getBuffer());
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getBuffer");
-//	      return jfapByteBuffer;
 	      return null;
 	   }
 
@@ -94,7 +82,7 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getBuffers");
 
-	      //TODO: Figure out what to do here when called
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getBuffers");
 	      return null;
@@ -110,7 +98,7 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "read",
 	                                           new Object[]{Integer.valueOf(amountToRead), completionCallback, Boolean.valueOf(forceQueue), Integer.valueOf(timeout)});
-	      // Just return null here for now?
+	      // TODO Just return null here for now? Everything is async and originally it was expecting null if async
 	      this.conn.getVirtualConnection().read();
 	      return null;
 	   }

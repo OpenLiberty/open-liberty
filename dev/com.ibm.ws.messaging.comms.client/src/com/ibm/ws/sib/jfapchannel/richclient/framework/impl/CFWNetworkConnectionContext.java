@@ -55,7 +55,7 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
 
     /**
      * @param connLink
-     */ // Could use either concreate jfap class or similar analogous placeholder
+     */
     public CFWNetworkConnectionContext(NetworkConnection conn, ConnectionLink connLink)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -101,7 +101,7 @@ public class CFWNetworkConnectionContext implements NetworkConnectionContext
     /**
      * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext#getIOContextForDevice()
      */
-    @Override // Connlink instance of JMS class could add API to get netty channel and use netty channel instead of connlink
+    @Override
     public IOConnectionContext getIOContextForDevice()
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

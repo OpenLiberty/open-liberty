@@ -133,15 +133,6 @@ public class CFWNetworkConnectionFactory implements NetworkConnectionFactory
         return conn;
     }
 
-/*
- * (non-Javadoc)
- * 
- * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory#getOutboundVirtualConFactory()
- */
-//    @Override
-//    public VirtualConnectionFactory getOutboundVirtualConFactory(){
-//        return vcFactory;
-//    }
     
     @Override
     public void destroy() throws FrameworkException{

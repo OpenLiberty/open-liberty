@@ -771,7 +771,6 @@ public class ConnectionDataGroup
             SibTr.entry(this, tc, "connectOverNetwork", new Object[] { addressHolder, factoryHolder });
 
         NetworkConnectionFactory vcf = factoryHolder.getFactory();
-        // TODO: If use Netty, need to get the conversation type to establish the mapping
         NetworkConnection vc = vcf.createConnection();
         Semaphore sem = new Semaphore();
         ClientConnectionReadyCallback callback = new ClientConnectionReadyCallback(sem);

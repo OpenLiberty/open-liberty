@@ -8,19 +8,11 @@ import javax.net.ssl.SSLSession;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
-import com.ibm.ws.sib.jfapchannel.MetaDataProvider;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOConnectionContext;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnection;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnectionContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
-import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
-
-import io.netty.channel.Channel;
 
 public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 
@@ -34,7 +26,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(tc,
-                        "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/jfapchannel/netty/NettyNetworkConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
+                        "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyNetworkConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
     }
 
     /** The underlying connection link */
@@ -46,7 +38,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 
     /**
      * @param connLink
-     */ // Could use either concreate jfap class or similar analogous placeholder
+     */
     public NettyNetworkConnectionContext(NettyNetworkConnection conn)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -62,8 +54,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 			
 			@Override
 			public SSLSession getSSLSession() {
-				// TODO Check what to do with SSL here
-				return null;
+				return conn.getSSLSession();
 			}
 			
 			@Override
@@ -117,7 +108,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
         	conn.getVirtualConnection().close();
         }else {
         	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "close", "Found NULL Netty Channel to close");
+                SibTr.debug(this, tc, "close", "Found NULL or non active Netty Channel to close");
         }
         	
 
@@ -128,7 +119,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
     /**
      * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext#getIOContextForDevice()
      */
-    @Override // Connlink instance of JMS class could add API to get netty channel and use netty channel instead of connlink
+    @Override
     public IOConnectionContext getIOContextForDevice()
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

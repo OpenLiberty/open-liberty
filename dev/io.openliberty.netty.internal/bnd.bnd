@@ -19,7 +19,8 @@ WS-TraceGroup: Netty
 
 Export-Package: \
   io.openliberty.netty.internal, \
-  io.openliberty.netty.internal.exception
+  io.openliberty.netty.internal.exception, \
+  io.openliberty.netty.internal.tls
 
 -buildpath: \
 	com.ibm.ws.logging,\
@@ -35,4 +36,5 @@ Export-Package: \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.io.netty;version=latest,\
-	io.openliberty.endpoint
+	io.openliberty.endpoint,\
+	io.openliberty.io.netty.ssl
