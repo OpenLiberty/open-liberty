@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import com.ibm.ws.wssecurity.fat.cxf.sample.CxfBspTests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfInteropX509Tests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSampleTests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSymSampleTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CheckpointRestoreAuthenticationTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CheckpointRestoreTimeoutTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfDeriveKeyTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfPasswordDigestTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTBasicTests;
@@ -49,9 +51,11 @@ import componenttest.rules.repeater.RepeatTests;
                 CxfCallerUNTTests.class,
                 CxfSampleTests.class,
                 CxfSymSampleTests.class,
+                CheckpointRestoreAuthenticationTests.class,
 
                 //Full
                 CxfSSLUNTNonceTimeOutTests.class,
+                CheckpointRestoreTimeoutTests.class,
                 CxfPasswordDigestTests.class,
                 CxfSSLUNTBasicTests.class,
                 CxfUNTNonceTests.class,

@@ -44,6 +44,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -114,6 +115,13 @@ public class SSLTestCommon {
 
         Log.info(thisClass, "initServer", "before server.startServer() inside SSLTestCommon");
         server.startServer();// will check CWWKS0008I: The security service is ready.
+        verifyServerStarted(thisMethod);
+    }
+
+    /**
+     * @param thisMethod
+     */
+    private static void verifyServerStarted(String thisMethod) {
         Log.info(thisClass, "setUp", "after initServer inside SSLTestCommon");
 
         portNumber = "" + server.getHttpDefaultPort();
@@ -178,8 +186,20 @@ public class SSLTestCommon {
                      "Unable to set default TrustManager", e);
             throw new RuntimeException("Unable to set default TrustManager", e);
         }
+    }
 
-        return;
+    protected static void checkpointAndRestoreServer(String customServerXml) throws Exception {
+        String thisMethod = "checkpointAndRestoreServer";
+
+        Log.info(thisClass, "checkpointServer", "checkpoint and restore server");
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer();
+        if (customServerXml != null) {
+            server.setServerConfigurationFile(customServerXml);
+        }
+        server.checkpointRestore();
+
+        verifyServerStarted(thisMethod);
     }
 
     public void genericTest(String thisMethod, String useThisUrl,

@@ -57,7 +57,8 @@ tested.features:\
   cdi-2.0, \
   cdi-3.0, \
   el-3.0, \
-  expressionlanguage-4.0	
+  expressionlanguage-4.0, \
+  checkpoint-1.0	
 	
 	
 -buildpath: \
