@@ -96,6 +96,9 @@ public class TestCheckpointHook implements CheckpointHook {
                            System.getenv("TEST_MUTABLE_KEY3") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY4"));
         System.out.println("TESTING - prepare running condition: " + getRunningCondition());
+        if (config.get("fail.prepare") != null) {
+            throw new IllegalStateException("TESTING - prepare hook fails.");
+        }
     }
 
     @Override
@@ -108,6 +111,9 @@ public class TestCheckpointHook implements CheckpointHook {
                            System.getenv("TEST_MUTABLE_KEY3") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY4"));
         System.out.println("TESTING - restore running condition: " + getRunningCondition());
+        if (config.get("fail.restore") != null) {
+            throw new IllegalStateException("TESTING - restore hook fails.");
+        }
     }
 
     private String getConfig() {
