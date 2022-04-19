@@ -74,7 +74,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                                     policyOption = ReferencePolicyOption.GREEDY,
                                     target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
            },
-           property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
+           property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
+           // use immediate component to avoid lazy instantiation and deactivate
+           immediate = true)
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
@@ -118,7 +120,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              */
             this.criu = new ExecuteCRIU() {
                 @Override
-                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
+                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps,
+                                 boolean unprivileged) throws CheckpointFailedException {
                     prepare.run();
                     restore.run();
                 }
