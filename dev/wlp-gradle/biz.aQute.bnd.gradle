@@ -42,12 +42,12 @@ subprojects {
     apply from: rootProject.file('wlp-gradle/subprojects/assemble.gradle')
 
     // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.	
-    if (bndis('fat.project')) {
+    if (bnd.is('fat.project')) {
       apply from: rootProject.file('wlp-gradle/subprojects/fat.gradle')
 
     // Apply OSS Audit plugin to all non-test projects that output bundles.
     // See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
-    } else if (!bndis('test.project') && !bndProject.isNoBundles()) {
+    } else if (!bnd.is('test.project') && !bndProject.isNoBundles()) {
       apply plugin: 'net.ossindex.audit'
 
       audit {

@@ -13,7 +13,6 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/common/src,\
     test-applications/olgh8014/src,\
     test-applications/olgh14137/src,\
     test-applications/olgh17369/src,\

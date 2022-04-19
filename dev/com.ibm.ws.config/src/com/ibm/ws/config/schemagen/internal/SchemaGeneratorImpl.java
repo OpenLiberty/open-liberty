@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import com.ibm.websphere.metatype.SchemaGenerator;
 import com.ibm.websphere.metatype.SchemaGeneratorOptions;
 
 /**
- * 
+ *
  */
 public class SchemaGeneratorImpl implements SchemaGenerator {
 
@@ -65,6 +65,8 @@ public class SchemaGeneratorImpl implements SchemaGenerator {
         schemaWriter.setLocale(options.getLocale());
         schemaWriter.setIgnoredPids(options.getIgnoredPids());
         schemaWriter.setIsRuntime(options.isRuntime());
+        schemaWriter.setOutputVersion(options.outputVersion());
+        schemaWriter.setSchemaVersion(options.schemaVersion());
 
         for (Bundle bundle : options.getBundles()) {
             MetaTypeInformation info = metaTypeService.getMetaTypeInformation(bundle);

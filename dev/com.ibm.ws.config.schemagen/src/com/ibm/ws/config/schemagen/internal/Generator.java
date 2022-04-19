@@ -14,15 +14,10 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -153,7 +148,9 @@ public class Generator {
 
                     showPurpose();                    
                     showBriefUsage();
-                    
+
+                    rc = ReturnCode.OK;
+                    break;
                 default:
                     rc = ReturnCode.BAD_ARGUMENT;
                     break;
@@ -181,7 +178,8 @@ public class Generator {
     private void generate(List<MetaTypeInformationSpecification> metatype) {
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         try {
-            PrintWriter writer = new PrintWriter(generatorOptions.getOutputFile(), generatorOptions.getEncoding());
+            String outputFileName = generatorOptions.getOutputFile();
+            PrintWriter writer = new PrintWriter(outputFileName, generatorOptions.getEncoding());
             XMLStreamWriter xmlWriter = null;
             if (generatorOptions.getCompactOutput()) {
             	 xmlWriter = new CompactOutputXMLStreamWriter(factory.createXMLStreamWriter(writer));
@@ -200,6 +198,7 @@ public class Generator {
                 schemaWriter.add(item);
             }
             schemaWriter.generate(true);
+            System.out.println(MessageFormat.format(messages.getString("schemagen.info.schema.file.created"), outputFileName));           
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -223,31 +222,19 @@ public class Generator {
         final String odpfx = "option-desc.";
 
         // Kernel feature list tools and schema tools for some reason share the same configuration options file.
-        // Create an exclusion set to prevent the schema generator tool help from displaying undesired information.
-        Set<String> exclusionSet = new HashSet<String>();
-        exclusionSet.add("option-key.productExtension");
-        
-        Enumeration<String> keys = options.getKeys();
-        Set<String> optionKeys = new TreeSet<String>();
+        // Hard-code the ones that apply to the schema generator tool to prevent --help from displaying undesired information.
 
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            if (key.startsWith(okpfx) && !exclusionSet.contains(key)) {
-                optionKeys.add(key);
-            }
-        }
+        String[] optionKeys = new String[] { "option-key.compactoutput", "option-key.encoding", "option-key.ignorePids", "option-key.locale", "option-key.schemaVersion", "option-key.outputVersion" };
 
-        if (optionKeys.size() > 0) {
-            System.out.println(options.getString("use.options"));
+        System.out.println(options.getString("use.options"));
+        System.out.println();
+
+        // Print each option and it's associated descriptive text
+        for (String optionKey : optionKeys) {
+            String option = optionKey.substring(okpfx.length());
+            System.out.println(options.getString(optionKey));
+            System.out.println(options.getString(odpfx + option));
             System.out.println();
-
-            // Print each option and it's associated descriptive text
-            for (String optionKey : optionKeys) {
-                String option = optionKey.substring(okpfx.length());
-                System.out.println(options.getString(optionKey));
-                System.out.println(options.getString(odpfx + option));
-                System.out.println();
-            }
         }
     }
 }

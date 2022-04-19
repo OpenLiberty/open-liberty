@@ -1,0 +1,9 @@
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>2.0</jsp-version>
+  <short-name>tag1</short-name>
+  <tag>
+    <name>hitMe</name>
+    <tag-class>com.ibm.ws.cdi.jee.ejbWithJsp.jsp.tagHandlers.JspCdiHitMeTag</tag-class>
+  </tag>
+</taglib>

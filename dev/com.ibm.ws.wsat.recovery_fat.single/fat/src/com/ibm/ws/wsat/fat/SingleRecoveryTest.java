@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -37,9 +37,7 @@ import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
-import com.ibm.ws.transaction.fat.util.FATUtils;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class SingleRecoveryTest {
@@ -67,7 +65,6 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void WSTXREC001FVT() throws Exception {
 		recoveryTest("01");
 	}
@@ -83,7 +80,6 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.RollbackException" })
 	public void WSTXREC004FVT() throws Exception {
@@ -91,6 +87,7 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.RollbackException" })
 	public void WSTXREC005FVT() throws Exception {
@@ -105,14 +102,11 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
-	@Mode(TestMode.LITE)
 	public void WSTXREC007FVT() throws Exception {
 		recoveryTest("07");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
 	public void WSTXREC008FVT() throws Exception {
 		recoveryTest("08");
 	}
@@ -123,7 +117,6 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void WSTXREC010FVT() throws Exception {
 		recoveryTest("10");
 	}
@@ -142,7 +135,6 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
-	@Mode(TestMode.LITE)
 	public void WSTXREC013FVT() throws Exception {
 		recoveryTest("13");
 	}
@@ -155,39 +147,30 @@ public class SingleRecoveryTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-	// Should be expected but that doesn't seem to work with multiple ffdc
-	// summaries
 	public void WSTXREC015FVT() throws Exception {
 		recoveryTest("15");
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-	@Mode(TestMode.LITE)
-	// Should be expected but that doesn't seem to work with multiple ffdc
-	// summaries
 	public void WSTXREC016FVT() throws Exception {
 		recoveryTest("16");
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-	// Should be expected but that doesn't seem to work with multiple ffdc
-	// summaries summaries
 	public void WSTXREC017FVT() throws Exception {
 		recoveryTest("17");
 	}
 
 	@Test
+	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-	// Should be expected but that doesn't seem to work with multiple ffdc
-	// summaries
 	public void WSTXREC018FVT() throws Exception {
 		recoveryTest("18");
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"com.ibm.tx.jta.XAResourceNotAvailableException" })
 	public void WSTXREC037FVT() throws Exception {
@@ -209,7 +192,6 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"javax.transaction.SystemException" })
 	public void WSTXREC040FVT() throws Exception {
@@ -217,40 +199,28 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	// - removed pending defect 194984
-	// Jon's comment before fix: This test is wrong I think. Can't see where
-	// server is restarted for the second time
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException"})
 	public void WSTXREC041FVT() throws Exception {
 		recoveryTest("41");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
-	@ExpectedFFDC(value = { "javax.transaction.RollbackException" })
+	@Mode(TestMode.LITE)
+	@ExpectedFFDC(value = { "javax.transaction.RollbackException", "javax.transaction.xa.XAException" })
 	public void WSTXREC042FVT() throws Exception {
 		recoveryTest("42");
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
-	//	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
 	public void WSTXREC043FVT() throws Exception {
 		recoveryTest("43");
 	}
 
 	@Test
-	// Jon's comment before fix: This test is wrong. Trace is saying things
-	// like commit is not the expected direction but the doc for the test
-	// says everything should commit
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException"})
 	public void WSTXREC044FVT() throws Exception {
 		recoveryTest("44");
 	}
 
 	@Test
-	// Jon's comment before fix: This test is wrong. It kills the server before
-	// resync has completed
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException",
 			"com.ibm.tx.jta.XAResourceNotAvailableException" })
 	public void WSTXREC045FVT() throws Exception {
@@ -258,14 +228,11 @@ public class SingleRecoveryTest {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
-	@AllowedFFDC(value = { "java.net.SocketException" })
 	public void WSTXREC046FVT() throws Exception {
 		recoveryTest("46");
 	}
 
 	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException" })
 	public void WSTXREC047FVT() throws Exception {
 		recoveryTest("47");
 	}
@@ -290,12 +257,11 @@ public class SingleRecoveryTest {
 			System.out.println(logKeyword + "callServlet with setupRec and "
 					+ id + " end");
 		} catch (Throwable e) {
+			Log.info(this.getClass(), method, "setupRec" + id + " failed to return. As expected.");
 		}
-		Log.info(this.getClass(), method, "setupRec" + id + " returned: "
-				+ result);
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
-		server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 		System.out.println(logKeyword + "waitForStringInLog Dump State end");
 
 		ProgramOutput po;
@@ -309,10 +275,10 @@ public class SingleRecoveryTest {
 			}
 
 			// make sure it's dead
-			server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+	        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 		}
 
-		po = server1.startServerAndValidate(false, true, true);
+		po = server1.startServerAndValidate(false, false, false);
 		System.out.println("Start server return code: " + po.getReturnCode());
 
 		// Server appears to have started ok
@@ -329,6 +295,8 @@ public class SingleRecoveryTest {
 //				e.printStackTrace();
 //			}
 //		}
+		
+		server1.validateAppsLoaded();
 
 		Log.info(this.getClass(), method, "callServlet checkRec" + id);
 		try {
@@ -379,7 +347,7 @@ public class SingleRecoveryTest {
 		assertNotNull(result);
 		System.out
 				.println("Recover test " + testNumber + " Result : " + result);
-		assertTrue("Get emplty reply from server: " + result,
+		assertTrue("Get empty reply from server: " + result,
 				!result.equals(""));
 		assertTrue("Cannot get expected success reply from server: " + result,
 				result.contains("get resource states successfully"));

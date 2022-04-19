@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<wsdl:definitions name="ImageServiceImplService"
+	targetNamespace="http://jaxws.service/">
+</wsdl:definitions>

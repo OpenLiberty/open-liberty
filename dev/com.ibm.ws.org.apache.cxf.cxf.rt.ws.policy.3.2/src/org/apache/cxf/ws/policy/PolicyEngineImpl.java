@@ -33,6 +33,7 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.configuration.ConfiguredBeanLocator;
 import org.apache.cxf.extension.BusExtension;
 import org.apache.cxf.helpers.CastUtils;
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.factory.FactoryBeanListener;
 import org.apache.cxf.service.factory.FactoryBeanListenerManager;
@@ -662,15 +663,15 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                     if (null != assertor && assertor.canAssert(a.getName())) {
                         continue;
                     }
-
                     Set<PolicyInterceptorProvider> s = pipr.get(a.getName());
                     if (s.isEmpty()) {
                         if (doLog) {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
                             // Liberty change begin migration of behaviour from CXF 2.6.2
                             if (ignoreUnsupportedPolicy) {
+                                // Please do not modify log message below, it's been used in PropertySettingTest
                                 LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
-                                    + "property cxf.ignore.unsupported.policy is set to true.");
+                                                + "property cxf.ignore.unsupported.policy is set to true.");
                                 return true;
                             } else {
                                 return false;

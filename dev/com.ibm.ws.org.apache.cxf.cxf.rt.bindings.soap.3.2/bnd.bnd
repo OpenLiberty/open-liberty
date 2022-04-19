@@ -20,6 +20,9 @@ cxfVersion=3.4.3
 
 -buildpath: org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
+  com.ibm.websphere.javaee.wsdl4j.1.2, \
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core

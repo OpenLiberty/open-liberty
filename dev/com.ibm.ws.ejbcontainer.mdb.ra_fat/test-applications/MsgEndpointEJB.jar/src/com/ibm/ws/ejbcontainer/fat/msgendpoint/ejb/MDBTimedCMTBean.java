@@ -261,6 +261,13 @@ public class MDBTimedCMTBean implements MessageListener {
                                             System.out.println("Cancelled Timer[" + i + "] executed: " + timer[i]);
                                         }
                                         break;
+                                    case 2:
+                                    case 4:
+                                        if (svTimeoutCounts[i] < 1) {
+                                            successful = false;
+                                            System.out.println("Interval Timer[" + i + "] not executed at least once: " + timer[i]);
+                                        }
+                                        break;
 
                                     default:
                                         if (svTimeoutCounts[i] != 1) {
@@ -807,6 +814,13 @@ public class MDBTimedCMTBean implements MessageListener {
                                 System.out.println("Cancelled Timer[" + i + "] executed: " + timer[i]);
                             }
                             break;
+                        case 2:
+                        case 4:
+                            if (svTimeoutCounts[i] < 1) {
+                                successful = false;
+                                System.out.println("Interval Timer[" + i + "] not executed at least once: " + timer[i]);
+                            }
+                            break;
 
                         default:
                             if (svTimeoutCounts[i] != 1) {
@@ -1237,6 +1251,8 @@ public class MDBTimedCMTBean implements MessageListener {
         } catch (InterruptedException e) {
             e.printStackTrace(System.out);
         }
+        System.out.println("Not all timers fired, countdownlatch.await() timed out");
+        System.out.println("CDL remaining count: " + latch.getCount());
         return false;
     }
 }

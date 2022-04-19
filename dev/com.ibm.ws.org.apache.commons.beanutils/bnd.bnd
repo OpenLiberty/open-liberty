@@ -10,7 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;commons-beanutils:commons-beanutils;1.9.4}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-    @${repo;commons-beanutils:commons-beanutils;1.9.4}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/NOTICE.txt|META-INF/LICENSE.txt
-
 -buildpath: commons-beanutils:commons-beanutils;version=1.9.4

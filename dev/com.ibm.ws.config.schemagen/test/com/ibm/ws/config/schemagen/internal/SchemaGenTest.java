@@ -172,7 +172,9 @@ public class SchemaGenTest {
     }
     
     /**
-     * Test that when an output file is specified as parameter that the output file is created.
+     * Test that when an output file is specified as parameter that the output file is created,
+     * and that CWWKG0109I "success" message is created.
+     * 
      * @throws IOException
      */
     @Test
@@ -193,9 +195,32 @@ public class SchemaGenTest {
             p = pb.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
             
-            // The command should not generate any output to stdio or stderr
-            assertNull("Stream should be null", br.readLine());
+            boolean successMsgAppears = false;     
+
+            long startTime = System.nanoTime();
+            int lineCounter = 0;
+            
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                
+                if (line.indexOf("CWWKG0109I") != -1) {
+                    successMsgAppears = true;
+                }
+
+                // Exit loop if we are getting hung
+                if (lineCounter++ > MAX_OUTPUT_LINES) {
+                    System.out.println("schemaGen help exceeded [ " + MAX_OUTPUT_LINES + " ] lines");
+                    break;
+                } else if (System.nanoTime() - startTime >  TIMEOUT) {
+                    System.out.println("schemaGen exceeded [ " + TIMEOUT + " ] ns when displaying help");
+                    break;
+                }
+            }
+            
+            assertTrue("'CWWKG0109I' should appear in command output", successMsgAppears);
+            assertTrue("Should only output 1 message in successful case.", lineCounter==1);
             
             // It should, however, generate the output file.
             File outputFile = new File(WLP_BIN_DIR + "/" + OUTPUT_FILE);        

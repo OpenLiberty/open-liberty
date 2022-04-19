@@ -23,7 +23,7 @@ import com.ibm.ws.query.entities.interfaces.IAddress;
 import com.ibm.ws.query.entities.interfaces.IEmbZipCode;
 
 @Entity
-@Table(name = "Jpa2Address")
+@Table(name = "JPA2Address")
 public class Address implements IAddress, Serializable {
     @Id
     @Column(length = 30)

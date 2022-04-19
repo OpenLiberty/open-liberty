@@ -136,7 +136,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     /**
      * Collects common dependencies, including the ConcurrencyExtensionProvider, if any is available.
      */
-    private ConcurrencyService concurrencySvc;
+    ConcurrencyService concurrencySvc;
 
     /**
      * Reference to the context service for this managed executor service. Available only on the OSGi code path.

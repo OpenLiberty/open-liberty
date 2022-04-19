@@ -16,9 +16,9 @@ public interface IAddressBean {
     @Override
     public String toString();
 
-    public String getStreet();
+    public IAddressPK getStreet();
 
-    public void setStreet(String street);
+    public void setStreet(IAddressPK street);
 
     public String getCity();
 

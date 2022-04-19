@@ -15,9 +15,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,9 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
-
 
 /**
  * This is a test class that runs the whole Jakarta Concurrency TCK. The TCK results
@@ -56,6 +51,10 @@ public class ConcurrentTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //UNCOMMENT - To test against a local snapshot of TCK
+        //additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
+        //additionalProps.put("jakarta.concurrent.tck.version", "3.0.0-SNAPSHOT");
+
         //username and password for Arquillian to authenticate to restConnect
         additionalProps.put("tck_username", "arquillian");
         additionalProps.put("tck_password", "arquillianPassword");
@@ -70,6 +69,11 @@ public class ConcurrentTckLauncher {
         //Ports liberty should be using for testing
         server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
         server.addEnvVar("tck_port_secure", "" + server.getPort(PortType.WC_defaulthost_secure));
+
+        Map<String, String> opts = server.getJvmOptionsAsMap();
+        //Path that jimage will output modules for signature testing
+        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
+        server.setJvmOptions(opts);
 
         //Finally start the server
         server.startServer();
@@ -98,6 +102,10 @@ public class ConcurrentTckLauncher {
             Log.info(getClass(), "launchConcurrentTCK", "Running lite tests");
             suiteXmlFile = "tck-suite-lite.xml";
         }
+
+        //UNCOMMENT - To perform signature testing only
+        //suiteXmlFile = "tck-suite-signature.xml";
+
         Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
 
         /**
@@ -112,8 +120,8 @@ public class ConcurrentTckLauncher {
                                            suiteXmlFile, //tck suite
                                            additionalProps, //additional props
                                            Collections.emptySet() //additional jars
-        );  
-        
+        );
+
         resultInfo.put("results_type", "Jakarta");
         resultInfo.put("feature_name", "Concurrency");
         resultInfo.put("feature_version", "3.0");

@@ -45,7 +45,7 @@ task addJPAFATTools (type: Copy) {
   rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
 }
 
-task addhibernateJPA21(type: Copy) {
+task addHibernate_JPA21(type: Copy) {
   shouldRunAfter jar
   from configurations.hibernateJPA21
   into new File(autoFvtDir, 'publish/shared/resources/jpa_entity_fat_jpa21_hibernate')
@@ -88,7 +88,7 @@ task copyCommonFiles {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
-  dependsOn addhibernateJPA21
+  dependsOn addHibernate_JPA21
   dependsOn addOpenJPA_JPA21
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools

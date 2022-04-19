@@ -323,8 +323,8 @@ class JAXBContextInitializer extends ServiceModelVisitor {
             if (cls == null
                 && ReflectionUtil.getDeclaredConstructors(claz).length > 0
                 && !Modifier.isAbstract(claz.getModifiers())) {
-                if (LOG.isLoggable(Level.INFO)) {
-                    LOG.info("Class " + claz.getName() + " does not have a default constructor which JAXB requires.");
+                if (LOG.isLoggable(Level.FINEST)) {
+                    LOG.finest("Class " + claz.getName() + " does not have a default constructor which JAXB requires.");
                 }
                 Object factory = createFactory(claz);
                 unmarshallerProperties.put("com.sun.xml.bind.ObjectFactory", factory);

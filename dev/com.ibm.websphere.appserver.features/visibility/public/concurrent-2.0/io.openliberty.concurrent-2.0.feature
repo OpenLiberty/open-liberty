@@ -19,7 +19,8 @@ Subsystem-Name: Jakarta Concurrency 2.0
 -bundles=\
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
-  com.ibm.ws.resource
+  com.ibm.ws.resource, \
+  io.openliberty.concurrent.internal.basictrigger.jakarta
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

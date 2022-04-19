@@ -1,3 +1,0 @@
-# for patch test
---add-opens
-java.base/sun.net.www.protocol.https=ALL-UNNAMED

@@ -10,6 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;commons-io:commons-io;2.8.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @${repo;commons-io:commons-io;2.8.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
 -buildpath: commons-io:commons-io;strategy=exact;version=2.8.0
