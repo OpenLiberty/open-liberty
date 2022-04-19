@@ -99,7 +99,8 @@ cd io.openliberty.jakarta.concurrency.3.0_fat_tck/wlp
 -Denv.tck_username=arquillian \
 -Denv.tck_password=arquillianPassword \
 -Denv.tck_port=9080 \
--Denv.tck_port_secure=9443
+-Denv.tck_port_secure=9443 \
+-Djimage.dir=$PWD/usr/shared/jimage/output
 ```
 ### Run the TCK
 
@@ -122,12 +123,12 @@ mvn clean test -B \
 -Djava.util.logging.config.file=$PWD/usr/servers/ConcurrentTCKServer/resources/logging/logging.properties
 ```
 
-By default the TCK will run against a snapshot of the Jakarta API and TCK uploaded to the DHE repository.
+By default the TCK will run against a staged version of Jakarta API and TCK uploaded to sonatype.
 If you want to test against a local `3.0.0-SNAPSHOT` then set these properties on the command above: 
 
 ```txt
--Djakarta.concurrent.groupid=jakarta.enterprise.concurrent
--Djakarta.concurrent.version=3.0.0-SNAPSHOT
+-Djakarta.concurrent.tck.groupid=jakarta.enterprise.concurrent \
+-Djakarta.concurrent.tck.version=3.0.0-SNAPSHOT
 ```
 
 Finally, remember to stop the running server
