@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.netty.jfapchannel.NettyIOConnectionContext;
 import com.ibm.ws.netty.jfapchannel.NettyIOWriteRequestContext;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
@@ -23,6 +22,10 @@ import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 
+/**
+ * Netty transport callback notified when a write operation completes.  These callbacks are
+ * owned and registered once per connection. Based on com.ibm.ws.sib.jfapchannel.impl.ConnectionWriteCompletedCallback
+ */
 public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCallback {
 	
 	private static final TraceComponent tc = SibTr.register(NettyConnectionWriteCompletedCallback.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
@@ -32,7 +35,7 @@ public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCa
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.common.impl/src/com/ibm/ws/sib/jfapchannel/impl/NettyConnectionWriteCompletedCallback.java, SIB.comms, WAS70.SIB, uu1215.01 1.46.1.3");
 	   }
 
-	   // Structure used to prioritise senders.
+	   // Structure used to prioritize senders.
 	   // Method calls synchronized on 'priorityQueue'.
 	   private final PriorityQueue priorityQueue;
 
@@ -90,14 +93,14 @@ public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCa
 	   private TransmissionData partiallySentTransmission = null;                            // F181603.2
 
 	   // Is this the first time this callback has been invoked to do work.  Used for
-	   // one off buffer initialisation.
+	   // one off buffer initialization.
 	   private final AtomicBoolean firstInvocation = new AtomicBoolean(true);
 
 	   /**
 	    * Creates a new callback which will use the specified queue and send lock.
 	    *
 	    * @param priorityQueue
-	    *           Used to prioritise sends.
+	    *           Used to prioritize sends.
 	    * @param x
 	    *           The TCP write context to associate with this callback.
 	    * @param connection
@@ -299,49 +302,22 @@ public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCa
 	    */
 	   private WsByteBuffer getWriteContextBuffer() {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getWriteContextBuffer");
-	      WsByteBuffer writeBuffer = getSoleWriteContextBuffer();
+	      WsByteBuffer writeBuffer = null;
 
 	      if (firstInvocation.compareAndSet(true, false) || (writeBuffer == null)) {
 	         final int writeBufferSize =
 	                 Integer.parseInt(RuntimeInfo.getProperty("com.ibm.ws.sib.jfapchannel.DEFAULT_WRITE_BUFFER_SIZE", "" + JFapChannelConstants.DEFAULT_WRITE_BUFFER_SIZE));
 
-	         if ((writeBuffer != null) && (!writeBuffer.isDirect() || writeBuffer.capacity() < writeBufferSize)) {
-	            writeBuffer.release();
-	            writeBuffer = null;
-	         }
+	         // TODO: Verify this code if necessary and if not remove
+//	         if ((writeBuffer != null) && (!writeBuffer.isDirect() || writeBuffer.capacity() < writeBufferSize)) {
+//	            writeBuffer.release();
+//	            writeBuffer = null;
+//	         }
 
-	         if (writeBuffer == null) {
-	            writeBuffer = WsByteBufferPool.getInstance().allocateDirect(writeBufferSize);      // F196678.10
-	            writeCtx.setBuffer(writeBuffer);
-	         }
+            writeBuffer = WsByteBufferPool.getInstance().allocateDirect(writeBufferSize);      // F196678.10
 	      }
 
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getWriteContextBuffer", writeBuffer);
-	      return writeBuffer;
-	   }
-
-	   /**
-	    * Returns the first WsByteBuffer set in 'writeCtx', ensuring that it is the sole byte buffer set in 'writeCtx', and
-	    * releasing any other byte buffers that had been registered there.
-	    * @return the sole byte buffer set in 'writeCtx'; maybe null if there is no such byte buffer.
-	    */
-	   private WsByteBuffer getSoleWriteContextBuffer() {
-	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSoleWriteContextBuffer");
-	      WsByteBuffer writeBuffer = null;
-	      final WsByteBuffer[] writeBuffers = writeCtx.getBuffers();
-	      if (writeBuffers != null) {
-	         final int writeBuffersSize = writeBuffers.length;
-	         if (writeBuffersSize > 0) {
-	            writeBuffer = writeBuffers[0];
-	            if (writeBuffersSize > 1) {
-	               writeCtx.setBuffer(writeBuffer);
-	               for (int i = 1; i < writeBuffersSize; i++) {
-	                  if (writeBuffers[i] != null) writeBuffers[i].release();
-	               }
-	            }
-	         }
-	      }
-	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSoleWriteContextBuffer", writeBuffer);
 	      return writeBuffer;
 	   }
 

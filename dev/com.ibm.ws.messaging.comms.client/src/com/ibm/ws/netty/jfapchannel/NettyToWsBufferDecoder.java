@@ -3,7 +3,6 @@ package com.ibm.ws.netty.jfapchannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
@@ -57,17 +56,7 @@ public class NettyToWsBufferDecoder extends ByteToMessageDecoder {
 		out.add(WsByteBufferPool.getInstance().wrap(bytes).position(in.readerIndex()));
         temp.release();
         
-		// TODO check this for using ByteBuff completely
-//		SipMessageByteBuffer data = SipMessageByteBuffer.fromPool();
-//
-//		while (in.isReadable()) {
-//			final byte b = in.readByte();
-//			data.put(b);
-//		}
-//
-//		out.add(data);
-		// System.out.println("decode. length [" + data.getMarkedBytesNumber() + "].");
-        
+		
         if (tc.isEntryEnabled())
             SibTr.exit(this, tc, "decode", ctx.channel());
 	}

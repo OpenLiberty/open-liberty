@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
-import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -38,10 +37,7 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
-import io.netty.channel.Channel;
-import io.openliberty.netty.internal.BootstrapExtended;
-import io.openliberty.netty.internal.ServerBootstrapExtended;
-import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 public class CommsOutboundChain {
     private static final TraceComponent tc = Tr.register(CommsOutboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
@@ -58,6 +54,9 @@ public class CommsOutboundChain {
 
     /** Optional,dynamic reference to sslOptions */
     private final AtomicServiceReference<ChannelConfiguration> _sslOptions = new AtomicServiceReference<ChannelConfiguration>("sslOptions");
+    
+    /** Optional,dynamic reference to sslOptions */
+    private final AtomicServiceReference<NettyTlsProvider> _tlsProviderService = new AtomicServiceReference<NettyTlsProvider>("tlsProviderService");
 
     /** use _commsClientService service direct instead of reference as _commsClientService is a required service */
     private CommsClientServiceFacadeInterface _commsClientService = null;
@@ -67,6 +66,21 @@ public class CommsOutboundChain {
     private boolean _isChainDeactivated = false;
     /** If useSSL is set to true in the outbound connection configuration */
     private boolean _isSSLChain = false;
+    
+    private static Map<String, CommsOutboundChain> chainList = new HashMap<String,CommsOutboundChain>();
+    
+   
+    public static Map<String, CommsOutboundChain> getChainList() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getChainList");
+        // TODO Check if we need syncing
+        Map<String, CommsOutboundChain> shallowCopy = new HashMap<>();
+        shallowCopy.putAll(chainList);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "getChainList", shallowCopy);
+        return shallowCopy;
+    }
     
    
     @Trivial
@@ -112,6 +126,23 @@ public class CommsOutboundChain {
             Tr.exit(this, tc, "getTcpOptions", tcpOptions);
         return tcpOptions;
     }
+    
+    protected void setTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "setNettyTlsProvider", ref);
+        _tlsProviderService.setReference(ref);
+        createJFAPChain();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "setNettyTlsProvider");
+    }
+
+    protected void unsetTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "unsetNettyTlsProvider", ref);
+        _tlsProviderService.setReference(ref);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "unsetNettyTlsProvider");
+    }
 
     @Trivial
     protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
@@ -124,10 +155,10 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this, tc, "setSslOptions");
     }
-
-    private Map<String, Object> getSslOptions() {
+    
+    public Map<String, Object> getSslOptions() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getSslOptions");
+            Tr.entry(tc, "getSslOptions");
 
         ChannelConfiguration chanCnfgService = _sslOptions.getService();
         Map<String, Object> sslOptions = null;
@@ -141,7 +172,7 @@ public class CommsOutboundChain {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getSslOptions", sslOptions);
+            Tr.exit(tc, "getSslOptions", sslOptions);
         return sslOptions;
     }
 
@@ -158,8 +189,12 @@ public class CommsOutboundChain {
     protected void activate(Map<String, Object> properties, ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "activate", new Object[] {properties, context, _isChainActivated, _isChainDeactivated});
+        
+        
 
         _sslOptions.activate(context);
+        
+        _tlsProviderService.activate(context);
 
         _isSSLChain = MetatypeUtils.parseBoolean(_OutboundChain_ConfigAlias, "useSSL", properties.get("useSSL"), false);
         
@@ -253,15 +288,37 @@ public class CommsOutboundChain {
 	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                    SibTr.debug(this, tc, "JFAP Outbound chain" + _chainName + " successfully started ");
 	            }
+	            chainList.put(_chainName, this);
 	        } catch (ChannelException | ChainException exception) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                SibTr.debug(this, tc, "JFAP Outbound chain " + _chainName + " failed to start, exception ="+exception);
-	        } catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				SibTr.debug(this, tc, "JFAP Outbound chain " + _chainName + " failed to start, exception ="+e);
-			}
+	        }
+        }else {
+        	if (_isSSLChain && getSslOptions() == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        SibTr.debug(this, tc, "_sslOptions not set, continue waiting");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    	SibTr.debug(this, tc, "JFAP Outbound chain " + _chainName + " failed to start, exception ="+new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { _chainName }, null))));                    
+                
+            }else if(_isSSLChain && getSslOptions() != null) {
+	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+	                    SibTr.debug(this, tc, "JFAP Outbound secure chain" + _chainName + " successfully started ");
+	                chainList.put(_chainName, this);
+            }else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(this, tc, "JFAP Outbound chain" + _chainName + " successfully started ");
+                chainList.put(_chainName, this);
+            }
         }
+
+        StringBuilder mapAsString = new StringBuilder("{");
+        for (String key : chainList.keySet()) {
+            mapAsString.append(key + "=" + chainList.get(key) + ", ");
+        }
+        if(mapAsString.length()>2)
+        	mapAsString.delete(mapAsString.length()-2, mapAsString.length());
+        mapAsString.append("}");
+        SibTr.debug(this, tc, "CommsOutboundChain: chainlist " + mapAsString.toString(), _chainName);
                
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "createJFAPChain");
@@ -279,6 +336,15 @@ public class CommsOutboundChain {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "CommsOutboundChain: Destroying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
+        
+        StringBuilder mapAsString = new StringBuilder("{");
+        for (String key : chainList.keySet()) {
+            mapAsString.append(key + "=" + chainList.get(key) + ", ");
+        }
+        if(mapAsString.length()>2)
+        	mapAsString.delete(mapAsString.length()-2, mapAsString.length());
+        mapAsString.append("}");
+        SibTr.debug(this, tc, "CommsOutboundChain: chainlist " + mapAsString.toString(), _chainName);
 
         // The chain may have failed to activate if, for example, sslOptions and sslSupport were not defined.
         if ( _isChainDeactivated ) {
@@ -291,6 +357,9 @@ public class CommsOutboundChain {
         }
         
         _sslOptions.deactivate(context);
+        _tlsProviderService.deactivate(context);
+        
+        chainList.remove(_chainName);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this,tc, "deactivate");
@@ -349,6 +418,8 @@ public class CommsOutboundChain {
 	            removeChannel(_sslChannelName);
 	        removeChannel(_jfapChannelName);
         }
+        
+        chainList.remove(_chainName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "terminateConnectionsAssociatedWithChain");
@@ -379,4 +450,13 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "removeChannel");
     }
+    
+    public boolean isSSL() {
+    	return _isSSLChain;
+    }
+    
+    public NettyTlsProvider getTlsProvider() {
+	    return _tlsProviderService.getService();
+	}
+    
 }

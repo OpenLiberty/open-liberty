@@ -6,6 +6,8 @@ import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
+import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
+import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
@@ -71,11 +73,16 @@ public class JMSClientInboundHandler extends SimpleChannelInboundHandler<WsByteB
 
         if (connection != null) {
         	IOReadCompletedCallback callback = connection.getReadCompletedCallback();
-        	if(callback instanceof NettyConnectionReadCompletedCallback) {
-        		((NettyConnectionReadCompletedCallback)callback).readCompleted(msg);
+        	IOReadRequestContext readCtx = connection.getReadRequestContext();
+        	NetworkConnection networkConnection = connection.getNetworkConnection();
+        	if(
+        			callback instanceof NettyConnectionReadCompletedCallback && 
+        			readCtx instanceof NettyIOReadRequestContext && 
+        			networkConnection instanceof NettyNetworkConnection) {
+        		((NettyConnectionReadCompletedCallback)callback).readCompleted(msg, readCtx, (NettyNetworkConnection)networkConnection);
         	}else {
         		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        			SibTr.debug(this, tc, "channelRead0", "Something's wrong. Callback is not netty specific. Cry cause not sure what happened.");
+        			SibTr.debug(this, tc, "channelRead0: Something's wrong. Callback or read context is not netty specific. Cry cause not sure what happened.", new Object[] {connection, callback, readCtx});
                 }
         	}
         	

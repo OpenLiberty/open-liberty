@@ -6,17 +6,12 @@ import java.util.Arrays;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
-//import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionWriteCompletedCallback;
-//import com.ibm.ws.sib.jfapchannel.richclient.buffer.impl.RichByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOWriteRequestContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
-//import com.ibm.wsspi.channelfw.VirtualConnection;
-//import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
-//import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -31,12 +26,12 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	   /** Log class info on load */
 	   static
 	   {
-	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/jfapchannel/framework/impl/CFWIOWriteRequestContext.java, SIB.comms, WASX.SIB, uu1215.01 1.5");
+	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyIOWriteRequestContext.java, SIB.comms, WASX.SIB, uu1215.01 1.5");
 	   }
 
 
 	   /**
-	    * @param writeCtx
+	    * @param conn
 	    */
 	   public NettyIOWriteRequestContext(NettyNetworkConnection conn)
 	   {
@@ -54,7 +49,7 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setBuffer", buffer);
 
-	      //TODO: Figure out what to do here with buffers
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setBuffer");
 	   }
@@ -67,7 +62,7 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setBuffers", Arrays.toString(buffers));
 
-	      //TODO: Figure out what to do here with buffers
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setBuffers");
 	   }
@@ -79,11 +74,9 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	   public WsByteBuffer getBuffer()
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getBuffer");
-//	      WsByteBuffer jfapByteBuffer = ((RichByteBufferPool) WsByteBufferPool.getInstance()).wrap(writeCtx.getBuffer());
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getBuffer");
-//	      return jfapByteBuffer;
 	      return null;
-	      //TODO: Figure out what to do here with buffers, probably just need to wrap the WsByteBuffer to a JFapByteBuffer. Not really used anywhere else?
 	   }
 
 	   /**
@@ -93,7 +86,7 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getBuffers");
 
-	      //TODO: Figure out what to do here when called
+	      // TODO: Figure out what to do here when called. Think its safe to remove but will cause issues with interface and compatibility
 
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getBuffers");
 	      return null;
@@ -104,7 +97,10 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
                    new Object[]{buffer, completionCallback});
 		   NetworkConnection retConn = null;
 	       final IOWriteRequestContext me = this;
-	       // Verify how to use the queueRequest and timeout
+	       // TODO: Verify how to use the queueRequest and timeout
+	       // Only called from write completed callback
+	       // queueRequest passed is always false
+	       // timeout is always no timeout
 		      
 	       Channel chan = this.conn.getVirtualConnection();
 	       
@@ -136,15 +132,15 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	    *
 	    * @see com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext#write(int, com.ibm.ws.sib.jfapchannel.framework.IOWriteCompletedCallback, boolean, int)
 	    */
-	   // TODO: Probably need to change this method to include the object itself not the amount to write
+	   // TODO: Probably need to change this method to include the object itself not the amount to write. See other write method
 	   public NetworkConnection write(int amountToWrite, final IOWriteCompletedCallback completionCallback,
 	                                  boolean queueRequest, int timeout)
 	   {
 		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "write",
                    new Object[]{amountToWrite, completionCallback, queueRequest, timeout});
 
-	       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "write", null);
-		   throw new UnsupportedOperationException("Not currently supported.");
+	       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "write: Not supported");
+		   throw new UnsupportedOperationException("Not currently supported for Netty. Please use other write method.");
 
 	   }
 

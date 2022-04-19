@@ -19,9 +19,11 @@ import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
+import com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -90,6 +92,11 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         	
         	if(CommsClientServiceFacade.useNetty()) {
         		// If Netty, create new Netty channel factory
+        		// TODO: Getting error difference cause channelfw fails for testSSLFeatureUpdate
+        		// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
+        		// Check what to do here appropriately
+        		if(CommsOutboundChain.getChainList().get(chainName) != null && CommsOutboundChain.getChainList().get(chainName).isSSL() && CommsOutboundChain.getChainList().get(chainName).getSslOptions() == null)
+        			throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
             	connFactory = new NettyNetworkConnectionFactory(chainName);
         	}else {
         		VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramework().getOutboundVCFactory(chainName);

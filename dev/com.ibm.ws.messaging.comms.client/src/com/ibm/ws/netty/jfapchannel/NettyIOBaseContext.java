@@ -3,10 +3,7 @@ package com.ibm.ws.netty.jfapchannel;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOBaseContext;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.channel.Channel;
 
@@ -20,7 +17,7 @@ public class NettyIOBaseContext {
 	   /** Log class info on load */
 	   static
 	   {
-	      if (tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/jfapchannel/netty/NettyIOBaseContext.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
+	      if (tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyIOBaseContext.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
 	   }
 
 	   /** The connection reference */
@@ -39,14 +36,14 @@ public class NettyIOBaseContext {
 	   }
 	   
 	   /**
-	    * This method tries to avoid creating a new instance of a CFWNetworkConnection object by seeing
+	    * This method tries to avoid creating a new instance of a NettyNetworkConnection object by seeing
 	    * if the specified virtual connection is the one that we are wrapping in the 
-	    * CFWNetworkConnection instance that created this context. If it is, we simply return that.
+	    * NettyNetworkConnection instance that created this context. If it is, we simply return that.
 	    * Otherwise we must create a new instance.
 	    * 
-	    * @param vc The virtual connection.
+	    * @param chan The Netty channel.
 	    * 
-	    * @return Returns a NetworkConnection instance that wraps the virtual connection.
+	    * @return Returns a NetworkConnection instance that wraps the Netty channel.
 	    */
 	   protected NetworkConnection getNetworkConnectionInstance(Channel chan)
 	   {

@@ -69,9 +69,10 @@ Service-Component: \
      commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
      tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
      sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+     tlsProviderService=io.openliberty.netty.internal.tls.NettyTlsProvider;\
      configuration-policy:=require;\
-     optional:='sslOptions';\
-     greedy:='tcpOptions,sslOptions';\
+     optional:='sslOptions,tlsProviderService';\
+     greedy:='tcpOptions,sslOptions,tlsProviderService';\
      properties:='service.vendor=IBM'
 
 instrument.disabled: true
@@ -89,7 +90,12 @@ instrument.disabled: true
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.channelfw;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	io.openliberty.io.netty;version=latest, \
-	io.openliberty.netty.internal;version=latest
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	com.ibm.ws.kernel.service,\
+	io.openliberty.io.netty.ssl,\
+	io.openliberty.io.netty.ssl,\
+	com.ibm.ws.wsbytebuffer,\
+	io.netty.handler

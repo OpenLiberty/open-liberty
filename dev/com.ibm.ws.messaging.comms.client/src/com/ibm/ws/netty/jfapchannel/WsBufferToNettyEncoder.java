@@ -1,6 +1,5 @@
 package com.ibm.ws.netty.jfapchannel;
 
-import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
@@ -35,8 +34,8 @@ public class WsBufferToNettyEncoder extends MessageToByteEncoder<WsByteBuffer> {
 		}
 		com.ibm.wsspi.bytebuffer.WsByteBuffer wrappedBuffer = (com.ibm.wsspi.bytebuffer.WsByteBuffer)((RichByteBufferImpl)msg).getUnderlyingBuffer();
 		out.writeBytes(wrappedBuffer.getWrappedByteBuffer());
-		// TODO Check this reset if necessary or what it does
-//		msg.reset();
+		// TODO Check this reset if necessary to clean buffer
+		// msg.reset();
 		if (tc.isEntryEnabled())
             SibTr.exit(this, tc, "encode", ctx.channel());
 	}

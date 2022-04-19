@@ -8,11 +8,7 @@ import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext;
-import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOReadRequestContext;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWIOWriteRequestContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 public class NettyIOConnectionContext implements IOConnectionContext{
 	
@@ -25,7 +21,7 @@ public class NettyIOConnectionContext implements IOConnectionContext{
 	   /** Log class info on load */
 	   static
 	   {
-	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/jfapchannel/netty/NettyIOConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
+	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyIOConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
 	   }
 
 

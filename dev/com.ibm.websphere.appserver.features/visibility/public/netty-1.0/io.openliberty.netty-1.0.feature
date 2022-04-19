@@ -12,7 +12,9 @@ Subsystem-Name: Netty Transport Framework 1.0
 -bundles=\
   com.ibm.ws.wsbytebuffer, \
   io.openliberty.netty.internal, \
-  io.openliberty.netty.internal.impl
+  io.openliberty.netty.internal.impl, \
+  io.openliberty.io.netty, \
+  io.openliberty.io.netty.ssl
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

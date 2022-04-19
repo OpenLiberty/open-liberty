@@ -155,11 +155,6 @@ public class OutboundConnectionTracker
             this.chainName = chainName;
             this.convType = convType;
         }
-        
-        //TODO: Helper Netty method check if necessary
-        public boolean matchesAddress(InetSocketAddress address, String chainName){
-            return address.equals(this.address) && chainName.equals(this.chainName);
-        }
 
         @Override
         public boolean equals(Object o)
@@ -852,9 +847,7 @@ public class OutboundConnectionTracker
                         }
 
                         try {
-                            // destroy the OutboundVirtualConnection associated with the chainName
-                        	// TODO: Figure out how to change this to an appropriate Netty context. Maybe just a destroy method?
-//                            cdGroup.getNetworkConnectionFactory().getOutboundVirtualConFactory().destroy();
+                            // destroy the Connection associated with the chainName
                             cdGroup.getNetworkConnectionFactory().destroy();
                         } catch (Exception e) {//Don't let the exception mess up closing other remaining connection
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

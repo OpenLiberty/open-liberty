@@ -22,6 +22,7 @@ import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.ConnectionClosedListener;
 import com.ibm.ws.sib.jfapchannel.ConnectionInterface;
@@ -51,6 +52,8 @@ import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
+
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * Represents an actual socket connection to another machine
@@ -284,8 +287,14 @@ public abstract class Connection implements ConnectionInterface
       connChannel = channel;                                // F174772
       this.vc = vc;                                         // F174772
       // TODO This could be made prettier. Check how best to do this
-      if(!this.isInbound() && CommsClientServiceFacade.useNetty())
+      if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
     	  writeCompletedCallback = new NettyConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this);
+    	  try {
+			((NettyNetworkConnection) vc).setHearbeatInterval(heartbeatInterval);
+		} catch (NettyException e) {
+			throw new FrameworkException(e);
+		}
+      }
       else
     	  writeCompletedCallback = new ConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this); // F176003
 
@@ -1046,6 +1055,13 @@ public abstract class Connection implements ConnectionInterface
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setHeartbeatInterval","seconds="+seconds);
      if (seconds < 0) throw new SIErrorException(nls.getFormattedMessage("CONNECTION_INTERNAL_SICJ0043", null, "CONNECTION_INTERNAL_SICJ0043"));
      heartbeatInterval = seconds;
+     if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
+   	  try {
+			((NettyNetworkConnection) vc).setHearbeatInterval(seconds);
+		} catch (NettyException e) {
+			throw new SIErrorException(e);
+		}
+     }
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setHeartbeatInterval");
    }
 
