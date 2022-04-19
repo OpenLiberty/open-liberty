@@ -99,7 +99,9 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200403;version=${exportVer},\
   org.apache.cxf.ws.addressing.v200408;version=${exportVer},\
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
-  org.apache.cxf.wsdl.http;version=${exportVer}
+  org.apache.cxf.wsdl.http;version=${exportVer},\
+  com.ibm.ws.cxf.client, \
+  com.ibm.ws.cxf.client.component
 
 Private-Package: \
   com.ibm.ws.cxf.core
@@ -135,6 +137,9 @@ Import-Package: \
   !javax.xml.ws.*, \
   *
 
+-dsannotations: \
+  com.ibm.ws.cxf.client.component.*
+ 	
 DynamicImport-Package: \
   com.ctc.wstx.*,\
   com.sun.xml.messaging.saaj.*,\
