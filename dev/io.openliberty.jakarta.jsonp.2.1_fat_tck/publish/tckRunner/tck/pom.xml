@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2022 IBM Corporation and others. All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+	IBM Corporation - initial API and implementation -->
+<!-- NOTE: This pom is used for Dev Testing -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.openliberty.jakarta.jsonp</groupId>
+	<artifactId>tck.runner.tck</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Jakarta JSONP TCK Runner TCK Module</name>
+
+	<repositories> <!-- For artifacts not yet in Maven Central -->
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<!-- Global Maven settings -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
+
+		<!-- Jakarta EE API -->
+		<jakarta.json.version>2.1.0</jakarta.json.version>
+		<!-- TODO: update version when switching to jakarta.json-tck for artifactId -->
+		<jakarta.json.tck.version>2.1.0-SNAPSHOT</jakarta.json.tck.version>
+
+		<!-- Test versions -->
+		<targetDirectory>${project.basedir}/target</targetDirectory>
+	</properties>
+
+
+	<dependencies>
+		<!-- tck - jsonp - external artifact -->
+		<dependency>
+			<groupId>jakarta.json</groupId>
+			<!-- TODO: switch back to jakarta.json-tck once it contains artifacts. -->
+			<!-- <artifactId>jakarta.json-tck</artifactId> -->
+			<artifactId>jakarta.json-tck-tests</artifactId>
+			<version>${jakarta.json.tck.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- api - jsonp - internal bundle -->
+		<!-- TODO revert to jakarta.json when GA version is in GHE -->
+		<dependency>
+			<groupId>io.openliberty.jakarta.json</groupId>
+			<artifactId>jakarta.json-api</artifactId>
+			<version>${jakarta.json.version}</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.jsonp.2.1}</systemPath>
+		</dependency>
+		<!-- impl - jsonp - parsson - internal bundle -->
+		<!-- TODO revert to org.eclipse.parsson when GA version is in GHE -->
+		<dependency>
+			<groupId>io.openliberty.org.eclipse.parsson</groupId>
+			<artifactId>parsson</artifactId>
+			<version>1.1.0</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.org.eclipse.parsson.1.1}</systemPath>
+		</dependency>
+		<!-- test - signature test dependency -->
+		<dependency>
+			<groupId>org.netbeans.tools</groupId>
+			<artifactId>sigtest-maven-plugin</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<!-- test - arquillian - used for test deployment -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container</artifactId>
+			<version>1.7.0.Alpha10</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>${targetDirectory}</directory>
+		<plugins>
+			<!-- Plugin used to copy external artifacts to signaturedirectory for signature tests -->
+			<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							 This artifact is being copied from the system instead								
+							<artifactItems>
+								<artifactItem>
+									<groupId>jakarta.json</groupId>
+									<artifactId>jakarta.json-api</artifactId>
+									<version>${jakarta.json.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/signaturedirectory</outputDirectory>
+									<destFileName>jakarta.json-api.jar</destFileName>
+								</artifactItem> 
+							</artifactItems>
+							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+			<!-- Plugin used to internal bundles to signaturedirectory for signature tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <version>3.0.0</version>
+			    <executions>
+			        <execution>
+			            <id>copy-jsonp</id>
+			            <phase>generate-test-sources</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			              <target>
+			                <copy file="${io.openliberty.jakarta.jsonp.2.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.json-api.jar"/>
+			              </target>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+					<failIfNoTests>true</failIfNoTests>
+					<!-- TODO: switch back to jakarta.json-tck once it contains artifacts. -->
+					<dependenciesToScan>jakarta.json:jakarta.json-tck-tests</dependenciesToScan>
+					<systemPropertyVariables>
+						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
+						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

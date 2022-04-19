@@ -20,13 +20,13 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -726,7 +726,7 @@ public class MvnUtils {
         int rc = runCmd(testcmd, getTCKRunnerDir(), getMvnTestOutputFile());
 
         List<String> failingTestsList = postProcessTestResults();
-            
+
         String[] mvnDependencyList = getMvnDependencyCommandArray();
 
         runCmd(mvnDependencyList, getTCKRunnerDir(), getMvnDependencyOutputFile());
@@ -774,7 +774,16 @@ public class MvnUtils {
         String id = RepeatTestFilter.getRepeatActionsAsString();
 
         for (File file : resultFiles) {
-            Document doc = builder.parse(file);
+            Document doc;
+            try {
+                doc = builder.parse(file);
+            } catch (SAXException ex) {
+                //Handle JSON-P TCK test that logs an invalid unicode char that was purposely used in the test.
+                String xmlText = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                xmlText = xmlText.replaceAll("\uffff", "0xffff");
+                Files.write(file.toPath(), xmlText.getBytes(StandardCharsets.UTF_8));
+                doc = builder.parse(file);
+            }
             NodeList nodes = (NodeList) xpr.evaluate(doc, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); i++) {
                 Attr nameAttr = (Attr) nodes.item(i);
@@ -1157,9 +1166,9 @@ public class MvnUtils {
 
     public static void preparePublicationFile(Map<String, String> resultInfo) {
         String javaMajorVersion = resultInfo.get("java_major_version");
-        String javaVersion= resultInfo.get("java_info");
+        String javaVersion = resultInfo.get("java_info");
         String OLVersion = resultInfo.get("product_version");
-        String type = resultInfo.get("results_type"); 
+        String type = resultInfo.get("results_type");
         Path outputPath = Paths.get("results", OLVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc");
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
@@ -1173,7 +1182,7 @@ public class MvnUtils {
             throw new RuntimeException(e);
         }
         TestSuiteXmlParser xmlParser = new TestSuiteXmlParser();
-        
+
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
             File junitDirectory = junitPath.toFile();
@@ -1190,61 +1199,62 @@ public class MvnUtils {
             String adocContent = "";
             String MPversion = "";
 
-            String osVersion = resultInfo.get("os_name"); 
+            String osVersion = resultInfo.get("os_name");
             String[] specParts = getSpec();
             String specName = resultInfo.get("feature_name");
             String specVersion = resultInfo.get("feature_version");
             String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
             String rcVersion = specParts[2];
-            String[] documentStart = {":page-layout: certification \n= TCK Results\n\n",
-                                        "As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ", 
-                                        type //MicroProfile or Jakarta EE
-                                        };
+            String[] documentStart = { ":page-layout: certification \n= TCK Results\n\n",
+                                       "As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ",
+                                       type //MicroProfile or Jakarta EE
+            };
             for (String part : documentStart) {
                 adocContent += part;
             }
-            if(type.equals("MicroProfile")){
-                String[] documentMain = {" ",specName, " ", specVersion, 
-                                        ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
-                                        " Certification Summary (Java ", javaMajorVersion,")\n\n",
-                                        "* Product Name, Version and download URL (if applicable):\n",
-                                        "+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
-                                        OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
-                                        "* Specification Name, Version and download URL:\n+\n", 
-                                        "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-", specVersion, rcVersion, 
-                                        "/microprofile-", MPSpecLower, "-spec-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
-                                        rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-Java",javaMajorVersion,"-TCKResults.html[TCK results summary]\n\n",
-                                        "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
-                                        "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
-                                        osVersion,"\n\nTest results:\n\n[source, text]\n----\n" };
+            if (type.equals("MicroProfile")) {
+                String[] documentMain = { " ", specName, " ", specVersion,
+                                          ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
+                                          " Certification Summary (Java ", javaMajorVersion, ")\n\n",
+                                          "* Product Name, Version and download URL (if applicable):\n",
+                                          "+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
+                                          OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
+                                          "* Specification Name, Version and download URL:\n+\n",
+                                          "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-", specVersion, rcVersion,
+                                          "/microprofile-", MPSpecLower, "-spec-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
+                                          rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-Java", javaMajorVersion,
+                                          "-TCKResults.html[TCK results summary]\n\n",
+                                          "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
+                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
+                                          osVersion, "\n\nTest results:\n\n[source, text]\n----\n" };
                 for (String part : documentMain) {
                     adocContent += part;
                 }
-            }
-            else{
-                String[] documentMain = {".\n\n== Open Liberty ", OLVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion,")",
-                                       "\n\n* Product Name, Version and download URL (if applicable):",
-                                       "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/",OLVersion,".zip[Open Liberty ",OLVersion, "]\n\n",
-                                       "* Specification Name, Version and download URL:\n+\n", 
-                                       "link:https://jakarta.ee/specifications/", specName,"/",specVersion,"[Jakarta EE ",specName," ",specVersion,"]\n\n",
-                                       "* TCK Version, digital SHA-256 fingerprint and download URL:\n+\n", 
-                                       "https://download.eclipse.org/jakartaee/",".zip[Jakarta EE]\n",
-                                       "SHA-256: ``\n\n",
-                                       "* Public URL of TCK Results Summary:\n+\n",
-                                       "link:", OLVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
-                                       "* Any Additional Specification Certification Requirements:\n\n",
-                                       "+\nJakarta Contexts and Dependency Injection\n",
-                                       "link:https://download.eclipse.org/jakartaee/cdi/","SHA-256:\n``\n",
-                                       "+\nJakarta Bean Validation\n",
-                                       "link:https://download.eclipse.org/jakartaee/bean-validation/","SHA-256:\n``\n",
-                                       "+\nDependency Injection\n",
-                                       "link:https://download.eclipse.org/jakartaee/dependency-injection/","SHA-256:\n``\n",
-                                       "+\nDebugging\n",
-                                       "link:https://download.eclipse.org/jakartaee/debugging/","SHA-256:\n``\n",
-                                       "* Java runtime used to run the implementation:\n+\n", javaVersion,
-                                       "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n",
-                                       osVersion,
-                                       "\n\nTest results:\n\n[source, text]\n----\n" };
+            } else {
+                String[] documentMain = { ".\n\n== Open Liberty ", OLVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion, ")",
+                                          "\n\n* Product Name, Version and download URL (if applicable):",
+                                          "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/", OLVersion, ".zip[Open Liberty ", OLVersion,
+                                          "]\n\n",
+                                          "* Specification Name, Version and download URL:\n+\n",
+                                          "link:https://jakarta.ee/specifications/", specName, "/", specVersion, "[Jakarta EE ", specName, " ", specVersion, "]\n\n",
+                                          "* TCK Version, digital SHA-256 fingerprint and download URL:\n+\n",
+                                          "https://download.eclipse.org/jakartaee/", ".zip[Jakarta EE]\n",
+                                          "SHA-256: ``\n\n",
+                                          "* Public URL of TCK Results Summary:\n+\n",
+                                          "link:", OLVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                          "* Any Additional Specification Certification Requirements:\n\n",
+                                          "+\nJakarta Contexts and Dependency Injection\n",
+                                          "link:https://download.eclipse.org/jakartaee/cdi/", "SHA-256:\n``\n",
+                                          "+\nJakarta Bean Validation\n",
+                                          "link:https://download.eclipse.org/jakartaee/bean-validation/", "SHA-256:\n``\n",
+                                          "+\nDependency Injection\n",
+                                          "link:https://download.eclipse.org/jakartaee/dependency-injection/", "SHA-256:\n``\n",
+                                          "+\nDebugging\n",
+                                          "link:https://download.eclipse.org/jakartaee/debugging/", "SHA-256:\n``\n",
+                                          "* Java runtime used to run the implementation:\n+\n", javaVersion,
+                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n",
+                                          osVersion,
+                                          "\n\nTest results:\n\n[source, text]\n----\n" };
                 for (String part : documentMain) {
                     adocContent += part;
                 }
@@ -1254,12 +1264,12 @@ public class MvnUtils {
                 output.write(result.toString());
             }
             output.write("----");
-        
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
             throw new RuntimeException(e);
-        } 
+        }
     }
 
     public static String[] getSpec() {
@@ -1271,7 +1281,7 @@ public class MvnUtils {
         String[] returnArray = { "", "", "" };
         Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile", Pattern.DOTALL);
         try (BufferedReader br = new BufferedReader(new FileReader(getMvnDependencyOutputFile()))) {
-            
+
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
                 if (sCurrentLine.contains("-tck:jar")) {
@@ -1284,7 +1294,7 @@ public class MvnUtils {
                         specVersion = versionMatcher.group(1);
                         if (specVersion.contains("-RC")) {
                             parts = specVersion.split("-RC");
-                            RC = "-RC"+parts[1];
+                            RC = "-RC" + parts[1];
                             specVersion = parts[0];
                         }
                         returnArray[0] = specName;
@@ -1300,29 +1310,28 @@ public class MvnUtils {
         return returnArray;
     }
 
-    public static Map<String, String> getResultInfo(LibertyServer server){
+    public static Map<String, String> getResultInfo(LibertyServer server) {
         Map<String, String> resultInfo = new HashMap<>();
         JavaInfo javaInfo = JavaInfo.forCurrentVM();
         String productVersion = "";
-        resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") +')');
+        resultInfo.put("java_info", System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") + ')');
         resultInfo.put("java_major_version", String.valueOf(javaInfo.majorVersion()));
-        resultInfo.put("os_name",System.getProperty("os.name"));
-        try{
+        resultInfo.put("os_name", System.getProperty("os.name"));
+        try {
             List<String> matches = server.findStringsInLogs("product =");
-            if(!matches.isEmpty()){
+            if (!matches.isEmpty()) {
                 Pattern olVersionPattern = Pattern.compile("Liberty (.*?) \\(", Pattern.DOTALL);
                 Pattern wasVersionPattern = Pattern.compile("WebSphere Application Server (.*?) \\(", Pattern.DOTALL);
                 Matcher olNameMatcher = olVersionPattern.matcher(matches.get(0));
                 Matcher wasNameMatcher = wasVersionPattern.matcher(matches.get(0));
                 if (olNameMatcher.find()) {
                     productVersion = olNameMatcher.group(1);
-                }
-                else if(wasNameMatcher.find()){
+                } else if (wasNameMatcher.find()) {
                     productVersion = wasNameMatcher.group(1);
                 }
                 resultInfo.put("product_version", productVersion);
             }
-        }finally{
+        } finally {
             return resultInfo;
         }
     }
