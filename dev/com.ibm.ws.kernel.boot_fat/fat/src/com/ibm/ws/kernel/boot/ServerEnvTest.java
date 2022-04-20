@@ -153,6 +153,8 @@ public class ServerEnvTest {
         ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
         Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
         Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+        String stdout = "\nstdout:\n" + po.getStdout();
+        String stderr = "\nstderr:\n" + po.getStderr();
 
         // Check for server ready
         String serverReady = server.waitForStringInLog("CWWKF0011I");
@@ -163,7 +165,7 @@ public class ServerEnvTest {
         // Because we didn't start the server using the LibertyServer APIs, we need
         // to have it detect its started state so it will stop and save logs properly
         server.resetStarted();
-        assertTrue("the server should have been started", server.isStarted());
+        assertTrue("the server should have been started:" + stdout + stderr, server.isStarted());
 
         logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
 
