@@ -193,6 +193,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
                                                        stackJoin);
 
 
+        stackJoin = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
+        stackJoin);
+
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
