@@ -35,8 +35,8 @@ If a serverName is not specified, "defaultServer" will be used.
 
 Notes:
 
-The server requires Java 8.   To download IBM Java SDKs, visit 
-http://www.ibm.com/developerworks/java/jdk/ 
+The server requires Java 8, 11 or 17   To download IBM Java SDKs, visit 
+https://developer.ibm.com/languages/java/semeru-runtimes/downloads/
 
 The script will try to find the java executable in your environment by
 looking for JAVA_HOME and JRE_HOME before falling back to the java executable
