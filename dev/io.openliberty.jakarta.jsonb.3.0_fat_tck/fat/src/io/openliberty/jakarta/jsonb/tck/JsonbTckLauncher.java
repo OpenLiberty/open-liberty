@@ -55,12 +55,11 @@ public class JsonbTckLauncher {
             additionalProps.put("java.locale.providers", "COMPAT");
         }
 
-        // Skip signature testing on Windows and Semeru JDK.
+        // Skip signature testing on Windows
         // So far as I can tell the signature test plugin is not supported on this configuration
         //Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
-        if (System.getProperty("os.name").contains("Windows") &&
-            System.getProperty("java.runtime.name").contains("Semeru")) {
-            Log.info(JsonbTckLauncher.class, "setUp", "Skipping JSONB Signature Test on Windows and Semeru JDK");
+        if (System.getProperty("os.name").contains("Windows")) {
+            Log.info(JsonbTckLauncher.class, "setUp", "Skipping JSONB Signature Test on Windows");
             additionalProps.put("exclude.tests", "ee.jakarta.tck.json.bind.signaturetest.jsonb.JSONBSigTest.java");
         }
     }
