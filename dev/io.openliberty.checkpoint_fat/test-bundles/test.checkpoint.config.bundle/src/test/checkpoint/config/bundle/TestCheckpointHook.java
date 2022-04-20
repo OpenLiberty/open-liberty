@@ -21,6 +21,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.condition.Condition;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -36,6 +38,7 @@ public class TestCheckpointHook implements CheckpointHook {
     private final ConcurrentHashMap<String, Object> config;
     private final CheckpointPhase phase;
     private final ServiceReference<CheckpointPhase> phaseRef;
+    private volatile ServiceReference<Condition> runningCondition = null;
 
     @Activate
     public TestCheckpointHook(Map<String, Object> config,
@@ -45,6 +48,35 @@ public class TestCheckpointHook implements CheckpointHook {
         this.phase = phase;
         this.phaseRef = phaseRef;
         System.out.println("TESTING - initial " + getConfig());
+    }
+
+    @Activate
+    void activate() {
+        System.out.println("TESTING - activate running condition: " + getRunningCondition());
+    }
+
+    @Reference(service = Condition.class, //
+               policy = ReferencePolicy.DYNAMIC, //
+               cardinality = ReferenceCardinality.OPTIONAL, //
+               target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
+    protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
+        this.runningCondition = runningCondition;
+        System.out.println("TESTING - bind running condition: " + getRunningCondition());
+    }
+
+    protected void unsetRunningCondition(ServiceReference<Condition> runningCondition) {
+        this.runningCondition = null;
+    }
+
+    /**
+     * @return
+     */
+    private String getRunningCondition() {
+        if (runningCondition == null) {
+            return "null";
+        } else {
+            return runningCondition.getProperty(Condition.CONDITION_ID) + " " + runningCondition.getProperty(CheckpointPhase.CHECKPOINT_PROPERTY);
+        }
     }
 
     @Modified
@@ -63,6 +95,10 @@ public class TestCheckpointHook implements CheckpointHook {
                            System.getenv("TEST_IMMUTABLE_KEY2") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY3") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY4"));
+        System.out.println("TESTING - prepare running condition: " + getRunningCondition());
+        if (config.get("fail.prepare") != null) {
+            throw new IllegalStateException("TESTING - prepare hook fails.");
+        }
     }
 
     @Override
@@ -74,6 +110,10 @@ public class TestCheckpointHook implements CheckpointHook {
                            System.getenv("TEST_IMMUTABLE_KEY2") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY3") + " - " + //
                            System.getenv("TEST_MUTABLE_KEY4"));
+        System.out.println("TESTING - restore running condition: " + getRunningCondition());
+        if (config.get("fail.restore") != null) {
+            throw new IllegalStateException("TESTING - restore hook fails.");
+        }
     }
 
     private String getConfig() {

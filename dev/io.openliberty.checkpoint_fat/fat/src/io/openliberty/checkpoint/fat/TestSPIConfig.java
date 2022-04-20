@@ -70,6 +70,8 @@ public class TestSPIConfig {
         server.startServer();
         findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
+        findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
+        findLogMessage("Bind should have non-null running condition", "TESTING - bind running condition: ", "io.openliberty.process.running APPLICATIONS", 500);
     }
 
     @Test
@@ -84,22 +86,15 @@ public class TestSPIConfig {
         findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
     }
 
-    @Before
-    public void setUp() throws Exception {
-        TestMethod testMethod = getTestMethod();
-        runBeforeCheckpoint(testMethod);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
-                             server -> {
-                                 findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
-                                 findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
-                                 runBeforeRestore(testMethod);
-                             });
+    @Test
+    public void testRunningConditionLaunch() throws Exception {
+        server.startServer();
+        findLogMessage("Activate should have non-null running condition", "TESTING - activate running condition: ", "io.openliberty.process.running null", 500);
     }
 
-    /**
-     * @param testMethod
-     */
-    private void runBeforeCheckpoint(TestMethod testMethod) {
+    @Before
+    public void beforeEachTest() throws Exception {
+        TestMethod testMethod = getTestMethod();
         try {
             server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
@@ -111,10 +106,29 @@ public class TestSPIConfig {
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
                     break;
             }
+            switch (testMethod) {
+                case testRunningConditionLaunch:
+                    break;
+                default:
+                    setCheckpoint(testMethod);
+                    Log.info(getClass(), testName.getMethodName(), "Setting the checkpoint for " + testMethod);
+            }
 
         } catch (Exception e) {
             throw new AssertionError("Unexpected error configuring test.", e);
         }
+
+    }
+
+    private void setCheckpoint(TestMethod testMethod) {
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+                             server -> {
+                                 findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
+                                 findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
+                                 findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
+                                 findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
+                                 runBeforeRestore(testMethod);
+                             });
     }
 
     /**
@@ -143,10 +157,11 @@ public class TestSPIConfig {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void afterEachTest() throws Exception {
         server.stopServer();
         server.restoreServerConfiguration();
         server.deleteFileFromLibertyInstallRoot("server.env");
+        server.unsetCheckpoint();
     }
 
     public TestMethod getTestMethod() {
@@ -167,6 +182,7 @@ public class TestSPIConfig {
         testRestoreWithDefaults,
         testRestoreWithEnvSet,
         testAddImmutableEnvKey,
+        testRunningConditionLaunch,
         unknown
     }
 

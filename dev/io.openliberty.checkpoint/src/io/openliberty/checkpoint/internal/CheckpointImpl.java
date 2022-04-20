@@ -10,10 +10,15 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.internal;
 
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_PROPERTY;
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RUNNING_ID;
+import static org.osgi.service.condition.Condition.CONDITION_ID;
+
 import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -24,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -35,6 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -67,7 +74,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                                     policyOption = ReferencePolicyOption.GREEDY,
                                     target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
            },
-           property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
+           property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
+           // use immediate component to avoid lazy instantiation and deactivate
+           immediate = true)
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
@@ -111,7 +120,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              */
             this.criu = new ExecuteCRIU() {
                 @Override
-                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
+                public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps,
+                                 boolean unprivileged) throws CheckpointFailedException {
                     prepare.run();
                     restore.run();
                 }
@@ -255,12 +265,22 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
             throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e);
         }
+
         restore(multiThreadRestoreHooks);
+        registerRunningCondition();
 
         waitForConfig();
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
+    }
+
+    private void registerRunningCondition() {
+        BundleContext bc = cc.getBundleContext();
+        Hashtable<String, Object> conditionProps = new Hashtable<>();
+        conditionProps.put(CONDITION_ID, CONDITION_PROCESS_RUNNING_ID);
+        conditionProps.put(CHECKPOINT_PROPERTY, checkpointAt);
+        bc.registerService(Condition.class, Condition.INSTANCE, conditionProps);
     }
 
     private void waitForConfig() {
