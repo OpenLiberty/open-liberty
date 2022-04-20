@@ -27,6 +27,10 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.simplicity.config.cache.AuthCache;
+import com.ibm.websphere.simplicity.config.cache.Cache;
+import com.ibm.websphere.simplicity.config.cache.CacheManager;
+import com.ibm.websphere.simplicity.config.cache.CachingProvider;
 import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
 import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
@@ -82,6 +86,18 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "httpSessionDatabase")
     private HttpSessionDatabase httpSessionDatabase;
+
+    @XmlElement(name = "cache")
+    private ConfigElementList<Cache> caches;
+
+    @XmlElement(name = "authCache")
+    private ConfigElementList<AuthCache> authCaches;
+
+    @XmlElement(name = "cacheManager")
+    private ConfigElementList<CacheManager> cacheManagers;
+
+    @XmlElement(name = "cachingProvider")
+    private ConfigElementList<CachingProvider> cachingProviders;
 
     @XmlElement(name = "application")
     private ConfigElementList<Application> applications;
@@ -534,6 +550,42 @@ public class ServerConfiguration implements Cloneable {
             this.httpSessionDatabase = new HttpSessionDatabase();
         }
         return this.httpSessionDatabase;
+    }
+
+    /**
+     * @return the list of caches configuration elements
+     */
+    public ConfigElementList<Cache> getCaches() {
+        if (this.caches == null)
+            this.caches = new ConfigElementList<Cache>();
+        return this.caches;
+    }
+
+    /**
+     * @return the list of authCaches configuration elements
+     */
+    public ConfigElementList<AuthCache> getAuthCaches() {
+        if (this.authCaches == null)
+            this.authCaches = new ConfigElementList<AuthCache>();
+        return this.authCaches;
+    }
+
+    /**
+     * @return the list of cachingProvider configuration elements
+     */
+    public ConfigElementList<CachingProvider> getcachingProviders() {
+        if (this.cachingProviders == null)
+            this.cachingProviders = new ConfigElementList<CachingProvider>();
+        return this.cachingProviders;
+    }
+
+    /**
+     * @return the list of cacheManagers configuration elements
+     */
+    public ConfigElementList<CacheManager> getcacheManagers() {
+        if (this.cacheManagers == null)
+            this.cacheManagers = new ConfigElementList<CacheManager>();
+        return this.cacheManagers;
     }
 
     public ConfigElementList<JMSActivationSpec> getJMSActivationSpecs() {
@@ -1375,7 +1427,7 @@ public class ServerConfiguration implements Cloneable {
         }
         return this.oauth2Logins;
     }
-    
+
     /**
      * Get the 'oidcLogin' elements.
      *
@@ -1387,7 +1439,7 @@ public class ServerConfiguration implements Cloneable {
         }
         return this.oidcLogins;
     }
-    
+
     /**
      * Get the 'openidConnectClient' elements.
      *
