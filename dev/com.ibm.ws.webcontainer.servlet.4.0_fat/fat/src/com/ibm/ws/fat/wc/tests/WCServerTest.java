@@ -251,6 +251,7 @@ public class WCServerTest {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)
     public void testServletContextSetAndGetSessionTimeout() throws Exception {
         // The first url.
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/SessionTimeoutServlet?TestSessionTimeout=new";

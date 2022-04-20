@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -48,6 +50,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class WCSameSiteCookieAttributeSecurityTest {
 
     private static final Logger LOG = Logger.getLogger(WCSameSiteCookieAttributeSecurityTest.class.getName());
