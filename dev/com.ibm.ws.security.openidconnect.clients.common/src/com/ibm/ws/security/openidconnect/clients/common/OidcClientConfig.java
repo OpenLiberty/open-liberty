@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.webcontainer.security.HttpSessionCache;
 
 public interface OidcClientConfig extends ConvergedClientConfig {
 
@@ -86,6 +87,8 @@ public interface OidcClientConfig extends ConvergedClientConfig {
     public boolean requireIatClaimForIntrospection();
 
     public SingleTableCache getCache();
+
+    public HttpSessionCache getHttpSessionCache();
 
     public boolean getAccessTokenCacheEnabled();
 

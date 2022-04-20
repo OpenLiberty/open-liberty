@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +58,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.HttpSessionCache;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -428,6 +430,28 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             }
         }
         return oidcClientAuthenticator.authenticate(req, res, oidcClientConfig);
+    }
+
+    @Override
+    public void logoutIfSessionInactive(HttpServletRequest req, String provider) {
+        OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
+        if (!oidcClientConfig.isBackchannelLogoutSupported()) {
+            return;
+        }
+
+        HttpSessionCache httpSessionCache = oidcClientConfig.getHttpSessionCache();
+        String httpSessionId = req.getSession().getId();
+        if (httpSessionCache.isSessionActive(httpSessionId)) {
+            return;
+        }
+
+        try {
+            req.logout();
+        } catch (ServletException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not logout inactive session. An exception is caught : " + e);
+            }
+        }
     }
 
     private boolean requestHasOidcCookie(HttpServletRequest req) {

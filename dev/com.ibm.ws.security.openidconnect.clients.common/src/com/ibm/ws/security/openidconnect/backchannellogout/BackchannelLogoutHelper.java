@@ -13,12 +13,14 @@ package com.ibm.ws.security.openidconnect.backchannellogout;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwt.JwtClaims;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.webcontainer.security.HttpSessionCache;
 
 public class BackchannelLogoutHelper {
 
@@ -44,8 +46,8 @@ public class BackchannelLogoutHelper {
                 throw new BackchannelLogoutException(errorMsg);
             }
             String logoutTokenParameter = validateRequestAndGetLogoutTokenParameter();
-            validateLogoutToken(logoutTokenParameter);
-            performLogout();
+            JwtClaims logoutTokenClaims = validateLogoutToken(logoutTokenParameter);
+            performLogout(logoutTokenClaims);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (BackchannelLogoutException e) {
             Tr.error(tc, "BACKCHANNEL_LOGOUT_REQUEST_FAILED", new Object[] { request.getRequestURI(), e.getMessage() });
@@ -77,13 +79,21 @@ public class BackchannelLogoutHelper {
         return logoutTokenParameter;
     }
 
-    JwtToken validateLogoutToken(String logoutTokenString) throws BackchannelLogoutException {
+    JwtClaims validateLogoutToken(String logoutTokenString) throws BackchannelLogoutException {
         LogoutTokenValidator validator = new LogoutTokenValidator(clientConfig);
         return validator.validateToken(logoutTokenString);
     }
 
-    void performLogout() throws BackchannelLogoutException {
-        // TODO
+    void performLogout(JwtClaims logoutTokenClaims) throws BackchannelLogoutException {
+        try {
+            String sub = logoutTokenClaims.getSubject();
+            String sid = logoutTokenClaims.getClaimValue("sid", String.class);
+
+            HttpSessionCache httpSessionCache = clientConfig.getOidcClientConfig().getHttpSessionCache();
+            httpSessionCache.removeSession(sub, sid);
+        } catch (Exception e) {
+            throw new BackchannelLogoutException(e.getMessage(), HttpServletResponse.SC_NOT_IMPLEMENTED);
+        }
     }
 
 }

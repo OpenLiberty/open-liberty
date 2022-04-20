@@ -76,6 +76,8 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
 import com.ibm.ws.ssl.KeyStoreService;
+import com.ibm.ws.webcontainer.security.HttpSessionCache;
+import com.ibm.ws.webcontainer.security.InMemoryHttpSessionCache;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
@@ -304,6 +306,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
+
+    private final HttpSessionCache httpSessionCache = new InMemoryHttpSessionCache();
 
     // see defect 218708
     static String firstRandom = OidcUtil.generateRandom(32);
@@ -2059,6 +2063,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public SingleTableCache getCache() {
         return cache;
+    }
+
+    @Override
+    public HttpSessionCache getHttpSessionCache() {
+        return httpSessionCache;
     }
 
 }

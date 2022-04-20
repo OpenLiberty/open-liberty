@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -41,6 +42,7 @@ import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.JtiNonceCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
@@ -48,6 +50,7 @@ import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.HttpSessionCache;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -174,13 +177,27 @@ public class Jose4jUtil {
             //doIdAssertion(customProperties, payload, clientConfig);
             oidcResult = attributeToSubject.doMapping(customProperties, subject);
             //oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, username, subject, customProperties, null);
-
+            if (oidcResult.getStatus() == AuthResult.SUCCESS) {
+                addHttpSessionToCache(oidcClientRequest, jwtClaims, clientConfig);
+            }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { e.getLocalizedMessage(), clientId });
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         return oidcResult;
+    }
+
+    private void addHttpSessionToCache(OidcClientRequest oidcClientRequest, JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws MalformedClaimException {
+        OidcClientConfig oidcClientConfig = clientConfig.getOidcClientConfig();
+        if (oidcClientConfig.isBackchannelLogoutSupported()) {
+            String sub = jwtClaims.getSubject();
+            String sid = jwtClaims.getClaimValue("sid", String.class);
+            String httpSessionId = oidcClientRequest.getRequest().getSession().getId();
+
+            HttpSessionCache httpSessionCache = oidcClientConfig.getHttpSessionCache();
+            httpSessionCache.insertSession(sub, sid, httpSessionId);
+        }
     }
 
     String getIdToken(Map<String, String> tokens, ConvergedClientConfig clientConfig) {
