@@ -148,6 +148,7 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -261,7 +262,11 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Activate
     public EJBRuntimeImpl(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
-        this.checkpointPhase = checkpointPhase;
+        if (checkpointPhase != null || !ProductInfo.getBetaEdition()) {
+            this.checkpointPhase = checkpointPhase;
+        } else {
+            this.checkpointPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
+        }
     }
 
     @Override

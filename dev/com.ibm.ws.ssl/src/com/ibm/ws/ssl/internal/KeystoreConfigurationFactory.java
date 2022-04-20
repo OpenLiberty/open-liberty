@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -76,7 +75,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     @SuppressWarnings("unchecked")
     @Override
     @FFDCIgnore(IllegalArgumentException.class)
-    public void updated(String pid, Dictionary properties) throws ConfigurationException {
+    public void updated(String pid, Dictionary properties) {
         // If we are stopping ignore the update
         if (FrameworkState.isStopping()) {
             return;
@@ -105,15 +104,16 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         try {
             if (svc.updateKeystoreConfig(properties)) {
                 svc.updateRegistration(bContext);
-
+                String location = svc.getKeyStore().getLocation();
                 //if needed set the file monitor
                 String trigger = svc.getKeyStore().getTrigger();
                 Boolean fileBased = svc.getKeyStore().getFileBased();
                 if (!(trigger.equalsIgnoreCase("disabled"))) {
                     if (fileBased.booleanValue()) {
-                        createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
-                    } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
-                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, svc.getKeyStore().getLocation());
+                        createFileMonitor(svc.getKeyStore().getName(), location, trigger, svc.getKeyStore().getPollingRate());
+                    } else if (location.contains(KeyringMonitor.SAF_PREFIX) || (location.contains(KeyringMonitor.SAF_HWPREFIX))
+                               || location.contains(KeyringMonitor.SAF_HYBRIDPREFIX)) {
+                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, location);
                     }
                 }
             } else {
@@ -179,7 +179,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     /**
      * The specified files have been modified and we need to clear the SSLContext caches and

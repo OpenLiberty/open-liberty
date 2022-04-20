@@ -1,0 +1,26 @@
+<ejb-jar-ext
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd"
+  version="1.1"
+>
+  <session name="SGCheckpointBeanP">
+    <start-at-app-start value="true"/>
+  </session>
+  <session name="SGCheckpointBeanQ" >
+    <start-at-app-start value="false"/>
+  </session>
+
+  <session name="SLCheckpointBeanO">
+    <start-at-app-start value="true"/>
+  </session>
+  <session name="SLCheckpointBeanP">
+    <start-at-app-start value="true"/>
+  </session>
+  <session name="SLCheckpointBeanQ" >
+    <start-at-app-start value="false"/>
+  </session>
+  <session name="SLCheckpointBeanR" >
+    <start-at-app-start value="false"/>
+  </session>
+</ejb-jar-ext>
