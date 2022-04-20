@@ -84,7 +84,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -160,7 +162,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -238,7 +242,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -327,7 +333,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -416,7 +424,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -495,7 +505,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -588,7 +600,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
@@ -652,7 +666,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     // We recover/retry just fine, but this is a reason why Derby is not used for production.
     @AllowedFFDC({
         "jakarta.persistence.PersistenceException", // errors reported through Jakarta Persistence
+        "jakarta.transaction.RollbackException",
         "javax.persistence.PersistenceException", // errors reported through JPA
+        "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "java.sql.SQLSyntaxErrorException" // if EclipseLink creates duplicate tables/constraints concurrently
     })
