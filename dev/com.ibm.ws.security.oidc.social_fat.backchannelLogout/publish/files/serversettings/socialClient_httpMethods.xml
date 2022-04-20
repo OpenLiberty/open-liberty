@@ -13,8 +13,6 @@
 	<oidcLogin 
 		id="client01" 
 		signatureAlgorithm="HS256"
-		scope="profile email openid" 
-		userNameAttribute="sub"
 		clientId="client01" 
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
@@ -23,7 +21,6 @@
 		userInfoEndpointEnabled="true" 
 		issuer="testIssuer"
 		hostNameVerificationEnabled="false"
-		backchannelLogoutSupported="true"
 		>
 	</oidcLogin>
 

@@ -12,7 +12,6 @@
 
 	<featureManager>
 		<feature>timedexit-1.0</feature>
-		<feature>oauth-2.0</feature>
 		<feature>openidConnectServer-1.0</feature>
 		<feature>ssl-1.0</feature>
 		<feature>osgiconsole-1.0</feature>

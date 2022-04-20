@@ -19,21 +19,11 @@ Import-Package: \
     !*.internal.*, \
     org.jose4j.*;version="[0.5,1)", \
     *
-    
-# after building without issue, it has suddenly started complaining about these projects
--dependson: \
-    build.changeDetector,\
-	io.openliberty.org.testcontainers,\
-	com.ibm.ws.security.fat.common,\
-	com.ibm.ws.security.fat.common.jwt,\
-	com.ibm.ws.security.oauth.oidc_fat.common
-    
+        
 fat.project: true
 
 publish.wlp.jar.disabled: true
 
-tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
-    appsecurity-4.0, expressionlanguage-4.0, pages-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\

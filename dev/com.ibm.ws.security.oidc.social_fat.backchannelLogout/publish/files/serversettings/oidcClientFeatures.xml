@@ -17,7 +17,6 @@
 		<feature>ssl-1.0</feature>
 		<feature>openidConnectClient-1.0</feature>
 		<feature>jaxrs-2.0</feature>
-		<!-- jaxrs-2.0 is not required. Testing defect 152627 -->
 	</featureManager>
 
 </server>

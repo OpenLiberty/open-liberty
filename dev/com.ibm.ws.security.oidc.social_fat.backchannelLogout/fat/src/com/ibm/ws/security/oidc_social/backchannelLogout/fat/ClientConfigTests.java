@@ -85,7 +85,7 @@ public class ClientConfigTests extends BackChannelLogoutCommonTests {
     }
 
     @Test
-    public void ClientConfigTests_backchannelLogoutSupported_fakse_backchannelLogoutSessionRequired_true() throws Exception {
+    public void ClientConfigTests_backchannelLogoutSupported_false_backchannelLogoutSessionRequired_true() throws Exception {
 
     }
 

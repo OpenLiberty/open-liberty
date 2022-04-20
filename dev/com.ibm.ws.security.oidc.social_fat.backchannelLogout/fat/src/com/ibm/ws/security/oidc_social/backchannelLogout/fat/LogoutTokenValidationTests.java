@@ -534,9 +534,9 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenValidationTests_invalid_iat_future_beyond_clockSkew() throws Exception {
 
         long clockSkew = 5;
-        long tomorrow = System.currentTimeMillis() / 1000 + minutesToSeconds(clockSkew + 5);
+        long justBeyondClockSkew = System.currentTimeMillis() / 1000 + minutesToSeconds(clockSkew + 5);
 
-        genericInvalidClaimTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, tomorrow, MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
+        genericInvalidClaimTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, justBeyondClockSkew, MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
 
     }
 
@@ -798,6 +798,8 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenValidationTests_include_optional_sub_omit_sid() throws Exception {
 
         JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
+        // remvoe sid
+        builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
 
         String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
 

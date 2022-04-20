@@ -18,18 +18,15 @@
 
 	<openidConnectClient
 		id="client_sessionNotRequired"
-		scope="openid profile"
 		clientId="client_sessionNotRequired"
 		clientSecret="secret"
 		sharedKey="secret"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="mySessionNotRequiredAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 
@@ -41,18 +38,15 @@
 
 	<openidConnectClient
 		id="client_sessionRequired"
-		scope="openid profile"
 		clientId="client_sessionRequired"
 		clientSecret="secret"
 		sharedKey="secret"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="mySessionRequiredAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 	
@@ -64,18 +58,15 @@
 
 	<openidConnectClient
 		id="client_jtiInOP"
-		scope="openid profile"
 		clientId="client_jtiInOP"
 		clientSecret="secret"
 		sharedKey="secret"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigJtiSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigJtiSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigJtiSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myJtiAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 
@@ -87,19 +78,16 @@
 
 	<openidConnectClient
 		id="client_nonDefaultIssuer"
-		scope="openid profile"
 		clientId="client_nonDefaultIssuer"
 		clientSecret="secret"
 		sharedKey="secret"
 		issuerIdentifier="someIssuer"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigIssuerSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigIssuerSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigIssuerSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myIssuerAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 	
@@ -111,19 +99,16 @@
 
 	<openidConnectClient
 		id="client_nonDefaultAudienceAll"
-		scope="openid profile"
 		clientId="client_nonDefaultAudienceAll"
 		clientSecret="secret"
 		sharedKey="secret"
 		audiences="ALL_AUDIENCES"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesAllAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 		
@@ -135,19 +120,16 @@
 
 	<openidConnectClient
 		id="client_nonDefaultAudienceOne"
-		scope="openid profile"
 		clientId="client_nonDefaultAudienceOne"
 		clientSecret="secret"
 		sharedKey="secret"
 		audiences="aud1"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesOneAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 		
@@ -159,19 +141,16 @@
 
 	<openidConnectClient
 		id="client_nonDefaultAudienceMultiple"
-		scope="openid profile"
 		clientId="client_nonDefaultAudienceMultiple"
 		clientSecret="secret"
 		sharedKey="secret"
 		audiences="aud1,aud2"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesMultipleAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 	
@@ -183,20 +162,17 @@
 
 	<openidConnectClient
 		id="client_rs256"
-		scope="openid profile"
 		clientId="client_rs256"
 		clientSecret="secret"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myRs256AuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 		
@@ -208,18 +184,15 @@
 
 	<openidConnectClient
 		id="client_nonceInOP"
-		scope="openid profile"
 		clientId="client_nonceInOP"
 		clientSecret="secret"
 		sharedKey="secret"
-		mapIdentityToRegistryUser="true"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigNonceSample/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigNonceSample/token"
 		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigNonceSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myNonceAuthFilter"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 		

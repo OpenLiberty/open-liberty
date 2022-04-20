@@ -16,9 +16,7 @@
         <feature>jsp-2.3</feature>
         <feature>appSecurity-2.0</feature>
         <feature>socialLogin-1.0</feature>
-        <feature>jwt-1.0</feature>
         <feature>jaxrs-2.0</feature>
-        <feature>oauth-2.0</feature>
 	</featureManager>
 
 </server>

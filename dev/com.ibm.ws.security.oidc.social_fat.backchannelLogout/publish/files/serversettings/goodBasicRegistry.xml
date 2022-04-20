@@ -15,9 +15,6 @@
 		realm="BasicRealm"
 	>
 		<user
-			name="utle"
-			password="utlepwd" />
-		<user
 			name="testuser"
 			password="testuserpwd" />
 	</basicRegistry>

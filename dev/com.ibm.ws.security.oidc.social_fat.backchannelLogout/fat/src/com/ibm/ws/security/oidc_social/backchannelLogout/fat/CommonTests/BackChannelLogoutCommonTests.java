@@ -387,8 +387,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     public List<validationData> setMissingBCLRequestClaimExpectations(String claim) throws Exception {
 
         List<validationData> expectations = setInvalidBCLRequestExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a claim [" + claim + "] was missing.", MessageConstants.CWWKS1545E_BACK_CHANNEL_LOGOUT_MISSING_REQUIRED_CLAIM);
-
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a claim [" + claim + "] was missing.", MessageConstants.CWWKS1545E_BACK_CHANNEL_LOGOUT_MISSING_REQUIRED_CLAIM + ".*" + claim);
         return expectations;
     }
 
@@ -403,7 +402,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         List<validationData> expectations = setInvalidBCLRequestExpectations();
         if (specificMsg != null && !specificMsg.equals("")) {
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a claim contained an invalid value.", specificMsg);
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain expected message [" + specificMsg + "].", specificMsg);
         }
 
         return expectations;
@@ -441,7 +440,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         }
 
         int start = respReceived.indexOf(tokenName);
-        String theValue = respReceived.substring(start + tokenName.length(), respReceived.length() - 1);
+        String theValue = respReceived.substring(start + tokenName.length(), respReceived.length());
         Log.info(thisClass, thisMethod, tokenName + " " + theValue);
         if (!theValue.isEmpty()) {
             return theValue;

@@ -12,11 +12,9 @@
 
 	<openidConnectClient
 		id="client01"
-		scope="openid profile"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
@@ -24,7 +22,6 @@
 		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		issuerIdentifier="testIssuer"
-		backchannelLogoutSupported="true"
 	>
 	</openidConnectClient>
 
