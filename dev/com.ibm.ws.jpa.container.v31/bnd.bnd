@@ -29,6 +29,9 @@ Private-Package: \
   com.ibm.ws.jpa.container.v31.JPAPCtxtAttributeAccessorV31, \
   com.ibm.ws.jpa.container.v31.internal.JPA31Runtime
 
+javac.source: 11
+javac.target: 11
+
 -buildpath: \
 	com.ibm.ws.jpa.container;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\

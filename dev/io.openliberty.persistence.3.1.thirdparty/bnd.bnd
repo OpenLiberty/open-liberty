@@ -13,7 +13,7 @@ bVersion=1.0
 
 # Eclipselink version info
 eclVersion=3.1.0
-eclFullVersion=${eclVersion}-M1
+eclFullVersion=${eclVersion}
 eclPackageVersion=3.1.0
 asmFullVersion=9.2.0
 
@@ -27,6 +27,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse.org - EclipseLink Project
 Bundle-ManifestVersion: 2
 Specification-Version: ${eclVersion}
+
+javac.source: 11
+javac.target: 11
 
 Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
@@ -108,15 +111,6 @@ DynamicImport-Package: \
 
 Private-Package: io.openliberty.persistence.internal.helper
 
--maven-dependencies.fix: \
- org.eclipse.persistence:org.eclipse.persistence.core:3.1.0-M1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.core;version=3.1.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa:3.1.0-M1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa;version=3.1.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:3.1.0-M1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.jpql;version=3.1.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.1.0-M1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.modelgen.processor;version=3.1.0,\
 
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
@@ -134,7 +128,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclVersion};maven-version=${eclVersion}-M1,\
-    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclVersion};maven-version=${eclVersion}-M1,\
-    jakarta.persistence:jakarta.persistence-api;version=3.1.0,\
+    org.eclipse.persistence:org.eclipse.persistence.core;version="[3.1.0,3.2.0)",\
+    org.eclipse.persistence:org.eclipse.persistence.jpa;version="[3.1.0,3.2.0)",\
+    io.openliberty.jakarta.persistence.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core
