@@ -47,7 +47,6 @@ import test.concurrent.sim.context.zos.wlm.Enclave;
 @ContextServiceDefinition(name = "java:app/concurrent/ThreadNameContext",
                           propagated = { "SyncToOSThread", SECURITY, APPLICATION })
 
-//TODO move to web.xml and include properties?
 @ContextServiceDefinition(name = "java:module/concurrent/zosWLMContext",
                           propagated = { "Classification" },
                           cleared = { TRANSACTION, "SyncToOSThread", SECURITY },
@@ -240,6 +239,56 @@ public class SimZOSContextTestServlet extends FATServlet {
             assertEquals("ASYNCDMN", longRunningTxSupplier.get());
 
             assertEquals("TX_CLASS_C", Enclave.getTransactionClass());
+        } finally {
+            Enclave.clear();
+        }
+    }
+
+    /**
+     * Configure vendor properties for PropagateOrNew and with different default transaction
+     * classes for zosWLMContext and verify that the fake context type that we are using to simulate it
+     * propagates or creates the new context on the thread.
+     */
+    // TODO If the spec ever adds a way for vendor properties to be supplied to context types, this test could help provide coverage.
+    // @Test
+    public void testVendorPropertiesSimulatedZOSWLMContext() throws Exception {
+        // Instead of testing the real z/OS WLM context behavior,
+        // the fake context provider updates the state of a mock Enclave class.
+        ContextService contextSvc = InitialContext.doLookup("java:comp/concurrent/zosWLMContextPropagateOrNew");
+
+        String originalName = Thread.currentThread().getName();
+        try {
+            Enclave.setTransactionClass("TX_CLASS_D");
+
+            Supplier<String> txClassSupplier = contextSvc.contextualSupplier(Enclave::getTransactionClass);
+
+            Enclave.setTransactionClass("TX_CLASS_E");
+
+            assertEquals("TX_CLASS_D", txClassSupplier.get());
+
+            assertEquals("TX_CLASS_E", Enclave.getTransactionClass());
+
+            // Propagate the absence of context:
+
+            Enclave.clear();
+
+            txClassSupplier = contextSvc.contextualSupplier(Enclave::getTransactionClass);
+
+            Enclave.setTransactionClass("TX_CLASS_F");
+
+            assertEquals("DEFAULT_TX", txClassSupplier.get());
+
+            assertEquals("TX_CLASS_F", Enclave.getTransactionClass());
+
+            // Long running task:
+
+            @SuppressWarnings("unchecked")
+            Supplier<String> longRunningTxSupplier = contextSvc.createContextualProxy(Enclave::getTransactionClass,
+                                                                                      Collections.singletonMap(ManagedTask.LONGRUNNING_HINT, "true"),
+                                                                                      Supplier.class);
+            assertEquals("DAEMON_TX", longRunningTxSupplier.get());
+
+            assertEquals("TX_CLASS_F", Enclave.getTransactionClass());
         } finally {
             Enclave.clear();
         }
