@@ -158,6 +158,7 @@ public class ServerStartTest {
 
                 server.startServer();
             } finally {
+                server.stopServer();
                 server.deleteDirectoryFromLibertyServerRoot("jvm.options");
                 server.setServerConfigurationFile("tmp/origServer.xml");
             }
