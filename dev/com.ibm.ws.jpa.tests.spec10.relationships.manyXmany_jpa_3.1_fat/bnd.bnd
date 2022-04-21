@@ -31,9 +31,9 @@ tested.features: persistence-3.1, persistenceContainer-3.1, enterpriseBeansLite-
     com.ibm.ws.jpa_testframework;version=latest,\
     com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_fat.common;version=latest,\
     fattest.simplicity;version=latest,\
-    io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.annotation.2.1;version=latest,\
     io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
-    io.openliberty.jakarta.persistence.3.0;version=latest,\
+    io.openliberty.jakarta.persistence.3.1;version=latest,\
     io.openliberty.jakarta.transaction.2.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest

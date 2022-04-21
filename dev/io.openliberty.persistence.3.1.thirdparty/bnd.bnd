@@ -117,15 +117,13 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class, \
-  org/eclipse/persistence/internal/helper/*.class
+  org/eclipse/persistence/internal/localization/i18n/*.class
 
 -buildpath: \
     org.eclipse.persistence:org.eclipse.persistence.core;version="[3.1.0,3.2.0)",\

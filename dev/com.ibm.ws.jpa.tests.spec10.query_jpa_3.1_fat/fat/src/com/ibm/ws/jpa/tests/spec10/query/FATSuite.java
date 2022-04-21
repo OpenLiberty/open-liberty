@@ -38,7 +38,6 @@ import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19342_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_Web;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -68,6 +67,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite extends AbstractFATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES());
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatWithJPA31());
 
 }
