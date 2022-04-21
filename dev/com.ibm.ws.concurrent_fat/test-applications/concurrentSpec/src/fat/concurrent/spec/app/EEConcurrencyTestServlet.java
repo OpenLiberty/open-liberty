@@ -11,6 +11,8 @@
 package fat.concurrent.spec.app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.Closeable;
@@ -153,6 +155,9 @@ public class EEConcurrencyTestServlet extends FATServlet {
     // Interval (in nanoseconds) up to which tests should wait for a single task to run
     static final long TIMEOUT_NS = TimeUnit.MILLISECONDS.toNanos(TIMEOUT);
 
+    // Allows for small variations when checking the system clock
+    static final long TOLERANCE_MS = 100;
+
     /**
      * Schedule/submit a task that is both a Callable and a Runnable.
      * Ensure that if scheduled/submitted as a Callable then call is invoked and not run,
@@ -251,7 +256,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskStarting #1
@@ -264,7 +269,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskAborted #1
@@ -277,7 +282,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof CancellationException))
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -294,7 +299,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof RuntimeException) || !(event.exception.getCause() instanceof InterruptedException))
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -870,7 +875,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskStarting #1
@@ -883,7 +888,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskDone #1
@@ -896,7 +901,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -946,7 +951,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #1
@@ -959,7 +964,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskDone #1
@@ -972,7 +977,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -991,7 +996,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #2
@@ -1004,7 +1009,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskDone #2
@@ -1017,7 +1022,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Unexpected or missing exception: " + event, event.exception);
@@ -1066,7 +1071,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #1
@@ -1079,7 +1084,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskDone #1
@@ -1092,7 +1097,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -1111,7 +1116,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #2
@@ -1124,7 +1129,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskDone #2
@@ -1137,7 +1142,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Unexpected or missing exception: " + event, event.exception);
@@ -1378,7 +1383,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #1
@@ -1391,7 +1396,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskAborted #1
@@ -1404,7 +1409,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof CancellationException))
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -1421,7 +1426,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -1469,7 +1474,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskAborted #1
@@ -1482,7 +1487,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -1499,7 +1504,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -1697,7 +1702,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -1710,7 +1715,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -1723,7 +1728,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -1774,7 +1779,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -1787,7 +1792,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -1800,7 +1805,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -1819,7 +1824,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #2
@@ -1832,7 +1837,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #2
@@ -1845,7 +1850,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -2016,7 +2021,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #1
@@ -2029,7 +2034,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskAborted #1
@@ -2042,7 +2047,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof AbortedException) || (!(event.exception.getCause() instanceof ArithmeticException)))
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -2059,7 +2064,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -2109,7 +2114,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #1
@@ -2122,7 +2127,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskAborted #1
@@ -2135,7 +2140,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof AbortedException) || (!(event.exception.getCause() instanceof ArithmeticException)))
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -2152,7 +2157,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -2312,7 +2317,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #1
@@ -2325,7 +2330,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskDone #1
@@ -2338,7 +2343,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Non-null exception: " + event, event.exception);
@@ -2357,7 +2362,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskAborted #2
@@ -2370,7 +2375,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskAborted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskAborted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskAborted#2: Unexpected delay: " + event);
         if (!(event.exception instanceof AbortedException) || (!(event.exception.getCause() instanceof ArithmeticException)))
             throw new Exception("schedule(callable, trigger)/taskAborted#2: Unexpected or missing exception: " + event, event.exception);
@@ -2387,7 +2392,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (!(event.exception instanceof ArithmeticException))
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected or missing exception: " + event, event.exception);
@@ -2510,7 +2515,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #1
@@ -2523,7 +2528,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskDone #1
@@ -2536,7 +2541,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof IllegalStateException))
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -2585,7 +2590,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskAborted #1
@@ -2598,7 +2603,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(runnable, trigger)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -2615,7 +2620,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedRunnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (!(event.exception instanceof IllegalStateException))
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected or missing exception: " + event, event.exception);
@@ -2668,7 +2673,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #1
@@ -2681,7 +2686,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException) || (!(event.exception.getCause() instanceof NegativeArraySizeException)))
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -2698,7 +2703,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -2715,7 +2720,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #2
@@ -2728,7 +2733,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #2
@@ -2741,7 +2746,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -2912,6 +2917,88 @@ public class EEConcurrencyTestServlet extends FATServlet {
         if (future == null)
             throw new Exception("Second taskSubmitted did not add future within allotted interval");
         future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Confirm that getDelay for the ScheduledFuture of ManagedScheduledExecutorService does not exceed the fixed delay amount.
+     */
+    @Test
+    public void testGetDelayOfFixedDelayTask() throws Throwable {
+        DelayListener listener = new DelayListener();
+        Runnable task = ManagedExecutors.managedTask((Runnable) new CounterTask(), listener);
+
+        ScheduledFuture<?> future = mschedxsvcClassloaderContext.scheduleWithFixedDelay(task, 500, 4000, TimeUnit.MILLISECONDS);
+        try {
+            Long delay;
+            delay = listener.delays.poll();
+            assertNotNull(delay);
+            assertTrue("delay to initial execution: " + delay, delay <= TOLERANCE_MS + 500l);
+
+            delay = listener.delays.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+            assertNotNull(delay);
+            assertTrue("delay to second execution: " + delay, delay <= TOLERANCE_MS + 4000l);
+        } finally {
+            future.cancel(false);
+        }
+    }
+
+    /**
+     * Confirm that getDelay for the ScheduledFuture of ManagedScheduledExecutorService does not exceed the fixed rate amount.
+     */
+    @Test
+    public void testGetDelayOfFixedRateTask() throws Throwable {
+        DelayListener listener = new DelayListener();
+        Runnable task = ManagedExecutors.managedTask((Runnable) new CounterTask(), listener);
+
+        ScheduledFuture<?> future = mschedxsvcClassloaderContext.scheduleAtFixedRate(task, 600, 5000, TimeUnit.MILLISECONDS);
+        try {
+            Long delay;
+            delay = listener.delays.poll();
+            assertNotNull(delay);
+            assertTrue("delay to initial execution: " + delay, delay <= TOLERANCE_MS + 600l);
+
+            delay = listener.delays.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+            assertNotNull(delay);
+            assertTrue("delay to second execution: " + delay, delay <= TOLERANCE_MS + 5000l);
+        } finally {
+            future.cancel(false);
+        }
+    }
+
+    /**
+     * Confirm that getDelay for the ScheduledFuture of ManagedScheduledExecutorService does not exceed the amount returned by the Trigger.
+     */
+    @Test
+    public void testGetDelayOfTriggeredTask() throws Throwable {
+        DelayListener listener = new DelayListener();
+        Runnable task = ManagedExecutors.managedTask((Runnable) new CounterTask(), listener);
+
+        ScheduledFuture<?> future = mschedxsvcClassloaderContext.schedule(task, new Trigger() {
+            @Override
+            public Date getNextRunTime(LastExecution lastExec, Date scheduledAt) {
+                if (lastExec == null) // first time
+                    return new Date(scheduledAt.getTime() + 400);
+                else
+                    return new Date(scheduledAt.getTime() + 6000);
+            }
+
+            @Override
+            public boolean skipRun(LastExecution arg0, Date arg1) {
+                return false;
+            }
+        });
+        try {
+            Long delay;
+            delay = listener.delays.poll();
+            assertNotNull(delay);
+            assertTrue("delay to initial execution: " + delay, delay <= TOLERANCE_MS + 400l);
+
+            delay = listener.delays.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+            assertNotNull(delay);
+            assertTrue("delay to second execution: " + delay, delay <= TOLERANCE_MS + 6000l);
+        } finally {
+            future.cancel(false);
+        }
     }
 
     /**
@@ -5030,7 +5117,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, delay)/taskSubmitted: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, delay)/taskSubmitted: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, delay)/taskSubmitted: Unexpected delay: " + event);
 
         // schedule(runnable, delay): taskStarting
@@ -5043,7 +5130,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, delay)/taskStarting: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, delay)/taskStarting: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, delay)/taskStarting: Unexpected delay: " + event);
 
         // schedule(runnable, delay): taskDone
@@ -5056,7 +5143,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, delay)/taskDone: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, delay)/taskDone: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, delay)/taskDone: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(runnable, delay)/taskDone: Non-null exception: " + event).initCause(event.exception);
@@ -5094,7 +5181,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, delay)/taskSubmitted: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, delay)/taskSubmitted: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, delay)/taskSubmitted: Unexpected delay: " + event);
 
         // schedule(callable, delay): taskStarting
@@ -5107,7 +5194,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, delay)/taskStarting: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, delay)/taskStarting: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, delay)/taskStarting: Unexpected delay: " + event);
 
         // schedule(callable, delay): taskDone
@@ -5120,7 +5207,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, delay)/taskDone: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, delay)/taskDone: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, delay)/taskDone: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, delay)/taskDone: Non-null exception: " + event).initCause(event.exception);
@@ -5175,7 +5262,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Unexpected delay: " + event);
         if (!(event.failureFromFutureGet instanceof InterruptedException))
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Future.get(): missing or unexpected error: " + event, event.failureFromFutureGet);
@@ -5190,7 +5277,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Unexpected delay: " + event);
         if (!(event.failureFromFutureGet instanceof InterruptedException))
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Future.get(): missing or unexpected error: " + event, event.failureFromFutureGet);
@@ -5205,7 +5292,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -5224,7 +5311,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Unexpected delay: " + event);
         if (!(event.failureFromFutureGet instanceof InterruptedException))
             throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Future.get(): missing or unexpected error: " + event, event.failureFromFutureGet);
@@ -5239,7 +5326,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#2: Unexpected delay: " + event);
         if (!(event.failureFromFutureGet instanceof InterruptedException))
             throw new Exception("scheduleAtFixedRate/taskStarting#2: Future.get(): missing or unexpected error: " + event, event.failureFromFutureGet);
@@ -5254,7 +5341,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleAtFixedRate/taskDone#2: Non-null exception: " + event).initCause(event.exception);
@@ -5273,7 +5360,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskStarting #3
@@ -5286,7 +5373,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#3: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskDone #3
@@ -5299,7 +5386,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskDone#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#3: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleAtFixedRate/taskDone#3: Non-null exception: " + event).initCause(event.exception);
@@ -5355,7 +5442,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 2)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 2)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #1
@@ -5368,7 +5455,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskDone #1
@@ -5381,7 +5468,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -5400,7 +5487,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 2)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 2)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#2: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #2
@@ -5413,7 +5500,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#2: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskDone #2
@@ -5426,7 +5513,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleWithFixedDelay/taskDone#2: Non-null exception: " + event).initCause(event.exception);
@@ -5445,7 +5532,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 2)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 2)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#3: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskStarting #3
@@ -5458,7 +5545,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskStarting#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskStarting#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskStarting#3: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskDone #3
@@ -5471,7 +5558,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#3: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#3: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("scheduleWithFixedDelay/taskDone#3: Non-null exception: " + event).initCause(event.exception);
@@ -5520,7 +5607,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleAtFixedRate: taskStarting #1
@@ -5533,7 +5620,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Unexpected delay: " + event);
         if (!Boolean.TRUE.equals(event.canceled))
             throw new Exception("scheduleAtFixedRate/taskStarting#1: Not able to cancel: " + event);
@@ -5548,7 +5635,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof CancellationException))
             throw new Exception("scheduleAtFixedRate/taskAborted#1: Unexpected or missing exception: " + event).initCause(event.exception);
@@ -5567,7 +5654,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null && !(event.exception instanceof IllegalStateException))
             throw new Exception("scheduleAtFixedRate/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -5601,7 +5688,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskSubmitted#1: Unexpected delay: " + event);
 
         // scheduleWithFixedDelay: taskAborted #1
@@ -5614,7 +5701,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof CancellationException))
             throw new Exception("scheduleWithFixedDelay/taskAborted#1: Unexpected or missing exception: " + event).initCause(event.exception);
@@ -5633,7 +5720,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null && !(event.exception instanceof IllegalStateException))
             throw new Exception("scheduleWithFixedDelay/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -5956,7 +6043,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #1
@@ -5969,7 +6056,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskDone #1
@@ -5982,7 +6069,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(runnable, trigger)/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -6001,7 +6088,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskStarting #2
@@ -6014,7 +6101,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(runnable, trigger): taskDone #2
@@ -6027,7 +6114,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != runnable)
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(runnable, trigger)/taskDone#2: Non-null exception: " + event).initCause(event.exception);
@@ -6069,7 +6156,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #1
@@ -6082,7 +6169,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskDone #1
@@ -6095,7 +6182,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Non-null exception: " + event).initCause(event.exception);
@@ -6114,7 +6201,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #2
@@ -6127,7 +6214,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskDone #2
@@ -6140,7 +6227,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != callable)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Non-null exception: " + event).initCause(event.exception);
@@ -6309,7 +6396,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
         if (!Boolean.FALSE.equals(event.isDone))
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Task should not be done: " + event);
@@ -6324,7 +6411,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable, trigger)/taskAborted#1: Unexpected exception: " + event, event.exception);
@@ -6359,7 +6446,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
         if (!Boolean.FALSE.equals(event.isDone))
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Task should not be done: " + event);
@@ -6374,7 +6461,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskStarting#1: Unexpected delay: " + event);
         if (!Boolean.FALSE.equals(event.isDone))
             throw new Exception("[re]schedule(callable)/taskStarting#1: Task should not be done: " + event);
@@ -6389,7 +6476,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("[re]schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6412,7 +6499,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6431,7 +6518,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
         if (!Boolean.FALSE.equals(event.isDone))
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Task should not be done: " + event);
@@ -6446,7 +6533,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Unexpected delay: " + event);
         if (!Boolean.FALSE.equals(event.isDone))
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Task should not be done: " + event);
@@ -6461,7 +6548,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -6527,7 +6614,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -6540,7 +6627,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -6553,7 +6640,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6573,7 +6660,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskStarting #1
@@ -6586,7 +6673,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskDone #1
@@ -6599,7 +6686,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6618,7 +6705,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskStarting #2
@@ -6631,7 +6718,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#2: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskDone #2
@@ -6644,7 +6731,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -6722,7 +6809,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #1
@@ -6735,7 +6822,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskDone #1
@@ -6748,7 +6835,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6767,7 +6854,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskStarting #2
@@ -6780,7 +6867,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(callable, trigger): taskDone #2
@@ -6793,7 +6880,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable, trigger)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -6814,7 +6901,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // [re]schedule(callable): taskStarting #1
@@ -6827,7 +6914,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // [re]schedule(callable): taskDone #1
@@ -6840,7 +6927,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("[re]schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6920,7 +7007,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -6933,7 +7020,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -6946,7 +7033,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -6967,7 +7054,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskSubmitted#1: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskStarting #1
@@ -6980,7 +7067,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskStarting#1: Unexpected delay: " + event);
 
         // [re]schedule(callable, trigger): taskDone #1
@@ -6993,7 +7080,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("[re]schedule(callable, trigger)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -7918,7 +8005,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #1
@@ -7931,7 +8018,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -7948,7 +8035,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -7965,7 +8052,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #2
@@ -7978,7 +8065,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected or missing exception: " + event, event.exception);
@@ -7995,7 +8082,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -8046,7 +8133,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -8059,7 +8146,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -8072,7 +8159,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -8091,7 +8178,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #2
@@ -8104,7 +8191,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected or missing exception: " + event, event.exception);
@@ -8121,7 +8208,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -8138,7 +8225,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#3: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#3: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #3
@@ -8151,7 +8238,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#3: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#3: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#3: Unexpected or missing exception: " + event, event.exception);
@@ -8168,7 +8255,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#3: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#3: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#3: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#3: Unexpected exception: " + event, event.exception);
@@ -8185,7 +8272,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#4: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#4: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#4: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #4
@@ -8198,7 +8285,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#4: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#4: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#4: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #4
@@ -8211,7 +8298,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#4: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#4: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#4: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#4: Unexpected exception: " + event, event.exception);
@@ -8259,7 +8346,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #1
@@ -8272,7 +8359,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#1: Unexpected or missing exception: " + event, event.exception);
@@ -8289,7 +8376,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -8306,7 +8393,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #2
@@ -8319,7 +8406,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#2: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #2
@@ -8332,7 +8419,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -8380,7 +8467,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#1: Unexpected delay: " + event);
 
         // schedule(callable): taskStarting #1
@@ -8393,7 +8480,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskStarting#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskStarting#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskStarting#1: Unexpected delay: " + event);
 
         // schedule(callable): taskDone #1
@@ -8406,7 +8493,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#1: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#1: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#1: Unexpected exception: " + event, event.exception);
@@ -8425,7 +8512,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskSubmitted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskSubmitted#2: Unexpected delay: " + event);
 
         // schedule(callable): taskAborted #2
@@ -8438,7 +8525,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskAborted#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskAborted#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected delay: " + event);
         if (!(event.exception instanceof SkippedException))
             throw new Exception("schedule(callable)/taskAborted#2: Unexpected or missing exception: " + event, event.exception);
@@ -8455,7 +8542,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("schedule(callable)/taskDone#2: Wrong executor: " + event);
         if (event.task != managedCallable)
             throw new Exception("schedule(callable)/taskDone#2: Wrong task: " + event);
-        if (event.delay == null || event.delay > 1)
+        if (event.delay == null || event.delay > TOLERANCE_MS + 1)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected delay: " + event);
         if (event.exception != null)
             throw new Exception("schedule(callable)/taskDone#2: Unexpected exception: " + event, event.exception);
@@ -9061,7 +9148,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#1: Unexpected delay: " + event);
 
             // taskStarting #1
@@ -9074,7 +9161,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskStarting#1: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskStarting#1: Unexpected delay: " + event);
 
             // taskDone #1
@@ -9087,7 +9174,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskDone#1: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskDone#1: Unexpected delay: " + event);
 
             // taskSubmitted #2
@@ -9100,7 +9187,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#2: Unexpected delay: " + event);
 
             // taskStarting #2
@@ -9113,7 +9200,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskStarting#2: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskStarting#2: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskStarting#2: Unexpected delay: " + event);
 
             // taskDone #2
@@ -9126,7 +9213,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskDone#2: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskDone#2: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskDone#2: Unexpected delay: " + event);
 
             // taskSubmitted #3
@@ -9139,7 +9226,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#3: Unexpected delay: " + event);
 
             // taskStarting #3
@@ -9152,7 +9239,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskStarting#3: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskStarting#3: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskStarting#3: Unexpected delay: " + event);
 
             // taskDone #3
@@ -9165,7 +9252,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskDone#3: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskDone#3: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskDone#3: Unexpected delay: " + event);
 
             // taskSubmitted #4
@@ -9178,7 +9265,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#4: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#4: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskSubmitted#4: Unexpected delay: " + event);
 
             // taskStarting #4
@@ -9191,7 +9278,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskStarting#4: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskStarting#4: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskStarting#4: Unexpected delay: " + event);
 
             // taskDone #4
@@ -9204,7 +9291,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 throw new Exception("scheduleAtFixedRate/taskDone#4: Wrong executor: " + event);
             if (event.task != task)
                 throw new Exception("scheduleAtFixedRate/taskDone#4: Wrong task: " + event);
-            if (event.delay == null || event.delay > 1)
+            if (event.delay == null || event.delay > TOLERANCE_MS + 1)
                 throw new Exception("scheduleAtFixedRate/taskDone#4: Unexpected delay: " + event);
         } finally {
             future.cancel(false);
