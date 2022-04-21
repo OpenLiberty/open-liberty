@@ -65,8 +65,11 @@ public class SingleTableCache extends CommonCache {
      * Insert the value into the Cache using the specified key.
      */
     public synchronized void put(@Sensitive Object key, Object value, long clockSkew) {
-        CacheValue cacheValue = new CacheValue(value, clockSkew);
-        lookupTable.put(key, cacheValue);
+        lookupTable.put(key, createCacheValue(value, clockSkew));
+    }
+
+    protected CacheValue createCacheValue(Object value, long clockSkew) {
+        return new CacheValue(value, clockSkew);
     }
 
     public int size() {

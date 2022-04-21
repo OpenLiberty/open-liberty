@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-public class JwtCacheKey {
+class JwtCacheKey {
 
     @Sensitive
     private final String jwt;
@@ -23,15 +23,6 @@ public class JwtCacheKey {
     public JwtCacheKey(@Sensitive String jwt, String configId) {
         this.jwt = jwt;
         this.configId = configId;
-    }
-
-    @Sensitive
-    public String getJwt() {
-        return jwt;
-    }
-
-    public String getConfigId() {
-        return configId;
     }
 
     @Override
@@ -51,7 +42,7 @@ public class JwtCacheKey {
             return false;
         }
         JwtCacheKey other = (JwtCacheKey) obj;
-        return Objects.equals(jwt, other.getJwt()) && Objects.equals(configId, other.getConfigId());
+        return Objects.equals(jwt, other.jwt) && Objects.equals(configId, other.configId);
     }
 
 }

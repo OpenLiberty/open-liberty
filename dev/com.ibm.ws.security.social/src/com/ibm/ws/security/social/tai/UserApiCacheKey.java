@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-public class UserApiCacheKey {
+class UserApiCacheKey {
 
     @Sensitive
     private final String token;
@@ -23,15 +23,6 @@ public class UserApiCacheKey {
     public UserApiCacheKey(@Sensitive String token, String configId) {
         this.token = token;
         this.configId = configId;
-    }
-
-    @Sensitive
-    public String getToken() {
-        return token;
-    }
-
-    public String getConfigId() {
-        return configId;
     }
 
     @Override
@@ -51,7 +42,7 @@ public class UserApiCacheKey {
             return false;
         }
         UserApiCacheKey other = (UserApiCacheKey) obj;
-        return Objects.equals(token, other.getToken()) && Objects.equals(configId, other.getConfigId());
+        return Objects.equals(token, other.token) && Objects.equals(configId, other.configId);
     }
 
 }

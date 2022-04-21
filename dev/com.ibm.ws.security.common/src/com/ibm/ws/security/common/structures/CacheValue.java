@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,12 @@ package com.ibm.ws.security.common.structures;
 
 import java.util.Objects;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class CacheValue {
+
+    private static final TraceComponent tc = Tr.register(CacheValue.class);
 
     private Object value;
     private long createdAt = 0L;
@@ -41,6 +46,9 @@ public class CacheValue {
     public boolean isExpired(long timeoutInMilliseconds) {
         long now = System.currentTimeMillis();
         if ((now - createdAt) > timeoutInMilliseconds) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Entry is considered expired; the current time " + now + " - the created at time " + createdAt + " was larger than the specified timeout " + timeoutInMilliseconds);
+            }
             return true;
         }
         return false;

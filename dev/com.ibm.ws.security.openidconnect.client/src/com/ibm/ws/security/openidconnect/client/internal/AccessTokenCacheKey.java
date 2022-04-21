@@ -25,15 +25,6 @@ public class AccessTokenCacheKey {
         this.configId = configId;
     }
 
-    @Sensitive
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getConfigId() {
-        return configId;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(accessToken, configId);
@@ -48,7 +39,7 @@ public class AccessTokenCacheKey {
         if (getClass() != obj.getClass())
             return false;
         AccessTokenCacheKey other = (AccessTokenCacheKey) obj;
-        return Objects.equals(accessToken, other.getAccessToken()) && Objects.equals(configId, other.getConfigId());
+        return Objects.equals(accessToken, other.accessToken) && Objects.equals(configId, other.configId);
     }
 
 }

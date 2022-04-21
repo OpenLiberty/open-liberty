@@ -11,13 +11,10 @@
 package com.ibm.ws.security.jwt.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
 import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.junit.After;
@@ -32,7 +29,6 @@ public class JwtCacheTest extends CommonTestClass {
 
     private final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
-    private final JwtCacheValue cacheValue = mockery.mock(JwtCacheValue.class);
     private final JwtContext jwtContext = mockery.mock(JwtContext.class);
     private final JwtClaims jwtClaims = mockery.mock(JwtClaims.class);
     private final NumericDate date = mockery.mock(NumericDate.class);
@@ -51,12 +47,6 @@ public class JwtCacheTest extends CommonTestClass {
     public void tearDown() throws Exception {
         System.out.println("Exiting test: " + testName.getMethodName());
         mockery.assertIsSatisfied();
-    }
-
-    @Test
-    public void test_evictStaleEntries_emptyCache() {
-        // Ensure we don't throw an exception or anything bad
-        cache.evictStaleEntries();
     }
 
     @Test
@@ -174,112 +164,6 @@ public class JwtCacheTest extends CommonTestClass {
             });
             Object returnedValue = cache.get(jwt, configId);
             assertEquals("Returned value did not match the initial value put in the cache.", jwtContext, returnedValue);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_isJwtExpired_contextMissingClaims() {
-        mockery.checking(new Expectations() {
-            {
-                one(cacheValue).getValue();
-                will(returnValue(jwtContext));
-                one(jwtContext).getJwtClaims();
-                will(returnValue(null));
-            }
-        });
-        boolean result = cache.isJwtExpired(cacheValue);
-        assertTrue("JWT with null claims object should have been considered expired, but was not.", result);
-    }
-
-    @Test
-    public void test_isJwtExpired_malformedExpirationClaim() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(cacheValue).getValue();
-                    will(returnValue(jwtContext));
-                    one(jwtContext).getJwtClaims();
-                    will(returnValue(jwtClaims));
-                    one(jwtClaims).getExpirationTime();
-                    will(throwException(new MalformedClaimException(defaultExceptionMsg)));
-                }
-            });
-            boolean result = cache.isJwtExpired(cacheValue);
-            assertTrue("JWT with null claims object should have been considered expired, but was not.", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_isJwtExpired_jwtVeryOld() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(cacheValue).getValue();
-                    will(returnValue(jwtContext));
-                    one(jwtContext).getJwtClaims();
-                    will(returnValue(jwtClaims));
-                    one(jwtClaims).getExpirationTime();
-                    will(returnValue(date));
-                    one(date).getValueInMillis();
-                    will(returnValue(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
-                    one(cacheValue).getClockSkew();
-                    will(returnValue(1000L * 60 * 60));
-                }
-            });
-            boolean result = cache.isJwtExpired(cacheValue);
-            assertTrue("JWT with very old 'exp' claim should have been considered expired, but was not.", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_isJwtExpired_jwtExpiredButWithinClockSkew() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(cacheValue).getValue();
-                    will(returnValue(jwtContext));
-                    one(jwtContext).getJwtClaims();
-                    will(returnValue(jwtClaims));
-                    one(jwtClaims).getExpirationTime();
-                    will(returnValue(date));
-                    one(date).getValueInMillis();
-                    will(returnValue(System.currentTimeMillis() - (1000 * 60)));
-                    one(cacheValue).getClockSkew();
-                    will(returnValue(1000L * 60 * 60));
-                }
-            });
-            boolean result = cache.isJwtExpired(cacheValue);
-            assertFalse("JWT with old 'exp' claim still within the clock skew should not have been considered expired, but was.", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_isJwtExpired_jwtNotExpired() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(cacheValue).getValue();
-                    will(returnValue(jwtContext));
-                    one(jwtContext).getJwtClaims();
-                    will(returnValue(jwtClaims));
-                    one(jwtClaims).getExpirationTime();
-                    will(returnValue(date));
-                    one(date).getValueInMillis();
-                    will(returnValue(System.currentTimeMillis() + (1000 * 60 * 60 * 2)));
-                    one(cacheValue).getClockSkew();
-                    will(returnValue(1000L * 60 * 5));
-                }
-            });
-            boolean result = cache.isJwtExpired(cacheValue);
-            assertFalse("JWT with 'exp' claim in the future should not have been considered expired, but was.", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
