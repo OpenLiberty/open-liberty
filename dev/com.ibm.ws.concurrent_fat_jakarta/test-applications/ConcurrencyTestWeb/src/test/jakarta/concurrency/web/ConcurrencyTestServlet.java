@@ -1151,12 +1151,141 @@ public class ConcurrencyTestServlet extends FATServlet {
 
     /**
      * Verify that it is possible to obtain the nested ContextService of a ManagedExecutorService
+     * that is configured as a ManagedExecutorDefinition, and that when withContextCapture is invoked on this ContextService,
+     * the resulting CompletableFuture is backed by the ManagedExecutorService, subject to its concurrency
+     * constraints (maxAsync=1) and runs tasks under the context propagation settings of its nested ContextService.
+     */
+    @Test
+    public void testGetContextServiceFromManagedExecutorDefinition() throws Exception {
+        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
+        assertNotNull(bean);
+        bean.execute(() -> {
+            CountDownLatch blocker = new CountDownLatch(1);
+            CountDownLatch blocking = new CountDownLatch(1);
+            Callable<Boolean> blockerTask = () -> {
+                blocking.countDown();
+                return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            };
+
+            try {
+                ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/executor8");
+                ContextService contextSvc = executor.getContextService();
+
+                CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+                CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
+
+                // block the managed executor's single maxAsync slot
+                Future<Boolean> blockerFuture1 = executor.submit(blockerTask);
+                assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                CompletableFuture<Object> stage2 = stage1copy.thenApplyAsync(jndiName -> {
+                    try {
+                        return InitialContext.doLookup(jndiName);
+                    } catch (NamingException x) {
+                        throw new CompletionException(x);
+                    }
+                });
+
+                stage1.complete("java:comp/concurrent/executor8");
+
+                // copied stage completes,
+                assertEquals("java:comp/concurrent/executor8", stage1copy.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+                // but the async stage must be blocked from running on the executor,
+                try {
+                    Object result = stage2.get(1, TimeUnit.SECONDS);
+                    fail("Dependent stage of withContextCapture stage should be blocked from asynchronous execution " +
+                         "due to both maxAsync slots of the executor being used up. Instead: " + result);
+                } catch (TimeoutException x) {
+                    // expected
+                }
+
+                blocker.countDown();
+
+                Object result;
+                assertNotNull(result = stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertTrue(result.toString(), result instanceof ManagedExecutorService);
+
+                assertEquals(true, blockerFuture1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
+                throw new EJBException(x);
+            } finally {
+                blocker.countDown();
+            }
+        });
+    }
+
+    /**
+     * Verify that it is possible to obtain the nested ContextService of a ManagedScheduledExecutorService
+     * that is configured as a ManagedScheduledExecutorDefinition, and that when withContextCapture is invoked on this ContextService,
+     * the resulting CompletableFuture is backed by the ManagedScheduledExecutorService, subject to its concurrency
+     * constraints (maxAsync=2) and runs tasks under the context propagation settings of its nested ContextService.
+     */
+    @Test
+    public void testGetContextServiceFromManagedScheduledExecutorDefinition() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/executor6");
+        ContextService contextSvc = executor.getContextService();
+
+        CompletableFuture<String> stage1 = new CompletableFuture<String>();
+
+        CompletableFuture<String> stage1copy = contextSvc.withContextCapture(stage1);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blocking = new CountDownLatch(2);
+        Callable<Boolean> blockerTask = () -> {
+            blocking.countDown();
+            return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        };
+        try {
+            // block both of the managed executor's maxAsync slots
+            Future<Boolean> blockerFuture1 = executor.submit(blockerTask);
+            Future<Boolean> blockerFuture2 = executor.submit(blockerTask);
+            assertTrue(blocking.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            CompletableFuture<Object> stage2 = stage1copy.thenApplyAsync(jndiName -> {
+                try {
+                    return InitialContext.doLookup(jndiName);
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            stage1.complete("java:comp/concurrent/executor6");
+
+            // copied stage completes,
+            assertEquals("java:comp/concurrent/executor6", stage1copy.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // but the async stage must be blocked from running on the executor,
+            try {
+                Object result = stage2.get(1, TimeUnit.SECONDS);
+                fail("Dependent stage of withContextCapture stage should be blocked from asynchronous execution " +
+                     "due to both maxAsync slots of the executor being used up. Instead: " + result);
+            } catch (TimeoutException x) {
+                // expected
+            }
+
+            blocker.countDown();
+
+            Object result;
+            assertNotNull(result = stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(result.toString(), result instanceof ManagedScheduledExecutorService);
+
+            assertEquals(true, blockerFuture1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(true, blockerFuture2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
+     * Verify that it is possible to obtain the nested ContextService of a ManagedExecutorService
      * that is configured in server.xml, and that when withContextCapture is invoked on this ContextService,
      * the resulting CompletableFuture is backed by the ManagedExecutorService, subject to its concurrency
      * constraints, and runs tasks under the context propagation settings of its nested ContextService.
      */
     @Test
-    public void testGetContextService1WithContextCapture() throws Exception {
+    public void testGetContextServiceFromServerXMLWithContextCapture() throws Exception {
         ContextService contextSvc = executor1.getContextService();
 
         CompletableFuture<String> stage1 = new CompletableFuture<String>();
