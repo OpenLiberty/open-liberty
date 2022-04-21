@@ -518,9 +518,10 @@ public class LibertyServer implements LogMonitorClient {
         /*
          * save intermediate results of ongoing checkpoint restore test
          */
-        private boolean validateApps;
-        private boolean expectStartFailure;
-        private boolean validateTimedExit;
+        // TODO these booleans don't seem to ever get set to true
+        private final boolean validateApps = false;
+        private final boolean expectStartFailure = false;
+        private final boolean validateTimedExit = false;
         private Properties checkpointEnv = null;
     }
 
@@ -859,6 +860,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
+     *
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
@@ -1550,6 +1552,11 @@ public class LibertyServer implements LogMonitorClient {
         // Create a marker file to indicate that we're trying to start a server
         createServerMarkerFile();
 
+        if (doCheckpoint()) {
+            // save off envVars for checkpoint
+            checkpointInfo.checkpointEnv = envVars;
+        }
+
         ProgramOutput output;
         if (executeAsync) {
             if (!(machine instanceof LocalMachine)) {
@@ -1672,7 +1679,6 @@ public class LibertyServer implements LogMonitorClient {
             if (doCheckpoint()) {
                 checkpointValidate(output, expectStartFailure);
                 checkpointInfo.beforeRestoreLambda.accept(this);
-                checkpointInfo.checkpointEnv = envVars;
                 if (checkpointInfo.autoRestore) {
                     checkpointRestore(false);
                 } else {
@@ -2744,7 +2750,13 @@ public class LibertyServer implements LogMonitorClient {
 
             if (!isStarted) {
                 Log.info(c, method, "Server " + serverToUse + " is not running (stop called previously).");
-                postStopServerArchive = false;
+                // The checkpointEnv will be set if a checkpoint was done.
+                // The server may never have been successfully started because
+                // the checkpoint failed or the restore failed.
+                // We archive the server in this case to ensure we get the possible error logs
+                if (checkpointInfo == null || checkpointInfo.checkpointEnv == null) {
+                    postStopServerArchive = false;
+                }
                 return output;
             }
 
