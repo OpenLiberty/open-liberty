@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,12 +265,10 @@ public class FeaturesStartTestAToL {
             return true;
 
         if (feature.equalsIgnoreCase("logstashCollector-1.0")) {
-            if (javaInfo.vendor() != JavaInfo.Vendor.IBM) {
-                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
-                return true;
-            } else if (JAVA_LEVEL >= 11) {
-                // IBM JDK 11+ (Semeru) is based on Adopt JDK 11+ and it doesn't include Health Center
-                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because IBM JDK 11+ doesn't include Health Center.");
+            // Only IBM JDK includes Health Center and IBM JDK 11+ (Semeru) is based on Adopt JDK 11+, which does not include Health Center.
+            if (!(JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"))) {
+                Log.info(c, testName.getMethodName(),
+                         "Skipping feature " + feature + " because it is for IBM JDK only, and the runtime JDK does not include Health Center.");
                 return true;
             } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
                 Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
