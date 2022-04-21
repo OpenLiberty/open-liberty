@@ -818,8 +818,10 @@ readServerEnv()
            if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
            then
               processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+	      echo processedLine = $processedLine
               if [ "#enable_variable_expansion" = $processedLine ]
               then
+                 echo eval ". $1"
                  eval ". $1"
                  variableExpansionEnabled=1
               fi

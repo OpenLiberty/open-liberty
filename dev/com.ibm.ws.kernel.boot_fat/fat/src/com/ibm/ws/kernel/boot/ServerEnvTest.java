@@ -134,9 +134,11 @@ public class ServerEnvTest {
             fileContents = "LOG_FILE=" + consoleLogEnvVarReference;
         }
         Log.info(c, METHOD_NAME, "Creating /etc/server.env with contents:\n" + fileContents);
+
         File wlpEtcDir = new File(server.getInstallRoot(), "etc");
         String serverEnvCreate = createServerEnvFile(fileContents, wlpEtcDir);
         Log.info(c, METHOD_NAME, "server.env location = " + serverEnvCreate);
+        String serverEnvDebug = "\n\n server.env location =" + serverEnvCreate + " contents:\n" + fileContents + "\n";
         assertTrue("The server.env file was not created.", serverEnvCreate.contains("server.env"));
 
         // Set the log file name in an environment variable
@@ -165,7 +167,7 @@ public class ServerEnvTest {
         // Because we didn't start the server using the LibertyServer APIs, we need
         // to have it detect its started state so it will stop and save logs properly
         server.resetStarted();
-        assertTrue("the server should have been started:" + stdout + stderr, server.isStarted());
+        assertTrue("the server should have been started:" + stdout + stderr + serverEnvDebug, server.isStarted());
 
         logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
 
