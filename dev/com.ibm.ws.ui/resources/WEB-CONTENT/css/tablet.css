@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -829,4 +829,79 @@ noscript {
         top: 70px;
         bottom: 0px;
     }
+}
+
+/* high contrast mode css */
+.dj_a11y #editButtonWidgetDiv .dijitButtonFocused .dijitButtonContents, .dj_a11y #filterButtonWidgetDiv .dijitButtonFocused .dijitButtonContents,
+.dj_a11y #modifyButtonWidgetDiv .dijitDropDownButtonFocused .dijitButtonContents, .dj_a11y #doneButtonWidgetDiv .dijitButtonFocused .dijitButtonContents,
+.dj_a11y #homeButtonDivcatalogContainer .dijitButtonFocused .dijitButtonContents, .dj_a11y #homeButtonDivtoolContainer .dijitButtonFocused .dijitButtonContents,
+.dj_a11y #homeButtonDivprefsContainer .dijitButtonFocused .dijitButtonContents, .dj_a11y #homeButtonDivbgTasksContainer .dijitButtonFocused .dijitButtonContents,
+.dj_a11y #profileButtonWidgetDiv_toolboxContainer .dijitDropDownButtonFocused .dijitButtonContents, .dj_a11y #profileButtonWidgetDiv_catalogContainer .dijitDropDownButtonFocused .dijitButtonContents,
+.dj_a11y #profileButtonWidgetDiv_toolContainer .dijitDropDownButtonFocused .dijitButtonContents, .dj_a11y #profileButtonWidgetDiv_bgTasksContainer .dijitDropDownButtonFocused .dijitButtonContents,
+.dj_a11y #bgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonNode, .dj_a11y #catalogBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonNode,
+.dj_a11y #toolBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonNode, .dj_a11y #prefsBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonNode,
+.dj_a11y #bgTasksDetailsbgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonNode {
+    border: 1px solid !important;
+}
+
+/* .dj_a11y .idxHeaderSecondaryTrailing .dijitDropDownButtonHover .dijitButtonContents,
+.dj_a11y .idxHeaderSecondaryTrailing .dijitButtonHover .dijitButtonContents,
+.dj_a11y .leftSecondaryHeader .dijitDropDownButtonHover .dijitButtonContents,
+.dj_a11y .leftSecondaryHeader .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivcatalogContainer .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivprefsContainer .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivtoolContainer .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivbgTasksContainer .dijitButtonHover .dijitButtonContents { */
+.dj_a11y #editButtonWidgetDiv .dijitButtonHover .dijitButtonContents, .dj_a11y #filterButtonWidgetDiv .dijitButtonHover .dijitButtonContents,
+.dj_a11y #modifyButtonWidgetDiv .dijitDropDownButtonHover .dijitButtonContents, .dj_a11y #doneButtonWidgetDiv .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivcatalogContainer .dijitButtonHover .dijitButtonContents, .dj_a11y #homeButtonDivtoolContainer .dijitButtonHover .dijitButtonContents,
+.dj_a11y #homeButtonDivprefsContainer .dijitButtonHover .dijitButtonContents, .dj_a11y #homeButtonDivbgTasksContainer .dijitButtonHover .dijitButtonContents,
+.dj_a11y #profileButtonWidgetDiv_toolboxContainer .dijitDropDownButtonHover .dijitButtonContents, .dj_a11y #profileButtonWidgetDiv_catalogContainer .dijitDropDownButtonHover .dijitButtonContents,
+.dj_a11y #profileButtonWidgetDiv_toolContainer .dijitDropDownButtonHover .dijitButtonContents, .dj_a11y #profileButtonWidgetDiv_bgTasksContainer .dijitDropDownButtonHover .dijitButtonContents,
+.dj_a11y #bgTaskButtonDiv .dijitDropDownButtonHover .dijitButtonNode, .dj_a11y #catalogBgTaskButtonDiv .dijitDropDownButtonHover .dijitButtonNode,
+.dj_a11y #toolBgTaskButtonDiv .dijitDropDownButtonHover .dijitButtonNode, .dj_a11y #prefsBgTaskButtonDiv .dijitDropDownButtonHover .dijitButtonNode,
+.dj_a11y #bgTasksDetailsbgTaskButtonDiv .dijitDropDownButtonHover .dijitButtonNode {
+    border: 1px solid !important;
+}
+
+.dj_a11y .searchBoxInput {
+    border: 2px solid !important;
+}
+
+.dj_a11y  .cancelFilterImg {
+    right: 16px;
+    top: 14px;
+}
+
+.dj_a11y  .mblImageIcon:focus, .dj_a11y  .mblImageIcon:hover {
+    border: 6px solid;
+}
+
+.dj_a11y .profileMenuPopup:after, .dj_a11y .profileMenuPopup:before,
+.dj_a11y .backgroundTaskPopupDialog:after, .dj_a11y .backgroundTaskPopupDialog:before {
+    border: 0;
+}
+
+.dj_a11y #addBookmarkDialogId .dijitButtonNode {
+    border: 1px solid !important;
+}
+
+.dj_a11y #addBookmarkDialogId .dijitButtonContents {
+    display: block;
+    height: 34px;
+    width: 356px;
+}
+
+.dj_a11y #addBookmarkButtonId:focus, .dj_a11y #addBookmarkButtonId:hover {
+    border: 1px solid !important;
+    outline: 0 !important;
+    height: 32px;
+}
+
+.dj_a11y #addBookmarkDialogId, .dj_a11y #catalogAddToolId, .dj_a11y #toolboxRemoveToolId, .dj_a11y .messageDialog {
+    border: 1px solid !important;
+}
+
+.dj_a11y .addDropDownPopup:after, .dj_a11y .addDropDownPopup:before {
+    display: none !important;
 }

@@ -29,6 +29,9 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.ASMHelper;
 import org.apache.cxf.common.util.OpcodesProxy;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public class NamespaceClassGenerator extends ClassGeneratorClassLoader implements NamespaceClassCreator {
 
     private static final Logger LOG = LogUtils.getL7dLogger(ClassGeneratorClassLoader.class);
@@ -79,7 +82,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                 t = ex2;
             }
         }
-        LOG.log(Level.INFO, "Could not create a NamespaceMapper compatible with Marshaller class " + mcls.getName(), t);
+        LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " + mcls.getName(), t);
         return cls;
     }
 

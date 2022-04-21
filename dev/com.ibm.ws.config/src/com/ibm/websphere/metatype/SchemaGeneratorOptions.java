@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ public class SchemaGeneratorOptions {
     private Set<String> ignoredPids;
     private boolean isRuntime = false;
 
-    private String schemaVersion;
-    private String outputVersion;
+    private SchemaVersion schemaVersion;
+    private OutputVersion outputVersion;
 
     public Bundle[] getBundles() {
         return bundles;
@@ -72,20 +72,31 @@ public class SchemaGeneratorOptions {
         this.isRuntime = value;
     }
 
+    @Deprecated
     public String getSchemaVersion() {
+        return schemaVersion.toString();
+    }
+
+    @Deprecated
+    public String getOutputVersion() {
+        return outputVersion.toString();
+    }
+
+    // New getter
+    public SchemaVersion schemaVersion() {
         return schemaVersion;
     }
 
-    public String getOutputVersion() {
+    // New getter
+    public OutputVersion outputVersion() {
         return outputVersion;
     }
 
     public void setSchemaVersion(String v) {
-        schemaVersion = v;
+        schemaVersion = SchemaVersion.getEnum(v);
     }
 
     public void setOutputVersion(String v) {
-        outputVersion = v;
+        outputVersion = OutputVersion.getEnum(v);
     }
-
 }

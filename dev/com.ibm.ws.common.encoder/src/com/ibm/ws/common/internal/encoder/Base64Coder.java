@@ -311,7 +311,7 @@ public final class Base64Coder {
             return null;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder(b.length);
         for (int i = 0, len = b.length; i < len; i++) {
             sb.append((char) (b[i] & 0xff));
         }

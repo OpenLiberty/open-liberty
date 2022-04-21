@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,6 +39,16 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.1";
+
+    protected static final Set<String> acceptableMpConfigPropNames;
+
+    static {
+        Set<String> mpConfigPropNames = new HashSet<>();
+        mpConfigPropNames.add(MpConstants.ISSUER);
+        mpConfigPropNames.add(MpConstants.PUBLIC_KEY);
+        mpConfigPropNames.add(MpConstants.KEY_LOCATION);
+        acceptableMpConfigPropNames = Collections.unmodifiableSet(mpConfigPropNames);
+    }
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
@@ -88,10 +99,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        Set<String> acceptableMpConfigPropNames = new HashSet<String>();
-        acceptableMpConfigPropNames.add(MpConstants.ISSUER);
-        acceptableMpConfigPropNames.add(MpConstants.PUBLIC_KEY);
-        acceptableMpConfigPropNames.add(MpConstants.KEY_LOCATION);
         return acceptableMpConfigPropNames;
     }
 

@@ -38,4 +38,4 @@ src: src,resources
         com.ibm.ws.kernel.service;version=latest,\
         com.ibm.ws.logging;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-        org.eclipse.osgi;version=latest,\
+        org.eclipse.osgi;version=latest

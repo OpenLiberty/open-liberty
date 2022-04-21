@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLTransientConnectionException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -76,6 +79,10 @@ public class BasicTestServlet extends FATDatabaseServlet {
     private boolean isGetColorRegistered = false;
     private boolean isGetUserRegistered = false;
 
+    private enum TLSConnectionType {
+        shared, free
+    };
+
     @Resource
     private UserTransaction tran;
 
@@ -87,6 +94,45 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/ds3", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds3;
+
+    @Resource(name = "jdbc/ds1tls")
+    DataSource ds1tls;
+
+    @Resource(name = "jdbc/ds2tls")
+    DataSource ds2tls;
+
+    @Resource(name = "jdbc/dsfat22tls")
+    DataSource dsfat22tls;
+
+    @Resource(name = "jdbc/dsfat22btls")
+    DataSource dsfat22btls;
+
+    @Resource(name = "jdbc/dsfat22ctls")
+    DataSource dsfat22ctls;
+
+    @Resource(name = "jdbc/dsfat22dtls")
+    DataSource dsfat22dtls;
+
+    @Resource(name = "jdbc/dsfat22etls")
+    DataSource dsfat22etls;
+
+    @Resource(name = "jdbc/dsfat22gtls")
+    DataSource dsfat22gtls;
+
+    @Resource(name = "jdbc/dsfat22htls")
+    DataSource dsfat22htls;
+
+    @Resource(name = "jdbc/dsfat22itls")
+    DataSource dsfat22itls;
+
+    @Resource(name = "jdbc/dsfat22jtls")
+    DataSource dsfat22jtls;
+
+    @Resource(name = "jdbc/dsfat22ktls")
+    DataSource dsfat22ktls;
+
+    @Resource(name = "jdbc/dsfat22ltls")
+    DataSource dsfat22ltls;
 
     @Resource(name = "jdbc/XAds")
     DataSource xads;
@@ -907,12 +953,361 @@ public class BasicTestServlet extends FATDatabaseServlet {
     public void getSingleConnectionAfterAbort() throws Exception {
         int size = getPoolSize("jdbc/ds2");
         if (size != 0)
-            throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbort was called, but it wasn't");
+            throw new Exception("Expected pool to be empty when getSingleConnectionAfterAbort was called, but it was " + size);
 
         // Aborted connection should have been destroyed, so we should be able to get
         // and close a new connection no problem.
         Connection c = ds2.getConnection();
         c.close();
+    }
+
+    /**
+     * Function to get and close a connection from thread local storage
+     *
+     * After running this function, a call to
+     * checkPoolAfterNumConnectionsPerThreadLocal
+     * should succeed.
+     *
+     * Uses datasource ds1tls for shareable connections.
+     */
+    public void testNumConnectionsPerThreadLocal() throws Exception {
+        Connection c = ds1tls.getConnection();
+        c.close();
+    }
+
+    /**
+     * This function should be called right after testNumConnectionsPerThreadLocal
+     */
+    public void checkPoolAfterNumConnectionsPerThreadLocal() throws Exception {
+        String dsJndiName = "jdbc/ds1tls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 1)
+            throw new Exception("Expected pool to be 1 when testNumConnectionsPerThreadLocal was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Connection request should time out per the connectionTimeout when maxPoolSize
+     * of 2 is exceeded and using thread local storage
+     */
+    @Test
+    @ExpectedFFDC({ "com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException" })
+    public void testMaxPoolSizeWithTLS() throws Throwable {
+
+        Connection con1 = ds2tls.getConnection();
+        try {
+            Connection con2 = ds2tls.getConnection();
+            long start = System.currentTimeMillis();
+            try {
+                Connection con3 = ds2tls.getConnection();
+                con3.close();
+                throw new Exception("This connection should not be allowed (exceeds maxPoolSize of 2)");
+            } catch (SQLTransientConnectionException x) {
+                // Timeout should occur in 1 second, but let's allow lots of buffer for slow machines. (Observed 7.4 second delay logging to FFDC)
+                long duration = System.currentTimeMillis() - start;
+                if (duration > 15000)
+                    throw new Exception("Connection attempt should time out after 1 second, not " + duration + "ms");
+            } finally {
+                con2.close();
+            }
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * Test if a aged timeout value of 0 causes pooling to be disabled with thread local storage.
+     */
+    public void testAgedTimeoutImmediateWithTLS() throws Throwable {
+        Connection cnt = dsfat22tls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeoutImmediateWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeoutImmediateWithTLS() throws Exception {
+        String dsJndiName = "jdbc/dsfat22tls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 0)
+            throw new Exception("Expected pool to be 0 when testAgedTimeoutImmediateWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Test if a aged timeout value of -1 causes pooling to be disabled with thread local storage.
+     */
+    public void testAgedTimeoutDisabledWithTLS() throws Throwable {
+        Connection cnt = dsfat22btls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeoutDisabledWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeoutDisabledWithTLS() throws Exception {
+        String dsJndiName = "jdbc/dsfat22btls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 1)
+            throw new Exception("Expected pool to be 1 when testAgedTimeoutDisabledWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Test if a aged timeout value of 1s causes connections to be discarded correctly with thread local storage.
+     */
+    public void testAgedTimeoutWithTLS() throws Throwable {
+        Connection cnt = dsfat22ctls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeoutWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeoutWithTLS() throws Exception {
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22ctls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 0)
+            throw new Exception("Expected pool to be 0 when testAgedTimeoutWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 0, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Test if a aged timeout value of 90m causes connections to be maintained with thread local storage.
+     */
+    public void testAgedTimeout90mWithTLS() throws Throwable {
+        Connection cnt = dsfat22dtls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testAgedTimeout190mWithTLS
+     */
+    public void checkPoolAfterTestAgedTimeout90mWithTLS() throws Exception {
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22dtls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 1)
+            throw new Exception("Expected pool to be 1 when testAgedTimeout90mWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Test if reapTime=-1 causes connections to be maintained with thread local storage.
+     */
+    public void testReapDisabledWithTLS() throws Throwable {
+        Connection cnt = dsfat22etls.getConnection();
+        try {
+            cnt.getMetaData();
+            cnt.close();
+
+        } finally {
+            cnt.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testReapDisabledWithTLS
+     */
+    public void checkPoolAfterTestReapDisabledWithTLS() throws Exception {
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22etls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 1)
+            throw new Exception("Expected pool to be 1 when testReapDisabledWithTLS was called, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 1, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Connection request should fail when trying to exceed the maxConnectionsPerThread with thread local storage.
+     */
+    @Test
+    @ExpectedFFDC({ "javax.resource.ResourceException" })
+    public void testMaxConnectionsPerThreadExceededWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22gtls.getConnection();
+        try {
+            Connection con2 = dsfat22gtls.getConnection();
+
+            con1.close();
+            con2.close();
+            throw new Exception("This connection should not be allowed (exceeds maxConnectionsPerThread of 1)");
+        } catch (SQLException x) {
+            //We should get an exception here indicating that we exceeded the max # of managed connections per thread
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * Connection request should succeed when trying with maxConnectionsPerThread=0 with thread local storage.
+     */
+    @Test
+    public void testMaxConnectionsPerThreadDisabledWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22htls.getConnection();
+        try {
+            Connection con2 = dsfat22htls.getConnection();
+
+            con1.close();
+            con2.close();
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * Connection request should succeed when meeting the maxConnectionsPerThread=2 with thread local storage.
+     */
+    @Test
+    public void testMaxConnectionsPerThreadMetWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22itls.getConnection();
+        try {
+            //maxConnectionsPerThread=2 so should succeed
+            Connection con2 = dsfat22itls.getConnection();
+
+            con1.close();
+            con2.close();
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * Ensure connections are removed but minPoolSize connections remain with thread local storage.
+     */
+    public void testMinPoolSizeMettWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22jtls.getConnection();
+        try {
+            Connection con2 = dsfat22jtls.getConnection();
+            try {
+                Connection con3 = dsfat22jtls.getConnection();
+                con1.close();
+                con2.close();
+                con3.close();
+            } finally {
+                con2.close();
+            }
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testMinPoolSizeMettWithTLS
+     */
+    public void checkPoolAfterTestMinPoolSizeMettWithTLS() throws Exception {
+        //after 3000ms, the connection should have reached maxIdleTime and been reaped
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22jtls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 2)
+            throw new Exception("Expected pool to be 2 when testMinPoolSizeMettWithTLS was called after 3s, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 2, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Ensure connections are not removed before maxIdleTime is met with thread local storage.
+     */
+    public void testMinPoolSizeNotMettWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22ktls.getConnection();
+        try {
+            Connection con2 = dsfat22ktls.getConnection();
+            try {
+                Connection con3 = dsfat22ktls.getConnection();
+                con1.close();
+                con2.close();
+                con3.close();
+            } finally {
+                con2.close();
+            }
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testMinPoolSizeNotMettWithTLS
+     */
+    public void checkPoolAfterTestMinPoolSizeNotMettWithTLS() throws Exception {
+        //after 3000ms, the connection should not have reached maxIdleTime=90m and should still be present
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22ktls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 3)
+            throw new Exception("Expected pool to be 3 when testMinPoolSizeNotMettWithTLS was called after 3s, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
+    }
+
+    /**
+     * Ensure connections are not removed when maxIdleTime is disabled with thread local storage.
+     */
+    public void testMaxIdleTimeDisabledtWithTLS() throws Throwable {
+
+        Connection con1 = dsfat22ltls.getConnection();
+        try {
+            Connection con2 = dsfat22ltls.getConnection();
+            try {
+                Connection con3 = dsfat22ltls.getConnection();
+                con1.close();
+                con2.close();
+                con3.close();
+            } finally {
+                con2.close();
+            }
+        } finally {
+            con1.close();
+        }
+    }
+
+    /**
+     * This function should be called right after testMaxIdleTimeDisabledtWithTLS
+     */
+    public void checkPoolAfterTestMaxIdleTimeDisabledtWithTLS() throws Exception {
+        //after 3000ms, the connections should not have reached maxIdleTime (because it is disabled) and should still be present
+        Thread.sleep(3000);
+        String dsJndiName = "jdbc/dsfat22ltls";
+        int size = getPoolSize(dsJndiName);
+        if (size != 3)
+            throw new Exception("Expected pool to be 3 when testMaxIdleTimeDisabledtWithTLS was called after 3s, but it was " + size);
+
+        checkTLSPoolSize(dsJndiName, 3, TLSConnectionType.free, false);
     }
 
     @Test
@@ -1443,6 +1838,41 @@ public class BasicTestServlet extends FATDatabaseServlet {
     private int getPoolSize(String jndiName) throws Exception {
         ConnectionManagerMBean cmBean = getConnectionManagerBean(jndiName);
         return (int) cmBean.getSize();
+    }
+
+    private String getPoolContent(String jndiName) throws Exception {
+        ConnectionManagerMBean cmBean = getConnectionManagerBean(jndiName);
+        return cmBean.showPoolContents();
+    }
+
+    private void checkTLSPoolSize(String dsJndiName, int expectedSize, TLSConnectionType connType, boolean printPoolContents) throws Exception {
+        //Parse the poolContents to ensure the connection was created in thread local storage
+        String poolContents = getPoolContent(dsJndiName);
+        //debug convenience option
+        if (printPoolContents) {
+            System.out.println(poolContents);
+        }
+
+        String actualSize = null;
+        Pattern pattern = Pattern.compile("No " + connType.toString() + " TLS connections");
+        Matcher matcher = pattern.matcher(poolContents);
+        if (matcher.find() && !matcher.group().isEmpty()) {
+            actualSize = "0";
+        } else {
+            Pattern pattern2 = Pattern.compile("Total number of connection in " + connType.toString() + " TLS pool:\\s+([0-9]+)");
+            Matcher matcher2 = pattern2.matcher(poolContents);
+
+            if (matcher2.find() && !matcher2.group().isEmpty()) {
+                actualSize = matcher2.group(1);
+            }
+        }
+
+        if (actualSize == null) {
+            System.out.println(poolContents);
+            throw new Exception("Unable to determine " + connType + " TLS pool size.");
+        }
+
+        assertEquals("Total number of connection in free TLS pool", String.valueOf(expectedSize), actualSize);
     }
 
     /**

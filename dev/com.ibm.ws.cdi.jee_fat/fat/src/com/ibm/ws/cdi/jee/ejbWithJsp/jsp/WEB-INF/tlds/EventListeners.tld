@@ -1,0 +1,14 @@
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>2.0</jsp-version>
+  <short-name>tag3</short-name>
+  <listener>
+    <listener-class>com.ibm.ws.cdi.jee.ejbWithJsp.jsp.listeners.JspCdiTagLibraryEventListenerCI</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.ibm.ws.cdi.jee.ejbWithJsp.jsp.listeners.JspCdiTagLibraryEventListenerFI</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.ibm.ws.cdi.jee.ejbWithJsp.jsp.listeners.JspCdiTagLibraryEventListenerMI</listener-class>
+  </listener> 
+</taglib>

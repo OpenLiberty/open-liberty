@@ -18,10 +18,11 @@
     <name>Jakarta Concurrency TCK Runner TCK Module</name>
 
     <properties>
-        <!-- TODO remove once spec is GAed -->
-        <!-- These properties can be overwritten by users -->
-        <jakarta.concurrent.groupid>io.openliberty.jakarta.enterprise.concurrent</jakarta.concurrent.groupid>
-        <jakarta.concurrent.version>3.0.0.20220126</jakarta.concurrent.version>
+    	<!-- These properties can be overwritten by users if they want to test against a snapshot version-->
+        <jakarta.concurrent.tck.groupid>jakarta.enterprise.concurrent</jakarta.concurrent.tck.groupid>
+        <jakarta.concurrent.tck.version>3.0.0</jakarta.concurrent.tck.version>
+        
+        <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
         
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian-wlp.version>2.0.2</arquillian-wlp.version>
@@ -38,13 +39,19 @@
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>ibmdhe</id>
-            <name>IBM_DHE File Server</name>
-            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-        </repository>
-    </repositories>
+	<repositories> <!-- For artifacts not yet in Maven Central -->
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -61,10 +68,9 @@
     <dependencies>
         <!-- TCK Dependency -->
         <dependency>
-            <!-- TODO: Update this once TCK is available on maven -->
-		    <groupId>${jakarta.concurrent.groupid}</groupId>
+		    <groupId>${jakarta.concurrent.tck.groupid}</groupId>
 		    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-		    <version>${jakarta.concurrent.version}</version>
+		    <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
         <!-- API Dependency -->
         <dependency>

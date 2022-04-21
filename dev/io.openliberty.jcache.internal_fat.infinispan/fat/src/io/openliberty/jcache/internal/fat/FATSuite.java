@@ -18,6 +18,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.Machine;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -35,9 +38,17 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
                 JCacheCustomPrincipalCastingTest.class,
                 JCacheDeleteAuthCacheTest.class,
                 JCacheAuthCacheFailureTest.class,
-                JCacheSamlAuthenticationCacheTest.class
+                JCacheSamlAuthenticationCacheTest.class,
+                JCacheSpnegoAuthenticationCacheTest.class
 })
 public class FATSuite {
+
+    /*
+     * Run EE9 tests in LITE mode and run all tests in FULL mode.
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new JakartaEE9Action());
 
     @ClassRule
     public static InfinispanContainer infinispan = new InfinispanContainer();

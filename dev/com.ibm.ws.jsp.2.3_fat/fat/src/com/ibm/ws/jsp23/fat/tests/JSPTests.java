@@ -70,8 +70,6 @@ public class JSPTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
-
         ShrinkHelper.defaultDropinApp(server,
                                       TestEL_APP_NAME + ".war",
                                       "com.ibm.ws.jsp23.fat.testel.beans",
@@ -87,6 +85,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PI59436_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -799,13 +799,16 @@ public class JSPTests {
         String orgEdrFile = "headerEDR1.jsp";
         String relEdrPath = "../../shared/config/ExtendedDocumentRoot/";
         server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
+        // Hit the TestEDR app again so its index.jsp has a newer
+        // last modified timestamp than headerEDR1.jsp.
+        ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
+        Thread.sleep(5000L); // sleep to insure sufficient time for app restart
         String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
         LOG.info("url: " + url);
         WebConversation wc1 = new WebConversation();
         WebRequest request1 = new GetMethodWebRequest(url);
         wc1.getResponse(request1);
 
-        Thread.sleep(5000L); // sleeps necessary to insure sufficient time delta for epoch timestamp comparisons
         server.setMarkToEndOfLog(); // mark after 1st call to index.jsp since it might have compiled and caused a SRVE0253I
         Thread.sleep(5000L);
         WebConversation wc2 = new WebConversation();
@@ -813,7 +816,7 @@ public class JSPTests {
         wc2.getResponse(request2);
         assertNull("Log should not contain SRVE0253I: Destroy successful.",
                    server.verifyStringNotInLogUsingMark("SRVE0253I", 1200));
-        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup testTLD's edr file
         Thread.sleep(500L); // ensure file is deleted
     }
 

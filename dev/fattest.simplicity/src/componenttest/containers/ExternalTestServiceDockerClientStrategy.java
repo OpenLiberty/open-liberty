@@ -74,6 +74,13 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     public static final boolean USE_REMOTE_DOCKER_HOST = useRemoteDocker();
 
     /**
+     * Used to specify if we plan on running using the artifactory name substituion class, or not.
+     *
+     * @see #useArtifactorySubstitutor()
+     */
+    public static final boolean USE_ARTIFACTORY_NAME_SUBSTITUTION = useArtifactorySubstitutor();
+
+    /**
      * <pre>
      * By default, Testcontainers will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      *
@@ -181,7 +188,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     private static void generateArtifactorySubstitutorConfig() {
         // If we are using local docker host then we won't substitute names so skip this step.
-        if (!USE_REMOTE_DOCKER_HOST)
+        if (!USE_ARTIFACTORY_NAME_SUBSTITUTION)
             return;
 
         generateDockerConfig(ArtifactoryImageNameSubstitutor.getPrivateRegistry(), ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken());
@@ -391,11 +398,62 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         } while (false);
 
         reason = result ? //
-                        "Running against remote docker host.  Reason: " + reason : //
+                        "Running against remote docker host. Reason: " + reason : //
                         "Running against local docker host. Reason: " + reason;
 
         Log.info(c, "useRemoteDocker", reason);
         return result;
+    }
 
+    /**
+     * Determines if we are going to use the Artifactory name substitutor.
+     *
+     * Priority:
+     * 1. System Property: fat.test.use.artifactory.substitution
+     *
+     * default (USE_REMOTE_DOCKER_HOST)
+     *
+     * NOTE: There are situations were we will still decide NOT to apply the
+     * substitution for synthetic images, and programmatically committed images.
+     * This will be determined on an image-to-image basis
+     *
+     * @see    ArtifactoryImageNameSubstitutor#apply(org.testcontainers.utility.DockerImageName)
+     *
+     * @return true, we are using the substitutor, false otherwise.
+     */
+    private static boolean useArtifactorySubstitutor() {
+        boolean result;
+        String reason;
+
+        do {
+            //State 1: fat.test.use.artifactory.substitution should always be honored first
+            if (System.getProperty("fat.test.use.artifactory.substitution") != null) {
+                result = Boolean.getBoolean("fat.test.use.artifactory.substitution");
+                reason = "fat.test.use.artifactory.substitution set to " + result;
+
+                if (result == false && USE_REMOTE_DOCKER_HOST == true) {
+                    Log.warning(c, reason + System.lineSeparator()
+                                   + "Based on a priority system we decided to use a remote docker host for testing. "
+                                   + "Therefore, we cannot honor the request to NOT use artifactory. "
+                                   + "To resolve this issue either remove the fat.test.use.artifactory.substitution property, "
+                                   + "or force this test to use the a local docker host using fat.test.use.remote.docker=false.");
+
+                    throw new IllegalStateException("Cannot set fat.test.use.artifactory.substitution to false when USE_REMOTE_DOCKER_HOST=true. See logs for more details.");
+                }
+
+                break;
+            }
+
+            // Default, use USE_REMOTE_DOCKER_HOST to determine if we use substitution
+            result = USE_REMOTE_DOCKER_HOST;
+            reason = "USE_REMOTE_DOCKER_HOST set to " + USE_REMOTE_DOCKER_HOST;
+        } while (false);
+
+        reason = result ? //
+                        "Using Artifactory Substitution for docker images. Reason: " + reason : //
+                        "Using Docker default repository for docker images. Reason: " + reason;
+
+        Log.info(c, "useArtifactorySubstitutor", reason);
+        return result;
     }
 }

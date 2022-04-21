@@ -19,49 +19,73 @@
 
     <persistence-unit name="QUERY_JTA">
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
-        <!-- <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>  -->
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <!-- <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file> -->
         <properties>
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+
+            <!-- OpenJPA Support Properties -->
             <property name="openjpa.Compatibility"  value="checkDatabaseForCascadePersistToDetachedEntity=true"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
         </properties>
     </persistence-unit>
-    
+
     <persistence-unit name="QUERY_XML_JTA">
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+
+            <!-- OpenJPA Support Properties -->
             <property name="openjpa.Compatibility"  value="checkDatabaseForCascadePersistToDetachedEntity=true"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
         </properties>
     </persistence-unit>
 
     <persistence-unit name="QUERY_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <!-- <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>  -->
         <properties>
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+
+            <!-- OpenJPA Support Properties -->
             <property name="openjpa.Compatibility"  value="checkDatabaseForCascadePersistToDetachedEntity=true"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
         </properties>
     </persistence-unit>
-    
+
     <persistence-unit name="QUERY_XML_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+
+            <!-- OpenJPA Support Properties -->
             <property name="openjpa.Compatibility"  value="checkDatabaseForCascadePersistToDetachedEntity=true"/>
+
+            <!-- Hibernate Support Properties
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/> -->
         </properties>
     </persistence-unit>
 </persistence>

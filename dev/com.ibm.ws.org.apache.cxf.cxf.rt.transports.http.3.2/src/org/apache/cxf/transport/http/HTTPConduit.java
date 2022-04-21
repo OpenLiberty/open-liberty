@@ -96,6 +96,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /*
  * HTTP Conduit implementation.
  * <p>
@@ -151,6 +154,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * instance is governed by policies either explicitly set or by
  * configuration.
  */
+@Trivial
 @NoJSR250Annotations
 public abstract class HTTPConduit
     extends AbstractConduit
@@ -1136,6 +1140,7 @@ public abstract class HTTPConduit
      * Wrapper output stream responsible for flushing headers and handling
      * the incoming HTTP-level response (not necessarily the MEP response).
      */
+    @Trivial
     protected abstract class WrappedOutputStream extends AbstractThresholdOutputStream {
         /**
          * This boolean is true if the request must be cached.

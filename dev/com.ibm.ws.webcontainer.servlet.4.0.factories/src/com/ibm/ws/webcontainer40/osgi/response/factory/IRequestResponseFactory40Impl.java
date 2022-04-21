@@ -30,7 +30,6 @@ public class IRequestResponseFactory40Impl implements IRequestFactory, IResponse
      */
     @Override
     public IRequest createRequest(HttpInboundConnection inboundConnection) {
-        // there appears to be nothing in IRequestImpl that needs to be different in servlet 3.1, so return the 3.0 version
         return new IRequest40Impl(inboundConnection);
     }
 

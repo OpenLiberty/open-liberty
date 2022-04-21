@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,8 +87,17 @@ class FeatureCollection {
         if (resolvedFeatures.size() < rootFeatures.size())
             throw new RuntimeException("Only resolved features " + resolvedFeatures + " for root set " + rootFeatures);
         Set<String> resolvedCanonicalFeatures = new HashSet<>(resolvedFeatures.size());
-        for (String f : resolvedFeatures)
-            resolvedCanonicalFeatures.add(f.startsWith("com.ibm.") ? f : "com.ibm.websphere.appserver." + f);
+        for (String f : resolvedFeatures) {
+            if (f.startsWith("com.ibm.") || f.startsWith("io.openliberty.")) {
+                resolvedCanonicalFeatures.add(f);
+            } else {
+                if (knownFeatures.containsKey("io.openliberty." + f)) {
+                    resolvedCanonicalFeatures.add("io.openliberty." + f);
+                } else {
+                    resolvedCanonicalFeatures.add("com.ibm.websphere.appserver." + f);
+                }
+            }
+        }
         return resolvedCanonicalFeatures;
     }
 
@@ -107,6 +116,11 @@ class FeatureCollection {
         Feature f = knownFeatures.get("com.ibm.websphere.appserver." + featureShortName);
         if (f != null)
             return f;
+
+        f = knownFeatures.get("io.openliberty." + featureShortName);
+        if (f != null)
+            return f;
+
         for (Feature knownFeature : knownFeatures.values())
             if (knownFeature.isPublic() && knownFeature.getShortName().equalsIgnoreCase(featureShortName))
                 return knownFeature;

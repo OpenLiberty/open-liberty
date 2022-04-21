@@ -51,6 +51,14 @@ public class WSSecurityPropagationHelper {
      * The validateToken API requires a Java 2 Security permission,
      * WebSphereRuntimePermission "validateLTPAToken".
      *
+     * You can retrieve the LtpaToken2 from the JAAS custom login module sharedState Constants.WSSSOTOKEN_KEY or
+     * callback WSCredTokenCallbackImpl. See the JAAS custom login module sample for detail information.
+     *
+     * You can also retrieve the LtpaToken2 from the LTPA cookie
+     *
+     * If you call this API with the LTPA cookie value, then you must decode the LTPA cookie value.
+     * Example: byte[] ltpaToken = Base64.getDecoder().decode(ltpaCookieValue);
+     *
      * @param byte[] (LtpaToken2)
      * @return ValidationResult
      * @exception ValidationFailedException

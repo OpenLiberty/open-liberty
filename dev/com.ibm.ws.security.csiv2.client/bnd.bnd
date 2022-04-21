@@ -21,7 +21,7 @@ Export-Package: com.ibm.ws.security.csiv2.client, \
   com.ibm.ws.transport.iiop.client.security
 
 Private-Package: com.ibm.ws.config.xml.internal.nester, \
-  com.ibm.ws.security.csiv2.client* \
+  com.ibm.ws.security.csiv2.client*
 
 Import-Package: \
 com.ibm.websphere.crypto;version="[1.3,2)", \

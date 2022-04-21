@@ -12,6 +12,7 @@
 package com.ibm.ws.query.web;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Test;
 
 import com.ibm.ws.query.testlogic.JUBulkUpdateTest;
+import com.ibm.ws.query.testlogic.enums.TestEntityTypeEnum;
 import com.ibm.ws.query.utils.SetupQueryTestCase;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
@@ -90,78 +92,85 @@ public class JUBulkUpdateTestServlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testNamedDeleteQuery_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testNamedDeleteQuery_AMJTA_Web";
         final String testMethod = "testNamedDeleteQuery";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testNamedUpdateDeptBudget_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testNamedUpdateDeptBudget_AMJTA_Web";
         final String testMethod = "testNamedUpdateDeptBudget";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testNamedUpdateDeptBudgetForParent_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testNamedUpdateDeptBudgetForParent_AMJTA_Web";
         final String testMethod = "testNamedUpdateDeptBudgetForParent";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testDeleteQuery_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testDeleteQuery_AMJTA_Web";
         final String testMethod = "testDeleteQuery";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testDeleteQuery2_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testDeleteQuery2_AMJTA_Web";
         final String testMethod = "testDeleteQuery2";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testUpdateDeptBudget_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testUpdateDeptBudget_AMJTA_Web";
         final String testMethod = "testUpdateDeptBudget";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa_spec10_query_svlquery_jubulkupdatetest_testUpdateTwoTable_AMJTA_Web() throws Exception {
-        executeDDL("JPA_SVLQUERY_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA_SVLQUERY_POPULATE_${dbvendor}.ddl");
-
         final String testName = "jpa_spec10_query_svlquery_jubulkupdatetest_testUpdateTwoTable_AMJTA_Web";
         final String testMethod = "testUpdateTwoTable";
         final String testResource = "test-jpa-resource-amrl";
-        executeTest(testName, testMethod, testResource);
+
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("TestEntityType", TestEntityTypeEnum.ANNO);
+
+        executeTest(testName, testMethod, testResource, properties);
     }
 }

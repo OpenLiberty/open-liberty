@@ -67,6 +67,10 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.cxf.ws.addressing.Names;
 
+
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 //No Liberty Change: jaxws-2.3 requires recompiling this class
 public class SOAPHandlerInterceptor extends
         AbstractProtocolHandlerInterceptor<SoapMessage> implements
@@ -77,7 +81,7 @@ public class SOAPHandlerInterceptor extends
             SOAPHandlerInterceptor.class.getName() + ".ENDING",
             Phase.USER_PROTOCOL) {
 
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
             handleMessageInternal(message);
         }
     };
@@ -103,7 +107,7 @@ public class SOAPHandlerInterceptor extends
         return understood;
     }
 
-    public void handleMessage(SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) {
         if (binding.getHandlerChain().isEmpty()) {
             return;
         }

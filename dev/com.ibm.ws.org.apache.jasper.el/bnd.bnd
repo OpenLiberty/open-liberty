@@ -19,7 +19,7 @@ Export-Package: org.apache.el;thread-context=true, \
    org.apache.el.lang;thread-context=true, \
    org.apache.el.parser, \
    org.apache.el.util, \
-   org.apache.el.stream, \
+   org.apache.el.stream
 
 Private-Package: org.apache.el.*
 

@@ -7,3 +7,4 @@ com.ibm.ws.cdi.third.party_fat
 com.ibm.ws.cdi.visibility_fat
 io.openliberty.cdi.3.0.internal_fat
 io.openliberty.cdi.4.0.internal_fat
+io.openliberty.cdi.core_fat

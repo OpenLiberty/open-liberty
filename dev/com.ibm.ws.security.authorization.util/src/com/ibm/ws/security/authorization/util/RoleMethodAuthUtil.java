@@ -15,7 +15,6 @@ import java.security.Principal;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -51,9 +50,11 @@ public class RoleMethodAuthUtil {
                     LOG.log(Level.FINEST, "found RolesAllowed in method: {} " + method.getName(),
                             new Object[] { theseroles });
                 }
-                boolean allowed = Stream.of(theseroles).anyMatch(isUserInRoleFunction);
-                if (allowed)
-                    return true;
+                for (String role : theseroles) {
+                    if (isUserInRoleFunction.test(role)) {
+                        return true;
+                    }
+                }
                 checkAuthentication(principal); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {
@@ -90,9 +91,11 @@ public class RoleMethodAuthUtil {
                     LOG.log(Level.FINEST, "found RolesAllowed in class: {} " + cls.getName(),
                             new Object[] { theseroles });
                 }
-                boolean allowed = Stream.of(theseroles).anyMatch(isUserInRoleFunction);
-                if (allowed)
-                    return true;
+                for (String role : theseroles) {
+                    if (isUserInRoleFunction.test(role)) {
+                        return true;
+                    }
+                }
                 checkAuthentication(principal); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {

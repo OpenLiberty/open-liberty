@@ -60,8 +60,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("OpenIdConnect*=all");
 
     private static final String CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN = "CWWKS1643E";
-    private static final String CWWKS1645E_ID_TOKEN_ISSUER_NOT_THIS_OP = "CWWKS1645E";
-    private static final String CWWKS1646E_ID_TOKEN_MISSING_REQUIRED_CLAIMS = "CWWKS1646E";
+    private static final String CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP = "CWWKS1646E";
+    private static final String CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS = "CWWKS1647E";
 
     private final String issuerIdentifier = "https://localhost/oidc/endpoint/OP";
     private final String client1Id = "client1";
@@ -331,7 +331,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             JwtClaims result = builder.getClaimsFromIdTokenString(idTokenString);
             fail("Should have thrown an exception but got: " + result);
         } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_MISSING_REQUIRED_CLAIMS);
+            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS);
         }
     }
 
@@ -878,7 +878,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
             fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
         } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss");
+            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "iss");
         }
     }
 
@@ -921,7 +921,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
             fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
         } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "aud");
+            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "aud");
         }
     }
 
@@ -964,7 +964,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             boolean result = builder.isIdTokenWithMatchingClaims(idTokenClaims, idToken, client1);
             fail("Should have thrown an exception but didn't. Was ID token considered a match? " + result + ".");
         } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "sub");
+            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".*" + "sub");
         }
     }
 
@@ -1282,7 +1282,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             builder.createLogoutTokenForClientFromCachedIdToken(clientsAndLogoutTokens, client1, idToken);
             fail("Should have thrown an exception but didn't. Clients and logout tokens map was: " + clientsAndLogoutTokens);
         } catch (LogoutTokenBuilderException e) {
-            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1645E_ID_TOKEN_ISSUER_NOT_THIS_OP);
+            verifyException(e, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*" + CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
         }
     }
 
@@ -1578,7 +1578,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         JwtContext resultContext = Jose4jUtil.parseJwtWithoutValidation(logoutTokenString);
         JsonWebStructure jsonWebStructure = resultContext.getJoseObjects().get(0);
         assertEquals("JWT alg header did not match expected value.", "HS256", jsonWebStructure.getAlgorithmHeaderValue());
-        assertEquals("JWT typ header did not match expected value.", "JWT", jsonWebStructure.getHeader("typ"));
 
         verifyLogoutTokenClaims(resultContext.getJwtClaims(), expectedAudiences, expectedSubject, expectedSid);
     }
@@ -1643,11 +1642,9 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 one(client).getClientSecret();
                 will(returnValue(clientSecret));
-                one(oidcServerConfig).getSignatureAlgorithm();
+                allowing(oidcServerConfig).getSignatureAlgorithm();
                 will(returnValue("HS256"));
                 one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(null));
-                one(oidcServerConfig).getPrivateKey();
                 will(returnValue(null));
                 one(oidcServerConfig).getKeyAliasName();
                 will(returnValue(null));

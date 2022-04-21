@@ -24,7 +24,7 @@ Export-Package: \
     com.ibm.ws.jca.adapter, \
     com.ibm.ws.jca.cm, \
     com.ibm.ws.jca.cm.mbean, \
-    com.ibm.wsspi.zos.tx \
+    com.ibm.wsspi.zos.tx
 
 Import-Package: \
     com.ibm.ws.jca.cm.handle, \

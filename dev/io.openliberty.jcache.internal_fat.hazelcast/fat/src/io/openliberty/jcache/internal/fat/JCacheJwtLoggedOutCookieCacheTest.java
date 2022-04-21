@@ -13,10 +13,12 @@ package io.openliberty.jcache.internal.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
@@ -36,7 +39,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  * Contains distributed JCache logged out cookie cache tests for JWT SSO.
  */
 // TODO TAIJwtUtils, LoggedOutJwtSsoCookieCache
-// TODO Can't test against EE9/9.1 until mpJwt supports EE9/9.1.
+// TODO Can't test against EE9/9.1 until mpJwt supports EE9/9.1. TODO REMOVE???
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -50,6 +53,17 @@ public class JCacheJwtLoggedOutCookieCacheTest extends BaseTestCase {
 
     private static FormLoginClient formLoginClient1;
     private static FormLoginClient formLoginClient2;
+
+    @BeforeClass
+    public static void beforeClass() {
+        /*
+         * Transform apps for EE9+.
+         */
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/formlogin.war"));
+            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/formlogin.war"));
+        }
+    }
 
     @Before
     public void before() throws Exception {

@@ -10,6 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.launch.internal;
 
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_PROPERTY;
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY;
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RUNNING_ID;
+import static java.util.Collections.singletonMap;
+import static org.osgi.framework.FrameworkUtil.asDictionary;
+import static org.osgi.service.condition.Condition.CONDITION_ID;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,6 +58,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.DataFormatHelper;
@@ -579,7 +587,7 @@ public class FrameworkManager {
         // This exception will have a translated message stating that an unknown exception occurred.
         // This is so bizarre a case that it should never happen.
         try {
-            Framework fwk = fwkFactory.newFramework(config.getFrameworkProperties());
+            final Framework fwk = fwkFactory.newFramework(config.getFrameworkProperties());
             if (fwk == null)
                 return null;
             fwk.init();
@@ -588,11 +596,11 @@ public class FrameworkManager {
                 String phaseProp = config.get(CheckpointPhase.CHECKPOINT_PROPERTY);
                 if (phaseProp != null) {
                     // register the checkpoint phase as early as possible
-                    BundleContext fwkContext = fwk.getBundleContext();
+                    final BundleContext fwkContext = fwk.getBundleContext();
                     final CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
                     final Dictionary<String, Object> phaseRegProps = new Hashtable<>();
-                    phaseRegProps.put(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY, Boolean.FALSE);
-                    phaseRegProps.put(CheckpointPhase.CHECKPOINT_PROPERTY, phase);
+                    phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.FALSE);
+                    phaseRegProps.put(CHECKPOINT_PROPERTY, phase);
                     final ServiceRegistration<CheckpointPhase> phaseReg = fwkContext.registerService(CheckpointPhase.class, phase, phaseRegProps);
 
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
@@ -629,11 +637,17 @@ public class FrameworkManager {
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
                         @Override
                         public void restore() {
-                            phaseRegProps.put(CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
+                            phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
                             phaseReg.setProperties(phaseRegProps);
                         }
                     }, restoredHookProps);
+                } else {
+                    // not a checkpoint launch; register the running condition now
+                    registerRunningCondition(fwk);
                 }
+            } else {
+                // in non-beta always register the running condition
+                registerRunningCondition(fwk);
             }
             return fwk;
         } catch (BundleException ex) {
@@ -646,6 +660,12 @@ public class FrameworkManager {
                 throw ex;
             return null;
         }
+    }
+
+    private static void registerRunningCondition(Framework framework) {
+        BundleContext bc = framework.getBundleContext();
+        bc.registerService(Condition.class, Condition.INSTANCE,
+                           asDictionary(singletonMap(CONDITION_ID, CONDITION_PROCESS_RUNNING_ID)));
     }
 
     private static final String MANAGER_DIR_NAME = ".manager";

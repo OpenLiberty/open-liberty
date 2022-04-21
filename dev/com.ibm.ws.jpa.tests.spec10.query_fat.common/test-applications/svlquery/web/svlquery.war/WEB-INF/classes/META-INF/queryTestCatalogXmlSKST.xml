@@ -2,81 +2,81 @@
 <!-- AtestCatalog metadata in xml -->
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" version="2.0">
   <package>com.ibm.ws.query.entities.xml</package>
-  
+
   <!-- <named-queries> -->
   <named-query name="findAllDepartmentsLikeName">
-    <query>SELECT d FROM DeptBean d WHERE d.name LIKE :deptName</query>
+    <query>SELECT d FROM XMLDeptBean d WHERE d.name LIKE :deptName</query>
   </named-query>
   <named-query name="joinDeptWithEmps">
-    <query>SELECT d FROM DeptBean d JOIN d.emps e WHERE d.no &gt; ?1 order by d.no asc</query>
+    <query>SELECT d FROM XMLDeptBean d JOIN d.emps e WHERE d.no &gt; ?1 order by d.no asc</query>
   </named-query>
   <named-query name="deleteDepartmentsGreaterThan">
-    <query>delete FROM DeptBean d WHERE d.no &gt; :deptNo</query>
+    <query>delete FROM XMLDeptBean d WHERE d.no &gt; :deptNo</query>
   </named-query>
   <named-query name="updateDeptBudget">
-    <query>update DeptBean d set d.budget = (d.budget + ?1)</query>
+    <query>update XMLDeptBean d set d.budget = (d.budget + ?1)</query>
   </named-query>
   <named-query name="updateDeptBudgetForParent2">
-    <query>update DeptBean d set d.budget = (d.budget * :factor) where d.reportsTo.no = :reports2</query>
+    <query>update XMLDeptBean d set d.budget = (d.budget * :factor) where d.reportsTo.no = :reports2</query>
   </named-query>
   <named-query name="updateDeptBudgetForParent">
-    <query>update DeptBean d set d.budget = (d.budget * ?1) where d.reportsTo.no = ?2</query>
+    <query>update XMLDeptBean d set d.budget = (d.budget * ?1) where d.reportsTo.no = ?2</query>
   </named-query>
   <named-query name="joinDeptWithEmps2">
-    <query>SELECT d FROM DeptBean d JOIN d.emps e WHERE d.no &gt; ?1 order by e.empid desc</query>
+    <query>SELECT d FROM XMLDeptBean d JOIN d.emps e WHERE d.no &gt; ?1 order by e.empid desc</query>
   </named-query>
   <named-native-query name="nativeFindAllDepartmentNumbersLikeName">
-    <query>SELECT d.deptno FROM JPADeptBean d WHERE d.name LIKE ?</query>
+    <query>SELECT d.deptno FROM JPAXMLDeptBean d WHERE d.name LIKE ?</query>
   </named-native-query>
   <named-native-query name="nativeFindAllDepartmentColumns">
-    <query>SELECT d.* FROM JPADeptBean d WHERE d.deptno &gt; ?1 order by d.deptno asc</query>
+    <query>SELECT d.* FROM JPAXMLDeptBean d WHERE d.deptno &gt; ?1 order by d.deptno asc</query>
   </named-native-query>
-  <named-native-query name="nativeFindAllDepartments" result-class="com.ibm.ws.query.entities.xml.DeptBean">
-    <query>SELECT d.* FROM JPADeptBean d WHERE d.deptno &gt; ?1 order by d.deptno asc</query>
+  <named-native-query name="nativeFindAllDepartments" result-class="com.ibm.ws.query.entities.xml.XMLDeptBean">
+    <query>SELECT d.* FROM JPAXMLDeptBean d WHERE d.deptno &gt; ?1 order by d.deptno asc</query>
   </named-native-query>
   <named-native-query name="nativeJoinDeptWithEmps" result-set-mapping="DeptBeanThenEmpBeanMapping">
-    <query>SELECT d.*,e.* FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; ?1 order by e.empid desc</query>
+    <query>SELECT d.*,e.* FROM JPAXMLEmpBean e JOIN JPAXMLDeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; ?1 order by e.empid desc</query>
   </named-native-query>
   <named-native-query name="nativeJoinDeptWithEmps2" result-set-mapping="DeptBeanThenEmpBeanMapping">
-    <query>SELECT d.*,e.* FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; :deptNo order by e.empid desc</query>
+    <query>SELECT d.*,e.* FROM JPAXMLEmpBean e JOIN JPAXMLDeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; :deptNo order by e.empid desc</query>
   </named-native-query>
   <named-native-query name="nativeJoinEmpsWithDept" result-set-mapping="EmpBeanThenDeptBeanMapping">
-    <query>SELECT e.*,d.* FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; ?1 order by e.empid desc</query>
+    <query>SELECT e.*,d.* FROM JPAXMLEmpBean e JOIN JPAXMLDeptBean d on e.dept_deptno = d.deptno WHERE d.deptno &gt; ?1 order by e.empid desc</query>
   </named-native-query>
   <named-native-query name="nativeFindAllDepartments2" result-set-mapping="DeptBeanMapping">
-    <query>SELECT d.* FROM JPADeptBean d WHERE d.deptno &gt; ? order by d.deptno asc</query>
+    <query>SELECT d.* FROM JPAXMLDeptBean d WHERE d.deptno &gt; ? order by d.deptno asc</query>
   </named-native-query>
   <named-native-query name="nativeDeleteDepartmentsGreaterThan">
-    <query>delete FROM JPADeptBean WHERE deptno &gt; ?1</query>
+    <query>delete FROM JPAXMLDeptBean WHERE deptno &gt; ?1</query>
   </named-native-query>
   <named-native-query name="nativeUpdateDeptBudget">
-    <query>update JPADeptBean set budget = (budget + ?1)</query>
+    <query>update JPAXMLDeptBean set budget = (budget + ?1)</query>
   </named-native-query>
   <named-native-query name="nativeUpdateDeptBudgetForParent2">
-    <query>update JPADeptBean set budget = (budget * :factor) where REPORTSTO_DEPTNO = :reports2</query>
+    <query>update JPAXMLDeptBean set budget = (budget * :factor) where REPORTSTO_DEPTNO = :reports2</query>
   </named-native-query>
   <named-native-query name="nativeUpdateDeptBudgetForParent">
-    <query>update JPADeptBean set budget = (budget * ?1) where REPORTSTO_DEPTNO = ?2</query>
+    <query>update JPAXMLDeptBean set budget = (budget * ?1) where REPORTSTO_DEPTNO = ?2</query>
   </named-native-query>
   <sql-result-set-mapping name="StringMapping">
     <column-result name="name" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="DeptBeanMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLDeptBean" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="PersonSQLMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.PersonBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLPersonBean" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="PersonBeanSQLMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.PersonBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLPersonBean" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="DeptBeanThenEmpBeanMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean" />
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.EmpBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLDeptBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLEmpBean" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="EmpBeanThenDeptBeanMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.EmpBean" />
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLEmpBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLDeptBean" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="IntegerThenStringMapping">
     <entity-result entity-class="java.lang.Integer" />
@@ -87,16 +87,16 @@
     <column-result name="NAME2" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="EntityThenStringMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLDeptBean" />
     <column-result name="name2" />
   </sql-result-set-mapping>
   <sql-result-set-mapping name="EntityThenCountMapping">
-    <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean" />
+    <entity-result entity-class="com.ibm.ws.query.entities.xml.XMLDeptBean" />
     <column-result name="resCount" />
   </sql-result-set-mapping>
-  
-  <entity name="DeptBean" class="DeptBean" access="FIELD">
-    <table name="JPADeptBean" />
+
+  <entity name="XMLDeptBean" class="XMLDeptBean" access="FIELD">
+    <table name="JPAXMLDeptBean" />
     <attributes>
       <id name="no">
         <column name="deptno" />
@@ -123,9 +123,9 @@
       </embedded>
     </attributes>
   </entity>
-  
-  <entity name="EmpBean" class="EmpBean" access="FIELD">
-    <table name="JPAEmpBean" />
+
+  <entity name="XMLEmpBean" class="XMLEmpBean" access="FIELD">
+    <table name="JPAXMLEmpBean" />
     <attributes>
       <id name="empid">
         <column name="empid" nullable="false" column-definition="integer" />
@@ -140,24 +140,24 @@
       <basic name="hireDate" fetch="EAGER"></basic>
       <basic name="hireTime" fetch="EAGER"></basic>
       <basic name="hireTimestamp" fetch="EAGER"></basic>
-      <many-to-one name="dept" target-entity="DeptBean" fetch="EAGER"></many-to-one>
-      <one-to-many name="manages" target-entity="DeptBean" fetch="LAZY" mapped-by="mgr">
+      <many-to-one name="dept" target-entity="XMLDeptBean" fetch="EAGER"></many-to-one>
+      <one-to-many name="manages" target-entity="XMLDeptBean" fetch="LAZY" mapped-by="mgr">
         <cascade>
           <cascade-remove />
         </cascade>
       </one-to-many>
-      <one-to-one name="home" target-entity="AddressBean" fetch="EAGER">
+      <one-to-one name="home" target-entity="XMLAddressBean" fetch="EAGER">
         <join-column name="HOME_STREET" referenced-column-name="street" />
       </one-to-one>
-      <one-to-one name="work" target-entity="AddressBean" fetch="EAGER">
+      <one-to-one name="work" target-entity="XMLAddressBean" fetch="EAGER">
         <join-column name="WORK_STREET" referenced-column-name="street" />
       </one-to-one>
-      <many-to-many name="tasks" target-entity="TaskBean" fetch="LAZY" mapped-by="emps"></many-to-many>
+      <many-to-many name="tasks" target-entity="XMLTaskBean" fetch="LAZY" mapped-by="emps"></many-to-many>
     </attributes>
   </entity>
-  
-  <entity name="ProjectBean" class="ProjectBean" access="FIELD">
-    <table name="JPAProjectBean" />
+
+  <entity name="XMLProjectBean" class="XMLProjectBean" access="FIELD">
+    <table name="JPAXMLProjectBean" />
     <attributes>
       <id name="projid">
         <column name="projid" nullable="false" column-definition="integer" />
@@ -173,13 +173,13 @@
       <basic name="startTime" />
       <basic name="cost" />
       <basic name="budget" />
-      <many-to-one name="dept" target-entity="DeptBean" fetch="EAGER"></many-to-one>
-      <one-to-many name="tasks" target-entity="TaskBean" fetch="LAZY" mapped-by="project"></one-to-many>
+      <many-to-one name="dept" target-entity="XMLDeptBean" fetch="EAGER"></many-to-one>
+      <one-to-many name="tasks" target-entity="XMLTaskBean" fetch="LAZY" mapped-by="project"></one-to-many>
     </attributes>
   </entity>
-  
-  <entity name="TaskBean" class="TaskBean" access="FIELD">
-    <table name="JPATaskBean" />
+
+  <entity name="XMLTaskBean" class="XMLTaskBean" access="FIELD">
+    <table name="JPAXMLTaskBean" />
     <attributes>
       <id name="taskid"></id>
       <basic name="name" fetch="EAGER">
@@ -189,13 +189,13 @@
         <column length="40" />
       </basic>
       <basic name="cost" />
-      <many-to-one name="project" target-entity="ProjectBean" fetch="EAGER"></many-to-one>
-      <many-to-many name="emps" target-entity="EmpBean" fetch="LAZY"></many-to-many>
+      <many-to-one name="project" target-entity="XMLProjectBean" fetch="EAGER"></many-to-one>
+      <many-to-many name="emps" target-entity="XMLEmpBean" fetch="LAZY"></many-to-many>
     </attributes>
   </entity>
-  
-  <entity name="AddressBean" class="AddressBean" access="FIELD">
-    <table name="JPAAddressBean" />
+
+  <entity name="XMLAddressBean" class="XMLAddressBean" access="FIELD">
+    <table name="JPAXMLAddressBean" />
     <attributes>
       <embedded-id name="street"></embedded-id>
       <basic name="city">
@@ -209,9 +209,9 @@
       </basic>
     </attributes>
   </entity>
-  
-  <entity name="TypeTestBean" class="TypeTestBean" access="FIELD">
-    <table name="JPATypeTestBean" />
+
+  <entity name="XMLTypeTestBean" class="XMLTypeTestBean" access="FIELD">
+    <table name="JPAXMLTypeTestBean" />
     <attributes>
       <id name="id"></id>
       <basic name="i4" />
@@ -256,9 +256,9 @@
       <basic name="busPass"></basic>
     </attributes>
   </entity>
-  
-  <entity name="CustomerBean" class="CustomerBean" access="FIELD">
-    <table name="JPACustomerparttab" />
+
+  <entity name="XMLCustomerBean" class="XMLCustomerBean" access="FIELD">
+    <table name="JPAXMLCustomerPartTab" />
     <attributes>
       <id name="id"></id>
       <basic name="name">
@@ -269,9 +269,9 @@
       <one-to-many name="supplies" fetch="LAZY" mapped-by="supplier" />
     </attributes>
   </entity>
-  
-  <entity name="LineItem" class="LineItem" access="FIELD">
-    <table name="JPALineItemparttab" />
+
+  <entity name="XMLLineItem" class="XMLLineItem" access="FIELD">
+    <table name="JPAXMLLineItemPartTab" />
     <attributes>
       <id name="lid"></id>
       <basic name="quantity" />
@@ -280,9 +280,9 @@
       <many-to-one name="order" fetch="EAGER" />
     </attributes>
   </entity>
-  
-  <entity name="OrderBean" class="OrderBean" access="FIELD">
-    <table name="JPAOrderparttab" />
+
+  <entity name="XMLOrderBean" class="XMLOrderBean" access="FIELD">
+    <table name="JPAXMLOrderPartTab" />
     <attributes>
       <id name="oid"></id>
       <basic name="amount" />
@@ -291,42 +291,48 @@
       <one-to-many name="lineitems" fetch="EAGER" mapped-by="order" />
     </attributes>
   </entity>
-  
-  <entity name="Part" class="Part" access="FIELD">
-    <table name="JPAparttab" />
+
+  <entity name="XMLPart" class="XMLPart" access="FIELD">
+    <table name="JPAXMLPartTab" />
     <inheritance strategy="SINGLE_TABLE" />
-    <discriminator-column name="PARTTYPE" />
+    <discriminator-column name="XMLPARTTYPE" />
     <attributes>
       <id name="partno"></id>
       <basic name="name">
         <column length="40" />
       </basic>
+      <one-to-many name="usedIn" mapped-by="child" >
+        <cascade>
+          <cascade-persist />
+        </cascade>
+      </one-to-many>
     </attributes>
   </entity>
-  
-  <entity name="PartBase" class="PartBase" access="FIELD">
+
+  <entity name="XMLPartBase" class="XMLPartBase" access="FIELD">
     <inheritance strategy="SINGLE_TABLE" />
     <discriminator-value>PartBase</discriminator-value>
-    <discriminator-column name="PARTTYPE" discriminator-type="STRING" />
+    <discriminator-column name="XMLPARTTYPE" discriminator-type="STRING" />
     <attributes>
       <basic name="cost" />
       <basic name="mass" />
       <many-to-many name="suppliers" fetch="LAZY" mapped-by="supplies" />
     </attributes>
   </entity>
-  
-  <entity name="PartComposite" class="PartComposite" access="FIELD">
+
+  <entity name="XMLPartComposite" class="XMLPartComposite" access="FIELD">
     <inheritance strategy="SINGLE_TABLE" />
     <discriminator-value>PartComposite</discriminator-value>
+    <discriminator-column name="XMLPARTTYPE" discriminator-type="STRING" />
     <attributes>
       <basic name="assemblyCost" />
       <basic name="massIncrement" />
       <one-to-many name="partsUsed" fetch="LAZY" mapped-by="parent" />
     </attributes>
   </entity>
-  
-  <entity name="Product" class="Product" access="FIELD">
-    <table name="JPAProductparttab" />
+
+  <entity name="XMLProduct" class="XMLProduct" access="FIELD">
+    <table name="JPAXMLProductPartTab" />
     <attributes>
       <id name="pid" />
       <basic name="description">
@@ -338,9 +344,9 @@
       <one-to-many name="lineitems" fetch="EAGER" mapped-by="product" />
     </attributes>
   </entity>
-  
-  <entity name="Supplier" class="Supplier" access="FIELD">
-    <table name="JPASupplierparttab" />
+
+  <entity name="XMLSupplier" class="XMLSupplier" access="FIELD">
+    <table name="JPAXMLSupplierPartTab" />
     <attributes>
       <id name="sid" />
       <basic name="name">
@@ -349,9 +355,9 @@
       <many-to-many name="supplies" fetch="LAZY" />
     </attributes>
   </entity>
-  
-  <entity name="Usage" class="Usage" access="FIELD">
-    <table name="JPAUsageparttab" />
+
+  <entity name="XMLUsage" class="XMLUsage" access="FIELD">
+    <table name="JPAXMLUsageparttab" />
     <attributes>
       <id name="id" />
       <basic name="quantity" />
@@ -359,9 +365,9 @@
       <many-to-one name="parent" fetch="EAGER" />
     </attributes>
   </entity>
-  
-  <entity name="PersonBean" class="PersonBean" access="FIELD">
-    <table name="JPAXYZ" />
+
+  <entity name="XMLPersonBean" class="XMLPersonBean" access="FIELD">
+    <table name="JPAXMLXYZ" />
     <attributes>
       <id name="id" />
       <basic name="age" />
@@ -373,16 +379,16 @@
       </basic>
     </attributes>
   </entity>
-  
-  <embeddable class="AddressPK" access="FIELD">
+
+  <embeddable class="XMLAddressPK" access="FIELD">
     <attributes>
       <basic name="name">
         <column name="street" length="40" />
       </basic>
     </attributes>
   </embeddable>
-  
-  <embeddable class="CharityFund" access="FIELD">
+
+  <embeddable class="XMLCharityFund" access="FIELD">
     <attributes>
       <basic name="charityName">
         <column length="40" />

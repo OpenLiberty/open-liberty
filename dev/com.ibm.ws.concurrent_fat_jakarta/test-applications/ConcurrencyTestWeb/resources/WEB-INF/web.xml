@@ -37,6 +37,8 @@
     <priority>10</priority>
   </managed-thread-factory>
 
+  <!-- The following are merged with annoations in ConcurrencyTestServlet -->
+
   <context-service>
     <name>java:app/concurrent/merged/web/LTContextService</name>
     <cleared></cleared>

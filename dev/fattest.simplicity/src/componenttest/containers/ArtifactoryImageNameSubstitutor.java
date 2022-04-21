@@ -30,15 +30,18 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     @Override
     public DockerImageName apply(DockerImageName original) {
-        // If we are using local docker, or a programmatically built image, or a registry was explicitly set,
-        // we don't want to perform any substitution -- just return the original
-        if (!ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST ||
-            isSyntheticImage(original) ||
-            (original.getRegistry() != null && !original.getRegistry().isEmpty())) {
+        // Priority 1: If we are using a programmatically built image, or a registry was explicit set, do not substitute
+        if (isSyntheticImage(original) || (original.getRegistry() != null && !original.getRegistry().isEmpty())) {
             return original;
         }
 
-        // Using remote docker, need to substitute image name to use private registry
+        // Priority 2: Ask the docker strategy if we should substitute the image.
+        // This takes into account local/remote docker and properties to force the use of Artifactory.
+        if (!ExternalTestServiceDockerClientStrategy.USE_ARTIFACTORY_NAME_SUBSTITUTION) {
+            return original;
+        }
+
+        // Need to substitute image name to use private registry
         String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
         Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
         return DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original);
@@ -46,7 +49,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     @Override
     protected String getDescription() {
-        return "private artifactory registry substitutor";
+        return "ArtifactoryImageNameSubstitutor";
     }
 
     /**
@@ -58,12 +61,15 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
      */
     private static boolean isSyntheticImage(DockerImageName dockerImage) {
         String name = dockerImage.asCanonicalNameString();
-        boolean isSynthetic = name.startsWith("testcontainers/") && name.endsWith("latest");
-        if (isSynthetic) {
-            Log.warning(c, "WARNING: Cannot use private registry for programmatically built image " + name +
+        boolean isSynthetic = dockerImage.getRegistry().equals("localhost") && //
+                              dockerImage.getRepository().split("/")[0].equals("testcontainers") && //
+                              dockerImage.getVersionPart().equals("latest");
+        boolean isCommittedImage = dockerImage.getRepository().equals("sha256");
+        if (isSynthetic || isCommittedImage) {
+            Log.warning(c, "WARNING: Cannot use private registry for programmatically built or committed image " + name +
                            ". Consider using a pre-built image instead.");
         }
-        return isSynthetic;
+        return isSynthetic || isCommittedImage;
     }
 
     static String getPrivateRegistry() {

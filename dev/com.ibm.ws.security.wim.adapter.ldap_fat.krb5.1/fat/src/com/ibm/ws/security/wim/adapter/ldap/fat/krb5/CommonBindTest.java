@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,8 +96,8 @@ public class CommonBindTest {
     protected static final String UNBOUNDID_USER_DN = "uid=" + UNBOUNDID_USER + "," + UNBOUNDID_BASE_DN;
     protected static final String UNBOUNDID_PWD = "usrpwd";
 
-    static int LDAP_PORT = ApacheDSandKDC.LDAP_PORT;
-    static int KDC_PORT = ApacheDSandKDC.KDC_PORT;
+    static int LDAP_PORT = ApacheDSandKDC.getLdapPort();
+    static int KDC_PORT = ApacheDSandKDC.getKdcPort();
 
     protected static String[] stopStrings = null;
 

@@ -54,6 +54,13 @@
 			<artifactId>jakarta.json.bind-tck</artifactId>
 			<version>${jakarta.jsonb.tck.version}</version>
 			<scope>test</scope>
+			<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.netbeans.tools</groupId>
+		            <artifactId>sigtest-maven-plugin</artifactId>
+		        </exclusion>
+		    </exclusions>
 		</dependency>
 		<!-- api - jsonb - internal bundle -->
 		<!-- TODO revert to jakarta.json.bind when GA version is in GHE -->
@@ -104,6 +111,13 @@
 			<version>1.7.0.Alpha10</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
+		<dependency>
+            <groupId>org.netbeans.tools</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>1.6</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -180,6 +194,9 @@
 						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json.bind-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
 					</systemPropertyVariables>
+					<excludes>
+						<exclude>${exclude.tests}</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>

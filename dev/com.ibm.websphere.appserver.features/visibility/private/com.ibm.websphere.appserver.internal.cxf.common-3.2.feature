@@ -8,7 +8,6 @@ IBM-App-ForceRestart: uninstall, \
 Subsystem-Name: Internal Apache CXF 3.2 Common Feature for JAX-RS and JAX-WS
 -bundles=\
  com.ibm.websphere.org.osgi.service.http; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cxf.client, \
  com.ibm.ws.org.apache.cxf.cxf.core.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \

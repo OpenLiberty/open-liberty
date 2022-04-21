@@ -1,9 +1,18 @@
 package com.ibm.ws.jpa.olgh14137.model;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+/*
+ * Hibernate defaults to PROPERTY access type for Embedded objects.
+ * EclipseLink/OpenJPA defaults to FIELD access type.
+ *
+ * Access type needs to explicitly be defined here so that Hibernate can obtain the defined annotations
+ */
+@Access(AccessType.FIELD)
 public class OverrideNestedEmbeddableOLGH14137 {
 
     @Column(name = "nested_value")
@@ -17,6 +26,22 @@ public class OverrideNestedEmbeddableOLGH14137 {
 
     public OverrideNestedEmbeddableOLGH14137(Integer nestedValue, Integer nestedValue2) {
         this.nestedValue = nestedValue;
+        this.nestedValue2 = nestedValue2;
+    }
+
+    public Integer getNestedValue() {
+        return nestedValue;
+    }
+
+    public void setNestedValue(Integer nestedValue) {
+        this.nestedValue = nestedValue;
+    }
+
+    public Integer getNestedValue2() {
+        return nestedValue2;
+    }
+
+    public void setNestedValue2(Integer nestedValue2) {
         this.nestedValue2 = nestedValue2;
     }
 

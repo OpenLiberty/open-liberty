@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2023,8 +2023,9 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
     // end 268176 Welcome file wrappers are not checked for resource existence
     // WAS.webcontainer
 
-    protected synchronized void createTarget(Servlet s) throws InjectionException{ //596191
-        if (s instanceof SingleThreadModel) {
+    protected synchronized void createTarget(Servlet s) throws InjectionException{
+        if((com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60)
+                        && (s instanceof SingleThreadModel)) {
             isSTM = true;
             servletConfig.setSingleThreadModelServlet(isSTM);
             target = new SingleThreadModelServlet(s.getClass());

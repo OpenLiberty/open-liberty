@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,62 +11,72 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# Define the bundle for this FAT
-
 src: \
-	fat/src,\
-	test-applications/injectIntoPath.war/src,\
-	test-applications/jaxrsResourceInjection.war/src,\
-	test-applications/jeeInjectionTargetTest.war/src,\
-	test-applications/jeeInjectionTargetTestEJB.jar/src,\
-	test-applications/jeeInjectionTargetTestJSP2.3.war/src,\
-	test-applications/sharedLibrary.jar/src,\
-	test-applications/simpleJSFApp.war/src,\
-	test-applications/simpleJSFWithSharedLib.war/src,\
-	test-applications/simpleJSPApp.war/src,\
-	test-applications/resourceWebServicesClient.war/src,\
-	test-applications/resourceWebServicesProvider.war/src
-	
-tested.features:\
-	cdi-2.0,\
-	servlet-4.0,\
-	servlet-5.0,\
-	jdbc-4.2,\
-	jpa-2.2,\
-	beanValidation-2.0,\
-	jaxrs-2.1,\
-	jsf-2.3,\
-	connectors-2.0,\
-	mdb-4.0,\
-	restfulwsclient-3.0,\
-	restfulws-3.0,\
-	jsonp-2.0,\
-	faces-3.0
-	
-test.project: true
+        fat/src
 
+fat.project: true
+
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
+tested.features: \
+        cdi-1.2, \
+        servlet-5.0, \
+        xmlws-3.0, \
+        xmlbinding-3.0, \
+        cdi-3.0, \
+        xmlws-4.0, \
+        xmlbinding-4.0, \
+        cdi-4.0, \
+        servlet-6.0, \
+        connectors-2.0, \
+        expressionlanguage-4.0, \
+        jdbc-4.2, \
+        messaging-3.0, \
+        pages-3.0, \
+        enterprisebeans-4.0, \
+        managedbeans-2.0, \
+        mdb-4.0, \
+        messagingserver-3.0, \
+        enterprisebeansremote-4.0, \
+        enterprisebeanshome-4.0, \
+        beanvalidation-3.0, \
+        enterprisebeanslite-4.0, \
+        enterprisebeanspersistenttimer-4.0, \
+        websocket-2.0, \
+        faces-3.0, \
+        messagingclient-3.0,\
+        expressionlanguage-5.0, \
+        connectors-2.1, \
+        jdbc-4.2, \
+        messaging-3.1, \
+        pages-3.1, \
+        websocket-2.1, \
+        faces-4.0,\
+        restfulwsclient-3.0,\
+        concurrent-2.0,\
+        restfulws-3.0,\
+        jsonp-2.0,\
+        restfulwsclient-3.1,\
+        concurrent-3.0,\
+        jsonp-2.1,\
+        restfulws-3.1
+
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+# fat.minimum.java.level: 1.8
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	javax.jws:jsr181-api;version=latest,\
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.ws.security;version=latest,\
-	com.ibm.websphere.security;version=latest,\
-	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.javaee.jms.2.0;version=latest,\
-	com.ibm.websphere.javaee.connector.1.7;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest

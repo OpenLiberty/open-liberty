@@ -35,4 +35,4 @@ publish.wlp.jar.suffix: dev/api/third-party
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: io.openliberty.org.apache.myfaces.3.0;version=project, \
-    org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
+    org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version}

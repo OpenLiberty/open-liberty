@@ -60,6 +60,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -78,6 +80,11 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             List<SimpleEntityOLGH17369> dto01 = query.getResultList();
             Assert.assertNotNull(dto01);
             Assert.assertEquals(0, dto01.size());
+
+            // TODO: org.hibernate.engine.jdbc.spi.SqlExceptionHelper logExceptions At least one result expression (THEN or ELSE) of the CASE expression must have a known type.
+            if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                return;
+            }
 
             // Equivalent CriteriaBuilder
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -174,7 +181,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+        /*
+         * Hibernate does not support CASE expressions where THEN & ELSE do not declare a type:
+         * java.lang.IllegalArgumentException: org.hibernate.QueryException:
+         * No data type for node: org.hibernate.hql.internal.ast.tree.SearchedCaseNode
+         */
+        if (JPAPersistenceProvider.OPENJPA.equals(provider) || JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             return;
         }
 
@@ -330,6 +342,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -348,6 +362,11 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             List<SimpleEntityOLGH17369> dto01 = query.getResultList();
             Assert.assertNotNull(dto01);
             Assert.assertEquals(0, dto01.size());
+
+            // TODO: org.hibernate.engine.jdbc.spi.SqlExceptionHelper logExceptions At least one result expression (THEN or ELSE) of the CASE expression must have a known type.
+            if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                return;
+            }
 
             // Equivalent CriteriaBuilder
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -447,7 +466,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+        /*
+         * Hibernate does not support CASE expressions where THEN & ELSE do not declare a type:
+         * java.lang.IllegalArgumentException: org.hibernate.QueryException:
+         * No data type for node: org.hibernate.hql.internal.ast.tree.SearchedCaseNode
+         */
+        if (JPAPersistenceProvider.OPENJPA.equals(provider) || JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             return;
         }
 
@@ -597,6 +621,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -616,8 +642,14 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             List<Integer> intList = query.getResultList();
             Assert.assertNotNull(intList);
             Assert.assertEquals(2, intList.size());
-            Assert.assertEquals(new Integer(100), intList.get(0));
-            Assert.assertEquals(new Integer(100), intList.get(1));
+            if (JPAPersistenceProvider.OPENJPA.equals(provider) && isUsingJPA22ContainerFeature(true)) {
+                // OpenJPA 3.2.x changed behavior to return Long type instead of Integer type
+                Assert.assertEquals(new Long(100), intList.get(0));
+                Assert.assertEquals(new Long(100), intList.get(1));
+            } else {
+                Assert.assertEquals(new Integer(100), intList.get(0));
+                Assert.assertEquals(new Integer(100), intList.get(1));
+            }
 
             // test equivalent CriteriaBuilder
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -674,7 +706,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+        /*
+         * Hibernate does not support CASE expressions where THEN & ELSE do not declare a type:
+         * java.lang.IllegalArgumentException: org.hibernate.QueryException:
+         * No data type for node: org.hibernate.hql.internal.ast.tree.SearchedCaseNode
+         */
+        if (JPAPersistenceProvider.OPENJPA.equals(provider) || JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             return;
         }
 
@@ -843,7 +880,12 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
         // OpenJPA does not support CASE expressions where THEN & ELSE do not declare a type
-        if (JPAPersistenceProvider.OPENJPA.equals(provider)) {
+        /*
+         * Hibernate does not support CASE expressions where THEN & ELSE do not declare a type:
+         * java.lang.IllegalArgumentException: org.hibernate.QueryException:
+         * No data type for node: org.hibernate.hql.internal.ast.tree.SearchedCaseNode
+         */
+        if (JPAPersistenceProvider.OPENJPA.equals(provider) || JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             return;
         }
 

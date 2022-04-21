@@ -15,15 +15,15 @@
 defaultTasks 'clean', 'build'
 
 // Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
-project.version = bnd('Bundle-Version', bnd.buildID)
+project.version = bnd.get('Bundle-Version', bnd.buildID)
 jar {
   version=null
 }
 
-if (parseBoolean(bnd('globalize', 'true'))) {
+if (parseBoolean(bnd.get('globalize', 'true'))) {
   task globalize {
     // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
-    def quotationExcludes = bnd('globalize.quotation.excludes')
+    def quotationExcludes = bnd.get('globalize.quotation.excludes')
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
 
@@ -132,7 +132,7 @@ if (parseBoolean(bnd('globalize', 'true'))) {
   }
 }
 
-if (parseBoolean(bnd('copy.pii', 'true'))) {
+if (parseBoolean(bnd.get('copy.pii', 'true'))) {
   task copyPiiFiles(type: Copy) {
     ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
     from project.file('resources')
@@ -148,13 +148,13 @@ if (parseBoolean(bnd('copy.pii', 'true'))) {
   task copyPiiFiles { }
 }
 
-if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
+if ( parseBoolean( bnd.get('jakartaeeMe', 'false'))) {
   configurations {
     jakartaeeTransformJars
   }
 
   dependencies {
-    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
+    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0',
                             'commons-cli:commons-cli:1.4',
                             'org.slf4j:slf4j-api:1.7.36',
                             'org.slf4j:slf4j-simple:1.7.36',
@@ -186,7 +186,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
         def finalBundleJarName = initialBundleJarName.replaceAll( '.jar', '.jakarta.jar' )
         println 'Default jakarta final bundle jar name [ ' + finalBundleJarName + ' ]'
 
-        def localBundleJarName = bnd('jakartaFinalJarName')
+        def localBundleJarName = bnd.get('jakartaFinalJarName')
         if ( (localBundleJarName != null) && !localBundleJarName.isEmpty() ) {
           println 'Local jakarta final bundle jar name [ ' + localBundleJarName + ' ]'
           println 'Ignoring default jakarta final bundle jar name'
@@ -228,7 +228,7 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
             def localOption = localEntry[1]
 
             def bndProperty = 'jakartaLocal' + localName
-            def localAddition = bnd(bndProperty)
+            def localAddition = bnd.get(bndProperty)
 
             if ( (localAddition == null) || localAddition.isEmpty() ) {
                 println 'BND [ ' + bndProperty + ' ] is not set'
@@ -247,31 +247,31 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
             }
         }
 
-        def finalBundleId = bnd('jakartaFinalBundleId')
+        def finalBundleId = bnd.get('jakartaFinalBundleId')
         if ( (finalBundleId != null) && !finalBundleId.isEmpty() ) {
           println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
 
-          def initialBundleId = bnd('Bundle-SymbolicName', project.name)
+          def initialBundleId = bnd.get('Bundle-SymbolicName', project.name)
           int index = initialBundleId.indexOf(";")
           if (index != -1) {
             initialBundleId = initialBundleId.substring(0, index)
           }
 
-          def finalBundleVersion = bnd('jakartaFinalBundleVersion')
+          def finalBundleVersion = bnd.get('jakartaFinalBundleVersion')
           if (finalBundleVersion == null) {
             finalBundleVersion = ''
           }
           println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
 
-          def finalBundleShortName = bnd('jakartaFinalBundleName')
+          def finalBundleShortName = bnd.get('jakartaFinalBundleName')
           if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
-            finalBundleShortName = bnd('Bundle-Name')
+            finalBundleShortName = bnd.get('Bundle-Name')
           }
           println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
 
-          def finalBundleDescription = bnd('jakartaFinalBundleDescription')
+          def finalBundleDescription = bnd.get('jakartaFinalBundleDescription')
           if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
-            finalBundleDescription = bnd('Bundle-Description')
+            finalBundleDescription = bnd.get('Bundle-Description')
           }
           println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
 
@@ -309,26 +309,31 @@ if ( parseBoolean( bnd('jakartaeeMe', 'false'))) {
 }
 
 compileJava {
-  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
-    inputs.files { rasInstrumentationInputFiles() }
-    outputs.dir compileJava.destinationDir
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd('instrument.classesExcludes').split("\\s*,\\s*"))
-    doLast {
-      if (instrument.isEmpty())
-        return
-      rasInstrumentationTaskdef(ant)
-      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
-        fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
-      }
-    }
-  }
-
-  if (parseBoolean(bnd('globalize', 'true'))) {
+  if (parseBoolean(bnd.get('globalize', 'true'))) {
     dependsOn globalize
   }
 
   options.warnings = false
   options.fork = true
+}
+
+if (!parseBoolean(bnd.get('instrument.disabled', 'false'))) {
+  task instrument {
+    dependsOn compileJava
+    inputs.files { rasInstrumentationInputFiles() }
+    outputs.dir compileJava.destinationDir
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
+    doLast {
+      if (!instrument.isEmpty()) {
+        rasInstrumentationTaskdef(ant)
+        ant.instrumentForTrace(ffdc: bnd.get('instrument.ffdc'), taskInjection: bnd.get('instrument.taskInjection')) {
+          fileset(dir: compileJava.destinationDir, includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
+        }
+      }
+    }
+  }
+
+  jar.dependsOn(instrument)
 }
 
 test {
@@ -382,7 +387,7 @@ task buildfat {
   group = "build"
 }
 
-if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
+if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
   task apiSpiJavadoc(type: Javadoc) {
     dependsOn jar
 
@@ -403,7 +408,7 @@ if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp
     classpath += cp
     source = sp
 
-    include bnd('Export-Package', '').split(',').collect {
+    include bnd.get('Export-Package', '').split(',').collect {
       def pkg = it
       int index = pkg.indexOf(";")
       if (index != -1) {
@@ -414,8 +419,8 @@ if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp
       return pkg
     }
     exclude "**/internal/**"
-    title = bnd('Bundle-Name')
-    options.source bnd('javac.source')
+    title = bnd.get('Bundle-Name')
+    options.source bnd.get('javac.source')
     options.memberLevel = 'PUBLIC'
     options.noIndex true
     options.use true
@@ -426,18 +431,18 @@ if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp
 
   task zipJavadoc(type: Zip) {
     dependsOn apiSpiJavadoc
-    archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+    archiveName bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
     from new File(project.buildDir, "javadoc")
 
     doLast {
-      if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
-        def initialJavadocZipName = project.buildDir.path + '/distributions/' + bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+      if ( parseBoolean( bnd.get('jakartaeeMe', 'true'))) {
+        def initialJavadocZipName = project.buildDir.path + '/distributions/' + bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
         println 'Initial javadoc zip name [ ' + initialJavadocZipName + ' ]'
 
         def finalJavadocZipName = initialJavadocZipName.replaceAll( '.javadoc.zip', '.jakarta.javadoc.zip' )
         println 'Default jakarta javadoc zip name [ ' + finalJavadocZipName + ' ]'
 
-        def finalBundleId = bnd('jakartaFinalBundleId')
+        def finalBundleId = bnd.get('jakartaFinalBundleId')
         if ( (finalBundleId != null) && !finalBundleId.isEmpty() ) {
           finalJavadocZipName = project.buildDir.path + '/distributions/' + finalBundleId + '.javadoc.zip'
         }

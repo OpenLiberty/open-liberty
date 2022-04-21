@@ -350,4 +350,56 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		Log.exiting(c, METHOD_NAME);
 	}
 
+	/**
+	 * Test already installed user feature with WLP_USER_DIR set
+	 */
+	@Test
+	public void testAlreadyInstalledUsrFeatureWlpUserDir() throws Exception {
+		final String METHOD_NAME = "testAlreadyInstalledUsrFeatureWlpUserDir";
+		Log.entering(c, METHOD_NAME);
+
+		replaceWlpProperties("21.0.0.4");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+		copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/server.env");
+
+		copyFileToMinifiedRoot("myUserDir/servers/serverX", "../../publish/tmp/usrFeaturesServerXml/server.xml");
+
+		copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+				"../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+				"../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+		copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+				"../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "test.featuresBOM",
+				"com.ibm.ws.userFeature:features-bom:19.0.0.8");
+		writeToProps(minifiedRoot + "/etc/server.env", "WLP_USER_DIR", minifiedRoot + "/myUserDir");
+
+		String[] filesList = { "myUserDir/extension/lib/features/testesa1.mf", "myUserDir/extension/bin/testesa1.bat" };
+
+		String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		String output = po.getStdout();
+
+		assertFilesExist(filesList);
+		assertTrue("Should contain testesa1", output.contains("testesa1"));
+
+		// run isf command again
+		po = runFeatureUtility(METHOD_NAME, param1s);
+		output = po.getStdout();
+		assertTrue("Should contain \"No features were installed\"", output.contains("No features were installed"));
+
+		deleteUsrExtFolder(METHOD_NAME);
+		deleteEtcFolder(METHOD_NAME);
+
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+
+		Log.exiting(c, METHOD_NAME);
+	}
+
 }

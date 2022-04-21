@@ -475,6 +475,10 @@ public class LibertyServer implements LogMonitorClient {
         checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
     }
 
+    public void unsetCheckpoint() {
+        checkpointInfo = null;
+    }
+
     /**
      * Info
      */
@@ -855,7 +859,6 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
-     *
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
@@ -6865,11 +6868,7 @@ public class LibertyServer implements LogMonitorClient {
                     LOG.warning("Unable to detect platform support for criu: " + e.getMessage());
                     return false; //no cache of checkpointSupported let it keep trying.
                 }
-                if (jinfo.VENDOR == Vendor.OPENJ9 && jinfo.isCriuSupported()) {
-                    checkpointSupported = true;
-                } else {
-                    checkpointSupported = false;
-                }
+                checkpointSupported = jinfo.isCriuSupported();
             } else {
                 checkpointSupported = false;
             }

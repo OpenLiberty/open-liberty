@@ -30,6 +30,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.service.factory.AbstractServiceFactoryBean;
 import org.apache.cxf.service.model.BindingInfo;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class SoapBinding extends AbstractBasicInterceptorProvider implements Binding {
 
     private static final Logger LOG = LogUtils.getL7dLogger(SoapBinding.class);
@@ -58,13 +60,14 @@ public class SoapBinding extends AbstractBasicInterceptorProvider implements Bin
         return version;
     }
 
+    @Sensitive
     public Message createMessage() {
         SoapMessage soapMessage = new SoapMessage(version);
         soapMessage.put(Message.CONTENT_TYPE, soapMessage.getVersion().getContentType());
         return soapMessage;
     }
 
-    public Message createMessage(Message m) {
+    public Message createMessage(@Sensitive Message m) {
        
         SoapMessage soapMessage = new SoapMessage(m);
         if (m.getExchange() != null) {

@@ -24,8 +24,6 @@ generate.replacement: true
     build.changeDetector,\
     com.ibm.ws.security.fat.common.jwt
 
-#Private-Package: \
-
 src: \
     src,\
     fat/src,\
@@ -66,7 +64,6 @@ com.ibm.websphere.security;version=latest,\
 com.ibm.ws.cdi.interfaces;version=latest,\
 com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
 com.ibm.ws.common.encoder,\
-com.ibm.ws.componenttest:public.api;version=latest,\
 com.ibm.ws.kernel.service;version=latest,\
 com.ibm.ws.logging.core;version=latest,\
 com.ibm.ws.logging;version=latest,\

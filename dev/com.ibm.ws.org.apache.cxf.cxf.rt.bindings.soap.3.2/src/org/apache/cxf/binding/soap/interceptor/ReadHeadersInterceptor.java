@@ -66,6 +66,8 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.StaxUtils.StreamToDOMContext;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 
 public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
 
@@ -82,7 +84,7 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
         }
 
         /** {@inheritDoc}*/
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             XMLStreamReader xmlReader = message.getContent(XMLStreamReader.class);
             if (xmlReader != null) {
                 try {
@@ -141,7 +143,7 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
     }
 
     //CHECKSTYLE:OFF MethodLength
-    public void handleMessage(SoapMessage message) {
+    public void handleMessage(@Sensitive SoapMessage message) { // Liberty Change
         if (isGET(message)) {
             LOG.fine("ReadHeadersInterceptor skipped in HTTP GET method");
             return;

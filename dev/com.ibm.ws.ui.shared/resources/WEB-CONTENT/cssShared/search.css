@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,10 @@
 	width: 22px;
 	height: 22px;
 	background-size: 100%;
+}
+
+#search-searchBoxClear-button_label, #search-searchBoxSearch-button_label, #search-searchBoxAddPill-button_label {
+	display: none; /* not to show the button labels added for high contrast mode */
 }
 
 .searchPillPane{
@@ -504,8 +508,33 @@
 	border-bottom-right-radius: 3.9px;
 }
 
+.searchPillDeleteButton span {
+	display: none; /* not to show the delete text added for high contrast mode */
+}
+
 .searchPillDeleteButton:focus,
 .searchPillDeleteButton:hover {
 	border: none;
 	background-color: #E3E4E6;
+}
+
+/* high contrast mode css */
+.dj_a11y .searchPill .dijitButtonNode {
+	border: none !important;
+	height: 22px;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.dj_a11y .searchPill .dijitArrowButtonChar {
+	display: inline !important;
+}
+
+.dj_a11y .searchPillDeleteButton span {
+	display: inline !important;
+}
+
+.dj_a11y .searchInputDropDownButtonFocused,
+.dj_a11y .searchByDropDownButtonFocused{
+	border: 1px solid;
 }

@@ -515,7 +515,7 @@ public class JWT {
     }
 
     @FFDCIgnore({ InvalidKeyException.class, IllegalStateException.class })
-    public boolean verify(long clockSkewInSeconds, Object key)
+    public boolean verify(long clockSkewInSeconds, @Sensitive Object key)
             throws IDTokenValidationFailedException {
         boolean isValid = false;
         setKey(key);
@@ -731,6 +731,7 @@ public class JWT {
      * @throws InvalidKeyException
      */
     //@FFDCIgnore({InvalidKeyException.class})
+    @Sensitive
     private Key getKey(String alg) throws UnsupportedEncodingException, InvalidKeyException {
         Key keyUsed = null;
         if ("RS256".equals(alg)) {
@@ -761,6 +762,7 @@ public class JWT {
     /**
      * @return the key
      */
+    @Sensitive
     public Object getKey() {
         return key;
     }
@@ -769,7 +771,7 @@ public class JWT {
      * @param key
      *            the key to set
      */
-    public void setKey(Object key) {
+    public void setKey(@Sensitive Object key) {
         this.key = key;
     }
 }

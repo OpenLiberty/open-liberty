@@ -65,9 +65,6 @@ import java.util.ArrayList;
  * </p>
  */
 public interface RecoveryAgent {
-    boolean checkingLeases();
-
-    void setCheckingLeases(boolean b);
 
     void terminateServer();
 
@@ -84,7 +81,7 @@ public interface RecoveryAgent {
      * @param failureScope The failure scope for which recovery is starting
      *
      * @exception RecoveryFailedException Thrown by the client service if it is
-     *                unable to complete recovery processing
+     *                                        unable to complete recovery processing
      * @throws LogPropertiesNotReadyException
      */
     void initiateRecovery(FailureScope failureScope) throws RecoveryFailedException;
@@ -99,7 +96,7 @@ public interface RecoveryAgent {
      * @param failureScope The failure scope for which recovery is terminating
      *
      * @exception TerminationFailedException Thrown by the client service if it is
-     *                unable to terminate recovery processing
+     *                                           unable to terminate recovery processing
      */
     void terminateRecovery(FailureScope failureScope) throws TerminationFailedException;
 
@@ -147,7 +144,7 @@ public interface RecoveryAgent {
      * Informs the recovery agent that another recovery agent (identified by the client
      * id) has been upable to handle recovery processing for the given failure scope.
      *
-     * @param int The client id of the failing recovery agent.
+     * @param int          The client id of the failing recovery agent.
      * @param failureScope The target failure scope.
      *
      * @return String[] The log directory set.
@@ -177,8 +174,8 @@ public interface RecoveryAgent {
      * Notify RecoveryAgent of logfile space running out.
      * Called when the log file first crosses the 75% full threshold.
      *
-     * @param logname The name provided by the client service on the FileLogProperties
-     *            used to create this logfile
+     * @param logname    The name provided by the client service on the FileLogProperties
+     *                       used to create this logfile
      * @param bytesInUse The space required for current log data
      * @param bytesTotal The total space available for data
      */

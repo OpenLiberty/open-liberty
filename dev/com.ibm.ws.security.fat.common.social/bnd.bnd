@@ -23,8 +23,6 @@ Import-Package: \
     !com.ibm.ws.kernel.boot.cmdline, \
     *
 
-Private-Package: \
-
 src: \
     src, \
     test-applications/formlogin.social/src
@@ -41,7 +39,6 @@ generate.replacement: true
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.ws.componenttest:public.api;version=latest, \
     com.ibm.websphere.javaee.servlet.3.1;version=latest, \
     fattest.simplicity;version=latest, \
     com.ibm.ws.org.apache.httpcomponents;version=latest,\

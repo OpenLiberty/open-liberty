@@ -25,7 +25,8 @@ WS-TraceGroup: concurrent
 Private-Package: \
   io.openliberty.concurrent.internal.context,\
   io.openliberty.concurrent.internal.processor,\
-  io.openliberty.concurrent.internal.resources
+  io.openliberty.concurrent.internal.resources,\
+  io.openliberty.concurrent.internal.trigger
 
 instrument.classesExcludes: io/openliberty/concurrent/internal/resources/*.class
 
@@ -38,7 +39,8 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/resources/*.class
   io.openliberty.concurrent.internal.processor.ManagedScheduledExecutorDefinitionProvider,\
   io.openliberty.concurrent.internal.processor.ManagedScheduledExecutorResourceFactoryBuilder,\
   io.openliberty.concurrent.internal.processor.ManagedThreadFactoryDefinitionProvider,\
-  io.openliberty.concurrent.internal.processor.ManagedThreadFactoryResourceFactoryBuilder
+  io.openliberty.concurrent.internal.processor.ManagedThreadFactoryResourceFactoryBuilder,\
+  io.openliberty.concurrent.internal.trigger.ZonedTriggerService
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\

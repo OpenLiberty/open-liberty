@@ -36,12 +36,6 @@ Import-Package: \
  org.slf4j,\
  org.xml.sax,\
  org.xml.sax.helpers
-   
-Include-Resource: \
- @lib/ehcache-core-2.5.2.jar!/META-INF/**,\
- @lib/ehcache-core-2.5.2.jar!/templates/**,\
- @lib/ehcache-core-2.5.2.jar!/schemas/**,\
- @lib/ehcache-core-2.5.2.jar!/*xml
 
 Archiver-Version:
 Build-Jdk:

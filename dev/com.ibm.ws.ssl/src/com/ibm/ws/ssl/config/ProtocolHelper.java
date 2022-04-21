@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * CertificateEnvHelper
@@ -66,7 +65,6 @@ public class ProtocolHelper {
         String[] protocols = sslProtocol.split(",");
 
         if (protocols.length > 1) {
-            betaFenceCheckProtocolList(sslProtocol);
             // multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
             for (String protocol : protocols) {
                 if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
@@ -103,10 +101,6 @@ public class ProtocolHelper {
     private void checkProtocol(String protocol) throws SSLException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "checkProtocol", protocol);
-
-        //if (isProtocolDisabled(protocol)) {
-        //    throw new SSLException(protocol + " protocol is disabled.");
-        //}
 
         try {
             SSLContext.getInstance(protocol);
@@ -169,16 +163,4 @@ public class ProtocolHelper {
         }
         return protocols;
     }
-
-    private void betaFenceCheckProtocolList(String sslProtocol) throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            Tr.error(tc, "The " + sslProtocol + " sslProtocol attribute value has a list of SSL protocols, the support is beta and is not available.");
-            throw new UnsupportedOperationException("The " + sslProtocol + " sslProtocol attribute value has a list SSL protocols, the support is beta and is not available.");
-        } else {
-            // Running beta exception, issue message
-            Tr.info(tc, "BETA: the " + sslProtocol + " sslProtocol attribute has a list of SSL protocols configured.");
-        }
-    }
-
 }

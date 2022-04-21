@@ -19,16 +19,26 @@
 
     <persistence-unit name="OLGH17376_JTA">
         <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
+            <!-- OpenJPA Support Properties -->
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Runtime=TRACE, Tool=TRACE, SQL=TRACE, JDBC=TRACE"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
+
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>
     </persistence-unit>
 
     <persistence-unit name="OLGH17376_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
+            <!-- OpenJPA Support Properties -->
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Runtime=TRACE, Tool=TRACE, SQL=TRACE, JDBC=TRACE"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
+
+            <!-- EclipseLink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
         </properties>

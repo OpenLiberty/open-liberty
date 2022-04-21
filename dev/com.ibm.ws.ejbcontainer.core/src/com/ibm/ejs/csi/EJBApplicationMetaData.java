@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.container.ContainerProperties;
@@ -92,7 +96,7 @@ public class EJBApplicationMetaData {
      * {@link #ivCurrentlyBlockingWork} and then later set to false once the application has
      * fully started. If a late-add module is being started, the flag is reset to
      * ivBlockWorkUntilStarted.
-     * 
+     *
      * <p>
      * Modifications to this variable are protected by synchronizing this object.
      */
@@ -100,7 +104,7 @@ public class EJBApplicationMetaData {
 
     /**
      * True if this application was initially marked as blocking work.
-     * 
+     *
      * <p>
      * Access to this variable is protected by synchronizing this object.
      */
@@ -112,7 +116,7 @@ public class EJBApplicationMetaData {
      * being started. If a late-add module is being started, then ivModuleBeingAddedLate
      * will also be non-null. Note that this relies on the runtime not starting modules from
      * the same application on multiple threads.
-     * 
+     *
      * <p>
      * Access to this variable is protected by synchronizing this object.
      */
@@ -134,7 +138,7 @@ public class EJBApplicationMetaData {
 
     /**
      * Application Custom Property :
-     * 
+     *
      * True if checkEJBApplicationConfiguration has been enabled for this application.
      * Default is false.
      */
@@ -143,7 +147,7 @@ public class EJBApplicationMetaData {
 
     /**
      * Application Custom Property :
-     * 
+     *
      * True if the local client views for EJBs in this application should use proxy
      * wrappers.
      */
@@ -152,7 +156,7 @@ public class EJBApplicationMetaData {
     /**
      * This ArrayList contains a list of all Singleton Session Beans that have been marked
      * as "Startup" via annotations or XML.
-     * 
+     *
      * <p>
      * This list is null until the first startup singleton is found. This list is always
      * null after the application has started.
@@ -162,7 +166,7 @@ public class EJBApplicationMetaData {
     /**
      * List of singletons that have dependencies on other singletons. A LinkedHashMap is
      * used for fast iteration.
-     * 
+     *
      * <p>
      * This list is null until the first application with dependencies is found. This list
      * is always null after the application has started.
@@ -179,7 +183,7 @@ public class EJBApplicationMetaData {
      * List of singletons in the order that they were initialized. A Set is used to ensure
      * that a singleton is only added once even if errors occur and initialization is
      * attempted multiple times. A LinkedHashSet is used to ensure stable ordering.
-     * 
+     *
      * <p>
      * This list is null until initialization is attempted for a singleton.
      */
@@ -189,7 +193,7 @@ public class EJBApplicationMetaData {
      * List of timers that were started prior to the application being fully started. This
      * could occur because of automatic timers or because the timer is created from a
      * startup bean.
-     * 
+     *
      * <p>
      * This list is null until the first non-persistent timer is started prior to the
      * application being fully started. This list is always null after the application has
@@ -199,24 +203,31 @@ public class EJBApplicationMetaData {
     private List<TimerNpImpl> ivQueuedNonPersistentTimers;
 
     /**
+     * List of Runnable instances that will preload bean pools for those stateless beans that
+     * have been configured with a hard minimum pool size. Additionally, stateless bean pools
+     * may be preloaded when the server has been started for taking a checkpoint.
+     */
+    private List<Runnable> ivPreloadBeanPools;
+
+    /**
      * True if this application is stopping or has stopped.
      */
     private boolean ivStopping;
 
     /**
      * d607800.CodRv
-     * 
+     *
      * Indicates that we are in a late-add flow (ie, module is being added after the
      * application started event was sent).
-     * 
+     *
      * Also indicates exactly which module we are adding late, which allows to us continue
      * allowing access to beans in other modules (which were already started), while
      * preventing access to beans in the module we are currently starting.
-     * 
+     *
      * After the late-add module has been processed (either we successfully started it, or
      * blew up trying), this is set back to null to indicate that we are no longer in the
      * process of late-adding a new module.
-     * 
+     *
      * <p>
      * Access to this variable is protected by synchronizing this object.
      */
@@ -227,26 +238,19 @@ public class EJBApplicationMetaData {
      * boolean indicating that the application is in the process if starting and
      * initializing. It also set the ArrayList of Startup Singletons to null since there may
      * not be any in this particular application.
-     * 
-     * @param container
-     *            the container for this application
-     * @param name
-     *            the application name
-     * @param logicalName
-     *            the logical name of the application
-     * @param standaloneModule
-     *            <tt>true</tt> if this application is a module without an EAR
-     * @param amd
-     *            the WAS server runtime application meta data, or null if the application
-     *            is not running in a WAS server environment or the embeddable EJB container
-     * @param started
-     *            <tt>true</tt> if the application is already started
-     * @param blockWorkUntilStarted
-     *            <tt>true</tt> if this application should block incoming work until the
-     *            application is fully started
+     *
+     * @param container             the container for this application
+     * @param name                  the application name
+     * @param logicalName           the logical name of the application
+     * @param standaloneModule      <tt>true</tt> if this application is a module without an EAR
+     * @param amd                   the WAS server runtime application meta data, or null if the application
+     *                                  is not running in a WAS server environment or the embeddable EJB container
+     * @param started               <tt>true</tt> if the application is already started
+     * @param blockWorkUntilStarted <tt>true</tt> if this application should block incoming work until the
+     *                                  application is fully started
      */
     public EJBApplicationMetaData(EJSContainer container, String name, String logicalName, boolean standaloneModule,
-            ApplicationMetaData amd, boolean started, boolean blockWorkUntilStarted) {
+                                  ApplicationMetaData amd, boolean started, boolean blockWorkUntilStarted) {
         ivContainer = container; // F743-506
         ivName = name; // F743-12528
         ivLogicalName = logicalName; // F743-26137
@@ -261,12 +265,12 @@ public class EJBApplicationMetaData {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "EJBApplicationMetaData object created for thread: " + ivStartupThread + ", blockWorkUntilStarted="
-                    + blockWorkUntilStarted);
+                         + blockWorkUntilStarted);
     }
 
     /**
      * Returns the name of this application.
-     * 
+     *
      * @return the application name
      */
     // F743-12528
@@ -280,23 +284,21 @@ public class EJBApplicationMetaData {
      * without ".ear", <tt>null</tt> if the application was a standalone module, or the
      * logical name to be shared by several standalone modules.
      */
-    public String getLogicalName() // F743-26137
-    {
+    public String getLogicalName() {
         return ivLogicalName;
     }
 
     /**
      * Returns true if this application is a module without an EAR.
      */
-    public boolean isStandaloneModule() // d660700
-    {
+    public boolean isStandaloneModule() {
         return ivStandaloneModule;
     }
 
     /**
      * Returns the runtime application metadata. The result will be null if the application
      * is not running in a WAS server environment or the embeddable EJB container.
-     * 
+     *
      * @return the application metadata, or null if unavailable
      */
     // F743-12528
@@ -308,7 +310,7 @@ public class EJBApplicationMetaData {
      * Sets whether or not to bind EJBs in this application to the configured binding
      * locations.
      * <p>
-     * 
+     *
      * This method sets an application custom property.
      */
     // F743-33812
@@ -322,7 +324,7 @@ public class EJBApplicationMetaData {
      * Returns <tt>true</tt> if EJBs in this application should be bound to the configured
      * binding locations.
      * <p>
-     * 
+     *
      * This method returns an application custom property.
      */
     // F743-33812
@@ -334,7 +336,7 @@ public class EJBApplicationMetaData {
      * Sets whether or not to bind EJBs in this application to the java:global names
      * required by the EJB specification.
      * <p>
-     * 
+     *
      * This method sets an application custom property.
      */
     // F743-33812
@@ -348,7 +350,7 @@ public class EJBApplicationMetaData {
      * Returns <tt>true</tt> if EJBs in this application should be bound to the java:global
      * names required by the EJB specification.
      * <p>
-     * 
+     *
      * This method returns an application custom property.
      */
     // F743-33812
@@ -360,7 +362,7 @@ public class EJBApplicationMetaData {
      * Sets whether or not to perform more rigid checking for EJB application configuration
      * problems. This may result in additional warnings and/or errors.
      * <p>
-     * 
+     *
      * This method sets an application custom property.
      */
     // F743-33178
@@ -375,7 +377,7 @@ public class EJBApplicationMetaData {
      * problems should be performed and should result in additional warnings and/or errors.
      * <p>
      * .
-     * 
+     *
      * This method returns an application custom property.
      */
     // F743-33178
@@ -397,13 +399,10 @@ public class EJBApplicationMetaData {
 
     /**
      * Adds a singleton bean belonging to this application.
-     * 
-     * @param bmd
-     *            the bean metadata
-     * @param startup
-     *            true if this is a startup singleton bean
-     * @param dependsOnLinks
-     *            list of dependency EJB links
+     *
+     * @param bmd            the bean metadata
+     * @param startup        true if this is a startup singleton bean
+     * @param dependsOnLinks list of dependency EJB links
      */
     public void addSingleton(BeanMetaData bmd, boolean startup, Set<String> dependsOnLinks) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -425,19 +424,36 @@ public class EJBApplicationMetaData {
     }
 
     /**
+     * Adds a Runnable instance for preloading a bean pool at the completion of application start. <p>
+     *
+     * To ensure all beans in the application have been identified (in case there are bean
+     * references that need to be resolved prior to instance creation) and the application's
+     * state has been properly initialized (before running any additional application code that
+     * may occur during the preload), bean pools will be preloaded at the end of application
+     * start, after all beans have been identified, all startup bean post construct methods
+     * have been called, and the application has been unblocked for work.
+     *
+     * @param preloadBeanPool Runnable instance for preloading a bean pool
+     */
+    public void addPreloadBeanPool(Runnable preloadBeanPool) {
+        if (ivPreloadBeanPools == null) {
+            ivPreloadBeanPools = new ArrayList<Runnable>();
+        }
+        ivPreloadBeanPools.add(preloadBeanPool);
+    }
+
+    /**
      * Prevent EJB work until the application has finished starting startup singletons. This
      * method blocks for a period of time to give the application a chance to start
      * (finishStarting) and then throws an exception if the application is still not
      * started. The only exception to this rule is work that is happening as part of
      * application startup.
-     * 
+     *
      * @return true if the application has started, and false if the application has not
      *         started, but work is allowed from the current thread
-     * @throws ApplicationNotStartedException
-     *             if the application has not started and work is not allowed from the
-     *             current thread
-     * @throws EJBStoppedException
-     *             if the application failed to start while waiting for startup singletons.
+     * @throws ApplicationNotStartedException if the application has not started and work is not allowed from the
+     *                                            current thread
+     * @throws EJBStoppedException            if the application failed to start while waiting for startup singletons.
      */
     public boolean checkIfEJBWorkAllowed(EJBModuleMetaDataImpl module) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -519,7 +535,7 @@ public class EJBApplicationMetaData {
 
                         if (moduleBeingAddedLate != null) {
                             throw new ApplicationNotStartedException("module " + module.getName() + " in application " + ivName
-                                    + " has not finished startup processing");
+                                                                     + " has not finished startup processing");
                         }
 
                         throw new ApplicationNotStartedException("application " + ivName + " has not finished startup processing");
@@ -563,9 +579,8 @@ public class EJBApplicationMetaData {
     /**
      * Prevent non-persistent timers from being created after the application or module has
      * begun stopping.
-     * 
-     * @throws EJBStoppedException
-     *             if the application or module is stopping
+     *
+     * @throws EJBStoppedException if the application or module is stopping
      */
     public synchronized void checkIfCreateNonPersistentTimerAllowed(EJBModuleMetaDataImpl mmd) {
         if (ivStopping) {
@@ -584,17 +599,15 @@ public class EJBApplicationMetaData {
      * application. Regardless of the outcome of this call, the caller is responsible for
      * ensuring that a subsequent call is made to either {@link #startedModule} or
      * {@link #stoppingModule}.
-     * 
-     * @param mmd
-     *            the module being started
-     * @param blockWorkUntilStarted
-     *            <tt>true</tt> if this module should block incoming work until it is fully
-     *            started
+     *
+     * @param mmd                   the module being started
+     * @param blockWorkUntilStarted <tt>true</tt> if this module should block incoming work until it is fully
+     *                                  started
      */
     public synchronized void startingModule(EJBModuleMetaDataImpl mmd, boolean blockWorkUntilStarted) { // F743-26072
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "startingModule: " + mmd.getJ2EEName() + ", blockWorkUntilStarted=" + blockWorkUntilStarted + ", started="
-                    + isStarted());
+                         + isStarted());
 
         ivModules.add(mmd);
 
@@ -609,14 +622,14 @@ public class EJBApplicationMetaData {
     }
 
     /**
-     * Notification that the application is about to finish starting. Performs processing of
-     * singletons after all modules have been started but before the application has
-     * finished starting. Module references are resolved, and startup singletons are
-     * started.
-     * 
-     * @throws RuntimeWarning
-     *             if a dependency reference cannot be resolved or a startup singleton fails
-     *             to initialize
+     * Notification that the application is about to finish starting. Performs preloading
+     * of stateless bean pools, activation of message endpoints and start of non-persistent
+     * timers. The application will also be unblocked for incoming work.
+     *
+     * Note that processing of startup singletons has been performed after each module start
+     * (as required by CTS), but the application remains blocked for incoming work until now.
+     *
+     * @throws RuntimeWarning if an error occurs while finishing the start
      */
     private void finishStarting() throws RuntimeWarning {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -626,12 +639,20 @@ public class EJBApplicationMetaData {
         // NOTE - Any state that is cleared here should also be cleared in
         // stoppingModule.
 
+        // Activates message endpoints
         if (ivModules != null) { // F743-26072
             notifyApplicationEventListeners(ivModules, true);
         }
 
         // Signal that the application is "fully started".
         unblockThreadsWaitingForStart(); // F743-15941
+
+        // Now that the application is unblocked, preloading of the bean pools may begin.
+        // Must occur after unblocking, otherwise the pool preload threads would block.
+        if (ivPreloadBeanPools != null) {
+            preloadBeanPools();
+            ivPreloadBeanPools = null;
+        }
 
         synchronized (this) {
             // F743-506 - Now that the application is fully started, start the
@@ -651,11 +672,13 @@ public class EJBApplicationMetaData {
      * successfully. The caller must ensure that a prior call to {@link #startingModule} has
      * been made. If this method throws an exception, the caller is responsible for ensuring
      * that stoppingModule is called.
-     * 
-     * @param mmd
-     *            the module
-     * @throws RuntimeWarning
-     *             if an error occurs while finishing the start
+     *
+     * Singleton dependency resolution and startup singleton processing will occur at this time,
+     * but incoming work will remain blocked until all modules in the application have started.
+     *
+     * @param mmd the module
+     * @throws RuntimeWarning if a dependency reference cannot be resolved or a startup singleton fails
+     *                            to initialize
      */
     public void startedModule(EJBModuleMetaDataImpl mmd) throws RuntimeWarning { // F743-26072
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -694,9 +717,8 @@ public class EJBApplicationMetaData {
     /**
      * Notification that the modules within the application have finished starting. The
      * caller is responsible for calling {@link #stopping} if this method fails.
-     * 
-     * @throws RuntimeWarning
-     *             if an error occurs while finishing the start
+     *
+     * @throws RuntimeWarning if an error occurs while finishing the start
      */
     public void started() throws RuntimeWarning { // F743-26072
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -720,14 +742,11 @@ public class EJBApplicationMetaData {
 
     /**
      * Resolves a dependency reference link to another EJB.
-     * 
-     * @param source
-     *            the dependent bean
-     * @param link
-     *            the dependency bean using EJB link syntax
+     *
+     * @param source the dependent bean
+     * @param link   the dependency bean using EJB link syntax
      * @return the resulting home record
-     * @throws RuntimeWarning
-     *             if the link cannot be resolved
+     * @throws RuntimeWarning if the link cannot be resolved
      */
     private HomeRecord resolveEJBLink(J2EEName source, String link) throws RuntimeWarning {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -747,14 +766,14 @@ public class EJBApplicationMetaData {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "resolveEJBLink");
             throw new RuntimeWarning("CNTR0198E: The " + component + " singleton session bean in the " + module + " module depends on "
-                    + link + ", which does not exist.", ex);
+                                     + link + ", which does not exist.", ex);
         } catch (AmbiguousEJBReferenceException ex) {
             Tr.error(tc, "SINGLETON_DEPENDS_ON_AMBIGUOUS_NAME_CNTR0199E", new Object[] { component, module, link });
 
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "resolveEJBLink");
             throw new RuntimeWarning("CNTR0199E: The " + component + " singleton session bean in the " + module + " module depends on "
-                    + link + ", which does not uniquely specify an enterprise bean.", ex);
+                                     + link + ", which does not uniquely specify an enterprise bean.", ex);
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -764,9 +783,8 @@ public class EJBApplicationMetaData {
 
     /**
      * Resolves and verifies the singleton dependency links.
-     * 
-     * @throws RuntimeWarning
-     *             if verification fails
+     *
+     * @throws RuntimeWarning if verification fails
      */
     private void resolveDependencies() throws RuntimeWarning {
         // d684950
@@ -800,15 +818,11 @@ public class EJBApplicationMetaData {
      * Verifies that the specified bean only depends on other singletons and that it does
      * not depend on itself. This method calls itself recursively to process all
      * dependencies.
-     * 
-     * @param bmd
-     *            the bean to check
-     * @param used
-     *            the set of dependent beans that are already being processed
-     * @param checked
-     *            the set of beans that have already been processed
-     * @throws RuntimeWarning
-     *             if verification fails
+     *
+     * @param bmd     the bean to check
+     * @param used    the set of dependent beans that are already being processed
+     * @param checked the set of beans that have already been processed
+     * @throws RuntimeWarning if verification fails
      */
     private void resolveBeanDependencies(BeanMetaData bmd, Set<BeanMetaData> used) throws RuntimeWarning {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -835,14 +849,13 @@ public class EJBApplicationMetaData {
             J2EEName dependencyName = dependency.j2eeName;
 
             if (!dependency.isSingletonSessionBean()) {
-                Tr.error(
-                        tc,
-                        "SINGLETON_DEPENDS_ON_NON_SINGLETON_BEAN_CNTR0200E",
-                        new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), dependencyName.getComponent(),
-                                dependencyName.getModule() });
+                Tr.error(tc,
+                         "SINGLETON_DEPENDS_ON_NON_SINGLETON_BEAN_CNTR0200E",
+                         new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), dependencyName.getComponent(),
+                                        dependencyName.getModule() });
                 throw new RuntimeWarning("CNTR0200E: The " + bmd.j2eeName.getComponent() + " singleton session bean in the "
-                        + bmd.j2eeName.getModule() + " module depends on the " + dependencyName.getComponent() + " enterprise bean in the "
-                        + dependencyName.getModule() + ", but the target is not a singleton session bean.");
+                                         + bmd.j2eeName.getModule() + " module depends on the " + dependencyName.getComponent() + " enterprise bean in the "
+                                         + dependencyName.getModule() + ", but the target is not a singleton session bean.");
             }
 
             if (!used.add(dependency)) {
@@ -850,9 +863,9 @@ public class EJBApplicationMetaData {
                     Tr.debug(tc, "circular dependency from " + dependencyName);
 
                 Tr.error(tc, "SINGLETON_DEPENDS_ON_SELF_CNTR0201E",
-                        new Object[] { dependencyName.getComponent(), dependencyName.getModule() });
+                         new Object[] { dependencyName.getComponent(), dependencyName.getModule() });
                 throw new RuntimeWarning("CNTR0201E: The " + dependencyName.getComponent() + " singleton session bean in the "
-                        + dependencyName.getModule() + " module directly or indirectly depends on itself.");
+                                         + dependencyName.getModule() + " module directly or indirectly depends on itself.");
             }
 
             bmd.ivDependsOn.add(dependencyName); // d588220
@@ -868,12 +881,10 @@ public class EJBApplicationMetaData {
     /**
      * Resolves dependencies for a singleton bean. The {@link #checkIfEJBWorkAllowed} method
      * must have been called prior to calling this method.
-     * 
-     * @param bmd
-     *            the bean to check
+     *
+     * @param bmd the bean to check
      * @return a list of dependencies, or null if the bean has no dependencies
-     * @throws RuntimeWarning
-     *             if dependencies are invalid
+     * @throws RuntimeWarning if dependencies are invalid
      */
     public List<J2EEName> resolveBeanDependencies(BeanMetaData bmd) throws RuntimeWarning { // F743-20281
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -923,9 +934,8 @@ public class EJBApplicationMetaData {
 
     /**
      * Creates all startup singleton beans.
-     * 
-     * @throws RuntimeWarning
-     *             if a bean fails to initialize
+     *
+     * @throws RuntimeWarning if a bean fails to initialize
      */
     private void createStartupBeans() throws RuntimeWarning {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -964,9 +974,9 @@ public class EJBApplicationMetaData {
                 FFDCFilter.processException(t, CLASS_NAME + ".createStartupBeans", "6921", this);
 
                 Tr.error(tc, "STARTUP_SINGLETON_SESSION_BEAN_INITIALIZATION_FAILED_CNTR0190E", new Object[] { startupName.getComponent(),
-                        startupName.getModule(), t });
+                                                                                                              startupName.getModule(), t });
                 throw new RuntimeWarning("CNTR0201E: The " + startupName.getComponent() + " startup singleton session bean in the "
-                        + startupName.getModule() + " module failed initialization.", t);
+                                         + startupName.getModule() + " module failed initialization.", t);
             }
         }
 
@@ -975,15 +985,67 @@ public class EJBApplicationMetaData {
     }
 
     /**
+     * Preload the bean pools for stateless session beans that have been configured with a
+     * hard minimum pool size or are being proloaded when server checkpoint is enabled.
+     */
+    private void preloadBeanPools() {
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (EJSPlatformHelper.isZOSCRA()) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "preloadBeanPools: skipped in adjunct process");
+            return;
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "preloadBeanPools : " + ivPreloadBeanPools.size() + " beans");
+
+        boolean isCheckpoint = ivContainer.getEJBRuntime().isCheckpointApplications();
+        List<ScheduledFuture<?>> preloadFutures = new ArrayList<ScheduledFuture<?>>();
+        ScheduledExecutorService executor = ivContainer.getEJBRuntime().getScheduledExecutorService();
+
+        for (Runnable preloadBeanPool : ivPreloadBeanPools) {
+            ScheduledFuture<?> preloadFuture = executor.schedule(preloadBeanPool, 0, TimeUnit.MILLISECONDS);
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "preloadBeanPool scheduled : " + preloadFuture);
+            preloadFutures.add(preloadFuture);
+        }
+
+        // If the server is starting for applications checkpoint, then wait a reasonable amount
+        // of time for the asynchronous bean pool preloads to complete. Checkpoint restore will
+        // then resume processing with fully preloaded bean pools.
+        if (isCheckpoint) {
+            long timeout = 10;
+            for (ScheduledFuture<?> preloadFuture : preloadFutures) {
+                try {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "checkpoint - waiting " + timeout + "s : " + preloadFuture);
+                    preloadFuture.get(timeout, TimeUnit.SECONDS);
+                } catch (TimeoutException tex) {
+                    // Acceptable behavior; not worth holding up application start any longer.
+                    // Reduce wait time for remaining preloads to avoid large cumulative wait time.
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "checkpoint - TimeoutException");
+                    timeout = 1;
+                } catch (InterruptedException | ExecutionException ex) {
+                    // An exception in the preload runnable would already log FFDC; avoid repeating
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "checkpoint - continuing : " + ex);
+                }
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "preloadBeanPools");
+    }
+
+    /**
      * Notifies all application event listeners in the specified modules.
-     * 
-     * @param modules
-     *            the list of modules to notify
-     * @param started
-     *            <tt>true</tt> if the application is started, or <tt>false</tt> if the
-     *            application is stopping
-     * @throws RuntimeWarning
-     *             if any listener throws an exception
+     *
+     * @param modules the list of modules to notify
+     * @param started <tt>true</tt> if the application is started, or <tt>false</tt> if the
+     *                    application is stopping
+     * @throws RuntimeWarning if any listener throws an exception
      */
     private void notifyApplicationEventListeners(Collection<EJBModuleMetaDataImpl> modules, boolean started) throws RuntimeWarning { // F743-26072
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -1035,8 +1097,7 @@ public class EJBApplicationMetaData {
     private void startQueuedNonPersistentTimerAlarms() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (EJSPlatformHelper.isZOSCRA()) // d684950
-        {
+        if (EJSPlatformHelper.isZOSCRA()) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "startQueuedNonPersistentTimerAlarms: skipped in adjunct process");
             return;
@@ -1057,11 +1118,9 @@ public class EJBApplicationMetaData {
      * Record the initialization attempt of a singleton. This method must not be called for
      * a bean before it is called for each of that bean's dependencies. This method may be
      * called multiple times for the same bean, but only the first call will have an effect.
-     * 
-     * @param home
-     *            the bean's home
-     * @throws EJBStoppedException
-     *             if the application is stopping
+     *
+     * @param home the bean's home
+     * @throws EJBStoppedException if the application is stopping
      */
     public synchronized void addSingletonInitialization(EJSHome home) {
         if (ivStopping) {
@@ -1077,25 +1136,25 @@ public class EJBApplicationMetaData {
     /**
      * Queues or starts a non-persistent timer alarm, returning an indication of whether or
      * not the operation was successful.
-     * 
+     *
      * If the application has not yet started, then the timer is queued and its alarm will
      * be started after the application is fully started.
-     * 
+     *
      * If the application has previously been started, but now we are late-adding a new
      * module, the timer we are trying to start is from that new module, then the timer is
      * queued and its alarm will be started after the module is fully started.
-     * 
+     *
      * If everything in the application is already running, then the timer alarm is started
      * immediately.
-     * 
+     *
      * If we are in the late-add flow, and the timer is not from the module we are in the
      * process of adding (ie, the module the timer is from has already been started), then
      * the timer alarm is started immediately.
-     * 
+     *
      * Otherwise, the request is ignored because the application is stopping or stopped, and
      * all non-persistent timers for the application have already been removed. False is
      * returned.
-     * 
+     *
      * @return true if the timer was successfully queued or started; otherwise false.
      */
     public synchronized boolean queueOrStartNonPersistentTimerAlarm(TimerNpImpl timer, EJBModuleMetaDataImpl module) {
@@ -1106,8 +1165,7 @@ public class EJBApplicationMetaData {
         } else {
             if (isStarted()) {
                 timer.schedule();
-            } else if (ivModuleBeingAddedLate != null && ivModuleBeingAddedLate != module) // d607800.CodRv
-            {
+            } else if (ivModuleBeingAddedLate != null && ivModuleBeingAddedLate != module) {
                 timer.schedule();
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1125,14 +1183,11 @@ public class EJBApplicationMetaData {
     /**
      * Notification that the application or a module within the application will begin
      * stopping stopping. This method should never throw an exception.
-     * 
-     * @param application
-     *            <tt>true</tt> if the application is stopping
-     * @param j2eeName
-     *            the J2EEName of the application or module, or <tt>null</tt> if application
-     *            is true and J2EEName is unavailable
-     * @param modules
-     *            the list of modules being stopped
+     *
+     * @param application <tt>true</tt> if the application is stopping
+     * @param j2eeName    the J2EEName of the application or module, or <tt>null</tt> if application
+     *                        is true and J2EEName is unavailable
+     * @param modules     the list of modules being stopped
      */
     private void beginStopping(boolean application, J2EEName j2eeName, Collection<EJBModuleMetaDataImpl> modules) { // F743-26072
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -1187,9 +1242,8 @@ public class EJBApplicationMetaData {
     /**
      * Notification that a module within this application will begin stopping. This method
      * should never throw an exception.
-     * 
-     * @param mmd
-     *            the module
+     *
+     * @param mmd the module
      */
     public void stoppingModule(EJBModuleMetaDataImpl mmd) { // F743-26072
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -1210,6 +1264,7 @@ public class EJBApplicationMetaData {
                 ivSingletonDependencies = null;
                 ivStartupSingletonList = null;
                 ivQueuedNonPersistentTimers = null;
+                ivPreloadBeanPools = null;
             }
         }
 
@@ -1231,17 +1286,17 @@ public class EJBApplicationMetaData {
 
     /**
      * //d607800.CodRv
-     * 
+     *
      * Indicates if the application is currently completed started, or not.
-     * 
+     *
      * If any part of the application is actively being started, the the ivStartupThread
      * switch is non-null to indicate this.
-     * 
+     *
      * Note that when an ejb module is added late (ie, after the application has already
      * been started), the ivStartupThread switch will stay null until the module-starting
      * event is received from the runtime. This actually occurs after the process of adding
      * the module has begun.
-     * 
+     *
      */
     public boolean isStarted() {
         return ivStartupThread == null;
@@ -1259,7 +1314,7 @@ public class EJBApplicationMetaData {
      * Verifies that all versioned modules in an application use the same application base
      * name, and unique module base names.
      * <p>
-     * 
+     *
      * An IllegalArgumentException is thrown if both criteria are not met.
      */
     // F54184.1 F54184.2
@@ -1268,7 +1323,7 @@ public class EJBApplicationMetaData {
             String versionedAppBaseName = ejbMMD.ivVersionedAppBaseName;
             if (versionedAppBaseName != null && !versionedAppBaseName.equals(appBaseName)) {
                 throw new IllegalArgumentException("appBaseName (" + appBaseName + ") does not equal previously set value : "
-                        + versionedAppBaseName);
+                                                   + versionedAppBaseName);
             }
 
             if (modBaseName.equals(ejbMMD.ivVersionedModuleBaseName)) {

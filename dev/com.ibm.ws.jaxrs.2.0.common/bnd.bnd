@@ -23,7 +23,7 @@ WS-TraceGroup: JAXRS
    !org.apache.cxf.validation, \
    !org.apache.cxf.jaxrs.validation, \
    !org.apache.cxf.databinding;version=3.1.18, \
-   org.apache.cxf.*;version=3.1.18, \
+   org.apache.cxf.*;version=3.1.18
 
 Export-Package: \
 	com.ibm.ws.jaxrs20,\
@@ -42,7 +42,9 @@ Export-Package: \
 	com.ibm.ws.jaxrs20.clientconfig,\
 	org.apache.cxf.feature,\
 	org.apache.cxf.jaxrs.client;version=3.1.18,\
-	com.ibm.ws.cxf.exceptions;version=3.1.18
+    com.ibm.ws.cxf.exceptions;version=3.1.18,\
+    com.ibm.ws.cxf.client, \
+    com.ibm.ws.cxf.client.component
 
 Import-Package: \
  !com.wordnik.swagger.jaxrs.config, \
@@ -129,7 +131,7 @@ DynamicImport-Package: \
  javax.json.*
 
 Private-Package:\
-   com.ibm.ws.jaxrs20.*, \
+   com.ibm.ws.jaxrs20.*
 
 Include-Resource: \
   @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.9.13}, \
@@ -150,7 +152,8 @@ Include-Resource: \
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
  	com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
  	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
- 	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister
+ 	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister, \
+ 	com.ibm.ws.cxf.client.component.*
 
 -dependson: com.ibm.ws.org.codehaus.jackson
 

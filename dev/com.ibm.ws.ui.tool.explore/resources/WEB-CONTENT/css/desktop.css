@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,4 +78,16 @@
 .dropDownActionButtonIcon {
     height: 14px;
     width: 14px;
+}
+
+/* high contrast css */
+.dj_a11y .breadcrumbDashboard .dijitButtonNode, .dj_a11y .searchDiv .dijitButtonNode,
+.dj_a11y .breadcrumb .dijitButtonNode {
+    margin-top: 8px;  /* verifically center the breadcrumb button in the breadcrumb dashboard */
+}
+
+.dj_a11y .breadcrumbTextOnly .dijitButtonNode {
+    border: none !important;
+    height: 44px;
+    margin-top: 8px;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class JDBC41Test extends FATServletClient {
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist
+                          "J2CA0045E", //expected from testMaxPoolSizeWithTLS
                           "J2CA0079E"); // expected by testMBeanPurgeAbort
     }
 
@@ -65,6 +66,60 @@ public class JDBC41Test extends FATServletClient {
     public void testAbortedConnectionDestroyed() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyed");
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbort");
+    }
+
+    @Test
+    public void testNumConnectionsPerThreadLocal() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testNumConnectionsPerThreadLocal");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterNumConnectionsPerThreadLocal");
+    }
+
+    @Test
+    public void testAgedTimeoutImmediateWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutImmediateWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutImmediateWithTLS");
+    }
+
+    @Test
+    public void testAgedTimeoutWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutWithTLS");
+    }
+
+    @Test
+    public void testAgedTimeout90mWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeout90mWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeout90mWithTLS");
+    }
+
+    @Test
+    public void testAgedTimeoutDisabledWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAgedTimeoutDisabledWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestAgedTimeoutDisabledWithTLS");
+    }
+
+    @Test
+    public void testReapDisabledWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testReapDisabledWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestReapDisabledWithTLS");
+    }
+
+    @Test
+    public void testMinPoolSizeMettWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeMettWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeMettWithTLS");
+    }
+
+    @Test
+    public void testMinPoolSizeNotMettWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMinPoolSizeNotMettWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMinPoolSizeNotMettWithTLS");
+    }
+
+    @Test
+    public void testMaxIdleTimeDisabledtWithTLS() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMaxIdleTimeDisabledtWithTLS");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "checkPoolAfterTestMaxIdleTimeDisabledtWithTLS");
     }
 
     @Test

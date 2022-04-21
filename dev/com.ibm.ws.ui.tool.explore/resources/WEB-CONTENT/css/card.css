@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ @import url("cardExcludeValidator.css");
+
 /* @media only screen and (min-device-width: 767px) {  */
 .tableContainerDropDownActionButton {
     border: 0;
@@ -809,4 +811,80 @@ input.checkboxToggleButton:checked+label:after {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+/* High contrast mode css */
+.dj_a11y .actionMenu .dijitTooltipContainer .dijitButtonNode {
+    border: 0 !important;
+}
+
+.dj_a11y .dropDownActionButtonsDisabled {
+    opacity: 0.5;
+}
+
+.dj_a11y .dropDownButton, .dj_a11y .dropDownButton .dijitButtonNode {
+    border: 0 !important;
+    height: 32px;
+}
+
+/* show both the drop down image and the arrow button char on each card for maxiumum contrast
+   as the down arrow in the image doesn't show well in the white on black theme */
+.dj_a11y .dropDownButton .dijitButtonNode img {
+    height: 24px;
+    width: 24px;
+}
+
+/* .dj_a11y .dropDownButton .dijitArrowButtonChar {
+    display: none !important;
+} */
+
+.dj_a11y .dropDownActionButtons:not(.dropDownActionButtonsDisabled):hover,
+.dj_a11y .dropDownButtonFocused,
+.dj_a11y .dropDownActionButtonsFocused {
+    outline: 1px solid !important;
+}
+
+.dj_a11y .actionMenu {
+    padding: 9px 0 5px 0;
+    margin-left: 0;
+}
+
+.dj_a11y .actionMenu-start-Icon-SVG, .dj_a11y .actionMenu-restart-Icon-SVG, .dj_a11y .actionMenu-stop-Icon-SVG,
+.dj_a11y .actionMenu-start-disabled-Icon-SVG, .dj_a11y .actionMenu-restart-disabled-Icon-SVG,
+.dj_a11y .actionMenu-stop-disabled-Icon-SVG {
+    display: none;
+}
+
+.dj_a11y .actionMenuPopup {
+    border: 1px solid;
+}
+
+.dj_a11y .cardInner:focus, .dj_a11y .cardInner:hover {
+    outline: 3px solid !important;
+}
+
+.dj_a11y .expandButton svg {
+    display: none;
+}
+
+.dj_a11y .expandButton:hover, .dj_a11y .expandButton:focus, .dj_a11y .expandButtonFocused {
+    outline: 1px solid;
+}
+
+.dj_a11y input.checkboxToggleButton:checked+label {
+    opacity: 1 !important;
+}
+
+.dj_a11y input.checkboxToggleButton+label,
+.dj_a11y input.checkboxToggleButton:checked+label:before  {
+    height: 24px;
+}
+
+.dj_a11y input.checkboxToggleButton+label:before,
+.dj_a11y input.checkboxToggleButton+label:after {
+    height: 20px;
+}
+
+.dj_a11y input.checkboxToggleButton+label:hover, .dj_a11y input.checkboxToggleButton:focus+label {
+    outline: 2px dashed;
 }

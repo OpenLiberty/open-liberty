@@ -10,8 +10,6 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.commons.fileupload;1.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @${repo;org.apache.commons.fileupload;1.3.3;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
 instrument.disabled: true
 
 jakartaeeMe: true

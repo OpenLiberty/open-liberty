@@ -23,7 +23,7 @@ Import-Package: com.ibm.wsspi.probeExtension, \
     javax.servlet, \
     com.ibm.wsspi.request.probe.bci, \
     com.ibm.wsspi.requestContext, \
-    javax.servlet.http, \
+    javax.servlet.http
 
 Private-Package: com.ibm.ws.request.probe.servlet, \
 	com.ibm.ws.request.probe.session

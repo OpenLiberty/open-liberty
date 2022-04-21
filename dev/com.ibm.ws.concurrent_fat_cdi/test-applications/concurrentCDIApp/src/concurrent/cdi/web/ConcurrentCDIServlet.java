@@ -85,6 +85,11 @@ public class ConcurrentCDIServlet extends HttpServlet {
      */
     private static final long TIMEOUT_MS = TimeUnit.MINUTES.toMillis(2);
 
+    /**
+     * Maximum number of nanoseconds to wait for a task to finish.
+     */
+    private static final long TIMEOUT_NS = TimeUnit.MILLISECONDS.toNanos(TIMEOUT_MS);
+
     @Inject
     private ApplicationScopedBean appScopedBean;
 
@@ -355,6 +360,24 @@ public class ConcurrentCDIServlet extends HttpServlet {
         AtomicReference<String> threadNameRef = new AtomicReference<String>();
         appScopedBean.notAsync(threadNameRef);
         assertEquals(curThreadName, threadNameRef.get());
+    }
+
+    /**
+     * The Asynchronous annotation can be placed on a method of a superclass of a CDI managed bean.
+     */
+    @Test
+    public void testAsyncOnSuperclassMethod() throws Exception {
+        CompletableFuture<Long> future = requestScopedBean.getThreadId();
+
+        // Get the result in a way that avoids being able to run inline
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && !future.isDone();)
+            TimeUnit.MILLISECONDS.sleep(200);
+
+        long asyncMethodThreadId = future.getNow(-1l);
+        long curThreadId = Thread.currentThread().getId();
+
+        assertTrue("Asynchronous method must not run on current thread " + curThreadId,
+                   curThreadId != asyncMethodThreadId);
     }
 
     /**

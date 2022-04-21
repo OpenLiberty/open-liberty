@@ -32,7 +32,7 @@ Export-Package: \
   org.apache.cxf.transport.https;version="2.6.2", \
   org.apache.cxf.transport.servlet;version="2.6.2", \
   org.apache.cxf.transport.servlet.servicelist;version="2.6.2", \
-  org.apache.cxf.transports.http.configuration;version="2.6.2", \
+  org.apache.cxf.transports.http.configuration;version="2.6.2"
 
 Import-Package: \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \
@@ -109,7 +109,7 @@ Import-Package: \
   org.osgi.framework, \
   org.osgi.service.cm, \
   org.osgi.util.tracker, \
-  org.w3c.dom, \
+  org.w3c.dom
 
 Private-Package: \
   schemas.configuration, \

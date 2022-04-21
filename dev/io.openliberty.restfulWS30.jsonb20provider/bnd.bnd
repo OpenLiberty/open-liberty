@@ -41,4 +41,4 @@ Include-Resource:\
   com.ibm.websphere.org.osgi.core;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.ws.logging.core, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest

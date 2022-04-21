@@ -44,6 +44,6 @@ Include-Resource:\
 -buildpath: \
   com.ibm.websphere.javaee.jaxrs.2.1, \
   com.ibm.ws.logging.core, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 jakartaeeMe: true

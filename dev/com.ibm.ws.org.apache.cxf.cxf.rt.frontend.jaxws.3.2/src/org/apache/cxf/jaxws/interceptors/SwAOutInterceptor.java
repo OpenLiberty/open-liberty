@@ -77,6 +77,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class SwAOutInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LogUtils.getL7dLogger(SwAOutInterceptor.class);
 
@@ -145,7 +147,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         return false;
     }
 
-    public void handleMessage(SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
         Exchange ex = message.getExchange();
         BindingOperationInfo bop = ex.getBindingOperationInfo();
         if (bop == null) {
@@ -195,7 +197,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
         }
         processAttachments(message, sbi);
     }
-    protected void processAttachments(SoapMessage message, SoapBodyInfo sbi) {
+    protected void processAttachments(@Sensitive SoapMessage message, SoapBodyInfo sbi) {
         Collection<Attachment> atts = setupAttachmentOutput(message);
         List<Object> outObjects = CastUtils.cast(message.getContent(List.class));
 
@@ -360,6 +362,9 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
 
         Collection<Attachment> atts = message.getAttachments();
+        
+        LOG.log(Level.FINE, "setupAttachmentOutput: getAttachments returned  " + atts);
+        
         if (atts == null) {
             atts = new ArrayList<>();
             message.setAttachments(atts);
@@ -372,6 +377,7 @@ public class SwAOutInterceptor extends AbstractSoapInterceptor {
 
         Collection<Attachment> atts = message.getAttachments();
         
+        // Please do not modify log message below, it's been used in PropertySettingTest
         LOG.log(Level.FINE, "skipAttachmentOutput: getAttachments returned  " + atts);
         
         if (atts != null) {

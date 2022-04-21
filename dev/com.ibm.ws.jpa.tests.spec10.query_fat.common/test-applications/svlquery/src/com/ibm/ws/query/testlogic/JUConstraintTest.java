@@ -27,8 +27,16 @@ import com.ibm.ws.query.entities.ano.Part;
 import com.ibm.ws.query.entities.ano.PartBase;
 import com.ibm.ws.query.entities.ano.PartComposite;
 import com.ibm.ws.query.entities.ano.Usage;
+import com.ibm.ws.query.entities.interfaces.IPart;
+import com.ibm.ws.query.entities.interfaces.ISupplier;
+import com.ibm.ws.query.entities.interfaces.IUsage;
+import com.ibm.ws.query.entities.xml.XMLPart;
+import com.ibm.ws.query.entities.xml.XMLPartBase;
+import com.ibm.ws.query.entities.xml.XMLPartComposite;
+import com.ibm.ws.query.testlogic.enums.TestEntityTypeEnum;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
+import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
@@ -37,6 +45,176 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class JUConstraintTest extends AbstractTestLogic {
+
+    private static ISupplier[] SUPPLIER;
+    private static IPart[] PART;
+    private static IUsage[] USAGE;
+
+    private static boolean POPULATED = false;
+
+    private static void populate(JPAResource jpaResource, TestEntityTypeEnum testEntityType) {
+        SUPPLIER = new ISupplier[2];
+        PART = new IPart[6];
+        USAGE = new IUsage[7];
+
+        // Populate
+        try {
+            System.out.println("JUConstraintTest.populate(): Begin");
+
+            EntityManager em = jpaResource.getEm();
+            TransactionJacket tj = jpaResource.getTj();
+
+            System.out.println("Beginning new transaction...");
+            tj.beginTransaction();
+            if (tj.isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                em.joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            em.clear();
+
+            if (TestEntityTypeEnum.ANNO.equals(testEntityType)) {
+                SUPPLIER[0] = new com.ibm.ws.query.entities.ano.Supplier(1, "S1");
+                SUPPLIER[1] = new com.ibm.ws.query.entities.ano.Supplier(2, "S2");
+
+                PART[0] = new com.ibm.ws.query.entities.ano.PartBase(10, "P10", 10.00, 15.25);
+                PART[1] = new com.ibm.ws.query.entities.ano.PartBase(11, "P11", 110.00, 25.80);
+                PART[2] = new com.ibm.ws.query.entities.ano.PartBase(12, "P12", 114.00, 82.01);
+                PART[3] = new com.ibm.ws.query.entities.ano.PartComposite(20, "C20", 7.5, 1.0);
+                PART[4] = new com.ibm.ws.query.entities.ano.PartComposite(21, "C21", 0, 15.0);
+                PART[5] = new com.ibm.ws.query.entities.ano.PartComposite(99, "C99", 10, 20);
+
+                USAGE[0] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[3], 4, (Part) PART[0]);
+                USAGE[1] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[4], 1, (Part) PART[1]);
+                USAGE[2] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[4], 1, (Part) PART[2]);
+                USAGE[3] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[4], 4, (Part) PART[0]);
+                USAGE[4] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[5], 1, (Part) PART[3]);
+                USAGE[5] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[5], 1, (Part) PART[4]);
+                USAGE[6] = new com.ibm.ws.query.entities.ano.Usage((PartComposite) PART[5], 4, (Part) PART[0]);
+
+                SUPPLIER[0].addPart((PartBase) PART[0]).addPart((PartBase) PART[1]).addPart((PartBase) PART[2]);
+                SUPPLIER[1].addPart((PartBase) PART[0]).addPart((PartBase) PART[2]);
+            } else {
+                SUPPLIER[0] = new com.ibm.ws.query.entities.xml.XMLSupplier(1, "S1");
+                SUPPLIER[1] = new com.ibm.ws.query.entities.xml.XMLSupplier(2, "S2");
+
+                PART[0] = new com.ibm.ws.query.entities.xml.XMLPartBase(10, "P10", 10.00, 15.25);
+                PART[1] = new com.ibm.ws.query.entities.xml.XMLPartBase(11, "P11", 110.00, 25.80);
+                PART[2] = new com.ibm.ws.query.entities.xml.XMLPartBase(12, "P12", 114.00, 82.01);
+                PART[3] = new com.ibm.ws.query.entities.xml.XMLPartComposite(20, "C20", 7.5, 1.0);
+                PART[4] = new com.ibm.ws.query.entities.xml.XMLPartComposite(21, "C21", 0, 15.0);
+                PART[5] = new com.ibm.ws.query.entities.xml.XMLPartComposite(99, "C99", 10, 20);
+
+                USAGE[0] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[3], 4, (XMLPart) PART[0]);
+                USAGE[1] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[4], 1, (XMLPart) PART[1]);
+                USAGE[2] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[4], 1, (XMLPart) PART[2]);
+                USAGE[3] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[4], 4, (XMLPart) PART[0]);
+                USAGE[4] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[5], 1, (XMLPart) PART[3]);
+                USAGE[5] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[5], 1, (XMLPart) PART[4]);
+                USAGE[6] = new com.ibm.ws.query.entities.xml.XMLUsage((XMLPartComposite) PART[5], 4, (XMLPart) PART[0]);
+
+                SUPPLIER[0].addPart((XMLPartBase) PART[0]).addPart((XMLPartBase) PART[1]).addPart((XMLPartBase) PART[2]);
+                SUPPLIER[1].addPart((XMLPartBase) PART[0]).addPart((XMLPartBase) PART[2]);
+            }
+
+            // Persist new entities
+            for (ISupplier s : SUPPLIER)
+                em.persist(s);
+            for (IPart p : PART)
+                em.persist(p);
+            for (IUsage u : USAGE)
+                em.persist(u);
+
+            System.out.println("Committing transaction...");
+            tj.commitTransaction();
+
+            JUConstraintTest.POPULATED = true;
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            System.out.println("JUConstraintTest.populate(): End");
+        }
+    }
+
+    private static void cleanup(JPAResource jpaResource, TestEntityTypeEnum testEntityType) {
+        if (JUConstraintTest.POPULATED) {
+            try {
+                System.out.println("JUConstraintTest.cleanup(): Begin");
+
+                EntityManager em = jpaResource.getEm();
+                TransactionJacket tj = jpaResource.getTj();
+
+                System.out.println("Beginning new transaction...");
+                tj.beginTransaction();
+                if (tj.isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    em.joinTransaction();
+                }
+
+                System.out.println("Cleaning up Usage entities...");
+                for (IUsage u : USAGE) {
+                    u = em.find(u.getClass(), u.getId());
+                    if (u != null)
+                        em.remove(u);
+                }
+
+                System.out.println("Committing transaction...");
+                tj.commitTransaction();
+
+                System.out.println("Beginning new transaction...");
+                tj.beginTransaction();
+                if (tj.isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    em.joinTransaction();
+                }
+
+                System.out.println("Cleaning up Part entities...");
+                for (IPart p : PART) {
+                    p = em.find(p.getClass(), p.getPartno());
+                    if (p != null)
+                        em.remove(p);
+                }
+
+                System.out.println("Committing transaction...");
+                tj.commitTransaction();
+
+                System.out.println("Beginning new transaction...");
+                tj.beginTransaction();
+                if (tj.isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    em.joinTransaction();
+                }
+                System.out.println("Cleaning up Supplier entities...");
+                for (ISupplier s : SUPPLIER) {
+                    s = em.find(s.getClass(), s.getSid());
+                    if (s != null)
+                        em.remove(s);
+                }
+
+                System.out.println("Committing transaction...");
+                tj.commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                em.clear();
+
+                JUConstraintTest.POPULATED = false;
+            } catch (AssertionError ae) {
+                throw ae;
+            } catch (Throwable t) {
+                t.printStackTrace();
+                throw new RuntimeException(t);
+            } finally {
+                System.out.println("JUConstraintTest.cleanup(): End");
+            }
+        }
+    }
+
     public void testSelectAllParts(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                    Object managedComponentObject) {
         final String testName = getTestName();
@@ -61,17 +239,35 @@ public class JUConstraintTest extends AbstractTestLogic {
             }
         }
 
+        // Fetch target entity type from test parameters
+        TestEntityTypeEnum testEntityType = (TestEntityTypeEnum) testExecCtx.getProperties().get("TestEntityType");
+        if (testEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("TestEntityType not set. Cannot execute the test.");
+            return;
+        }
+
         // Execute Test Case
         try {
-            EntityManager em = jpaResource.getEm();
-            em.clear();
+            System.out.println("JUConstraintTest.testSelectAllParts(): Begin");
 
+            JUConstraintTest.populate(jpaResource, testEntityType);
+
+            System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
-            if (jpaResource.getTj().isApplicationManaged())
-                em.joinTransaction();
-            String q = "select p from Part p";
-            System.err.println("EJBQL:" + q);
-            List<Part> l = em.createQuery(q).getResultList();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            String query = "select p from Part p";
+
+            System.out.println("Executing query '" + query + "' ...");
+            List<Part> l = jpaResource.getEm().createQuery(query).getResultList();
 //            jpaResource.getTj().commitTransaction();
 //
 //            em.clear();
@@ -164,17 +360,21 @@ public class JUConstraintTest extends AbstractTestLogic {
                 Assert.assertTrue("Assert idx " + idx, foundAnswers[idx]);
             }
 
+            System.out.println("Committing transaction...");
             jpaResource.getTj().commitTransaction();
 
-            em.clear();
-        } catch (java.lang.AssertionError ae) {
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            JUConstraintTest.cleanup(jpaResource, testEntityType);
+        } catch (AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
             t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+            throw new RuntimeException(t);
         } finally {
-            System.out.println(testName + ": End");
+            System.out.println("JUConstraintTest.testSelectAllParts(): End");
         }
     }
 
@@ -202,15 +402,35 @@ public class JUConstraintTest extends AbstractTestLogic {
             }
         }
 
+        // Fetch target entity type from test parameters
+        TestEntityTypeEnum testEntityType = (TestEntityTypeEnum) testExecCtx.getProperties().get("TestEntityType");
+        if (testEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("TestEntityType not set. Cannot execute the test.");
+            return;
+        }
+
         // Execute Test Case
         try {
-            EntityManager em = jpaResource.getEm();
-            em.clear();
+            System.out.println("JUConstraintTest.testSelectExpensiveParts(): Begin");
 
+            JUConstraintTest.populate(jpaResource, testEntityType);
+
+            System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
-            String q = "select p from PartBase p where p.cost>100";
-            System.err.println("EJBQL:" + q);
-            List<Part> l = em.createQuery(q).getResultList();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            String query = "select p from PartBase p where p.cost>100";
+
+            System.out.println("Creating query '" + query + "' ...");
+            List<Part> l = jpaResource.getEm().createQuery(query).getResultList();
 //            jpaResource.getTj().commitTransaction();
 //
 //            em.clear();
@@ -284,17 +504,21 @@ public class JUConstraintTest extends AbstractTestLogic {
                 Assert.assertTrue("Assert idx " + idx, foundAnswers[idx]);
             }
 
+            System.out.println("Committing transaction...");
             jpaResource.getTj().commitTransaction();
 
-            em.clear();
-        } catch (java.lang.AssertionError ae) {
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            JUConstraintTest.cleanup(jpaResource, testEntityType);
+        } catch (AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
             t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+            throw new RuntimeException(t);
         } finally {
-            System.out.println(testName + ": End");
+            System.out.println("JUConstraintTest.testSelectExpensiveParts(): End");
         }
     }
 
@@ -322,16 +546,37 @@ public class JUConstraintTest extends AbstractTestLogic {
             }
         }
 
+        // Fetch target entity type from test parameters
+        TestEntityTypeEnum testEntityType = (TestEntityTypeEnum) testExecCtx.getProperties().get("TestEntityType");
+        if (testEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("TestEntityType not set. Cannot execute the test.");
+            return;
+        }
+
         // Execute Test Case
         try {
-            EntityManager em = jpaResource.getEm();
-            em.clear();
+            System.out.println("JUConstraintTest.testCheckCompositePartAssemblyForCycle(): Begin");
 
+            JUConstraintTest.populate(jpaResource, testEntityType);
+
+            System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
-            String q = "select p from PartComposite p";
-            System.err.println("EJBQL:" + q);
-            Query query = em.createQuery(q);
-            List<PartComposite> l = query.getResultList();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            String query = "select p from PartComposite p";
+            System.out.println("Creating query '" + query + "' ...");
+            Query q1 = jpaResource.getEm().createQuery(query);
+
+            System.out.println("Executing query '" + query + "'...");
+            List<PartComposite> l = q1.getResultList();
             for (PartComposite p : l) {
                 String cycleMsg = null;
                 if (checkCycle(p)) {
@@ -344,18 +589,21 @@ public class JUConstraintTest extends AbstractTestLogic {
                 Assert.assertEquals(cycleMsg, ("No cycle in part:" + p.getPartno()));
             }
 
+            System.out.println("Committing transaction...");
             jpaResource.getTj().commitTransaction();
 
-            em.clear();
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
 
-        } catch (java.lang.AssertionError ae) {
+            JUConstraintTest.cleanup(jpaResource, testEntityType);
+        } catch (AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
             t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+            throw new RuntimeException(t);
         } finally {
-            System.out.println(testName + ": End");
+            System.out.println("JUConstraintTest.testCheckCompositePartAssemblyForCycle(): End");
         }
     }
 
@@ -377,30 +625,44 @@ public class JUConstraintTest extends AbstractTestLogic {
 
         // Process Test Properties
         final Map<String, Serializable> testProps = testExecCtx.getProperties();
-        String dbProductName = "";
-        String dbProductVersion = "";
         if (testProps != null) {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
-                if ("dbProductName".equals(key)) {
-                    dbProductName = key;
-                }
-                if ("dbProductVersion".equals(key)) {
-                    dbProductVersion = key;
-                }
             }
+        }
+
+        // Fetch target entity type from test parameters
+        TestEntityTypeEnum testEntityType = (TestEntityTypeEnum) testExecCtx.getProperties().get("TestEntityType");
+        if (testEntityType == null) {
+            // Oops, unknown type
+            Assert.fail("TestEntityType not set. Cannot execute the test.");
+            return;
         }
 
         // Execute Test Case
         try {
-            EntityManager em = jpaResource.getEm();
-            em.clear();
+            System.out.println("JUConstraintTest.testCalculateCompositePartAssemblyTotalCostAndTotalMass(): Begin");
 
+            JUConstraintTest.populate(jpaResource, testEntityType);
+
+            System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
-            String q = "select p FROM Part p";
-            System.err.println("EJBQL:" + q);
-            Query query = em.createQuery(q);
-            List<Part> pplist = query.getResultList();
+            if (jpaResource.getTj().isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                jpaResource.getEm().joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
+            String query = "select p FROM Part p";
+
+            System.out.println("Creating query '" + query + "' ...");
+            Query q1 = jpaResource.getEm().createQuery(query);
+
+            System.out.println("Executing query '" + query + "'...");
+            List<Part> pplist = q1.getResultList();
 
             Assert.assertNotNull(pplist);
 
@@ -463,6 +725,13 @@ public class JUConstraintTest extends AbstractTestLogic {
                 Assert.assertTrue("Assert idx " + idx, foundAnswers[idx]);
             }
 
+            System.out.println("Committing transaction...");
+            jpaResource.getTj().commitTransaction();
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            jpaResource.getEm().clear();
+
 //            TreeSet<String> ts = new TreeSet();
 //            for (Part p : pplist) {
 //                if (p instanceof PartComposite) {
@@ -489,8 +758,14 @@ public class JUConstraintTest extends AbstractTestLogic {
 //            }
 //            Assert.assertEquals(cmal.toString(), expectedText);
 
+            JUConstraintTest.cleanup(jpaResource, testEntityType);
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
         } finally {
-            System.out.println(testName + ": End");
+            System.out.println("JUConstraintTest.testCalculateCompositePartAssemblyTotalCostAndTotalMass(): End");
         }
     }
 

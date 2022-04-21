@@ -22,7 +22,7 @@ WS-TraceGroup: rest.validation
 
 Private-Package:\
   com.ibm.ws.rest.handler.validator.jca.*,\
-  com.ibm.ws.rest.handler.validator.jms.*,\
+  com.ibm.ws.rest.handler.validator.jms.*
 
 Import-Package:\
   !javax.jms,\

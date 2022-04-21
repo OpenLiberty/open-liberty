@@ -38,13 +38,16 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class Soap11FaultOutInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LogUtils.getL7dLogger(Soap11FaultOutInterceptor.class);
 
     public Soap11FaultOutInterceptor() {
         super(Phase.PREPARE_SEND);
     }
-    public void handleMessage(SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
         Fault f = (Fault) message.getContent(Exception.class);
         message.put(org.apache.cxf.message.Message.RESPONSE_CODE, f.getStatusCode());
         if (message.getVersion() == Soap11.getInstance()) {
@@ -60,7 +63,7 @@ public class Soap11FaultOutInterceptor extends AbstractSoapInterceptor {
         Soap11FaultOutInterceptorInternal() {
             super(Phase.MARSHAL);
         }
-        public void handleMessage(SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             XMLStreamWriter writer = message.getContent(XMLStreamWriter.class);
             Fault f = (Fault) message.getContent(Exception.class);
 

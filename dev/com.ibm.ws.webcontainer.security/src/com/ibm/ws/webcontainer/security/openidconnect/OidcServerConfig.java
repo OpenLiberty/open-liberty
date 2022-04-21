@@ -136,4 +136,6 @@ public interface OidcServerConfig {
 
     String getKeyAliasName();
 
+    long getBackchannelLogoutRequestTimeout();
+
 }

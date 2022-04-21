@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -117,8 +117,8 @@ public class JAXBToolsTest extends FATServletClient {
         commandBuilder.append(" ").append(xjcArgs);
 
         String output = execute(commandBuilder.toString());
-        assertTrue("The output should contain the error id 'CWWKW0700E', but does not.\nActual output:\n" + output,
-                   output.indexOf("CWWKW0700E") >= 0);
+        assertTrue("The output should contain the error id 'CWWKW1400E', 'CWWKW1401E', or 'CWWKW1402E', but does not.\nActual output:\n" + output,
+                   ((output.indexOf("CWWKW1400E") >= 0) || (output.indexOf("CWWKW1401E") >= 0) || (output.indexOf("CWWKW1402E") >= 0)));
     }
 
     @Test

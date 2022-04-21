@@ -22,8 +22,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
+import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,11 +42,15 @@ public class WebServiceRefFeaturesTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "webServiceRefFeatures", "com.ibm.ws.test.client.stub",
-                                      "com.ibm.ws.test.wsfeatures.client",
-                                      "com.ibm.ws.test.wsfeatures.client.handler",
-                                      "com.ibm.ws.test.wsfeatures.handler",
-                                      "com.ibm.ws.test.wsfeatures.service");
+        ExplodedShrinkHelper.explodedDropinApp(server, "webServiceRefFeatures", "com.ibm.ws.test.client.stub",
+                                               "com.ibm.ws.test.wsfeatures.client",
+                                               "com.ibm.ws.test.wsfeatures.client.handler",
+                                               "com.ibm.ws.test.wsfeatures.handler",
+                                               "com.ibm.ws.test.wsfeatures.service");
+
+        TestUtils.publishFileToServer(server,
+                                      "WebServiceRefFeaturesTestServer", "image-wsreffeatures.wsdl",
+                                      "Dropins/webServiceRefFeatures.war/WEB-INF/wsdl", "image.wsdl");
 
         server.startServer("WebServiceRefFeaturesTest.log");
         server.waitForStringInLog("webServiceRefFeatures");

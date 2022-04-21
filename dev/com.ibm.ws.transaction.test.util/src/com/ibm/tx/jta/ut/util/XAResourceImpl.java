@@ -535,6 +535,7 @@ public class XAResourceImpl implements XAResource, Serializable {
             sb.append("State: " + stateFormatter(_state));
             sb.append("\nXid: " + _xid);
             sb.append("\nCommit order: " + _commitOrder);
+            sb.append("\nRecover action: " + actionFormatter(recoverAction));
 
             return sb.toString();
         }
@@ -919,6 +920,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         final int recoverAction = self().getRecoverAction();
         if (recoverAction != XAResource.XA_OK) {
             final int repeatCount = self().getRecoverRepeatCount();
+            System.out.println("recoverRepeatCount = "+repeatCount+", recoverAction = "+actionFormatter(recoverAction));
             self().setRecoverRepeatCount(repeatCount - 1);
             if (repeatCount > 0) {
                 switch (recoverAction) {
@@ -1521,24 +1523,26 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     private String actionFormatter(int action) {
         switch (action) {
-            case XAException.XA_RBROLLBACK:
-                return "ROLLBACK";
-            case XAException.XA_RDONLY:
-                return "READONLY";
-            case RUNTIME_EXCEPTION:
-                return "RUNTIME_EXCEPTION";
-            case DIE:
-                return "DIE";
-            case SLEEP_COMMIT:
-                return "SLEEP_COMMIT";
-            case SLEEP_ROLLBACK:
-                return "SLEEP_ROLLBACK";
-            case RETURN_TRUE:
-                return "RETURN_TRUE";
-            case RETURN_FALSE:
-                return "RETURN_FALSE";
-            default:
-                return "INVALID ACTION " + action;
+        case XAException.XAER_RMFAIL:
+        	return "RMFAIL";
+        case XAException.XA_RBROLLBACK:
+        	return "ROLLBACK";
+        case XAException.XA_RDONLY:
+        	return "READONLY";
+        case RUNTIME_EXCEPTION:
+        	return "RUNTIME_EXCEPTION";
+        case DIE:
+        	return "DIE";
+        case SLEEP_COMMIT:
+        	return "SLEEP_COMMIT";
+        case SLEEP_ROLLBACK:
+        	return "SLEEP_ROLLBACK";
+        case RETURN_TRUE:
+        	return "RETURN_TRUE";
+        case RETURN_FALSE:
+        	return "RETURN_FALSE";
+        default:
+        	return "NO ACTION (" + action +")";
         }
     }
 

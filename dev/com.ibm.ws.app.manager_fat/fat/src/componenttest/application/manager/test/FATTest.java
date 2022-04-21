@@ -187,7 +187,8 @@ public class FATTest extends AbstractAppManagerTest {
     @Mode(TestMode.FULL)
     public void testSymbolicLinkInLooseApp() throws Exception {
         File link = new File("/bin/ln");
-        if (link.exists() && link.canExecute()) {
+        File unlink = new File("/bin/unlink");
+        if (link.exists() && link.canExecute() && unlink.exists() && unlink.canExecute()) {
             String serverRoot = server.getServerRoot();
             String hardPath = serverRoot + "/symbolicLink/somethingelse/Classes";
             String symPath = serverRoot + "/testWarApplication/WEB-INF/classes";
@@ -244,7 +245,7 @@ public class FATTest extends AbstractAppManagerTest {
                 con.disconnect();
             } finally {
                 // Try unlinking the file. Simplicity seems to have issues with symbolic links.
-                String[] execParameters = new String[] { "unlink", symPath };
+                String[] execParameters = new String[] { "/bin/unlink", symPath };
                 Process process = Runtime.getRuntime().exec(execParameters);
                 assertEquals("Removing symbolic link didn't return 0.", 0, process.waitFor());
 

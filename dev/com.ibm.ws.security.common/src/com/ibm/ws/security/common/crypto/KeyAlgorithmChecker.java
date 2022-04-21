@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,13 +28,19 @@ public class KeyAlgorithmChecker {
 
     private static final TraceComponent tc = Tr.register(KeyAlgorithmChecker.class);
 
+    private static final Pattern HSA_PATTERN = Pattern.compile("HS[0-9]{3,}");
+    private static final Pattern RSA_PATTERN = Pattern.compile("RS[0-9]{3,}");
+    private static final Pattern ESA_PATTERN = Pattern.compile("ES[0-9]{3,}");
+    private static final Pattern ALG_PATTERN = Pattern.compile("[RHEP]S([0-9]{3,})", Pattern.CASE_INSENSITIVE);
+
     public static int UNKNOWN_HASH_SIZE = 0;
 
     public boolean isHSAlgorithm(String alg) {
         if (alg == null) {
             return false;
         }
-        return alg.matches("HS[0-9]{3,}");
+        Matcher m = HSA_PATTERN.matcher(alg);
+        return m.matches();
     }
 
     public boolean isPublicKeyValidType(Key key, String supportedSigAlg) {
@@ -57,7 +63,8 @@ public class KeyAlgorithmChecker {
         if (alg == null) {
             return false;
         }
-        return alg.matches("RS[0-9]{3,}");
+        Matcher m = RSA_PATTERN.matcher(alg);
+        return m.matches();
     }
 
     public boolean isValidRSAPublicKey(Key key) {
@@ -70,7 +77,8 @@ public class KeyAlgorithmChecker {
         if (alg == null) {
             return false;
         }
-        return alg.matches("ES[0-9]{3,}");
+        Matcher m = ESA_PATTERN.matcher(alg);
+        return m.matches();
     }
 
     public boolean isValidECPublicKey(String supportedSigAlg, Key key) {
@@ -100,12 +108,10 @@ public class KeyAlgorithmChecker {
     @FFDCIgnore(Exception.class)
     public int getHashSizeFromAlgorithm(String algorithm) {
         int hashSize = UNKNOWN_HASH_SIZE;
-        String algRegex = "[RHEP]S([0-9]{3,})";
-        Pattern algPattern = Pattern.compile(algRegex, Pattern.CASE_INSENSITIVE);
-        Matcher algMatcher = algPattern.matcher(algorithm);
+        Matcher algMatcher = ALG_PATTERN.matcher(algorithm);
         if (!algMatcher.matches()) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Algorithm [" + algorithm + "] did not match expected regex " + algRegex);
+                Tr.debug(tc, "Algorithm [" + algorithm + "] did not match expected regex " + ALG_PATTERN.toString());
             }
             return hashSize;
         }

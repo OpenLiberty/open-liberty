@@ -115,11 +115,23 @@ public class ServerSchemaGenCommand extends UtilityTemplate {
         int retCode = 0;
         try {
             String[] mbeanParams = new String[4];
+
             // If no args, dump help and exit.
             if ((args == null) || (args.length == 0)) {
                 stdout.println(getScriptUsage());
                 return 0;
             }
+
+            // Is first parameter -help?
+            String arg0Lower = args[0].toLowerCase();
+
+            if (arg0Lower.equals("-help") || arg0Lower.equals("--help")) {
+                stdout.println(getScriptUsage());
+                stdout.println();
+                showUsageInfo();
+                return 0;
+            }
+
             // The server name should be the first argument.  Go find the
             // server.  If we can't find the server, print the help text.
             String userDir = getUserDir();
@@ -131,19 +143,20 @@ public class ServerSchemaGenCommand extends UtilityTemplate {
                 stdout.println(getScriptUsage());
                 return RC_SERVER_NOT_FOUND;
             }
+
             //TODO handle if server not started case
             //iterate remaining arguments and compose the mbean API
             for (int i = 1; i < args.length; i++) {
                 String arg = args[i];
                 String argToLower = arg.toLowerCase();
-                if (argToLower.contains("help")) {
-                    stdout.println(getScriptUsage());
-                    stdout.println();
-                    showUsageInfo();
-                    return 0;
-                }
+
                 if (arg.startsWith("-")) {
-                    if (argToLower.contains("-schemaversion")) {
+                    if (argToLower.equals("-help") || argToLower.equals("--help")) {
+                        stdout.println(getScriptUsage());
+                        stdout.println();
+                        showUsageInfo();
+                        return 0;
+                    } else if (argToLower.contains("-schemaversion")) {
                         mbeanParams[0] = getArgumentValue(args[i]);
                     } else if (argToLower.contains("-outputversion")) {
                         mbeanParams[1] = getArgumentValue(argToLower);
@@ -158,6 +171,7 @@ public class ServerSchemaGenCommand extends UtilityTemplate {
                     }
                 }
             }
+
             // invoke MBEAN
             retCode = invokeSchemaGen(serverName, mbeanParams);
         } catch (Throwable t) {

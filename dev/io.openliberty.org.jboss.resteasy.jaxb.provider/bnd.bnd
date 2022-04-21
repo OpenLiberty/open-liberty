@@ -51,7 +51,7 @@ Import-Package: \
   *
 #  javax.activation;version=!, \
 #  javax.annotation;version=!, \
-#  javax.annotation.security;version=!, \
+#  javax.annotation.security;version=!
 
 DynamicImport-Package: \
   com.sun.xml.bind.marshaller

@@ -1174,7 +1174,7 @@ public final class JAXBUtils {
             }
             //Liberty change end
         } catch (PropertyException e) {
-            LOG.log(Level.INFO, "Failed to set MinumEscapeHandler to jaxb marshaller", e);
+            LOG.log(Level.FINEST, "Failed to set MinumEscapeHandler to jaxb marshaller", e);
         }
     }
 
@@ -1221,7 +1221,7 @@ public final class JAXBUtils {
                 //this class doesn't exist in JAXB 2.2 so expected
                 LOG.log(Level.FINER, "Failed to create " + simpleClassName);
             } else {
-                LOG.log(Level.INFO, "Failed to create " + simpleClassName);
+                LOG.log(Level.FINER, "Failed to create " + simpleClassName);
             }
         }
         return null;

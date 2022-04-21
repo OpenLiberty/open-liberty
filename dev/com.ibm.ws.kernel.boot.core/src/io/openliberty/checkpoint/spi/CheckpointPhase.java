@@ -46,6 +46,15 @@ public enum CheckpointPhase {
      */
     public static final String CHECKPOINT_RESTORED_PROPERTY = "io.openliberty.checkpoint.restored";
 
+    /**
+     * The ID of the condition service that indicates the Liberty process is running. A Liberty process
+     * is considered running if Liberty was launched with no checkpoint or if the Liberty process
+     * has been restored from a checkpoint image. When Liberty is launched to create a checkpoint image
+     * this condition is not registered until the Liberty process is restored from that checkpoint
+     * image.
+     */
+    public static final String CONDITION_PROCESS_RUNNING_ID = "io.openliberty.process.running";
+
     private static Map<String, CheckpointPhase> phases;
     static {
         phases = new HashMap<String, CheckpointPhase>();
