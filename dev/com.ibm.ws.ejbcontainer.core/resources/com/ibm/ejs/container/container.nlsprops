@@ -1566,6 +1566,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interf
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=The remote enterprise bean binding cannot be created because the CORBA name server is not available.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Check the log file for exceptions that are related to the ORB or CORBA name server initialization.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: The {0} bean in the {1} module of the {2} application has one or more methods with the jakarta.enterprise.concurrent.Asynchronous annotation, which must not be used on enterprise beans. The jakarta.ejb.Asynchronous annotation provides asynchronous methods for enterprise beans.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=The Jakarta Concurrency specification does not allow the jakarta.enterprise.concurrent.Asynchronous annotation to be used on Jakarta Enterprise Beans.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Remove the jakarta.enterprise.concurrent.Asynchronous annotation from the method or class. Use the jakarta.ejb.Asynchronous annotation to identify asynchronous enterprise bean methods.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: The {0} business interface contains a jakarta.enterprise.concurrent.Asynchronous annotation. Asynchronous annotations are not valid on any interface, and the Jakarta Enterprise Beans container ignores them.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=The jakarta.enterprise.concurrent.Asynchronous annotation must not be used with Jakarta Enterprise Beans. The Jakarta Enterprise Beans container ignores these annotations on interfaces. Unless the methods are declared asynchronous in the ejb-jar.xml deployment descriptor or the jakarta.ejb.Asynchronous annotation is specified on the bean class or a bean class method, the bean methods run synchronously.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remove any jakarta.enterprise.concurrent.Asynchronous annotation from the specified business interface and verify that the jakarta.ejb.Asynchronous annotation is specified correctly in the bean class.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2222,4 +2230,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Add a name property for this URL 
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: The embeddable Enterprise JavaBeans (EJB) container properties for the {0} URL resource do not contain the property, specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=The properties that the embeddable Enterprise JavaBeans (EJB) container uses contain a URL resource with no specification specified.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Add a specification property for this URL resource to the properties file.
-

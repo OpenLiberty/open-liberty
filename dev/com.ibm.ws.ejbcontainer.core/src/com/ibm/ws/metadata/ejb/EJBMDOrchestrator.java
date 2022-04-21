@@ -202,11 +202,11 @@ public abstract class EJBMDOrchestrator {
      * the metadata framework's generic ModuleDataObject. This occurs at application start
      * time.
      *
-     * @param ejbAMD is the container's metadata for the application containing this module
-     * @param mid the data needed to initialize a bean module.
+     * @param ejbAMD                is the container's metadata for the application containing this module
+     * @param mid                   the data needed to initialize a bean module.
      * @param statefulFailoverCache is an EJB Container configuration object that indicates whether
-     *            or not SFSB failover is active for this module.
-     * @param container used to obtain container-level SFSB failover values.
+     *                                  or not SFSB failover is active for this module.
+     * @param container             used to obtain container-level SFSB failover values.
      *
      * @return EJBModuleMetaDataImpl is the Container's internal format for module
      *         configuration data.
@@ -312,18 +312,18 @@ public abstract class EJBMDOrchestrator {
      * Later when an application wants to use the bean (ie. bean start) the remainder of
      * BMD will be filled in.
      *
-     * @param bid the data needed to initialize a bean.
-     * @param mmd is the Module's configuration data in the EJB Container's
-     *            internal format.
-     * @param container is the EJB Container in the current process.
-     * @param initAtStartup is the global default configuration for initializing beans
-     *                      at startup.
+     * @param bid              the data needed to initialize a bean.
+     * @param mmd              is the Module's configuration data in the EJB Container's
+     *                             internal format.
+     * @param container        is the EJB Container in the current process.
+     * @param initAtStartup    is the global default configuration for initializing beans
+     *                             at startup.
      * @param initAtStartupSet indicates that the initAtStartup parameter was explicitly
-     *                         configured and not a default value. 
+     *                             configured and not a default value.
      * @return BeanMetaData the EJB Container's internal format for bean configuration
      *         data.
      * @throws EJBConfigurationException - for customer configuration errors
-     * @throws ContainerException - for internal problems creating the meta data
+     * @throws ContainerException        - for internal problems creating the meta data
      */
     public BeanMetaData createBeanMetaData(BeanInitData bid,
                                            EJBModuleMetaDataImpl mmd,
@@ -559,7 +559,7 @@ public abstract class EJBMDOrchestrator {
     /**
      * Create the persister needed to support CMP 1.1 beans.
      *
-     * @param bmd is the EJB Container's internal format for bean configuration data.
+     * @param bmd                       is the EJB Container's internal format for bean configuration data.
      * @param defaultDataSourceJNDIName the default data source JNDI name
      * @return Persister provides persistence services for CMP 1.1 beans.
      * @throws ContainerException - for internal problems creating persister
@@ -595,7 +595,7 @@ public abstract class EJBMDOrchestrator {
      * for bean instances of this EJB type.
      *
      * @param bmd current metadata for the bean
-     * @throws ContainerException - for internal problems initializing bean metadata
+     * @throws ContainerException        - for internal problems initializing bean metadata
      * @throws EJBConfigurationException - for customer configuration errors
      */
     //  F743-17630 refactored method F743-17630CodRv
@@ -1294,6 +1294,12 @@ public abstract class EJBMDOrchestrator {
             bmd.ivHasAsynchMethod |= MethodAttribUtils.getAsynchronousMethods(ejbMethods,
                                                                               asynchMethodFlags,
                                                                               methodInterface); //d599046
+
+            //If any business methods or classes contain the concurrent asynchronous annotation then this call WILL throw an EJBConfigurationException
+            MethodAttribUtils.verifyNoConcurrentAsynchronousMethods(ejbMethods,
+                                                                    bmd.j2eeName.getComponent(),
+                                                                    bmd.j2eeName.getModule(),
+                                                                    bmd.j2eeName.getApplication());
         }
 
         // F743-1752.1 start
@@ -2078,7 +2084,7 @@ public abstract class EJBMDOrchestrator {
      * provides EJB inheritance support.
      *
      * @param moduleConfig <code>EJBModuleConfigData</code> holding module information.
-     * @param mmd <code>EJBModuleMetaDataImpl</code> metadata for a module.
+     * @param mmd          <code>EJBModuleMetaDataImpl</code> metadata for a module.
      *
      * @throws EJBConfigurationException for customer configuration errors.
      */
@@ -2121,10 +2127,10 @@ public abstract class EJBMDOrchestrator {
      * Get the failover instance ID to use for SFSB failover if enabled
      * for this EJB module.
      *
-     * @param mmd the module metadata
+     * @param mmd                   the module metadata
      * @param statefulFailoverCache is the failover cache that is used to hold created failover instances.
-     *            Note, this method should not be called if statefulFailoverCache is null (otherwise,
-     *            a NullPointerException will occur).
+     *                                  Note, this method should not be called if statefulFailoverCache is null (otherwise,
+     *                                  a NullPointerException will occur).
      * @return String
      **/
     protected abstract String getFailoverInstanceId(EJBModuleMetaDataImpl mmd, SfFailoverCache statefulFailoverCache);
@@ -2133,7 +2139,7 @@ public abstract class EJBMDOrchestrator {
      * Get whether SFSB failover is enabled for this SFSB at either
      * the module, application, or EJB container level (in that order).
      *
-     * @param mmd the module metadata
+     * @param mmd       the module metadata
      * @param container the container
      * @return true if enabled.
      */
@@ -2222,13 +2228,13 @@ public abstract class EJBMDOrchestrator {
      * there may also be additional instances in use.
      *
      * @param bmd is the configuration data to be updated with the
-     *            calculated pool limits. The bmd variables set by this
-     *            method include:
+     *                calculated pool limits. The bmd variables set by this
+     *                method include:
      *
-     *            bmd.minPoolSize
-     *            bmd.maxPoolSize,
-     *            bmd.ivInitialPoolSize
-     *            bmd.ivMaxCreation.
+     *                bmd.minPoolSize
+     *                bmd.maxPoolSize,
+     *                bmd.ivInitialPoolSize
+     *                bmd.ivMaxCreation.
      */
     private void processBeanPoolLimits(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -2915,7 +2921,7 @@ public abstract class EJBMDOrchestrator {
      * @param beanType
      * @param classNameToLoad
      *
-     * @throws ContainerException - for internal errors
+     * @throws ContainerException        - for internal errors
      * @throws EJBConfigurationException - for customer configuration errors
      *
      */
@@ -3314,7 +3320,7 @@ public abstract class EJBMDOrchestrator {
      * Gets a managed object factory for the specified ManagedBean class, or null if
      * instances of the class do not need to be managed.
      *
-     * @param bmd the bean metadata
+     * @param bmd   the bean metadata
      * @param klass the ManagedBean class
      */
     protected <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
@@ -3339,7 +3345,7 @@ public abstract class EJBMDOrchestrator {
      * Gets a managed object factory for the specified interceptor class, or null if
      * instances of the class do not need to be managed.
      *
-     * @param bmd the bean metadata
+     * @param bmd   the bean metadata
      * @param klass the interceptor class
      */
     protected <T> ManagedObjectFactory<T> getInterceptorManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
@@ -3364,7 +3370,7 @@ public abstract class EJBMDOrchestrator {
      * Gets a managed object factory for the specified EJB class, or null if
      * instances of the class do not need to be managed.
      *
-     * @param bmd the bean metadata
+     * @param bmd   the bean metadata
      * @param klass the bean implementation class
      */
     protected <T> ManagedObjectFactory<T> getEJBManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
@@ -3394,7 +3400,7 @@ public abstract class EJBMDOrchestrator {
      * @param cdo
      * @param bmd
      *
-     * @throws ContainerException for internal errors
+     * @throws ContainerException        for internal errors
      * @throws EJBConfigurationException for customer configuration errors
      *
      */
@@ -3679,7 +3685,7 @@ public abstract class EJBMDOrchestrator {
      *
      * @param cdo
      * @param bmd
-     * @throws ContainerException for internal errors
+     * @throws ContainerException        for internal errors
      * @throws EJBConfigurationException for customer configuration errors
      */
     // F743-506
@@ -3715,7 +3721,7 @@ public abstract class EJBMDOrchestrator {
      * not directly provided by the customer). This includes both classes
      * generated by EJBDeploy and JITDeploy.
      *
-     * @throws ContainerException for internal errors
+     * @throws ContainerException         for internal errors
      * @throws EJBConfigurationsException for customer configuration errors
      */
     private void loadGeneratedImplementationClasses(BeanMetaData bmd,
@@ -4329,14 +4335,14 @@ public abstract class EJBMDOrchestrator {
      * specify a class name using the new algoritm. <p>
      *
      * @param classLoader Application class loader to be used
-     * @param className Name of the class to load
-     * @param nameUtil Name Utility instance used to generate the
-     *            name of the generated class to load
+     * @param className   Name of the class to load
+     * @param nameUtil    Name Utility instance used to generate the
+     *                        name of the generated class to load
      *
      * @return the loaded class or null if the class name was null.
      *
      * @throws ClassNotFoundException if a class by the specified
-     *             class name could not be loaded.
+     *                                    class name could not be loaded.
      */
     private Class<?> loadGeneratedClass(ClassLoader classLoader,
                                         String className,
@@ -4449,7 +4455,7 @@ public abstract class EJBMDOrchestrator {
      * Returns a class loader that can be used to define a proxy for the
      * specified interface.
      *
-     * @param bmd the bean metadata
+     * @param bmd  the bean metadata
      * @param intf the interface to proxy
      * @return the loader
      * @throws EJBConfigurationException
@@ -4502,13 +4508,13 @@ public abstract class EJBMDOrchestrator {
      * Defines a wrapper proxy class and obtains its constructor that accepts a
      * WrapperProxyStte.
      *
-     * @param bmd the bean metadata
+     * @param bmd            the bean metadata
      * @param proxyClassName the wrapper proxy class name
      * @param interfaceClass the interface class to proxy
-     * @param methods the methods to define on the proxy
+     * @param methods        the methods to define on the proxy
      * @return the constructor with a WrapperProxyState parameter
      * @throws EJBConfigurationException if a class loader cannot be found
-     * @throws ClassNotFoundException if class generation fails
+     * @throws ClassNotFoundException    if class generation fails
      */
     private Constructor<?> getWrapperProxyConstructor(BeanMetaData bmd,
                                                       String proxyClassName,
@@ -5069,13 +5075,13 @@ public abstract class EJBMDOrchestrator {
      * haven't explicitly indicated if they are for 0 or 1 parm methods, and
      * figure out which group they belong in.
      *
-     * @param timers0ParmByMethodName mapping of method names for methods that
-     *            take 0 parms, and the timers that target them
-     * @param timers1ParmByMethodName mapping of method names for methods that
-     *            take 1 parm, and the timers that target them
+     * @param timers0ParmByMethodName           mapping of method names for methods that
+     *                                              take 0 parms, and the timers that target them
+     * @param timers1ParmByMethodName           mapping of method names for methods that
+     *                                              take 1 parm, and the timers that target them
      * @param timersUnspecifiedParmByMethodName mapping of method names and the
-     *            timers that target them, for timers that have an unspecified parm list in xml
-     * @param beanClass the base ejb class
+     *                                              timers that target them, for timers that have an unspecified parm list in xml
+     * @param beanClass                         the base ejb class
      * @parma bmd BeanMetaData
      */
     private void mapUnspecifiedTimers(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers0ParmByMethodName,
@@ -5223,13 +5229,13 @@ public abstract class EJBMDOrchestrator {
      * method name, and adds them to the correct group of timers (timers targeting 1 parm
      * methods, or timers targeting 0 parm methods).
      *
-     * @param methodToTimers mapping of methodNames to the timers that are associated
-     *            with that method; represents either the set of timers targeting 1 parm methods
-     *            or the set of timers targeting 0 parm methods
-     * @param methodName the name of a method that is targeted by timers defined in
-     *            xml with unspecified parameter lists
+     * @param methodToTimers                    mapping of methodNames to the timers that are associated
+     *                                              with that method; represents either the set of timers targeting 1 parm methods
+     *                                              or the set of timers targeting 0 parm methods
+     * @param methodName                        the name of a method that is targeted by timers defined in
+     *                                              xml with unspecified parameter lists
      * @param timersUnspecifiedParmByMethodName mapping of method names and the timers
-     *            with unspecified parameter lists that are associated with those methods
+     *                                              with unspecified parameter lists that are associated with those methods
      */
     private void addUnspecifiedTimersToMap(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> methodToTimers,
                                            String methodName,
@@ -5253,10 +5259,10 @@ public abstract class EJBMDOrchestrator {
      * Verifies that every timer defined in xml was successfully associated
      * with a Method.
      *
-     * @param timers1ParmByMethodName List of timers defined in xml with 1 parm.
-     * @param timers0ParmByMethodName List of timers defined in xml with 0 parms.
+     * @param timers1ParmByMethodName           List of timers defined in xml with 1 parm.
+     * @param timers0ParmByMethodName           List of timers defined in xml with 0 parms.
      * @param timersUnspecifiedParmByMethodName List of timers defined in xml with unspecified parms.
-     * @param bmd BeanMetaData
+     * @param bmd                               BeanMetaData
      * @throws EJBConfigurationException
      */
     private void dealWithUnsatisifedXMLTimers(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers1ParmByMethodName,
@@ -5290,7 +5296,7 @@ public abstract class EJBMDOrchestrator {
      * were successfully mapped to a Method.
      *
      * @param xmlTimers List of Timer instances representing timers defined in xml.
-     * @param bmd BeanMetaData
+     * @param bmd       BeanMetaData
      * @return
      * @throws EJBConfigurationException
      */
@@ -5326,12 +5332,12 @@ public abstract class EJBMDOrchestrator {
      * Sticks a timer defined in xml into the correct list, based on the number
      * of parameters specified in xml for the timer.
      *
-     * @param timers1ParmByMethodName list of timers specified in xml with 1 parm
-     * @param timers0ParmByMethodName list of timers specified in xml with 0 parms
+     * @param timers1ParmByMethodName           list of timers specified in xml with 1 parm
+     * @param timers0ParmByMethodName           list of timers specified in xml with 0 parms
      * @param timersUnspecifiedParmByMethodName list of timers specified in xml with undefined parms
-     * @param parmCount number of parms explicitily defined for the timer in xml (1, 0, or -1 for undefined)
-     * @param methodName name of the Method that should be the recipient of the timer callback
-     * @param timer The Timer instance representing the timer defined in xml
+     * @param parmCount                         number of parms explicitily defined for the timer in xml (1, 0, or -1 for undefined)
+     * @param methodName                        name of the Method that should be the recipient of the timer callback
+     * @param timer                             The Timer instance representing the timer defined in xml
      */
     private void addTimerToCorrectMap(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers1ParmByMethodName,
                                       Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers0ParmByMethodName,
@@ -5367,11 +5373,11 @@ public abstract class EJBMDOrchestrator {
     //F743-15870
     /**
      *
-     * @param methodParams MethodParams representing the parameters defined in xml for the timer.
-     * @param bmd BeanMetaData
-     * @param methodName The name of the Method that will receive the timer callback.
+     * @param methodParams               MethodParams representing the parameters defined in xml for the timer.
+     * @param bmd                        BeanMetaData
+     * @param methodName                 The name of the Method that will receive the timer callback.
      * @param programaticallyCreatedFlow indicates if the programatically created or automatically created
-     *            timer processing invoke the method.
+     *                                       timer processing invoke the method.
      * @return -1 if the parms are undefined, 0 if explicitly set to no parm, 1 if explicitly set to 1 parm
      * @throws EJBConfigurationException
      */
@@ -5466,11 +5472,11 @@ public abstract class EJBMDOrchestrator {
      * <li> parameters must either be empty or Timer
      * </ul>
      *
-     * @param bmd bean metadata for the bean being processed
+     * @param bmd    bean metadata for the bean being processed
      * @param method the session synchronization method
      *
      * @throws EJBConfigurationException thrown if the method has not been
-     *             coded properly based on the rules in the specification
+     *                                       coded properly based on the rules in the specification
      */
     private void validateTimeoutCallbackMethod(BeanMetaData bmd, MethodMap.MethodInfo methodInfo) // d666251
                     throws EJBConfigurationException {
@@ -5600,11 +5606,11 @@ public abstract class EJBMDOrchestrator {
     /**
      * Processes a Schedule annotation.
      *
-     * @param timerMethod the existing timer method metadata, or null if no
-     *            timer metadata has been created for this method
-     * @param method the method for this automatic timer
+     * @param timerMethod  the existing timer method metadata, or null if no
+     *                         timer metadata has been created for this method
+     * @param method       the method for this automatic timer
      * @param timerMethods the list of timer method metadata
-     * @param schedule the annotation
+     * @param schedule     the annotation
      * @return the processed automatic timer metadata
      */
     // F743-506
@@ -5690,10 +5696,10 @@ public abstract class EJBMDOrchestrator {
      * for all module versions to ensure ivCallbackKind is initialized.
      *
      * @param bmd is the BeanMetaData for the EJB. <b>Note: </b> The {@link #finishBMDInit(BeanMetaData, ComponentDataObject, String)} and the
-     *            {@link #finishBMDInit(BeanMetaData, ComponentDataObject, InjectionEngine)} methods are required to be called prior to this method.
+     *                {@link #finishBMDInit(BeanMetaData, ComponentDataObject, InjectionEngine)} methods are required to be called prior to this method.
      *
      * @throws EJBConfigurationException is thrown if an error in interceptor configuration
-     *             (either annotation or WCCM) is detected.
+     *                                       (either annotation or WCCM) is detected.
      */
     // d367572.3 added entire method. // d367572.4 re-wrote method.
     private void initializeInterceptorMD(BeanMetaData bmd, final Map<Method, ArrayList<EJBMethodInfoImpl>> methodInfoMap) // d430356
@@ -6000,7 +6006,7 @@ public abstract class EJBMDOrchestrator {
      * Note, this method must only be called if the bean is a SFSB and
      * it is in a EJB 3 module.
      *
-     * @param bmd is the BeanMetaData for the SFSB.
+     * @param bmd     is the BeanMetaData for the SFSB.
      * @param methods is the array of Method objects for all public methods of the EJB.
      *
      * @throws EJBConfigurationException if any customer configuration error is detected.
@@ -6234,7 +6240,7 @@ public abstract class EJBMDOrchestrator {
      * since the method might appear in more than one method interface array that exists
      * for the EJB.
      *
-     * @param bmd is the BeanMetaData for the EJB.
+     * @param bmd             is the BeanMetaData for the EJB.
      * @param allMethodsOfEJB is the array of Method objects for all public methods of the EJB.
      *
      * @return a Map of java reflection Method object to ArrayList of EJBMethodInfoImpl
@@ -6314,7 +6320,7 @@ public abstract class EJBMDOrchestrator {
      * Find the EJBMethodInfo in a specified array of EJBMethodInfo
      * that contains a specified Method object.
      *
-     * @param methodInfos is the array of EJBMethodInfo objects to search.
+     * @param methodInfos  is the array of EJBMethodInfo objects to search.
      *
      * @param targetMethod is the target of the search.
      *
@@ -6846,6 +6852,8 @@ public abstract class EJBMDOrchestrator {
             AppConfigChecker.validateStatefulTimeoutOnInterfaces(bmd.ivBusinessLocalInterfaceClasses, tc); // F743-6605
             AppConfigChecker.validateStatefulTimeoutOnInterfaces(bmd.ivBusinessRemoteInterfaceClasses, tc); // F743-6605
             AppConfigChecker.validateStatefulTimeoutOnSFSB(bmd, tc); // F743-6605
+            AppConfigChecker.validateCorrectAsycOnMethods(bmd.ivBusinessLocalInterfaceClasses, tc);
+            AppConfigChecker.validateCorrectAsycOnMethods(bmd.ivBusinessRemoteInterfaceClasses, tc);
         }
 
         // ----------------------------------------------------------------------
@@ -7498,12 +7506,12 @@ public abstract class EJBMDOrchestrator {
      * against the specification, including the restriction that the
      * class may not also implement the SessionSynchronization interface. <p>
      *
-     * @param bmd bean metadata for the bean being processed
+     * @param bmd  bean metadata for the bean being processed
      * @param bean the XML representation of the session enterprise bean
      *
      * @throws EJBConfigurationException thrown if any of the session
-     *             synchronization were not defined within the rules of the
-     *             specification.
+     *                                       synchronization were not defined within the rules of the
+     *                                       specification.
      */
     // F743-25855
     private void processSessionSynchronizationMD(BeanMetaData bmd, Session bean) throws EJBConfigurationException {
@@ -7577,14 +7585,14 @@ public abstract class EJBMDOrchestrator {
      * synchronization method from XML. If the session synchronization method
      * was not specified in XML, then null will be returned. <p>
      *
-     * @param bmd bean metadata for the bean being processed
-     * @param namedMethod session synchronization method from XML, may be null
+     * @param bmd            bean metadata for the bean being processed
+     * @param namedMethod    session synchronization method from XML, may be null
      * @param expectedParams expected parameters for session synchronization method
-     * @param xmlType the xml element type; used for configuration errors
+     * @param xmlType        the xml element type; used for configuration errors
      *
      * @return the Method associated with the XML configuration
      * @throws EJBConfigurationException thrown if a corresponding method cannot
-     *             be found on the bean class, or the parameters are not correct.
+     *                                       be found on the bean class, or the parameters are not correct.
      */
     // F743-25855
     private Method getSessionSynchMethod(BeanMetaData bmd,
@@ -7689,7 +7697,7 @@ public abstract class EJBMDOrchestrator {
      *
      * @param bmd bean metadata for the bean being processed
      * @throws EJBConfigurationException thrown if multiple methods have
-     *             been coded with the same annotation.
+     *                                       been coded with the same annotation.
      */
     // F743-25855
     private void findAnnotatedSessionSynchMethods(BeanMetaData bmd) throws EJBConfigurationException {
@@ -7769,13 +7777,13 @@ public abstract class EJBMDOrchestrator {
      * <li> parameters must be null or boolean, depending on which method
      * </ul>
      *
-     * @param bmd bean metadata for the bean being processed
-     * @param method the session synchronization method
+     * @param bmd            bean metadata for the bean being processed
+     * @param method         the session synchronization method
      * @param expectedParams the expected parameters for the method
-     * @param methodType the xml type of the session synchronization method
+     * @param methodType     the xml type of the session synchronization method
      *
      * @throws EJBConfigurationException thrown if the method has not been
-     *             coded properly based on the rules in the specification
+     *                                       coded properly based on the rules in the specification
      */
     // F743-25855
     private void validateSessionSynchronizationMethod(BeanMetaData bmd,
@@ -7860,9 +7868,9 @@ public abstract class EJBMDOrchestrator {
      * prevent the methods from being overridden in the generated proxy/wrapper. <p>
      *
      * @param listenerMethods
-     *            methods declared on the listener interface or message-driven
-     *            bean implementation when the listener interface has no
-     *            methods.
+     *                            methods declared on the listener interface or message-driven
+     *                            bean implementation when the listener interface has no
+     *                            methods.
      *
      * @return the listener methods excluding methods that overlap with the
      *         MessageEndpoint interface.

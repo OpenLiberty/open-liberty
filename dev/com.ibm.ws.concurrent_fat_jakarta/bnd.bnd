@@ -15,6 +15,7 @@ src: \
 	fat/src,\
 	test-applications/ConcurrencyTestEJB/src,\
 	test-applications/ConcurrencyTestWeb/src,\
+	test-applications/ConcurrencyTestError/src,\
 	test-applications/ConcurrencyJSPTestApp/src,\
 	test-libraries/LocationUtils/src,\
 	test-libraries/PriorityContext/src,\

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.StatefulTimeout;
@@ -23,18 +25,16 @@ import com.ibm.ws.javaee.dd.ejb.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejb.Session;
 
 /**
- * 
+ *
  * Helper class for validating proper metadata configuration for an EJB-based
  * application. This class is intended to be invoked from the EJBMDOrchestrator
  * class during metadata processing. It is intended to include various app
  * validation only if it will be logged. The <code>isValidationLoggable</code>
  * method can be used to determine if logging will occur.
- * 
+ *
  */
-final class AppConfigChecker
-{
-    private AppConfigChecker()
-    {
+final class AppConfigChecker {
+    private AppConfigChecker() {
         // Do not allow instances to be created
     }
 
@@ -45,9 +45,9 @@ final class AppConfigChecker
      * annotations may exist in interface methods.
      * Note: This method will always log the message - make sure to gate this
      * method by calling {@link isValidationLoggable}.
-     * 
+     *
      * @param ifaces - array of interfaces to scan for async annotations
-     * @param tc - the trace component to log if any async annotations are detected - must be non-null
+     * @param tc     - the trace component to log if any async annotations are detected - must be non-null
      */
     //F743-13921
     static void validateAsyncOnInterfaces(Class<?>[] ifaces, TraceComponent tc) {
@@ -77,15 +77,55 @@ final class AppConfigChecker
     }
 
     /**
+     * Logs an warning message (via the passed-in trace component) if any of the
+     * passed-in interfaces' methods contain an <code>@Asynchronous</code>
+     * annotation for jakarta.enterprise.concurrent.Asychronous.
+     * It will only log one message per class no matter how many annotations may exist in methods.
+     * Note: This method will always log the message - make sure to gate this
+     * method by calling {@link isValidationLoggable}.
+     *
+     * @param ifaces - array of interface classes to scan for async annotations
+     * @param tc     - the trace component to log if any async annotations are detected - must be non-null
+     */
+    static void validateCorrectAsycOnMethods(Class<?>[] ifaces, TraceComponent tc) {
+        if (ifaces == null) {
+            return; //Ignore if no classes exist
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "validateCorrectAsycOnMethods", Arrays.asList(ifaces).toString());
+
+        try {
+            for (Class<?> iface : ifaces) {
+                if (iface == null || !iface.isInterface()) {
+                    continue; //onto next interface
+                }
+
+                for (Method m : iface.getMethods()) {
+                    for (Annotation anno : m.getAnnotations()) {
+                        if ("jakarta.enterprise.concurrent.Asynchronous".equals(anno.annotationType().getName())) {
+                            Tr.warning(tc, "CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE", iface.getName());
+                            return;
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.entry(tc, "validateCorrectAsycOnMethods");
+        }
+    }
+
+    /**
      * Logs a warning message (via the passed-in trace component) if any of the
      * passed-in interfaces contain the <code>@StatefulTimeout</code>
      * annotation. It will only log one message per interface no matter how many
      * annotations may exist in interface methods.
      * Note: This method will always log the message - make sure to gate this
      * method by calling {@link isValidationLoggable}.
-     * 
+     *
      * @param ifaces - array of interfaces to scan for StatefulTimeout annotations
-     * @param tc - the trace component to log if any StatefulTimeout annotations are detected - must be non-null
+     * @param tc     - the trace component to log if any StatefulTimeout annotations are detected - must be non-null
      */
     //F743-6605
     static void validateStatefulTimeoutOnInterfaces(Class<?>[] ifaces, TraceComponent tc) {
@@ -110,18 +150,18 @@ final class AppConfigChecker
      * Logs a warning message (via the passed-in trace component) if the
      * passed-in bean is not a SFSB, yet contains a <code>@StatefulTimeout</code>
      * annotation or a stateful-timeout DD element.
-     * 
+     *
      * Logs a warning message (via the passed-in trace component) if the
      * passed-in bean is a SFSB and contains a stateful-timeout DD element
      * lacking a timeout element.
-     * 
-     * 
+     *
+     *
      * Note: make sure to gate this method by calling {@link isValidationLoggable}.
-     * 
-     * 
+     *
+     *
      * @param cdo - component data object, containing XML info about the stateful-timeout element, if present
      * @param bmd - metadata for the bean to check for the StatefulTimeout annotation
-     * @param tc - the trace component to log if any StatefulTimeout annotations are detected - must be non-null
+     * @param tc  - the trace component to log if any StatefulTimeout annotations are detected - must be non-null
      */
     //F743-6605
     static void validateStatefulTimeoutOnSFSB(BeanMetaData bmd, TraceComponent tc) {
@@ -131,7 +171,7 @@ final class AppConfigChecker
 
             if (bmd.type != InternalConstants.TYPE_STATEFUL_SESSION) {
                 Tr.warning(tc, "STATEFUL_TIMEOUT_ON_NON_SFSB_CNTR0304W", new Object[] { bmd.getName(), bmd.getModuleMetaData().getName(),
-                                                                                       bmd.getModuleMetaData().getApplicationMetaData().getName() }); // F743-6605.1, d641570
+                                                                                        bmd.getModuleMetaData().getApplicationMetaData().getName() }); // F743-6605.1, d641570
             }
 
         }

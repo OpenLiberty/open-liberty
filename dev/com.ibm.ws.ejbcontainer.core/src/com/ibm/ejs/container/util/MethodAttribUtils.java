@@ -10,13 +10,16 @@
  *******************************************************************************/
 package com.ibm.ejs.container.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.security.DenyAll;
@@ -339,6 +342,96 @@ public class MethodAttribUtils {
         return (asynchMethodFound);
 
     } // getAsynchronousMethods
+
+    /**
+     * <code>verifyNoConcurrentAsynchronousMethods<code> checks all beanMethods to determine
+     * if any beans are annotated with the Jakarta Concurrent Asynchronous annotation.
+     * Will return if no annotation is found, otherwise exception is thrown.
+     *
+     * @param beanMethods Input array of Method objects representing the methods of this EJB.
+     * @param component   Name of the component
+     * @param module      Name of the module
+     * @param app         Name of the application
+     *
+     * @throws EJBConfigurationException
+     */
+    public static void verifyNoConcurrentAsynchronousMethods(Method[] beanMethods, //
+                                                             String component, String module, String app) throws EJBConfigurationException {
+        if (beanMethods == null || beanMethods.length == 0) {
+            return; //Nothing to check
+        }
+
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        final String m = "verifyNoConcurrentAsynchronousMethods";
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, m, Arrays.asList(beanMethods).toString());
+
+        try {
+            /*
+             * Note: Bean method array contains the bean methods, and all methods inherited from superclasses as well.
+             * Therefore, keep track of classes we already checked so we don't check annotations on java.lang.Object a ton of times.
+             */
+            Set<Class<?>> classesToCheck = new HashSet<Class<?>>();
+
+            //Check method level annotations
+            Annotation[] asynchMethodAnnotations = null;
+            for (Method beanMethod : beanMethods) {
+
+                if (beanMethod == null)
+                    continue; //onto next method
+
+                //First compile a list of classes to check
+                Class<?> beanClass = beanMethod.getDeclaringClass();
+                if (beanClass != null) {
+                    classesToCheck.add(beanClass);
+                }
+
+                asynchMethodAnnotations = beanMethod.getAnnotations();
+
+                if (asynchMethodAnnotations == null)
+                    continue; //onto next method
+
+                for (Annotation beanAnno : asynchMethodAnnotations) {
+                    if ("jakarta.enterprise.concurrent.Asynchronous".equals(beanAnno.annotationType().getName())) {
+                        // Concurrent Asynch annotations are not allowed on EJBs
+                        Tr.error(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
+                                 new Object[] { component, module, app });
+
+                        throw new EJBConfigurationException( //
+                                        Tr.formatMessage(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
+                                                         new Object[] { component, module, app }));
+                    }
+                }
+            }
+
+            //Check class level annotations
+            Annotation[] asynchClassAnnotations = null;
+            for (Class<?> beanClass : classesToCheck) {
+                asynchClassAnnotations = beanClass.getAnnotations();
+
+                if (asynchClassAnnotations == null)
+                    continue; //onto next beanClass
+
+                for (Annotation classAnno : asynchClassAnnotations) {
+                    if ("jakarta.enterprise.concurrent.Asynchronous".equals(classAnno.annotationType().getName())) {
+                        // Concurrent Asynch annotations are not allowed on EJBs
+                        Tr.error(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
+                                 new Object[] { component, module, app });
+
+                        throw new EJBConfigurationException( //
+                                        Tr.formatMessage(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
+                                                         new Object[] { component, module, app }));
+                    }
+                }
+            }
+        } finally {
+            if (isTraceOn && tc.isEntryEnabled()) {
+                Tr.exit(tc, m);
+            }
+        }
+
+    } // verifyNoConcurrentAsynchronousMethods
 
     /**
      * Check all methods for method-level Security annotations. Specifically

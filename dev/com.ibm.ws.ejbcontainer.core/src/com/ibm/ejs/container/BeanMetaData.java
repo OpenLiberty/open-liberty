@@ -1614,7 +1614,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
                                               "ExPC Ids                    = " + Arrays.toString(ivExPcPuIds), // F743-30682
                                               "WebService Endpoint Created = " + ivWebServiceEndpointCreated, // d497921
                                               "Component NameSpace :  nsid = " + getJavaNameSpaceID(), // d508455
-                                              "Has aysnchronous method(s)  = " + ivHasAsynchMethod,
+                                              "Has asynchronous method(s)  = " + ivHasAsynchMethod,
                                               "Singleton Concurrency Type  = " + singletonConcurrency, //F743-1752CodRev
                                               "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
                                               "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
