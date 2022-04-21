@@ -21,7 +21,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
         AlwaysPassesTest.class,
         HttpMethodsTests.class,
-        //        LogoutTokenCreationTests.class,    TODO - needs more runtime code
+        LogoutTokenCreationTests.class,
         LogoutTokenValidationTests.class,
 //        ClientConfigTests.class,
 //        ServerConfigTests.class

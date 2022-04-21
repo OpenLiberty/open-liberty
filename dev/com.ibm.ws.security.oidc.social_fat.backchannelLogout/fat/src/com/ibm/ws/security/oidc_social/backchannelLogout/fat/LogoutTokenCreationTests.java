@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.json.JsonObject;
-
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +31,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
@@ -85,6 +88,84 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.rp", "rp_server_validateLogoutTokenCreation.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE);
 
         testSettings.setFlowType(Constants.RP_FLOW);
+        // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
+        // it'll do this to retrieve the logout_token content
+        testSettings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+
+    }
+
+    public JwtClaims getHeaderAlg(String jwtTokenString) throws Exception, InvalidJwtException {
+
+        Log.info(thisClass, "getHeaderAlg", "Original JWS Token String: " + jwtTokenString);
+        JwtClaims jwtClaims = new JwtClaims();
+
+        try {
+
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build();
+
+            JwtContext context = jwtConsumer.process(jwtTokenString);
+            List<JsonWebStructure> jsonStructures = context.getJoseObjects();
+            if (jsonStructures == null || jsonStructures.isEmpty()) {
+                throw new Exception("Invalid JsonWebStructure");
+            }
+            JsonWebStructure jsonStruct = jsonStructures.get(0);
+
+            jwtClaims.setClaim(Constants.HEADER_ALGORITHM, jsonStruct.getAlgorithmHeaderValue());
+
+            Log.info(thisClass, "getHeaderAlg", "JWT consumer populated succeeded! " + jwtClaims);
+        } catch (InvalidJwtException e) {
+            // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
+            // Hopefully with meaningful explanations(s) about what went wrong.
+            Log.info(thisClass, "getHeaderAlg", "Invalid JWT! " + e);
+            throw e;
+        }
+
+        // debug if ever needed
+        //        Map<String, Object> claimMap = jwtClaims.getClaimsMap();
+        //        for (Map.Entry<String, Object> entry : claimMap.entrySet()) {
+        //            Log.info(thisClass, "getHeaderAlg", "Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        //            Log.info(thisClass, "getHeaderAlg", "value of type: " + entry.getValue().getClass().toString());
+        //        }
+
+        return jwtClaims;
+
+    }
+
+    public JwtClaims getClaims(String jwtTokenString) throws Exception, InvalidJwtException {
+
+        JwtClaims jwtClaims = null;
+
+        Log.info(thisClass, "getClaims", "Original JWS Token String: " + jwtTokenString);
+
+        try {
+
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build();
+
+            jwtClaims = jwtConsumer.process(jwtTokenString).getJwtClaims();
+            Log.info(thisClass, "getClaims", "JWT consumer populated succeeded! " + jwtClaims);
+        } catch (InvalidJwtException e) {
+            // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
+            // Hopefully with meaningful explanations(s) about what went wrong.
+            Log.info(thisClass, "getClaims", "Invalid JWT! " + e);
+            throw e;
+        }
+
+        // debug if ever needed
+        //        Map<String, Object> claimMap = jwtClaims.getClaimsMap();
+        //        for (Map.Entry<String, Object> entry : claimMap.entrySet()) {
+        //            Log.info(thisClass, "getClaims", "Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        //            Log.info(thisClass, "getClaims", "value of type: " + entry.getValue().getClass().toString());
+        //        }
+
+        return jwtClaims;
 
     }
 
@@ -95,50 +176,51 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
      * @param updatedTestSettings
      * @throws Exception
      */
-    public void validateLogoutTokenContent(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData, boolean sidRequired) throws Exception {
+    public void validateLogoutTokenContent(String id_token, String logout_token, boolean sidRequired) throws Exception {
 
         // validate header
-        validateLogoutTokenHeader(idTokenData, logoutTokenData);
+        validateLogoutTokenHeader(id_token, logout_token);
         // validate payload
-        validateLogoutTokenClaims(idTokenData, logoutTokenData, sidRequired);
+        validateLogoutTokenClaims(id_token, logout_token, sidRequired);
     }
 
-    public void validateLogoutTokenHeader(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData) throws Exception {
+    public void validateLogoutTokenHeader(String id_token, String logout_token) throws Exception {
 
-        Map<String, Object> idTokenDataClaims = idTokenData.getMapHeader();
-        Map<String, Object> logoutClaims = logoutTokenData.getMapHeader();
+        JwtClaims idTokenClaims = getHeaderAlg(id_token);
+        JwtClaims logoutTokenClaims = getHeaderAlg(logout_token);
 
-        mustHaveString(Constants.HEADER_ALGORITHM, idTokenDataClaims, logoutClaims, true);
+        mustHaveString(Constants.HEADER_ALGORITHM, idTokenClaims, logoutTokenClaims, true);
 
     }
 
-    public void validateLogoutTokenClaims(JwtTokenForTest idTokenData, JwtTokenForTest logoutTokenData, boolean sidRequired) throws Exception {
+    public void validateLogoutTokenClaims(String id_token, String logout_token, boolean sidRequired) throws Exception {
 
-        Map<String, Object> idTokenDataClaims = idTokenData.getMapPayload();
-        Map<String, Object> logoutClaims = logoutTokenData.getMapPayload();
+        JwtClaims idTokenClaims = getClaims(id_token);
+        JwtClaims logoutTokenClaims = getClaims(logout_token);
 
-        mustHaveString(Constants.PAYLOAD_ISSUER, idTokenDataClaims, logoutClaims, true);
+        mustHaveString(Constants.PAYLOAD_ISSUER, idTokenClaims, logoutTokenClaims, true);
 
-        mustHaveArray(Constants.PAYLOAD_AUDIENCE, idTokenDataClaims, logoutClaims);
-        mustHaveLong(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, idTokenDataClaims, logoutClaims, true);
-        mustHaveString(Constants.PAYLOAD_JWTID, idTokenDataClaims, logoutClaims, false); // maybe change interface to pass alternately obtained jti value to validate against
+        mustHaveArray(Constants.PAYLOAD_AUDIENCE, idTokenClaims, logoutTokenClaims);
+        mustHaveLong(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, idTokenClaims, logoutTokenClaims, true);
+        mustHaveString(Constants.PAYLOAD_JWTID, idTokenClaims, logoutTokenClaims, false); // maybe change interface to pass alternately obtained jti value to validate against
 
         if (sidRequired) {
-            mustHaveString(Constants.PAYLOAD_SESSION_ID, idTokenDataClaims, logoutClaims, true);
+            mustHaveString(Constants.PAYLOAD_SESSION_ID, idTokenClaims, logoutTokenClaims, true);
         } else {
             // we need to have either sid or sub
-            mustHaveOneOrTheOtherString(Constants.PAYLOAD_SUBJECT, Constants.PAYLOAD_SESSION_ID, idTokenDataClaims, logoutClaims);
+            mustHaveOneOrTheOtherString(Constants.PAYLOAD_SUBJECT, Constants.PAYLOAD_SESSION_ID, idTokenClaims, logoutTokenClaims);
         }
 
-        mustHaveEvents(logoutClaims);
-        mustNotHave(Constants.PAYLOAD_NONCE, logoutClaims);
+        mustHaveEvents(logoutTokenClaims);
+        mustNotHave(Constants.PAYLOAD_NONCE, logoutTokenClaims);
 
     }
 
-    protected void mustHaveString(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims, boolean mustBeInIdToken) throws Exception {
+    //    protected void mustHaveString(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims, boolean mustBeInIdToken) throws Exception {
+    protected void mustHaveString(String key, JwtClaims idTokenClaims, JwtClaims logoutTokenClaims, boolean mustBeInIdToken) throws Exception {
 
-        Object logoutTokenValue = logoutClaims.get(key);
-        Object idTokenValue = idTokenDataClaims.get(key);
+        String logoutTokenValue = logoutTokenClaims.getStringClaimValue(key);
+        String idTokenValue = idTokenClaims.getStringClaimValue(key);
 
         if (logoutTokenValue == null) {
             fail("Key: " + key + " was missing in the logout_token");
@@ -154,7 +236,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
             } else {
                 if (!logoutTokenValue.toString().equals(idTokenValue.toString())) {
                     if (mustBeInIdToken) {
-                        fail("Was epecting Key: " + key + " with value: " + idTokenDataClaims.get(key) + ", but found: " + logoutTokenValue);
+                        fail("Was epecting Key: " + key + " with value: " + idTokenValue + ", but found: " + logoutTokenValue);
                     } else {
                         Log.info(thisClass, "mustHaveString", "The value for the key in the id_token and logout_token did not match - but, for claims like jti, they should not");
                     }
@@ -164,24 +246,28 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
-    protected void mustHaveLong(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims, boolean mustBeInIdToken) throws Exception {
+    protected void mustHaveLong(String key, JwtClaims idTokenClaims, JwtClaims logoutTokenClaims, boolean mustBeInIdToken) throws Exception {
 
-        Object rawLogoutTokenValue = logoutClaims.get(key);
-        Object rawIdTokenValue = idTokenDataClaims.get(key);
+        Long logoutTokenValue = null;
+        try {
+            logoutTokenValue = logoutTokenClaims.getClaimValue(key, Long.class);
+        } catch (Exception e) {
+            fail("Logout token value for key: " + key + " is not of type Long");
+        }
+        Long idTokenValue = idTokenClaims.getClaimValue(key, Long.class);
 
-        if (rawLogoutTokenValue == null) {
+        if (logoutTokenValue == null) {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
-            Long logoutTokenValue = Long.valueOf((String) rawLogoutTokenValue).longValue();
+
             // all of the required keys should be in the id_token, so we should be able to compare the value
-            if (rawIdTokenValue == null) {
+            if (idTokenValue == null) {
                 if (mustBeInIdToken) {
                     fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
                 } else {
                     Log.info(thisClass, "mustHaveString", "Key: " + key + " was missing in the id_token, so we can not validate the value in the logout_token - all we can do is make sure that claim exists.");
                 }
             } else {
-                Long idTokenValue = Long.valueOf((String) rawIdTokenValue).longValue();
                 if (logoutTokenValue < idTokenValue) {
                     fail("Was epecting Key: " + key + " with a value greater than: " + idTokenValue + ", but found: " + logoutTokenValue);
                 }
@@ -190,26 +276,26 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
-    protected void mustHaveArray(String key, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims) throws Exception {
+    protected void mustHaveArray(String key, JwtClaims idTokenClaims, JwtClaims logoutTokenClaims) throws Exception {
 
-        Object rawLogoutTokenValue = logoutClaims.get(key);
-        Object rawIdTokenValue = idTokenDataClaims.get(key);
+        Object rawLogoutTokenValues = logoutTokenClaims.getClaimValue(key);
+        Object rawIdTokenValues = idTokenClaims.getClaimValue(key);
 
-        if (rawLogoutTokenValue == null) {
+        if (rawLogoutTokenValues == null) {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
-            Log.info(thisClass, "mustHaveArray", "array type: " + rawLogoutTokenValue.getClass());
+            Log.info(thisClass, "mustHaveArray", "array type: " + rawLogoutTokenValues.getClass());
 
             // all of the required keys should be in the id_token, so we should be able to compare the value,
             // but check for a null in the idToken - just in case...
-            if (rawIdTokenValue == null) {
+            if (rawIdTokenValues == null) {
                 fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
             } else {
-                String[] logoutTokenList = rawLogoutTokenValue.toString().split(",");
-                String[] idTokenList = rawIdTokenValue.toString().split(",");
-                for (String logoutTokenValue : logoutTokenList) {
+                String[] logoutTokenValues = rawLogoutTokenValues.toString().split(",");
+                String[] idTokenValues = rawIdTokenValues.toString().split(",");
+                for (String logoutTokenValue : logoutTokenValues) {
                     boolean found = false;
-                    for (String idTokenValue : idTokenList) {
+                    for (String idTokenValue : idTokenValues) {
                         if (logoutTokenValue.equals(idTokenValue)) {
                             found = true;
                         }
@@ -219,9 +305,9 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
                     }
                 }
 
-                for (String idTokenValue : idTokenList) {
+                for (String idTokenValue : idTokenValues) {
                     boolean found = false;
-                    for (String logoutTokenValue : logoutTokenList) {
+                    for (String logoutTokenValue : logoutTokenValues) {
                         if (logoutTokenValue.equals(idTokenValue)) {
                             found = true;
                         }
@@ -236,10 +322,10 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     }
 
-    protected void mustHaveOneOrTheOtherString(String oneKey, String otherKey, Map<String, Object> idTokenDataClaims, Map<String, Object> logoutClaims) throws Exception {
+    protected void mustHaveOneOrTheOtherString(String oneKey, String otherKey, JwtClaims idTokenClaims, JwtClaims logoutTokenClaims) throws Exception {
 
-        Object oneLogoutTokenValue = logoutClaims.get(oneKey);
-        Object otherLogoutTokenValue = logoutClaims.get(otherKey);
+        String oneLogoutTokenValue = logoutTokenClaims.getStringClaimValue(oneKey);
+        String otherLogoutTokenValue = idTokenClaims.getStringClaimValue(oneKey);
 
         if (oneLogoutTokenValue == null) {
             if (otherLogoutTokenValue == null) {
@@ -248,55 +334,60 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
             }
         } else {
             // validate against what's in the id_token
-            mustHaveString(oneKey, idTokenDataClaims, logoutClaims, true);
+            mustHaveString(oneKey, idTokenClaims, logoutTokenClaims, true);
         }
 
         // don't have to check for null - if it's null, we don't need to check it and we've already checked for both claims being null
         if (otherLogoutTokenValue != null) {
             // validate against what's in the id_token
-            mustHaveString(otherKey, idTokenDataClaims, logoutClaims, true);
+            mustHaveString(otherKey, idTokenClaims, logoutTokenClaims, true);
         }
 
     }
 
-    protected void mustNotHave(String key, Map<String, Object> logoutClaims) throws Exception {
+    protected void mustNotHave(String key, JwtClaims logoutClaims) throws Exception {
 
-        Object logoutTokenValue = logoutClaims.get(key);
-        if (logoutTokenValue != null) {
+        if (logoutClaims.hasClaim(key)) {
             fail("Key: " + key + " was included in the logout_token and should NOT have been");
         }
     }
 
-    protected void mustHaveEvents(Map<String, Object> logoutClaims) throws Exception {
+    protected void mustHaveEvents(JwtClaims logoutClaims) throws Exception {
 
-        Object rawLogoutTokenValue = logoutClaims.get(Constants.PAYLOAD_EVENTS);
-        if (rawLogoutTokenValue == null) {
+        // {"http://schemas.openid.net/event/backchannel-logout":{}}
+
+        Object value = null;
+
+        Map<String, Object> events = logoutClaims.getClaimValue(Constants.PAYLOAD_EVENTS, Map.class);
+        if (events == null) {
             fail("Key: events is missing in the logout_token");
         }
 
-        if (rawLogoutTokenValue instanceof JsonObject) {
+        Log.info(thisClass, "mustHaveEvents", "events:" + events.getClass().toString());
 
-            Log.info(thisClass, "mustHaveEvents", "JsonObject: " + rawLogoutTokenValue);
-            JSONObject event = (JSONObject) rawLogoutTokenValue;
-            if (!event.containsKey(logoutEventKey)) {
-                fail("Key: events in the logout_token does not contain a Json object containing the key: " + logoutEventKey);
-            }
-            Object value = event.get(logoutEventKey);
-            if (value == null) {
-                // should really be able to have a null content, but, just in case
-                fail(logoutEventKey + " value is null and shouldcontain an empty Json object");
-            } else {
-                if (!value.equals(new JSONObject())) {
-                    Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
-                    Log.info(thisClass, "mustHaveEvents", "value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
-                    Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
-                    //                    fail("value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
-                } else {
-                    Log.info(thisClass, "mustHaveEvents", "value is an empty Json object - as it should be");
-                }
-            }
+        if (!events.containsKey(logoutEventKey)) {
+            fail("Key: events in the logout_token does not contain a Json object containing the key: " + logoutEventKey);
+        }
+        // check for key being of type JSONObject
+        try {
+            value = events.get(logoutEventKey);
+        } catch (Exception e) {
+            fail(logoutEventKey + " is not of type JSONObject");
+        }
+
+        if (value == null) {
+            // should not be able to have a null content, but, just in case
+            fail(logoutEventKey + " value is null and should at least contain an empty Json object");
         } else {
-            fail("Events is not of type JsonObject");
+            Log.info(thisClass, "mustHaveEvents", "value: " + value.getClass().toString());
+            if (!value.equals(new JSONObject())) {
+                Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
+                Log.info(thisClass, "mustHaveEvents", "value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
+                Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
+                //                    fail("value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
+            } else {
+                Log.info(thisClass, "mustHaveEvents", "value is an empty Json object - as it should be");
+            }
         }
     }
 
@@ -304,9 +395,6 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
         WebClient webClient = getAndSaveWebClient(true);
 
-        // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
-        // it'll do this to retrieve the logout_token content
-        settings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
         // update the end_session that the test will use (it needs the specific provider)
         settings.setEndSession(settings.getEndSession().replace("OidcConfigSample", provider));
 
@@ -318,15 +406,13 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         // grab the id_token that was created and store its contents in a JwtTokenForTest object
         String id_token = validationTools.getIDTokenFromOutput(response);
         Log.info(thisClass, _testName, "id token: " + id_token);
-        JwtTokenForTest idTokenData = gatherDataFromToken(id_token, settings);
 
         // invoke logout/end_session which will invoke the backchannel uri - which we've configured to use our test app that will print/log the logout_token
         Object logoutResponse = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, expectations, response, null);
         String logoutToken = getLogoutTokenFromOutput(Constants.LOGOUT_TOKEN, logoutResponse);
         Log.info(thisClass, _testName, "Logout token: " + logoutToken);
 
-        JwtTokenForTest logoutTokenData = gatherDataFromToken(logoutToken, settings);
-        validateLogoutTokenContent(idTokenData, logoutTokenData, sidRequired);
+        validateLogoutTokenContent(id_token, logoutToken, sidRequired);
 
     }
 
