@@ -1959,7 +1959,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
       <artifactId>microprofile-graphql-api</artifactId>
-      <version>2.0-RC3</version>
+      <version>2.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
