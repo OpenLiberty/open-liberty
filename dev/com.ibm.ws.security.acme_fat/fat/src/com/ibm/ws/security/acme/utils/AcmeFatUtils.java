@@ -880,6 +880,22 @@ public class AcmeFatUtils {
  		}
  		return false;
  	}
+ 	
+ 	/**
+ 	 * Check if the test is running on iSeries / OS/400
+ 	 * @param methodName the name of the method being run.
+ 	 * @return True if the test is running on iSeries.
+ 	 */
+ 	public static boolean isISeries(String methodName) {
+ 		if (System.getProperty("os.name").toLowerCase().startsWith("os/400")) {
+ 			// iSeries not enforcing the setReadable/setWriteable
+ 			Log.info(AcmeFatUtils.class, methodName,
+ 					"Skipping unreadable/unwriteable file tests on iSeries: "
+ 							+ System.getProperty("os.name", "unknown"));
+ 			return true;
+ 		}
+ 		return false;
+ 	}
 
  	/**
  	 * Handle adding CWPKI2045W as an allowed warning message to all stopServer requests.
