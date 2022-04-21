@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,12 @@
 package com.ibm.websphere.security.social;
 
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
 
@@ -30,9 +32,11 @@ import com.ibm.websphere.security.jwt.JwtToken;
  *
  * @ibm-api
  */
-public class UserProfile {
+public class UserProfile implements Serializable {
 
-    // TODO: Should this be a clone instead of the actual Subject's JwtToken?
+	private static final long serialVersionUID = 1L;
+
+	// TODO: Should this be a clone instead of the actual Subject's JwtToken?
     private final JwtToken jwtToken;
     private final Map<String, Object> customProperties;
     private final Set<Claims> claimSet;

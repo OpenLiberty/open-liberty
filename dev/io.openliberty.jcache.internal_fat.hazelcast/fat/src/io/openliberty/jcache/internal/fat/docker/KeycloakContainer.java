@@ -10,7 +10,10 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal.fat.docker;
 
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
 import java.time.Duration;
 
 import org.apache.http.HttpStatus;
@@ -27,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.jcache.internal.fat.HttpUtils;
 
 /**
  * A {@link Testcontainers} implementation for the Keycloak IDP.
@@ -39,7 +43,18 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
 
     private static final int HTTP_PORT = 8080;
     private static final int HTTPS_PORT = 8443;
-    public static final String DEFAULT_REALM = "master";
+
+    /*
+     * Defined realms for the Keycloak IDP. The default realm is a restricted word,
+     * so we create a test realm to use for tests. This prevents the word from 
+     * needing to be used anywhere else other than this class.
+     * 
+     * If future versions of Keycloak come pre-configured with a suitable realm
+     * name we can simply use that realm.
+     */
+    static final String DEFAULT_REALM = "master";
+    public static final String TEST_REALM = "TestRealm";
+
     public static final String ADMIN_USER = "admin";
     public static final String ADMIN_PASS = "password";
 
@@ -100,6 +115,30 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
             Log.error(CLASS, "start", e, CLASS.getName() + " testcontainer failed to start.");
             throw e;
         }
+
+        /*
+         * Create the test realm.
+         *
+         * The default realm the Keycloak docker image ships configured with is a restricted word,
+         * so to avoid it proliferating across our source and configuration, create a new realm here.
+         * 
+         * We can still use the same admin user from the default realm.
+         */
+        try {
+            keycloakAdmin.createRealm(TEST_REALM);
+        } catch (Exception e) {
+            Log.error(CLASS, "start", e, CLASS.getName() + " failed to create realm " + TEST_REALM + " .");
+            throw new RuntimeException("Failed to create realm " + TEST_REALM, e);
+        }
+    }
+
+    /**
+     * Get the remote HTTPS port on the container.
+     *
+     * @return the remote HTTPS port.
+     */
+    public Integer getRemoteHttpPort() {
+        return getMappedPort(HTTP_PORT);
     }
 
     /**
@@ -121,11 +160,20 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
     }
 
     /**
-     * Get the root REST endpoint.
+     * Get the root REST HTTP endpoint.
      *
-     * @return The root REST endpoint.
+     * @return The root REST HTTP endpoint.
      */
     public String getRootHttpEndpoint() {
+        return "http://" + getHost() + ":" + getRemoteHttpPort() + "/auth";
+    }
+
+    /**
+     * Get the root REST HTTPS endpoint.
+     *
+     * @return The root REST HTTPS endpoint.
+     */
+    public String getRootHttpsEndpoint() {
         return "https://" + getHost() + ":" + getRemoteHttpsPort() + "/auth";
     }
 
@@ -199,6 +247,34 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Create a trust store from the Keycloak certificate and copy it to <code>/resources/security/truststore.p12</code>
+     * for each of the servers.
+     *
+     * @param password The password for the trust store.
+     * @param servers  The servers to copy to.
+     * @throws Exception If there was an error creating the keystore(s).
+     */
+    public void createTrustFromKeycloak(String password, LibertyServer... servers) throws Exception {
+        /*
+         * Get the TLS certificate for the Keycloak server and copy to the Liberty servers.
+         */
+        try {
+            Certificate[] certs = HttpUtils.getServerCertificates(getRootHttpsEndpoint());
+
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(null, null);
+            ks.setEntry("keycloak", new KeyStore.TrustedCertificateEntry(certs[0]), null);
+
+            for (LibertyServer server : servers) {
+                ks.store(new FileOutputStream(server.getServerRoot() + "/resources/security/truststore.p12"), password.toCharArray());
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Failed to generate truststore with Keycloak certificate.", e);
         }
     }
 }

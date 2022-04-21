@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache logged out cookie cache tests for LTPA.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
@@ -70,6 +69,7 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
          */
         server1.addInstalledAppForValidation("formlogin");
         startServer1(server1, groupName.toString(), null, null);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, COOKIE_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, COOKIE_CACHE_NAME);
@@ -82,6 +82,7 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
          */
         server2.addInstalledAppForValidation("formlogin");
         startServer2(server2, groupName.toString());
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, COOKIE_CACHE_NAME);
         waitForExistingJCache(server2, COOKIE_CACHE_NAME);
 

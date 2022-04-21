@@ -39,7 +39,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SuppressWarnings("restriction")
 public class JCacheDeleteAuthCacheTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
@@ -73,6 +72,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -86,6 +86,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         server2.addInstalledAppForValidation("basicauth");
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2);
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
     }

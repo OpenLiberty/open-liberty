@@ -48,7 +48,6 @@ import io.openliberty.jcache.internal.fat.testresource.KdcResource;
 /**
  * Test the distributed authentication cache with GSS credentials generated from SPNEGO authentication.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
@@ -110,6 +109,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, DEFAULT_REALM, "SimpleServlet", DEFAULT_CONTEXT_ROOT);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -318,7 +318,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
                                                                                   response.contains("Private Credential: [GSSCredential"));
         } else {
             assertFalse("Did not expect to find the GSS private credential in the subject.",
-                        response.contains("Private Credential: [GSSCredential") || response.contains("(?s).*Private Credential:.*--- GSSCredential ---.*"));
+                        response.matches("(?s).*Private Credential:.*--- GSSCredential ---.*") || response.contains("Private Credential: [GSSCredential"));
         }
     }
 }

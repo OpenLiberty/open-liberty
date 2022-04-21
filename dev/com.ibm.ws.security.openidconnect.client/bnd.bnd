@@ -34,6 +34,8 @@ IBM-Authorization-Roles: com.ibm.ws.security.oidcclient10
 WS-TraceGroup: \
   OPENIDCONNECT
 
+instrument.classesExcludes: com/ibm/ws/security/openidconnect/client/internal/resources/*.class
+
 # For each exported package, create (in that package) a package-info.java...
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation

@@ -660,7 +660,7 @@ public class AcmeFatUtils {
 					/*
 					 * We can still get the certificate even if we get a non-200 response.
 					 */
-					Log.info(AcmeFatUtils.class, "assertAndGetServerCertificate", "Expected response 200, but received response: " + statusLine +". " + response);
+					Log.info(AcmeFatUtils.class, methodName, "Expected response 200, but received response: " + statusLine +". " + response);
 				}
 
 				/*

@@ -420,7 +420,7 @@ public class OAuthClientUtil {
             boolean useJvmProps) throws ClientProtocolException, IOException, SocialLoginException {
         return getFromEndpoint(userApiEndpoint, params, null, null, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
     }
-
+    
     Map<String, Object> getFromEndpoint(String url,
             @Sensitive List<NameValuePair> params,
             String baUsername,

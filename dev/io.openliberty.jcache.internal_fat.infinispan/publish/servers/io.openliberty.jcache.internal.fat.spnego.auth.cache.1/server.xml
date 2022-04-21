@@ -32,7 +32,8 @@
 		location="${shared.resource.dir}/configs/customLoginModule.xml" />
 	<include
 		location="${shared.resource.dir}/configs/libraries.xml" />
-	<include location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/ssl.xml" />
 
     <!-- 
         Configure the CachingProvider and CacheManager.

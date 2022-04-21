@@ -1,0 +1,111 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+		<feature>appSecurity-3.0</feature>
+		<feature>socialLogin-1.0</feature>
+		<feature>jaxrs-2.1</feature>
+		<feature>timedexit-1.0</feature>
+		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
+	</featureManager>
+
+	<httpEndpoint id="defaultHttpEndpoint"
+		httpPort="${bvt.prop.HTTP_default}"
+		httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+	<!--
+		Include common configuration. 
+	 -->
+	<include
+		location="${shared.resource.dir}/configs/basicRegistry.xml" />
+	<include
+		location="${shared.resource.dir}/configs/customLoginModule.xml" />
+	<include
+		location="${shared.resource.dir}/configs/libraries.xml" />
+
+	<!-- 
+		We need to generate the truststore in the test since it will need to contain
+		the IDP's cert.
+	 -->
+	<include
+		location="${shared.resource.dir}/configs/ssl.xml" />
+	<ssl id="defaultSSLConfig" trustDefaultCerts="true"
+		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+	<keyStore id="defaultTrustStore"
+		location="${server.config.dir}/resources/security/truststore.p12"
+		password="trustPassword" />
+
+	<!--
+		Configure the JCache instances.
+	 -->
+	<cache id="AuthCache" name="AuthCache">
+		<cacheManager>
+			<properties
+				hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+
+			<cachingProvider
+				libraryRef="HazelcastLib,CustomLoginLib" />
+		</cacheManager>
+	</cache>
+
+	<!-- 
+		Configure the authentication cache to use the JCache. 
+	 -->
+	<authCache cacheRef="AuthCache" />
+
+	<!--
+		OIDC configuration. Some of this configuration is generated at runtime as
+		it points to the Keycloak endpoints.
+	 -->
+	<oidcLogin id="keycloakLogin" 
+               scope="openid email roles profile openid"
+               clientId="oidc_client"
+               clientSecret="FILL ME IN"
+               userNameAttribute="preferred_username" 
+               discoveryEndpoint="FILL ME IN"
+               hostNameVerificationEnabled="false">
+                 
+		<jwt builder="myJwtBuilder" />
+                 
+	</oidcLogin>
+	
+    <jwtBuilder id="myJwtBuilder"/>
+
+	<!-- 
+		Applications.
+	 -->
+    <application
+        type="war"
+        id="helloworldApp"
+        name="helloworld"
+        location="${server.config.dir}/apps/helloworld.war">
+
+      <application-bnd>
+        <security-role name="Employee">
+          <special-subject type="ALL_AUTHENTICATED_USERS" />
+        </security-role>
+        <security-role name="Manager">
+          <special-subject type="ALL_AUTHENTICATED_USERS" />
+        </security-role>
+        <security-role name="AllAuthenticated">
+          <special-subject type="ALL_AUTHENTICATED_USERS" />
+        </security-role>
+      </application-bnd>
+    </application>
+
+    <javaPermission
+        codebase="${server.config.dir}/apps/helloworld.war"
+        className="java.security.AllPermission"
+        name="*"
+        actions="*" />
+
+</server>

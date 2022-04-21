@@ -47,7 +47,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SuppressWarnings("restriction")
 public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
@@ -143,6 +142,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         server1.updateServerConfiguration(SERVER1_ORIGINAL_CONFIG);
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -157,6 +157,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         server2.updateServerConfiguration(SERVER2_ORIGINAL_CONFIG);
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
 
@@ -181,7 +182,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCookie(URL_PATTERN, basicAuthClient1.getCookieFromLastLogin());
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
+        assertJCacheLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
         assertResponseContainsClassCastException(response, false);
     }
 
@@ -228,6 +229,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         server1.addInstalledAppForValidation("subjectcast");
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -247,6 +249,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         server2.addInstalledAppForValidation("subjectcast");
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
 
@@ -271,7 +274,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         response = basicAuthClient1.accessProtectedServletWithAuthorizedCookie(URL_PATTERN, basicAuthClient1.getCookieFromLastLogin());
         assertTrue("Did not get the expected response", basicAuthClient1.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertLtpaAuthCacheHit(true, server1, basicAuthClient1.getCookieFromLastLogin());
+        assertJCacheLtpaAuthCacheHit(true, server1, basicAuthClient1.getCookieFromLastLogin());
         assertResponseContainsClassCastException(response, true);
 
         /*
@@ -283,7 +286,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCookie(URL_PATTERN, basicAuthClient1.getCookieFromLastLogin());
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
+        assertJCacheLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
         assertResponseContainsClassCastException(response, true);
     }
 

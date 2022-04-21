@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal.fat;
 
-import static io.openliberty.jcache.internal.fat.docker.KeycloakContainer.DEFAULT_REALM;
+import static io.openliberty.jcache.internal.fat.docker.KeycloakContainer.TEST_REALM;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -40,8 +40,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
@@ -74,12 +72,12 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
 
     private static KeycloakContainer keycloak;
 
-    public static final String DEFAULT_LIBERTY_SAML_SP = "defaultSP";
-    public static final String TEST_USER = "testuser";
-    public static final String TEST_USER_PASS = "testuserpassword";
+    private static final String DEFAULT_LIBERTY_SAML_SP = "defaultSP";
+    private static final String TEST_USER = "testuser";
+    private static final String TEST_USER_PASS = "testuserpassword";
 
-    public String keycloakClientId1 = null;
-    public String keycloakClientId2 = null;
+    private String keycloakClientId1 = null;
+    private String keycloakClientId2 = null;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -110,12 +108,13 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
          * Download the SAML descriptors from the IDP and install them in
          * the servers before they start.
          */
-        keycloak.downloadSamlDescriptor(DEFAULT_REALM, server1, server2);
+        keycloak.downloadSamlDescriptor(TEST_REALM, server1, server2);
 
         /*
          * Start server 1.
          */
         startServer1(server1, groupName, null, null);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -127,27 +126,28 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
          * Start server 2.
          */
         startServer2(server2, groupName);
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
          * Register the each server as a SAML client.
          */
-        keycloakClientId1 = keycloak.getKeycloakAdmin().registerSamlClient(server1, DEFAULT_LIBERTY_SAML_SP, DEFAULT_REALM);
-        keycloakClientId2 = keycloak.getKeycloakAdmin().registerSamlClient(server2, DEFAULT_LIBERTY_SAML_SP, DEFAULT_REALM);
-        keycloak.getKeycloakAdmin().createUser(DEFAULT_REALM, TEST_USER, TEST_USER_PASS);
+        keycloakClientId1 = keycloak.getKeycloakAdmin().registerSamlClient(server1, DEFAULT_LIBERTY_SAML_SP, TEST_REALM);
+        keycloakClientId2 = keycloak.getKeycloakAdmin().registerSamlClient(server2, DEFAULT_LIBERTY_SAML_SP, TEST_REALM);
+        keycloak.getKeycloakAdmin().createUser(TEST_REALM, TEST_USER, TEST_USER_PASS);
     }
 
     @After
     public void after() throws Exception {
         try {
-            keycloak.getKeycloakAdmin().deleteUser(DEFAULT_REALM, TEST_USER);
+            keycloak.getKeycloakAdmin().deleteUser(TEST_REALM, TEST_USER);
         } catch (Exception e) {
             // Ignore.
         }
         if (keycloakClientId1 != null) {
             try {
-                keycloak.getKeycloakAdmin().deleteClient(DEFAULT_REALM, keycloakClientId1);
+                keycloak.getKeycloakAdmin().deleteClient(TEST_REALM, keycloakClientId1);
                 keycloakClientId1 = null;
             } catch (Exception e) {
                 // Ignore.
@@ -155,7 +155,7 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
         }
         if (keycloakClientId2 != null) {
             try {
-                keycloak.getKeycloakAdmin().deleteClient(DEFAULT_REALM, keycloakClientId2);
+                keycloak.getKeycloakAdmin().deleteClient(TEST_REALM, keycloakClientId2);
                 keycloakClientId2 = null;
             } catch (Exception e) {
                 // Ignore.
@@ -201,8 +201,8 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
      */
     @Test
     public void authcache_saml_sp() throws Exception {
-        String sp1Resource = "https://" + server1.getHostname() + ":" + server1.getHttpDefaultSecurePort() + "/samlclient/fat/sp1/SimpleServlet";
-        String sp2Resource = "https://" + server2.getHostname() + ":" + server2.getHttpDefaultSecurePort() + "/samlclient/fat/sp1/SimpleServlet";
+        final String sp1Resource = "https://" + server1.getHostname() + ":" + server1.getHttpDefaultSecurePort() + "/samlclient/fat/sp1/SimpleServlet";
+        final String sp2Resource = "https://" + server2.getHostname() + ":" + server2.getHttpDefaultSecurePort() + "/samlclient/fat/sp1/SimpleServlet";
 
         WebClient webClient = null;
         try {
@@ -494,28 +494,5 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
         }
         Log.info(CLASS, thisMethod, "EXITING: " + form);
         return form;
-    }
-
-    /**
-     * Print some output for the {@link WebResponse}.
-     *
-     * @param methodName The method making the call.
-     * @param response   The {@link WebResponse} to printout.
-     * @param webClient  The {@link WebClient} the response came from.
-     */
-    private void printWebResponse(String methodName, WebResponse response, WebClient webClient) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("\n");
-        sb.append("Request URL: ").append(response.getWebRequest().getUrl()).append("\n");
-        sb.append("HTTP Response: ").append(response.getStatusCode()).append(" ").append(response.getStatusMessage()).append("\n");
-        for (NameValuePair nvp : response.getResponseHeaders()) {
-            sb.append("HEADER: ").append(nvp).append("\n");
-        }
-        for (Cookie cookie : webClient.getCookies(response.getWebRequest().getUrl())) {
-            sb.append("COOKIE: ").append(cookie).append("\n");
-        }
-        sb.append(response.getContentAsString());
-
-        Log.info(CLASS, methodName, "Got page response: " + sb.toString());
     }
 }
