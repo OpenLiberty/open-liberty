@@ -16,6 +16,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.junit.After;
@@ -24,6 +28,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -199,27 +205,38 @@ public class ServerEnvTest {
      * @param dir directory for server.env
      * @throws IOException
      */
-    private String createServerEnvFile(String fileContents, File dir) throws IOException {
+    private String createServerEnvFile(String fileContents, File dir) throws Exception {
 
         File serverEnvFile = new File(dir, "server.env");
 
-        String serverEnv = serverEnvFile.getAbsolutePath();
+        String serverEnvFileName = serverEnvFile.getAbsolutePath();
 
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
+        Charset charset = Charset.forName("UTF-8");
+        Machine machine = Machine.getLocalMachine();
+        if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
+            charset = Charset.forName("IBM-1047");
+        }
+
         FileOutputStream fos = null;
+        PrintWriter pw = null;
         try {
             fos = new FileOutputStream(serverEnvFile);
-            fos.write(fileContents.getBytes());
+            Writer w = new OutputStreamWriter(fos, charset);
+            pw = new PrintWriter(w);
+            pw.print(fileContents.getBytes());
         } finally {
+            if (pw != null) {
+                pw.close();
+            }
             if (fos != null) {
                 fos.close();
             }
         }
-
-        return serverEnv;
+        return serverEnvFileName;
     }
 
     /**
