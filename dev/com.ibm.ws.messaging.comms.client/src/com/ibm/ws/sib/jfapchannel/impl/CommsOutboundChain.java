@@ -38,6 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class CommsOutboundChain {
     private static final TraceComponent tc = Tr.register(CommsOutboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
@@ -66,20 +67,24 @@ public class CommsOutboundChain {
     private boolean _isChainDeactivated = false;
     /** If useSSL is set to true in the outbound connection configuration */
     private boolean _isSSLChain = false;
+    /** If useNettyTransport is set to true in the outbound connection configuration */
+    private boolean _useNettyTransport = false;
+    
+    private static final String USE_NETTY = "useNettyTransport";
     
     private static Map<String, CommsOutboundChain> chainList = new HashMap<String,CommsOutboundChain>();
     
    
-    public static Map<String, CommsOutboundChain> getChainList() {
+    public static CommsOutboundChain getChainDetails(String chainName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getChainList");
-        // TODO Check if we need syncing
-        Map<String, CommsOutboundChain> shallowCopy = new HashMap<>();
-        shallowCopy.putAll(chainList);
+            Tr.entry(tc, "getChainDetails");
+        // TODO Check if this is the best way to do this
+        
+        CommsOutboundChain chain = chainList.get(chainName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getChainList", shallowCopy);
-        return shallowCopy;
+            Tr.exit(tc, "getChainDetails", chain);
+        return chain;
     }
     
    
@@ -190,7 +195,6 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "activate", new Object[] {properties, context, _isChainActivated, _isChainDeactivated});
         
-        
 
         _sslOptions.activate(context);
         
@@ -198,11 +202,20 @@ public class CommsOutboundChain {
 
         _isSSLChain = MetatypeUtils.parseBoolean(_OutboundChain_ConfigAlias, "useSSL", properties.get("useSSL"), false);
         
+        SibTr.debug(tc, "activate: In Beta edition: "+ProductInfo.getBetaEdition());
+        
+        _useNettyTransport = ProductInfo.getBetaEdition() ? 
+        							MetatypeUtils.parseBoolean(_OutboundChain_ConfigAlias, USE_NETTY, properties.get(USE_NETTY), true):
+									false;        
+        
         String Outboundname = (String) properties.get("id");
         _chainName = Outboundname;
         _tcpChannelName = Outboundname + "_JfapTcp";
         _sslChannelName = Outboundname + "_JfapSsl";
         _jfapChannelName = Outboundname + "_JfapJfap";
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            SibTr.debug(this, tc, "activate: Using " + (_useNettyTransport ? "Netty" : "Channel") + " Framework for chain ", _chainName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "CommsOutboundChain: Creating " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
@@ -230,7 +243,7 @@ public class CommsOutboundChain {
             return;
         }
         
-        if(!CommsClientServiceFacade.useNetty()) {
+        if(!useNetty()) {
         	// Channel Framework Implementation
         
         	try {
@@ -375,7 +388,7 @@ public class CommsOutboundChain {
             Tr.entry(this, tc, "terminateConnectionsAssociatedWithChain", _chainName);
         }
 
-        if(CommsClientServiceFacade.useNetty()) {
+        if(useNetty()) {
         	//TODO Terminate Netty connections? Verify how to do this. Seems like it should be something in NetworkConnectionContext
         	try {
         		OutboundConnectionTracker oct = ClientConnectionManager.getRef().getOutboundConnectionTracker();
@@ -457,6 +470,15 @@ public class CommsOutboundChain {
     
     public NettyTlsProvider getTlsProvider() {
 	    return _tlsProviderService.getService();
+	}
+    
+    /**
+	 * Query if Netty has been enabled for this endpoint
+	 * @return true if Netty should be used for this endpoint
+	 */
+	public boolean useNetty() {
+		// TODO: Return metatype until we can figure out beta fencing
+	    return _useNettyTransport;
 	}
     
 }

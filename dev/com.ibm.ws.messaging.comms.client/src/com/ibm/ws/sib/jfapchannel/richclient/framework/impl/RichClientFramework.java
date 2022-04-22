@@ -39,9 +39,12 @@ import com.ibm.ws.sib.jfapchannel.framework.Framework;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
+import com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;
 import com.ibm.ws.sib.jfapchannel.richclient.impl.octracker.JFapOutboundChannelDefinitionImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
+
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * This class is the channel framework implementation of the JFap transport framework. All the
@@ -84,9 +87,8 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>");
-        // TODO: Check beta fencing
-        if(!CommsClientServiceFacade.useNetty())
-        	framework = ChannelFrameworkReference.getInstance();
+        // TODO: Check Netty for this
+    	framework = ChannelFrameworkReference.getInstance();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -102,7 +104,6 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getNetworkTransportFactory");
-//        NetworkTransportFactory factory = new RichClientTransportFactory(framework);
         NetworkTransportFactory factory = new RichClientTransportFactory();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getNetworkTransportFactory", factory);
@@ -125,6 +126,13 @@ public class RichClientFramework extends Framework
                         outboundTransportName);
 
         // TODO: Check Netty for data
+        if(
+        		CommsOutboundChain.getChainDetails(outboundTransportName) != null && 
+        		CommsOutboundChain.getChainDetails(outboundTransportName).useNetty())
+        {
+        	throw new SIErrorException(new NettyException("Currently not supported"));
+        }
+        
         ChainData chainData = framework.getChain(outboundTransportName);
 
         // Obtain properties for outbound channel
@@ -160,10 +168,18 @@ public class RichClientFramework extends Framework
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getOutboundConnectionProperties", ep);
+        
 
         Map properties = null;
         if (ep instanceof CFEndPoint)
         {
+        	String chainName = ((CFEndPoint) ep).getName();
+        	if(
+	    			CommsOutboundChain.getChainDetails(chainName) != null &&
+	    			CommsOutboundChain.getChainDetails(chainName).useNetty()) 
+        	{
+        		throw new SIErrorException(new NettyException("Currently not supported"));
+        	}
             OutboundChannelDefinition[] channelDefinitions = (OutboundChannelDefinition[]) ((CFEndPoint) ep).getOutboundChannelDefs().toArray();
             if (channelDefinitions.length < 1)
                 throw new SIErrorException(nls.getFormattedMessage("OUTCONNTRACKER_INTERNAL_SICJ0064", null, "OUTCONNTRACKER_INTERNAL_SICJ0064"));
@@ -194,6 +210,14 @@ public class RichClientFramework extends Framework
             SibTr.entry(this, tc, "prepareOutboundConnection", ep);
 
         final CFEndPoint originalEndPoint = (CFEndPoint) ep;
+        
+        String chainName = originalEndPoint.getName();
+        if(
+    			CommsOutboundChain.getChainDetails(chainName) != null &&
+    			CommsOutboundChain.getChainDetails(chainName).useNetty()) 
+    	{
+    		throw new SIErrorException(new NettyException("Currently not supported"));
+    	}
 
         //Attempt to clone the original end point to prevent us affecting other users.
         final CFEndPoint endPoint = cloneEndpoint(originalEndPoint);

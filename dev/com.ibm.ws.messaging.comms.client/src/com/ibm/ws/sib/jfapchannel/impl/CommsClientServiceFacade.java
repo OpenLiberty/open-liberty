@@ -33,7 +33,6 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
 import io.openliberty.netty.internal.NettyFramework;
@@ -66,14 +65,10 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
     public void activate(Map<String, Object> properties, ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "activate");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(tc, "activate", "Using Netty: "+useNetty());
-        if(useNetty())
-        	_nettyRef.activate(context);
-        else {
-        	chfwRef.activate(context);
-        	getChannelFramework().registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
-        }
+        // TODO: Check this activating or deactivating with metatype optional bundles
+    	_nettyRef.activate(context);
+    	chfwRef.activate(context);
+//    	getChannelFramework().registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
         _commonServiceFacadeRef.activate(context);
         alarmManagerRef.activate(context);
         exeServiceRef.activate(context);
@@ -123,7 +118,7 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
     }
 
     public static NettyFramework getNettyBundle() {
-    	if(!useNetty()) throw new IllegalAccessError("Tried to getNetty with Netty turned off");
+    	// TODO Verify this later on
         return _nettyRef.getService();
     }
 
@@ -184,7 +179,6 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
 
     public static ChannelFramework getChannelFramework() {
     	// TODO Verify this later on
-    	if(useNetty()) throw new IllegalAccessError("Tried to getChannelFW with Netty turned on");
         if (null == chfwRef.getService()) {
             return ChannelFrameworkFactory.getChannelFramework();
         }
@@ -220,14 +214,5 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
         }
         return _ClientConnectionFactoryInstance;
     }
-    
-    /**
-	 * Query if Netty has been enabled for this endpoint
-	 * @return true if Netty should be used for this endpoint
-	 */
-	public static boolean useNetty() {
-		// TODO: Return true for now until we figure out how to 
-	    return true;
-	}
 
 }

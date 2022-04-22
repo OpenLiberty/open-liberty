@@ -61,7 +61,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	      init(bootstrap);
 	      this.chainName = chainName;
 	      //TODO: Check if this is the best way to link a chain with the channel
-	      this.chain = CommsOutboundChain.getChainList().get(chainName);
+	      this.chain = CommsOutboundChain.getChainDetails(chainName);
 	      
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {bootstrap, chainName, chain});
 	   }
@@ -72,7 +72,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	      
 	      this.chan = chan;
 	      // TODO: Check if this is fired and adapt to Netty accordingly
-	      this.chain = CommsOutboundChain.getChainList().get(chan.attr(JMSClientInboundHandler.CHAIN_ATTR_KEY).get());
+	      this.chain = CommsOutboundChain.getChainDetails(chan.attr(JMSClientInboundHandler.CHAIN_ATTR_KEY).get());
 	      
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {chan, chain});
 	   }
@@ -165,7 +165,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	   protected SSLSession getSSLSession() {
 		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSSLSession", new Object[] {chan, chain});
 		   SSLSession session = null;
-		   if(this.chain.isSSL() && CommsOutboundChain.getChainList().get(chainName).getSslOptions() != null) {
+		   if(this.chain.isSSL() && CommsOutboundChain.getChainDetails(chainName).getSslOptions() != null) {
 			   ChannelHandler handler = this.chan.pipeline().get(NettyNetworkConnectionFactory.SSL_HANDLER_KEY);
 			   if(handler == null || !(handler instanceof SslHandler)) {
 				   if (tc.isWarningEnabled())
@@ -206,7 +206,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 				if(this.chain.isSSL()) {
 		          	if (tc.isDebugEnabled())
 		                  SibTr.debug(this, tc, "initChannel","Adding SSL Support");
-		          	if(CommsOutboundChain.getChainList().get(chainName).getSslOptions() == null) {
+		          	if(CommsOutboundChain.getChainDetails(chainName).getSslOptions() == null) {
 		          		if (tc.isDebugEnabled())
 			                  SibTr.debug(this, tc, "initChannel","Found SSL Set but no SSLOptions to use. Throwing error.");
 		          		throw new NettyException("Invalid SSL options found for " + chainName);
