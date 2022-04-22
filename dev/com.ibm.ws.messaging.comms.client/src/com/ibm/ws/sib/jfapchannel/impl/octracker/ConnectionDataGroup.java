@@ -702,7 +702,7 @@ public class ConnectionDataGroup
 
                         NetworkConnection vc = connectOverNetwork(jfapAddressHolder, ncfHolder);
                         connectionDataToUse = createnewConnectionData(vc);
-                        if(CommsClientServiceFacade.useNetty()) {
+                        if(connectionDataToUse.getConnection().isUsingNetty()) {
                         	if(vc instanceof NettyNetworkConnection) {
                         		try {
 									((NettyNetworkConnection) vc).linkOutboundConnection(connectionDataToUse.getConnection());

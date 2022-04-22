@@ -98,4 +98,4 @@ instrument.disabled: true
 	io.openliberty.io.netty.ssl,\
 	io.openliberty.io.netty.ssl,\
 	com.ibm.ws.wsbytebuffer,\
-	io.netty.handler
+	com.ibm.ws.kernel.boot.core

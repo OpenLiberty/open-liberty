@@ -71,6 +71,7 @@ public class JMSClientInboundHandler extends SimpleChannelInboundHandler<WsByteB
 		Attribute<OutboundConnection> attr = ctx.channel().attr(CONNECTION_KEY);
 		OutboundConnection connection = attr.get();
 
+		//TODO: Check if connection is closed
         if (connection != null) {
         	IOReadCompletedCallback callback = connection.getReadCompletedCallback();
         	IOReadRequestContext readCtx = connection.getReadRequestContext();

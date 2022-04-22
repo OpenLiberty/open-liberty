@@ -63,7 +63,8 @@ public class InboundConnection extends Connection {
                              AcceptListener al,
                              int heartbeatInterval,
                              int heartbeatTimeout) throws FrameworkException {
-        super(channel, vc, heartbeatInterval, heartbeatTimeout);
+    	// TODO: Adapt to use Netty as needed
+        super(channel, vc, heartbeatInterval, heartbeatTimeout, false);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -222,6 +223,8 @@ public class InboundConnection extends Connection {
         buf.append(remoteHostAddress);
         buf.append(", Chain: ");
         buf.append(chainName);
+        buf.append(", Using Netty Framework: ");
+        buf.append(isUsingNetty());
         buf.append(", Heartbeat Timeout: ");
         buf.append(getHeartbeatTimeoutForToString());
         buf.append(", Heartbeat Interval: ");
@@ -239,4 +242,5 @@ public class InboundConnection extends Connection {
     public String getEyeCatcher() {
         return eyeCatcher;
     }
+
 }

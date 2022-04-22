@@ -128,6 +128,10 @@ public abstract class Connection implements ConnectionInterface
 
    // Amount of time to wait for a heartbeat response (seconds)
    private volatile int heartbeatTimeout;
+   
+   // Determine if the connection is using Netty or Channelfw
+   private final boolean usingNetty;
+
 
    // Various locking objects used to avoid synchronizing on this class.
    // Only 'send' and 'invalidate' should synchronize on 'this' - otherwise
@@ -245,6 +249,7 @@ public abstract class Connection implements ConnectionInterface
 
    private final boolean logIOEvents;
 
+
    /**
     * Creates a new connection object which communicates over the specified ConnLink.
     * @param channel
@@ -257,7 +262,8 @@ public abstract class Connection implements ConnectionInterface
    public Connection(NetworkConnectionContext channel,                // F177053
                      NetworkConnection vc,
                      int heartbeatInterval,
-                     int heartbeatTimeout) throws FrameworkException
+                     int heartbeatTimeout,
+                     boolean usingNetty) throws FrameworkException
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
          SibTr.entry(this, tc, "<init>", new Object[] {channel, vc, ""+heartbeatInterval, ""+heartbeatTimeout});
@@ -286,17 +292,19 @@ public abstract class Connection implements ConnectionInterface
 
       connChannel = channel;                                // F174772
       this.vc = vc;                                         // F174772
+      
+      this.usingNetty = usingNetty; // Netty implementation
       // TODO This could be made prettier. Check how best to do this
-      if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
-    	  writeCompletedCallback = new NettyConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this);
-    	  try {
-			((NettyNetworkConnection) vc).setHearbeatInterval(heartbeatInterval);
-		} catch (NettyException e) {
-			throw new FrameworkException(e);
-		}
-      }
-      else
-    	  writeCompletedCallback = new ConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this); // F176003
+      if(isUsingNetty()) {
+      	  writeCompletedCallback = new NettyConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this);
+      	  try {
+  			((NettyNetworkConnection) vc).setHearbeatInterval(heartbeatInterval);
+      	  } catch (NettyException e) {
+	  			throw new FrameworkException(e);
+      	  }
+        }else {
+        	writeCompletedCallback = new ConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this); // F176003
+        }
 
       logIOEvents = RuntimeInfo.getProperty(JFapChannelConstants.LOG_IO_TO_FFDC_EVENTLOG_PROPERTY) != null;
       int numConversationEvents = -1;
@@ -373,7 +381,7 @@ public abstract class Connection implements ConnectionInterface
       {
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "first conversation for connection");
 
-         if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
+         if(!this.isInbound() && isUsingNetty()) {
         	 readCompletedCallback = new NettyConnectionReadCompletedCallback(this, 
         			 														  onClientSide, 
         			 														  acceptListener, 
@@ -419,7 +427,7 @@ public abstract class Connection implements ConnectionInterface
          // pass it to the appropriate completed callback - otherwise perform a read
          // operation.
          // TODO: Check what to do here for Netty if necessary
-         if(this.isInbound() || !CommsClientServiceFacade.useNetty()) {
+         if(this.isInbound() || !isUsingNetty()) {
         	 if(tcpReadCtx.getBuffer().remaining() < tcpReadCtx.getBuffer().capacity())
              {
                 readCompletedCallback.complete(vc, tcpReadCtx);
@@ -652,7 +660,7 @@ public abstract class Connection implements ConnectionInterface
 
          // Proddle the write callback to get it to leap into action and start
          // sending data from the priority queue.
-         if(!this.isInbound() && CommsClientServiceFacade.useNetty())
+         if(!this.isInbound() && isUsingNetty())
           	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
          else
          	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
@@ -731,7 +739,7 @@ public abstract class Connection implements ConnectionInterface
 
          // Proddle the write callback to get it to leap into action and start
          // sending data from the priority queue.
-         if(!this.isInbound() && CommsClientServiceFacade.useNetty())
+         if(!this.isInbound() && isUsingNetty())
            	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
           else
           	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
@@ -973,7 +981,7 @@ public abstract class Connection implements ConnectionInterface
          {
             priorityQueue.waitForCloseToComplete();
             // TODO This could be made prettier. Check how best to do this
-            if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
+            if(!this.isInbound() && isUsingNetty()) {
             	((NettyConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
             	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
             }
@@ -1055,7 +1063,7 @@ public abstract class Connection implements ConnectionInterface
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setHeartbeatInterval","seconds="+seconds);
      if (seconds < 0) throw new SIErrorException(nls.getFormattedMessage("CONNECTION_INTERNAL_SICJ0043", null, "CONNECTION_INTERNAL_SICJ0043"));
      heartbeatInterval = seconds;
-     if(!this.isInbound() && CommsClientServiceFacade.useNetty()) {
+     if(!this.isInbound() && isUsingNetty()) {
    	  try {
 			((NettyNetworkConnection) vc).setHearbeatInterval(seconds);
 		} catch (NettyException e) {
@@ -1388,7 +1396,7 @@ public abstract class Connection implements ConnectionInterface
             break;
          case(JFapChannelConstants.SEGMENT_HEARTBEAT_RESPONSE):
         	// TODO This could be made prettier. Check how best to do this
-            if(!this.isInbound() && CommsClientServiceFacade.useNetty())
+            if(!this.isInbound() && isUsingNetty())
              	((NettyConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
             else
             	((ConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
@@ -1448,7 +1456,7 @@ public abstract class Connection implements ConnectionInterface
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "processPhysicalClose");
 
       // TODO This could be made prettier. Check how best to do this
-      if(!this.isInbound() && CommsClientServiceFacade.useNetty())
+      if(!this.isInbound() && isUsingNetty())
        	((NettyConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
       else
       	((ConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
@@ -1671,7 +1679,10 @@ public abstract class Connection implements ConnectionInterface
    {
       return logIOEvents;
    }
-
+   
+   public boolean isUsingNetty() {
+	   return this.usingNetty;
+   }
 
    public String getDiagnostics(boolean includeConversations)
    {

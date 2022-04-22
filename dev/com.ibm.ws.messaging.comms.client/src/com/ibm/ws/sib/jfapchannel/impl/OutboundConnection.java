@@ -14,6 +14,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIResourceException;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
@@ -25,6 +26,8 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.ConnectionData;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.OutboundConnectionTracker;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * An object which represents the client side of a connection (socket)
@@ -65,6 +68,7 @@ public class OutboundConnection extends Connection
 
     /** Eye catcher for use in debugSummaryMessage. */
     private final String eyeCatcher;
+        
 
     /**
      * Creates a new client connection
@@ -78,7 +82,8 @@ public class OutboundConnection extends Connection
                               int heartbeatTimeout, // F175658
                               ConnectionData connectionData) throws FrameworkException
     {
-        super(connLink, vc, heartbeatInterval, heartbeatTimeout); // F174772, F175658
+        super(connLink, vc, heartbeatInterval, heartbeatTimeout, 
+        		CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()) == null ? false : CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()).useNetty()); // F174772, F175658
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -444,6 +449,8 @@ public class OutboundConnection extends Connection
         buf.append(handshakeComplete);
         buf.append(", Handshakers Waiting: ");
         buf.append(handshakersWaiting);
+        buf.append(", Using Netty Framework: ");
+        buf.append(isUsingNetty());
         buf.append("}\nEvents follow:\n");
         buf.append(getDiagnostics(false));
 
@@ -458,4 +465,5 @@ public class OutboundConnection extends Connection
     {
         return eyeCatcher;
     }
+
 }
