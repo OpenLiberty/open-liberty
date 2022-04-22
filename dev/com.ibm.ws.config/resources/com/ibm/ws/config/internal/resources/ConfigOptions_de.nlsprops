@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Syntax: java [JVM-Optionen] -jar {0} [Optionen] Ausgabedatei 
-briefUsageScript=Syntax: ./{0} [Optionen] Ausgabedatei
+purpose=Der Befehl {0} generiert das XML-Schema f\u00fcr die Liberty-Basiskonfiguration und andere installierte Produkterweiterungen in einer einzigen Ausgabedatei.
 
+briefUsage=Syntax: java [JVM-Optionen] -jar {0} [Optionen] Ausgabedatei
+  
+briefUsageScript=Syntax: ./{0} [Optionen] Ausgabedatei
 
 use.options=Optionen:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Optionen:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Der Name einer Datei, die eine Liste mit zu ignorierenden PIDs enth\u00e4lt.
+option-desc.ignorePids=Ein Dateiname, der eine Liste der zu ignorierenden PIDs enth\u00e4lt.
 option-key.encoding=--encoding
 option-desc.encoding=Die f\u00fcr die Ausgabe zu verwendende Zeichencodierung.
 option-key.locale=--locale
-option-desc.locale=Die f\u00fcr die Ausgabe zu verwendende L\u00e4ndereinstellung.
+option-desc.locale=Die beim Erstellen der Ausgabedatei zu verwendende Sprache. Diese Angabe besteht aus dem zweistelligen ISO-639-Sprachencode in Kleinbuchstaben, dem optional ein Unterstreichungszeichen und der zweistellige ISO-3166-Landescode in Gro\u00dfbuchstaben folgen kann.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=Das Ausgabeschema enth\u00e4lt keine Einr\u00fcckungen, neue Zeilenvorsch\u00fcbe oder XML-Kommentare.
+option-desc.compactoutput=Das Ausgabeschema enth\u00e4lt keine einger\u00fcckten Leerzeichen, Zeilenvorsch\u00fcbe oder XML-Kommentare.
 option-key.productExtension=--productExtension
 option-desc.productExtension=Der Name der zu verarbeitenden Produkterweiterung.                            \nWenn die Produkterweiterung an der Standardbenutzerposition installiert wird, \nverwenden Sie das Schl\u00fcsselwort usr.                                                  \nWenn Sie diese Option nicht angeben, wird die Aktion f\u00fcr den Liberty-Kern ausgef\u00fchrt.
 

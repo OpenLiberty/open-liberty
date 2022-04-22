@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2014 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1176,7 +1176,8 @@ WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Il percorso classe non \u
 WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Aggiornare il MANIFEST.MF del file jar, in modo da fornire la definizione corretta del percorso classe.
 
 WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Risoluzione elemento {0} del percorso di classe manifest dell''archivio {1} non riuscita.
-WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Generalmente gli elementi del percorso di classe manifest sono riferimenti ai file JAR. Se l'elemento di riferimento \u00e8 necessario per l'applicazione, il messaggio indica un problema serio e non deve essere ignorato. Se l'elemento di riferimento non \u00e8 necessario per l'applicazione, il messaggio indica un problema innocuo e pu\u00f2 essere ignorato. L'elemento di riferimento \u00e8 assente, \u00e8 in una ubicazione non corretta o l'elemento di riferimento \u00e8 in una ubicazione corretta e l'elemento percorso di classe manifest fa riferimento a una ubicazione non corretta, differente. Quando un elemento \u00e8 necessario, viene prevalentemente indicato come un errore dell'applicazione nell'individuare una classe o altra risorsa o l'applicazione individua una versione errata di una classe o risorsa. Uno dei motivi comuni per cui un elemento percorso di classe manifest non viene risolto consiste nel fatto che un aggiornamento alla struttura di un'applicazione ha reso obsoleto l'elemento di riferimento. Un altro motivo comune per cui un elemento percorso di classe manifest non viene risolto consiste nel fatto che \u00e8 stato aggiunto un file JAR di terze parti a un'applicazione e tale file fa riferimento a un'ubicazione che non \u00e8 stata aggiunta all'applicazione.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Generalmente gli elementi del percorso di classe manifest sono riferimenti ai file JAR. Se l'elemento di riferimento \u00e8 necessario per l'applicazione, il messaggio indica un problema serio e non deve essere ignorato. Se l'elemento di riferimento non \u00e8 necessario per l'applicazione, il messaggio indica un problema innocuo e pu\u00f2 essere ignorato. L'elemento di riferimento \u00e8 assente, \u00e8 in una ubicazione non corretta o l'elemento di riferimento \u00e8 in una ubicazione corretta e l'elemento percorso di classe manifest fa riferimento a una ubicazione non corretta, differente. Quando un elemento \u00e8 necessario, viene prevalentemente indicato come un errore dell'applicazione nell'individuare una classe o altra risorsa o l'applicazione individua una versione errata di una classe o risorsa. Uno dei motivi comuni per cui un elemento percorso di classe manifest non viene risolto consiste nel fatto che un aggiornamento alla s\
+    truttura di un'applicazione ha reso obsoleto l'elemento di riferimento. Un altro motivo comune per cui un elemento percorso di classe manifest non viene risolto consiste nel fatto che \u00e8 stato aggiunto un file JAR di terze parti a un'applicazione e tale file fa riferimento a un'ubicazione che non \u00e8 stata aggiunta all'applicazione.
 WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Aggiungere, ridenominare o spostare gli elementi applicazione o aggiornare il percorso di classe manifest modificando o rimuovendo gli elementi del percorso di classe manifest che non possono essere risolti. Gli elementi del percorso di classe manifest vengono risolti relativamente all'ubicazione del file archivio che li contiene.
 
 CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: Valori duplicati di {0} sono stati rilevati in {1} per la stessa {2} di {3}, il valore \u00e8 {4} nel file web-fragment.xml di {5}, ma {6} in {7}. 
@@ -1244,6 +1245,9 @@ CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: Due confi
 CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Il jms-destination con lo stesso nome non pu\u00f2 essere configurato in file web-fragment.xml differenti se manca nel file web.xml.
 CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Configurare il jms-destination con lo stesso nome nel file web.xml per sovrascrivere quelle provenienti dai file web-fragment.xml.
 
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT=SRVE9950E: Delle configurazioni {0} in conflitto con lo stesso nome {1} sono state trovate nei file web-fragment.xml di {2} e {3}.
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT.explanation=Non \u00e8 consentito includere risorse definite dall'applicazione con lo stesso nome in diversi file web-fragment.xml a meno che non ne venga eseguita la sovrascrittura in web.xml.
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT.useraction=Sovrascrivere la configurazione web-fragment.xml in conflitto specificando una risorsa definita dall'applicazione con lo stesso nome in web.xml.
 
 SRVE0777E=SRVE0777E: Eccezione generata dalla classe dell''classe ''{0}.{1}:{2}''\n{3}
 SRVE0777E.explanation= Il codice dell'applicazione ha generato un'eccezione imprevista.

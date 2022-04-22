@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Las reclamaciones procedentes d
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=No se pueden extraer las reclamaciones de la se\u00f1al de ID de terceros. Consulte el mensaje de error para obtener m\u00e1s informaci\u00f3n.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Aseg\u00farese de que el proveedor de OpenID Connect de terceros est\u00e1 enviando una se\u00f1al de ID v\u00e1lida.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: El proveedor de {0} OpenID Connect ha encontrado el siguiente error al intentar crear se\u00f1ales de cierre de sesi\u00f3n para solicitudes de cierre de sesi\u00f3n de canal posterior: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=Es posible que la serie de se\u00f1al de ID en el par\u00e1metro id_token_hint, si se ha especificado una, est\u00e9 mal formada. Es posible que el proveedor no pueda determinar el conjunto de clientes para enviar solicitudes de cierre de sesi\u00f3n de canal posterior. Si el par\u00e1metro id_token_hint no est\u00e1 mal formado, se ha producido otro error cuando el proveedor ha intentado crear una se\u00f1al de cierre de sesi\u00f3n.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Consulte la acci\u00f3n de usuario para ver el error que se incluye en el mensaje.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: El proveedor de OpenID Connect no puede extraer reclamaciones que volver a utilizar desde la se\u00f1al de ID. El error es: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Es posible que la se\u00f1al de ID est\u00e9 mal formada o que una reclamaci\u00f3n dentro de la se\u00f1al tenga un valor que sea un tipo de datos inesperado. De forma alternativa, es posible que falten las reclamaciones necesarias o que el emisor de la se\u00f1al no sea el emisor que se espera.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Aseg\u00farese de que la se\u00f1al de ID est\u00e1 formateada correctamente. Consulte el error que se incluye en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: El proveedor de OpenID Connect no puede determinar el conjunto de clientes de OpenID Connect para cerrar la sesi\u00f3n debido al siguiente error: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=El proveedor no ha podido recuperar el conjunto de clientes que est\u00e1n registrados o las reclamaciones de se\u00f1al de ID pueden estar mal formadas.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Consulte el error que se incluye en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La SPI de mediador de se\u00f1al de ID no soporta la versi\u00f3n Java utilizada por este tiempo de ejecuci\u00f3n [{0}]. La versi\u00f3n de Java soportada es 1.7 o posteriores.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=La versi\u00f3n de Java del mensaje no puede soportar la funci\u00f3n de SPI de mediador de se\u00f1al de JWT. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Instale Java versi\u00f3n 1.7 o posteriores.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: La reclamaci\u00f3n del emisor [{0}] en la se\u00f1al de ID no coincide con el emisor esperado [{1}] para el proveedor de {2} OpenID Connect.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=El proveedor de OpenID Connect no ha emitido la se\u00f1al de ID, por lo que este proveedor de OpenID Connect no puede manejar la se\u00f1al.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Env\u00ede s\u00f3lo se\u00f1ales de ID con una reclamaci\u00f3n de emisor que coincida con la configuraci\u00f3n del proveedor de OpenID Connect que se especifica en el mensaje.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: El s\u00edmbolo de ID no es v\u00e1lido porque falta al menos una reclamaci\u00f3n que es necesaria: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=La especificaci\u00f3n de OpenID Connect requiere que la reclamaci\u00f3n o las reclamaciones que se muestran en el mensaje de error est\u00e9n presentes en la se\u00f1al de ID.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Aseg\u00farese de que el s\u00edmbolo de ID contiene todas las reclamaciones necesarias.
+
+# NOTE: Stop at CWWKS1649

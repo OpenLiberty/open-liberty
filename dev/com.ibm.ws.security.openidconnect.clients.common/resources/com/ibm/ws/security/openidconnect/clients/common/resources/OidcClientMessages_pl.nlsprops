@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: \u017b\u0105danie wylo
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Funkcja OpenID Connect oczekuje, \u017ce identyfikator URI \u017c\u0105dania kana\u0142u zwrotnego b\u0119dzie zawiera\u0142 identyfikator klienta OpenID Connect, aby okre\u015bli\u0107, kt\u00f3ry klient ma by\u0107 wylogowany.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Upewnij si\u0119, \u017ce identyfikator URI \u017c\u0105dania zawiera identyfikator klienta OpenID Connect, kt\u00f3ry ma by\u0107 u\u017cywany do wylogowania u\u017cytkownika.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Znacznik wylogowania jest niepoprawny, poniewa\u017c brakuje w nim co najmniej jednego wymaganego \u017c\u0105dania: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Znacznik wylogowania musi zawiera\u0107 \u017c\u0105dania, kt\u00f3re zosta\u0142y okre\u015blone w komunikacie.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect umieszcza brakuj\u0105ce \u017c\u0105dania w tokenie wylogowania.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Znacznik wylogowania nie jest poprawny, poniewa\u017c nie zawiera \u017c\u0105dania \u201esub\u201d lub \u201esid\u201d. Token musi zawiera\u0107 co najmniej jedno z tych \u017c\u0105da\u0144.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=\u017b\u0105dania \u201esub\u201d i \u201esid\u201d identyfikuj\u0105 u\u017cytkownika i sesj\u0119 powi\u0105zan\u0105 z tokenem. Co najmniej jedno z tych \u017c\u0105da\u0144 musi by\u0107 obecne, aby okre\u015bli\u0107 u\u017cytkownika lub sesj\u0119 do wylogowania.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect umieszcza brakuj\u0105ce \u017c\u0105dania w tokenie wylogowania.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Znacznik wylogowania nie jest poprawny, poniewa\u017c \u017c\u0105danie \u201eevents\u201d nie jest obiektem JSON: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=\u017b\u0105danie \u201eevents\u201d w znaczniku wylogowania musi by\u0107 obiektem JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect u\u017cywa poprawnego typu danych dla \u017c\u0105dania \u201eevents\u201d.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Znacznik wylogowania jest niepoprawny, poniewa\u017c \u017c\u0105danie \u201eevents\u201d nie zawiera elementu \u201e{0}\u201d. Warto\u015b\u0107 \u017c\u0105dania \u201eevents\u201d to {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=\u017b\u0105danie \u201eevents\u201d musi by\u0107 obiektem JSON, kt\u00f3ry zawiera element o nazwie okre\u015blonej w komunikacie.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie \u201eevents\u201d zawiera wymagany element.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Token wylogowania nie jest poprawny, poniewa\u017c zawiera \u017c\u0105danie \u201enonce\u201d.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Znacznik wylogowania nie mo\u017ce zawiera\u0107 \u017c\u0105dania \u201enonce\u201d, aby tego znacznika nie da\u0142o si\u0119 u\u017cy\u0107 w podrobionej odpowiedzi uwierzytelniania w miejsce znacznika identyfikatora.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Upewnij si\u0119, \u017ce znacznik wylogowania nie zawiera \u017c\u0105dania \u201enonce\u201d.
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Warto\u015b\u0107 elementu \u201e{0}\u201d w \u017c\u0105daniu \u201eevents\u201d nie jest obiektem JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Odpowiednia warto\u015b\u0107 elementu musi by\u0107 obiektem JSON. Oczekiwana warto\u015b\u0107 to \u201e{}\u201d, pusty obiekt JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie \u201eevents\u201d w znaczniku wylogowania jest poprawnie sformatowane.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: W znaczniku wylogowania brakuje \u017c\u0105dania \u201esid\u201d, ale klient OpenID Connect {0} go wymaga.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Klient OpenID Connect wymaga, aby znacznik wylogowania zawiera\u0142 identyfikator sesji w celu zidentyfikowania sesji klienta OpenID Connect z dostawc\u0105 OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Ustaw atrybut konfiguracyjny backchannelLogoutSessionRequired klienta OpenID Connect na warto\u015b\u0107 false lub upewnij si\u0119, \u017ce znacznik wylogowania zawiera \u017c\u0105danie \u201esid\u201d.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

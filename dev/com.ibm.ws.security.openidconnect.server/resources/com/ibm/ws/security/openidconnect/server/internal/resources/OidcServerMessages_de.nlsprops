@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Die Anforderungen aus dem ID-To
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Die Anforderungen aus dem ID-Token des Drittanbieters k\u00f6nnen nicht extrahiert werden. Weitere Informationen finden Sie in der Fehlernachricht.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Stellen Sie sicher, dass der OpenID Connect-Drittanbieter ein g\u00fcltiges ID-Token sendet.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Der OpenID Connect-Provider {0} hat bei dem Versuch, Abmeldetoken f\u00fcr R\u00fcckkanalabmeldeanforderungen zu erstellen, den folgenden Fehler festgestellt: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=Die ID-Tokenzeichenfolge im Parameter \u201eid_token_hint\u201c, falls angegeben, ist m\u00f6glicherweise fehlerhaft. Der Provider ist m\u00f6glicherweise nicht in der Lage, die Gruppe von Clients zum Senden von Abmeldeanforderungen f\u00fcr Back-Channel zu bestimmen. Wenn der Parameter \u201eid_token_hint\u201c nicht fehlerhaft ist, ist ein anderer Fehler aufgetreten, als der Provider versuchte, ein Abmeldetoken zu erstellen.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Pr\u00fcfen Sie die Benutzeraktion f\u00fcr den in der Nachricht enthaltenen Fehler.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Der OpenID Connect-Provider kann keine Anforderungen zur Wiederverwendung aus dem ID-Token extrahieren. Der Fehler: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Das ID-Token ist m\u00f6glicherweise fehlerhaft oder eine Anforderung innerhalb des Tokens weist einen Wert mit einem unerwarteten Datentyp auf. Alternativ kann das Token fehlende Anforderungen enthalten, die erforderlich sind, oder der Aussteller des Tokens ist nicht der erwartete Aussteller.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Stellen Sie sicher, dass das ID-Token ordnungsgem\u00e4\u00df formatiert ist. Weitere Informationen enth\u00e4lt der Fehler, der in der Nachricht angegeben ist.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Der OpenID Connect-Provider kann die Gruppe der OpenID Connect-Clients f\u00fcr die Abmeldung aufgrund des folgenden Fehlers nicht bestimmen: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Der Provider konnte die Gruppe der registrierten Clients nicht abrufen oder die ID-Token-Anforderungen sind m\u00f6glicherweise fehlerhaft.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Weitere Informationen enth\u00e4lt der Fehler, der in der Nachricht angegeben ist.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Die von dieser Laufzeitumgebung [{0}] verwendete Java-Version wird von der Mediator-SPI des ID-Tokens nicht unterst\u00fctzt. Die unterst\u00fctzte Java-Version ist 1.7 oder h\u00f6her.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Die in der Nachricht angegebene Java-Version unterst\u00fctzt die Mediator-SPI-Funktion des ID-Tokens nicht.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Installieren Sie Java Version 1.7 oder h\u00f6her.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: Die Ausstelleranforderung [{0}] im ID-Token stimmt nicht mit dem erwarteten Aussteller [{1}] f\u00fcr den OpenID Connect-Provider {2} \u00fcberein.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Der OpenID Connect-Provider hat das ID-Token nicht ausgegeben. Deshalb kann das Token nicht von diesem OpenID Connect-Provider verarbeitet werden.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Senden Sie nur ID-Tokens mit einer Ausstelleranforderung, die der Konfiguration f\u00fcr den OpenID Connect-Provider entspricht, der in der Nachricht angegeben ist.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Das ID-Token ist ung\u00fcltig, da ihm mindestens eine erforderliche Anforderung fehlt: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Die OpenID Connect-Spezifikation erfordert, dass die in der Fehlernachricht aufgelisteten Anforderungen im ID-Token vorhanden sein m\u00fcssen.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Stellen Sie sicher, dass das ID-Token alle erforderlichen Anforderungen enth\u00e4lt.
+
+# NOTE: Stop at CWWKS1649

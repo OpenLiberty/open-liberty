@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2020 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -187,3 +187,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fordern Sie ein neues To
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Der OpenID Connect-Client [{0}] enth\u00e4lt {1} in den Werten, die \u00fcber das Konfigurationsattribut [{2}] angegeben sind. Die angegebenen Werte werden ignoriert.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Die OAuth 2.0-Spezifikation definiert eine Reihe von reservierten Parametern, die vom Client f\u00fcr Berechtigungsanforderungen bereitgestellt werden m\u00fcssen. Werte f\u00fcr diese Parameter k\u00f6nnen nicht vom Benutzer bereitgestellt werden.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Entfernen Sie die angegebenen Werte aus der Liste mit den Werte, die in der OpenID Connect-Clientkonfiguration.
+
+JWT_MISSING_ISSUER=CWWKS1784E: Das Token ist ung\u00fcltig, da es keine Ausstelleranforderung enth\u00e4lt.
+JWT_MISSING_ISSUER.explanation=Das Token muss eine Ausstelleranforderung enthalten, um anzugeben, wer das Token ausgestellt hat.
+JWT_MISSING_ISSUER.useraction=Fordern Sie ein neues Token an, das eine Ausstelleranforderung enth\u00e4lt.

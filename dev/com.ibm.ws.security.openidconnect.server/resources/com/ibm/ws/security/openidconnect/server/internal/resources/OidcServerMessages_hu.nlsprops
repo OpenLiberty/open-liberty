@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: A harmadik f\u00e9lt\u0151l sz\
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 azonos\u00edt\u00f3 token ig\u00e9nyek nem nyerhet\u0151k ki. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hiba\u00fczenetet.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00fcls\u0151 OpenID Connect szolg\u00e1ltat\u00f3 \u00e9rv\u00e9nyes azonos\u00edt\u00f3 tokent k\u00fcldj\u00f6n.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: A {0} OpenID Connect szolg\u00e1ltat\u00f3 a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, amikor megpr\u00f3b\u00e1lta \u00f6ssze\u00e1ll\u00edtani a kijelentkez\u00e9si tokeneket a h\u00e1tt\u00e9rcsatorna kijelentkez\u00e9si k\u00e9r\u00e9sekhez: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=Lehet, hogy az id_token_hint param\u00e9terben megadott azonos\u00edt\u00f3 token karaktersorozat hib\u00e1s form\u00e1tum\u00fa. Lehets\u00e9ges, hogy a szolg\u00e1ltat\u00f3 nem tudja meghat\u00e1rozni azt az \u00fcgyf\u00e9lk\u00f6rt, amelynek a h\u00e1tt\u00e9rcsatorna kijelentkez\u00e9si k\u00e9r\u00e9seket kell k\u00fcldeni. Ha az id_token_hint param\u00e9ter form\u00e1tuma megfelel\u0151, akkor m\u00e1s hiba t\u00f6rt\u00e9nt, amikor a szolg\u00e1ltat\u00f3 megpr\u00f3b\u00e1lt \u00f6ssze\u00e1ll\u00edtani egy kijelentkez\u00e9si tokent.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=A hiba hiba kezel\u00e9se \u00e9rdek\u00e9ben tekintse meg az \u00fczenetben tal\u00e1lhat\u00f3, a hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tud \u00fajrafelhaszn\u00e1land\u00f3 \u00e1ll\u00edt\u00e1sokat kinyerni az azonos\u00edt\u00f3 tokenb\u0151l. A hiba a k\u00f6vetkez\u0151: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Lehet, hogy az azonos\u00edt\u00f3 token nem megfelel\u0151 form\u00e1tum\u00fa, vagy a tokenen bel\u00fcli \u00e1ll\u00edt\u00e1s nem v\u00e1rt adatt\u00edpust tartalmaz\u00f3 \u00e9rt\u00e9kkel rendelkezik. Ennek alternat\u00edv\u00e1jak\u00e9nt el\u0151fordulhat, hogy a tokenb\u0151l hi\u00e1nyoznak \u00e1ll\u00edt\u00e1sok, illetve a token kibocs\u00e1t\u00f3ja nem az elv\u00e1rt kibocs\u00e1t\u00f3.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edt\u00f3 token form\u00e1tuma helyes-e. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja meg\u00e1llap\u00edtani a kijelentkeztetend\u0151 OpenID Connect \u00fcgyf\u00e9lk\u00f6rt a k\u00f6vetkez\u0151 hiba miatt: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=A szolg\u00e1ltat\u00f3 nem tudta lek\u00e9rni a regisztr\u00e1lt \u00fcgyf\u00e9lk\u00f6rt, illetve lehet, hogy az azonos\u00edt\u00f3 token \u00e1ll\u00edt\u00e1sok form\u00e1tuma hib\u00e1s.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: A fut\u00e1si k\u00f6rnyezet \u00e1ltal haszn\u00e1lt Java v\u00e1ltozatot [{0}] az ID token Mediator SPI nem t\u00e1mogatja. A t\u00e1mogatott Java v\u00e1ltozat 1.7 vagy \u00fajabb.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Az \u00fczenetben l\u00e1that\u00f3 Java v\u00e1ltozat nem t\u00e1mogatja a ID token Mediator SPI funkci\u00f3t. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Telep\u00edtsen Java 1.7 vagy \u00fajabb v\u00e1ltozatot.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: Az azonos\u00edt\u00f3 tokenben szerepl\u0151 [{0}] kibocs\u00e1t\u00f3 \u00e1ll\u00edt\u00e1s nem egyezik meg a(z) {2} OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1rt [{1}] kibocs\u00e1t\u00f3j\u00e1val.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 nem bocs\u00e1totta ki az azonos\u00edt\u00f3 tokent, \u00edgy ezt az adott OpenID Connect szolg\u00e1ltat\u00f3 nem tudja kezelni.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Csak az \u00fczenetben megadott OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1nak megfelel\u0151 kibocs\u00e1t\u00f3 \u00e1ll\u00edt\u00e1ssal rendelkez\u0151 azonos\u00edt\u00f3 tokeneket k\u00fcldj\u00f6n.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Az azonos\u00edt\u00f3 token nem \u00e9rv\u00e9nyes, mert legal\u00e1bb egy k\u00f6telez\u0151 \u00e1ll\u00edt\u00e1s hi\u00e1nyzik: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Az OpenID Connect specifik\u00e1ci\u00f3 megk\u00f6veteli, hogy a hiba\u00fczenetben szerepl\u0151 \u00e1ll\u00edt\u00e1s(ok)nak szerepelni kell lennie az azonos\u00edt\u00f3 tokenben.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edt\u00f3 token tartalmazza-e az \u00f6sszes sz\u00fcks\u00e9ges \u00e1ll\u00edt\u00e1st.
+
+# NOTE: Stop at CWWKS1649

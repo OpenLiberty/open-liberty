@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: N\u00e1roky z tokenu ID t\u0159
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=N\u00e1roky z tokenu ID t\u0159et\u00ed strany nelze extrahovat. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Ujist\u011bte se, \u017ee poskytovatel protokolu OpenID Connect t\u0159et\u00ed strany odes\u00edl\u00e1 platn\u00fd token ID.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Poskytovatel OpenID Connect {0} zjistil p\u0159i pokusu o sestaven\u00ed token\u016f odhl\u00e1\u0161en\u00ed pro po\u017eadavky na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu n\u00e1sleduj\u00edc\u00ed chybu: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=\u0158et\u011bzec identifika\u010dn\u00edho tokenu v parametru id_token_hint, je-li zad\u00e1n, m\u016f\u017ee b\u00fdt chybn\u00fd. Poskytovatel nemus\u00ed b\u00fdt schopen ur\u010dit sadu klient\u016f pro odesl\u00e1n\u00ed po\u017eadavk\u016f na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu. Pokud nen\u00ed parametr id_token_hint chybn\u00fd, do\u0161lo k jin\u00e9 chyb\u011b, kdy\u017e se poskytovatel pokusil o sestaven\u00ed tokenu odhl\u00e1\u0161en\u00ed.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Prohl\u00e9dn\u011bte si akci u\u017eivatele t\u00fdkaj\u00edc\u00ed se chyby uveden\u00e9 ve zpr\u00e1v\u011b. 
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Poskytovatel OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky na op\u011btovn\u00e9 pou\u017eit\u00ed z identifika\u010dn\u00edho tokenu. Chyba je: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Identifika\u010dn\u00ed token m\u016f\u017ee chybn\u00fd nebo m\u016f\u017ee m\u00edt n\u00e1rok v tokenu hodnotu s neo\u010dek\u00e1van\u00fdm datov\u00fdm typem. P\u0159\u00edpadn\u011b m\u016f\u017ee v tokenu chyb\u011bt po\u017eadovan\u00fd n\u00e1rok nebo vydavatel tokenu nen\u00ed o\u010dek\u00e1van\u00fdm vydavatelem.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ujist\u011bte se, \u017ee identifika\u010dn\u00ed token je spr\u00e1vn\u011b naform\u00e1tov\u00e1n. Dal\u0161\u00ed informace naleznete v popisu chyby uveden\u00e9m ve zpr\u00e1v\u011b. 
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Poskytovatel OpenID Connect nem\u016f\u017ee ur\u010dit sadu klient\u016f OpenID Connect, kte\u0159\u00ed maj\u00ed b\u00fdt odhl\u00e1\u0161eni, kv\u016fli t\u00e9to chyb\u011b: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Poskytovateli se nepoda\u0159ilo na\u010d\u00edst sadu registrovan\u00fdch klient\u016f, nebo mohou b\u00fdt chybn\u00e9 n\u00e1roky identifika\u010dn\u00edho tokenu.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Dal\u0161\u00ed informace naleznete v popisu chyby uveden\u00e9m ve zpr\u00e1v\u011b. 
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Verze jazyka Java pou\u017eit\u00e1 t\u00edmto b\u011bhov\u00fdm prost\u0159ed\u00edm [{0}] nen\u00ed podporov\u00e1na rozhran\u00edm poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. Podporovan\u00e1 verze Java je 1.7 nebo vy\u0161\u0161\u00ed.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Verze Java ve zpr\u00e1v\u011b nepodporuje funkci rozhran\u00ed poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Nainstalujte verzi Java 1.7 nebo vy\u0161\u0161\u00ed.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: N\u00e1rok vydavatele [{0}] v identifika\u010dn\u00edm tokenu neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9mu vydavateli [{1}] pro poskytovatele OpenID Connect {2}.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Poskytovatel OpenID Connect nevydal identifika\u010dn\u00ed token, tak\u017ee dan\u00fd token nem\u016f\u017ee b\u00fdt t\u00edmto poskytovatelem OpenID Connect zpracov\u00e1n.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Ode\u0161lete pouze identifika\u010dn\u00ed tokeny s n\u00e1rokem vydavatele, kter\u00fd odpov\u00edd\u00e1 konfiguraci pro poskytovatele OpenID Connect, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Identifika\u010dn\u00ed token nen\u00ed platn\u00fd, proto\u017ee chyb\u00ed alespo\u0148 jeden po\u017eadovan\u00fd n\u00e1rok: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specifikace OpenID Connect vy\u017eaduje, aby byl v identifika\u010dn\u00edm tokenu uveden n\u00e1rok nebo n\u00e1roky, kter\u00e9 jsou uvedeny v chybov\u00e9 zpr\u00e1v\u011b.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Ujist\u011bte se, \u017ee identifika\u010dn\u00ed token obsahuje v\u0161echny po\u017eadovan\u00e9 n\u00e1roky.
+
+# NOTE: Stop at CWWKS1649

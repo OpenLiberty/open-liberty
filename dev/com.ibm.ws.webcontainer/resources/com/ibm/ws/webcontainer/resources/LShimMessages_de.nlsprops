@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2014 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -63,7 +63,6 @@ Illegal.Argument\:.{0}.is.not.a.directory..useraction=Vergewissern Sie sich, das
 # --------------------------------
 WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
 WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Dies ist ein Systemfehler.
-
 WebAppSecurityCollaborator.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
 
 # --------------------------------
@@ -219,7 +218,7 @@ failed.to.load.converter.properties.useraction=Stellen Sie sicher, dass die ange
 # --------------------------------
 setbuffer.size.called.after.write=SRVE0157E: setBufferSize() nach erstem Schreibzugriff auf Ausgabedatenstrom/Ausgabeprogramm aufgerufen
 setbuffer.size.called.after.write.explanation=Es wurde versucht, die Gr\u00f6\u00dfe des Antwortpuffers zu definieren, nachdem die Antwort bereits festgeschrieben war. Dies ist ein Anwendungsfehler.
-setbuffer.size.called.after.write.useraction= Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
+setbuffer.size.called.after.write.useraction=Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
 
 # --------------------------------
 usertransaction.rollback.exception=SRVE0160E: Ausnahme bei ROLLBACK-Operation f\u00fcr Benutzertransaktion: {0}
@@ -333,7 +332,6 @@ host.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration 
 
 # -----------------------------------------------
 host.on.port.has.not.been.defined=SRVE0205E: Der Host {0} an Port {1} ist nicht definiert.
-
 host.on.port.has.not.been.defined.explanation=Der f\u00fcr die Bearbeitung dieses Anforderungs-URI definierte virtuelle Host wurde nicht gefunden. Es ist eine Systemaktion erforderlich.
 host.on.port.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration f\u00fcr virtuelles Hosts in der Datei "virtualhosts.xml" oder \u00fcber die Administrationskonsole.
 
@@ -366,18 +364,22 @@ be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application
 class.{0}.could.not.be.instantiated=SRVE0211E: Die Klasse {0} konnte nicht instanziiert werden.
 class.{0}.could.not.be.instantiated.explanation=Interne Ausnahme.
 class.{0}.could.not.be.instantiated.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 class.{0}.not.accessible=SRVE0212E: Die Klasse {0} ist nicht verf\u00fcgbar.
 class.{0}.not.accessible.explanation=Interne Ausnahme.
 class.{0}.not.accessible.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 class.not.found=SRVE0213E: Die Klasse wurde nicht gefunden.
 class.not.found.explanation=Interne Ausnahme.
 class.not.found.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 invalid.count=SRVE0214E: Ung\u00fcltiger Z\u00e4hler
 invalid.count.explanation=Interne Ausnahme.
 invalid.count.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 non-HTTP.request.or.response=SRVE0215E: Keine HTTP-Anforderung oder -Antwort
 non-HTTP.request.or.response.explanation=Die definierte Servletkette kann nur HTTP-Anforderungen bearbeiten. Dies ist ein Anwendungsfehler.
@@ -531,7 +533,6 @@ reaper.destroying.servlet.[{0}].useraction=Keine.
 # -----------------------------------------------
 reaper.thread.error=SRVE0247E: Fehler beim Ausf\u00fchren des Reaper-Thread.
 reaper.thread.error.explanation=Bei der Verarbeitung des Reaper-Thread ist eine Ausnahme eingetreten. Dies ist ein Systemfehler.
-
 reaper.thread.error.useraction=Die Reaper-Verarbeitung ist eine Form der Garbage-Collection.
 
 # -----------------------------------------------
@@ -637,7 +638,6 @@ error.initializing.filters.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
 #------------------------------------------------
 error.obtaining.session.context=SRVE0268E: Fehler beim Abrufen des Sitzungskontextes f\u00fcr die Webanwendung: {0}
 error.obtaining.session.context.explanation=Es konnte kein g\u00fcltiger Sitzungskontext f\u00fcr die Webanwendung abgerufen werden. Es ist eine Systemaktion erforderlich.
-
 error.obtaining.session.context.useraction=Pr\u00fcfen Sie, ob der Sitzungsmanager ordnungsgem\u00e4\u00df konfiguriert ist.
 
 #-------------------------------------------------
@@ -837,7 +837,6 @@ Null.Filter.Mapping.useraction=\u00c4ndern Sie die Anwendungsdeskriptoren auf de
 
 #------------------------------------------------
 filtering.by.asterisk=SRVE0308E: Eine Filterung mit Stern ist nicht zul\u00e4ssig.
-
 filtering.by.asterisk.explanation=Eine Filterung mit Stern ist nicht zul\u00e4ssig, weil die Inaktivierung der Bereitstellung aller Servlets nach Klassenname \u00fcber die angepasste Eigenschaft "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" behandelt wird. Dies ist ein Anwendungsfehler.
 filtering.by.asterisk.useraction=Setzen Sie "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" auf "true", um die Bereitstellung aller Klassen nach Klassenname zu blockieren.
 
@@ -1177,7 +1176,8 @@ WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Der Klassenpfad wurde nic
 WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Aktualisieren Sie die Datei MANIFEST.MF der JAR-Datei und geben Sie die korrekte Klassenpfaddefinition an.
 
 WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Das Element {0} des Manifestklassenpfads des Archivs {1} konnte nicht aufgel\u00f6st werden.
-WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Gew\u00f6hnlich sind Manifestklassenpfadelemente Referenzen auf JAR-Dateien. Wenn das referenzierte Element f\u00fcr die Anwendung erforderlich ist, weist die Nachricht auf ein schwerwiegendes Problem hin, das nicht ignoriert werden darf. Wenn das referenzierte Element f\u00fcr die Anwendung nicht erforderlich ist, weist die Nachricht auf ein harmloses Problem hin, das ignoriert werden kann. Entweder fehlt das referenzierte Element oder es befindet sich an einer falschen Position oder es befindet sich an der richtigen Position, aber das Manifestklassenpfadelement verweist auf eine andere, falsche Position. Wenn ein Element erforderlich ist, ist dies in der Regel daran erkennbar, dass die Anwendung eine Klasse oder eine andere Ressource nicht finden kann oder dass die Anwendung die falsche Version einer Klasse oder Ressource l\u00e4dt. Wenn ein Manifestklassenpfadelement nicht aufgel\u00f6st werden kann, ist die h\u00e4ufig darauf zur\u00fcckzuf\u00fchren, dass die Struktur einer Anwendung aktualisiert wurde, wodurch ein referenziertes Element veraltet ist. Eine andere g\u00e4ngige Ursache ist das Hinzuf\u00fcgen einer JAR-Datei eines anderen Anbieters zu einer Anwendung, die auf eine Position verweist, die der Anwendung nicht hinzugef\u00fcgt wurde.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Gew\u00f6hnlich sind Manifestklassenpfadelemente Referenzen auf JAR-Dateien. Wenn das referenzierte Element f\u00fcr die Anwendung erforderlich ist, weist die Nachricht auf ein schwerwiegendes Problem hin, das nicht ignoriert werden darf. Wenn das referenzierte Element f\u00fcr die Anwendung nicht erforderlich ist, weist die Nachricht auf ein harmloses Problem hin, das ignoriert werden kann. Entweder fehlt das referenzierte Element oder es befindet sich an einer falschen Position oder es befindet sich an der richtigen Position, aber das Manifestklassenpfadelement verweist auf eine andere, falsche Position. Wenn ein Element erforderlich ist, ist dies in der Regel daran erkennbar, dass die Anwendung eine Klasse oder eine andere Ressource nicht finden kann oder dass die Anwendung die falsche Version einer Klasse oder Ressource l\u00e4dt. Wenn ein Manifestklassenpfadelement nicht aufgel\u00f6st werden kann, ist die h\u00e4ufig darauf zur\u00fc\
+    ckzuf\u00fchren, dass die Struktur einer Anwendung aktualisiert wurde, wodurch ein referenziertes Element veraltet ist. Eine andere g\u00e4ngige Ursache ist das Hinzuf\u00fcgen einer JAR-Datei eines anderen Anbieters zu einer Anwendung, die auf eine Position verweist, die der Anwendung nicht hinzugef\u00fcgt wurde.
 WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=F\u00fcgen Sie Anwendungselemente hinzu, benennen Sie sie um oder verschieben Sie sie, aktualisieren Sie den Manifestklassenpfad oder entfernen Sie Manifestklassenpfadelemente, die nicht aufgel\u00f6st werden k\u00f6nnen. Manifestklassenpfadelemente werden relativ zur Position der \u00fcbergeordneten Archivdatei aufgel\u00f6st.
 
 CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: Es wurden doppelte Werte ({0}) in {1} f\u00fcr {2} von {3} gefunden. Der Wert ist {4} in der Datei web-fragment.xml von {5}, aber {6} in {7}. 
@@ -1245,6 +1245,9 @@ CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: Es wurden
 CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, dasselbe JMS-Ziel in verschiedenen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
 CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie das JMS-Ziel mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
 
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT=SRVE9950E: In den \u201eweb-fragment.xml\u201c-Dateien von {2} und {3} wurden widerspr\u00fcchliche {0}-Konfigurationen mit demselben Namen {1} gefunden.
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT.explanation=Es ist nicht zul\u00e4ssig, anwendungsdefinierte Ressourcen mit demselben Namen in verschiedenen \u201eweb-fragment.xml\u201c-Dateien einzuschlie\u00dfen, es sei denn, Sie \u00fcberschreiben sie in \u201eweb.xml\u201c.
+WEB_FRAGMENT_XML_RESOURCE_CONFLICT.useraction=\u00dcberschreiben Sie die in Konflikt stehende \u201eweb-fragment.xml\u201c-Konfiguration, indem Sie eine anwendungsdefinierte Ressource mit demselben Namen in der Datei \u201eweb.xml\u201c angeben.
 
 SRVE0777E=SRVE0777E: Es wurde eine Ausnahme von der Anwendungsklasse ''{0}.{1}:{2}'' ausgel\u00f6st.\n{3}
 SRVE0777E.explanation= Der Anwendungscode hat eine unerwartete Ausnahme ausgel\u00f6st.

@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: A h\u00e1tt\u00e9r-kij
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Az OpenID Connect szolg\u00e1ltat\u00e1s elv\u00e1rja, hogy a h\u00e1tt\u00e9r k\u00e9r\u00e9s URI azonos\u00edt\u00f3ja tartalmazzon egy OpenID Connect \u00fcgyf\u00e9lazonos\u00edt\u00f3t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy melyik \u00fcgyf\u00e9l jelentkezzen ki.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s URI tartalmazza-e az OpenID Connect \u00fcgyf\u00e9lazonos\u00edt\u00f3t a felhaszn\u00e1l\u00f3 kijelentkez\u00e9s\u00e9hez.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: A kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes, mert legal\u00e1bb egy k\u00f6telez\u0151 \u00e1ll\u00edt\u00e1s hi\u00e1nyzik: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=A kijelentkez\u00e9si tokennek tartalmaznia kell az \u00fczenetben megadott \u00e1ll\u00edt\u00e1sokat.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 tartalmazza-e a kijelentkez\u00e9si tokenben a hi\u00e1nyz\u00f3 \u00e1ll\u00edt\u00e1sokat.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: A kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes, mert nem tartalmaz "sub" vagy "sid" \u00e1ll\u00edt\u00e1st. A tokennek rendelkeznie kell legal\u00e1bb az egyik ilyen ig\u00e9nnyel.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=A "sub" \u00e9s a "sid" \u00e1ll\u00edt\u00e1sok azonos\u00edtj\u00e1k a tokenhez tartoz\u00f3 felhaszn\u00e1l\u00f3t \u00e9s munkamenetet. Legal\u00e1bb az egyik \u00e1ll\u00edt\u00e1snak meg kell lennie, hogy meghat\u00e1rozhat\u00f3 legyen a kijelentkeztetend\u0151 felhaszn\u00e1l\u00f3 vagy munkamenet.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 tartalmazza-e a kijelentkez\u00e9si tokenben a hi\u00e1nyz\u00f3 \u00e1ll\u00edt\u00e1sokat.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: A kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes, mert az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1s nem JSON objektum: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=A kijelentkez\u00e9si tokenben l\u00e9v\u0151 "esem\u00e9nyek" \u00e1ll\u00edt\u00e1snak JSON objektumnak kell lennie.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 a megfelel\u0151 adatt\u00edpust haszn\u00e1lja-e az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1shoz.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: A kijelentkez\u00e9si token nem \u00e9rv\u00e9nyes, mert az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1s nem tartalmaz "{0}" tagot. Az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1s \u00e9rt\u00e9ke {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=Az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1snak olyan JSON objektumnak kell lennie, amely tartalmaz egy, az \u00fczenetben megadott n\u00e9vvel rendelkez\u0151 tagot.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1s tartalmazza-e a sz\u00fcks\u00e9ges tagot.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: A kijelentkez\u00e9si token \u00e9rv\u00e9nytelen, mert egyszeri "nonce" \u00e1ll\u00edt\u00e1st tartalmaz.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=A kijelentkez\u00e9si token nem tartalmazhat "nonce" \u00e1ll\u00edt\u00e1st, hogy a token ne legyen haszn\u00e1lhat\u00f3 azonos\u00edt\u00f3 token helyett egy hamis\u00edtott hiteles\u00edt\u00e9si v\u00e1laszban.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kijelentkez\u00e9si token nem tartalmaz-e "nonce" \u00e1ll\u00edt\u00e1st.
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1sban a(z) "{0}" tag \u00e9rt\u00e9ke nem JSON objektum.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=A megfelel\u0151 tag\u00e9rt\u00e9knek JSON objektumnak kell lennie. A v\u00e1rt \u00e9rt\u00e9k: "{}", egy \u00fcres JSON objektum.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az "esem\u00e9nyek" \u00e1ll\u00edt\u00e1s a kijelentkez\u00e9si tokenben helyesen van-e form\u00e1zva.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: A kijelentkez\u00e9si tokenb\u0151l hi\u00e1nyzik a "sid" \u00e1ll\u00edt\u00e1s, de a(z) {0} OpenID Connect \u00fcgyf\u00e9l ezt megk\u00f6veteli.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Az OpenID Connect \u00fcgyf\u00e9l azt ig\u00e9nyli, hogy a kijelentkez\u00e9si token az OpenID Connect \u00fcgyf\u00e9lmunkamenet azonos\u00edt\u00e1s\u00e1ra az OpenID Connect szolg\u00e1ltat\u00f3val tartalmazzon egy munkamenet-azonos\u00edt\u00f3t.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=\u00c1ll\u00edtsa az OpenID Connect backchannelLogoutSessionRequired \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3s attrib\u00fatum\u00e1t false \u00e9rt\u00e9kre, vagy gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kijelentkez\u00e9si token tartalmaz-e "sid" \u00e1ll\u00edt\u00e1st.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

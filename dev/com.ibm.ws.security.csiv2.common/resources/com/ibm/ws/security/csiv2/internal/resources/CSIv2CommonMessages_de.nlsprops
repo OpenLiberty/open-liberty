@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Stellen Sie sicher, dass Sie ein keyStore-El
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Die angeforderte Cipher-Suite {0} scheint {1} Assoziationsoptionen zu haben, die den angegebenen {2} unterst\u00fctzten Optionen und den {3} erforderlichen Optionen nicht entsprechen.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Die Cipher-Suite entspricht m\u00f6glicherweise nicht den Assoziationsoptionen, die in die Interoperable Object Reference (IOR) geschrieben bzw. die f\u00fcr den Abgleich der IOR verwendet werden.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Vergewissern Sie sich, dass die angeforderte Cipher-Suite mit den angegebenen Assoziationsoptionen \u00fcbereinstimmt, oder entfernen Sie sie.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Die {0} angeforderte Cipher-Suite scheint \u00fcber {1} Zuordnungsoptionen zu verf\u00fcgen, die nicht mit den angegebenen {2} erforderlichen Optionen \u00fcbereinstimmen.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Die Cipher-Suite stimmt m\u00f6glicherweise nicht mit den erforderlichen Optionen \u00fcberein, die in die IOR (Interoperable Object Reference) geschrieben werden oder die zum Abgleich der IOR verwendet werden.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=\u00dcberpr\u00fcfen Sie, ob die angeforderte Cipher-Suite den angegebenen erforderlichen Optionen entspricht, oder entfernen Sie sie.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: Die SSL-Konfiguration {0} ist nicht vorhanden. M\u00f6glicherweise fehlt ein SSL-Element in der Konfiguration oder die Konfiguration enth\u00e4lt eine ung\u00fcltige Referenz auf ein keystore- oder truststore-Element. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Das erforderliche SSL-Konfigurationselement kann wegen eines Fehlers in der Konfiguration nicht abgerufen werden. 

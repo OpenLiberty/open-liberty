@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Utilizare: java [op\u0163iuni JVM] -jar {0} [op\u0163iuni] outputFile  
-briefUsageScript=Utilizare: ./{0} [op\u021biuni] fi\u0219ier_ie\u0219ire
+purpose=Comanda {0} genereaz\u0103 schema XML pentru configura\u021bia nucleu Liberty \u0219i alte extensii de produs instalate, \u00eentr-un singur fi\u0219ier de ie\u0219ire.
 
+briefUsage=Utilizare: java [op\u0163iuni JVM] -jar {0} [op\u0163iuni] outputFile
+  
+briefUsageScript=Utilizare: ./{0} [op\u021biuni] fi\u0219ier_ie\u0219ire
 
 use.options=Op\u0163iuni:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Op\u0163iuni:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Un nume de fi\u015fier care con\u0163ine o list\u0103 de pid-uri de ignorat
+option-desc.ignorePids=Numele unui fi\u0219ier care con\u021bine o list\u0103 de pid-uri de ignorat.
 option-key.encoding=--encoding
-option-desc.encoding=Codificarea caracterelor de folosit pentru ie\u015fire
+option-desc.encoding=Codarea de caractere de utilizat pentru ie\u0219ire.
 option-key.locale=--locale
-option-desc.locale=Locale-ul de folosit pentru ie\u015fire
+option-desc.locale=Limba de utilizat atunci c\u00e2nd crea\u021bi fi\u0219ierul de ie\u0219ire. Acest \u0219ir este alc\u0103tuit din dou\u0103 litere mici ce reprezint\u0103 codul de limb\u0103 ISO-639, urmat op\u021bional de o liniu\u021b\u0103 de subliniere \u0219i dou\u0103 litere mari ce reprezint\u0103 codul de \u021bar\u0103 ISO-3166.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=Schema de ie\u015fire nu va con\u0163ine spa\u0163ii de indentare, linii noi sau comentarii XML
+option-desc.compactoutput=Schema de ie\u0219ire nu va con\u021bine spa\u021bii de indentare, salturi la linie nou\u0103 sau comentarii XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=Numele extensiei de produs de procesat.                            \nDac\u0103 extensia de produs este instalat\u0103 \u00een loca\u0163ia de utilizator implicit\u0103,    \nfolosi\u0163i cuv\u00e2ntul cheie: usr.                                                 \nDac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, se face ac\u0163iunea pe nucleul Liberty.
 

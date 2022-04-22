@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Uso: java [opciones JVM] -jar {0} [opciones] archivoSalida  
-briefUsageScript=Uso: ./{0} [options] outputFile
+purpose=El mandato {0} genera el esquema XML para la configuraci\u00f3n del n\u00facleo de Liberty y otras extensiones de productos instalados en un \u00fanico archivo de salida.
 
+briefUsage=Uso: java [opciones JVM] -jar {0} [opciones] archivoSalida
+  
+briefUsageScript=Uso: ./{0} [options] outputFile
 
 use.options=Opciones:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Opciones:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Un nombre de archivo que contiene una lista de pids a ignorar
+option-desc.ignorePids=Nombre de archivo que contiene una lista de pids que se deben ignorar.
 option-key.encoding=--encoding
-option-desc.encoding=La codificaci\u00f3n de caracteres a utilizar para la salida
+option-desc.encoding=La codificaci\u00f3n de caracteres que se debe utilizar para la salida.
 option-key.locale=--locale
-option-desc.locale=El entorno local a utilizar para la salida
+option-desc.locale=El idioma que se debe utilizar al crear el archivo de salida. Esta serie se compone de un c\u00f3digo de idioma de dos letras ISO-639\nen min\u00fascula, seguido de un car\u00e1cter de subrayado y el c\u00f3digo de pa\u00eds de dos letras\nISO-3166 en may\u00fascula.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=El esquema de salida no incluir\u00e1 espacios de indentaci\u00f3n, nuevos saltos de l\u00ednea ni comentarios XML
+option-desc.compactoutput=El esquema de salida no contendr\u00e1 espacios de sangr\u00eda, saltos de l\u00ednea nuevos ni comentarios XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=El nombre de extensi\u00f3n del producto que se van a procesar.                            \nSi la extensi\u00f3n del producto est\u00e1 instalada en la ubicaci\u00f3n de usuario por omisi\u00f3n,\nutilice la palabra clave: usr.                                                  \nSi no se especifica esta opci\u00f3n, la acci\u00f3n se realiza en el n\u00facleo de Liberty.
 

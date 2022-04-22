@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Sprawd\u017a, czy skonfigurowano element key
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: \u017b\u0105dany zestaw algorytm\u00f3w szyfrowania {0} ma prawdopodobnie opcje powi\u0105zania {1}, kt\u00f3re nie s\u0105 zgodne z okre\u015blonymi opcjami obs\u0142ugiwanymi (Supported) {2} i wymaganymi (Required) {3}.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Zestaw algorytm\u00f3w szyfrowania mo\u017ce nie by\u0107 zgodny z opcjami powi\u0105zania, kt\u00f3re s\u0105 zapisane w uniwersalnym wska\u017aniku obiektu (Interoperable Object Reference - IOR) lub s\u0105 u\u017cywane w celu dopasowania do wska\u017anika IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Sprawd\u017a, czy \u017c\u0105dany zestaw algorytm\u00f3w szyfrowania jest zgodny z okre\u015blonymi opcjami powi\u0105zania, lub usu\u0144 go.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Wygl\u0105da na to, \u017ce \u017c\u0105dany zestaw algorytm\u00f3w szyfrowania {0} ma opcje powi\u0105zania {1}, kt\u00f3re nie s\u0105 zgodne z okre\u015blonymi opcjami wymaganymi {2}.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Zestaw algorytm\u00f3w szyfrowania mo\u017ce nie by\u0107 zgodny z wymaganymi opcjami, kt\u00f3re zosta\u0142y zapisane w uniwersalnym wska\u017aniku obiektu lub kt\u00f3re wcze\u015bniej by\u0142y zgodne z uniwersalnym wska\u017anikiem obiektu.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Sprawd\u017a, czy \u017c\u0105dany zestaw algorytm\u00f3w szyfrowania jest zgodny z okre\u015blonymi opcjami wymaganymi, lub usu\u0144 go.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: Konfiguracja SSL {0} nie istnieje. By\u0107 mo\u017ce jest to spowodowane brakiem elementu SSL lub niepoprawnym odwo\u0142aniem do elementu magazynu kluczy lub magazynu zaufanych certyfikat\u00f3w w konfiguracji. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Z powodu b\u0142\u0119du w konfiguracji nie mo\u017cna pobra\u0107 potrzebnego elementu konfiguracji SSL. 

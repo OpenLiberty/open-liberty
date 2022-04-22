@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Assicurarsi di aver configurato un elemento 
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite di cifratura richiesta da {0} sembra aver opzioni di associazione {1} che non corrispondono alle opzioni supportate specificate {2} e alle opzioni richieste {3}.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite di cifratura potrebbe non corrispondere alle opzioni di associazione scritte nell'IOR (Interoperable Object Reference) o utilizzate per mettere in corrispondenza l'IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verificare che la suite di cifratura richiesta corrisponda alle opzioni di associazione specificate oppure rimuoverla.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite di cifratura {0} richiesta sembra avere delle opzioni di associazione {1} che non corrispondono alle opzioni richieste {2} specificate.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite di cifratura potrebbe non corrispondere alle opzioni richieste che vengono scritte nell'IOR (Interoperable Object Reference) o che sono utilizzate per una corrispondenza con l'IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verificare che la suite di cifratura richiesta corrisponda alle opzioni richieste specificate oppure rimuoverla.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: La configurazione SSL {0} non esiste. Ci\u00f2 pu\u00f2 dipendere da un elemento SSL mancante o da un riferimento non valido a un elemento keystore o truststore nella configurazione. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Impossibile richiamare l'elemento di configurazione SSL necessario, a causa di un errore nella configurazione. 

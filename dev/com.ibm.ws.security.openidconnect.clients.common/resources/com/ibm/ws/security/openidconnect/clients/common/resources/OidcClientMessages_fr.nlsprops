@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: La demande de d\u00e9c
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=La fonction OpenID Connect s'attend \u00e0 ce que l'URI de demande du canal arri\u00e8re inclut un ID client OpenID Connect pour d\u00e9terminer le client \u00e0 d\u00e9connecter.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=V\u00e9rifiez que l'URI de la demande inclut l'ID client OpenID Connect \u00e0 utiliser pour la d\u00e9connexion de l'utilisateur.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Le jeton de d\u00e9connexion n''est pas valide car il manque au moins une r\u00e9clamation requise : {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Le jeton de d\u00e9connexion doit contenir les revendications sp\u00e9cifi\u00e9es dans le message.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=V\u00e9rifiez que le fournisseur OpenID Connect inclut les r\u00e9clamations manquantes dans le jeton de d\u00e9connexion.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Le jeton de d\u00e9connexion n'est pas valide car il ne contient pas de r\u00e9clamation "sub" ou "sid". Le jeton doit avoir au moins une de ces demandes.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=Les revendications "sub" et "sid" identifient l'utilisateur et la session associ\u00e9s \u00e0 un jeton. Au moins une de ces demandes doit \u00eatre pr\u00e9sente pour d\u00e9terminer l'utilisateur ou la session \u00e0 consigner.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=V\u00e9rifiez que le fournisseur OpenID Connect inclut les r\u00e9clamations manquantes dans le jeton de d\u00e9connexion.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Le jeton de d\u00e9connexion n''est pas valide car la r\u00e9clamation "events" n''est pas un objet JSON : {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=La r\u00e9clamation "events" dans le jeton de d\u00e9connexion doit \u00eatre un objet JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=V\u00e9rifiez que le fournisseur OpenID Connect utilise le type de donn\u00e9es correct pour la r\u00e9clamation "events".
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Le jeton de d\u00e9connexion n''est pas valide car l''all\u00e9gation "events" ne contient pas "{0}" en tant que membre. La valeur de la demande "events" est {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=La revendication "Ev\u00e9nements" doit \u00eatre un objet JSON contenant un membre dont le nom est sp\u00e9cifi\u00e9 dans le message.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Assurez-vous que la r\u00e9clamation "\u00e9v\u00e9nements" inclut le membre requis.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Le jeton de d\u00e9connexion n'est pas valide car il contient une demande "nonce".
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Un jeton de d\u00e9connexion ne doit pas contenir de demande "nonce" de sorte que le jeton ne puisse pas \u00eatre utilis\u00e9 dans une r\u00e9ponse d'authentification falsifi\u00e9e \u00e0 la place d'un jeton d'ID.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=V\u00e9rifiez que le jeton de d\u00e9connexion ne contient pas de r\u00e9clamation "nonce".
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: La valeur du membre "{0}" dans la r\u00e9clamation "events" n''est pas un objet JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=La valeur de membre correspondante doit \u00eatre un objet JSON. La valeur attendue est "{}", un objet JSON vide.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=V\u00e9rifiez que la r\u00e9clamation "events" dans le jeton de d\u00e9connexion est correctement format\u00e9e.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: Le jeton de d\u00e9connexion est manquant dans la demande "sid", mais le client {0} OpenID Connect l''exige.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Le client OpenID Connect requiert que le jeton de d\u00e9connexion contienne un ID de session pour identifier la session client OpenID Connect avec le fournisseur OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=D\u00e9finissez l'attribut de configuration client backchannelLogoutSessionRequired OpenID Connect sur false ou v\u00e9rifiez que le jeton de d\u00e9connexion contient une r\u00e9clamation "sid".
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

@@ -93,8 +93,8 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Prvek konfigurace cdi12 je 
 cdi12.element.type.superceded.CWOWB1015W.explanation=Prvek konfigurace cdi nahrad\u00ed prvek konfigurace cdi12 a obsahuje v\u0161echny stejn\u00e9 volby plus nov\u00e9 volby.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Upravte konfiguraci server.xml tak, aby m\u00edsto prvku konfigurace cdi12 pou\u017e\u00edvala prvek konfigurace cdi.
 
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atribut emptyBeansXMLExplicitBeanArchive prvku konfigurace cdi je podporov\u00e1n pouze v r\u00e1mci CDI 4.0 nebo nov\u011bj\u0161\u00ed. Tento atribut je ignorov\u00e1n.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atribut emptyBeansXMLExplicitBeanArchive nem\u00e1 \u017e\u00e1dn\u00fd vliv, je-li pou\u017eit s verz\u00ed CDI ni\u017e\u0161\u00ed ne\u017e 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atribut emptyBeansXMLExplicitBeanArchive prvku konfigurace cdi je podporov\u00e1n pouze ve verzi CDI 4.0 nebo nov\u011bj\u0161\u00ed.  Tento atribut je ignorov\u00e1n.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atribut emptyBeansXMLExplicitBeanArchive nem\u00e1 \u017e\u00e1dn\u00fd vliv, je-li pou\u017eit s verz\u00ed CDI ni\u017e\u0161\u00ed ne\u017e 4.0. 
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Aktualizujte konfiguraci server.xml tak, \u017ee bu\u010f odeberte atribut, nebo pou\u017eijte CDI verze 4.0 nebo nov\u011bj\u0161\u00ed.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Atribut enableImplicatBeanArchives byl nastaven na prvc\u00edch konfigurace cdi12 i cdi. Pou\u017e\u00edv\u00e1 se hodnota z prvku cdi a hodnota v prvku cdi12 se ignoruje.

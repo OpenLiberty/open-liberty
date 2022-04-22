@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Utilizzo: java [opzioni JVM] -jar {0} [opzioni] outputFile  
-briefUsageScript=Utilizzo: ./{0} [opzioni] fileOutput
+purpose=Il comando {0} genera lo schema XML per la configurazione di Liberty Core e altre estensioni di prodotti installate in un unico file di output.
 
+briefUsage=Utilizzo: java [opzioni JVM] -jar {0} [opzioni] outputFile
+  
+briefUsageScript=Utilizzo: ./{0} [opzioni] fileOutput
 
 use.options=Opzioni:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Opzioni:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Un nome di file contenente un elenco di pid da ignorare
+option-desc.ignorePids=Un nome file contenente un elenco di pid da ignorare.
 option-key.encoding=--encoding
-option-desc.encoding=La codifica carattere da utilizzare per l'output
+option-desc.encoding=La codifica dei caratteri da utilizzare per l'output.
 option-key.locale=--locale
-option-desc.locale=La locale da utilizzare per l'output
+option-desc.locale=La lingua da utilizzare quando si crea il file di output. Questa stringa \u00e8 costituita dal codice lingua di due lettere minuscole ISO-639, facoltativamente seguito da un carattere di sottolineatura e il codice Paese di due lettere maiuscole ISO-3166 .
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=Lo schema di output non conterr\u00e0 spazi di rientro, nuovi avanzamenti riga o commenti XML
+option-desc.compactoutput=Lo schema di output non conterr\u00e0 spazi di rientro, nuovi avanzamenti riga o commenti XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=Il nome dell'estensione del prodotto da elaborare.                            \nSe l'estensione del prodotto \u00e8 installata nell'ubicazione utente predefinita,    \nutilizzare la parola chiave: usr.                                                  \nSe questa opzione non \u00e8 specificata, l'azione viene eseguita sul componente principale Liberty.
 

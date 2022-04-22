@@ -93,8 +93,8 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Elementul de configurare cd
 cdi12.element.type.superceded.CWOWB1015W.explanation=Elementul de configurare cdi \u00eenlocuie\u0219te elementul de configurare cdi12 \u0219i con\u021bine toate op\u021biunile pe care le oferea acesta, plus op\u021biuni noi.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Modifica\u021bi configura\u021bia server.xml pentru a utiliza elementul de configurare cdi \u00een locul elementului de configurare cdi12.
 
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atributul emptyBeansXMLExplicitBeanArchive al elementului de configurare cdi este acceptat numai pe CDI 4.0 sau o versiune mai recent\u0103. Acest atribut este ignorat.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atributul emptyBeansXMLExplicitBeanArchive nu are niciun efect atunci c\u00e2nd este utilizat cu o versiune CDI inferioar\u0103 versiunii 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atributul emptyBeansXMLExplicitBeanArchive al elementului de configura\u021bie cdi este suportat numai pentru CDI 4.0 sau o versiune mai nou\u0103. Acest atribut este ignorat.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atributul emptyBeansXMLExplicitBeanArchive nu are niciun efect atunci c\u00e2nd este utilizat cu o versiune CDI mai mic\u0103 dec\u00e2t 4.0.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Actualiza\u021bi configura\u021bia server.xml, fie pentru a elimina atributul, fie pentru a folosi versiunea CDI 4.0 sau o versiune mai recent\u0103.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Atributul enableImplicitBeanArchives a fost setat at\u00e2t pentru elemente de configurare cdi12, c\u00e2t \u0219i pentru elemente cdi. Se folose\u0219te valoarea din elementul cdi \u0219i se ignor\u0103 valoarea din cdi12
