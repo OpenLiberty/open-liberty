@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -587,30 +587,17 @@ public class CustomStoreSample implements OAuthStore {
 
     @Override
     public void deleteTokens(String providerId, long timestamp) throws OAuthStoreException {
-        System.out.println("CustomStoreSample deleteTokens request for " + providerId + " expiring before " + timestamp);
-
-        for (int i = 0; i < RETRY_COUNT; i++) {
-            try {
-                DBCollection col = getTokenCollection();
-                System.out.println("CustomStoreSample deleteTokens before " + col.count());
-                BasicDBObject query = new BasicDBObject();
-                query.put(EXPIRES, new BasicDBObject("$lt", timestamp));
-                query.put(PROVIDERID, providerId);
-                col.remove(query);
-                System.out.println("CustomStoreSample deleteTokens after " + col.count());
-                break;
-            } catch (Exception e) {
-                if (i < RETRY_COUNT && isNetworkFailure(e)) {
-                    try {
-                        System.out.println("CustomStoreSample deleteTokens hit a failure, trying again " + e.getMessage());
-
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e1) {
-                    }
-                } else {
-                    throw e;
-                }
-            }
+        try {
+            System.out.println("CustomStoreSample deleteTokens request for " + providerId + " expiring before " + timestamp);
+            DBCollection col = getTokenCollection();
+            System.out.println("CustomStoreSample deleteTokens before " + col.count());
+            BasicDBObject query = new BasicDBObject();
+            query.put(EXPIRES, new BasicDBObject("$lt", timestamp));
+            query.put(PROVIDERID, providerId);
+            col.remove(query);
+            System.out.println("CustomStoreSample deleteTokens after " + col.count());
+        } catch (Exception e) {
+            throw new OAuthStoreException("Failed on deleteTokens for time after " + timestamp, e);
         }
     }
 
