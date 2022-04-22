@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -248,9 +248,10 @@ public class AcmeSwapDirectoriesTest {
 	@CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
 	public void update_directoryURI_filePermissions() throws Exception {
         Assume.assumeTrue(!AcmeFatUtils.isWindows(testName.getMethodName()));
-		/*
-		 * Configure the acmeCA-2.0 feature.
-		 */
+        Assume.assumeTrue(!AcmeFatUtils.isISeries(testName.getMethodName()));
+        /*
+         * Configure the acmeCA-2.0 feature.
+         */
 		AcmeFatUtils.configureAcmeCA(server, caContainer, ORIGINAL_CONFIG, false, false, false, DOMAINS_1);
 
 		try {
@@ -318,7 +319,7 @@ public class AcmeSwapDirectoriesTest {
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 
 			if (acmefile.exists()) {
-				fail("The ACME file should not exist.");
+				fail("The ACME file should not exist. Running test on OS: " + System.getProperty("os.name"));
 			}
 			Log.info(this.getClass(), testName.getMethodName(), "TEST 2: FINISH.");
 				
