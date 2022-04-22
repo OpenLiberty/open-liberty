@@ -7,18 +7,20 @@ The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 TABLE OF CONTENTS
 
 APACHE V2
-BSD-2-CLAUSE 
-BSD-3-CLAUSE 
+BSD  
+BSD-2-CLAUSE  
+BSD-3-CLAUSE  
+BSD-EQUIVALENT  
 CDDL V1  
 CPL  
 EPL  
-EPL V2 
-ICU
-ISC 
+EPL V2  
+GTPL (GLOBUS TOOLKIT)
+ISC  
 JDOM
 MIT  
+MIT-EQUIVALENT  
 MPL V2.0  
-PYTHON
 W3C
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -28,87 +30,29 @@ APACHE SOFTWARE LICENSE 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License Version 2.0:
 
-JAKARTA.VALIDATION:JAKARTA.VALIDATION-API, 
-TOMCAT, 
-BCEL, 
-SERVLET, 
-APACHE CXF, 
-BTOA [swagger-ui], 
-COMMONS-IO, 
-COMMONS-LANG, 
-JSONTOKEN, 
-J4FRY [Apache MyFaces], 
-APACHE BVAL, 
-MIME4J, 
-ARRAYELRESOLVER.JAVA [javax.el],
-COMMONS-LOGGING, 
-JAVAEE_5.XSD [Apache CXF], 
-CRYPTACULAR,
-OPENTRACING-UTIL, 
-ORG.APACHE.GERONIMO.SPECS:GERONIMO-JAVAMAIL_1.4_SPEC,
-JAVA-SUPPORT, 
-XMLSEC, 
-JDBC-TOOL [Tomcat], 
-WOODSTOX-CORE, 
-JODA-TIME,
-COMMONS-COLLECTIONS, 
-OPENSAML-CORE, 
-WOODSTOX-CORE-ASL, 
-XML-RESOLVER,
-GRAILS [Apache MyFaces], 
-COMMON-LOGGING [SLF4J], 
-COMMONS-WEAVER, SPRING
-FRAMEWORK [Apache CXF], 
-FACELETS [Apache MyFaces], 
-NIMBUS JOSE + JWT
-PROJECT [Apache CXF], 
-COMMONS-DIGESTER, 
-DOMPURIFY [swagger-ui],
-XERCES-IMPL, 
-SPRING-BOOT, 
-OPENID4JAVA, 
-THREADCONTEXT.JAVA [weld], 
-YOKO,
-ORG.APACHE.ARIES.BLUEPRINT:ORG.APACHE.ARIES.BLUEPRINT.CORE, 
-XMLTOOLING,
-BOOTSTRAP.MIN.CSS [Spring-boot], 
-SERIALIZER, 
-JBOSS-LOGGING, 
-JANDEX,
-OMNIFACES [Apache MyFaces], 
-OPENSAML, JASYPT, WSS4J,
-MICROPROFILE-REST-CLIENT-API, 
-COMMONS-DISCOVERY,
-ORG.APACHE.ARIES.JMX:ORG.APACHE.ARIES.JMX.CORE, 
-EHCACHE, 
-WELD-PROBE [weld], 
-COMMONS-CODEC, 
-NEETHI, 
-SWAGGER-CLIENT [swagger-ui],
-ORG.APACHE.GERONIMO.SPECS:GERONIMO-ANNOTATION_1.0_SPEC, 
-SIZEOF-AGENT,
-APACHE MYFACES, 
-BASE64CODER [snakeyaml], 
-LOG4J [SLF4J],
-ORG.APACHE.GERONIMO.SPECS:GERONIMO-JPA_3.0_SPEC,
-ORG.APACHE.ARIES.JPA.API,
-ORG.APACHE.GERONIMO.SPECS:GERONIMO-EJB_3.0_SPEC, 
-FAILSAFE, 
-APACHE RAT [Tomcat], 
-OPENWS, 
-ANT [Apache CXF], 
-COMMONS-BEANUTILS, 
-CDI11 [weld],
-APACHE WSS4J, 
-WELD, 
-EQUINOX-PARTS [Eclipse Equinox coordinator],
-XMLBEANS [Apache CXF], 
-JSON-SIMPLE, 
-XMLSCHEMA-CORE, 
-NEKOHTML, 
-CDI-API,
-SNAKEYAML, 
-SWAGGER-UI
+METRICS-CORE, JAKARTA.VALIDATION:JAKARTA.VALIDATION-API, BCEL, SERVLET,
+DIJIT-THEMES/FLAT-ICONS, APACHE CXF, COMMONS-IO, COMMONS-LANG, J4FRY
+[Apache MyFaces], MIME4J, SWAGGER-ANNOTATIONS, AWS-SIGN2,
+GERONIMO-JAVAMAIL_1.4_MAIL, GERONIMO-ATINJECT_1.0_SPEC, COMMONS-LOGGING,
+JAVAEE_5.XSD [Apache CXF], CRYPTACULAR, OPENAPI-SPECIFICATION,
+ORG.APACHE.GERONIMO.SPECS:GERONIMO-JAVAMAIL_1.4_SPEC, COMMONS-POOL,
+JAVA-SUPPORT, ORG.APACHE.ARIES.UTIL, APACHE ARIES BLUEPRINT PARSER,
+XMLSEC, JODA-TIME, ARIES-JMX, COMMONS-COLLECTIONS, OPENSAML-CORE, OSGI
+CORE, APACHE ARIES, WOODSTOX-CORE-ASL, XML-RESOLVER, GRAILS [Apache
+MyFaces], JANSI, SPRING FRAMEWORK [Apache CXF], FACELETS [Apache
+MyFaces], GERONIMO-EJB_3.1_SPEC, NIMBUS JOSE + JWT PROJECT [Apache CXF],
+COMMONS-DIGESTER, XERCES-IMPL, FAILUREACCESS,
+ORG.APACHE.ARIES.BLUEPRINT:ORG.APACHE.ARIES.BLUEPRINT.CORE,
+DOJO/OPENAJAX, SERIALIZER, OMNIFACES [Apache MyFaces], OPENSAML, JASYPT,
+WSS4J, MICROPROFILE-REST-CLIENT-API,
+ORG.APACHE.ARIES.JMX:ORG.APACHE.ARIES.JMX.CORE, EHCACHE, COMMONS-CODEC,
+NEETHI, JAVAEE-API [Jakarta.ws.rs-api], ARIES JNDI URL, DOJO/CSS,
+FOREVER-AGENT, ORG.APACHE.GERONIMO.SPECS:GERONIMO-ANNOTATION_1.0_SPEC,
+SIZEOF-AGENT, APACHE MYFACES,
+ORG.APACHE.ARIES.JPA.CONTAINER, APACHE WSS4J, LOCALSTRINGS_JA.PROPERTIES
+[jakarta.servlet-api], WELD, OPENTRACING-JAVA, XMLBEANS [Apache CXF],
+XMLSCHEMA-CORE, GUAVA, GENERICENTITY [Jakarta.ws.rs-api], CDI-API,
+GERONIMO
 
 Apache License
 Version 2.0, January 2004
@@ -290,16 +234,127 @@ END OF TERMS AND CONDITIONS
 END OF APACHE LICENSE 2.0 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BSD LICENSE
+
+The Program includes some or all of the following packages that IBM 
+obtained under the BSD License:
+
+VALIDATIONEXCEPTION.JAVA [jakarta.xml.bind-api] (Copyright (c) 2003,
+2018 Oracle and/or its affiliates. All rights reserved.),
+MESSAGES.PROPERTIES [jakarta.xml.bind-api] (Copyright (c) 2003, 2018
+Oracle and/or its affiliates. All rights reserved.),
+JAKARTA.ACTIVATION-API (Copyright (c) 2018 Oracle and/or its affiliates.
+All rights reserved.), POM.XML [jakarta.xml.bind-api] (Copyright (c)
+1997, 2018 Oracle and/or its affiliates. All rights reserved.)
+
+
+BSD-2-CLAUSE
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are 
+met: 
+
+* Redistributions of source code must retain the above copyright notice, 
+  this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright 
+  notice, this list of conditions and the following disclaimer in the 
+  documentation and/or other materials provided with the distribution. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED 
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+END OF BSD-2-CLAUSE LICENSE NOTICES AND INFORMATION
+
+
+BSD-3-CLAUSE
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are 
+met: 
+
+* Redistributions of source code must retain the above copyright notice, 
+  this list of conditions and the following disclaimer. 
+* Redistributions in binary form must reproduce the above copyright 
+  notice, this list of conditions and the following disclaimer in the 
+  documentation and/or other materials provided with the distribution. 
+* Neither the name of the <ORGANIZATION> nor the names of its 
+  contributors may be used to endorse or promote products derived from 
+  this software without specific prior written permission. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER 
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+END OF BSD-3-CLAUSE LICENSE NOTICES AND INFORMATION
+
+
+BSD-4-CLAUSE
+
+Redistribution and use in source and binary forms, with or without 
+modification, is permitted provided that the following conditions are 
+met:
+
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright 
+  notice, this list of conditions and the following disclaimer in the 
+  documentation and/or other materials provided with the distribution.
+* All advertising materials mentioning features or use of this software 
+  must display the following acknowledgement:
+  This product includes software developed by the <ORGANIZATION>.
+* Neither the name of the <ORGANIZATION> nor the names of its 
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+  
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+END OF BSD-4-CLAUSE LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 BSD-2-CLAUSE LICENSE
 
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-2-Clause License:
 
-WEBIDL-CONVERSIONS [swagger-ui] (Copyright (c) 2014, Domenic Denicola),
-OWASP ENTERPRISE SECURITY API (ESAPI) [java-support] (Copyright (c) 2007
-- The OWASP Foundation), JAXEN [Apache CXF] (Copyright 2003-2006 The
-Werken Company.), STAX2-API (Copyright (c) 2006- Tatu Saloranta,
-tatu.saloranta@iki.fi)
+DIJIT (Copyright (c) 2005-2016 The JS Foundation), DOJO/JSON (Copyright
+2005 Michal Migurski), DOJO/_FIREBUG (Copyright (c) 2006-2007, Joe
+Hewitt, All rights reserved.), BOOM (Copyright (c) 2012-2013 Walmart.),
+JAKARTA.ACTIVATION (Copyright (c) 2018 Oracle and/or its affiliates. All
+rights reserved.), DIGDUG (? 2014 SitePen; Inc. http://sitepen.com),
+CHMODR (Copyright (c) Isaac Z. Schlueter ("Author")),
+FIREBUG-LITE [Lodash] (Copyright (c) 2007, Parakey Inc. All rights
+reserved.), OWASP ENTERPRISE SECURITY API (ESAPI) [java-support]
+(Copyright (c) 2007 - The OWASP Foundation), CASELESS (Copyright Not
+Found), AMDEFINE (Copyright (c) 2011 The Dojo Foundation Copyright (c)
+2011 The Dojo Foundation), CRYPTO-BROWSERIFY (Copyright Not Found), DOJO
+(Copyright (c) 2005-2013 The Dojo Foundation)
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -332,22 +387,26 @@ BSD-3-Clause LICENSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-3-Clause License:
 
-HOIST-NON-REACT-STATICS [swagger-ui] (Copyright (c) 2015, Yahoo! Inc.),
-QS [swagger-ui] (Copyright (c) 2014, Nathan LaFreniere and other
-[contributors](https://github.com/ljharb/qs/graphs/contributors)),
-SPRINTF-JS [swagger-ui] (Copyright (c) 2007-2014, Alexandru Marasteanu
-<hello [at) alexei (dot] ro>), PUREJAVACRC32C [Commons-Codec] (Copyright
-(c) 2004-2006 Intel Corportation), REDUX-IMMUTABLE [swagger-ui]
-(Copyright (c) 2016, Gajus Kuizinas (http://gajus.com/)), ESAPI
-(Copyright (c) 2007 - The OWASP Foundation), XMLSCHEMA-CORE PORTIONS
-[XMLSchema-core] (Copyright (C) World Wide Web Consortium 2006, 2007),
-D3 [weld] (Copyright (c) 2010-2014, Michael Bostock All rights
-reserved.), STYLE.CSS [weld] (Copyright (c) 2007, Yahoo! Inc. All rights
-reserved.), HIGHLIGHT [weld] (Copyright (c) 2006, Ivan Sagalaev All
-rights reserved.), HIGHLIGHT.JS [swagger-ui] (Copyright (c) 2006, Ivan
-Sagalaev.), ASM (Copyright (c) 2000-2011 INRIA, France Telecom  All
-rights reserved.), DOJO [Apache MyFaces] (Copyright (c) 2005, The Dojo
-Foundation All rights reserved.)
+ESRECURSE (Copyright (C) 2014 [Yusuke
+Suzuki](http://github.com/Constellation)), LEADFOOT (? 2014 SitePen;
+Inc. http://sitepen.com), YUI RESETS V2.5.2 [jQuery BBQ] (Copyright (c)
+2008, Yahoo! Inc. All rights reserved.), JQUERY EASING V1.3 [jQuery BBQ]
+(Copyright 2008 George McGinley Smith), ISTANBUL (Copyright 2012 Yahoo!
+Inc.), PUREJAVACRC32C [Commons-Codec] (Copyright (c) 2004-2006 Intel
+Corportation), DIFF (Copyright (c) 2009-2011 Kevin Decker
+kpdecker@gmail.com), CHOWNR (Copyright (c) Isaac Z. Schlueter),
+XMLSCHEMA-CORE PORTIONS [XMLSchema-core] (Copyright (C) World Wide Web
+Consortium 2006, 2007), STYLE.CSS [weld] (Copyright (c) 2007, Yahoo!
+Inc. All rights reserved.), ESPREE (Copyright Not Found), HIGHLIGHT.JS
+(Copyright (c) 2006  Ivan Sagalaev), FSTREAM (Copyright (c) Isaac Z.
+Schlueter ("Author")), JSDUMP [jQuery BBQ] (Copyright (c) 2008 Ariel
+Flesler), ASM (Copyright (c) 2000-2011 INRIA, France Telecom  All rights
+reserved.), ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
+Suzuki](http://github.com/Constellation) Copyright (C) 2012 Ariya
+Hidayat <ariya.hidayat@gmail.com>), ESUTILS (Copyright (C) 2013 [Yusuke
+Suzuki](http://github.com/Constellation)), GITHUB-URL-FROM-USERNAME-REPO
+(Copyright (c) Robert Kowalski ("Author")), DOCTRINE (Copyright Not
+Found)
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -378,6 +437,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF BSD 3-CLAUSE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BSD-EQUIVALENT
+
+The Program includes some or all of the following that IBM obtained
+under a BSD-EQUIVALENT license:
+
+
+jakarta.xml.bind-api (Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.)
+
+Eclipse Distribution License - v 1.0
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of the Eclipse Foundation, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+END OF BSD-EQUIVALENT NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 
 The Program includes some or all of the following that IBM obtained
@@ -385,25 +466,18 @@ under the Common Development and Distribution License V1
 (source code available via the indicated URL):
 
 JAXB-RUNTIME
-(https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime/2.3.4),
+(https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/2.3.3/jaxb-runtime-2.3.3-sources.jar),
 GLASSFISH [Apache MyFaces]
 (https://github.com/apache/myfaces/tree/myfaces-core-module-3.0.0-RC1),
 ARRAYELRESOLVER.JAVA [weld]
 (/Source-0/artifacts/weld/weld-se-sources.jar/javax/el/ArrayELResolver.java),
 STAX-EX
 (http://central.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar),
-JAVAX-SERVLET [Tomcat] (http://xmlns.jcp.org/xml/ns/javaee), JAVAEE XML
-SCHEMAS [Tomcat] (http://xmlns.jcp.org/xml/ns/javaee), JAVAMAIL
-(https://github.com/javaee/javamail/tree/JAVAMAIL-1_6_0), SERIALIZER
-[Eclipse yasson]
-(https://github.com/eclipse-ee4j/yasson/tree/1.0.4-RELEASE),
-ANNOTATEDIMPL.JAVA [weld]
-(src/test/java/org/jboss/weld/tests/extensions/supertypes/beans/CDIExtension.java;),
-JAVAEE_5.XSD [Apache MyFaces] (https://facelets.dev.java.net/),
-JBOSS-JDEPARSER
-(http://mvnrepository.com/artifact/org.jboss.jdeparser/jdeparser/1.0.0.Final),
-JAVAX.EL
-(https://mvnrepository.com/artifact/org.glassfish/javax.el/3.0.0)
+JAVAMAIL (https://github.com/javaee/javamail/tree/JAVAMAIL-1_6_0),
+JAVAEE_5.XSD [Apache MyFaces] (https://facelets.dev.java.net/), JPA
+SPECIFICATIONS [org.apache.aries.jpa.container]
+(https://glassfish.dev.java.net/source/browse/glassfish/), CTYPE/JSSTYLE
+(http://www.opensolaris.org/os/licensing)
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION V1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -425,12 +499,17 @@ The Program includes some or all of the following that IBM obtained
 under the Eclipse Public License (source code available via the
 indicated URL):
 
-ECLIPSE EQUINOX COORDINATOR
-(https://repo1.maven.org/maven2/org/eclipse/equinox/org.eclipse.equinox.coordinator/1.1.0.v20120522-1841/org.eclipse.equinox.coordinator-1.1.0.v20120522-1841-sources.jar),
-ECLIPSELINK (http://www.eclipse.org/eclipselink), ECLIPSE EQUINOX
+JAKARTA.ANNOTATION-API
+(https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5-sources.jar),
+ECLIPSELINK (http://www.eclipse.org/eclipselink), JAKARTA.ACTIVATION
+[jakarta.activation-api]
+(https://search.maven.org/remotecontent?filepath=jakarta/activation/jakarta.activation-api/1.2.2/jakarta.activation-api-1.2.2-sources.jar),
+ECLIPSE EQUINOX
 (https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.equinox.util/1.1.0/),
-SPRING-BOOT (http://projects.spring.io/spring-boot/), ECLIPSE YASSON
-(https://repo.maven.apache.org/maven2/org/eclipse/yasson/2.0.1/)
+ORG.ECLIPSE.EQUINOX.REGION
+(https://repo1.maven.org/maven2/org/eclipse/equinox/org.eclipse.equinox.region/1.2.101.v20150831-1342/org.eclipse.equinox.region-1.2.101.v20150831-1342-sources.jar),
+PERSISTENCE_2_1.XSD [OSGi Core]
+(https://github.com/osgi/bundles/tree/98b13a515d350989f218f92c41d1b66f940c1633)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -441,18 +520,219 @@ The Program includes some or all of the following that IBM obtained
 under the Eclipse Public License (source code available via the
 indicated URL):
 
-JAKARTA.JSON
-(https://repo.maven.apache.org/maven2/org/glassfish/jakarta.json/2.0.0-RC3/),
+JAKARTA.WS.RS-API
+(https://search.maven.org/artifact/jakarta.ws.rs/jakarta.ws.rs-api/3.0.0/bundle),
+ECLIPSE OSGI (https://github.com/eclipse/rt.equinox.bundles),
 JAKARTA.SERVLET:JAKARTA.SERVLET-API
 (https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar),
 JAKARTA.TRANSACTION:JAKARTA.TRANSACTION-API
 (https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0-RC1/jakarta.transaction-api-2.0.0-RC1-sources.jar),
+JAKARTA.SERVLET-API
+(https://repo.maven.apache.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/),
 JAKARTA.EJB:JAKARTA.EJB-API
 (https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.0-RC2/jakarta.ejb-api-4.0.0-RC2-sources.jar),
 JAKARTA.PERSISTENCE:JAKARTA.PERSISTENCE-API
 (https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0-RC2/jakarta.persistence-api-3.0.0-RC2-sources.jar)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+GLOBUS TOOLKIT PUBLIC LICENSE
+
+The Program includes some or all of the following that IBM obtained 
+under the Globus Toolkit Public License: 
+
+GLOBUS TOOLKIT PUBLIC 3 [Jakarta-Regexp]
+
+           Globus(R) Toolkit Public License
+                 Version 3, March 2005
+     http://www.globus.org/toolkit/license.html
+
+
+(This license is identical to the Apache License, Version 2.0, January
+2004, http://www.apache.org/licenses/LICENSE-2.0, except for the
+addition of an explicit U.S. Government disclaimer and limitation of
+liability in paragraphs 7 and 8.)
+
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+   "License" shall mean the terms and conditions for use, reproduction,
+   and distribution as defined by Sections 1 through 9 of this document.
+
+   "Licensor" shall mean the copyright owner or entity authorized by
+   the copyright owner that is granting the License.
+
+   "Legal Entity" shall mean the union of the acting entity and all
+   other entities that control, are controlled by, or are under common
+   control with that entity. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "You" (or "Your") shall mean an individual or Legal Entity
+   exercising permissions granted by this License.
+
+   "Source" form shall mean the preferred form for making modifications,
+   including but not limited to software source code, documentation
+   source, and configuration files.
+
+   "Object" form shall mean any form resulting from mechanical
+   transformation or translation of a Source form, including but
+   not limited to compiled object code, generated documentation,
+   and conversions to other media types.
+
+   "Work" shall mean the work of authorship, whether in Source or
+   Object form, made available under the License, as indicated by a
+   copyright notice that is included in or attached to the work
+   (an example is provided in the Appendix below).
+
+   "Derivative Works" shall mean any work, whether in Source or Object
+   form, that is based on (or derived from) the Work and for which the
+   editorial revisions, annotations, elaborations, or other modifications
+   represent, as a whole, an original work of authorship. For the purposes
+   of this License, Derivative Works shall not include works that remain
+   separable from, or merely link (or bind by name) to the interfaces of,
+   the Work and Derivative Works thereof.
+
+   "Contribution" shall mean any work of authorship, including
+   the original version of the Work and any modifications or additions
+   to that Work or Derivative Works thereof, that is intentionally
+   submitted to Licensor for inclusion in the Work by the copyright owner
+   or by an individual or Legal Entity authorized to submit on behalf of
+   the copyright owner. For the purposes of this definition, "submitted"
+   means any form of electronic, verbal, or written communication sent
+   to the Licensor or its representatives, including but not limited to
+   communication on electronic mailing lists, source code control systems,
+   and issue tracking systems that are managed by, or on behalf of, the
+   Licensor for the purpose of discussing and improving the Work, but
+   excluding communication that is conspicuously marked or otherwise
+   designated in writing by the copyright owner as "Not a Contribution."
+
+   "Contributor" shall mean Licensor and any individual or Legal Entity
+   on behalf of whom a Contribution has been received by Licensor and
+   subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to reproduce, prepare Derivative Works of,
+   publicly display, publicly perform, sublicense, and distribute the
+   Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have made,
+   use, offer to sell, sell, import, and otherwise transfer the Work,
+   where such license applies only to those patent claims licensable
+   by such Contributor that are necessarily infringed by their
+   Contribution(s) alone or by combination of their Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If You
+   institute patent litigation against any entity (including a
+   cross-claim or counterclaim in a lawsuit) alleging that the Work
+   or a Contribution incorporated within the Work constitutes direct
+   or contributory patent infringement, then any patent licenses
+   granted to You under this License for that Work shall terminate
+   as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+   Work or Derivative Works thereof in any medium, with or without
+   modifications, and in Source or Object form, provided that You
+   meet the following conditions:
+
+   (a) You must give any other recipients of the Work or
+       Derivative Works a copy of this License; and
+
+   (b) You must cause any modified files to carry prominent notices
+       stating that You changed the files; and
+
+   (c) You must retain, in the Source form of any Derivative Works
+       that You distribute, all copyright, patent, trademark, and
+       attribution notices from the Source form of the Work,
+       excluding those notices that do not pertain to any part of
+       the Derivative Works; and
+
+   (d) If the Work includes a "NOTICE" text file as part of its
+       distribution, then any Derivative Works that You distribute must
+       include a readable copy of the attribution notices contained
+       within such NOTICE file, excluding those notices that do not
+       pertain to any part of the Derivative Works, in at least one
+       of the following places: within a NOTICE text file distributed
+       as part of the Derivative Works; within the Source form or
+       documentation, if provided along with the Derivative Works; or,
+       within a display generated by the Derivative Works, if and
+       wherever such third-party notices normally appear. The contents
+       of the NOTICE file are for informational purposes only and
+       do not modify the License. You may add Your own attribution
+       notices within Derivative Works that You distribute, alongside
+       or as an addendum to the NOTICE text from the Work, provided
+       that such additional attribution notices cannot be construed
+       as modifying the License.
+
+   You may add Your own copyright statement to Your modifications and
+   may provide additional or different license terms and conditions
+   for use, reproduction, or distribution of Your modifications, or
+   for any such Derivative Works as a whole, provided Your use,
+   reproduction, and distribution of the Work otherwise complies with
+   the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate license agreement you may have executed
+   with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+   names, trademarks, service marks, or product names of the Licensor,
+   except as required for reasonable and customary use in describing the
+   origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+   agreed to in writing, Licensor and the U.S. Government provide
+   the Work (and each Contributor provides its Contributions) on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+   either express or implied, including, without limitation, any
+   warranties or conditions of TITLE, NON-INFRINGEMENT,
+   MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You and
+   third parties are solely responsible for determining the
+   appropriateness of using or redistributing the Work and assume
+   any risks associated with Your exercise of permissions under
+   this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+   whether in tort (including negligence), contract, or otherwise,
+   unless required by applicable law (such as deliberate and
+   grossly negligent acts) or agreed to in writing, shall any
+   Contributor or the U.S. Government be liable to You for damages,
+   including any direct, indirect, special, incidental, or
+   consequential damages of any character arising as a result of
+   this License or out of the use or inability to use the Work
+   (including but not limited to damages for loss of goodwill, work
+   stoppage, computer failure or malfunction, or any and all other
+   commercial damages or losses), even if such Contributor or the
+   U.S. Government has been advised of the possibility of such
+   damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing
+   the Work or Derivative Works thereof, You may choose to offer,
+   and charge a fee for, acceptance of support, warranty, indemnity,
+   or other liability obligations and/or rights consistent with this
+   License. However, in accepting such obligations, You may act only
+   on Your own behalf and on Your sole responsibility, not on behalf
+   of any other Contributor, and only if You agree to indemnify,
+   defend, and hold each Contributor harmless for any liability
+   incurred by, or claims asserted against, such Contributor by reason
+   of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+END OF GLOBUS TOOLKIT PUBLIC LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 INTERNATIONAL COMPONENTS FOR UNICODE LICENSE
@@ -846,17 +1126,8 @@ ISC LICENSE
 The Program includes some or all of the following that IBM obtained
 under the ISC License.
 
-EXT [swagger-ui] (Copyright (c) 2011-2019, Mariusz Nowak, @medikoo,
-medikoo.com), TIMERS-EXT [swagger-ui] (Copyright (c) 2013-2018, Mariusz
-Nowak, @medikoo, medikoo.com), D [swagger-ui] (Copyright (c) 2013-2019,
-Mariusz Nowak, @medikoo, medikoo.com), ES6-SYMBOL [swagger-ui]
-(Copyright (c) 2013-2019, Mariusz Nowak, @medikoo, medikoo.com),
-ES6-WEAK-MAP [swagger-ui] (Copyright (c) 2013-2018, Mariusz Nowak,
-@medikoo, medikoo.com), MEMOIZEE [swagger-ui] (Copyright (c) 2012-2018,
-Mariusz Nowak, @medikoo, medikoo.com), NEXT-TICK [swagger-ui] (Copyright
-(c) 2012-2020, Mariusz Nowak, @medikoo, medikoo.com), TYPE [swagger-ui]
-(Copyright (c) 2019-2022, Mariusz Nowak, @medikoo, medikoo.com),
-INHERITS [swagger-ui] (Copyright (c) Isaac Z. Schlueter)
+INIT-PACKAGE-JSON (Copyright (c) Isaac Z. Schlueter), GLOB (Copyright
+(c) Isaac Z. Schlueter and Contributors)
 
 ISC License
 
@@ -943,152 +1214,117 @@ MIT LICENSE
 The Program includes some or all of the following that IBM obtained
 under the MIT License:
 
-BLOB-TO-BUFFER [swagger-ui] (Jimmy Wärting
-<https://jimmy.warting.se/opensource>), CSS [weld] (No Copyright Found),
-NORMALIZE.CSS [weld] (Copyright 2011-2014 Twitter, Inc.), LODASH
-[swagger-ui] (Copyright OpenJS Foundation and other contributors
-<https://openjsf.org/>), TYPE [swagger-ui] (Copyright (c) 2019, Mariusz
-Nowak, @medikoo, medikoo.com), REFRACTOR [swagger-ui] (Copyright (c)
-2017 Titus Wormer <tituswormer@gmail.com>), UNICODENORMALIZER
-[swagger-ui] (Copyright (c) 2008 Matsuza), CROSS-FETCH [swagger-ui]
-(Copyright (c) 2017 Leonardo QuixadÃ¡), XML [swagger-ui] (Copyright (c)
-2011-2016 Dylan Greene <dylang@gmail.com>), NIGHT-OWL [swagger-ui]
-(Copyright (c) 2018 Sarah Drasner), URL-PARSE [swagger-ui] (Copyright
-(c) 2015 Unshift.io, Arnout Kazemier, the Contributors.),
-REACT-INSPECTOR [swagger-ui] (Copyright (c) 2017 Xiaoyi Chen), SHCORE.JS
-[weld] ((c) 2007-2008 Steven Levithan), SLF4J ((c) 2004-2013 QOS.ch  All
-rights reserved. ), COOKIE [swagger-ui] (Copyright (c) 2012-2014 Roman
-Shtylman <shtylman@gmail.com> Copyright (c) 2015 Douglas Christopher
-Wilson <doug@somethingdoug.com>), EMBER [weld] (Copyright (c) 2018
-Yehuda Katz, Tom Dale and Ember.js contributors), INVARIANT [swagger-ui]
-(Copyright (c) 2013-present, Facebook, Inc.), CORE-JS-BUFFER
-[swagger-ui] (Copyright (c) 2014-2022 Denis Pushkarev), INFLECTIONS.RB
-[Apache CXF] (No copyright), PUNYCODE [swagger-ui] (Copyright Mathias
-Bynens <https://mathiasbynens.be/>), @BABEL/RUNTIMECOREJS3 [swagger-ui]
-(Copyright (c) 2014-present Sebastian McKenzie and other contributors),
-REPEAT-STRING [swagger-ui] (Copyright (c) 2014-2016, Jon Schlinkert.),
-TSLIB [swagger-ui] (Copyright (c) Microsoft Corporation.), TYPE-FEST
-[swagger-ui] (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(https:/sindresorhus.com)), @TYPES/HOIST-NON-REACT-STATICS [swagger-ui]
-(Copyright (c) Microsoft Corporation),
-ORG.CODEHAUS.MOJO:ANIMAL-SNIFFER-ANNOTATIONS (Copyright (c) 2008 Kohsuke
-Kawaguchi and codehaus.org.), FORM-DATA-ENCODER [swagger-ui] (Copyright
-(c) 2021-present Nick K.), OBJECT-INSPECT [swagger-ui] (Copyright (c)
-2013 James Halliday), PROBE.JS [weld] (Copyright 2011-2014 Twitter,
-Inc.), REACT-REDUX [swagger-ui] (Copyright (c) 2015-present Dan
-Abramov), LOWLIGHT [swagger-ui] (© [Titus Wormer][author]),
-REACT-DEBOUNCE-INPUT [swagger-ui] (Copyright (c) 2016 Nik Butenko),
-ORG.EASYMOCK:EASYMOCK (Copyright (c) 2001-2008 OFFIS Tammo Freese.),
-BOOTSTRAP.MIN.CSS [Spring-boot] (Copyright 2011-2018 The Bootstrap
-Authors Copyright 2011-2018 Twitter, Inc.), CSS.ESCAPE [swagger-ui]
-(Copyright Mathias Bynens <https://mathiasbynens.be/>), BOOTSTRAP [weld]
-(Copyright 2011-2014 Twitter, Inc.), PROPERTY-INFORMATION [swagger-ui]
-(Copyright (c) 2015 Titus Wormer <mailto:tituswormer@gmail.com>),
-REQUIRES-PORT [swagger-ui] (Copyright (c) 2015 Unshift.io, Arnout
-Kazemier, the Contributors.), GET-INTRINSIC [swagger-ui] (Copyright (c)
-2020 Jordan Harband), IS-WINDOW [swagger-ui] (Copyright (c) 2016 W.Y.),
-VAPOR.JS [swagger-ui] (Copyright (c) 2010 Thomas Fuchs
-(http://script.aculo.us/thomas)), IEEE754 [swagger-ui] (Copyright 2008
-Fair Oaks Labs, Inc.), LOOSE-ENVIFY [swagger-ui] (Copyright (c) 2015
-Andres Suarez <zertosh@gmail.com>), XML-BUT-PRETTIER [swagger-ui]
-(Copyright (c) 2015 Jonathan Persson), REACT-IMMUTABLE-PURE-COMPONENT
-[swagger-ui] (Copyright (c) 2017 Piotr Tomasz Monarski), SIDE-CHANNEL
-[swagger-ui] (Copyright (c) 2019 Jordan Harband), MODERNIZR [swagger-ui]
-(No Copyright), JQUERY.VALIDATE.JS [Spring-boot] (Copyright (c) 2012
-JÃ¶rn Zaefferer), CSSTYPE [swagger-ui] (Copyright (c) 2017-2018 Fredrik
-Nicol), DEEP-EXTEND [swagger-ui] (Copyright (c) 2013-2018, Viacheslav
-Lotsmanov), URL [swagger-ui] (Copyright Joyent, Inc. and other Node
-contributors.), CHARACTER-ENTITIES-LEGACY [swagger-ui] (Copyright (c)
-2015 Titus Wormer <tituswormer@gmail.com>), SERIALIZE-ERROR [swagger-ui]
+NORMALIZE.CSS [weld] (No Copyright Found), LODASH (Copyright 2012-2015
+The Dojo Foundation), LODASH.ISARGUMENTS (Copyright 2012-2016 The Dojo
+Foundation <http://dojofoundation.org/>), FORM-DATA (Copyright (c) 2012
+Felix Geisendörfer (felix@debuggable.com) and contributors), GLOBALS
 (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
-(https://sindresorhus.com)), PRISMJS [swagger-ui] (Copyright (c) 2012
-Lea Verou), JQUERY V1.9.0 [Apache CXF] ((c) 2005, 2012 jQuery
-Foundation, Inc), DEEPMERGE [swagger-ui] (Copyright (c) 2012 James
-Halliday, Josh Duff, and other contributors), IS-PROMISE [swagger-ui]
-(Copyright (c) 2014 Forbes Lindesay), REACT-COPY-TO-CLIPBOARD
-[swagger-ui] (Copyright (c) 2016 Nik Butenko), SAFE-BUFFER [swagger-ui]
-(Copyright (c) Feross Aboukhadijeh), ES6-ITERATOR [swagger-ui]
-(Copyright (C) 2013-2017 Mariusz Nowak (www.medikoo.com)), WEBAPP
-[Apache CXF] (Copyright 2010, John Resig), REDUX [swagger-ui] (Copyright
-(c) 2015-present Dan Abramov), WEB-STREAMS-POLYFILL [swagger-ui]
-(Copyright (c) 2021 Mattias Buelens Copyright (c) 2016 Diwank Singh
-Tomer), ES5-EXT [swagger-ui] (Copyright (c) 2011-2022, Mariusz Nowak,
-@medikoo, medikoo.com), IS-DOM [swagger-ui] (Copyright (c) 2014),
-UUID.JS [Apache CXF] (Copyright (c) 2010 Robert Kieffer), IS-HEXADECIMAL
-[swagger-ui] (© [Titus Wormer][author]), HAS-SYMBOLS [swagger-ui]
-(Copyright (c) 2016 Jordan Harband), FUNCTION-BIND [swagger-ui]
-(Copyright (c) 2013 Raynos.), XTEND [swagger-ui] (Copyright (c)
-2012-2014 Raynos.), CALL-BIND [swagger-ui] (Copyright (c) 2020 Jordan
-Harband), MONOKAI SUBLIME STYLE [swagger-ui] (No copyright), HANDLEBARS
-[weld] (Copyright (C) 2011-2014 by Yehuda Katz), HAS [swagger-ui]
-(Copyright (c) 2013 Thiago de Arruda), REGENRATOR-RUNTIME [swagger-ui]
-(Copyright (c) 2014-present, Facebook, Inc.), IS-PLAIN-OBJECT
-[swagger-ui] (Copyright (c) 2014-2017, Jon Schlinkert.), MOMENT.JS
-[weld] (Copyright (c) JS Foundation and other contributors),
-CHARACTER-ENTITIES [swagger-ui] (Copyright (c) 2015 Titus Wormer
-<tituswormer@gmail.com>), PARSE-ENTITIES [swagger-ui] (Copyright (c)
-2015 Titus Wormer <mailto:tituswormer@gmail.com>), JQUERY-1.9.0.JS
-[Spring-boot] (Copyright 2005, 2012 jQuery Foundation, Inc. and other
-contributors), FETCH-BLOB [swagger-ui] (Jimmy Wärting
-<https://jimmy.warting.se/opensource> & David Frank */),
-NODE-DOMEXCEPTION [swagger-ui] (Copyright (c) 2021 Jimmy WÃ¤rting),
-@BABEL/RUNTIMEC [swagger-ui] (Copyright (c) 2014-present Sebastian
-McKenzie and other contributors), QUERYSTRINGIFY [swagger-ui] (Copyright
-(c) 2015 Unshift.io, Arnout Kazemier, the Contributors.), JS-TOKENS
-[swagger-ui] (Copyright (c) 2014, 2015, 2016, 2017, 2018 Simon Lydell),
-REACT-SYNTAX-HIGHLIGHTER [swagger-ui] (Copyright (c) 2019 Conor
-Hastings), SIZZLE.JS [Apache CXF] (Copyright 2010, The Dojo Foundation),
-QUERYSTRING [swagger-ui] (Copyright 2012 Irakli Gozalishvili.), DRACULA
-THEME [swagger-ui] (Copyright 2015, @author Éverton Ribeiro
-<nuxlli@gmail.com> @author Zeno Rocha <hi@zenorocha.com>), AUTOLINKER
-[swagger-ui] (Copyright (c) 2014 Gregory Jacobs
-(http://greg-jacobs.com)), CLASSNAMES [swagger-ui] (Copyright (c) 2018
-Jed Watson), LODASH-DEBOUNCE [swagger-ui] (Copyright jQuery Foundation
-and other contributors <https://jquery.org/>), JS-FILE-DOWNLOAD
-[swagger-ui] (Copyright 2017 Kenneth Jiang), REMARKABLE [swagger-ui]
-(Copyright (c) 2014-2016, Jon Schlinkert Copyright (c) 2014 Jon
-Schlinkert, Vitaly Puzrin), TRAVERSE [swagger-ui] (Copyright 2010 James
-Halliday (mail@substack.net)), XREGEXP [weld] (Copyright (c) 2007-2008
-Steven Levithan), IMMUTABLE [swagger-ui] (Copyright (c) 2014-present,
-Facebook, Inc.), NODE-FETCH [swagger-ui] (Copyright (c) 2016 David
-Frank), IS-ALPHABETICAL [swagger-ui] (© [Titus Wormer][author]),
-JQUERY.COOKIES  [SLF4J] (Copyright (c) 2005 - 2010, James Auldridge, All
-rights reserved.), OBJECT-ASSIGN [swagger-ui] (Copyright (c) Sindre
-Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
-CHARACTER-REFERENCE-INVALID [swagger-ui] (Copyright (c) 2015 Titus
-Wormer <tituswormer@gmail.com>), REACT-IMMUTABLE-PROPTYPES [swagger-ui]
-(Copyright (c) 2015 James Burnett), NORD-HIGHLIGHT [swagger-ui]
-(Copyright (c) 2017-present Arctic Ice Studio
-<development@arcticicestudio.com> * Copyright (c) 2017-present Sven Greb
-<development@svengreb.de> *), MEMOIZEE [swagger-ui] (No copyright),
-PARSE-INSIGHT [swagger-ui] (© [Titus Wormer][author]), JQUERY [SLF4J]
-(Copyright (c) 2005, 2014 jQuery Foundation, Inc.), CORE-JS [swagger-ui]
-(copyright:"Â© 2014-2022 Denis Pushkarev), SLF4J-API (Copyright (c)
-2004-2011 QOS.ch), WHATWG-URL [swagger-ui] (Copyright (c) 2015â€“2016
-Sebastian Mayr), PROP-TYPES [swagger-ui] (Copyright (c) 2013-present,
-Facebook, Inc.), BASE64-JS [swagger-ui] (Copyright (c) 2014 Jameson
-Little), @BRAINTREE/SANITIZE-URL [swagger-ui] (Copyright (c) 2017
-Braintree), COPY-TO-CLIPBOARD [swagger-ui] (Copyright (c) 2017 sudodoki
-<smd.deluzion@gmail.com>), LRU-QUEUE [swagger-ui] (Copyright (C) 2014
-Mariusz Nowak (www.medikoo.com)), SHA.JS [swagger-ui] (Copyright (c)
-2013-2018 sha.js contributors), FAST-JSON-PATCH [swagger-ui] (Copyright
-(c) 2013, 2014, 2020 Joachim Wester), FAULT [swagger-ui] (Copyright (c)
-2015 Titus Wormer <tituswormer@gmail.com>), FORMDATA-NODE [swagger-ui]
-(Copyright (c) 2017-present Nick K.), ARGPARSE [swagger-ui] (Copyright
-(C) 2012 by Vitaly Puzrin), JS-YAML [swagger-ui] (Copyright (C)
-2011-2015 by Vitaly Puzrin), RUBY [Apache CXF] (Copyright (c) 2005-2006
-David Heinemeier Hansson), IS-DECIMAL [swagger-ui] (© [Titus
-Wormer][author]), UNDERSCORE.JS [swagger-ui] (copyright Jeremy Ashkenas,
-DocumentCloud and Investigative Reporters & Editors
-<http://underscorejs.org/>), RANDOMBYTES [swagger-ui] (Copyright (c)
-2017 crypto-browserify), IS-OBJECT [swagger-ui] (Copyright (c) 2013
-Colingo.), TEST/HTTP/URL.JS [swagger-ui] (Copyright (c) 2002-2008 Kris
-Kowal <http://cixar.com/~kris.kowal>), SHBRUSHJAVA.JS [Jandex]
-(Copyright (C) 2004-2010 Alex Gorbatchev), RESELECT [swagger-ui]
-(Copyright (c) 2015-2018 Reselect Contributors), HANDLEBARS-V2.0.0.JS
-[weld] (Copyright (C) 2011-2014 by Yehuda Katz), SL4J [Apache CXF]
-(Copyright (c) 2004-2007 QOS.ch), EVENT-EMITTER [swagger-ui] (Copyright
-(C) 2012-2015 Mariusz Nowak (www.medikoo.com))
+(sindresorhus.com)), MINIMATCH (Copyright 2009 2010 2011 Isaac Z.
+Schlueter.), HAS-ANSI (Copyright (c) Sindre Sorhus
+<sindresorhus@gmail.com> (sindresorhus.com)), BURRITO/JS-TRAVERSE.GIT
+(No Copyright Found), DECOMPRESS (? [Kevin
+M?rtensson](http://kevinmartensson.com)), PARSEURI
+[OpenAPI-Specification] ((c) Steven Levithan <stevenlevithan.com>),
+QUNIT [jQuery BBQ] (Copyright (c) 2009 John Resig, Jörn Zaefferer),
+BENCHMARK.JS [Lodash] (Copyright 2010-2015 Mathias Bynens
+<http://mathiasbynens.be/>), EXTNAME (? [Kevin
+M?rtensson](https://github.com/kevva)), DIFFLET (Copyright Not Found),
+BUNKER (Copyright Not Found), SHCORE.JS [weld] ((c) 2007-2008 Steven
+Levithan), COOKIE (Copyright (c) 2012-2014 Roman Shtylman
+<shtylman@gmail.com> Copyright (c) 2015 Douglas Christopher Wilson
+<doug@somethingdoug.com>), SLF4J [Apache CXF] (Copyright (c) 2004-2017
+QOS.ch), COMBINED-STREAM (Copyright (c) 2011 Debuggable Limited
+<felix@debuggable.com>), JQUERY-BBQ [OpenAPI-Specification] (Copyright
+(c) 2010 "Cowboy" Ben Alman), EXPRESS-EXAMPLE-APP (Copyright (c)
+2013-2015 StrongLoop Inc.), BALANCED-MATCH (Copyright (c) 2013 Julian
+Gruber &lt;julian@juliangruber.com&gt;), ANSI-REGEX (Copyright (c)
+Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), LRU-CACHE
+(Copyright 2009 2010 2011 Isaac Z. Schlueter.), COFFEESCRIPT COMPILER
+V1.2.0 [highlight.js] (No copyright found), JQUERY BBQ (Copyright ©
+2010-2012 "Cowboy" Ben Alman), SIZZLE [jQuery BBQ] (Copyright 2010, The
+Dojo Foundation), INFLECTIONS.RB [Apache CXF] (No copyright),
+ES6-WEAK-MAP (Copyright (C) 2013 Mariusz Nowak (www.medikoo.com)),
+JQUERY COLOR ANIMATIONS [jQuery BBQ] (Copyright 2010, John Resig),
+CHILD-PROCESS-CLOSE (Copyright (C) 2012 Bert Belder), HASHER [Js-yaml]
+(© Miller Medeiros), ORG.CODEHAUS.MOJO:ANIMAL-SNIFFER-ANNOTATIONS
+(Copyright (c) 2008 Kohsuke Kawaguchi and codehaus.org.), PROBE.JS
+[weld] (Copyright 2011-2014 Twitter, Inc.), JSCS (Copyright 2013 Dulin
+Marat and other contributors), ORG.EASYMOCK:EASYMOCK (Copyright (c)
+2001-2008 OFFIS Tammo Freese.), JSCS/VOW (No Copyright Found),
+ES5-SHIM.JS [Js-yaml] (Copyright 2009-2012 by contributors),
+GET-INTRINSIC (Copyright (c) 2020 Jordan Harband), ESLINT (Copyright (c)
+2013 Nicholas C. Zakas. All rights reserved.), JSON EDITOR (Copyright
+(c) 2013 Jeremy Dorn), HANDLEBARS.JS [OpenAPI-Specification] (Copyright
+(C) 2011-2016 by Yehuda Katz), GET-STDIN (? [Sindre
+Sorhus](http://sindresorhus.com)), BACKBONE [Lodash] (Copyright (c)
+2010-2015 Jeremy Ashkenas, DocumentCloud), HTTP-SIGNATURE (Copyright
+Joyent Inc. All rights reserved.), EDITOR (Copyright 2013 James Halliday
+(mail@substack.net)), JQUERY UI CSS FRAMEWORK [jQuery BBQ] (Copyright
+(c) 2009 AUTHORS.txt (http://jqueryui.com/about)), CHAI (Copyright (c)
+2011-2014 Jake Luer <jake@alogicalparadox.com>), D (Copyright (C) 2013
+Mariusz Nowak (www.medikoo.com)), JAVASCRIPT DEBUG - V0.3 [jQuery BBQ]
+(Copyright (c) 2009 "Cowboy" Ben Alman), FILESET (Copyright (c) 2012
+Mickael Daniel), JS2XMLPARSER (Copyright (C) 2012 Michael Kourlas),
+ARCHY (Copyright Not Found), CHARM (Copyright Not Found), IPADDR.JS
+(Copyright (C) 2011 Peter Zotov <whitequark@whitequark.org>), JS-SIGNALS
+[Js-yaml] (Author: Miller Medeiros), UNDERSCORE [Lodash] (Copyright (c)
+2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters &
+Editors), ES6-SYMBOL (Copyright (C) 2013-2015 Mariusz Nowak
+(www.medikoo.com)), LODASH.ASSIGN (Copyright 2012-2015 The Dojo
+Foundation <http://dojofoundation.org/>), JQUERY V1.9.0 [Apache CXF]
+((c) 2005, 2012 jQuery Foundation, Inc), ASSERTION-ERROR (Copyright (c)
+2013 Jake Luer <jake@qualiancy.com> (http://qualiancy.com)), JSHINT
+LOOPFUNC [JSON Editor] (No copyright found. Author: John Resig
+http://ejohn.org/), JSCS/NARWHAL (Copyright (c) 2009 Thomas Robinson
+<280north.com> Copyright Joyent, Inc. and other Node contributors.),
+ES6-ITERATOR (Copyright (C) 2013-2015 Mariusz Nowak (www.medikoo.com)),
+WEBAPP [Apache CXF] (Copyright 2010, John Resig), JQUERY-HASHCHANGE
+[OpenAPI-Specification] (Copyright (c) 2010 "Cowboy" Ben Alman), UUID.JS
+[Apache CXF] (Copyright (c) 2010 Robert Kieffer), GOT (? [Sindre
+Sorhus](http://sindresorhus.com)), CALL-BIND (Copyright (c) 2020 Jordan
+Harband), COMMANDER (Copyright (c) 2011 TJ Holowaychuk
+&lt;tj@vision-media.ca&gt;), HANDLEBARS (Copyright (C) 2011-2015 by
+Yehuda Katz), JSLITMUS.JS [Lodash] (copyright Robert Kieffer
+<http://broofa.com/>), BUFFER-EQUAL (Copyright Not Found), EASYMOCK
+(Copyright (c) 2001-2008 OFFIS, Tammo Freese, Henri Tremblay.),
+ASSERT-PLUS (Copyright (c) 2012 Mark Cavage), MARKED (Copyright (c)
+2011-2013 Christopher Jeffrey (https://github.com/chjj/)),
+PERFECT-SCROLLBAR [highlight.js] (Copyright (c) 2014 Hyunje Alex Jun),
+MAP-KEY (Copyright Not Found), ACCEPTS (Copyright (c) 2014 Jonathan Ong
+<me@jongleberry.com> Copyright (c) 2015 Douglas Christopher Wilson
+<doug@somethingdoug.com>), JQUERY-WIGGLE (WonderGroup, Jordan Thomas),
+SIZZLE.JS [Apache CXF] (Copyright 2010, The Dojo Foundation), EXT-LIST
+(? [Kevin M?rtensson](https://github.com/kevva)), AWS-SIGN2/KNOX
+(Copyright(c) 2010 LearnBoost <dev@learnboost.com>), CTYPE (Copyright
+2011 Robert Mustacchi. All rights reserved. Copyright 2011 Joyent Inc.
+All rights reserved.), XREGEXP 0.6.1 [jQuery BBQ] ((c) 2007-2008 Steven
+Levithan), CHALK (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com>
+(sindresorhus.com)), DEEP-EQL (Copyright (c) 2013 Jake Luer
+<jake@alogicalparadox.com>), REQUESTANIMATIONFRAME POLYFILL [JSON
+Editor] (No copyright found. Author: Erik MÃ¶ller. fixes from Paul Irish
+and Tino Zijdel), SIZZLE CSS SELECTOR ENGINE [jQuery] (Copyright 2012
+jQuery Foundation and other contributors), MOCKITO [Jakarta.ws.rs-api]
+(Copyright (c) 2007 Mockito contributors), JQUERY [highlight.js]
+(Copyright jQuery Foundation and other contributors), SLF4J-API
+(Copyright (c) 2004-2011 QOS.ch), GRUNT [OpenAPI-Specification]
+(Copyright jQuery Foundation and other contributors,
+https://jquery.org/), MIME-TYPES (Copyright (c) 2014 Jonathan Ong
+me@jongleberry.com), JQUERY HASHCHANGE EVENT - V1.2 [jQuery BBQ]
+(Copyright (c) 2010 "Cowboy" Ben Alman), MIME-DB (Copyright (c) 2014
+Jonathan Ong me@jongleberry.com), JSON [Js-yaml] (Copyright 2012, Kit
+Cambridge), CATHARSIS (Copyright (c) 2012-2013 Jeff Williams),
+ESTRAVERSE-FB (Copyright (c) 2014 Ingvar Stepanyan), INI (Copyright 2009
+2010 2011 Isaac Z. Schlueter.), LOGICALOPERATOR.JAVA [EasyMock]
+(Copyright (c) 2001-2007 OFFIS, Henri Tremb), GITHUB-URL-FROM-GIT
+(Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>), JS-YAML
+(Copyright (C) 2011-2015 by Vitaly Puzrin), RUBY [Apache CXF] (Copyright
+(c) 2005-2006 David Heinemeier Hansson), ASYNC (Copyright (c) 2010
+Caolan McMahon), UNDERSCORE.JS [OpenAPI-Specification] ((c) 2009-2012
+Jeremy Ashkenas, DocumentCloud Inc.), COLUMNIFY (Copyright (c) 2013 Tim
+Oxley), ESLINT/INDENT (Copyright 2015 Dmitriy Shekhovtsov. All rights
+reserved. Copyright 2013 Dulin Marat and other contributors.),
+HANDLEBARS-V2.0.0.JS [weld] (Copyright (C) 2011-2014 by Yehuda Katz),
+SL4J [Apache CXF] (Copyright (c) 2004-2007 QOS.ch)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -1112,6 +1348,58 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF MIT LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+MIT-EQUIVALENT
+
+The Program includes some or all of the following that IBM obtained
+under a MIT-EQUIVALENT license:
+
+
+bl (Copyright 2013 Rod Vagg (the "Original Author"))
+
+Copyright 2013, Rod Vagg (the "Original Author")
+All rights reserved.
+
+MIT +no-false-attribs License
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+Distributions of all or part of the Software intended to be used
+by the recipients as they would use the unmodified Software,
+containing modifications that substantially alter, remove, or
+disable functionality of the Software, outside of the documented
+configuration mechanisms provided by the Software, shall be
+modified such that the Original Author's bug reporting email
+addresses and urls are either replaced with the contact information
+of the parties responsible for the changes, or removed entirely.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+
+Except where noted, this license applies to any and all software
+programs and associated documentation files created by the
+Original Author, when distributed with the Software.
+
+
+END OF MIT-EQUIVALENT NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 MOZILLA PUBLIC LICENSE, VERSION 2.0
 
 The Program includes some or all of the following that IBM obtained 
@@ -1123,790 +1411,6 @@ PUBLIC SUFFIX LIST [Apache CXF]
 [Apache CXF] (https://github.com/apache/cxf/tree/cxf-3.2.0)
 
 END OF MOZILLA PUBLIC LICENSE, VERSION 2.0 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-PYTHON SOFTWARE FOUNDATION LICENSE
-
-The Program includes some or all of the following that IBM
-obtained under the Python Software Foundation License:
-
-ARGPARSE [swagger-ui]
-
-A. HISTORY OF THE SOFTWARE
-==========================
-
-Python was created in the early 1990s by Guido van Rossum at Stichting
-Mathematisch Centrum (CWI, see http://www.cwi.nl) in the Netherlands
-as a successor of a language called ABC.  Guido remains Python's
-principal author, although it includes many contributions from others.
-
-In 1995, Guido continued his work on Python at the Corporation for
-National Research Initiatives (CNRI, see http://www.cnri.reston.va.us)
-in Reston, Virginia where he released several versions of the
-software.
-
-In May 2000, Guido and the Python core development team moved to
-BeOpen.com to form the BeOpen PythonLabs team.  In October of the same
-year, the PythonLabs team moved to Digital Creations (now Zope
-Corporation, see http://www.zope.com).  In 2001, the Python Software
-Foundation (PSF, see http://www.python.org/psf/) was formed, a
-non-profit organization created specifically to own Python-related
-Intellectual Property.  Zope Corporation is a sponsoring member of
-the PSF.
-
-All Python releases are Open Source (see http://www.opensource.org for
-the Open Source Definition).  Historically, most, but not all, Python
-releases have also been GPL-compatible; the table below summarizes
-the various releases.
-
-    Release         Derived     Year        Owner       GPL-
-                    from                                compatible? (1)
-
-    0.9.0 thru 1.2              1991-1995   CWI         yes
-    1.3 thru 1.5.2  1.2         1995-1999   CNRI        yes
-    1.6             1.5.2       2000        CNRI        no
-    2.0             1.6         2000        BeOpen.com  no
-    1.6.1           1.6         2001        CNRI        yes (2)
-    2.1             2.0+1.6.1   2001        PSF         no
-    2.0.1           2.0+1.6.1   2001        PSF         yes
-    2.1.1           2.1+2.0.1   2001        PSF         yes
-    2.2             2.1.1       2001        PSF         yes
-    2.1.2           2.1.1       2002        PSF         yes
-    2.1.3           2.1.2       2002        PSF         yes
-    2.2.1           2.2         2002        PSF         yes
-    2.2.2           2.2.1       2002        PSF         yes
-    2.2.3           2.2.2       2003        PSF         yes
-    2.3             2.2.2       2002-2003   PSF         yes
-    2.3.1           2.3         2002-2003   PSF         yes
-    2.3.2           2.3.1       2002-2003   PSF         yes
-    2.3.3           2.3.2       2002-2003   PSF         yes
-    2.3.4           2.3.3       2004        PSF         yes
-    2.3.5           2.3.4       2005        PSF         yes
-    2.4             2.3         2004        PSF         yes
-    2.4.1           2.4         2005        PSF         yes
-    2.4.2           2.4.1       2005        PSF         yes
-    2.4.3           2.4.2       2006        PSF         yes
-    2.4.4           2.4.3       2006        PSF         yes
-    2.5             2.4         2006        PSF         yes
-    2.5.1           2.5         2007        PSF         yes
-    2.5.2           2.5.1       2008        PSF         yes
-    2.5.3           2.5.2       2008        PSF         yes
-    2.6             2.5         2008        PSF         yes
-    2.6.1           2.6         2008        PSF         yes
-    2.6.2           2.6.1       2009        PSF         yes
-    2.6.3           2.6.2       2009        PSF         yes
-    2.6.4           2.6.3       2009        PSF         yes
-    2.6.5           2.6.4       2010        PSF         yes
-    2.7             2.6         2010        PSF         yes
-
-Footnotes:
-
-(1) GPL-compatible doesn't mean that we're distributing Python under
-    the GPL.  All Python licenses, unlike the GPL, let you distribute
-    a modified version without making your changes open source.  The
-    GPL-compatible licenses make it possible to combine Python with
-    other software that is released under the GPL; the others don't.
-
-(2) According to Richard Stallman, 1.6.1 is not GPL-compatible,
-    because its license has a choice of law clause.  According to
-    CNRI, however, Stallman's lawyer has told CNRI's lawyer that 1.6.1
-    is "not incompatible" with the GPL.
-
-Thanks to the many outside volunteers who have worked under Guido's
-direction to make these releases possible.
-
-
-B. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING PYTHON
-===============================================================
-
-PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
---------------------------------------------
-
-1. This LICENSE AGREEMENT is between the Python Software Foundation
-("PSF"), and the Individual or Organization ("Licensee") accessing and
-otherwise using this software ("Python") in source or binary form and
-its associated documentation.
-
-2. Subject to the terms and conditions of this License Agreement, PSF hereby
-grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
-analyze, test, perform and/or display publicly, prepare derivative works,
-distribute, and otherwise use Python alone or in any derivative version,
-provided, however, that PSF's License Agreement and PSF's notice of copyright,
-i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
-2011, 2012 Python Software Foundation; All Rights Reserved" are retained in Python
-alone or in any derivative version prepared by Licensee.
-
-3. In the event Licensee prepares a derivative work that is based on
-or incorporates Python or any part thereof, and wants to make
-the derivative work available to others as provided herein, then
-Licensee hereby agrees to include in any such work a brief summary of
-the changes made to Python.
-
-4. PSF is making Python available to Licensee on an "AS IS"
-basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
-
-5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON,
-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-6. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
-
-7. Nothing in this License Agreement shall be deemed to create any
-relationship of agency, partnership, or joint venture between PSF and
-Licensee.  This License Agreement does not grant permission to use PSF
-trademarks or trade name in a trademark sense to endorse or promote
-products or services of Licensee, or any third party.
-
-8. By copying, installing or otherwise using Python, Licensee
-agrees to be bound by the terms and conditions of this License
-Agreement.
-
-
-BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0
--------------------------------------------
-
-BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
-
-1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
-office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
-Individual or Organization ("Licensee") accessing and otherwise using
-this software in source or binary form and its associated
-documentation ("the Software").
-
-2. Subject to the terms and conditions of this BeOpen Python License
-Agreement, BeOpen hereby grants Licensee a non-exclusive,
-royalty-free, world-wide license to reproduce, analyze, test, perform
-and/or display publicly, prepare derivative works, distribute, and
-otherwise use the Software alone or in any derivative version,
-provided, however, that the BeOpen Python License is retained in the
-Software, alone or in any derivative version prepared by Licensee.
-
-3. BeOpen is making the Software available to Licensee on an "AS IS"
-basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
-
-4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
-SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
-AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY
-DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-5. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
-
-6. This License Agreement shall be governed by and interpreted in all
-respects by the law of the State of California, excluding conflict of
-law provisions.  Nothing in this License Agreement shall be deemed to
-create any relationship of agency, partnership, or joint venture
-between BeOpen and Licensee.  This License Agreement does not grant
-permission to use BeOpen trademarks or trade names in a trademark
-sense to endorse or promote products or services of Licensee, or any
-third party.  As an exception, the "BeOpen Python" logos available at
-http://www.pythonlabs.com/logos.html may be used according to the
-permissions granted on that web page.
-
-7. By copying, installing or otherwise using the software, Licensee
-agrees to be bound by the terms and conditions of this License
-Agreement.
-
-
-CNRI LICENSE AGREEMENT FOR PYTHON 1.6.1
----------------------------------------
-
-1. This LICENSE AGREEMENT is between the Corporation for National
-Research Initiatives, having an office at 1895 Preston White Drive,
-Reston, VA 20191 ("CNRI"), and the Individual or Organization
-("Licensee") accessing and otherwise using Python 1.6.1 software in
-source or binary form and its associated documentation.
-
-2. Subject to the terms and conditions of this License Agreement, CNRI
-hereby grants Licensee a nonexclusive, royalty-free, world-wide
-license to reproduce, analyze, test, perform and/or display publicly,
-prepare derivative works, distribute, and otherwise use Python 1.6.1
-alone or in any derivative version, provided, however, that CNRI's
-License Agreement and CNRI's notice of copyright, i.e., "Copyright (c)
-1995-2001 Corporation for National Research Initiatives; All Rights
-Reserved" are retained in Python 1.6.1 alone or in any derivative
-version prepared by Licensee.  Alternately, in lieu of CNRI's License
-Agreement, Licensee may substitute the following text (omitting the
-quotes): "Python 1.6.1 is made available subject to the terms and
-conditions in CNRI's License Agreement.  This Agreement together with
-Python 1.6.1 may be located on the Internet using the following
-unique, persistent identifier (known as a handle): 1895.22/1013.  This
-Agreement may also be obtained from a proxy server on the Internet
-using the following URL: http://hdl.handle.net/1895.22/1013".
-
-3. In the event Licensee prepares a derivative work that is based on
-or incorporates Python 1.6.1 or any part thereof, and wants to make
-the derivative work available to others as provided herein, then
-Licensee hereby agrees to include in any such work a brief summary of
-the changes made to Python 1.6.1.
-
-4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
-basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
-DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1 WILL NOT
-INFRINGE ANY THIRD PARTY RIGHTS.
-
-5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 1.6.1,
-OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-
-6. This License Agreement will automatically terminate upon a material
-breach of its terms and conditions.
-
-7. This License Agreement shall be governed by the federal
-intellectual property law of the United States, including without
-limitation the federal copyright law, and, to the extent such
-U.S. federal law does not apply, by the law of the Commonwealth of
-Virginia, excluding Virginia's conflict of law provisions.
-Notwithstanding the foregoing, with regard to derivative works based
-on Python 1.6.1 that incorporate non-separable material that was
-previously distributed under the GNU General Public License (GPL), the
-law of the Commonwealth of Virginia shall govern this License
-Agreement only as to issues arising under or with respect to
-Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in this
-License Agreement shall be deemed to create any relationship of
-agency, partnership, or joint venture between CNRI and Licensee.  This
-License Agreement does not grant permission to use CNRI trademarks or
-trade name in a trademark sense to endorse or promote products or
-services of Licensee, or any third party.
-
-8. By clicking on the "ACCEPT" button where indicated, or by copying,
-installing or otherwise using Python 1.6.1, Licensee agrees to be
-bound by the terms and conditions of this License Agreement.
-
-        ACCEPT
-
-
-CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2
---------------------------------------------------
-
-Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
-The Netherlands.  All rights reserved.
-
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the name of Stichting Mathematisch
-Centrum or CWI not be used in advertising or publicity pertaining to
-distribution of the software without specific, written prior
-permission.
-
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
-THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
-FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
-Additional Conditions for this Windows binary build
----------------------------------------------------
-
-This program is linked with and uses Microsoft Distributable Code,
-copyrighted by Microsoft Corporation. The Microsoft Distributable Code
-includes the following files:
-
-msvcr90.dll
-msvcp90.dll
-msvcm90.dll
-
-If you further distribute programs that include the Microsoft
-Distributable Code, you must comply with the restrictions on
-distribution specified by Microsoft. In particular, you must require
-distributors and external end users to agree to terms that protect the
-Microsoft Distributable Code at least as much as Microsoft's own
-requirements for the Distributable Code. See Microsoft's documentation
-(included in its developer tools and on its website at microsoft.com)
-for specific details.
-
-Redistribution of the Windows binary build of the Python interpreter
-complies with this agreement, provided that you do not:
-
-- alter any copyright, trademark or patent notice in Microsoft's
-Distributable Code;
-
-- use Microsoft's trademarks in your programs' names or in a way that
-suggests your programs come from or are endorsed by Microsoft;
-
-- distribute Microsoft's Distributable Code to run on a platform other
-than Microsoft operating systems, run-time technologies or application
-platforms; or
-
-- include Microsoft Distributable Code in malicious, deceptive or
-unlawful programs.
-
-These restrictions apply only to the Microsoft Distributable Code as
-defined above, not to Python itself or any programs running on the
-Python interpreter. The redistribution of the Python interpreter and
-libraries is governed by the Python Software License included with this
-file, or by other licenses as marked.
-
-
-This copy of Python includes a copy of bzip2, which is licensed under the following terms:
-
-
---------------------------------------------------------------------------
-
-This program, "bzip2", the associated library "libbzip2", and all
-documentation, are copyright (C) 1996-2007 Julian R Seward.  All
-rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. The origin of this software must not be misrepresented; you must 
-   not claim that you wrote the original software.  If you use this 
-   software in a product, an acknowledgment in the product 
-   documentation would be appreciated but is not required.
-
-3. Altered source versions must be plainly marked as such, and must
-   not be misrepresented as being the original software.
-
-4. The name of the author may not be used to endorse or promote 
-   products derived from this software without specific prior written 
-   permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
-OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-Julian Seward, jseward@bzip.org
-bzip2/libbzip2 version 1.0.5 of 10 December 2007
-
---------------------------------------------------------------------------
-
-This copy of Python includes a copy of Berkeley DB, which is licensed under the following terms:
-
-/*-
- * $Id: LICENSE,v 12.9 2008/02/07 17:12:17 mark Exp $
- */
-
-The following is the license that applies to this copy of the Berkeley DB
-software.  For a license to use the Berkeley DB software under conditions
-other than those described here, or to purchase support for this software,
-please contact Oracle at berkeleydb-info_us@oracle.com.
-
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-/*
- * Copyright (c) 1990,2008 Oracle.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Redistributions in any form must be accompanied by information on
- *    how to obtain complete source code for the DB software and any
- *    accompanying software that uses the DB software.  The source code
- *    must either be included in the distribution or be available for no
- *    more than the cost of distribution plus a nominal fee, and must be
- *    freely redistributable under reasonable conditions.  For an
- *    executable file, complete source code means the source code for all
- *    modules it contains.  It does not include source code for modules or
- *    files that typically accompany the major components of the operating
- *    system on which the executable file runs.
- *
- * THIS SOFTWARE IS PROVIDED BY ORACLE ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
- * NON-INFRINGEMENT, ARE DISCLAIMED.  IN NO EVENT SHALL ORACLE BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/*
- * Copyright (c) 1990, 1993, 1994, 1995
- * The Regents of the University of California.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-/*
- * Copyright (c) 1995, 1996
- * The President and Fellows of Harvard University.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY HARVARD AND ITS CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL HARVARD OR ITS CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-/***
- * ASM: a very small and fast Java bytecode manipulation framework
- * Copyright (c) 2000-2005 INRIA, France Telecom
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-This copy of Python includes a copy of openssl, which is licensed under the following terms:
-
-
-  LICENSE ISSUES
-  ==============
-
-  The OpenSSL toolkit stays under a dual license, i.e. both the conditions of
-  the OpenSSL License and the original SSLeay license apply to the toolkit.
-  See below for the actual license texts. Actually both licenses are BSD-style
-  Open Source licenses. In case of any license issues related to OpenSSL
-  please contact openssl-core@openssl.org.
-
-  OpenSSL License
-  ---------------
-
-/* ====================================================================
- * Copyright (c) 1998-2008 The OpenSSL Project.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. All advertising materials mentioning features or use of this
- *    software must display the following acknowledgment:
- *    "This product includes software developed by the OpenSSL Project
- *    for use in the OpenSSL Toolkit. (http://www.openssl.org/)"
- *
- * 4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
- *    endorse or promote products derived from this software without
- *    prior written permission. For written permission, please contact
- *    openssl-core@openssl.org.
- *
- * 5. Products derived from this software may not be called "OpenSSL"
- *    nor may "OpenSSL" appear in their names without prior written
- *    permission of the OpenSSL Project.
- *
- * 6. Redistributions of any form whatsoever must retain the following
- *    acknowledgment:
- *    "This product includes software developed by the OpenSSL Project
- *    for use in the OpenSSL Toolkit (http://www.openssl.org/)"
- *
- * THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
- * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
- * ====================================================================
- *
- * This product includes cryptographic software written by Eric Young
- * (eay@cryptsoft.com).  This product includes software written by Tim
- * Hudson (tjh@cryptsoft.com).
- *
- */
-
- Original SSLeay License
- -----------------------
-
-/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
- * All rights reserved.
- *
- * This package is an SSL implementation written
- * by Eric Young (eay@cryptsoft.com).
- * The implementation was written so as to conform with Netscapes SSL.
- * 
- * This library is free for commercial and non-commercial use as long as
- * the following conditions are aheared to.  The following conditions
- * apply to all code found in this distribution, be it the RC4, RSA,
- * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
- * included with this distribution is covered by the same copyright terms
- * except that the holder is Tim Hudson (tjh@cryptsoft.com).
- * 
- * Copyright remains Eric Young's, and as such any Copyright notices in
- * the code are not to be removed.
- * If this package is used in a product, Eric Young should be given attribution
- * as the author of the parts of the library used.
- * This can be in the form of a textual message at program startup or
- * in documentation (online or textual) provided with the package.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    "This product includes cryptographic software written by
- *     Eric Young (eay@cryptsoft.com)"
- *    The word 'cryptographic' can be left out if the rouines from the library
- *    being used are not cryptographic related :-).
- * 4. If you include any Windows specific code (or a derivative thereof) from 
- *    the apps directory (application code) you must include an acknowledgement:
- *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
- * 
- * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * 
- * The licence and distribution terms for any publically available version or
- * derivative of this code cannot be changed.  i.e. this code cannot simply be
- * copied and put under another distribution licence
- * [including the GNU Public Licence.]
- */
-
-
-This copy of Python includes a copy of Tcl, which is licensed under the following terms:
-
-This software is copyrighted by the Regents of the University of
-California, Sun Microsystems, Inc., Scriptics Corporation, ActiveState
-Corporation and other parties.  The following terms apply to all files
-associated with the software unless explicitly disclaimed in
-individual files.
-
-The authors hereby grant permission to use, copy, modify, distribute,
-and license this software and its documentation for any purpose, provided
-that existing copyright notices are retained in all copies and that this
-notice is included verbatim in any distributions. No written agreement,
-license, or royalty fee is required for any of the authorized uses.
-Modifications to this software may be copyrighted by their authors
-and need not follow the licensing terms described here, provided that
-the new terms are clearly indicated on the first page of each file where
-they apply.
-
-IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
-FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
-ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
-DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
-IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
-NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
-MODIFICATIONS.
-
-GOVERNMENT USE: If you are acquiring this software on behalf of the
-U.S. government, the Government shall have only "Restricted Rights"
-in the software and related documentation as defined in the Federal 
-Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
-are acquiring the software on behalf of the Department of Defense, the
-software shall be classified as "Commercial Computer Software" and the
-Government shall have only "Restricted Rights" as defined in Clause
-252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
-authors grant the U.S. Government and others acting in its behalf
-permission to use and distribute the software in accordance with the
-terms specified in this license. 
-
-This copy of Python includes a copy of Tk, which is licensed under the following terms:
-
-This software is copyrighted by the Regents of the University of
-California, Sun Microsystems, Inc., and other parties.  The following
-terms apply to all files associated with the software unless explicitly
-disclaimed in individual files.
-
-The authors hereby grant permission to use, copy, modify, distribute,
-and license this software and its documentation for any purpose, provided
-that existing copyright notices are retained in all copies and that this
-notice is included verbatim in any distributions. No written agreement,
-license, or royalty fee is required for any of the authorized uses.
-Modifications to this software may be copyrighted by their authors
-and need not follow the licensing terms described here, provided that
-the new terms are clearly indicated on the first page of each file where
-they apply.
-
-IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
-FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
-ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
-DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
-IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
-NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
-MODIFICATIONS.
-
-GOVERNMENT USE: If you are acquiring this software on behalf of the
-U.S. government, the Government shall have only "Restricted Rights"
-in the software and related documentation as defined in the Federal 
-Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
-are acquiring the software on behalf of the Department of Defense, the
-software shall be classified as "Commercial Computer Software" and the
-Government shall have only "Restricted Rights" as defined in Clause
-252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
-authors grant the U.S. Government and others acting in its behalf
-permission to use and distribute the software in accordance with the
-terms specified in this license.
-
-This copy of Python includes a copy of Tix, which is licensed under the following terms:
-
-Copyright (c) 1993-1999 Ioi Kim Lam.
-Copyright (c) 2000-2001 Tix Project Group.
-Copyright (c) 2004 ActiveState
-
-This software is copyrighted by the above entities
-and other parties.  The following terms apply to all files associated
-with the software unless explicitly disclaimed in individual files.
-
-The authors hereby grant permission to use, copy, modify, distribute,
-and license this software and its documentation for any purpose, provided
-that existing copyright notices are retained in all copies and that this
-notice is included verbatim in any distributions. No written agreement,
-license, or royalty fee is required for any of the authorized uses.
-Modifications to this software may be copyrighted by their authors
-and need not follow the licensing terms described here, provided that
-the new terms are clearly indicated on the first page of each file where
-they apply.
-
-IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
-FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
-ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
-DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
-IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
-NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
-MODIFICATIONS.
-
-GOVERNMENT USE: If you are acquiring this software on behalf of the
-U.S. government, the Government shall have only "Restricted Rights"
-in the software and related documentation as defined in the Federal 
-Acquisition Regulations (FARs) in Clause 52.227.19 (c) (2).  If you
-are acquiring the software on behalf of the Department of Defense, the
-software shall be classified as "Commercial Computer Software" and the
-Government shall have only "Restricted Rights" as defined in Clause
-252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
-authors grant the U.S. Government and others acting in its behalf
-permission to use and distribute the software in accordance with the
-terms specified in this license. 
-
-----------------------------------------------------------------------
-
-Parts of this software are based on the Tcl/Tk software copyrighted by
-the Regents of the University of California, Sun Microsystems, Inc.,
-and other parties. The original license terms of the Tcl/Tk software
-distribution is included in the file docs/license.tcltk.
-
-Parts of this software are based on the HTML Library software
-copyrighted by Sun Microsystems, Inc. The original license terms of
-the HTML Library software distribution is included in the file
-docs/license.html_lib.
-
-END OF PYTHON LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 W3C SOFTWARE LICENSE
@@ -1976,30 +1480,13 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 THE REMAINDER OF THIS OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
 TABLE OF CONTENTS
-CC-BY-SA-4.0  
+
 SIL OPEN FONT LICENSE 1.1  
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
-
-NNFX [swagger-ui] (No copyright)
-(http://registry.npmjs.org/swagger-ui/-/swagger-ui-4.3.0.tgz),
-KIMBIE-HIGHTLIGHT.JS [swagger-ui] (No Copyright)
-(https://github.com/idleberg/Kimbie-highlight.js)
-
-END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NON-IBM-LICENSE INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 SIL OPEN FONT LICENSE 1.1
@@ -2007,7 +1494,7 @@ SIL OPEN FONT LICENSE 1.1
 The Program includes some or all of the following works licensed under
 the SIL OPEN FONT LICENSE 1.1
 
-FONT AWESOME [weld], FONT-AWESOME [weld]
+FONT-AWESOME [weld]
 
 
 
@@ -2056,7 +1543,7 @@ END OF SIL OPEN FONT LICENSE 1.1 NON-IBM-LICENSE INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES AND INFORMATION 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF NOTICE FILE
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+END OF NOTICES AND INFORMATION FILE
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
