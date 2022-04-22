@@ -28,4 +28,10 @@ public interface RepeatTestAction {
      */
     public String getID();
 
+    /**
+      * Invoked by the FAT framework to perform cleanup steps before ending test repetition.
+      * If clean up is needed to undo the setup changes after running the action then override this method.
+      */
+    default public void cleanup() throws Exception {}
+
 }

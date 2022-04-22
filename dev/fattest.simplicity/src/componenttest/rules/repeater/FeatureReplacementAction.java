@@ -132,9 +132,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private boolean calledForServers = false;
     private boolean calledForServerConfigPaths = false;
 
-    private static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
-    private static final String pathToAutoFVTTestServers = "publish/servers/";
-    private static final String pathToAutoFVTTestClients = "publish/clients/";
+    protected static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
+    protected static final String pathToAutoFVTTestServers = "publish/servers/";
+    protected static final String pathToAutoFVTTestClients = "publish/clients/";
 
     public FeatureReplacementAction() {}
 
@@ -661,7 +661,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return removed;
     }
 
-    private static Set<File> findFile(File dir, String suffix) {
+    protected static Set<File> findFile(File dir, String suffix) {
         HashSet<File> set = new HashSet<File>();
         File[] list = dir.listFiles();
         if (list != null) {

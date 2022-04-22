@@ -141,6 +141,7 @@ public class RepeatTests extends ExternalResource {
                         Log.info(c, m, "===================================");
                         action.setup();
                         statement.evaluate();
+                        action.cleanup();
                     } else {
                         Log.info(c, m, "===================================");
                         Log.info(c, m, "");
