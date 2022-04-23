@@ -24,6 +24,7 @@
   <AD id="monitor.target"                 type="String"  default="(|(!(filter>=!))(filter=*Session*))" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="service.ranking"                type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
   <AD id="uri" type="String" ibm:type="location" required="false" name="%uri" description="%uri.desc"/>
+  <AD id="cacheSeparator"                 type="String"  required="false" name="%cacheSeparator" description="%cacheSeparator.desc" default="%"/>
   <AD id="properties" required="false"    type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.session.cache.properties" ibm:flat="true"/>
   <!-- group: performance -->
   <AD id="scheduleInvalidationFirstHour"  type="Integer" required="false" min="0" max="23" ibmui:group="performance" name="%scheduleInval1" description="%scheduleInval.desc"/>
