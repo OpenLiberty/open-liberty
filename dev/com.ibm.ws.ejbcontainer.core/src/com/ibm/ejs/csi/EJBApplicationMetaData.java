@@ -86,6 +86,12 @@ public class EJBApplicationMetaData {
     private final ApplicationMetaData ivApplicationMetaData;
 
     /**
+     * The server was started with checkpoint phase APPLICATIONS. A checkpoint is created
+     * at the end of application start.
+     */
+    private final boolean isCheckpointApplications;
+
+    /**
      * The EJB modules associated with this application.
      */
     private final Set<EJBModuleMetaDataImpl> ivModules = new LinkedHashSet<EJBModuleMetaDataImpl>(); // F743-26072
@@ -162,6 +168,21 @@ public class EJBApplicationMetaData {
      * null after the application has started.
      */
     private List<J2EEName> ivStartupSingletonList;
+
+    /**
+     * This ArrayList contains a list of all Singleton Session Beans that have not been
+     * marked as "Startup" via annotations or XML that should still be started because
+     * the server has been configured to create a checkpoint after application start.
+     *
+     * Singleton beans that have been explicitly configured for deferred initialization
+     * will not be included in this list. Checkpoint processing only changes the default
+     * behavior; it does not override explicit configuration options.
+     *
+     * <p>
+     * This list is null until the first non-startup singleton is found. This list is always
+     * null after the application has started.
+     */
+    private List<J2EEName> ivCheckpointSingletonList;
 
     /**
      * List of singletons that have dependencies on other singletons. A LinkedHashMap is
@@ -256,6 +277,7 @@ public class EJBApplicationMetaData {
         ivLogicalName = logicalName; // F743-26137
         ivStandaloneModule = standaloneModule; // d660700
         ivApplicationMetaData = amd;
+        isCheckpointApplications = (container != null) ? container.getEJBRuntime().isCheckpointApplications() : false;
 
         ivBlockWorkUntilStarted = blockWorkUntilStarted; // F743-15941
         if (!started) { // F743-26072
@@ -413,6 +435,11 @@ public class EJBApplicationMetaData {
                 ivStartupSingletonList = new ArrayList<J2EEName>();
             }
             ivStartupSingletonList.add(bmd.j2eeName);
+        } else if (isCheckpointApplications && !bmd.ivDeferEJBInitialization) {
+            if (ivCheckpointSingletonList == null) {
+                ivCheckpointSingletonList = new ArrayList<J2EEName>();
+            }
+            ivCheckpointSingletonList.add(bmd.j2eeName);
         }
 
         if (dependsOnLinks != null) {
@@ -646,6 +673,12 @@ public class EJBApplicationMetaData {
 
         // Signal that the application is "fully started".
         unblockThreadsWaitingForStart(); // F743-15941
+
+        // Non-startup singletons may now be created when starting server for checkpoint
+        if (ivCheckpointSingletonList != null) {
+            createSingletonBeansForCheckpoint();
+            ivCheckpointSingletonList = null;
+        }
 
         // Now that the application is unblocked, preloading of the bean pools may begin.
         // Must occur after unblocking, otherwise the pool preload threads would block.
@@ -985,6 +1018,51 @@ public class EJBApplicationMetaData {
     }
 
     /**
+     * Creates non-startup singleton beans when the server has been started for
+     * checkpoint after application start.
+     *
+     * Unlike startup singleton beans, the application may finish starting even
+     * if a non-startup singleton fails to initialize.
+     */
+    private void createSingletonBeansForCheckpoint() {
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (EJSPlatformHelper.isZOSCRA()) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "createSingletonBeansForCheckpoint: skipped in adjunct process");
+            return;
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "createSingletonBeansForCheckpoint : " + ivCheckpointSingletonList.size());
+
+        for (int i = 0, size = ivCheckpointSingletonList.size(); i < size; i++) {
+            J2EEName singletonName = ivCheckpointSingletonList.get(i);
+            try {
+                EJSHome home = (EJSHome) EJSContainer.homeOfHomes.getHome(singletonName);
+                if (home == null) {
+                    // The home won't exist if singleton beans aren't enabled in the runtime.
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "Ignoring Singleton bean: " + singletonName);
+                } else {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "Creating instance for Singleton bean: " + singletonName.toString());
+                    home.createSingletonBeanO();
+                }
+            } catch (Throwable t) {
+                // Post an FFDC, log the failure, but allow application start to continue.
+                // The application would start without checkpoint; the bean just won't be accessible.
+                FFDCFilter.processException(t, CLASS_NAME + ".createSingletonBeansForCheckpoint", "1052", this);
+                Tr.error(tc, "UNEXPECTED_EJB_START_FAILURE_CNTR0149E", new Object[] { singletonName.getComponent(),
+                                                                                      singletonName.getModule(), t });
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "createSingletonBeansForCheckpoint");
+    }
+
+    /**
      * Preload the bean pools for stateless session beans that have been configured with a
      * hard minimum pool size or are being proloaded when server checkpoint is enabled.
      */
@@ -1000,7 +1078,6 @@ public class EJBApplicationMetaData {
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "preloadBeanPools : " + ivPreloadBeanPools.size() + " beans");
 
-        boolean isCheckpoint = ivContainer.getEJBRuntime().isCheckpointApplications();
         List<ScheduledFuture<?>> preloadFutures = new ArrayList<ScheduledFuture<?>>();
         ScheduledExecutorService executor = ivContainer.getEJBRuntime().getScheduledExecutorService();
 
@@ -1014,7 +1091,7 @@ public class EJBApplicationMetaData {
         // If the server is starting for applications checkpoint, then wait a reasonable amount
         // of time for the asynchronous bean pool preloads to complete. Checkpoint restore will
         // then resume processing with fully preloaded bean pools.
-        if (isCheckpoint) {
+        if (isCheckpointApplications) {
             long timeout = 10;
             for (ScheduledFuture<?> preloadFuture : preloadFutures) {
                 try {
@@ -1263,6 +1340,7 @@ public class EJBApplicationMetaData {
                 // internal state.
                 ivSingletonDependencies = null;
                 ivStartupSingletonList = null;
+                ivCheckpointSingletonList = null;
                 ivQueuedNonPersistentTimers = null;
                 ivPreloadBeanPools = null;
             }
