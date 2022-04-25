@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,12 +324,12 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         // check user access first
         boolean isGranted = false;
         WSCredential wsCred = getWSCredentialFromSubject(subject);
-        String accessId = getAccessId(wsCred);
 
 //        if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName) && !resourceName.equalsIgnoreCase(ADMIN_RESOURCE_NAME)) {
         if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName)) {
             isGranted = useRoleAsGroupNameForAccessDecision(resourceName, requiredRoles, subject, accessDecisionService, wsCred);
         } else {
+            String accessId = getAccessId(wsCred);
             isGranted = useAppBndForAccessDecision(resourceName, requiredRoles, subject, accessDecisionService, wsCred, accessId);
         }
 
@@ -387,13 +387,10 @@ public class BuiltinAuthorizationService implements AuthorizationService {
                                                         WSCredential wsCred) {
         boolean isGranted = false;
         String[] groupIds = getGroupIds(wsCred);
-        String realmName = getRealmName(wsCred);
         if (groupIds != null && groupIds.length > 0) {
-            Collection<String> assignedRoles = new ArrayList<String>();
+            String realmName = getRealmName(wsCred);
             // Just include the group name and not the id
-            for (int i = 0; i < groupIds.length; i++) {
-                assignedRoles.add(AccessIdUtil.getUniqueId(groupIds[i], realmName));
-            }
+            Collection<String> assignedRoles = AccessIdUtil.getUniqueIds(groupIds, realmName);
             isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, assignedRoles, subject);
         }
         //Keep track the app that use role as group name for authorization decision
