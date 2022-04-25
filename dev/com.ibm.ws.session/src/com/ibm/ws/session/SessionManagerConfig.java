@@ -96,6 +96,8 @@ public class SessionManagerConfig implements Cloneable {
     private String sacKey = "DEFAULT_SAC_KEY";
 
     // The following properties are set via Custom Properties
+    private static char cacheSeparator = '%';
+    
     private static char cloneSeparator = ':';
     private boolean debugSessionCrossover = false;
     private static boolean cloneIdPropertySet = false;
@@ -700,6 +702,13 @@ public class SessionManagerConfig implements Cloneable {
      * 
      * CUSTOM PROPERTIES
      */
+    public static final char getCacheSeparator() {
+        return cacheSeparator;
+    }
+
+    public static final void setCacheSeparator(char c) {
+        cacheSeparator = c;
+    }    
 
     // cloneSeparator
     public static final char getCloneSeparator() {
