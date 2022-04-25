@@ -40,6 +40,9 @@ public class InMemoryHttpSessionCache implements HttpSessionCache {
         if (sub == null || sub.isEmpty()) {
             return;
         }
+        if (httpSessionId == null || httpSessionId.isEmpty()) {
+            return;
+        }
 
         if (!subToHttpSessionsMap.containsKey(sub)) {
             HttpSessionsStore httpSessionsStore = new HttpSessionsStore();

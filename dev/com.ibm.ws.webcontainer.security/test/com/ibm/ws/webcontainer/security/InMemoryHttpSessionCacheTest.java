@@ -127,6 +127,28 @@ public class InMemoryHttpSessionCacheTest {
     }
 
     @Test
+    public void test_insert_httpSessionIdIsNull() {
+        String sub = "testsub";
+        String sid = "testsid";
+        String httpSessionId = null;
+
+        cache.insertSession(sub, sid, httpSessionId);
+
+        assertFalse("Session with no http session id should not be active.", cache.isSessionActive(httpSessionId));
+    }
+
+    @Test
+    public void test_insert_httpSessionIdIsEmpty() {
+        String sub = "testsub";
+        String sid = "testsid";
+        String httpSessionId = "";
+
+        cache.insertSession(sub, sid, httpSessionId);
+
+        assertFalse("Session with empty http session id should not be active.", cache.isSessionActive(httpSessionId));
+    }
+
+    @Test
     public void test_remove() {
         populateCache();
 
