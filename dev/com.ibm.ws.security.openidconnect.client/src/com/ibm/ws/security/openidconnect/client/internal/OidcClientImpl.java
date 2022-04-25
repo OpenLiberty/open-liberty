@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -439,8 +440,14 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             return;
         }
 
+        HttpSession httpSession = req.getSession(false);
+        if (httpSession == null) {
+            return;
+        }
+
+        String httpSessionId = httpSession.getId();
+
         HttpSessionCache httpSessionCache = oidcClientConfig.getHttpSessionCache();
-        String httpSessionId = req.getSession().getId();
         if (httpSessionCache.isSessionActive(httpSessionId)) {
             return;
         }

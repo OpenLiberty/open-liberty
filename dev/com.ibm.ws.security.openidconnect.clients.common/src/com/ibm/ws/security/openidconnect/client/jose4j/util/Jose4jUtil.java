@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -191,9 +192,14 @@ public class Jose4jUtil {
     private void addHttpSessionToCache(OidcClientRequest oidcClientRequest, JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws MalformedClaimException {
         OidcClientConfig oidcClientConfig = clientConfig.getOidcClientConfig();
         if (oidcClientConfig.isBackchannelLogoutSupported()) {
+            HttpSession httpSession = oidcClientRequest.getRequest().getSession(false);
+            if (httpSession == null) {
+                return;
+            }
+
             String sub = jwtClaims.getSubject();
             String sid = jwtClaims.getClaimValue("sid", String.class);
-            String httpSessionId = oidcClientRequest.getRequest().getSession().getId();
+            String httpSessionId = httpSession.getId();
 
             HttpSessionCache httpSessionCache = oidcClientConfig.getHttpSessionCache();
             httpSessionCache.insertSession(sub, sid, httpSessionId);
