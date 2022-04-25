@@ -10,9 +10,12 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-instrument.disabled: true
-
 -includeresource: \
-   @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/!META-INF/maven/*
+  @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/!META-INF/maven/*,\
+  org/apache/ws/security=${bin}/org/apache/ws/security
 
--buildpath: org.apache.ws.security:wss4j;version=1.6.7.ibm-s20130913-2015
+-buildpath: \
+	org.apache.ws.security:wss4j;version='1.6.7.ibm-s20130913-2015',\
+	com.ibm.ws.org.apache.santuario.xmlsec.1.5.2;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	org.apache.commons.logging
