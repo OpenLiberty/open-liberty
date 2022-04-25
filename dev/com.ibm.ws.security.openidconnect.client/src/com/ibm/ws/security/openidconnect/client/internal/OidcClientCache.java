@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.util.Date;
 import java.util.Map;
@@ -32,7 +32,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 /**
  *
  */
-public class OidcClientCache {
+class OidcClientCache {
     private static final TraceComponent tc = Tr.register(OidcClientCache.class);
     static final String UTF8 = "UTF-8";
 
@@ -43,7 +43,7 @@ public class OidcClientCache {
     @Sensitive
     String customCacheKey = null;
 
-    public OidcClientCache(AuthCacheService authCacheService, OidcClientConfig oidcClientConfig, OidcClientRequest oidcClientRequest) {
+    OidcClientCache(AuthCacheService authCacheService, OidcClientConfig oidcClientConfig, OidcClientRequest oidcClientRequest) {
         this.authCache = authCacheService;
         this.clientCfg = oidcClientConfig;
         this.oidcClientRequest = oidcClientRequest;

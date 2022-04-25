@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.client.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -59,9 +59,6 @@ import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
-import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
-import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheKey;
-import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheValue;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -1170,7 +1167,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         @Override
         ProviderAuthenticationResult fixSubject(ProviderAuthenticationResult oidcResult) {
             fixSubjectCalled = true;
-            return new OidcClientAuthenticator().fixSubject(oidcResult);
+            return OidcClientAuthenticator.fixSubject(oidcResult);
         }
     }
 

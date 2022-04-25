@@ -43,7 +43,7 @@ public class MpJwtFatActions extends JwtTokenActions {
 
     public String getJwtFromTokenEndpoint(String testName, String builderId, String builderUrlBase, String user, String pw) throws MalformedURLException, Exception {
         // Sleep for 1 second to ensure created JWTs are unique; the iat claim for JWTs only has a granularity of seconds
-        Thread.sleep(1000);
+        Thread.sleep(1200);
 
         WebRequest request = buildJwtTokenEndpointRequest(builderId, builderUrlBase, user, pw);
 
