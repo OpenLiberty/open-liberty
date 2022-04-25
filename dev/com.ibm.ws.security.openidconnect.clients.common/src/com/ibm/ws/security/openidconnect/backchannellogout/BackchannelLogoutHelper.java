@@ -92,7 +92,8 @@ public class BackchannelLogoutHelper {
             HttpSessionCache httpSessionCache = clientConfig.getOidcClientConfig().getHttpSessionCache();
             httpSessionCache.removeSession(sub, sid);
         } catch (Exception e) {
-            throw new BackchannelLogoutException(e.getMessage(), HttpServletResponse.SC_NOT_IMPLEMENTED);
+            String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED", new Object[] { logoutTokenClaims, e.getMessage() });
+            throw new BackchannelLogoutException(errorMsg, HttpServletResponse.SC_NOT_IMPLEMENTED);
         }
     }
 

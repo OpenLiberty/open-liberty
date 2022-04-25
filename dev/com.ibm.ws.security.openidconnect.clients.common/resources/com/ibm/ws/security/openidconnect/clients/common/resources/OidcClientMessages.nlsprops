@@ -297,5 +297,9 @@ LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: The logout token is missing th
 LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=The OpenID Connect client requires that the logout token contains a session ID to identify the OpenID Connect client session with the OpenID Connect provider.
 LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Set the backchannelLogoutSessionRequired OpenID Connect client configuration attribute to false, or ensure that the logout token contains a "sid" claim.
 
+BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED=CWWKS1552E: The OpenID Connect client encountered the following error while performing back-channel logout with a logout token with claims {0}: {1}
+BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED.explanation=The back-channel logout request did not complete successfully.
+BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED.useraction=View the error message for more information.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
