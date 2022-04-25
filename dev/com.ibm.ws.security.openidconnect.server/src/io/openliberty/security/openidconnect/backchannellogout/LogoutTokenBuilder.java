@@ -180,7 +180,7 @@ public class LogoutTokenBuilder {
                 client = clientProvider.get(cachedTokenClientId);
                 fetchedClients.put(cachedTokenClientId, client);
             } catch (OidcServerException e) {
-                Tr.warning(tc, "ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS", oidcServerConfig.getProviderId(), cachedTokenClientId, e);
+                Tr.error(tc, "ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS", oidcServerConfig.getProviderId(), cachedTokenClientId, e);
             }
         }
         return client;
@@ -223,8 +223,8 @@ public class LogoutTokenBuilder {
                         Tr.debug(tc, "Will not create a logout token for cached ID token " + cachedIdToken + " because the issuer of the token is different");
                     }
                 } else {
-                    // Log a warning but continue trying to build logout tokens based on other cached ID tokens
-                    Tr.warning(tc, "ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN", client.getClientId(), e);
+                    // Log an error but continue trying to build logout tokens based on other cached ID tokens
+                    Tr.error(tc, "ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN", client.getClientId(), e);
                 }
             }
         }
