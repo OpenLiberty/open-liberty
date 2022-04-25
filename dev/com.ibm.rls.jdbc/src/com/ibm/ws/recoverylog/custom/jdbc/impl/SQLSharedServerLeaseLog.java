@@ -69,6 +69,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     volatile private boolean _isDerby;
     volatile private boolean _isNonStandard;
 
+    volatile private boolean _leaseTableExists;
     private boolean _sqlTransientErrorHandlingEnabled = true;
     private boolean _logRetriesEnabled = false;
     private int _leaseTimeout;
@@ -265,7 +266,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             recoveryGroup = "";
         }
         boolean newTable = true;
-
+        Exception currentEx = null;
         // Get peers from table
         // Test if they are stale
         // If they are we'll need to recover them
@@ -286,23 +287,29 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Query failed with exception: " + e);
+                currentEx = e;
+                // Perhaps we couldn't find the table. Attempt to create it if we havent already touched it
+                if (!_leaseTableExists) {
+                    try {
+                        createLeaseTable(conn);
 
-                try {
-                    // Perhaps we couldn't find the table ... so attempt to create it
-                    createLeaseTable(conn);
+                        conn.commit();
 
-                    conn.commit();
-
-                    newTable = true;
-                } catch (Exception ine) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Table Creation failed with exception: " + ine);
-                    // Set the current exception to ine
-                    throw ine;
-                }
+                        newTable = true;
+                    } catch (Exception ine) {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "In response to an error, attempted to create lease table but caught Exception: " + ine);
+                        // Throw the original exception
+                        throw currentEx;
+                    }
+                } else {
+                    // Throw the original exception
+                    throw currentEx;
+                } // eof if _leaseTableExists
 
             } // eof Exception e block
-
+              // We either found the table or have just successfully created it
+            _leaseTableExists = true;
         } // eof synchronize block
 
         // If table creation succeeded then we are done.
@@ -524,8 +531,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         if (currentEx != null) {
             if (!_serverStopping) {
-                if (isServerStartup) {
-                    // Perhaps we couldn't find the table ... so attempt to create it
+                // Perhaps we couldn't find the table. Attempt to create it if we are starting up and the table has not
+                // been touched already.
+                if (isServerStartup && !_leaseTableExists) {
+
                     synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
                     {
                         try {
@@ -536,23 +545,28 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
                             newTable = true;
                         } catch (Exception ine) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Table Creation failed with exception: " + ine);
-                            // Set the current exception to ine
-                            throw ine;
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "In response to an error, attempted to create lease table but caught Exception: " + ine);
+                            // Throw the original exception
+                            throw currentEx;
                         }
+                        // We just created the table
+                        _leaseTableExists = true;
                     } // eof synchronize block
                 } // eof isServerStartup
                 else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Lease select update failed with exception: " + currentEx);
-                    // Set the current exception to ine
+                    // Report the original exception
                     throw currentEx;
                 }
             } else { // server is stopping report but return without throwing exception
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Lease select update failed but server is stopping, exception: " + currentEx);
             }
+        } else {
+            // We found the table
+            _leaseTableExists = true;
         }
 
         if (tc.isEntryEnabled())
