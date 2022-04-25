@@ -435,6 +435,11 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
     @Override
     public void logoutIfSessionInactive(HttpServletRequest req, String provider) {
+        // don't logout if state exists (hasn't authenticated yet)
+        if (requestHasStateCookie(req)) {
+            return;
+        }
+
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         if (!oidcClientConfig.isBackchannelLogoutSupported()) {
             return;
@@ -461,12 +466,20 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
     }
 
+    private boolean requestHasStateCookie(HttpServletRequest req) {
+        return requestHasCookie(req, ClientConstants.WAS_OIDC_STATE_KEY);
+    }
+
     private boolean requestHasOidcCookie(HttpServletRequest req) {
+        return requestHasCookie(req, ClientConstants.COOKIE_NAME_OIDC_CLIENT_PREFIX);
+    }
+
+    private boolean requestHasCookie(HttpServletRequest req, String cookieNamePrefix) {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {
                 Cookie ck = cookies[i];
-                if (ck.getName().startsWith(ClientConstants.COOKIE_NAME_OIDC_CLIENT_PREFIX)) {
+                if (ck.getName().startsWith(cookieNamePrefix)) {
                     return true;
                 }
             }
