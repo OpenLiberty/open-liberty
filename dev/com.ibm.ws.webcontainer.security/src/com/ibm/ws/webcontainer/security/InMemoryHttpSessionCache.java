@@ -62,6 +62,9 @@ public class InMemoryHttpSessionCache implements HttpSessionCache {
         }
 
         HttpSessionsStore httpSessionsStore = subToHttpSessionsMap.get(sub);
+        if (httpSessionsStore == null) {
+            return;
+        }
 
         List<String> sessionsToRemove = httpSessionsStore.getSessions(sid);
         for (String sessionToRemove : sessionsToRemove) {
