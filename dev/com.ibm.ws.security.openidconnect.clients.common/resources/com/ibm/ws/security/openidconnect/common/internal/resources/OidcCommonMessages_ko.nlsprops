@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2020 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -187,3 +187,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=\uc9c0\uc815\ub41c \ucca
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: OpenID Connect \ud074\ub77c\uc774\uc5b8\ud2b8 [{0}]\uc774(\uac00) [{2}] \uad6c\uc131 \uc18d\uc131\uc5d0 \uc758\ud574 \uc9c0\uc815\ub41c \uac12\uc5d0 {1}\uc744(\ub97c) \ud3ec\ud568\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uc9c0\uc815\ub41c \uac12\uc774 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=OAuth 2.0 \uc2a4\ud399\uc740 \uad8c\ud55c \ubd80\uc5ec \uc694\uccad\uc744 \uc704\ud574 \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc81c\uacf5\ud574\uc57c \ud558\ub294 \uc608\uc57d\ub41c \uc694\uccad \ubcc0\uc218\uc758 \uc138\ud2b8\ub97c \uc815\uc758\ud569\ub2c8\ub2e4. \uc774\ub7ec\ud55c \uc608\uc57d\ub41c \ub9e4\uac1c\ubcc0\uc218\uc758 \uac12\uc740 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=OpenID Connect \ud074\ub77c\uc774\uc5b8\ud2b8 \uad6c\uc131\uc5d0 \uc815\uc758\ub41c \uac12\uc758 \ubaa9\ub85d\uc5d0\uc11c \uc9c0\uc815\ub41c \uac12\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+JWT_MISSING_ISSUER=CWWKS1784E: \ud1a0\ud070\uc774 \ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JWT_MISSING_ISSUER.explanation=\ud1a0\ud070\uc740 \ud1a0\ud070\uc744 \ubc1c\ud589\ud55c \uc0ac\uc6a9\uc790\ub97c \uc2dd\ubcc4\ud558\uae30 \uc704\ud574 \ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+JWT_MISSING_ISSUER.useraction=\ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud558\ub294 \uc0c8 \ud1a0\ud070\uc744 \ud655\ubcf4\ud558\uc2ed\uc2dc\uc624.

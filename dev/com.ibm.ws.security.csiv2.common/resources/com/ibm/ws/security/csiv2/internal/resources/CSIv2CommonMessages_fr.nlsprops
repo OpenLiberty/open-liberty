@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Assurez-vous d'avoir configur\u00e9 un \u00e
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite de chiffrement demand\u00e9e {0} semble avoir des options d''association {1} qui ne correspondent ni aux options Supported {2} sp\u00e9cifi\u00e9es ni aux options Required {3}.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite de chiffrement peut ne pas correspondre aux options d'association plac\u00e9es dans l'IOR ou utilis\u00e9es pour correspondre \u00e0 l'IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=V\u00e9rifiez que la suite de chiffrement demand\u00e9e correspond aux options d'association sp\u00e9cifi\u00e9es ou retirez-la.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite de chiffrement demand\u00e9e par {0} semble avoir des options d''association {1} qui ne correspondent pas aux options {2} requises sp\u00e9cifi\u00e9es.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite de chiffrement peut ne pas correspondre aux options requises qui sont \u00e9crites dans l'IOR (Interoperable Object Reference) ou qui sont utilis\u00e9es pour correspondre \u00e0 l'IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=V\u00e9rifiez que la suite de chiffrement demand\u00e9e correspond aux options requises sp\u00e9cifi\u00e9es ou supprimez-le.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: La configuration SSL {0} n''existe pas. Il se peut qu''un \u00e9l\u00e9ment SSL manque ou qu''il existe une r\u00e9f\u00e9rence non valide \u00e0 un \u00e9l\u00e9ment de magasin de cl\u00e9s ou de magasin de cl\u00e9s certifi\u00e9es dan la configuration.
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Impossible d'obtenir l'\u00e9l\u00e9ment de configuration SSL n\u00e9cessaire en raison d'une erreur dans la configuration.

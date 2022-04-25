@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: La solicitud de cierre
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=La caracter\u00edstica OpenID Connect espera que el URI de solicitud de canal de fondo incluya un ID de cliente de OpenID Connect para determinar el cliente que debe finalizar la sesi\u00f3n.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verifique que el URI de solicitud incluye el ID de cliente de OpenID Connect que se debe utilizar para cerrar la sesi\u00f3n del usuario.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: La se\u00f1al de cierre de sesi\u00f3n no es v\u00e1lida porque falta al menos una reclamaci\u00f3n que es necesaria: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=La se\u00f1al de cierre de sesi\u00f3n debe contener las reclamaciones especificadas en el mensaje.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Aseg\u00farese de que el proveedor de OpenID Connect incluye las reclamaciones que faltan en la se\u00f1al de cierre de sesi\u00f3n.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: La se\u00f1al de cierre de sesi\u00f3n no es v\u00e1lida porque no contiene una reclamaci\u00f3n "sub" o "sid". La se\u00f1al debe tener al menos una de esas reclamaciones.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=Las reclamaciones "sub" y "sid" identifican el usuario y la sesi\u00f3n que est\u00e1 asociada a una se\u00f1al. Al menos una de esas reclamaciones debe estar presente para determinar el usuario o la sesi\u00f3n para finalizar la sesi\u00f3n.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect incluye las reclamaciones que faltan en la se\u00f1al de cierre de sesi\u00f3n.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: La se\u00f1al de cierre de sesi\u00f3n no es v\u00e1lida porque la reclamaci\u00f3n "events" no es un objeto JSON: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=La reclamaci\u00f3n "events" de la se\u00f1al de cierre de sesi\u00f3n debe ser un objeto JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Aseg\u00farese de que el proveedor de OpenID Connect utiliza el tipo de datos correcto para la reclamaci\u00f3n "events".
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: La se\u00f1al de cierre de sesi\u00f3n no es v\u00e1lida porque la reclamaci\u00f3n "events" no contiene "{0}" como miembro. El valor de reclamaci\u00f3n "events" es {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=La reclamaci\u00f3n "events" debe ser un objeto JSON que contenga un miembro con el nombre especificado en el mensaje.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Aseg\u00farese de que la reclamaci\u00f3n "events" incluye el miembro necesario.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: La se\u00f1al de cierre de sesi\u00f3n no es v\u00e1lida porque contiene una reclamaci\u00f3n "nonce".
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Una se\u00f1al de cierre de sesi\u00f3n no debe contener una reclamaci\u00f3n "nonce" para que la se\u00f1al no pueda utilizarse en una respuesta de autenticaci\u00f3n falsificada en lugar de una se\u00f1al de ID.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n no contenga una reclamaci\u00f3n "nonce".
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: El valor del miembro "{0}" en la reclamaci\u00f3n "events" no es un objeto JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=El valor de miembro correspondiente debe ser un objeto JSON. El valor esperado es "{}", un objeto JSON vac\u00edo.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Aseg\u00farese de que la reclamaci\u00f3n "events" en la se\u00f1al de cierre de sesi\u00f3n tenga el formato correcto.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: A la se\u00f1al de cierre de sesi\u00f3n le falta la reclamaci\u00f3n "sid", pero el cliente de {0} OpenID Connect la necesita.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=El cliente de OpenID Connect requiere que la se\u00f1al de cierre de sesi\u00f3n contenga un ID de sesi\u00f3n para identificar la sesi\u00f3n del cliente de OpenID Connect con el proveedor de OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Establezca el atributo de configuraci\u00f3n del cliente de OpenID Connect backchannelLogoutSessionRequired en false, o aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n contiene una reclamaci\u00f3n "sid".
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

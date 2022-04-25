@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Die Back-Channel-Abmel
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Das OpenID Connect-Feature erwartet, dass der Back-Channel-Anforderungs-URI eine OpenID Connect-Client-ID enth\u00e4lt, um festzustellen, welcher Client sich abmelden muss.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Vergewissern Sie sich, dass der Anforderungs-URI die OpenID Connect-Client-ID f\u00fcr die Abmeldung des Benutzers enth\u00e4lt.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Das Abmeldetoken ist nicht g\u00fcltig, da ihm mindestens eine erforderliche Anforderung fehlt: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Das Abmeldetoken muss die in der Nachricht angegebenen Anforderungen umfassen.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider die fehlenden Anforderungen im Abmeldetoken angibt.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Das Abmeldetoken ist ung\u00fcltig, da es keine \u201esub\u201c- oder \u201esid\u201c -Anforderung enth\u00e4lt. Das Token muss mindestens eine dieser Anforderungen aufweisen.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=Die \u201esub\u201c- und \u201esid\u201c-Anforderungen geben den Benutzer und die Sitzung an, die einem Token zugeordnet sind. Mindestens eine dieser Anforderungen muss vorhanden sein, um den Benutzer oder die Sitzung f\u00fcr die Abmeldung zu ermitteln.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider die fehlenden Anforderungen im Abmeldetoken angibt.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Das Abmeldetoken ist nicht g\u00fcltig, da die Anforderung \u201eevents\u201c kein JSON-Objekt ist: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=Die Anforderung \u201eevents\u201c im Abmeldetoken muss ein JSON-Objekt sein.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider den richtigen Datentyp f\u00fcr die Anforderung \u201eevents\u201c verwendet.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Das Abmeldetoken ist nicht g\u00fcltig, weil die Anforderung \u201eevents\u201c nicht \u201e{0}\u201c als Element enth\u00e4lt. Der Anforderungswert \u201eevents\u201c lautet {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=Die Anforderung \u201eevents\u201c muss ein JSON-Objekt sein, das ein Element mit dem in der Nachricht angegebenen Namen enth\u00e4lt.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Stellen Sie sicher, dass die Anforderung \u201eevents\u201c das erforderliche Element enth\u00e4lt.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Das Abmeldetoken ist ung\u00fcltig, da es eine Anforderung \u201enonce\u201c enth\u00e4lt.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Ein Abmeldetoken darf keine Anforderung \u201enonce\u201c enthalten, sodass das Token nicht anstelle eines ID-Tokens in einer gef\u00e4lschten Authentifizierungsantwort verwendet werden kann.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Stellen Sie sicher, dass das Abmeldetoken keine Anforderung \u201enonce\u201c enth\u00e4lt.
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Der Wert f\u00fcr das Element \u201e{0}\u201c in der Anforderung \u201eevents\u201c ist kein JSON-Objekt.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Der entsprechende Elementwert muss ein JSON-Objekt sein. Der erwartete Wert ist \u201e{}\u201c, ein leeres JSON-Objekt.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Stellen Sie sicher, dass die Anforderung \u201eevents\u201c im Abmeldetoken ordnungsgem\u00e4\u00df formatiert ist.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: Im Abmeldetoken fehlt die Anforderung \u201esid\u201c, aber der OpenID Connect-Client {0} erfordert sie.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Der OpenID-Connect-Client erfordert, dass das Abmeldetoken eine Sitzungs-ID zur Identifizierung der OpenID Connect-Clientsitzung mit dem OpenID Connect-Provider enth\u00e4lt.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Setzen Sie das Konfigurationsattribut \u201ebackchannelLogoutSessionRequired\u201c des OpenID Connect-Clients auf \u201efalse\u201c oder stellen Sie sicher, dass das Abmeldetoken eine \u201esid\u201c-Anforderung enth\u00e4lt.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

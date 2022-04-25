@@ -93,8 +93,8 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Element konfiguracyjny cdi1
 cdi12.element.type.superceded.CWOWB1015W.explanation=Element konfiguracyjny cdi zast\u0119puje element konfiguracyjny cdi12 i zawiera wszystkie te same opcje oraz nowe opcje.
 cdi12.element.type.superceded.CWOWB1015W.useraction=Zmie\u0144 konfiguracj\u0119 w pliku server.xml, tak aby u\u017cywa\u0142a elementu konfiguracyjnego cdi zamiast elementu konfiguracyjnego cdi12.
 
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atrybut emptyBeansXMLExplicitBeanArchive elementu konfiguracyjnego cdi jest obs\u0142ugiwany tylko w \u015brodowisku CDI 4.0 lub nowszym. Ten atrybut jest ignorowany.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atrybut emptyBeansXMLExplicitBeanArchive nie odnosi \u017cadnego skutku, je\u015bli jest u\u017cywany z wersj\u0105 \u015brodowiska CDI wcze\u015bniejsz\u0105 ni\u017c 4.0.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atrybut emptyBeansXMLExplicitBeanArchive elementu konfiguracyjnego CDI jest obs\u0142ugiwany tylko w systemie CDI 4.0 lub nowszym. Ten atrybut jest ignorowany.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atrybut emptyBeansXMLExplicitBeanArchive nie ma \u017cadnego wp\u0142ywu, je\u015bli jest u\u017cywany z wersj\u0105 CDI ni\u017csz\u0105 ni\u017c 4.0.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Zaktualizuj konfiguracj\u0119 w pliku server.xml, usuwaj\u0105c ten atrybut, lub u\u017cyj \u015brodowiska CDI w wersji 4.0 lub nowszej.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Atrybut enableImplicitBeanArchives zosta\u0142 ustawiony w elementach konfiguracyjnych cdi12 i cdi. U\u017cywana jest warto\u015b\u0107 podana w elemencie cdi, a warto\u015b\u0107 podana w elemencie cdi12 jest ignorowana.

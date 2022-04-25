@@ -94,7 +94,7 @@ cdi12.element.type.superceded.CWOWB1015W.explanation=A cdi konfigur\u00e1ci\u00f
 cdi12.element.type.superceded.CWOWB1015W.useraction=M\u00f3dos\u00edtsa a server.xml konfigur\u00e1ci\u00f3t, hogy a cdi konfigur\u00e1ci\u00f3s elemet haszn\u00e1lja a cdi12 konfigur\u00e1ci\u00f3s elem helyett.
 
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: A cdi konfigur\u00e1ci\u00f3s elem emptyBeansXMLExplicitBeanArchive attrib\u00fatuma csak a CDI 4.0 vagy \u00fajabb v\u00e1ltozat\u00e1n t\u00e1mogatott. Ez az attrib\u00fatum figyelmen k\u00edv\u00fcl marad.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Az emptyBeansXMLExplicitBeanArchive attrib\u00fatumnak a 4.0-n\u00e1l kor\u00e1bbi CDI v\u00e1ltozatokban nincs hat\u00e1sa.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Az emptyBeansXMLExplicitBeanArchive attrib\u00fatum 4.0 v\u00e1ltozatn\u00e1l kor\u00e1bbi CDI eset\u00e9n hat\u00e1s n\u00e9lk\u00fcl marad.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Friss\u00edtse a server.xml konfigur\u00e1ci\u00f3t, \u00e9s t\u00e1vol\u00edtsa el az attrib\u00fatumot, vagy haszn\u00e1lja a CDI 4.0 vagy \u00fajabb v\u00e1ltozat\u00e1t.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Az enableImplicitBeanArchives attrib\u00fatum a cdi12 \u00e9s a cdi konfigur\u00e1ci\u00f3s elemeken is be\u00e1ll\u00edt\u00e1sra ker\u00fclt. A cdi elem \u00e9rt\u00e9ke ker\u00fcl felhaszn\u00e1l\u00e1sra, \u00e9s a cdi12 elem \u00e9rt\u00e9ke figyelmen k\u00edv\u00fcl marad.

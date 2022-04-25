@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Sk\u0142adnia: java [opcje JVM] -jar {0} [opcje] plikWyjsciowy  
-briefUsageScript=Sk\u0142adnia: ./{0} [opcje] plik_wyj\u015bciowy
+purpose=Komenda {0} generuje schemat XML dla konfiguracji podstawowego modu\u0142u Liberty i innych zainstalowanych rozszerze\u0144 produkt\u00f3w w jednym pliku wyj\u015bciowym.
 
+briefUsage=Sk\u0142adnia: java [opcje JVM] -jar {0} [opcje] plikWyjsciowy
+  
+briefUsageScript=Sk\u0142adnia: ./{0} [opcje] plik_wyj\u015bciowy
 
 use.options=Opcje:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Opcje:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Nazwa pliku zawieraj\u0105cego list\u0119 identyfikator\u00f3w pid do zignorowania
+option-desc.ignorePids=Nazwa pliku zawieraj\u0105cego list\u0119 identyfikator\u00f3w PID, kt\u00f3re maj\u0105 by\u0107 ignorowane.
 option-key.encoding=--encoding
-option-desc.encoding=Kodowanie znak\u00f3w u\u017cywane na potrzeby danych wyj\u015bciowych
+option-desc.encoding=Kodowanie znak\u00f3w, kt\u00f3re ma by\u0107 u\u017cywane w danych wyj\u015bciowych.
 option-key.locale=--locale
-option-desc.locale=Ustawienia narodowe u\u017cywane na potrzeby danych wyj\u015bciowych
+option-desc.locale=J\u0119zyk, kt\u00f3ry ma by\u0107 u\u017cywany podczas tworzenia pliku wyj\u015bciowego. Ten \u0142a\u0144cuch sk\u0142ada si\u0119 z dwuliterowego kodu j\u0119zyka w standardzie ISO-639 (ma\u0142e litery), po kt\u00f3rym opcjonalnie mo\u017ce znajdowa\u0107 si\u0119 podkre\u015blenie oraz dwuliterowy kod kraju w standardzie ISO-3166 (du\u017ce litery).
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=Schemat wyj\u015bciowy nie b\u0119dzie zawiera\u0142 wci\u0119\u0107 sk\u0142adaj\u0105cych si\u0119 ze spacji, znak\u00f3w nowego wiersza ani komentarzy XML.
+option-desc.compactoutput=Schemat wyj\u015bciowy nie b\u0119dzie zawiera\u0142 wci\u0119\u0107, kana\u0142\u00f3w w nowych wierszach ani komentarzy XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=Nazwa rozszerzenia produktu do przetwarzania. \nJe\u015bli rozszerzenie produktu jest zainstalowane w po\u0142o\u017ceniu\ndomy\u015blnym u\u017cytkownika, u\u017cyj s\u0142owa kluczowego: usr. \nJe\u015bli ta opcja nie zosta\u0142a okre\u015blona, dzia\u0142anie jest wykonywane\nna pliku core serwera Liberty.
 

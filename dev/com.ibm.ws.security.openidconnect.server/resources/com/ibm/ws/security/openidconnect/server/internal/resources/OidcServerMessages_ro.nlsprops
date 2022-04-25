@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Claim-urile suplimentare de la 
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Nu au putut fi extrase claim-urile de la jetonul ID ter\u021b\u0103 parte. Vizualiza\u021bi mesajul de eroare pentru mai multe informa\u021bii.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul ter\u021b OpenID Connect trimite un jeton ID valid.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Furnizorul OpenID Connect {0} a detectat urm\u0103toarea eroare atunci c\u00e2nd a \u00eencercat s\u0103 construiasc\u0103 jetoane de delogare pentru cereri de delogare back-channel: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=\u0218irul jetonului de ID din parametrul id_token_hint, dac\u0103 a fost furnizat unul, ar putea fi format gre\u0219it. Este posibil ca furnizorul s\u0103 nu poat\u0103 determina setul de clien\u021bi pentru trimiterea cererilor de delogare back-channel. Dac\u0103 parametrul id_token_hint nu este format gre\u0219it, a ap\u0103rut alt\u0103 eroare atunci c\u00e2nd furnizorul a \u00eencercat s\u0103 construiasc\u0103 un jeton de delogare.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Vede\u021bi ac\u021biunea utilizatorului pentru eroarea care este inclus\u0103 \u00een mesaj.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Furnizorul OpenID Connect nu poate extrage revendic\u0103ri pentru reutilizare din jetonul de ID. Eroarea este: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Jetonul de ID ar putea fi format gre\u0219it sau o revendicare din jeton ar putea avea o valoare care este un tip de date nea\u0219teptat. Sau din jeton ar putea lipsi revendic\u0103ri care sunt necesare, sau emitentul jetonului nu este emitentul a\u0219teptat.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de ID este formatat corect. Pentru mai multe informa\u021bii, vede\u021bi eroarea care este inclus\u0103 \u00een mesaj.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Furnizorul OpenID Connect nu poate determina setul de clien\u021bi OpenID Connect pentru delogare, din cauza urm\u0103toarei erori: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Furnizorul nu a reu\u0219it s\u0103 extrag\u0103 setul de clien\u021bi care sunt \u00eenregistra\u021bi sau revendic\u0103rile jetonului de ID ar putea fi formate gre\u0219it.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea care este inclus\u0103 \u00een mesaj.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Versiunea Java folosit\u0103 de acest runtime [{0}] nu este suportat\u0103 de ID token Mediator SPI. Versiunea suportat\u0103 de Java este 1.7 sau mai \u00eenalt\u0103.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Versiunea Java din mesaj nu poate suporta func\u0163ia ID token Mediator SPI. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Instala\u0163i Java versiunea 1.7 sau mai \u00eenalt\u0103.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: Revendicarea de emitent [{0}] din jetonul de ID nu se potrive\u0219te cu emitentul a\u0219teptat [{1}] pentru furnizorul OpenID Connect {2}.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Furnizorul OpenID Connect nu a emis jetonul de ID, astfel c\u0103 jetonul nu poate fi manipulat de acest furnizor OpenID Connect.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Trimite\u021bi doar jetoane de ID cu o revendicare de emitent care se potrive\u0219te cu configura\u021bia pentru furnizorul OpenID Connect specificat \u00een mesaj.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Jetonul de ID nu este valid, deoarece lipse\u0219te cel pu\u021bin o revendicare necesar\u0103: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specifica\u021bia OpenID Connect cere ca revendicarea sau revendic\u0103rile care sunt enumerate \u00een mesajul de eroare s\u0103 fie prezente \u00een jetonul de ID.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de ID con\u021bine toate revendic\u0103rile necesare.
+
+# NOTE: Stop at CWWKS1649

@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: \u00dagy t\u0171nik, hogy a k\u00e9rt {0} rejtjelk\u00e9szlet {1} hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1ssal rendelkezik, amelyek nem felelnek meg a megadott {2} t\u00e1mogatott be\u00e1ll\u00edt\u00e1soknak \u00e9s a k\u00f6telez\u0151 {3} be\u00e1ll\u00edt\u00e1soknak.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=El\u0151fordulhat, hogy a rejtjelk\u00e9szlet nem felel meg az egy\u00fcttm\u0171k\u00f6d\u00e9sre k\u00e9pes objektumhivatkoz\u00e1sba (IOR) \u00edrt, vagy az IOR egyeztet\u00e9s\u00e9hez haszn\u00e1lt hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1soknak.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ellen\u0151rizze, hogy a k\u00e9rt rejtjelk\u00e9szlet megfelel-e a megadott hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1soknak, vagy t\u00e1vol\u00edtsa el azt.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: A(z) {0} \u00e1ltal k\u00e9rt rejtjelk\u00e9szlet olyan {1} t\u00e1rs\u00edt\u00e1si be\u00e1ll\u00edt\u00e1sokkal rendelkezik, amelyek nem felelnek meg a megadott {2} k\u00f6telez\u0151 param\u00e9tereinek.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Lehets\u00e9ges, hogy a rejtjelk\u00e9szlet nem felel meg az interoper\u00e1bilis objektumhivatkoz\u00e1sba \u00edrt (IOR) vagy az IOR egyeztet\u00e9s\u00e9hez haszn\u00e1lt k\u00f6telez\u0151 param\u00e9tereknek.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ellen\u0151rizze, hogy a k\u00e9rt rejtjelk\u00e9szlet megfelel-e a megadott k\u00f6telez\u0151 param\u00e9tereknek, vagy t\u00e1vol\u00edtsa el.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: A(z) {0} SSL konfigur\u00e1ci\u00f3 nem l\u00e9tezik. Ezt okozhatja a konfigur\u00e1ci\u00f3ban egy hi\u00e1nyz\u00f3 SSL elem, illetve kulcst\u00e1rol\u00f3ra vagy kulcst\u00e1rol\u00f3 elemre mutat\u00f3 \u00e9rv\u00e9nytelen hivatkoz\u00e1s. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=A konfigur\u00e1ci\u00f3 hib\u00e1ja miatt nem lehet beolvasni a sz\u00fcks\u00e9ges SSL konfigur\u00e1ci\u00f3s elemet. 

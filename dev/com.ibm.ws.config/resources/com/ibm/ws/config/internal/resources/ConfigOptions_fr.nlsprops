@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Syntaxe : java [options JVM] -jar {0} [options] fichierSortie  
-briefUsageScript=Syntaxe : ./{0} [options] outputFile
+purpose=La commande {0} g\u00e9n\u00e8re le sch\u00e9ma XML pour la configuration de base Liberty et d''autres extensions de produits install\u00e9s dans un seul fichier de sortie.
 
+briefUsage=Syntaxe : java [options JVM] -jar {0} [options] fichierSortie
+  
+briefUsageScript=Syntaxe : ./{0} [options] outputFile
 
 use.options=Options :
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Options :
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=Nom d'un fichier contenant la liste des PID \u00e0 ignorer
+option-desc.ignorePids=Nom de fichier contenant une liste de pids \u00e0 ignorer.
 option-key.encoding=--encoding
-option-desc.encoding=L'encodage de caract\u00e8res \u00e0 utiliser pour la sortie
+option-desc.encoding=Codage de caract\u00e8res \u00e0 utiliser pour la sortie.
 option-key.locale=--locale
-option-desc.locale=L'environnement local (param\u00e8tres r\u00e9gionaux) \u00e0 utiliser pour la sortie
+option-desc.locale=La langue \u00e0 utiliser lorsque vous cr\u00e9ez le fichier de sortie. Cette cha\u00eene se compose du code de langue constitu\u00e9 de deux lettres minuscules ISO-639, \u00e9ventuellement suivi d'un trait de soulignement et du code de pays constitu\u00e9 de deux lettres majuscules ISO-3166.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=Le sch\u00e9ma de sortie ne contiendra pas d'espaces d'indentation, de nouveaux sauts de ligne ou des commentaires XML
+option-desc.compactoutput=Le sch\u00e9ma de sortie ne contiendra pas d'espaces ind\u00e9cents, de nouvelles lignes ou de commentaires XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=Nom d'extension de produit \u00e0 traiter.                            \n Si l'extension de produit est install\u00e9e dans l'emplacement utilisateur par d\u00e9faut,    \nutilisez le mot cl\u00e9 : usr.                                                  \nSi cette option n'est pas indiqu\u00e9e, l'action est effectu\u00e9e sur la fonction Liberty centrale.
 

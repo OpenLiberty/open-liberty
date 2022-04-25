@@ -93,8 +93,8 @@ cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Das Konfigurationselement c
 cdi12.element.type.superceded.CWOWB1015W.explanation=Das cdi-Konfigurationselement ersetzt das Konfigurationselement cdi12 und enth\u00e4lt dieselben Optionen sowie neue Optionen.
 cdi12.element.type.superceded.CWOWB1015W.useraction=\u00c4ndern Sie Ihre Konfiguration in der Datei server.xml so, dass das Konfigurationselement cdi anstelle des Konfigurationselements cdi12 verwendet wird.
 
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Das Attribut emptyBeansXMLExplicitBeanArchive des Konfigurationselements cdi wird nur ab CDI 4.0 unterst\u00fctzt. Dieses Attribut wird ignoriert.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Das Attribut emptyBeansXMLExplicitBeanArchive hat keine Auswirkung, wenn es mit einer CDI-Version vor 4.0 verwendet wird.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Das Attribut emptyBeansXMLExplicitBeanArchive des cdi-Konfigurationselements wird nur in CDI 4.0 oder h\u00f6her unterst\u00fctzt. Dieses Attribut wird ignoriert.
+cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Das Attribut emptyBeansXMLExplicitBeanArchive hat keine Auswirkungen, wenn es mit einer \u00e4lteren CDI-Version als Version 4.0 verwendet wird.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Aktualisieren Sie Ihre Konfiguration in der Datei server.xml, um das Attribut zu entfernen oder verwenden Sie CDI Version 4.0 oder h\u00f6her.
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: Das Attribut enableImplicitBeanArchives wurde in den Konfigurationselementen cdi12 und cdi gesetzt. Der Wert aus dem Element "cdi" wird verwendet und der Wert im Element cdi12 wird ignoriert.

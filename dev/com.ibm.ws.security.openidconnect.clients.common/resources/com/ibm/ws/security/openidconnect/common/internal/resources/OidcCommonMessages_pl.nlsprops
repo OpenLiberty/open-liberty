@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2020 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -187,3 +187,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Uzyskaj nowy znacznik, k
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zawiera element {1} w warto\u015bciach, kt\u00f3re zosta\u0142y okre\u015blone przez atrybut konfiguracji [{2}]. Okre\u015blone warto\u015bci zostan\u0105 zignorowane.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specyfikacja OAuth 2.0 definiuje zestaw zarezerwowanych parametr\u00f3w \u017c\u0105da\u0144, kt\u00f3re musz\u0105 zosta\u0107 podane przez klienta w przypadku \u017c\u0105da\u0144 autoryzacji. Warto\u015bci tych zarezerwowanych parametr\u00f3w nie mog\u0105 by\u0107 podawane przez u\u017cytkownika.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone warto\u015bci z listy warto\u015bci zdefiniowanej w konfiguracji klienta OpenID Connect.
+
+JWT_MISSING_ISSUER=CWWKS1784E: Token nie jest poprawny, poniewa\u017c nie zawiera \u017c\u0105dania wystawcy.
+JWT_MISSING_ISSUER.explanation=Znacznik musi zawiera\u0107 \u017c\u0105danie wystawcy, aby umo\u017cliwi\u0107 zidentyfikowanie, kto wystawi\u0142 znacznik.
+JWT_MISSING_ISSUER.useraction=Uzyskaj nowy znacznik, kt\u00f3ry zawiera \u017c\u0105danie wystawcy.

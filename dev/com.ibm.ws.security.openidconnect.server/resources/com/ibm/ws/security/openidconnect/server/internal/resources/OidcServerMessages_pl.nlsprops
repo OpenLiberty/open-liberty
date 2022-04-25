@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Roszczenia z tokenu identyfikat
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Nie mo\u017cna wyodr\u0119bni\u0107 roszcze\u0144 z tokenu identyfikatora innej firmy. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w komunikacie o b\u0142\u0119dzie.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect innej firmy wysy\u0142a poprawny token identyfikatora.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Dostawca OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas pr\u00f3by utworzenia token\u00f3w wylogowania dla \u017c\u0105da\u0144 wylogowania przez kana\u0142 zwrotny: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=\u0141a\u0144cuch znacznika identyfikatora w parametrze id_token_hint mo\u017ce by\u0107 zniekszta\u0142cony (je\u015bli zosta\u0142 podany). Dostawca mo\u017ce nie by\u0107 w stanie okre\u015bli\u0107 zestawu klient\u00f3w, do kt\u00f3rych nale\u017cy wysy\u0142a\u0107 \u017c\u0105dania wylogowania przez kana\u0142 zwrotny. Je\u015bli parametr id_token_hint nie jest zniekszta\u0142cony, wyst\u0105pi\u0142 inny b\u0142\u0105d, gdy dostawca pr\u00f3bowa\u0142 utworzy\u0107 znacznik wylogowania.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du uwzgl\u0119dnionego w komunikacie.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Dostawca OpenID Connect nie mo\u017ce wyodr\u0119bni\u0107 \u017c\u0105da\u0144 ponownego wykorzystania ze znacznika identyfikatora. B\u0142\u0105d: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Znacznik identyfikatora mo\u017ce by\u0107 zniekszta\u0142cony lub \u017c\u0105danie w obr\u0119bie znacznika mo\u017ce mie\u0107 warto\u015b\u0107, kt\u00f3ra jest nieoczekiwanym typem danych. Znacznik mo\u017ce te\u017c zawiera\u0107 brakuj\u0105ce \u017c\u0105dania wymagane lub wystawca znacznika nie jest oczekiwanym wystawc\u0105.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Upewnij si\u0119, \u017ce znacznik identyfikatora zosta\u0142 poprawnie sformatowany. Aby dowiedzie\u0107 si\u0119 wi\u0119cej, zapoznaj si\u0119 z b\u0142\u0119dem uwzgl\u0119dnionym w komunikacie.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Dostawca OpenID Connect nie mo\u017ce okre\u015bli\u0107 zestawu klient\u00f3w OpenID Connect do wylogowania z powodu wyst\u0105pienia nast\u0119puj\u0105cego b\u0142\u0119du: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Dostawcy nie uda\u0142o si\u0119 pobra\u0107 zestawu zarejestrowanych klient\u00f3w lub \u017c\u0105dania ze znacznika identyfikatora mog\u0105 by\u0107 zniekszta\u0142cone.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Aby dowiedzie\u0107 si\u0119 wi\u0119cej, zapoznaj si\u0119 z b\u0142\u0119dem uwzgl\u0119dnionym w komunikacie.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 funkcj\u0119 SPI mediatora znacznika ID. Obs\u0142ugiwane jest \u015brodowisko Java w wersji 1.7 lub nowsze.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Wersja \u015brodowiska Java podana w komunikacie nie mo\u017ce obs\u0142u\u017cy\u0107 funkcji SPI mediatora znacznika ID. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Zainstaluj \u015brodowisko Java w wersji 1.7 lub nowsze.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: \u017b\u0105danie wystawcy [{0}] w znaczniku identyfikatora nie jest zgodne z oczekiwanym wystawc\u0105 [{1}] dla dostawcy OpenID Connect {2} .
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Dostawca OpenID Connect nie wystawi\u0142 znacznika identyfikatora, wi\u0119c ten dostawca OpenID Connect nie mo\u017ce obs\u0142u\u017cy\u0107 znacznika.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Wy\u015blij tylko znaczniki identyfikatora z \u017c\u0105daniem wystawcy zgodnym z konfiguracj\u0105 dostawcy OpenID Connect okre\u015blonego w komunikacie.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Znacznik identyfikatora jest niepoprawny, poniewa\u017c brakuje co najmniej jednego wymaganego \u017c\u0105dania: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specyfikacja OpenID Connect wymaga, aby \u017c\u0105dania wyszczeg\u00f3lnione w komunikacie o b\u0142\u0119dzie znajdowa\u0142y si\u0119 w znaczniku identyfikatora.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Upewnij si\u0119, \u017ce znacznik identyfikatora zawiera wszystkie wymagane \u017c\u0105dania.
+
+# NOTE: Stop at CWWKS1649

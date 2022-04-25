@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Aseg\u00farese de haber configurado un eleme
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite de cifrado solicitada {0} parece tener {1} opciones de asociaci\u00f3n que no coinciden con las opciones de soporte {2} especificadas y las opciones {3} necesarias.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=La suite de cifrado podr\u00eda no coincidir con las opciones de asociaci\u00f3n que est\u00e1n escritas en la IOR (Interoperable Object Reference) o que se utilizan para que coincida con el IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifique que la suite de cifrado solicitada coincida con las opciones de asociaci\u00f3n especificadas, e elim\u00ednela.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: La suite de cifrado solicitada de {0} parece tener opciones de asociaci\u00f3n de {1} que no coinciden con las opciones necesarias de {2} especificadas.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Es posible que la suite de cifrado no coincida con las opciones necesarias que se escriben en IOR (Interoperable Object Reference) o que se utilizan para coincidir con la IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifique que la suite de cifrado solicitada coincida con las opciones necesarias especificadas o elim\u00ednela.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: La configuraci\u00f3n SSL {0} no existe. Esto es debido a que falta un elemento SSL o a que una referencia a un elemento de almac\u00e9n de claves o almac\u00e9n de confianza en la configuraci\u00f3n no es v\u00e1lida. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=No se puede obtener el elemento de configuraci\u00f3n SSL debido a un error en la configuraci\u00f3n. 

@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Uso: java [op\u00e7\u00f5es da JVM] -jar {0} [op\u00e7\u00f5es] outputFile  
-briefUsageScript=Uso: ./{0} [options] outputFile
+purpose=O comando {0} gera o esquema XML para a configura\u00e7\u00e3o do n\u00facleo do Liberty e de outras extens\u00f5es de produtos instaladas em um \u00fanico arquivo de sa\u00edda.
 
+briefUsage=Uso: java [op\u00e7\u00f5es da JVM] -jar {0} [op\u00e7\u00f5es] outputFile
+  
+briefUsageScript=Uso: ./{0} [options] outputFile
 
 use.options=Op\u00e7\u00f5es:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Op\u00e7\u00f5es:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=O nome de um arquivo que cont\u00e9m uma lista de pids a ser ignorada
+option-desc.ignorePids=Um nome da arquivo que cont\u00e9m uma lista de pids a serem ignorados.
 option-key.encoding=--codifica\u00e7\u00e3o
-option-desc.encoding=A codifica\u00e7\u00e3o de caracteres a ser usada para a sa\u00edda
+option-desc.encoding=A codifica\u00e7\u00e3o de caracteres a ser usada para a sa\u00edda.
 option-key.locale=- --c\u00f3digo de idioma
-option-desc.locale=O c\u00f3digo de idioma a ser usado para a sa\u00edda
+option-desc.locale=O idioma a ser usado ao criar o arquivo de sa\u00edda. Esta sequ\u00eancia consiste no c\u00f3digo de idioma de duas letras min\u00fasculas ISO-639, opcionalmente\nseguido por sublinhados e pelo o c\u00f3digo do pa\u00eds de duas letras mai\u00fasculas ISO-3166.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=O esquema de sa\u00edda n\u00e3o conter\u00e1 espa\u00e7os de indenta\u00e7\u00e3o, novos feeds de linha ou coment\u00e1rios XML
+option-desc.compactoutput=O esquema de sa\u00edda n\u00e3o conter\u00e1 espa\u00e7os de indenta\u00e7\u00e3o, novos feeds de linha ou coment\u00e1rios XML.
 option-key.productExtension=--productExtension
 option-desc.productExtension=O nome da extens\u00e3o de produto a ser processado.                            \nSe a extens\u00e3o do produto estiver instalada no local do usu\u00e1rio padr\u00e3o,    \nuse a palavra-chave: usr.                                                  \nSe essa op\u00e7\u00e3o n\u00e3o estiver especificada, a a\u00e7\u00e3o ser\u00e1 executada no n\u00facleo do Liberty.
 

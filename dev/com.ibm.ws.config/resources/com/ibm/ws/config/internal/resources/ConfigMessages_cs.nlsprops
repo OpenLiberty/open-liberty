@@ -29,12 +29,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\n\
-Copyright (c) 2010 IBM Corporation a dal\u0161\u00ed.\n\
-V\u0161echna pr\u00e1va vyhrazena. Tento program a doprovodn\u00e9 materi\u00e1ly\n\
-jsou povoleny za podm\u00ednek licence Eclipse Public License v1.0,\n\
-kter\u00e1 je sou\u010d\u00e1st\u00ed t\u00e9to distribuce a je k dispozici na adrese \n\
-http://www.eclipse.org/legal/epl-v10.html
+copyright=\nCopyright (c) 2010 IBM Corporation a dal\u0161\u00ed.\nV\u0161echna pr\u00e1va vyhrazena. Tento program a doprovodn\u00e9 materi\u00e1ly\njsou povoleny za podm\u00ednek licence Eclipse Public License v1.0,\nkter\u00e1 je sou\u010d\u00e1st\u00ed t\u00e9to distribuce a je k dispozici na adrese \nhttp://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu p\u0159i syntaktick\u00e9 anal\u00fdze ko\u0159ene konfigurace a v odkazovan\u00fdch dokumentech typu Konfigurace. Chyba: {0}
 error.parse.server.explanation=Konfiguraci serveru nelze p\u0159e\u010d\u00edst, proto\u017ee v jednom z konfigura\u010dn\u00edch soubor\u016f je chyba.
@@ -436,12 +431,9 @@ error.missing.required.attribute.singleton.explanation=Chyb\u011bj\u00edc\u00ed 
 error.missing.required.attribute.singleton.useraction=P\u0159idejte atribut do konfigura\u010dn\u00edho souboru server.xml nebo do jednoho z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a tak nem\u016f\u017ee m\u00edt atribut ibm:extendsAlias pro {1}. Zm\u011b\u0148te \
-konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
-error.factoryOnly.extendsAlias.explanation=Atribut ibm:extendsAlias lze pou\u017e\u00edt pouze na identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1ren, kter\u00e9 roz\u0161i\u0159uj\u00ed jinou identitu p\u0159etrv\u00e1vaj\u00edc\u00ed \
-prost\u0159ednictv\u00edm tov\u00e1rny.
-error.factoryOnly.extendsAlias.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte \
-atribut ibm:extendsAlias.
+error.factoryOnly.extendsAlias=CWWKG0096E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a tak nem\u016f\u017ee m\u00edt atribut ibm:extendsAlias pro {1}. Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
+error.factoryOnly.extendsAlias.explanation=Atribut ibm:extendsAlias lze pou\u017e\u00edt pouze na identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1ren, kter\u00e9 roz\u0161i\u0159uj\u00ed jinou identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
+error.factoryOnly.extendsAlias.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.ExtendsAliasMustExtend=CWWKG0097E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut ibm:extendsAlias pro {1}, a proto mus\u00ed ur\u010dovat atribut ibm:extends.
@@ -450,13 +442,11 @@ error.ExtendsAliasMustExtend.useraction=Ur\u010dete atribut ibm:extends.
 
 #"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
 error.parentpid.and.childalias=CWWKG0098E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut {1} pro {2}, a proto mus\u00ed ur\u010dovat atribut {3}.
-error.parentpid.and.childalias.explanation=Metatyp ud\u00e1v\u00e1, \u017ee byl \u010d\u00e1ste\u010dn\u011b ur\u010den vno\u0159en\u00fd prvek child-first. Vno\u0159en\u00e9 prvky child-first mus\u00ed ur\u010dovat atribut ibm:parentPid i atribut \
-ibm:childAlias.
+error.parentpid.and.childalias.explanation=Metatyp ud\u00e1v\u00e1, \u017ee byl \u010d\u00e1ste\u010dn\u011b ur\u010den vno\u0159en\u00fd prvek child-first. Vno\u0159en\u00e9 prvky child-first mus\u00ed ur\u010dovat atribut ibm:parentPid i atribut ibm:childAlias.
 error.parentpid.and.childalias.useraction=Pokud je tento metatyp ur\u010den\u00fd pro vno\u0159en\u00fd prvek child-first, zadejte chyb\u011bj\u00edc\u00ed atribut. Jinak odeberte zadan\u00fd atribut. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.extendsAlias.collision=CWWKG0100E: V jedn\u00e9 hierarchii prvk\u016f extends je duplicitn\u00ed atribut ibm:extendsAlias {2}. Identifik\u00e1tory PID jsou {0} a {1}. Ka\u017ed\u00fd atribut \
-ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
+error.extendsAlias.collision=CWWKG0100E: V jedn\u00e9 hierarchii prvk\u016f extends je duplicitn\u00ed atribut ibm:extendsAlias {2}. Identifik\u00e1tory PID jsou {0} a {1}. Ka\u017ed\u00fd atribut ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
 error.extendsAlias.collision.explanation=V r\u00e1mci jedn\u00e9 hierarchie prvk\u016f extends mus\u00ed b\u00fdt atribut ibm:extendsAlias jedine\u010dn\u00fd.
 error.extendsAlias.collision.useraction=Ka\u017ed\u00fd atribut ibm:extendsAlias mus\u00ed b\u00fdt v r\u00e1mci hierarchie prvk\u016f extends jedine\u010dn\u00fd.
 
@@ -485,6 +475,13 @@ error.bad.variable.file=CWWKG0106E: Soubor {0} nelze \u010d\u00edst.
 error.bad.variable.file.explanation=Soubor nelze na\u010d\u00edst jako prom\u011bnnou, proto\u017ee jej nelze \u010d\u00edst. 
 error.bad.variable.file.useraction=Ov\u011b\u0159te, \u017ee soubor obsahuje textov\u00fd obsah a zkontrolujte opr\u00e1vn\u011bn\u00ed opera\u010dn\u00edho syst\u00e9mu pro tento soubor.
 
+error.unknownOutputVersion=CWWKG0107E: Verze v\u00fdstupu, {0}, nen\u00ed podporov\u00e1na. 
+error.unknownOutputVersion.explanation=Hodnota poskytnut\u00e1 s volbou "--outputVersion" nen\u00ed platn\u00e1.
+error.unknownOutputVersion.useraction=Chcete-li zobrazit platn\u00e9 volby, zadejte p\u0159\u00edkaz "./schemaGen --help".
+
+error.unknownSchemaVersion=CWWKG0108E: Verze sch\u00e9matu, {0}, nen\u00ed podporov\u00e1na. 
+error.unknownSchemaVersion.explanation=Hodnota poskytnut\u00e1 s volbou "--schemaVersion" nen\u00ed platn\u00e1.
+error.unknownSchemaVersion.useraction=Chcete-li zobrazit platn\u00e9 volby, zadejte p\u0159\u00edkaz "./schemaGen --help".
 
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

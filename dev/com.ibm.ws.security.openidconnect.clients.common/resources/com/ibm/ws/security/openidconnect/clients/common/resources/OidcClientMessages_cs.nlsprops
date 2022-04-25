@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Po\u017eadavek na odhl
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Funkce OpenID Connect o\u010dek\u00e1v\u00e1, \u017ee identifik\u00e1tor URI po\u017eadavku na zadn\u00ed kan\u00e1l bude obsahovat ID klienta OpenID Connect, aby ur\u010dil, kter\u00fd klient se m\u00e1 odhl\u00e1sit.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Ov\u011b\u0159te, \u017ee identifik\u00e1tor URI po\u017eadavku obsahuje ID klienta OpenID Connect, kter\u00e9 m\u00e1 b\u00fdt pou\u017eito pro odhl\u00e1\u0161en\u00ed u\u017eivatele.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Token odhl\u00e1\u0161en\u00ed je neplatn\u00fd, proto\u017ee chyb\u00ed alespo\u0148 jeden po\u017eadovan\u00fd n\u00e1rok: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Token odhl\u00e1\u0161en\u00ed mus\u00ed obsahovat n\u00e1roky, kter\u00e9 jsou uvedeny ve zpr\u00e1v\u011b.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect obsahuje chyb\u011bj\u00edc\u00ed n\u00e1roky v tokenu odhl\u00e1\u0161en\u00ed.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Token odhl\u00e1\u0161en\u00ed je neplatn\u00fd, proto\u017ee neobsahuje n\u00e1rok "sub" nebo "sid". Token mus\u00ed m\u00edt alespo\u0148 jeden z t\u011bchto n\u00e1rok\u016f.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=N\u00e1roky "sub" a "sid" ozna\u010duj\u00ed u\u017eivatele a relaci, kter\u00e1 je p\u0159idru\u017eena k tokenu. Alespo\u0148 jeden z t\u011bchto n\u00e1rok\u016f mus\u00ed b\u00fdt p\u0159\u00edtomen, aby bylo mo\u017en\u00e9 ur\u010dit u\u017eivatele nebo relaci pro odhl\u00e1\u0161en\u00ed.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect obsahuje chyb\u011bj\u00edc\u00ed n\u00e1roky v tokenu odhl\u00e1\u0161en\u00ed.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Token odhl\u00e1\u0161en\u00ed je neplatn\u00fd, proto\u017ee n\u00e1rok "events" nen\u00ed objektem JSON: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=N\u00e1rok "events" v tokenu odhl\u00e1\u0161en\u00ed mus\u00ed b\u00fdt objekt JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect pou\u017e\u00edv\u00e1 spr\u00e1vn\u00fd datov\u00fd typ n\u00e1roku "events".
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Token odhl\u00e1\u0161en\u00ed je neplatn\u00fd, proto\u017ee n\u00e1rok "events" neobsahuje \u010dlena "{0}". Hodnota n\u00e1roku "events" je {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=N\u00e1rok "events" mus\u00ed b\u00fdt objekt JSON, kter\u00fd obsahuje \u010dlena s n\u00e1zvem, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Ujist\u011bte se, \u017ee n\u00e1rok "events" obsahuje po\u017eadovan\u00e9ho \u010dlena.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Token odhl\u00e1\u0161en\u00ed je neplatn\u00fd, proto\u017ee obsahuje n\u00e1rok "nonce".
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Token odhl\u00e1\u0161en\u00ed nesm\u00ed obsahovat n\u00e1rok "nonce", tak\u017ee token nem\u016f\u017ee b\u00fdt pou\u017eit v r\u00e1mci fale\u0161n\u00e9 odezvy ov\u011b\u0159en\u00ed nam\u00edsto identifika\u010dn\u00edho tokenu.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Ujist\u011bte se, \u017ee token odhl\u00e1\u0161en\u00ed neobsahuje n\u00e1rok "nonce".
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Hodnota \u010dlena "{0}" v n\u00e1roku "events" nen\u00ed objektem JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Odpov\u00eddaj\u00edc\u00ed hodnota \u010dlena mus\u00ed b\u00fdt objektem JSON. O\u010dek\u00e1van\u00e1 hodnota je "{}", pr\u00e1zdn\u00fd objekt JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ujist\u011bte se, \u017ee n\u00e1rok "events" v tokenu odhl\u00e1\u0161en\u00ed je spr\u00e1vn\u011b naform\u00e1tov\u00e1n.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: V tokenu odhl\u00e1\u0161en\u00ed chyb\u00ed n\u00e1rok "sid", ale klient OpenID Connect {0} jej vy\u017eaduje.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Klient OpenID Connect vy\u017eaduje, aby token odhl\u00e1\u0161en\u00ed obsahoval ID relace pro identifikaci relace klienta OpenID Connect u poskytovatele OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Nastavte atribut backchannelLogoutSessionRequired pro konfiguraci klienta OpenID Connect na hodnotu false nebo zajist\u011bte, aby token odhl\u00e1\u0161en\u00ed obsahoval n\u00e1rok "sid".
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

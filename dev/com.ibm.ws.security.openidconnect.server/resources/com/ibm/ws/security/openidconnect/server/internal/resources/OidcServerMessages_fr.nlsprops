@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Les r\u00e9clamations provenant
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Les r\u00e9clamations provenant du jeton d'ID tiers ne peuvent pas \u00eatre extraites. Pour plus d'informations, consultez le message d'erreur.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=V\u00e9rifiez que le fournisseur tiers OpenID Connect envoie un jeton d'ID valide.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Le fournisseur {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lorsqu''il a tent\u00e9 de g\u00e9n\u00e9rer des jetons de d\u00e9connexion pour les demandes de d\u00e9connexion de canal arri\u00e8re : {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=La cha\u00eene de jeton d'ID dans le param\u00e8tre id_token_hint, si elle a \u00e9t\u00e9 fournie, peut \u00eatre mal form\u00e9e. Il se peut que le fournisseur ne soit pas en mesure de d\u00e9terminer l'ensemble de clients pour envoyer des demandes de d\u00e9connexion de canal arri\u00e8re. Si le param\u00e8tre id_token_hint n'est pas mal form\u00e9, une autre erreur s'est produite lorsque le fournisseur a tent\u00e9 de g\u00e9n\u00e9rer un jeton de d\u00e9connexion.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Reportez-vous \u00e0 l'action de l'utilisateur pour l'erreur incluse dans le message.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Le fournisseur OpenID Connect ne peut pas extraire les revendications \u00e0 r\u00e9utiliser \u00e0 partir du jeton d''ID. L''erreur est la suivante : {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Le jeton d'ID peut \u00eatre mal form\u00e9 ou une r\u00e9clamation dans le jeton peut avoir une valeur qui est un type de donn\u00e9es inattendu. Sinon, le jeton peut manquer des r\u00e9clamations qui sont requises ou l'\u00e9metteur du jeton n'est pas l'\u00e9metteur attendu.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=V\u00e9rifiez que le jeton d'ID est correctement format\u00e9. Consultez l'erreur incluse dans le message pour plus d'informations.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Le fournisseur OpenID Connect ne peut pas d\u00e9terminer l''ensemble des clients OpenID Connect pour se d\u00e9connecter en raison de l''erreur suivante : {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Le fournisseur n'a pas r\u00e9ussi \u00e0 extraire l'ensemble de clients qui sont enregistr\u00e9s, ou les r\u00e9clamations de jeton d'ID peuvent \u00eatre incorrectement form\u00e9es.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Consultez l'erreur incluse dans le message pour plus d'informations.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La version Java utilis\u00e9e par cet environnement d''ex\u00e9cution [{0}] n''est pas prise en charge par le SPI Mediator du jeton d''ID. Celle prise en charge est la version Java 1.7, ou ult\u00e9rieure.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=La version Java dans le message ne peut pas prendre en charge la fonction de SPI Mediator du jeton d'ID. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Installez Java version 1.7, ou ult\u00e9rieure.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: La r\u00e9clamation d''\u00e9metteur [{0}] dans le jeton d''ID ne correspond pas \u00e0 l''\u00e9metteur [{1}] attendu pour le fournisseur {2} OpenID Connect.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Le fournisseur OpenID Connect n'a pas \u00e9mis le jeton d'ID, de sorte que le jeton ne peut pas \u00eatre g\u00e9r\u00e9 par ce fournisseur OpenID Connect.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Envoyez uniquement des jetons d'ID avec une demande d'\u00e9metteur correspondant \u00e0 la configuration du fournisseur OpenID Connect sp\u00e9cifi\u00e9 dans le message.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Le jeton d''ID n''est pas valide car il manque au moins une r\u00e9clamation requise : {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=La sp\u00e9cification OpenID Connect requiert que la ou les revendications r\u00e9pertori\u00e9es dans le message d'erreur soient pr\u00e9sentes dans le jeton d'ID.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=V\u00e9rifiez que le jeton d'ID contient toutes les demandes requises.
+
+# NOTE: Stop at CWWKS1649

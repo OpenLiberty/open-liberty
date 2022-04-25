@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Ujist\u011bte se, zda jste nakonfigurovali p
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Zd\u00e1 se, \u017ee po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada {0} m\u00e1 {1} voleb p\u0159idru\u017een\u00ed, kter\u00e9 neodpov\u00eddaj\u00ed uveden\u00fdm podporovan\u00fdm volb\u00e1m {2} a povinn\u00fdm volb\u00e1m {3}.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Mo\u017en\u00e1 \u0161ifrovac\u00ed sada neodpov\u00edd\u00e1 volb\u00e1m p\u0159idru\u017een\u00ed, kter\u00e9 jsou zaps\u00e1ny v odkazu IOR (Interoperable Object Reference) nebo pou\u017eity pro shodu s IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ov\u011b\u0159te, \u017ee po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada odpov\u00edd\u00e1 uveden\u00fdm volb\u00e1m p\u0159idru\u017een\u00ed, nebo ji odeberte.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Zd\u00e1 se, \u017ee po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada {0} m\u00e1 {1} voleb p\u0159idru\u017een\u00ed, kter\u00e9 se neshoduj\u00ed s {2} po\u017eadovan\u00fdmi volbami. 
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=\u0160ifrovac\u00ed sada se nemus\u00ed shodovat s po\u017eadovan\u00fdmi volbami, kter\u00e9 jsou zaps\u00e1ny do odkazu IOR (Interoperable Object Reference) nebo kter\u00e9 se pou\u017e\u00edvaj\u00ed k porovn\u00e1n\u00ed s odkazem IOR. 
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ov\u011b\u0159te, zda po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada odpov\u00edd\u00e1 uveden\u00fdm po\u017eadovan\u00fdm volb\u00e1m, nebo ji odeberte. 
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: Konfigurace SSL {0} neexistuje. D\u016fvodem m\u016f\u017ee b\u00fdt chyb\u011bj\u00edc\u00ed prvek SSL nebo neplatn\u00fd odkaz na prvek \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nebo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti v konfiguraci. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=V d\u016fsledku chyby v konfiguraci nelze z\u00edskat pot\u0159ebn\u00fd prvek konfigurace SSL. 

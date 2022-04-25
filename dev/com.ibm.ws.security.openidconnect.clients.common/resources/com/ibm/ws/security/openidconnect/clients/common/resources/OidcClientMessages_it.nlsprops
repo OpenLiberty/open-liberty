@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: La richiesta di discon
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=La funzione OpenID Connect prevede che l'URI della richiesta del backchannel includa un ID client OpenID Connect per determinare quale client disconnettere.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verificare che l'URI della richiesta includa l'ID client OpenID Connect da utilizzare per la disconnessione dell'utente.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Il token di disconnessione non \u00e8 valido perch\u00e9 manca almeno un''attestazione che \u00e8 obbligatoria: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Il token di disconnessione deve contenere le attestazioni specificate nel messaggio.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Assicurarsi che il provider OpenID Connect includa le attestazioni mancanti nel token di disconnessione.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Il token di disconnessione non \u00e8 valido perch\u00e9 non contiene un'attestazione "sub" o "sid". Il token deve avere almeno una di tali attestazioni.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=Le attestazioni "sub" e "sid" identificano l'utente e la sessione associati ad un token. Almeno una di quelle attestazioni deve essere presente per determinare l'utente o la sessione per effettuare la disconnessione.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Assicurarsi che il provider OpenID Connect includa le attestazioni mancanti nel token di disconnessione.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Il token di disconnessione non \u00e8 valido perch\u00e9 l''attestazione "events" non \u00e8 un oggetto jSON: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=L'attestazione "events" nel token di disconnessione deve essere un oggetto JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Assicurarsi che il provider OpenID Connect utilizzi il tipo di dati corretto per l'attestazione "events".
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Il token di disconnessione non \u00e8 valido perch\u00e9 l''attestazione "events" non contiene "{0}" come un membro. Il valore dell''attestazione "events" \u00e8 {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=L'attestazione "events" deve essere un oggetto JSON che contiene un membro con il nome che \u00e8 specificato nel messaggio.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Assicurarsi che l'attestazione "events" includa il membro richiesto.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Il token di disconnessione non \u00e8 valido perch\u00e9 contiene un'attestazione "nonce".
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Un token di disconnessione non deve contenere un'attestazione "nonce" in modo che il token non possa essere utilizzato in una risposta di autenticazione falsificata al posto di un token ID.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Assicurarsi che il token di disconnessione non contenga un'attestazione "nonce".
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Il valore per il membro "{0}" nell''attestazione "events" non \u00e8 un oggetto JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Il valore del membro corrispondente deve essere un oggetto JSON. Il valore previsto \u00e8 "{}", un oggetto JSON vuoto.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Assicurarsi che il formato dell'attestazione "events" nel token di disconnessione sia definito correttamente.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: Al token di disconnessione manca l''attestazione "sid" ma il client {0} OpenID Connect lo richiede.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Il client OpenID Connect richiede che il token di disconnessione contenga un ID sessione (SID) per identificare la sessione client OpenID Connect presso il provider OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Impostare l'attributo di configurazione del client OpenID Connect backchannelLogoutSessionRequired su false oppure assicurarsi che il token di disconnessione contenga un'attestazione "sid".
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+

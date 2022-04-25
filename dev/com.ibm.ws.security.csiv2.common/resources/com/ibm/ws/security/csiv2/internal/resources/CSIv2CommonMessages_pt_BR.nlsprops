@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Certifique-se de ter configurado um elemento
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: O {0} conjunto de cifras solicitado aparece para ter op\u00e7\u00f5es de associa\u00e7\u00e3o {1} que n\u00e3o correspondem \u00e0s op\u00e7\u00f5es suportadas {2} especificadas e as op\u00e7\u00f5es {3} requeridas.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=O conjunto de cifras pode n\u00e3o corresponder \u00e0s op\u00e7\u00f5es de associa\u00e7\u00e3o que s\u00e3o gravadas para o Interoperable Object Reference (IOR) ou que s\u00e3o usadas para corresponder ao IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifique se o conjunto de cifras solicitado corresponde \u00e0s op\u00e7\u00f5es de associa\u00e7\u00e3o especificadas, ou remova-o.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Aparentemente, o conjunto de cifras solicitado {0} possui op\u00e7\u00f5es de associa\u00e7\u00e3o {1} que n\u00e3o correspondem \u00e0s op\u00e7\u00f5es necess\u00e1rias {2}.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=\u00c9 poss\u00edvel que o conjunto de cifras n\u00e3o corresponda \u00e0s op\u00e7\u00f5es necess\u00e1rias gravadas na Interoperable Object Reference (IOR) ou que s\u00e3o utilizadas para a correspond\u00eancia com o IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifique se o conjunto de cifras solicitado corresponde \u00e0s op\u00e7\u00f5es necess\u00e1rias especificadas ou remova-o.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: A configura\u00e7\u00e3o SSL {0} n\u00e3o existe. Isso pode ter acontecido devido a um elemento SSL ausente ou uma refer\u00eancia inv\u00e1lida a um elemento de keystore ou de armazenamento confi\u00e1vel na configura\u00e7\u00e3o. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=N\u00e3o \u00e9 poss\u00edvel obter o elemento de configura\u00e7\u00e3o SSL que \u00e9 necess\u00e1rio devido a um erro na configura\u00e7\u00e3o.

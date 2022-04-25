@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2020 IBM Corporation and others.
+# Copyright (c) 2013, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -187,3 +187,7 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fie ob\u0163ine\u0163i u
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Clientul OpenID Connect [{0}] include {1} \u00een valorile specificate de atributul de configura\u0163ie  [{2}]. Valorile specificate vor fi ignorate.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifica\u0163ia OAuth 2.0 define\u015fte un set de parametri de cerere rezerva\u0163i care trebuie furnizat de client pentru cererile de autorizare. Valorile pentru ace\u015fti parametri rezerva\u0163i nu pot fi furnizate de utilizator.
 DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u00cenl\u0103tura\u0163i valorile specificate din lista de valori definite \u00een configura\u0163ia clientului OpenID Connect.
+
+JWT_MISSING_ISSUER=CWWKS1784E: Jetonul nu este valid, deoarece nu con\u021bine o revendicare de emitent.
+JWT_MISSING_ISSUER.explanation=Jetonul trebuie s\u0103 con\u021bin\u0103 o revendicare de emitent pentru a identifica emitentul jetonului.
+JWT_MISSING_ISSUER.useraction=Ob\u021bine\u021bi un jeton nou, care s\u0103 includ\u0103 o revendicare de emitent.

@@ -184,7 +184,29 @@ OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR=CWWKS1641E: Non \u00e8 stato possibile prop
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.explanation=Impossibile estrarre le asserzioni dal token ID di terze parti. Visualizzare il messaggio di errore per ulteriori informazioni.
 OIDC_SERVER_THIRDPARTY_IDTOKEN_ERROR.useraction=Assicurarsi che il provider OpenID Connect di terze parti stia inviando un token ID valido.
 
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR=CWWKS1642E: Il provider {0} OpenID Connect ha riscontrato il seguente errore quando ha provato a creare i token di disconnessione per le richieste di disconnessione di backchannel: {1}
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.explanation=La stringa del token ID nel parametro id_token_hint, se ne \u00e8 stato fornito uno, potrebbe avere un formato non valido. Il provider potrebbe non essere in grado di determinare la serie di client per inviare richieste di disconnessione di backchannel. Se il formato del parametro id_token_hint \u00e8 corretto, si \u00e8 verificato un altro errore quando il provider ha provato a creare un token di disconnessione.
+OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR.useraction=Consultare l'azione dell'utente per l'errore incluso nel messaggio.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Il provider OpenID Connect non pu\u00f2 estrarre le attestazioni da riutilizzare dal token ID. L''errore \u00e8: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Il token ID potrebbe avere un formato non valido oppure un'attestazione all'interno del token potrebbe avere un valore di un tipo di dati imprevisto. In alternativa, al token potrebbero mancare delle attestazioni che sono richieste oppure l'emittente del token non \u00e8 quello previsto.
+LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Assicurarsi che il token ID abbia un formato corretto. Per ulteriori informazioni, consultare l'errore incluso nel messaggio.
+
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Il provider OpenID Connect non pu\u00f2 determinare la serie di client OpenID Connect per la disconnessione a causa del seguente errore: {0}
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Il provider non \u00e8 riuscito a richiamare la serie dei client registrati oppure le attestazioni del token ID potrebbero avere un formato non valido.
+LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Per ulteriori informazioni, consultare l'errore incluso nel messaggio.
+
+# NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La versione Java utilizzata da questo runtime [{0}] non \u00e8 supportata dallo SPI Mediator token ID. La versione Java supportata \u00e8 1.7 o successive.
 IDT_MEDIATOR_SPI_REQUIRES_JDK.explanation=La versione Java nel messaggio non pu\u00f2 supportare la funzione SPI Mediator token ID. 
 IDT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Installare Java versione 1.7 o successive.
 
+ID_TOKEN_ISSUER_NOT_THIS_OP=CWWKS1646E: L''attestazione dell''emittente [{0}] nel token ID non corrisponde all''emittente previsto [{1}] per il provider OpenID Connect {2}.
+ID_TOKEN_ISSUER_NOT_THIS_OP.explanation=Il provider OpenID Connect non ha emesso il token ID, quindi il token non pu\u00f2 essere gestito da questo provider OpenID Connect.
+ID_TOKEN_ISSUER_NOT_THIS_OP.useraction=Inviare solo token ID con un'attestazione dell'emittente che corrisponda alla configurazione per il provider OpenID Connect specificato nel messaggio.
+
+ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Il token ID non \u00e8 valido perch\u00e9 manca almeno un''attestazione richiesta: {0}
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=La specifica OpenID Connect richiede che l'attestazione o le attestazioni elencate nel messaggio di errore debbano essere presenti nel token ID.
+ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Assicurarsi che il token ID contenga tutte le attestazioni richieste.
+
+# NOTE: Stop at CWWKS1649

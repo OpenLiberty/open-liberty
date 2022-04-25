@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Pou\u017eit\u00ed: java [volby JVM] -jar {0} [volby] outputFile  
-briefUsageScript=Pou\u017eit\u00ed: ./{0} [options] outputFile
+purpose=P\u0159\u00edkaz {0} generuje sch\u00e9ma XML pro konfiguraci j\u00e1dra Liberty a dal\u0161\u00ed roz\u0161\u00ed\u0159en\u00ed nainstalovan\u00fdch produkt\u016f do jednoho v\u00fdstupn\u00edho souboru.
 
+briefUsage=Pou\u017eit\u00ed: java [volby JVM] -jar {0} [volby] outputFile
+  
+briefUsageScript=Pou\u017eit\u00ed: ./{0} [options] outputFile
 
 use.options=Volby:
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=Volby:
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=N\u00e1zev souboru obsahuj\u00edc\u00ed seznam pid, kter\u00fd se m\u00e1 ignorovat
+option-desc.ignorePids=N\u00e1zev souboru obsahuj\u00edc\u00edho seznam identifik\u00e1tor\u016f pid, kter\u00e9 se maj\u00ed ignorovat. 
 option-key.encoding=--encoding
-option-desc.encoding=K\u00f3dovan\u00ed znak\u016f, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro v\u00fdstup
+option-desc.encoding=K\u00f3dov\u00e1n\u00ed znak\u016f, kter\u00e9 m\u00e1 b\u00fdt pou\u017eito pro v\u00fdstup. 
 option-key.locale=--locale
-option-desc.locale=N\u00e1rodn\u00ed prost\u0159ed\u00ed, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro v\u00fdstup
+option-desc.locale=Jazyk, kter\u00fd m\u00e1 b\u00fdt pou\u017eit p\u0159i vytv\u00e1\u0159en\u00ed v\u00fdstupn\u00edho souboru. Tento \u0159et\u011bzec se skl\u00e1d\u00e1 z dvoup\u00edsmenn\u00e9ho k\u00f3du jazyka dle standardu ISO-639 zapsan\u00e9ho mal\u00fdmi p\u00edsmeny, voliteln\u011b n\u00e1sledovan\u00e9ho podtr\u017e\u00edtkem a dvoup\u00edsmenn\u00fdm k\u00f3dem zem\u011b dle standardu ISO-3166 zapsan\u00fdm velk\u00fdmi p\u00edsmeny.
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=V\u00fdstupn\u00ed sch\u00e9ma nebude obsahovat odsazen\u00ed, od\u0159\u00e1dkov\u00e1n\u00ed ani koment\u00e1\u0159e XML
+option-desc.compactoutput=Sch\u00e9ma v\u00fdstupu nebude obsahovat odsazen\u00ed pomoc\u00ed mezer, nov\u011b dodan\u00e9 \u0159\u00e1dky nebo koment\u00e1\u0159e XML. 
 option-key.productExtension=--productExtension
 option-desc.productExtension=N\u00e1zev roz\u0161\u00ed\u0159en\u00ed produktu, kter\u00e9 m\u00e1 b\u00fdt zpracov\u00e1no.                            \nJe-li roz\u0161\u00ed\u0159en\u00ed produktu nainstalov\u00e1no ve v\u00fdchoz\u00edm um\u00edst\u011bn\u00ed u\u017eivatele, \npou\u017eijte kl\u00ed\u010dov\u00e9 slovo: usr.                                                  \nPokud tato volba nen\u00ed zad\u00e1na, bude akce provedena na j\u00e1dru profilu Liberty.
 

@@ -29,28 +29,18 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\n\
-Copyright (c) 2010 IBM Corporation and others.\n\
-Todos os direitos reservados. Este programa e os materiais de acompanhamento\n\
-est\u00e3o disponibilizados sob os termos do Eclipse Public License v1.0\n\
-que acompanha esta distribui\u00e7\u00e3o e est\u00e1 dispon\u00edvel em\n\
-http://www.eclipse.org/legal/epl-v10.html
+copyright=\nCopyright (c) 2010 IBM Corporation and others.\nTodos os direitos reservados. Este programa e os materiais de acompanhamento\nest\u00e3o disponibilizados sob os termos do Eclipse Public License v1.0\nque acompanha esta distribui\u00e7\u00e3o e est\u00e1 dispon\u00edvel em\nhttp://www.eclipse.org/legal/epl-v10.html
 
-error.parse.server=CWWKG0001E: O analisador de configura\u00e7\u00e3o detectou um erro ao analisar a raiz da configura\u00e7\u00e3o e os \
-documentos de configura\u00e7\u00e3o referenciados. Erro: {0}
-error.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro em um dos arquivos de \
-configura\u00e7\u00e3o.
+error.parse.server=CWWKG0001E: O analisador de configura\u00e7\u00e3o detectou um erro ao analisar a raiz da configura\u00e7\u00e3o e os documentos de configura\u00e7\u00e3o referenciados. Erro: {0}
+error.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro em um dos arquivos de configura\u00e7\u00e3o.
 error.parse.server.useraction=Resolva o erro no arquivo de configura\u00e7\u00e3o, em seguida, reinicie o servidor.
 
-error.parse.bundle=CWWKG0002E: O analisador de configura\u00e7\u00e3o detectou um erro ao processar o pacote configur\u00e1vel, a \
-vers\u00e3o ou a identidade persistida (PID). Erro: {0} Erro: {1} Raz\u00e3o: {2}
+error.parse.bundle=CWWKG0002E: O analisador de configura\u00e7\u00e3o detectou um erro ao processar o pacote configur\u00e1vel, a vers\u00e3o ou a identidade persistida (PID). Erro: {0} Erro: {1} Raz\u00e3o: {2}
 error.parse.bundle.explanation=Houve um erro ao analisar a configura\u00e7\u00e3o especificada.
 error.parse.bundle.useraction=Resolva o erro de configura\u00e7\u00e3o, em seguida, tente a a\u00e7\u00e3o novamente.
 
-info.prop.ignored=CWWKG0003I: Um operador n\u00e3o foi especificado ou o valor especificado \u00e9 nulo ou vazio. A propriedade \u00e9 \
-ignorada. Propriedade: {0} Arquivo: {1}
-info.prop.ignored.explanation=Uma propriedade de configura\u00e7\u00e3o esperada est\u00e1 ausente ou n\u00e3o foi especificada e foi \
-ignorada.
+info.prop.ignored=CWWKG0003I: Um operador n\u00e3o foi especificado ou o valor especificado \u00e9 nulo ou vazio. A propriedade \u00e9 ignorada. Propriedade: {0} Arquivo: {1}
+info.prop.ignored.explanation=Uma propriedade de configura\u00e7\u00e3o esperada est\u00e1 ausente ou n\u00e3o foi especificada e foi ignorada.
 info.prop.ignored.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 info.unsupported.api=CWWKG0004I: Esta API n\u00e3o \u00e9 suportada: {0}
@@ -67,8 +57,7 @@ info.ignore.invalid.optional.include.useraction=Torne o recurso v\u00e1lido se e
 
 warn.file.delete.failed=CWWKG0007W: O sistema n\u00e3o p\u00f4de excluir {0}
 warn.file.delete.failed.explanation=N\u00e3o foi poss\u00edvel excluir o recurso especificado.
-warn.file.delete.failed.useraction=Resolva quaisquer problemas que impe\u00e7am a exclus\u00e3o do recurso, em seguida, tente a a\u00e7\u00e3o \
-novamente.
+warn.file.delete.failed.useraction=Resolva quaisquer problemas que impe\u00e7am a exclus\u00e3o do recurso, em seguida, tente a a\u00e7\u00e3o novamente.
 
 warn.file.mkdirs.failed=CWWKG0008W: O sistema n\u00e3o p\u00f4de criar diret\u00f3rios para {0}.
 warn.file.mkdirs.failed.explanation=N\u00e3o foi poss\u00edvel criar os diret\u00f3rios especificados.
@@ -100,19 +89,13 @@ warn.config.delete.failed=CWWKG0012W: O sistema n\u00e3o p\u00f4de excluir a con
 warn.config.delete.failed.explanation=A configura\u00e7\u00e3o n\u00e3o foi removida do servi\u00e7o de ConfigurationAdmin.
 warn.config.delete.failed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-warn.config.delete.failed.multiple=CWWKG0013W: O sistema n\u00e3o excluiu a configura\u00e7\u00e3o de {0}. Diversas configura\u00e7\u00f5es  correspondentes foram \
-localizadas.
-warn.config.delete.failed.multiple.explanation=A configura\u00e7\u00e3o especificada n\u00e3o p\u00f4de ser removida com seguran\u00e7a do servi\u00e7o de \
-ConfigurationAdmin, porque mais de uma configura\u00e7\u00e3o correspondente foi localizada.
+warn.config.delete.failed.multiple=CWWKG0013W: O sistema n\u00e3o excluiu a configura\u00e7\u00e3o de {0}. Diversas configura\u00e7\u00f5es  correspondentes foram localizadas.
+warn.config.delete.failed.multiple.explanation=A configura\u00e7\u00e3o especificada n\u00e3o p\u00f4de ser removida com seguran\u00e7a do servi\u00e7o de ConfigurationAdmin, porque mais de uma configura\u00e7\u00e3o correspondente foi localizada.
 warn.config.delete.failed.multiple.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-error.syntax.parse.server=CWWKG0014E: O analisador da configura\u00e7\u00e3o detectou um erro de sintaxe de XML durante a an\u00e1lise da raiz \
-da configura\u00e7\u00e3o e dos documentos de configura\u00e7\u00e3o referenciados. Erro: {0} Arquivo: {1} \
-Linha: {2} Coluna: {3}
-error.syntax.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro de sintaxe XML em um dos \
-arquivos de configura\u00e7\u00e3o.
-error.syntax.parse.server.useraction=Resolva o erro de sintaxe de XML no documento de configura\u00e7\u00e3o, em seguida, reinicie o \
-servidor.
+error.syntax.parse.server=CWWKG0014E: O analisador da configura\u00e7\u00e3o detectou um erro de sintaxe de XML durante a an\u00e1lise da raiz da configura\u00e7\u00e3o e dos documentos de configura\u00e7\u00e3o referenciados. Erro: {0} Arquivo: {1} Linha: {2} Coluna: {3}
+error.syntax.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro de sintaxe XML em um dos arquivos de configura\u00e7\u00e3o.
+error.syntax.parse.server.useraction=Resolva o erro de sintaxe de XML no documento de configura\u00e7\u00e3o, em seguida, reinicie o servidor.
 
 error.config.update.init=CWWKG0015E: O sistema n\u00e3o p\u00f4de atualizar uma ou mais configura\u00e7\u00f5es. Erro: {0}
 error.config.update.init.explanation=Uma ou mais configura\u00e7\u00f5es n\u00e3o puderam ser atualizadas no servi\u00e7o de ConfigurationAdmin.
@@ -127,8 +110,7 @@ info.config.refresh.stop.explanation=O sistema detectou as mudan\u00e7as nos arq
 info.config.refresh.stop.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 info.config.refresh.nochanges=CWWKG0018I: A configura\u00e7\u00e3o do servidor n\u00e3o foi atualizada. Nenhuma mudan\u00e7a funcional foi detectada.
-info.config.refresh.nochanges.explanation=Os arquivos de configura\u00e7\u00e3o do servidor foram modificados, mas nenhuma mudan\u00e7a na \
-configura\u00e7\u00e3o funcional foi detectada.
+info.config.refresh.nochanges.explanation=Os arquivos de configura\u00e7\u00e3o do servidor foram modificados, mas nenhuma mudan\u00e7a na configura\u00e7\u00e3o funcional foi detectada.
 info.config.refresh.nochanges.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 schemagen.noextensions=CWWKG0019E: A configura\u00e7\u00e3o pai {0} especificada em {1} n\u00e3o suporta extens\u00f5es.
@@ -155,8 +137,7 @@ error.config.update.disk=CWWKG0024E: A configura\u00e7\u00e3o do servidor {0} n\
 error.config.update.disk.explanation=Os dados de configura\u00e7\u00e3o do servidor n\u00e3o foram armazenados com \u00eaxito no disco.
 error.config.update.disk.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-error.config.update.event=CWWKG0025E: Os eventos de atualiza\u00e7\u00e3o de configura\u00e7\u00e3o do servidor n\u00e3o foram emitidos para {0}. Erro: \
-{1}
+error.config.update.event=CWWKG0025E: Os eventos de atualiza\u00e7\u00e3o de configura\u00e7\u00e3o do servidor n\u00e3o foram emitidos para {0}. Erro: {1}
 error.config.update.event.explanation=Os eventos de atualiza\u00e7\u00e3o de configura\u00e7\u00e3o do servidor n\u00e3o foram emitidos.
 error.config.update.event.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
@@ -197,13 +178,11 @@ warning.pid.not.found.useraction=Altere o valor de atributo para referenciar um 
 
 error.targetRequired=CWWKG0034E: O arquivo de destino deve ser especificado
 error.targetRequired.explanation=O arquivo de destino deve ser fornecido na linha de comandos.
-error.targetRequired.useraction=Tente o comando novamente e especifique um arquivo de destino. Tente usar --help para obter uma lista \
-de op\u00e7\u00f5es v\u00e1lidas.
+error.targetRequired.useraction=Tente o comando novamente e especifique um arquivo de destino. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
 
 error.unknownArgument=CWWKG0035E: Op\u00e7\u00e3o desconhecida: {0}
 error.unknownArgument.explanation=A op\u00e7\u00e3o especificada n\u00e3o foi reconhecida.
-error.unknownArgument.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista \
-de op\u00e7\u00f5es v\u00e1lidas.
+error.unknownArgument.useraction=Tente o comando novamente usando op\u00e7\u00f5es v\u00e1lidas. Tente usar --help para obter uma lista de op\u00e7\u00f5es v\u00e1lidas.
 
 error.schemaGenException=CWWKG0036E: Erro ao gerar o esquema: {0}
 error.schemaGenException.explanation=Encontrado um erro durante a gera\u00e7\u00e3o do esquema.
@@ -471,13 +450,9 @@ error.extendsAlias.collision=CWWKG0100E: O atributo {2} ibm:extendsAlias est\u00
 error.extendsAlias.collision.explanation=O atributo ibm:extendsAlias deve ser exclusivo dentro de uma hierarquia de extens\u00f5es \u00fanicas.
 error.extendsAlias.collision.useraction=Torne cada atributo ibm:extendsAlias exclusivo dentro da hierarquia de extens\u00f5es.
 
-warning.binding.config=CWWKG0101W: A configura\u00e7\u00e3o com a identidade persistida (PID) {0} est\u00e1 ligada ao pacote \
-configur\u00e1vel {1}. A configura\u00e7\u00e3o n\u00e3o \u00e9 vis\u00edvel a outros pacotes configur\u00e1veis.  
-warning.binding.config.explanation=Uma configura\u00e7\u00e3o est\u00e1 ligada ao pacote configur\u00e1vel de chamada quando o \
-m\u00e9todo getConfiguration da interface ConfigurationAdmin \u00e9 chamado pela primeira vez. Depois que a configura\u00e7\u00e3o \u00e9 ligada, ela n\u00e3o \u00e9 \
-mais vis\u00edvel aos outros pacotes configur\u00e1veis.  
-warning.binding.config.useraction=Para assegurar que o local do pacote configur\u00e1vel seja o valor esperado, use o \
-m\u00e9todo getConfiguration na interface ConfigurationAdmin que obt\u00e9m um local do pacote configur\u00e1vel como o segundo par\u00e2metro.
+warning.binding.config=CWWKG0101W: A configura\u00e7\u00e3o com a identidade persistida (PID) {0} est\u00e1 ligada ao pacote configur\u00e1vel {1}. A configura\u00e7\u00e3o n\u00e3o \u00e9 vis\u00edvel a outros pacotes configur\u00e1veis.  
+warning.binding.config.explanation=Uma configura\u00e7\u00e3o est\u00e1 ligada ao pacote configur\u00e1vel de chamada quando o m\u00e9todo getConfiguration da interface ConfigurationAdmin \u00e9 chamado pela primeira vez. Depois que a configura\u00e7\u00e3o \u00e9 ligada, ela n\u00e3o \u00e9 mais vis\u00edvel aos outros pacotes configur\u00e1veis.  
+warning.binding.config.useraction=Para assegurar que o local do pacote configur\u00e1vel seja o valor esperado, use o m\u00e9todo getConfiguration na interface ConfigurationAdmin que obt\u00e9m um local do pacote configur\u00e1vel como o segundo par\u00e2metro.
 
 # This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
 info.config.conflict=CWWKG0102I: {0}
@@ -500,6 +475,13 @@ error.bad.variable.file=CWWKG0106E: O arquivo {0} n\u00e3o pode ser lido.
 error.bad.variable.file.explanation=O arquivo n\u00e3o pode ser carregado como uma vari\u00e1vel, porque n\u00e3o \u00e9 poss\u00edvel fazer sua leitura. 
 error.bad.variable.file.useraction=Verifique se h\u00e1 conte\u00fado de texto no arquivo e verifique as permiss\u00f5es do sistema operacional para o arquivo.
 
+error.unknownOutputVersion=CWWKG0107E: A vers\u00e3o de sa\u00edda , {0}, n\u00e3o \u00e9 suportada.
+error.unknownOutputVersion.explanation=O valor fornecido com a op\u00e7\u00e3o "-- ouputVersion" n\u00e3o \u00e9 v\u00e1lido.
+error.unknownOutputVersion.useraction=Para ver as op\u00e7\u00f5es v\u00e1lidas, insira o comando "./schemaGen --help".
+
+error.unknownSchemaVersion=CWWKG0108E: A vers\u00e3o do esquema, {0}, n\u00e3o \u00e9 suportado.
+error.unknownSchemaVersion.explanation=O valor fornecido com a op\u00e7\u00e3o "--schemaVersion" n\u00e3o \u00e9 v\u00e1lido.
+error.unknownSchemaVersion.useraction=Para ver as op\u00e7\u00f5es v\u00e1lidas, insira o comando "./schemaGen --help".
 
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

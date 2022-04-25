@@ -185,9 +185,9 @@ SSL_SERVICE_NOT_STARTED.useraction= Asigura\u0163i-v\u0103 c\u0103 a\u0163i conf
 
 
 # Do not translate Supported and Required
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Suita de cifrare {0} cerut\u0103 apare pentru a avea op\u0163iuni de asociere {1} care nu se potrivesc cu op\u0163iunile suportate {2} specificate \u015fi cu op\u0163iunile necesare {3}.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=E posibil ca suita de cifrare s\u0103 nu se potriveasc\u0103 cu op\u0163iunile de asociere care sunt scrise pe Interoperable Object Reference (IOR) sau care sunt utilizate pentru a se potrivi cu IOR.
-CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifica\u0163i c\u0103 suita de cifrare cerut\u0103 se potrive\u015fte cu op\u0163iunile de asociere specificate, sau \u00eenl\u0103tura\u0163i-o.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Suita de cifrare cerut\u0103 {0} se pare c\u0103 are op\u021biuni de asociere {1} care nu se potrivesc cu op\u021biunile necesare {2} specificate.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Este posibil ca suita de cifrare s\u0103 nu se potriveasc\u0103 cu op\u021biunile necesare care sunt scrise \u00een Interoperable Object Reference (IOR) sau care sunt utilizate pentru potrivirea cu IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifica\u021bi dac\u0103 suita de cifrare cerut\u0103 se potrive\u0219te cu op\u021biunile necesare specificate sau o elimina\u021bi-o.
 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: Configura\u0163ia SSL {0} nu exist\u0103.  Acest lucru se poate datora unui element SSL lips\u0103 sau unei referin\u0163e invalide la un element de depozit de chei sau  depozit de \u00eencrederi din configura\u0163ie. 
 CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=Nu se poate ob\u0163ine elementul de configurare SSL necesar datorit\u0103 unei erori \u00een configura\u0163ie.  

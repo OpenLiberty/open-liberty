@@ -29,12 +29,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\n\
-Copyright (c) 2010 IBM Corporation and others.\n\
-All rights reserved. This program and the accompanying materials\n\
-are made available under the terms of the Eclipse Public License v1.0\n\
-which accompanies this distribution, and is available at\n\
-http://www.eclipse.org/legal/epl-v10.html
+copyright=\nCopyright (c) 2010 IBM Corporation and others.\nAll rights reserved. This program and the accompanying materials\nare made available under the terms of the Eclipse Public License v1.0\nwhich accompanies this distribution, and is available at\nhttp://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Der Konfigurationsparser hat beim Parsen des Konfigurationsstammverzeichnisses und der referenzierten Konfigurationsdokumente einen Fehler festgestellt. Fehler: {0}
 error.parse.server.explanation=Die Serverkonfiguration konnte nicht gelesen werden, weil in einer der Konfigurationsdateien ein Fehler gefunden wurde.
@@ -47,6 +42,7 @@ error.parse.bundle.useraction=Beheben Sie den Konfigurationsfehler und wiederhol
 info.prop.ignored=CWWKG0003I: Es wurde kein Operator angegeben, oder der angegebene Wert ist null oder leer. Die Eigenschaft wird ignoriert. Eigenschaft: {0} Datei: {1}
 info.prop.ignored.explanation=Eine erwartete Konfigurationseigenschaft fehlt oder wurde nicht angegeben und wird deshalb ignoriert.
 info.prop.ignored.useraction=Es ist keine Aktion erforderlich.
+
 info.unsupported.api=CWWKG0004I: Diese API wird nicht unterst\u00fctzt: {0}
 info.unsupported.api.explanation=Die angegebene API wird nicht unterst\u00fctzt.
 info.unsupported.api.useraction=Verwenden Sie eine unterst\u00fctzte API.
@@ -136,6 +132,7 @@ schemagen.alias.required.useraction=Konfigurieren Sie ein Attribut config.alias 
 schemagen.invalid.child=CWWKG0023E: Die untergeordnete Konfiguration {0} muss eine Factory-Konfiguration sein.
 schemagen.invalid.child.explanation=Die Konfiguration muss eine Factory-Konfiguration sein.
 schemagen.invalid.child.useraction=Verwenden Sie zum Definieren einer Factory-Konfiguration ein Attribut factoryPid anstelle eines Attributs pid.
+
 error.config.update.disk=CWWKG0024E: Die Serverkonfiguration {0} wurde nicht auf der Platte aktualisiert. Fehler: {1}
 error.config.update.disk.explanation=Die Serverkonfigurationsdaten wurden nicht erfolgreich auf der Platte gespeichert.
 error.config.update.disk.useraction=Es ist keine Aktion erforderlich.
@@ -163,20 +160,22 @@ schemagen.bad.reference.extension.useraction=Bearbeiten Sie die Datei metatype.x
 schemagen.bad.reference.pid=CWWKG0030E: Die in der Erweiterung ibm:reference aufgelistete Pid-Referenz {0} ist nicht vorhanden.
 schemagen.bad.reference.pid.explanation=Die angegebene pid-Referenz in der Erweiterung ibm:reference ist nicht vorhanden oder ung\u00fcltig.
 schemagen.bad.reference.pid.useraction=Bearbeiten Sie die entsprechende Datei metatype.xml und korrigieren Sie den pid-Namen in der Erweiterung ibm:reference.
+
 error.unique.value.conflict=CWWKG0031E: Der Wert {1}, der f\u00fcr das eindeutige Attribut {0} angegeben wurde, wird bereits verwendet.
 error.unique.value.conflict.explanation=Der Wert f\u00fcr das angegebene Attribut muss eindeutig sein, es wird jedoch bereits verwendet.
 error.unique.value.conflict.useraction=\u00c4ndern Sie den Attributwert in einen eindeutigen Wert.
 
 # {3} is either the formatted value of default.value.in.use or an empty string
-warn.config.invalid.value=CWWKG0032W: F\u00fcr die Eigenschaft [{0}] wurde ein unerwarteter Wert angegeben. Wert = [{1}]. Die erwarteten Werte sind {2}. \
-{3} 
+warn.config.invalid.value=CWWKG0032W: F\u00fcr die Eigenschaft [{0}] wurde ein unerwarteter Wert angegeben. Wert = [{1}]. Die erwarteten Werte sind {2}. {3} 
 warn.config.invalid.value.explanation=Der f\u00fcr die Eigenschaft angegebene Wert kann nicht verwendet werden.
 warn.config.invalid.value.useraction=Korrigieren Sie den Wert der Eigenschaft so, dass ein erwarteter Wert verwendet wird.
 
 default.value.in.use=Der verwendete Standardwert ist {0}. 
+
 warning.pid.not.found=CWWKG0033W: Der Wert [{1}], der f\u00fcr das Referenzattribut [{0}] angegeben wurde, wurde in der Konfiguration nicht gefunden.
 warning.pid.not.found.explanation=Der angegebene Wert muss ein Element in der Konfiguration sein.
 warning.pid.not.found.useraction=\u00c4ndern Sie den Attributwert so, dass ein g\u00fcltiges Konfigurationselement referenziert wird. 
+
 error.targetRequired=CWWKG0034E: Die Zieldatei muss angegeben werden.
 error.targetRequired.explanation=Die Zieldatei muss in der Befehlszeile angegeben werden.
 error.targetRequired.useraction=Wiederholen Sie den Befehl und geben Sie eine Zieldatei an. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
@@ -205,8 +204,7 @@ error.fileNotFound=CWWKG0040E: Die Datei {0} wurde nicht gefunden.
 error.fileNotFound.explanation=Die Datei, die die Liste der auszuschlie\u00dfenden PIDs enth\u00e4lt, wurde nicht gefunden.
 error.fileNotFound.useraction=Korrigieren Sie den Dateinamen und wiederholen Sie den Befehl.
 
-error.invalidArgument=CWWKG0041E: Das Argument {0} ist ung\u00fcltig. \
-Der Wert muss angegeben werden.
+error.invalidArgument=CWWKG0041E: Das Argument {0} ist ung\u00fcltig. Der Wert muss angegeben werden.
 error.invalidArgument.explanation=Es wurde kein Wert f\u00fcr das Argument gefunden.
 error.invalidArgument.useraction=Wiederholen Sie den Befehl mit angegebenem Wert.
 
@@ -477,6 +475,13 @@ error.bad.variable.file=CWWKG0106E: Die {0}-Datei kann nicht gelesen werden.
 error.bad.variable.file.explanation=Die Datei kann nicht als Variable geladen werden, weil sie nicht gelesen werden kann. 
 error.bad.variable.file.useraction=Vergewissern Sie sich, dass die Datei Textinhalte enth\u00e4lt und \u00fcberpr\u00fcfen Sie die Betriebssystemberechtigungen f\u00fcr die Datei.
 
+error.unknownOutputVersion=CWWKG0107E: Die Ausgabeversion {0} wird nicht unterst\u00fctzt.
+error.unknownOutputVersion.explanation=Der mit der Option \u201e--ouputVersion\u201c angegebene Wert ist ung\u00fcltig.
+error.unknownOutputVersion.useraction=Um g\u00fcltige Optionen anzuzeigen, geben Sie den Befehl \u201e./schemaGen --help\u201c ein.
+
+error.unknownSchemaVersion=CWWKG0108E: Die Schemaversion {0} wird nicht unterst\u00fctzt.
+error.unknownSchemaVersion.explanation=Der mit der Option \u201e--schemaVersion\u201c angegebene Wert ist ung\u00fcltig.
+error.unknownSchemaVersion.useraction=Um g\u00fcltige Optionen anzuzeigen, geben Sie den Befehl \u201e./schemaGen --help\u201c ein.
 
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

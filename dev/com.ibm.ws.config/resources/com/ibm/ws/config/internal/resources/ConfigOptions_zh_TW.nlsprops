@@ -14,9 +14,11 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=\u7528\u6cd5\uff1ajava [JVM \u9078\u9805] -jar {0} [\u9078\u9805] outputFile  
-briefUsageScript=\u7528\u6cd5\uff1a./{0} [options] outputFile
+purpose={0} \u6307\u4ee4\u6703\u5728\u55ae\u4e00\u8f38\u51fa\u6a94\u4e2d\u7522\u751f Liberty \u6838\u5fc3\u914d\u7f6e\u53ca\u5176\u4ed6\u5df2\u5b89\u88dd\u7522\u54c1\u5ef6\u4f38\u7684 XML \u7db1\u76ee\u3002
 
+briefUsage=\u7528\u6cd5\uff1ajava [JVM \u9078\u9805] -jar {0} [\u9078\u9805] outputFile
+  
+briefUsageScript=\u7528\u6cd5\uff1a./{0} [options] outputFile
 
 use.options=\u9078\u9805\uff1a
 # -------- OPTIONS ----------------------------------------------------#
@@ -25,13 +27,14 @@ use.options=\u9078\u9805\uff1a
 # whitespace, and begin descriptions with \t 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.ignorePids=--ignorePidsFile
-option-desc.ignorePids=\u5305\u542b\u8981\u5ffd\u7565\u4e4b PID \u6e05\u55ae\u7684\u6a94\u540d
+option-desc.ignorePids=\u5305\u542b\u8981\u5ffd\u7565\u7684 pid \u6e05\u55ae\u7684\u6a94\u540d\u3002
 option-key.encoding=--encoding
-option-desc.encoding=\u7528\u65bc\u8f38\u51fa\u7684\u5b57\u5143\u7de8\u78bc
+option-desc.encoding=\u7528\u65bc\u8f38\u51fa\u7684\u5b57\u5143\u7de8\u78bc\u3002
 option-key.locale=--locale
-option-desc.locale=\u7528\u65bc\u8f38\u51fa\u7684\u8a9e\u8a00\u74b0\u5883
+option-desc.locale=\u5efa\u7acb\u8f38\u51fa\u6a94\u6642\u8981\u4f7f\u7528\u7684\u8a9e\u8a00\u3002 \u9019\u500b\u5b57\u4e32\u7531 ISO-639 \u96d9\u5b57\u6bcd\u5c0f\u5beb\u8a9e\u8a00\u78bc\u7d44\u6210\uff0c\u5f8c\u9762\u9078\u64c7\u6027\u5730\u63a5\u8457\u5e95\u7dda\uff0c\u4ee5\u53ca ISO-3166 \u5927\u5beb\u96d9\u5b57\u6bcd\u570b\u5bb6\u78bc\u3002
+
 option-key.compactoutput=--compactOutput
-option-desc.compactoutput=\u8f38\u51fa\u7db1\u76ee\u4e0d\u6703\u5305\u542b\u7e2e\u6392\u7a7a\u683c\u3001\u63db\u884c\u8cc7\u8a0a\u4f86\u6e90\u6216 XML \u8a3b\u89e3
+option-desc.compactoutput=\u8f38\u51fa\u7db1\u76ee\u5c07\u4e0d\u5305\u542b\u7e2e\u6392\u7a7a\u683c\u3001\u63db\u884c\u6216 XML \u8a3b\u89e3\u3002
 option-key.productExtension=--productExtension
 option-desc.productExtension=\u8981\u8655\u7406\u7684\u5ef6\u4f38\u7522\u54c1\u540d\u7a31\u3002                           \n\u5982\u679c\u5ef6\u4f38\u7522\u54c1\u662f\u5b89\u88dd\u5728\u9810\u8a2d\u4f7f\u7528\u8005\u4f4d\u7f6e\u4e0a\uff0c                                \n\u8acb\u4f7f\u7528\u95dc\u9375\u5b57\uff1ausr\u3002                                                    \n\u5982\u679c\u6c92\u6709\u6307\u5b9a\u9019\u500b\u9078\u9805\uff0c\u5c31\u6703\u5c0d Liberty \u6838\u5fc3\u63a1\u53d6\u52d5\u4f5c\u3002
 

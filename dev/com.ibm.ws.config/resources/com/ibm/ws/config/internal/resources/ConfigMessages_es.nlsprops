@@ -29,12 +29,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\n\
-Copyright (c) 2010 IBM Corporation y otros.\n\
-Reservados todos los derechos. Este programa y los materiales complementarios\n\
-se suministran bajo los t\u00e9rminos de Eclipse Public License v1.0\n\
-que se proporciona con esta distribuci\u00f3n y est\u00e1 disponible en\n\
-http://www.eclipse.org/legal/epl-v10.html
+copyright=\nCopyright (c) 2010 IBM Corporation y otros.\nReservados todos los derechos. Este programa y los materiales complementarios\nse suministran bajo los t\u00e9rminos de Eclipse Public License v1.0\nque se proporciona con esta distribuci\u00f3n y est\u00e1 disponible en\nhttp://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: El analizador de configuraci\u00f3n ha detectado un error al analizar la ra\u00edz de la configuraci\u00f3n y los documentos de configuraci\u00f3n referenciados. Error: {0}
 error.parse.server.explanation=La configuraci\u00f3n del servidor no se ha podido leer porque hay un error en uno de los archivos de configuraci\u00f3n.
@@ -479,6 +474,14 @@ error.root.must.be.server.useraction=A\u00f1ada un elemento de servidor o client
 error.bad.variable.file=CWWKG0106E: No se puede leer el archivo {0}. 
 error.bad.variable.file.explanation=El archivo no se puede cargar como una variable porque no se puede leer. 
 error.bad.variable.file.useraction=Verifique que el archivo tiene contenido de texto y compruebe los permisos de sistema operativo para el archivo.
+
+error.unknownOutputVersion=CWWKG0107E: La versi\u00f3n de salida, {0}, no recibe soporte.
+error.unknownOutputVersion.explanation=El valor proporcionado con la opci\u00f3n "--ouputVersion" no es v\u00e1lido.
+error.unknownOutputVersion.useraction=Para ver opciones v\u00e1lidas, especifique el mandato "./schemaGen --help".
+
+error.unknownSchemaVersion=CWWKG0108E: La versi\u00f3n de esquema, {0}, no recibe soporte.
+error.unknownSchemaVersion.explanation=El valor proporcionado con la opci\u00f3n "--schemaVersion" no es v\u00e1lido.
+error.unknownSchemaVersion.useraction=Para ver opciones v\u00e1lidas, especifique el mandato "./schemaGen --help".
 
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

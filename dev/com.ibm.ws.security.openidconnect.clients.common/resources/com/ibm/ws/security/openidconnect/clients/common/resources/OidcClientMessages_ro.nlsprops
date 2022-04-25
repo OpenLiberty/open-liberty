@@ -266,4 +266,36 @@ BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG=CWWKS1544E: Cererea de delogare ba
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.explanation=Caracteristica OpenID Connect presupune ca secven\u021ba URI a cererii de back-channel s\u0103 includ\u0103 un ID de client OpenID Connect pentru a determina care client s\u0103 se delogheze.
 BACKCHANNEL_LOGOUT_REQUEST_NO_MATCHING_CONFIG.useraction=Verifica\u021bi dac\u0103 cererea URI include ID-ul de client OpenID Connect de utilizat pentru delogarea utilizatorului.
 
+LOGOUT_TOKEN_MISSING_CLAIMS=CWWKS1545E: Jetonul de delogare nu este valid, deoarece lipse\u0219te cel pu\u021bin o revendicare necesar\u0103: {0}
+LOGOUT_TOKEN_MISSING_CLAIMS.explanation=Jetonul de delogare trebuie s\u0103 con\u021bin\u0103 revendic\u0103rile specificate \u00een mesaj.
+LOGOUT_TOKEN_MISSING_CLAIMS.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul OpenID Connect include revendic\u0103rile care lipsesc \u00een jetonul de delogare.
+
+# Do not translate "sub" or "sid"
+LOGOUT_TOKEN_MISSING_SUB_AND_SID=CWWKS1546E: Jetonul de delogare nu este valid, deoarece nu con\u021bine o revendicare "sub" sau "sid". Jetonul trebuie s\u0103 aib\u0103 cel pu\u021bin una dintre aceste revendic\u0103ri.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.explanation=Revendic\u0103rile "sub" \u0219i "sid" identific\u0103 utilizatorul \u0219i sesiunea care este asociat\u0103 cu un jeton. Trebuie s\u0103 fie prezent\u0103 cel pu\u021bin una dintre aceste revendic\u0103ri pentru a determina utilizatorul sau sesiunea la delogare.
+LOGOUT_TOKEN_MISSING_SUB_AND_SID.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul OpenID Connect include revendic\u0103rile care lipsesc \u00een jetonul de delogare.
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE=CWWKS1547E: Jetonul de delogare nu este valid, deoarece revendicarea "events" nu este un obiect JSON: {0}
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.explanation=Revendicarea "events" din jetonul de delogare trebuie s\u0103 fie un obiect JSON.
+LOGOUT_TOKEN_EVENTS_CLAIM_WRONG_TYPE.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul OpenID Connect utilizeaz\u0103 tipul de date corect pentru revendicarea "events".
+
+# Do not translate "events"
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER=CWWKS1548E: Jetonul de delogare nu este valid, deoarece revendicarea "events" nu con\u021bine "{0}" ca membru. Valoarea revendic\u0103rii "events" este {1}.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.explanation=Revendicarea "events" trebuie s\u0103 fie un obiect JSON care con\u021bine un membru cu numele care este specificat \u00een mesaj.
+LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER.useraction=Asigura\u021bi-v\u0103 c\u0103 revendicarea "events" include membrul necesar.
+
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM=CWWKS1549E: Jetonul de delogare nu este valid, deoarece con\u021bine o revendicare "nonce".
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.explanation=Un jeton de delogare trebuie s\u0103 nu con\u021bin\u0103 o revendicare "nonce", astfel \u00eenc\u00e2t jetonul s\u0103 nu poat\u0103 fi utilizat \u00eentr-un r\u0103spuns de autentificare falsificat \u00een locul unui jeton de ID.
+LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de delogare nu con\u021bine o revendicare "nonce".
+
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Valoarea pentru membrul "{0}" \u00een revendicarea "events" nu este un obiect JSON.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Valoarea membrului corespondent trebuie s\u0103 fie un obiect JSON. Valoarea a\u0219teptat\u0103 este "{}", un obiect JSON gol.
+LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Asigura\u021bi-v\u0103 c\u0103 revendicarea "events" din jetonul de delogare este formatat\u0103 corect.
+
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: \u00cen jetonul de delogare lipse\u0219te revendicarea "sid", dar aceasta este necesar\u0103 pentru clientul OpenID Connect {0}.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Clientul OpenID Connect necesit\u0103 ca jetonul de delogare s\u0103 con\u021bin\u0103 un ID de sesiune pentru a identifica sesiunea de client OpenID Connect cu furnizorul OpenID Connect.
+LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Seta\u021bi la fals atributul de configurare backchannelLogoutSessionRequired al clientului OpenID Connect sau asigura\u021bi-v\u0103 c\u0103 jetonul de delogare con\u021bine o revendicare "sid".
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
+
