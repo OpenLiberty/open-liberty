@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,10 +29,12 @@ public class LTPATokenizer {
 
     private static final TraceComponent tc = Tr.register(LTPATokenizer.class);
 
-    private static final char TOKEN_DELIM = '%';
-    private static final char USER_DATA_DELIM = '$';
-    private static final char USER_ATTRIB_DELIM = ':';
-    private static final String STRING_ATTRIB_DELIM = "|";
+    private static final char TOKEN_DELIM_PERCENT = '%';
+    private static final char USER_DATA_DELIM_DOLLAR = '$';
+    private static final char USER_ATTRIB_DELIM_COLLON = ':';
+    private static final char STRING_ATTRIB_DELIM_CHAR_PIPE = '|';
+    private static final String STRING_ATTRIB_DELIM_PIPE = "|";
+    private static final char BACKSLASH = '\\';
 
     /**
      * @param attributes
@@ -50,13 +52,13 @@ public class LTPATokenizer {
                 ArrayList<String> list = attributes.get(key);
                 String value = convertArrayListToString(list);
                 if (value != null) {
-                    sb.append(key).append(USER_ATTRIB_DELIM).append(value).append(USER_DATA_DELIM);
+                    sb.append(key).append(USER_ATTRIB_DELIM_COLLON).append(value).append(USER_DATA_DELIM_DOLLAR);
                 }
             }
         } else {
             for (Entry<String, ArrayList<String>> entry : attributes.entrySet()) {
                 String value = convertArrayListToString(entry.getValue());
-                sb.append(entry.getKey()).append(USER_ATTRIB_DELIM).append(value).append(USER_DATA_DELIM);
+                sb.append(entry.getKey()).append(USER_ATTRIB_DELIM_COLLON).append(value).append(USER_DATA_DELIM_DOLLAR);
             }
         }
 
@@ -70,7 +72,7 @@ public class LTPATokenizer {
     /**
      * Parse the String form of a LTPA token and extract the UserData,
      * expiration limit, and the signature.
-     * 
+     *
      * @param tokenStr The String form of a LTPA token
      * @return A list of the strings. 0: The String form of the UserData,
      *         1: Expiration limit of the token, 2: The signature of the token
@@ -83,15 +85,16 @@ public class LTPATokenizer {
 
         int signBegin = -1, expireBegin = -1;
         // LTPA Token has 3 fields: userdata, expiration and sign
+        // userdata
+        //
+        // Example:
+        // expire:1651552864844$u:user\:BasicRealm/steven\\%1651552864844% <sign data>
         // SSO Token has only two : userdata, and expiration
+
         try {
             for (int i = tokenLen - 1; i > -1; i--) {
                 c = tokenStr.charAt(i);
-                if (c == TOKEN_DELIM) {
-                    if (tokenStr.charAt(i - 1) == '\\') {
-                        // this is not a TOKEN_DELIM but part of the string tested
-                        continue;
-                    }
+                if (c == TOKEN_DELIM_PERCENT) {
                     // we will encounter two of these
                     if (signBegin == -1) {
                         signBegin = i + 1;
@@ -101,6 +104,7 @@ public class LTPATokenizer {
                     }
                 }
             }
+
             if (expireBegin == -1) {
                 // only one DELIM encountered
                 expireBegin = signBegin;
@@ -123,8 +127,8 @@ public class LTPATokenizer {
 
     /**
      * Given a specified String, parse to find attributes and add to specified Map.
-     * 
-     * @param data String to parse attribtues from
+     *
+     * @param data    String to parse attribtues from
      * @param attribs Target map to add attributes
      */
     private static void addAttributes(String data, Map<String, ArrayList<String>> attribs) {
@@ -133,10 +137,10 @@ public class LTPATokenizer {
         int keyIndex = 0;
         int dataLen = data.length();
         for (keyIndex = 0; keyIndex < dataLen; keyIndex++) {
-            if ((data.charAt(keyIndex) == USER_ATTRIB_DELIM) && (data.charAt(keyIndex - 1) != '\\')) {
+            if ((data.charAt(keyIndex) == USER_ATTRIB_DELIM_COLLON) && (data.charAt(keyIndex - 1) != BACKSLASH)) {
                 key = data.substring(0, keyIndex);
                 value = data.substring(keyIndex + 1, dataLen);
-                ArrayList<String> list = convertStringToArrayList(value);
+                ArrayList<String> list = convertStringToArrayList(key, value);
                 if (list != null) {
                     attribs.put(key, list);
                 }
@@ -146,7 +150,7 @@ public class LTPATokenizer {
 
     /**
      * Parse the String form of a UserData and get a Map of the UserData.
-     * 
+     *
      * @param userData The String form of a UserData
      * @return A Map of the UserData
      */
@@ -158,7 +162,7 @@ public class LTPATokenizer {
         Map<String, ArrayList<String>> attribs = new HashMap<String, ArrayList<String>>();
 
         for (i = 0; i < tokenLen; i++) {
-            if ((userData.charAt(i) == USER_DATA_DELIM) && (userData.charAt(i - 1) != '\\')) {
+            if ((userData.charAt(i) == USER_DATA_DELIM_DOLLAR) && (userData.charAt(i - 1) != BACKSLASH)) {
                 numOfAttribs++;
                 String data = userData.substring(lastDelim, i);
                 lastDelim = i + 1;
@@ -179,7 +183,7 @@ public class LTPATokenizer {
             String[] type = input.toArray(new String[input.size()]);
             for (int i = 0; i < type.length; i++) {
                 if (i != 0) {
-                    result.append(STRING_ATTRIB_DELIM);
+                    result.append(STRING_ATTRIB_DELIM_PIPE);
                 }
                 result.append(escape(type[i]));
             }
@@ -190,15 +194,20 @@ public class LTPATokenizer {
 
     /*
      * Convert a String form of an array to the array list
-     * 
+     *
      * @param value The String form of an array
-     * 
+     *
      * @return The array list
      */
-    private static final ArrayList<String> convertStringToArrayList(String value) {
+    private static final ArrayList<String> convertStringToArrayList(String key, String value) {
         if (value != null && value.length() > 0) {
             ArrayList<String> result = new ArrayList<String>();
-            StringTokenizer st = new StringTokenizer(value, STRING_ATTRIB_DELIM);
+            StringTokenizer st = null;
+            if (key.equals("u")) {
+                st = new StringTokenizer(value);
+            } else {
+                st = new StringTokenizer(value, STRING_ATTRIB_DELIM_PIPE);
+            }
             while (st.hasMoreTokens()) {
                 String nextString = unescape(st.nextToken());
                 if (nextString != null) {
@@ -212,7 +221,7 @@ public class LTPATokenizer {
 
     /*
      * Remove the delimination of the String form.
-     * 
+     *
      * @param str The String form
      */
     private static final String escape(String str) {
@@ -224,15 +233,23 @@ public class LTPATokenizer {
         int len = str.length();
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
+
             switch (c) {
-                case TOKEN_DELIM:
-                case USER_DATA_DELIM:
-                case USER_ATTRIB_DELIM:
-                    sb.append('\\');
+                case TOKEN_DELIM_PERCENT:
+                case USER_DATA_DELIM_DOLLAR:
+                case USER_ATTRIB_DELIM_COLLON:
+                case STRING_ATTRIB_DELIM_CHAR_PIPE:
+                    sb.append(BACKSLASH);
+                    break;
+                case BACKSLASH:
+                    if (i == len - 1) {
+                        sb.append(BACKSLASH);
+                    }
                     break;
                 default:
                     break;
             }
+
             sb.append(c);
         }
         return sb.toString();
@@ -240,7 +257,7 @@ public class LTPATokenizer {
 
     /*
      * Add the delimination to the String form.
-     * 
+     *
      * @param str The String form
      */
     private static final String unescape(String str) {
@@ -248,9 +265,9 @@ public class LTPATokenizer {
         int len = str.length();
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
-            if ((c == '\\') && (i < len - 1)) {
+            if ((c == BACKSLASH) && (i < len - 1)) {
                 char d = str.charAt(i + 1);
-                if (!((d == USER_DATA_DELIM) || (d == USER_ATTRIB_DELIM) || (d == TOKEN_DELIM))) {
+                if (!((d == USER_DATA_DELIM_DOLLAR) || (d == USER_ATTRIB_DELIM_COLLON) || (d == TOKEN_DELIM_PERCENT) || (d == BACKSLASH))) {
                     // if next char is delim, skip this escape char
                     sb.append(c);
                 }
