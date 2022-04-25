@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2019, 2021 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2019, 2022 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at 
@@ -15,6 +15,15 @@
     <artifactId>tck.runner.tck</artifactId>
     <version>1.2.1</version>
     <name>MicroProfile RestClient 1.2 TCK Runner TCK Module</name>
+
+<!-- Switch to use DHE since the 1.2.2-20210215 version isn't in maven central -->
+<!-- Without this change these test will not run locally (but will run in builds) -->
+    <repositories>
+        <repository>
+          <id>DHE</id>
+          <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/</url>
+        </repository>
+    </repositories>
 
     <properties>
         <microprofile.rest.client.version>1.2.2-20210215</microprofile.rest.client.version>
