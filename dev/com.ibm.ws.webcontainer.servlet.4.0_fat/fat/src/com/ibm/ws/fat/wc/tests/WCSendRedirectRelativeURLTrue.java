@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -25,12 +26,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class WCSendRedirectRelativeURLTrue {
 
     private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());

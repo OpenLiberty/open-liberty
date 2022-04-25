@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.io.OutputStream;
@@ -34,6 +35,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -223,6 +225,7 @@ public class WCServerHttpUnit {
     }
 
     @Test
+    @SkipForRepeat(EE10_FEATURES)
     public void testRelativeRedirect() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -237,6 +240,7 @@ public class WCServerHttpUnit {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)
     public void testRelativeRedirectWithPathInfo() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -277,6 +281,7 @@ public class WCServerHttpUnit {
     }
 
     @Test
+    @SkipForRepeat(EE10_FEATURES)
     public void testSessionCookieConfig() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";

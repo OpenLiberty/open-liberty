@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -20,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,6 +37,7 @@ import componenttest.topology.utils.HttpUtils;
  *
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class WCSCIHandlesTypesTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
