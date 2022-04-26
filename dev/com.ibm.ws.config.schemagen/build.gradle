@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,5 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 test {
+  dependsOn assemble
   dependsOn ':com.ibm.ws.config:assemble'
+  dependsOn ':com.ibm.ws.kernel.cmdline:assemble'
+  dependsOn ':com.ibm.ws.kernel.feature:assemble'
+  dependsOn ':com.ibm.ws.kernel.service:assemble'
+  dependsOn ':com.ibm.ws.config.schemagen.schemagen:assemble'
+  dependsOn ':com.ibm.ws.org.eclipse.equinox.metatype:assemble'
+  dependsOn ':com.ibm.ws.logging:assemble'
+  dependsOn ':org.eclipse.osgi:assemble'
+  dependsOn ':com.ibm.ws.org.apache.aries.util:assemble'
 }

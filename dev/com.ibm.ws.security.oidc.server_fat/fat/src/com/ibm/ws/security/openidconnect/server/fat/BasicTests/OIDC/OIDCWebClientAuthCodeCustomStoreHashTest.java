@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -30,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.topology.utils.LDAPUtils;
 
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
@@ -43,6 +45,10 @@ public class OIDCWebClientAuthCodeCustomStoreHashTest extends genericWebClientAu
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
+        /*
+         * These tests have not been configured to run with the local LDAP server.
+         */
+        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test, run user feature");
         // add any additional messages that you want the "start" to wait for

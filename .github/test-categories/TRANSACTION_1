@@ -14,17 +14,3 @@ com.ibm.ws.transaction.hadb_fat.postgresql.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.1
 com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
-com.ibm.ws.transaction.cloud_fat.base
-com.ibm.ws.transaction.cloud_fat.db2.1
-com.ibm.ws.transaction.cloud_fat.db2.2
-com.ibm.ws.transaction.cloud_fat.derby.1
-com.ibm.ws.transaction.cloud_fat.derby.2
-com.ibm.ws.transaction.cloud_fat.dualFS
-com.ibm.ws.transaction.cloud_fat.oracle.1
-com.ibm.ws.transaction.cloud_fat.oracle.2
-com.ibm.ws.transaction.cloud_fat.peerlocking
-com.ibm.ws.transaction.cloud_fat.sqlserver.1
-com.ibm.ws.transaction.cloud_fat.sqlserver.2
-com.ibm.ws.transaction.cloud_fat.postgresql.1
-com.ibm.ws.transaction.cloud_fat.postgresql.2
-com.ibm.ws.transaction.cloud_fat.simpleFS
