@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: The OpenID Connect p
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=The ID token might be malformed or a claim within the token might have a value that is an unexpected data type. Alternatively, the token might be missing claims that are required or the issuer of the token is not the issuer that is expected.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ensure the ID token is formatted correctly. See the error that is included in the message for more information.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: The OpenID Connect provider cannot determine the set of OpenID Connect clients to log out because of the following error: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=The provider failed to retrieve the set of clients that are registered, or the ID token claims might be malformed.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=For more information, see the error included in the message.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: The {0} OpenID Connect provider encountered the following error when it retrieved the {1} client to build back-channel logout tokens: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=The OAuth client does not exist, or another error occurred.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=For more information, see the error included in the message.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: The Java version used by this run time [{0}] is not supported by the ID token Mediator SPI. The supported Java version is 1.7 or higher.
@@ -223,10 +223,18 @@ BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Ensure that the back-channel log
 # NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
 #
 
-BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: The {0} OpenID Connect provider encountered an error while submitting back-channel logout requests: {1}
-BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Sending requests to the back-channel logout URIs was interrupted, or another error occurred while scheduling the requests for execution.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: The {0} OpenID Connect provider encountered an error on submitting back-channel logout requests: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Requests sent to the back-channel logout URIs were interrupted, or another error occurred in scheduling the requests to run.
 BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Send another logout request to retry the back-channel logout. For more information, see the error included in the message.
 
 ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: The {0} OpenID Connect provider encountered an error while building or sending a back-channel logout request to {1}: {2}
 ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=The HTTP connection encountered an error, or the connection failed.
 ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Send another logout request to retry the back-channel logout. For more information, see the error included in the message.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: A back-channel logout token that is based on a cached ID token for the {0} client cannot be created due to the following error: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=An error occurred in building the logout token string. Alternatively, the issuer of the cached ID token might not match this OpenID Connect provider, or the cached ID token might be missing some claims that are required.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=For more information, see the error included in the message.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: A back-channel logout token that is based on a cached ID token with claims [{0}] for the {1} client cannot be created due to the following error: {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=An error occurred in building the logout token string. Alternatively, the issuer of the cached ID token might not match this OpenID Connect provider, or the cached ID token might be missing some claims that are required.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=For more information, see the error included in the message.

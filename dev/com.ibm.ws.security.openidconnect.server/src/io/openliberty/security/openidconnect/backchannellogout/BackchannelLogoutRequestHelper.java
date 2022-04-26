@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -56,14 +57,21 @@ public class BackchannelLogoutRequestHelper {
      * RPs. If the ID token contains multiple audiences, logout tokens are created for each client audience. Logout tokens are
      * also created for all RPs that the OP is aware of having active or recently valid sessions.
      */
-    public void sendBackchannelLogoutRequests(String idTokenString) {
-        if (idTokenString == null || idTokenString.isEmpty()) {
+    public void sendBackchannelLogoutRequests(String user, String idTokenString) {
+        if ((user == null || user.isEmpty()) && (idTokenString == null || idTokenString.isEmpty())) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Neither a user name nor an ID token string was provided, so back-channel logout will not be performed.");
+            }
             return;
         }
-        Map<OidcBaseClient, List<String>> logoutTokens = null;
+        Map<OidcBaseClient, Set<String>> logoutTokens = null;
         try {
             LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(request, oidcServerConfig);
-            logoutTokens = tokenBuilder.buildLogoutTokensFromIdTokenString(idTokenString);
+            if (idTokenString == null || idTokenString.isEmpty()) {
+                logoutTokens = tokenBuilder.buildLogoutTokensFromUserName(user);
+            } else {
+                logoutTokens = tokenBuilder.buildLogoutTokensFromIdTokenString(idTokenString);
+            }
         } catch (LogoutTokenBuilderException e) {
             Tr.error(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", oidcServerConfig.getProviderId(), e.getMessage());
             return;
@@ -71,7 +79,7 @@ public class BackchannelLogoutRequestHelper {
         sendBackchannelLogoutRequestsToClients(logoutTokens);
     }
 
-    void sendBackchannelLogoutRequestsToClients(Map<OidcBaseClient, List<String>> clientsAndLogoutTokens) {
+    void sendBackchannelLogoutRequestsToClients(Map<OidcBaseClient, Set<String>> clientsAndLogoutTokens) {
         if (clientsAndLogoutTokens == null || clientsAndLogoutTokens.isEmpty()) {
             return;
         }
@@ -79,9 +87,9 @@ public class BackchannelLogoutRequestHelper {
         sendAllBackchannelLogoutRequests(requests);
     }
 
-    List<BackchannelLogoutRequest> createLogoutRequests(Map<OidcBaseClient, List<String>> clientsAndLogoutTokens) {
+    List<BackchannelLogoutRequest> createLogoutRequests(Map<OidcBaseClient, Set<String>> clientsAndLogoutTokens) {
         List<BackchannelLogoutRequest> requests = new ArrayList<>();
-        for (Entry<OidcBaseClient, List<String>> entry : clientsAndLogoutTokens.entrySet()) {
+        for (Entry<OidcBaseClient, Set<String>> entry : clientsAndLogoutTokens.entrySet()) {
             OidcBaseClient client = entry.getKey();
             for (String logoutToken : entry.getValue()) {
                 BackchannelLogoutRequest request = new BackchannelLogoutRequest(oidcServerConfig, client.getBackchannelLogoutUri(), logoutToken);

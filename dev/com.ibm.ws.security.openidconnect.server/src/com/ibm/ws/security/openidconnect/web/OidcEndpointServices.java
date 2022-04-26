@@ -535,7 +535,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
 
         if (continueLogoff) {
-            sendBackchannelLogoutRequests(request, oidcServerConfig, idTokenString);
+            sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
         }
     }
 
@@ -544,18 +544,12 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         return clientTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
     }
 
-    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String idTokenString) {
+    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
         if (!ProductInfo.getBetaEdition()) {
             return;
         }
-        if (idTokenString == null || idTokenString.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "ID token string was not provided or was empty, so back-channel logout will not be performed.");
-            }
-            return;
-        }
         BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-        bclRequestCreator.sendBackchannelLogoutRequests(idTokenString);
+        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 
     /**
