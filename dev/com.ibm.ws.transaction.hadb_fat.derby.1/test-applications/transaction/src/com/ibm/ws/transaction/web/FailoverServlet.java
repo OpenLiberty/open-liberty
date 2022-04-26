@@ -404,6 +404,7 @@ public class FailoverServlet extends FATServlet {
             int ret = claimPeerUpdateStmt.executeUpdate();
 
             System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+            con.commit();
         } else {
             // We didn't find the row in the table
             System.out.println("insertStaleLease: Could not find row");
