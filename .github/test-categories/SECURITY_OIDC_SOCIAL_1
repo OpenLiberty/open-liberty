@@ -1,2 +1,2 @@
 com.ibm.ws.security.oidc.social_fat.claimPropagation
-#com.ibm.ws.security.oidc.social_fat.backchannelLogout
+com.ibm.ws.security.oidc.social_fat.backchannelLogout
