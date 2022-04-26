@@ -12,12 +12,12 @@ package com.ibm.ws.jpa.container.v31;
 
 import java.util.List;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.CriteriaUpdate;
 
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.jpa.management.JPAEntityManager;

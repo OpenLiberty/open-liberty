@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.v31;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.SynchronizationType;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.SynchronizationType;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;

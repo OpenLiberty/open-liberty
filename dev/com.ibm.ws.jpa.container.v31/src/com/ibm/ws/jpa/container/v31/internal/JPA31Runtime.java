@@ -15,9 +15,9 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.SynchronizationType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.SynchronizationType;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
