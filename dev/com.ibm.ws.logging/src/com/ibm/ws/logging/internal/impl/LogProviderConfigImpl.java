@@ -192,10 +192,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         stackJoin = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
                                                        stackJoin);
 
-
-        stackJoin = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
-        stackJoin);
-
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
@@ -282,7 +278,6 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
 
         rolloverStartTime = InitConfgAttribute.ROLLOVER_START_TIME.getStringValueAndSaveInit(c, rolloverStartTime, isInit);
-
         rolloverInterval = InitConfgAttribute.ROLLOVER_INTERVAL.getLongDurationValueAndSaveInit(c, rolloverInterval, isInit, TimeUnit.MINUTES);
 
         stackJoin = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackJoin, isInit);
@@ -601,11 +596,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         long getLongDurationValueAndSaveInit(Map<String, Object> config, long defaultValue, boolean isInit, TimeUnit timeUnit) {
             Object value = config.get(isInit ? propertyKey : configKey);
-            long newValue;
-            if (isInit) //if init, need duration to long
-                newValue = LoggingConfigUtils.getLongDurationValue(value, defaultValue, timeUnit);    
-            else
-                newValue = LoggingConfigUtils.getLongValue(value, defaultValue);
+            long newValue = LoggingConfigUtils.getLongDurationValue(value, defaultValue, timeUnit);
             if (isInit && value == null) {
                 config.put(propertyKey, Long.toString(newValue));
             }

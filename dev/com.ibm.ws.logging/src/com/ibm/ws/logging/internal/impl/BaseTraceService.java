@@ -1331,7 +1331,6 @@ public class BaseTraceService implements TrService {
         String rolloverStartTime = config.getRolloverStartTime();
         long rolloverInterval = config.getRolloverInterval();
 
-
         //if the rollover has already been scheduled, cancel it
         //this is either a reschedule, or a unschedule
         if (this.isLogRolloverScheduled) {
@@ -1351,6 +1350,9 @@ public class BaseTraceService implements TrService {
 
         //if both rolloverStartTime and rolloverInterval are empty, return
         if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
+            Tr.debug(tc, "No time based log rollover is scheduled.");
+            Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
+            Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
             return;
         }
 
