@@ -12,11 +12,11 @@ package com.ibm.ws.jpa.container.v30;
 
 import java.util.Map;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.SynchronizationType;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.SynchronizationType;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.jpa.JPAPuId;

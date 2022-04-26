@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2021 IBM Corporation and others.
+# Copyright (c) 2017,2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WebSphere WebServices Global Handler service
-Bundle-SymbolicName: com.ibm.ws.webservices.handler; singleton:=true
-Bundle-Description: WebSphere WebServices Global Handler service, version ${bVersion}
 
 -dsannotations: com.ibm.webservices.handler.impl.GlobalHandlerServiceImpl
 -nouses: true
 
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.webservices.handler.jar
-jakartaFinalBundleName: WebSphere WebServices Global Handler service
-jakartaFinalBundleId: io.openliberty.webservices.handler
-jakartaFinalBundleDescription: WebSphere WebServices Global Handler service; Jakarta Enabled
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 

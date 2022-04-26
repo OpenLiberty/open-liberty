@@ -1,15 +1,14 @@
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WAS Java Batch Job JMS
-Bundle-SymbolicName: com.ibm.ws.jbatch.jms
-Bundle-Description: WebSphere Job JMS Dispatcher, JMS Executor and Job Event Publisher for Java Batch (jbatch) ; version=${bVersion}
 
 Import-Package: *
 
 WS-TraceGroup: wsbatch
 
-jakartaeeMe: true
 
 Import-Package: \
   com.ibm.ws.kernel.boot.security;resolution:=optional, \

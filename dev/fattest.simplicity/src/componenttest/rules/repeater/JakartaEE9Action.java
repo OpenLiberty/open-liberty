@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.eclipse.transformer.jakarta.JakartaTransformer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -351,10 +349,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         System.setErr(ps);
 
         try {
-            Class.forName("org.eclipse.transformer.jakarta.JakartaTransformer");
+            Class.forName("org.eclipse.transformer.cli.JakartaTransformerCLI");
         } catch (Throwable e) {
-            String mesg = "Unable to load the org.eclipse.transformer.jakarta.JakartaTransformer class. " +
-                          "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?";
+            String mesg = "Unable to load the org.eclipse.transformer.cli.JakartaTransformerCLI class. " +
+                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
             Log.error(c, m, e, mesg);
             throw new RuntimeException(mesg, e);
         }
@@ -428,10 +426,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
             Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));
 
-            // Note the use of 'com.ibm.ws.JakartaTransformer'.
-            // 'org.eclipse.transformer.Transformer' might also be used instead.
-
-            JakartaTransformer.main(args);
+            TransformerHolder._INSTANCE.transform(args);
 
             if (outputPath.toFile().exists()) {
                 if (backupPath != null) {
@@ -472,5 +467,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             }
             Log.info(c, m, "Transforming complete app: " + outputPath);
         }
+    }
+
+    // uses the initialisation-on-demand holder idiom to provide safe and fast lazy loading
+    private static class TransformerHolder {
+        public static final TransformSubAction _INSTANCE = new componenttest.rules.repeater.TransformSubActionImpl();
     }
 }

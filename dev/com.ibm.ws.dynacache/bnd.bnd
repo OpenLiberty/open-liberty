@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,20 +12,15 @@
 #com.ibm.ejs.util.am
 
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: dynacache
-Bundle-SymbolicName: com.ibm.ws.dynacache
-Bundle-Description: Dynacache Core cache capability in Liberty
 
 #
 # Produce a JakartaEE compliant JAR.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.dynacache.internal.jar
-jakartaFinalBundleName: Dynacache
-jakartaFinalBundleId: io.openliberty.dynacache.internal
-jakartaFinalBundleDescription: Dynacache Core cache capability in Liberty; Jakarta Enabled
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 

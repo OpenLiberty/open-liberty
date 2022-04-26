@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Security TAI Authentication
-Bundle-Description: Security TAI Authentication, version=${bVersion}
-Bundle-SymbolicName: com.ibm.ws.security.authentication.tai
 
 #
 # Produce a JakartaEE compliant JAR.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.authentication.internal.tai.jar
-jakartaFinalBundleName: Security TAI Authentication
-jakartaFinalBundleId: io.openliberty.security.authentication.internal.tai
-jakartaFinalBundleDescription: Security TAI Authentication; Jakarta Enabled
 
 WS-TraceGroup: \
   Authentication

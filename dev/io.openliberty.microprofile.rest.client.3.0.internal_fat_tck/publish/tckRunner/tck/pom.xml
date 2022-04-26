@@ -124,7 +124,7 @@
             <artifactId>mprestclient</artifactId>
             <version>4.7.0.Final</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.mprestclient.jakarta_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.mprestclient_}</systemPath>
         </dependency>
 
         <dependency>
@@ -132,7 +132,7 @@
             <artifactId>jaxb.provider</artifactId>
             <version>4.7.0.Final</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.jakarta_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider_}</systemPath>
         </dependency>
 
         <dependency>

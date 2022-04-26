@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,9 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.websphere.javaee.jcache.1.1
 
 Export-Package: \
    javax.cache.*;version="1.1";thread-context=true
@@ -27,4 +29,3 @@ instrument.disabled: true
 -buildpath: \
 	javax.cache:cache-api;version=1.1.0
 
-jakartaeeMe: true

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
@@ -99,7 +100,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<String> additionalBeanDefiningAnnotations = new HashSet<String>();
 
     private final Set<String> extensionClassNames = new HashSet<String>();
-    private final Set<Supplier<Object>> spiExtensionSuppliers = new HashSet<>();
+    private final Set<Supplier<Extension>> spiExtensionSuppliers = new HashSet<>();
 
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
@@ -1059,12 +1060,12 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     }
 
     @Override
-    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+    public Set<Supplier<Extension>> getSPIExtensionSuppliers() {
         return spiExtensionSuppliers;
     }
 
     @Override
-    public void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers) {
+    public void setSPIExtensionSuppliers(Set<Supplier<Extension>> spiExtensionSuppliers) {
         this.spiExtensionSuppliers.clear();
         this.spiExtensionSuppliers.addAll(spiExtensionSuppliers);
     }

@@ -1,6 +1,5 @@
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.io.smallrye.common; singleton:=true
 
 bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
 Build-Identifier: SNAPSHOT-${now}

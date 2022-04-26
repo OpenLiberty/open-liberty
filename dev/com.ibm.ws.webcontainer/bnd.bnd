@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.1
 
-Bundle-Name: WAS WebContainer
-Bundle-SymbolicName: com.ibm.ws.webcontainer
-Bundle-Description: WAS WebContainer 8.0 with Servlet 3.0 support
 WLP-ServerName: IBM WebSphere Liberty
 WLP-ServerVersion: ${libertyRelease}
 
@@ -167,7 +167,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.disabled: true
 
-jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.ws.kernel.service,\

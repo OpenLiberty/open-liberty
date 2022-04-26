@@ -12,21 +12,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd.annotation</artifactId>
-      <version>6.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd.transform</artifactId>
-      <version>6.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd</artifactId>
-      <version>6.2.0</version>
-    </dependency>
-    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
       <version>3.3.0</version>

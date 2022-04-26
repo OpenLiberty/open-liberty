@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,166 +148,6 @@ if (parseBoolean(bnd.get('copy.pii', 'true'))) {
   task copyPiiFiles { }
 }
 
-if ( parseBoolean( bnd.get('jakartaeeMe', 'false'))) {
-  configurations {
-    jakartaeeTransformJars
-  }
-
-  dependencies {
-    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:6.2.0',
-                            'commons-cli:commons-cli:1.4',
-                            'org.slf4j:slf4j-api:1.7.36',
-                            'org.slf4j:slf4j-simple:1.7.36',
-                            'org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005',
-                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005'
-  }
-
-  task jakartaeeTransform {
-    mustRunAfter project.tasks.jar
-    dependsOn jar
-    inputs.files(fileTree(project.buildDir).matching {include '*.jar' exclude '*jakarta.jar' }).skipWhenEmpty()
-    outputs.dir project.buildDir
-    doLast {
-      fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
-
-      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }
-      bundles.each { bundleJar ->
-
-        println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
-
-        // Jakarta transform options always input the bundle jar and output
-        // a jakarta transformed copy of the bundle jar.
-        //
-        // Jakarta transform always uses a set of global properties files.
-
-        def initialBundleJarName = project.buildDir.path + '/' + bundleJar.name
-        println 'Initial bundle jar name [ ' + initialBundleJarName + ' ]'
-
-        def finalBundleJarName = initialBundleJarName.replaceAll( '.jar', '.jakarta.jar' )
-        println 'Default jakarta final bundle jar name [ ' + finalBundleJarName + ' ]'
-
-        def localBundleJarName = bnd.get('jakartaFinalJarName')
-        if ( (localBundleJarName != null) && !localBundleJarName.isEmpty() ) {
-          println 'Local jakarta final bundle jar name [ ' + localBundleJarName + ' ]'
-          println 'Ignoring default jakarta final bundle jar name'
-          finalBundleJarName = project.buildDir.path + '/' + localBundleJarName
-          println 'Override jakarta bundle final jar name [ ' + finalBundleJarName + ' ]'
-        } else {
-          println 'Using default jakarta final bundle jar name'
-        }
-
-        def transformProject = bndWorkspace.getProject('wlp-jakartaee-transform')
-        def globalRules = transformProject.getFile('rules')
-        println 'Using global rules [ ' + globalRules.path + ' ]'
-
-        def transformerArgs = [
-          initialBundleJarName, finalBundleJarName,
-          '-q', // quiet output
-          '-tr', transformProject.getFile('rules/jakarta-renames.properties').path,
-          '-ts', transformProject.getFile('rules/jakarta-selections.properties').path,
-          '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
-          '-tb', transformProject.getFile('rules/jakarta-bundles.properties').path,
-          '-td', transformProject.getFile('rules/jakarta-direct.properties').path,
-          '-tf', transformProject.getFile('rules/jakarta-text.properties').path ]
-
-        // Add BND file specified local additions.
-
-        project.ext.set( 'jakartaLocalSelections', 'local.selections.properties' )
-
-        def localOptions = [
-            [ 'Selections', '-ts' ],
-            [ 'Renames',    '-tr' ],
-            [ 'Versions',   '-tv' ],
-            [ 'Bundles',    '-tb' ],
-            [ 'Direct',     '-td' ],
-            [ 'TextMaster', '-tf' ]
-        ]
-
-        for ( localEntry in localOptions ) {
-            def localName = localEntry[0]
-            def localOption = localEntry[1]
-
-            def bndProperty = 'jakartaLocal' + localName
-            def localAddition = bnd.get(bndProperty)
-
-            if ( (localAddition == null) || localAddition.isEmpty() ) {
-                println 'BND [ ' + bndProperty + ' ] is not set'
-
-            } else {
-                def localFile = project.file( 'rules/' + localAddition )
-
-                if ( !localFile.exists() ) {
-                    logger.error( 'ERROR: BND Ignoring [ ' + bndProperty + ' ]; [ ' + localFile.path + ' ] does not exist' )
-
-                } else {
-                    println 'BND adding [ ' + bndProperty + ' ]: [ ' + localFile.path + ' ]'
-                    transformerArgs.add( localOption )
-                    transformerArgs.add( localFile.path )
-                }
-            }
-        }
-
-        def finalBundleId = bnd.get('jakartaFinalBundleId')
-        if ( (finalBundleId != null) && !finalBundleId.isEmpty() ) {
-          println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
-
-          def initialBundleId = bnd.get('Bundle-SymbolicName', project.name)
-          int index = initialBundleId.indexOf(";")
-          if (index != -1) {
-            initialBundleId = initialBundleId.substring(0, index)
-          }
-
-          def finalBundleVersion = bnd.get('jakartaFinalBundleVersion')
-          if (finalBundleVersion == null) {
-            finalBundleVersion = ''
-          }
-          println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
-
-          def finalBundleShortName = bnd.get('jakartaFinalBundleName')
-          if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
-            finalBundleShortName = bnd.get('Bundle-Name')
-          }
-          println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
-
-          def finalBundleDescription = bnd.get('jakartaFinalBundleDescription')
-          if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
-            finalBundleDescription = bnd.get('Bundle-Description')
-          }
-          println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
-
-          def directBundleDataKey = initialBundleId
-          def directBundleDataValue =
-            finalBundleId + ',' +
-            finalBundleVersion + ',' +
-            finalBundleShortName + ',' +
-            finalBundleDescription
-
-          println 'BND jakarta direct key [ ' + directBundleDataKey + ' ]'
-          println 'BND jakarta direct value [ ' + directBundleDataValue + ' ]'
-
-          transformerArgs.add( '-ti' )
-          transformerArgs.add( 'tb' )
-          transformerArgs.add( directBundleDataKey )
-          transformerArgs.add( directBundleDataValue )
-        }
-
-        println 'Transformer options:'
-        transformerArgs.each {
-            println '  [ ' + it + ' ]'
-        }
-
-        javaexec {
-            classpath configurations.jakartaeeTransformJars
-            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
-            args = transformerArgs
-        }
-      }
-    }
-  }
-
-  assemble.dependsOn(jakartaeeTransform)
-}
-
 compileJava {
   if (parseBoolean(bnd.get('globalize', 'true'))) {
     dependsOn globalize
@@ -434,17 +274,39 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
     archiveName bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
     from new File(project.buildDir, "javadoc")
 
+    configurations {
+      jakartaeeTransformJars
+    }
+
+    dependencies {
+      jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-M1',
+                             'commons-cli:commons-cli:1.5.0',
+                             'org.slf4j:slf4j-api:1.7.36',
+                             'org.slf4j:slf4j-simple:1.7.36',
+                             'org.eclipse.transformer:org.eclipse.transformer:0.5.0-A1',
+                             'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-A1',
+                             'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-A1'
+    }
     doLast {
-      if ( parseBoolean( bnd.get('jakartaeeMe', 'true'))) {
+      def transformedBnd = new File( "$projectDir/transformed.bnd" )
+      if (transformedBnd.exists()) {
+        def bndProps = new Properties()
+        bndProps.load(new FileInputStream(transformedBnd))
+        def transformedSymbolicName = bndProps.getProperty("Bundle-SymbolicName")
+        if (transformedSymbolicName != null) {
+          int index = transformedSymbolicName.indexOf(";")
+          if (index != -1) {
+            transformedSymbolicName = transformedSymbolicName.substring(0, index).trim()
+          }
+        }
+
         def initialJavadocZipName = project.buildDir.path + '/distributions/' + bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
-        println 'Initial javadoc zip name [ ' + initialJavadocZipName + ' ]'
 
-        def finalJavadocZipName = initialJavadocZipName.replaceAll( '.javadoc.zip', '.jakarta.javadoc.zip' )
-        println 'Default jakarta javadoc zip name [ ' + finalJavadocZipName + ' ]'
+        def finalJavadocZipName = project.buildDir.path + '/distributions/' + transformedSymbolicName + '.javadoc.zip'
 
-        def finalBundleId = bnd.get('jakartaFinalBundleId')
-        if ( (finalBundleId != null) && !finalBundleId.isEmpty() ) {
-          finalJavadocZipName = project.buildDir.path + '/distributions/' + finalBundleId + '.javadoc.zip'
+        File jakartaZipFile = new File(finalJavadocZipName)
+        if (jakartaZipFile.exists()) {
+          jakartaZipFile.delete()
         }
 
         def transformProject = bndWorkspace.getProject('wlp-jakartaee-transform')
@@ -456,7 +318,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 
         javaexec {
             classpath configurations.jakartaeeTransformJars
-            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
+            main = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
             args = transformerArgs
         }
       }

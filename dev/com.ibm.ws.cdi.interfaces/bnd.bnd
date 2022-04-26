@@ -9,11 +9,10 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
 
-Bundle-Name: com.ibm.ws.cdi.interfaces
-Bundle-SymbolicName: com.ibm.ws.cdi.interfaces
-Bundle-Description:CDI Liberty Interfaces, version ${bVersion}
+-sub: *.bnd
+
+bVersion=1.0
 
 Service-Component: \
  com.ibm.ws.cdi.interfaces.deserializationClassProvider;\
@@ -42,5 +41,3 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	org.eclipse.osgi
-
-jakartaeeMe: true

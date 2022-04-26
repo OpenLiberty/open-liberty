@@ -12,7 +12,6 @@
 bVersion=1.0
 cxfVersion=3.4.3
 
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
 
 Import-Package: \
@@ -48,7 +47,6 @@ Export-Package: \
 app-resources= \
   META-INF/services/javax.xml.ws.spi.Provider
 
-# the Service-Component in app-resources.bnd uses "${Bundle-SymbolicName}_${bVersion}.ResourceProvider"
 # however this bundle symbolic name is com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, and this ds config need
 # the name not contains "-".
 Service-Component: \

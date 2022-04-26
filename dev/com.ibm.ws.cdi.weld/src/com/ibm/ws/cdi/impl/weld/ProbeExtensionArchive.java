@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.probe.ProbeExtension;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -178,7 +180,7 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
 
     /** {@inheritDoc} */
     @Override
-    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+    public Set<Supplier<Extension>> getSPIExtensionSuppliers() {
         return Collections.emptySet();
     }
 

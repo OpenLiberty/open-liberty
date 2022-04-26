@@ -4,7 +4,7 @@ visibility=private
  IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.restfulWS-3.0)(osgi.identity=io.openliberty.restfulWS-3.1)))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.beanValidation-3.0))"
 -bundles=\
-  io.openliberty.org.jboss.resteasy.validator.provider.jakarta
+  io.openliberty.org.jboss.resteasy.validator.provider
 IBM-Install-Policy: when-satisfied
 kind=ga
 edition=core

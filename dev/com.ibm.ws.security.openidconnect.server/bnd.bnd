@@ -9,20 +9,15 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Liberty Security OpenID Connect Server 1.0
-Bundle-SymbolicName: com.ibm.ws.security.openidconnect.server
-Bundle-Description: Liberty Security OpenID Connect Server, version=${bVersion}
 
 #
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.openidconnect.internal.server.jar
-jakartaFinalBundleName: Liberty Security OpenID Connect Server 1.0
-jakartaFinalBundleId: io.openliberty.security.openidconnect.internal.server
-jakartaFinalBundleDescription: Liberty Security OpenID Connect Server 1.0; Jakarta Enabled
 
 Web-ContextPath: /oidc
 

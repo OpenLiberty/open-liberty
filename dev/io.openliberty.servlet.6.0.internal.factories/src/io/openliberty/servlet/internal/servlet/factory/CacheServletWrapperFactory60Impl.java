@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.servlet.internal.servlet.factory;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
@@ -19,6 +17,8 @@ import com.ibm.ws.webcontainer.servlet.CacheServletWrapperFactory;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer40.servlet.CacheServletWrapper40;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component(service = CacheServletWrapperFactory.class, property = { "service.vendor=IBM" })
 public class CacheServletWrapperFactory60Impl implements CacheServletWrapperFactory {

@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

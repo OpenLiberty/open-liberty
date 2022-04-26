@@ -38,12 +38,9 @@ DynamicImport-Package: \
  org.bouncycastle.jce.provider,\
  org.apache.ws.security.components.crypto,\
  org.apache.ws.security.saml   
- 
-Include-Resource: \
- @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/META-INF/**,\
- @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/templates/**,\
- @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/schemas/**,\
- @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/*xml
+
+-includeresource: \
+   @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/!META-INF/maven/*
 
 Build-Jdk:
 Built-By:

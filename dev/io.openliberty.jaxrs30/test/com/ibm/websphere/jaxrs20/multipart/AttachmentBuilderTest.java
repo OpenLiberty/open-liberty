@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 @SuppressWarnings("deprecation")
 public class AttachmentBuilderTest {

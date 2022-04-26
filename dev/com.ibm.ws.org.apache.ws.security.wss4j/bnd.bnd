@@ -10,7 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: \
-   @${repo;org.apache.ws.security:wss4j;1.6.7.ibm-s20130913-2015}!/!META-INF/maven/*
-
 -buildpath: org.apache.ws.security:wss4j;version=1.6.7.ibm-s20130913-2015

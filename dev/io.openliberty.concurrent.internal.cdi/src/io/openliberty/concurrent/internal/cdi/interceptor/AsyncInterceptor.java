@@ -19,14 +19,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.RejectedExecutionException;
 
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -34,7 +28,13 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 @Asynchronous
 @Interceptor

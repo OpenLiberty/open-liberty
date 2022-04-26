@@ -9,21 +9,16 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Security Built-in Authentication Implementation
-Bundle-SymbolicName: com.ibm.ws.security.authentication.builtin
-Bundle-Description: Security Built-in Authentication Implementation, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
 #
 # Produce a JakartaEE compliant JAR.
 #
-jakartaeeMe: true
-jakartaFinalJarName: io.openliberty.security.authentication.internal.builtin.jar
-jakartaFinalBundleName: Security Built-in Authentication Implementation
-jakartaFinalBundleId: io.openliberty.security.authentication.internal.builtin
-jakartaFinalBundleDescription: Security Built-in Authentication Implementation; Jakarta Enabled
 
 WS-TraceGroup: \
   Authentication

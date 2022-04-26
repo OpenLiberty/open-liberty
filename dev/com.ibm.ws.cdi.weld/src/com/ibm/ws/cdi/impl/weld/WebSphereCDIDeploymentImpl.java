@@ -504,7 +504,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             //to pass to weld.
 
             for (WebSphereBeanDeploymentArchive deploymentBDA : deploymentDBAs.values()) {
-                Set<Supplier<Object>> spiExtensionSuppliers = deploymentBDA.getSPIExtensionSuppliers();
+                Set<Supplier<Extension>> spiExtensionSuppliers = deploymentBDA.getSPIExtensionSuppliers();
 
                 if (spiExtensionSuppliers.isEmpty()) {
                     continue;
@@ -512,14 +512,10 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
                 extensionBDAs.put(deploymentBDA.getId(), deploymentBDA);
 
-                for (Supplier<Object> spiExtensionSupplier : spiExtensionSuppliers) {
+                for (Supplier<Extension> spiExtensionSupplier : spiExtensionSuppliers) {
                     try {
-                        Object extension = spiExtensionSupplier.get();
-                        if (!(extension instanceof Extension)) {
-                            throw new IllegalArgumentException(extension.getClass().getCanonicalName()
-                                                               + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
-                        }
-                        ExtensionMetaData metaData = new ExtensionMetaData((Extension) extension);
+                        Extension extension = spiExtensionSupplier.get();
+                        ExtensionMetaData metaData = new ExtensionMetaData(extension);
                         extensionSet.add(metaData);
                     } catch (Exception e) {
                         Tr.error(tc, "exception.creating.extensions.CWOWB1012E", deploymentBDA.toString(), e.toString());

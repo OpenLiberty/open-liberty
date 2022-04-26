@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Opentracing 2.0 CDI 
-Bundle-SymbolicName: io.openliberty.opentracing.2.0.internal.cdi
-Bundle-Description: CDI support for Opentracing 2.0; version=${bVersion}
 
 WS-TraceGroup: OPENTRACING
 
@@ -34,7 +34,6 @@ Include-Resource: \
 
 -dsannotations: io.openliberty.opentracing.internal.cdi.OpentracingCDIInjectionExtension
 
-jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

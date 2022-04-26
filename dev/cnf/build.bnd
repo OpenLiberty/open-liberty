@@ -54,8 +54,6 @@ instrument.taskInjection: false
 -baselinerepo: Release
 -buildrepo: Local
 
-jakartaeeMe: false
-
 # Don't upload sources or javadoc unless bundle overrides
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
 -maven-dependencies:
@@ -81,3 +79,7 @@ build.bnd.plugins.path: \
 build.bnd.plugins: \
   com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor;path:="${build.bnd.plugins.path}",\
   com.ibm.ws.build.bnd.plugins.BundleManifestValidator;path:="${build.bnd.plugins.path}"
+
+-plugin.transformer.verifier: aQute.bnd.service.verifier.VerifierPlugin;\
+ name=Transformer;\
+ command:="-transformer"

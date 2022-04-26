@@ -33,6 +33,7 @@ import com.ibm.ws.cdi.internal.interfaces.ResourceInjectionBag;
 import com.ibm.ws.runtime.metadata.MetaData;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * Extension archive which adds the Weld LiteExtensionTranslator
@@ -84,7 +85,7 @@ public class LiteExtensionArchive extends AbstractCDIArchive implements Extensio
 
     /** {@inheritDoc} */
     @Override
-    public Set<Supplier<Object>> getSPIExtensionSuppliers() {
+    public Set<Supplier<Extension>> getSPIExtensionSuppliers() {
         return Collections.singleton(() -> new LiteExtensionTranslator(buildCompatibleExtensions, bceClassLoader));
     }
 

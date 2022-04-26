@@ -1,3 +1,6 @@
+biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0-M1
+biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-M1
+biz.aQute.bnd:biz.aQute.bnd:6.3.0-M1
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
 com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
@@ -83,8 +86,12 @@ org.eclipse.microprofile.graphql:microprofile-graphql-tck:1.0.0-20191203
 org.eclipse.microprofile.rest.client:microprofile-rest-client-tck:1.2.2-20210215
 org.eclipse.microprofile.rest.client:microprofile-rest-client-tck:1.3.5-20210215
 org.eclipse.microprofile.rest.client:microprofile-rest-client-tck:1.4.2-20210215
+org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0-A1
 org.eclipse.transformer:org.eclipse.transformer.cli:0.3.0.20211005
+org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-A1
+org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-A1
 org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005
+org.eclipse.transformer:org.eclipse.transformer:0.5.0-A1
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827

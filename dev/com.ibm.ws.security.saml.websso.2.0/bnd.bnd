@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: WAS Security SAML Web SSO 2.0
-Bundle-SymbolicName: com.ibm.ws.security.saml.websso.2.0
-Bundle-Description: WAS Security SAML WebSso 2.0, version=${bVersion}
 
 WS-TraceGroup: SAML20
 
@@ -192,4 +192,3 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.threading;version=latest, \
     com.ibm.ws.injection.core;version=latest
 
-jakartaeeMe: true

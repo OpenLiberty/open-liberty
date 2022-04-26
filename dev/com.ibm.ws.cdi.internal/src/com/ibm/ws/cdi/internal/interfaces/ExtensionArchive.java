@@ -13,6 +13,8 @@ package com.ibm.ws.cdi.internal.interfaces;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import javax.enterprise.inject.spi.Extension;
+
 public interface ExtensionArchive extends CDIArchive {
 
     /**
@@ -38,5 +40,5 @@ public interface ExtensionArchive extends CDIArchive {
     /**
      * @return a set of suppliers of extension objects
      */
-    Set<Supplier<Object>> getSPIExtensionSuppliers();
+    Set<Supplier<Extension>> getSPIExtensionSuppliers();
 }

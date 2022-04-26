@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
@@ -292,12 +293,12 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      *
      * @return a set of extension class names.
      */
-    Set<Supplier<Object>> getSPIExtensionSuppliers();
+    Set<Supplier<Extension>> getSPIExtensionSuppliers();
 
     /**
      * Register the extensions in this BDA that were aquired via the SPI.
      */
-    void setSPIExtensionSuppliers(Set<Supplier<Object>> spiExtensionSuppliers);
+    void setSPIExtensionSuppliers(Set<Supplier<Extension>> spiExtensionSuppliers);
 
     /**
      * Get the BCE class names from this archive

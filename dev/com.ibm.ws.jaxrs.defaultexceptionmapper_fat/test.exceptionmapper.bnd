@@ -5,5 +5,3 @@ Private-Package: com.ibm.ws.jaxrs.defaultexceptionmapper_fat.mapper
 bVersion=1.0
 
 -dsannotations: *
-
-jakartaeeMe: true
