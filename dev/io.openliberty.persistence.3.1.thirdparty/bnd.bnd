@@ -12,10 +12,10 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=3.1.0
-eclFullVersion=${eclVersion}
-eclPackageVersion=3.1.0
-asmFullVersion=9.2.0
+eclVersion=4.0.0
+eclFullVersion=${eclVersion}.70bac7a
+eclPackageVersion=4.0.0
+asmFullVersion=9.3.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.1.thirdparty
 Bundle-Description: EclipseLink JPA
@@ -115,10 +115,10 @@ Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*
+  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
+  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
+  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
+  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -127,7 +127,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/localization/i18n/*.class
 
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.core;version="[3.1.0,3.2.0)",\
-    org.eclipse.persistence:org.eclipse.persistence.jpa;version="[3.1.0,3.2.0)",\
+    io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;version="[4.0.0,4.1.0)",\
+    io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa;version="[4.0.0,4.1.0)",\
     io.openliberty.jakarta.persistence.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core
