@@ -93,7 +93,7 @@ public class IfxPreparedStatement implements PreparedStatement {
     IfxPreparedStatement(PreparedStatement realPS) throws SQLException {
         wrappedPS = realPS;
         wrappedPS.setQueryTimeout(QUERY_TIMEOUT);
-        System.out.println("SIMHADB: query timeout is " + wrappedPS.getQueryTimeout());
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): query timeout is " + wrappedPS.getQueryTimeout());
     }
 
     @Override
@@ -150,24 +150,24 @@ public class IfxPreparedStatement implements PreparedStatement {
         int[] ret = null;
         boolean failOver = false;
 
-        System.out.println("SIMHADB: executeBatch, this - " + this + ", wrapped - " + wrappedPS);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, this - " + this + ", wrapped - " + wrappedPS);
 
         if (IfxConnection.isFailoverEnabled()) {
             System.out
-                            .println("SIMHADB: executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
+                            .println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, failover Enabled, Counter -" + IfxConnection.getFailoverCounter());
             IfxConnection.incrementFailoverCounter();
             if (IfxConnection.getFailoverCounter() == IfxConnection.getFailoverValue())
                 failOver = true;
             if (IfxConnection.getFailoverCounter() > IfxConnection.getFailoverValue()
                 && IfxConnection.getFailingRetries() > 1
                 && IfxConnection.getFailingRetryCounter() <= IfxConnection.getFailingRetries()) {
-                System.out.println("SIMHADB: executeBatch, fail on the retry");
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, fail on the retry");
                 failOver = true;
             }
         }
 
         if (IfxConnection.isDuplicationEnabled()) {
-            System.out.println("SIMHADB: executeBatch, duplication Enabled, Counter -" + IfxConnection.getDuplicateCounter());
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, duplication Enabled, Counter -" + IfxConnection.getDuplicateCounter());
             IfxConnection.incrementDuplicateCounter();
 
             // Check to see if we should start accumulating the data that will be duplicated in the recovery log.
@@ -177,18 +177,18 @@ public class IfxPreparedStatement implements PreparedStatement {
             // Check to see if it is time to add the duplicate rows to the database and halt the VM.
             // "+2" accumulates 2 sets of duplicate data
             if (IfxConnection.getDuplicateCounter() >= IfxConnection.getFailoverValue() + 2) {
-                System.out.println("SIMHADB: executeBatch, enter halt phase with rowMap " + _duplicateRows);
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, enter halt phase with rowMap " + _duplicateRows);
 
                 // Duplicate and halt provided this prepared statement is for an "INSERT INTO WAS_TRAN_LOG"
                 if (_tranlogInsertFlag)
                     duplicateAndHalt();
             }
         } else if (IfxConnection.isHaltEnabled()) {
-            System.out.println("SIMHADB: executeBatch, halt Enabled, Counter -" + IfxConnection.getHaltCounter());
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, halt Enabled, Counter -" + IfxConnection.getHaltCounter());
             IfxConnection.incrementHaltCounter();
 
             if (IfxConnection.getHaltCounter() >= IfxConnection.getFailoverValue()) {
-                System.out.println("SIMHADB: executeBatch, time to halt");
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch, time to halt");
 
                 //halt
                 if (_tranlogInsertFlag)
@@ -197,13 +197,13 @@ public class IfxPreparedStatement implements PreparedStatement {
         }
 
         if (failOver) {
-            System.out.println("SIMHADB: Feigning query failover, close connection");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): Feigning query failover, close connection");
             IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
             Connection myconn = getConnection();
             try {
                 myconn.rollback();
             } catch (Exception ex) {
-                System.out.println("SIMHADB: on rollback, caught exc: " + ex);
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): on rollback, caught exc: " + ex);
             }
             String sqlReason = "Generated internally";
             String sqlState = "Generated reason";
@@ -211,7 +211,7 @@ public class IfxPreparedStatement implements PreparedStatement {
             int reasonCode = IfxConnection.getSimSQLCode(); // FOR DB2 should be
                                                             // -4498, Oracle
                                                             // 17410
-            System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): sqlcode set to: " + reasonCode);
             // if reason code is "-3" then exception is non-transient, otherwise it is transient
             SQLException sqlex;
             if (reasonCode == -3) {
@@ -230,77 +230,64 @@ public class IfxPreparedStatement implements PreparedStatement {
             }
             throw sqlex;
         } else {
-            System.out.println("SIMHADB: ExecuteBatch");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): ExecuteBatch");
             ret = wrappedPS.executeBatch();
         }
 
-        System.out.println("SIMHADB: executeBatch - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeBatch - " + ret);
         return ret;
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
 
-        System.out.println("SIMHADB: executeQuery, this - " + this + ", sql - " + sql); // +
-                                                                                        // ",
-                                                                                        // fail
-                                                                                        // Counter
-                                                                                        // -"
-                                                                                        // +
-                                                                                        // failoverCounter
-                                                                                        // +
-                                                                                        // ",
-                                                                                        // wrapped
-                                                                                        // -
-                                                                                        // "
-                                                                                        // +
-                                                                                        // wrappedStmt);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeQuery, this - " + this + ", sql - " + sql);
 
         simQueryFailover();
 
         ResultSet ret = wrappedPS.executeQuery(sql);
-        System.out.println("SIMHADB: executeQuery exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeQuery exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate, this - " + this + ", sql: " + sql);
 
         simQueryFailover();
 
         int ret = wrappedPS.executeUpdate(sql);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", keys: " + autoGeneratedKeys);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate, this - " + this + ", sql: " + sql + ", keys: " + autoGeneratedKeys);
 
         simQueryFailover();
         int ret = wrappedPS.executeUpdate(sql, autoGeneratedKeys);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", columnindexes");
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate, this - " + this + ", sql: " + sql + ", columnindexes");
 
         simQueryFailover();
         int ret = wrappedPS.executeUpdate(sql, columnIndexes);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate(String sql, String[] columnNames) throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this + ", sql: " + sql + ", columnnames");
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate, this - " + this + ", sql: " + sql + ", columnnames");
 
         simQueryFailover();
         int ret = wrappedPS.executeUpdate(sql, columnNames);
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
@@ -460,7 +447,7 @@ public class IfxPreparedStatement implements PreparedStatement {
 
     @Override
     public void addBatch() throws SQLException {
-        System.out.println("SIMHADB: addBatch, this - " + this);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): addBatch, this - " + this);
         wrappedPS.addBatch();
     }
 
@@ -477,31 +464,23 @@ public class IfxPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        System.out.println("SIMHADB: executeQuery, this - " + this); // + ",
-                                                                     // fail
-                                                                     // Counter
-                                                                     // -" +
-                                                                     // failoverCounter
-                                                                     // + ",
-                                                                     // wrapped
-                                                                     // - " +
-                                                                     // wrappedStmt);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeQuery, this - " + this);
 
         simQueryFailover();
 
         ResultSet ret = wrappedPS.executeQuery();
-        System.out.println("SIMHADB: executeQuery exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeQuery exit, ret - " + ret);
         return ret;
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        System.out.println("SIMHADB: executeUpdate, this - " + this);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate, this - " + this);
 
         simQueryFailover();
 
         int ret = wrappedPS.executeUpdate();
-        System.out.println("SIMHADB: executeUpdate exit, ret - " + ret);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): executeUpdate exit, ret - " + ret);
         return ret;
     }
 
@@ -556,9 +535,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     public void setBytes(int parameterIndex, byte[] theBytes) throws SQLException {
         wrappedPS.setBytes(parameterIndex, theBytes);
         String theBytesString = toHexString(theBytes, 32);
-        System.out.println("SIMHADB: setBytes, index: " + parameterIndex + " value: " + theBytesString);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setBytes, index: " + parameterIndex + " value: " + theBytesString);
         if (IfxConnection.isDuplicateNow()) {
-            System.out.println("SIMHADB: dup phase setBytes, index: " + parameterIndex + " value: " + theBytesString);
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): dup phase setBytes, index: " + parameterIndex + " value: " + theBytesString);
             collectDataForDuplicateRows(parameterIndex, theBytes);
         }
     }
@@ -601,9 +580,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setLong(int parameterIndex, long theLong) throws SQLException {
         wrappedPS.setLong(parameterIndex, theLong);
-        System.out.println("SIMHADB: setLong, index: " + parameterIndex + " value: " + theLong);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setLong, index: " + parameterIndex + " value: " + theLong);
         if (IfxConnection.isDuplicateNow()) {
-            System.out.println("SIMHADB: dup phase setLong, index: " + parameterIndex + " value: " + theLong);
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): dup phase setLong, index: " + parameterIndex + " value: " + theLong);
             collectDataForDuplicateRows(parameterIndex, theLong);
         }
     }
@@ -641,9 +620,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setShort(int parameterIndex, short theShort) throws SQLException {
         wrappedPS.setShort(parameterIndex, theShort);
-        System.out.println("SIMHADB: setShort, index: " + parameterIndex + " value: " + theShort);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setShort, index: " + parameterIndex + " value: " + theShort);
         if (IfxConnection.isDuplicateNow()) {
-            System.out.println("SIMHADB: dup phase setShort, index: " + parameterIndex + " value: " + theShort);
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): dup phase setShort, index: " + parameterIndex + " value: " + theShort);
             collectDataForDuplicateRows(parameterIndex, theShort);
         }
     }
@@ -651,9 +630,9 @@ public class IfxPreparedStatement implements PreparedStatement {
     @Override
     public void setString(int parameterIndex, String theString) throws SQLException {
         wrappedPS.setString(parameterIndex, theString);
-        System.out.println("SIMHADB: setString, index: " + parameterIndex + " value: " + theString);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setString, index: " + parameterIndex + " value: " + theString);
         if (IfxConnection.isDuplicateNow()) {
-            System.out.println("SIMHADB: dup phase setString, index: " + parameterIndex + " value: " + theString);
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): dup phase setString, index: " + parameterIndex + " value: " + theString);
             collectDataForDuplicateRows(parameterIndex, theString);
         }
     }
@@ -783,21 +762,21 @@ public class IfxPreparedStatement implements PreparedStatement {
         boolean failOver = false;
 
         if (IfxConnection.getTestingLeaselogUpdateFlag() && _leaselogUpdateFlag) {
-            System.out.println("SIMHADB: simQueryFailover, for Lease Log Update");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): simQueryFailover, for Lease Log Update");
             _leaselogUpdateFlag = false;
             IfxConnection.setTestingLeaselogUpdateFlag(false);
             failOver = true;
         }
 
         if (IfxConnection.getTestingLeaselogClaimFlag() && _leaselogClaimFlag) {
-            System.out.println("SIMHADB: simQueryFailover, for Lease Log Claim");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): simQueryFailover, for Lease Log Claim");
             _leaselogClaimFlag = false;
             IfxConnection.setTestingLeaselogClaimFlag(false);
             failOver = true;
         }
 
         if (IfxConnection.isQueryFailoverEnabled() && IfxConnectionPoolDataSource.isTestingFailoverAtRuntime()) {
-            System.out.println("SIMHADB: simQueryFailover, failover Enabled, Counter -"
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): simQueryFailover, failover Enabled, Counter -"
                                + IfxConnection.getQueryFailoverCounter());
             IfxConnection.incrementQueryFailoverCounter();
 
@@ -807,7 +786,7 @@ public class IfxPreparedStatement implements PreparedStatement {
         }
 
         if (failOver) {
-            System.out.println("SIMHADB: Feigning executequery/Update failover, rollback on connection");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): Feigning executequery/Update failover, rollback on connection");
             IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
             Connection myconn = getConnection();
             try {
@@ -815,7 +794,7 @@ public class IfxPreparedStatement implements PreparedStatement {
                 // myconn.close();
 
             } catch (Exception ex) {
-                System.out.println("SIMHADB: on close connection, caught exc: " + ex);
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): on close connection, caught exc: " + ex);
             }
             String sqlReason = "Generated internally";
             String sqlState = "Generated reason";
@@ -902,7 +881,7 @@ public class IfxPreparedStatement implements PreparedStatement {
         if (_tranlogInsertFlag) {
             if (!IfxConnection.isDuplicateInfraEnabled()) {
                 IfxConnection.enableDuplicateInfra();
-                System.out.println("SIMHADB: collectDataForDuplicateRows first time in setting a value, the PS: " + this);
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): collectDataForDuplicateRows first time in setting a value, the PS: " + this);
                 _columnValues = new ArrayList();
                 _duplicateRows = new HashMap();
                 _cachedRow = new HashMap();
@@ -922,7 +901,8 @@ public class IfxPreparedStatement implements PreparedStatement {
                     // the parameterIndex is greater than 1, then we need to use cached values to complete the row
                     int cachedIndex = 1;
                     while (parameterIndex > cachedIndex) {
-                        System.out.println("SIMHADB: collectDataForDuplicateRows at index " + cachedIndex + " add value: " + _cachedRow.get(cachedIndex));
+                        System.out.println("IfxPreparedStatement(" + wrappedPS + "): collectDataForDuplicateRows at index " + cachedIndex + " add value: "
+                                           + _cachedRow.get(cachedIndex));
                         _columnValues.add(_cachedRow.get(cachedIndex));
                         cachedIndex++;
                     }
@@ -930,7 +910,7 @@ public class IfxPreparedStatement implements PreparedStatement {
 
                 _columnValues.add(theObject);
                 _lastIndexEntry = parameterIndex;
-                System.out.println("SIMHADB: collectDataForDuplicateRows has added " + theObject + " to list " + _columnValues);
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): collectDataForDuplicateRows has added " + theObject + " to list " + _columnValues);
             }
         }
     }
@@ -945,33 +925,33 @@ public class IfxPreparedStatement implements PreparedStatement {
      */
     private void duplicateAndHalt() throws SQLException {
         if (_duplicateRows != null) {
-            System.out.println("SIMHADB: duplicateAndHalt there are - " + _duplicateRows.size() + " rows to duplicate");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt there are - " + _duplicateRows.size() + " rows to duplicate");
             for (List valueList : _duplicateRows.values()) {
                 if (valueList != null) {
-                    System.out.println("SIMHADB: duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
+                    System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
                     ListIterator<Object> listItr = valueList.listIterator();
 
                     int theIndex = 0;
                     while (listItr.hasNext()) {
                         theIndex++;
                         Object theObj = listItr.next();
-                        System.out.println("SIMHADB: duplicateAndHalt, working with object - " + theObj);
+                        System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, working with object - " + theObj);
                         if (theObj instanceof String) {
                             String theString = (String) theObj;
-                            System.out.println("SIMHADB: duplicateAndHalt setString, index: " + theIndex + " value: " + theString);
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setString, index: " + theIndex + " value: " + theString);
                             wrappedPS.setString(theIndex, theString);
                         } else if (theObj instanceof Short) {
                             Short theShort = (Short) theObj;
-                            System.out.println("SIMHADB: duplicateAndHalt setShort, index: " + theIndex + " value: " + theShort);
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setShort, index: " + theIndex + " value: " + theShort);
                             wrappedPS.setShort(theIndex, theShort);
                         } else if (theObj instanceof Long) {
                             Long theLong = (Long) theObj;
-                            System.out.println("SIMHADB: duplicateAndHalt setLong, index: " + theIndex + " value: " + theLong);
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setLong, index: " + theIndex + " value: " + theLong);
                             wrappedPS.setLong(theIndex, theLong);
                         } else if (theObj instanceof byte[]) {
                             byte[] theArray = (byte[]) theObj;
                             String theBytesString = toHexString(theArray, 32);
-                            System.out.println("SIMHADB: setBytes, index: " + theIndex + " value: " + theBytesString);
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): setBytes, index: " + theIndex + " value: " + theBytesString);
                             wrappedPS.setBytes(theIndex, theArray);
                         }
                     }
@@ -980,14 +960,14 @@ public class IfxPreparedStatement implements PreparedStatement {
                 }
             }
 
-            System.out.println("SIMHADB: duplicateAndHalt, now commit");
+            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, now commit");
             Connection myconn = getConnection();
             myconn.commit();
             if (IfxConnection.isHaltEnabled()) {
-                System.out.println("SIMHADB: duplicateAndHalt, now HALT");
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, now HALT");
                 Runtime.getRuntime().halt(-2000);
             } else {
-                System.out.println("SIMHADB: duplicateAndHalt, HALT is disabled");
+                System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, HALT is disabled");
 
                 // At this point reset the duplication parameters
                 IfxConnection.setDuplicationEnabled(false);
@@ -1003,7 +983,7 @@ public class IfxPreparedStatement implements PreparedStatement {
      * @throws SQLException
      */
     private void simplyHalt() throws SQLException {
-        System.out.println("SIMHADB: Now HALT");
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): Now HALT");
         Runtime.getRuntime().halt(-2000);
     }
 
@@ -1012,12 +992,12 @@ public class IfxPreparedStatement implements PreparedStatement {
     }
 
     public void setLeaselogUpdateFlag() {
-        System.out.println("SIMHADB: setLeaselogUpdateFlag, this - " + this + ", wrapped - " + wrappedPS);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setLeaselogUpdateFlag, this - " + this + ", wrapped - " + wrappedPS);
         _leaselogUpdateFlag = true;
     }
 
     public void setLeaselogClaimFlag() {
-        System.out.println("SIMHADB: setLeaselogClaimFlag, this - " + this + ", wrapped - " + wrappedPS);
+        System.out.println("IfxPreparedStatement(" + wrappedPS + "): setLeaselogClaimFlag, this - " + this + ", wrapped - " + wrappedPS);
         _leaselogClaimFlag = true;
     }
 }

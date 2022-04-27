@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This abstract class encapsulates logic to determine whether a SQL operation has encountered a transient condition in an HA RDBMS environment
@@ -33,8 +34,8 @@ public abstract class SQLRetry {
     private static final TraceComponent tc = Tr.register(SQLRetry.class,
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
-    private Throwable _nonTransientException = null;
-    private static boolean _logRetriesEnabled = false;
+    private Throwable _nonTransientException;
+    private static boolean _logRetriesEnabled;
 
     private static final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
     private static final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
@@ -100,8 +101,8 @@ public abstract class SQLRetry {
      */
     public boolean retryAfterSQLException(SQLRetriableLog retriableLog, SQLException sqlex, int retryAttempts, int retrySleepTime) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "retryAfterSQLException ", new Object[] { retriableLog, sqlex, retryAttempts,
-                                                                   retrySleepTime });
+            Tr.entry(tc, "retryAfterSQLException ", retriableLog, sqlex, retryAttempts, retrySleepTime);
+
         boolean shouldRetry = true;
         boolean failAndReport = false;
         int operationRetries = 0;
@@ -112,7 +113,11 @@ public abstract class SQLRetry {
         while (shouldRetry && !failAndReport) {
             // Should we attempt to reconnect? This method works through the set of SQL exceptions and will
             // return TRUE if we determine that a transient DB error has occurred
-            if (operationRetries < retryAttempts) {
+            if (FrameworkState.isStopping()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Not retrying because the server is stopping");
+                failAndReport = true;
+            } else if (operationRetries++ < retryAttempts) {
                 // We havent exceeded the number of retry attempts
 
                 initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
@@ -120,7 +125,6 @@ public abstract class SQLRetry {
                 // Iterate through possible sqlcodes
                 shouldRetry = isSQLErrorTransient(sqlex); // For batch, calling code needs: sqlTransientErrorHandlingEnabled && recoveryLog.isSQLErrorTransient(sqlex);
 
-                operationRetries++;
                 if (shouldRetry) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Try to reexecute the SQL, attempt number: " + operationRetries);
