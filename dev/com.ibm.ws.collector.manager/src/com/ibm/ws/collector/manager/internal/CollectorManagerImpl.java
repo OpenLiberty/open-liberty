@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,11 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
@@ -58,9 +60,18 @@ public class CollectorManagerImpl implements CollectorManager {
     /* Map of bound handlers */
     private final Map<String, HandlerManager> handlerMgrs = new HashMap<String, HandlerManager>();
 
+    /* Name to use as an extension key for application name */
+    private final static String APPNAME_KEY = "appName";
+
+    /* LogRecordContext callback to retrieve application name */
+    private final static LogRecordContext.Extension APPNAME_CALLBACK = getAppNameCallbackLRCExt();
+
     protected void activate(Map<String, Object> configuration) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
+        }
+        if (ProductInfo.getBetaEdition()) {
+            LogRecordContext.registerExtension(APPNAME_KEY, APPNAME_CALLBACK);
         }
     }
 
@@ -68,6 +79,11 @@ public class CollectorManagerImpl implements CollectorManager {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, " Deactivating " + this, " reason = " + reason);
         }
+
+        if (ProductInfo.getBetaEdition()) {
+            LogRecordContext.unregisterExtension(APPNAME_KEY);
+        }
+
         //Unregister all BufferManagers created. This will also deactivate sources.
         unregisterAllBufferManagers();
     }
@@ -418,5 +434,27 @@ public class CollectorManagerImpl implements CollectorManager {
 
     private synchronized void retrieveBundleContext() {
         bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+    }
+
+    private static LogRecordContext.Extension getAppNameCallbackLRCExt() {
+        LogRecordContext.Extension appNameCBExt = null;
+
+        if (ProductInfo.getBetaEdition()) {
+            appNameCBExt = new LogRecordContext.Extension() {
+                @Override
+                public String getValue() {
+                    com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    if (metaData != null) {
+                        com.ibm.websphere.csi.J2EEName name = metaData.getJ2EEName();
+                        if (name != null) {
+                            return name.getApplication();
+                        }
+                    }
+                    return null;
+                }
+            };
+
+        }
+        return appNameCBExt;
     }
 }
