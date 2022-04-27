@@ -27,8 +27,8 @@ import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * 
- * This class handles the details of using the UDP and TCP channel for network
- * tranport for the SipResolver
+ * This class handles the details of using the UDP channel for network
+ * transport for the SipResolver
  *
  */
 class SipResolverUdpTransport implements SipResolverTransport {
@@ -74,7 +74,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
     private int _transportErrorCount = 0;
     private boolean connectDone = false;
 
-    // these allowed threasholds will be re-determine, using the number of avaliable
+    // these allowed thresholds will be re-determined, using the number of available
     // DNS servers, when the object is instantiated
     private int _ConnectFailuresAllowed = 2;
     private int _TransportErrorsAllowed = 3;
@@ -100,7 +100,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
             if (c_logger.isTraceDebugEnabled())
                 c_logger.traceDebug("SipResolverUdpTransport: initialize: getChannelFramewor()");
 
-            /** Create the channel configuration */
+            /* Create the channel configuration */
             _framework = framework;
             try {
                 Map<String, Object> options = new HashMap<String, Object>();
@@ -128,7 +128,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
                     "SipResolverUdpTransport: constructor(Vector, SipResolverTransportListener): entry: id="
                             + hashCode() + " " + framework);
 
-        /** setup the channel fw */
+        /* setup Netty */
         initialize(framework);
 
         _nameServers = nameServers;
@@ -138,9 +138,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
         _ConnectFailuresAllowed = _nameServers.size() * 2;
         _TransportErrorsAllowed = _nameServers.size() * 3;
 
-        // TODO connect timeout config
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-        // bootstrap.option(ChannelOption.SO_REUSEADDR, true);
         bootstrap.handler(new SipResolverUDPInitializer(bootstrap.getBaseInitializer()));
 
         if (c_logger.isTraceDebugEnabled()) {
@@ -260,7 +258,11 @@ class SipResolverUdpTransport implements SipResolverTransport {
 
     }
 
-    // This method is called by the connection callback when the connectAsynch fails
+    /**
+     * This method is called by the connection callback when the connectAsynch fails
+     * 
+     * @param e
+     */
     public void destroy(Exception e) {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverUdpTransport: destroy(Exception e)");
@@ -296,7 +298,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
     }
 
     /**
-     * 
+     * Handle write request based on _writeState.
      */
     synchronized public void writeRequest(ByteBuf requestBuffer) throws IOException {
         if (c_logger.isTraceEntryExitEnabled())
@@ -367,8 +369,10 @@ class SipResolverUdpTransport implements SipResolverTransport {
             c_logger.traceExit(this, "SipResolverUdpTransport: writeRequest: exit: ");
     }
 
-    // This method is called by the timeout watcher when no response has been
-    // received.
+    /**
+     *  This method is called by the timeout watcher when no response has been
+     *  received.
+     */  
     public void destroyFromTimeout(Exception e) {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverUdpTransport: destroyFromTimeout(Exception e)");
@@ -402,15 +406,18 @@ class SipResolverUdpTransport implements SipResolverTransport {
             c_logger.traceExit(this, "SipResolverUdpTransport: destroyFromTimeout(Exception e)");
     }
 
+    /**
+     * clear the request queue of all outstanding requests
+     */
     public void prepareForReConnect() {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverUdpTransport: prepareForReConnect");
 
-        // clear the request queue of all outstanding request.
-        // We can only clear when the object using us tell us to clear,
-        // ohterwise we risk timing windows whereby we clear out requests
-        // which were menat for rollover, or we fail to clear out an attempt
-        // the will later be retried.
+        // Clear the request queue of all outstanding requests.
+        // Only clear when the object using us tells us to clear,
+        // otherwise we risk timing windows whereby we clear out requests
+        // which were meant for rollover, or we fail to clear out an attempt
+        // that will later be retried.
         if (c_logger.isTraceDebugEnabled())
             c_logger.traceDebug("SipResolverUdpTransport: prepareForReConnect: clear out _requestQueue: # of items: "
                     + _requestQueue.size());
@@ -485,6 +492,10 @@ class SipResolverUdpTransport implements SipResolverTransport {
                     "SipResolverUdpTransport: error(VirtualConnection vc, UDPReadRequestContext rrc, IOException ioe)");
     }
 
+    /**
+     * Complete the write by clearing error counts and draining
+     * the request queue.
+     */
     public void writeComplete() {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this,
@@ -499,6 +510,9 @@ class SipResolverUdpTransport implements SipResolverTransport {
                     "SipResolverUdpTransport: complete(VirtualConnection vc, UDPWriteRequestContext wrc)");
     }
 
+    /**
+     * Handle error in write.
+     */
     public void writeError(Exception e) {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverUdpTransport: writeError(Exception e)");
@@ -535,7 +549,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
     }
 
     /**
-     *
+     * Handle requests in queue
      */
     synchronized private void drainRequestQueue() {
         if (c_logger.isTraceEntryExitEnabled())

@@ -766,7 +766,7 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 		
 	
 	/**
-	 * @author bpulito
+	 * 
 	 */
 	private class RequestTimeoutTimerTask extends TimerTask
 	{
@@ -792,7 +792,7 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 	}
 	
 	/**
-	 * @author bpulito
+	 * 
 	 */
 	private class UriExpirationTimerTask extends TimerTask
 	{
@@ -984,7 +984,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			/* ERROR      */ new e(NONE,ERROR),      new e(NONE,ERROR),        new e(NONE,ERROR),     new e(NONE,ERROR)}
 			/************************************************************************************************************************************/
 			};
-			
 		};
 		
 
@@ -996,7 +995,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			_SRVResponses   = null;
 			_AResponses     = new Hashtable<String,Vector>();
 			_AAAAResponses  = new Hashtable<String,Vector>();
-			
 
 		}
 
@@ -1225,10 +1223,8 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			/** if we have NAPTR responses; use for SRV requests */
 			if (_NAPTRResponses.size() > 0) {
 				/** send out the SRV request for each element in the NAPTR answer */
-				//System.out.println("StateMachine:handleResponse + _NAPTRResponses " + request.getNAPTRResponses().size());
 				for (Enumeration e = _NAPTRResponses.elements(); e.hasMoreElements();) {
 					NAPTRRecord r = (NAPTRRecord) e.nextElement();
-					//System.out.println("SipResolverLookupImpl:handleResponse send out SRV ");
 					DnsMessage request = new DnsMessage(Dns.SRV, r.getReplacement().getString());
 					/**  invoke the resolver */
 					sendReq(request);
@@ -1870,17 +1866,17 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			//String replacement = nr.getReplacement().getString();
 			//if  (!replacement.startsWith("_"+SIP)){
 		        //		if (c_logger.isTraceDebugEnabled())
-		        //			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacment service " + replacement);
+		        //			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacement service " + replacement);
 		        //		bool = true;
 			//}
                         
-       			/** now check the replacement field for protocol */
+       		/** now check the replacement field for protocol */
 			
 			//if  (!replacement.contains("_"+UDP+".") && 
 			//	 !replacement.contains("_"+TCP+".")	&&
 			//	 !replacement.contains("_"+SCTP+".")){
 			//		if (c_logger.isTraceDebugEnabled())
-			//			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacment protocol " + replacement);
+			//			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacement protocol " + replacement);
 			//		bool = true;
 			//	}
 			
@@ -1981,7 +1977,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 											}
 										}
 										else if (srv.getPriority() < existing.getPriority()){
-											//System.out.println("StateMachine:checkSRVs lower priority");
 											_SRVResponses[_NAPTRResponses.indexOf(naptr)].insertElementAt(srv, i);
 											break;
 

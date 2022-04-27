@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sip.stack.transport.*;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -36,7 +37,6 @@ import jain.protocol.ip.sip.ListeningPoint;
  * controlled/predictable manner with a minimum of synchronization.
  */
 public class GenericTCPChain extends GenericChain {
-	private static final TraceComponent tc = Tr.register(GenericTCPChain.class);
     private static final LogMgr c_logger = Log.get(GenericTCPChain.class);
 
 	private final boolean isTLS;
@@ -118,12 +118,12 @@ public class GenericTCPChain extends GenericChain {
 
 	@Override
 	public Type getType() {
-		return isTLS ? Type.tls : Type.tcp;
+		return isTLS ? Type.TLS : Type.TCP;
 	}
 
 	@Override
 	public String getTransport() {
-	    return isTLS ? "tls" : ListeningPoint.TRANSPORT_TCP;
+	    return isTLS ? SipStackUtil.TLS_TRANSPORT : ListeningPoint.TRANSPORT_TCP;
 	}
 
     /**
@@ -152,17 +152,17 @@ public class GenericTCPChain extends GenericChain {
                 nettyBundle.start(serverBootstrap, ep.getHost(), ep.getPort(), future -> {
                     if (future.isSuccess()) {
                         if (c_logger.isTraceDebugEnabled()) {
-                            c_logger.traceDebug("SIP " + (isTLS ? "TCP" : "TLS") + " endpoint start success");
+                            c_logger.traceDebug("SIP " + (isTLS ? "TLS" : "TCP") + " endpoint start success");
                         }
                     } else {
                         if (c_logger.isTraceDebugEnabled()) {
-                            c_logger.traceDebug("SIP " + (isTLS ? "TCP" : "TLS") + " endpoint start failure: " + future.cause());
+                            c_logger.traceDebug("SIP " + (isTLS ? "TLS" : "TCP") + " endpoint start failure: " + future.cause());
                         }
                     }
                 });
             } catch (NettyException e) {
                 if (c_logger.isTraceDebugEnabled()) {
-                    c_logger.traceDebug("Exception creating " + (isTLS ? "TCP" : "TLS") + " bootstrap: " + e);
+                    c_logger.traceDebug("Exception creating " + (isTLS ? "TLS" : "TCP") + " bootstrap: " + e);
                 }
             }
         }

@@ -21,6 +21,7 @@ import com.ibm.ws.sip.stack.transaction.transport.connections.SipMessageByteBuff
 import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
 import com.ibm.ws.sip.stack.transport.netty.SipMessageBufferStreamDecoder;
 import com.ibm.ws.sip.stack.util.AddressUtils;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.bootstrap.Bootstrap;
@@ -34,7 +35,6 @@ import jain.protocol.ip.sip.ListeningPoint;
 /**
  * base class for outbound connections of any transport type
  * 
- * @author ran
  */
 public abstract class SipOutboundConnLink extends SipConnLink {
 	/** class logger */
@@ -147,7 +147,7 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 		ListeningPoint lp = getSIPListenningConnection().getListeningPoint();
 		String localBindAddress = lp.getHost();
 		if (!AddressUtils.isIpAddress(localBindAddress)) {
-			localBindAddress = "0.0.0.0";
+			localBindAddress = SipStackUtil.INADDR_ANY;
 		}
 		
 		// use an ephemeral port
@@ -189,7 +189,7 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 		@Override
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disonnected");
+				Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
 			}
 			destroy(null);
 		}
@@ -200,7 +200,6 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 				Tr.debug(this, tc, "exceptionCaught", cause);
 			}
 
-			// TODO ANNA - should we close the connection ?
 			connectionError(new Exception(cause));
 			ctx.close();
 		}

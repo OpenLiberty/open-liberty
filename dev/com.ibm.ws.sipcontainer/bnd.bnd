@@ -72,8 +72,7 @@ Import-Package: \
   com.ibm.ws.sip.container.was.message.SipMessageFactory, \
   com.ibm.ws.sip.container.router.SipApplicationListener, \
   com.ibm.ws.sip.container.converged.SessionContextRegistryImplFactoryImplConverged, \
-  com.ibm.ws.sip.container.was.filters.ApplState, \
-  com.ibm.ws.sip.util.FeatureUtil
+  com.ibm.ws.sip.container.was.filters.ApplState
  
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \

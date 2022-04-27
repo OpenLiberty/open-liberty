@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.sip.stack.transport.sip.chfw;
+package com.ibm.ws.sip.stack.transport.sip;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -30,7 +30,6 @@ import com.ibm.wsspi.udpchannel.UDPContext;
 /**
  * base class for factories that create sip application channels
  * 
- * @author ran
  */
 public abstract class SipChannelFactory implements ChannelFactory
 {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,34 +44,21 @@ public class SRVRecord extends ResourceRecord {
     protected SRVRecord(ByteBuf buffer, Name name) {
 
         super(buffer);
-        // System.out.println("SRVRecord");
-        // System.out.println("SRVRecord name " + name.getString());
 
         String[] sa = name.getString().split("\\.");
         _service = sa[0];
-        // System.out.println("SRVRecord _service " + _service);
         _protocol = sa[1];
-        // System.out.println("SRVRecord _protocol " + _protocol);
 
         _name = "";
 
         for (int i = 2; i < sa.length; i++) {
             _name = _name + sa[i] + ".";
-            // System.out.println("SRVRecord name " + _name);
         }
 
         _priority = buffer.readShort();
-//		_priority = buffer.getShort();
-        // System.out.println("SRVRecord priority " + _priority);
         _weight = buffer.readShort();
-//		_weight   = buffer.getShort();
-        // System.out.println("SRVRecord weight " + _weight);
         _port = buffer.readShort();
-//		_port     = buffer.getShort();
-        // System.out.println("SRVRecord port " + _port);
         _target = new Name(buffer);
-
-        // System.out.println("SRVRecord exit");
 
     }
 

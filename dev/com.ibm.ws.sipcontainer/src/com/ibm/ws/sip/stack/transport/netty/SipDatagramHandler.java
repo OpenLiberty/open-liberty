@@ -58,17 +58,17 @@ public class SipDatagramHandler extends SimpleChannelInboundHandler<SipMessageEv
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disonnected");
+            Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
         }
 
         Attribute<SipUdpConnLink> attr = ctx.channel().attr(attrKey);
         SipUdpConnLink connLink = attr.get();
         // clean up from connections table
         if (connLink != null) {
-            connLink.close(null);
+            connLink.close();
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "channelInactive", "could not find a SIP channel");
+                Tr.debug(this, tc, "channelInactive", ctx.name() + "could not find a SIP channel");
             }
         }
     }

@@ -161,7 +161,7 @@ public class GenericUDPChain extends GenericChain implements ChainEventListener 
 
     @Override
     public Type getType() {
-        return Type.udp;
+        return Type.UDP;
     }
 
 

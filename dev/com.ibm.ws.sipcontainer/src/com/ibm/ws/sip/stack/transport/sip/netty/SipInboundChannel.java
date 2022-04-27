@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,28 +66,15 @@ public abstract class SipInboundChannel implements SIPListenningConnection {
 
 		signalNoConnections();
 
-		// TODO Anat: We need to make an intelligent decision about this Channel and not
-
 	}
 
 	/**
-	 * Send an event to the channel framework that there are no more active
-	 * connections on this quiesced channel instance. This will allow an early final
+	 * Used to send an event to the chfw that there are no more active
+	 * connections on this quiesced channel instance to allow an early final
 	 * chain stop instead of waiting the full quiesce timeout length.
+	 * Empty for Netty for now.
 	 */
 	private void signalNoConnections() {
-		// ANNA
-		/*
-		 * EventAdmin engine = GenericEndpointImpl.getEventAdmin();
-		 * 
-		 * Map<String, Object> eventProps = new HashMap<String, Object>(1);
-		 * eventProps.put(ChannelFramework.EVENT_CHANNELNAME,
-		 * m_config.getExternalName());
-		 * 
-		 * if (engine != null) { Event event = new
-		 * Event(ChannelFramework.EVENT_STOPCHAIN.toString(), eventProps);
-		 * engine.postEvent(event); }
-		 */
 	}
 
 	/**

@@ -26,7 +26,7 @@ import com.ibm.ws.sip.stack.transaction.transport.Hop;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPListenningConnection;
 import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
-import com.ibm.ws.sip.util.FeatureUtil;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 public class SIPListenningConnectionImpl
 	implements SIPListenningConnection  
@@ -114,7 +114,7 @@ public class SIPListenningConnectionImpl
     public void notifyConnectionCreated(InetSocketAddress remoteAddress) {
         InetAddress address = remoteAddress.getAddress();
         int port = remoteAddress.getPort();
-        Hop key = new Hop("TCP", InetAddressCache.getHostAddress(address), port);
+        Hop key = new Hop(SipStackUtil.TCP, InetAddressCache.getHostAddress(address), port);
         SIPConnectionImpl connection = new SIPConnectionImpl(this, address, port);
         connection.setKey(key);
         notifyConnectionCreated(connection);
@@ -167,7 +167,7 @@ public class SIPListenningConnectionImpl
 					Socket sock = m_sock.accept();
 					InetAddress address = sock.getInetAddress();
 					int port = sock.getPort();					
-					Hop key = new Hop("TCP", InetAddressCache.getHostAddress(address), port);
+					Hop key = new Hop(SipStackUtil.TCP, InetAddressCache.getHostAddress(address), port);
 					SIPConnectionImpl connection = new SIPConnectionImpl(m_parent, sock);
 					connection.setKey(key);
 					notifyConnectionCreated(connection);														

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,6 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 
-//import com.ibm.wsspi.channelfw.VirtualConnection;
-//import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
-//import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.*;
 import io.netty.channel.*;
@@ -34,8 +31,8 @@ import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * 
- * This class handles the details of using the UDP and TCP channel for network
- * tranport for the SipResolver
+ * This class handles the details of using the TCP channel for network
+ * transport for the SipResolver
  *
  */
 class SipResolverTcpTransport implements SipResolverTransport {
@@ -84,7 +81,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
     private int _connectionFailedCount = -1;
     private int _transportErrorCount = 0;
 
-    // these allowed thresholds will be re-determine, using the number of avaliable
+    // these allowed thresholds will be re-determined, using the number of available
     // DNS servers, when the object is instantiated
     private int _ConnectFailuresAllowed = 2;
     private int _TransportErrorsAllowed = 3;
@@ -92,15 +89,11 @@ class SipResolverTcpTransport implements SipResolverTransport {
     /** Netty channel associated with the resolver connection */
     protected Channel m_channel;
 
-    // private TCPWriteRequestContext _writer = null;
-    // private TCPReadRequestContext _reader = null;
     private SipResolverTransportListener _transportListener = null;
-    // private OutboundVirtualConnection _outboundVirtualContext;
+    private InetSocketAddress _currentSocketAddress = null;
 
     private int _writeState = WRITE_STATE_DISCONNECTED;
     private int _readState = READ_STATE_DISCONNECTED;
-
-    private InetSocketAddress _currentSocketAddress = null;
 
     synchronized protected static void initialize(NettyFramework framework) {
         if (_channelInitialized == false) {
@@ -126,6 +119,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverTcpTransport: constructor: entry: id=" + hashCode());
 
+        /* setup Netty */
         initialize(netty);
         _lengthBuffer = ByteBufAllocator.DEFAULT.buffer(2);
         _nameServers = nameServers;
@@ -151,7 +145,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
         bootstrap.handler(new SipResolverTCPInitializer(bootstrap.getBaseInitializer()));
 
         if (c_logger.isTraceEntryExitEnabled())
-            c_logger.traceExit(this, "SipResolverTcpTransport: constructor: entry");
+            c_logger.traceExit(this, "SipResolverTcpTransport: constructor: exit");
     }
 
     synchronized protected void shutdown() {
@@ -225,27 +219,12 @@ class SipResolverTcpTransport implements SipResolverTransport {
             }
         }
 
-//        final ChannelFuture channelFuture = bootstrap.connect(_currentSocketAddress);
-//
-//        channelFuture.addListener(f -> {
-//            if (f.isCancelled() || !f.isSuccess()) {
-//                if (c_logger.isWarnEnabled()) {
-//                    c_logger.warn("Resolver channel exception during connect: " + f.cause().getMessage());
-//                }
-//                destroy((Exception) f.cause());
-//            } else {
-//                m_channel = channelFuture.channel();
-//                ready();
-//            }
-//        });
-        // Connection established successfully
-
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceExit(this, "SipResolverTcpTransport: connect: exit: id=" + hashCode());
     }
 
     /**
-     * 
+     * Handle write request based on _writeState.
      */
     synchronized public void writeRequest(ByteBuf requestBuffer) throws IOException {
         if (c_logger.isTraceEntryExitEnabled())
@@ -269,14 +248,9 @@ class SipResolverTcpTransport implements SipResolverTransport {
             _lengthBuffer.clear();
             _lengthBuffer.writeShort((short) requestBuffer.readableBytes());
 
-//            System.out.println("writeRequest writableBytes" + requestBuffer.readableBytes());
-
             _bufferArray[0] = _lengthBuffer;
             _bufferArray[1] = requestBuffer;
             ByteBuf newBuf = Unpooled.copiedBuffer(_bufferArray);
-//            ByteBuf newBuf = ByteBufAllocator.DEFAULT.compositeBuffer().addComponents(_bufferArray);
-
-//            System.out.println("writeRequest " + newBuf.toString(Charset.defaultCharset()));
 
             _outstandingRequestCount++;
             ChannelFuture writeFuture = m_channel.writeAndFlush(newBuf, m_channel.newPromise().addListener(f -> {
@@ -324,7 +298,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
             c_logger.traceExit(this, "SipResolverTcpTransport: writeRequest: exit");
     }
 
-    /*
+    /**
      * This method is called when the socket is set up and ready to send and receive
      * data on.
      */
@@ -353,7 +327,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
             c_logger.traceExit(this, "SipResolverTcpTransport: ready: exit");
     }
 
-    /*
+    /**
      * This method is called when the socket connection fails during setup.
      * 
      * @see
@@ -372,7 +346,6 @@ class SipResolverTcpTransport implements SipResolverTransport {
 
         _connectionFailedCount++;
         _writeState = WRITE_STATE_DISCONNECTED;
-        // _outboundVirtualContext = null;
 
         if (_connectionFailedCount <= _ConnectFailuresAllowed) {
             if (c_logger.isTraceDebugEnabled())
@@ -397,7 +370,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
     }
 
     /**
-     * 
+     * Take action on read depending on _readState.
      */
     public void readComplete(ChannelHandlerContext ctx, ByteBuf msg) {
         if (c_logger.isTraceEntryExitEnabled())
@@ -464,7 +437,8 @@ class SipResolverTcpTransport implements SipResolverTransport {
     }
 
     /**
-     * 
+     * Called from exceptionCaught() in order to log more details and to 
+     * clean up read and write states.
      */
     public void readError(Exception e) {
         if (c_logger.isTraceEntryExitEnabled())
@@ -557,14 +531,17 @@ class SipResolverTcpTransport implements SipResolverTransport {
             c_logger.traceExit(this, "SipResolverTcpTransport: error(vc, read context, exception)");
     }
 
+    /**
+     * Clear the request queue of all outstanding requests, 
+     * then allow reconnects.
+     */
     public void prepareForReConnect() {
         if (c_logger.isTraceEntryExitEnabled())
             c_logger.traceEntry(this, "SipResolverTcpTransport: prepareForReConnect");
 
-        // clear the request queue of all outstanding request.
         // We can only clear when the object using us tell us to clear,
-        // ohterwise we risk timing windows whereby we clear out requests
-        // which were menat for rollover, or we fail to clear out an attempt
+        // otherwise we risk timing windows whereby we clear out requests
+        // which were meant for rollover, or we fail to clear out an attempt
         // that will be retried..
         _requestQueue.clear();
 
@@ -577,7 +554,8 @@ class SipResolverTcpTransport implements SipResolverTransport {
     }
 
     /**
-     * 
+     * Complete the write by clearing failed/error counts and draining
+     * the request queue.
      */
     public void writeComplete() {
         if (c_logger.isTraceEntryExitEnabled())
@@ -595,7 +573,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
     }
 
     /**
-     * 
+     * Handle error in write.
      */
     public void writeError(Exception e) {
         if (c_logger.isTraceEntryExitEnabled())
@@ -636,7 +614,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
     }
 
     /**
-     *
+     * Handle requests in queue
      */
     synchronized private void drainRequestQueue() {
         if (c_logger.isTraceEntryExitEnabled())
@@ -650,12 +628,10 @@ class SipResolverTcpTransport implements SipResolverTransport {
                 _lengthBuffer.retain();
 
                 _lengthBuffer.writeShort((short) requestBuffer.readableBytes());
-//                System.out.println("writeRequest writableBytes" + requestBuffer.readableBytes());
 
                 _bufferArray[0] = _lengthBuffer;
                 _bufferArray[1] = requestBuffer;
                 ByteBuf newBuf = Unpooled.copiedBuffer(_bufferArray);
-//                System.out.println("writeRequest " + newBuf.toString(Charset.defaultCharset()));
 
                 if (c_logger.isTraceDebugEnabled())
                     c_logger.traceDebug("SipResolverTcpTransport:drainRequestQueue: writing new message, length = "

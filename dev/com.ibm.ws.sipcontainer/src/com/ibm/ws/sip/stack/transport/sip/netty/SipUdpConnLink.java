@@ -36,14 +36,11 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.socket.DatagramPacket;
 import jain.protocol.ip.sip.ListeningPoint;
 
-//TODO Liberty import com.ibm.ws.management.AdminHelper;
-
 /**
  * singleton class for either inbound or outbound udp messages
  * 
  * TODO this class and SipConnLink have a lot in common, and should have a common base class.
  * 
- * @author ran
  */
 public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	/** class logger */
@@ -171,7 +168,6 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 					MessageContext messageContext = null;
 					synchronized (m_outMessages) {
 						if (m_outMessages.isEmpty() || !m_connLink.m_connected) {
-//							if (m_outMessages.isEmpty()) {
 							m_outMessages.wait();
 						}
 						if (!m_running) {
@@ -268,10 +264,6 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	 */
 	private SipUdpConnLink(SipUdpInboundChannel channel) {
 		m_channel = channel;
-		/*
-		 * TODO Liberty m_needToLearnRouterEndpoint =
-		 * AdminHelper.getPlatformHelper().isZOS();
-		 */
 		m_sendThread = new SendThread(this);
 		m_connected = false;
 		m_outboundBuffer = null;
@@ -319,33 +311,12 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(this, tc, "<connect>", "outboundChainName = " + outboundChainName);
 		}
-		// TODO ANNA		
-		String localHostname = null; 
-		int localPort = 0;
-		// use the selected interface for the outbound connection
-		if (messageContext != null && messageContext.getSipConnection() != null) {
-			localHostname = messageContext.getSipConnection().getSIPListenningConnection().getListeningPoint()
-					.getHost(); // can't use the real port because we're already listening on it
-		}
-//		UDPRequestContext connectRequestContext =
-//			UDPRequestContextFactory.getRef().createUDPRequestContext( 
-//					localHostname, localPort); 
-//        if (_localHostName != null && !_localHostName.equals("*")) {
-//            this.localAddress = new InetSocketAddress(_localHostName, _localPort);
-//        } else {
-//            this.localAddress = new InetSocketAddress(_localPort);
-//        }
-
 		
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(this,  tc,"<connect>","connectAsynch...");
-		}
-		
-		// TODO connect async
+		// TODO connect async?
 	}
 
 	/**
-	 * sends outbound message
+	 * send queued outbound message
 	 * 
 	 * @param message datagram to be sent
 	 * @see com.ibm.ws.sip.stack.transaction.transport.connections.channelframework.UdpSender#send(com.ibm.ws.sip.stack.transaction.transport.connections.SipMessageByteBuffer)
@@ -362,7 +333,7 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	}
 
 	/**
-	 * sends out one message. always called from the send thread.
+	 * send out one message now. always called from the send thread.
 	 * 
 	 * @param message datagram to be sent
 	 * @return true if completed immediately
@@ -472,6 +443,10 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 
 		m_sendThread.terminate();
 	}
+	
+	public void close() {
+		this.close(null);
+	}
 
 	@Override
 	public void operationComplete(ChannelFuture future) throws Exception {
@@ -485,7 +460,7 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
             }
             FFDCFilter.processException(t, getClass().getName(), "1", this);
             complete();
-            //error(future.cause());
+            
         }
 	}
 

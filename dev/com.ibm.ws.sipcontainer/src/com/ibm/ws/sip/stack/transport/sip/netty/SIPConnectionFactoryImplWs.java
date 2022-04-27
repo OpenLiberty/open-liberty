@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import jain.protocol.ip.sip.ListeningPoint;
 /**
  * factory that creates channel-framework chains
  * 
- * @author ran
  */
 public class SIPConnectionFactoryImplWs implements SIPConnectionFactory
 {
@@ -62,8 +61,11 @@ public class SIPConnectionFactoryImplWs implements SIPConnectionFactory
 	{
 		SipInboundChannel channel = m_channels.get(lp);
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(this, tc,"createListeningConnection",
-				"no listening point [" + lp.toString() + ']');
+			if (lp !=null) 
+				Tr.debug(this, tc,"createListeningConnection",
+				   "listening point [" + lp.toString() + ']');
+			else
+				Tr.debug(this, tc,"createListeningConnection", "no listening point");
 		}
 		return channel;
 	}
@@ -85,7 +87,7 @@ public class SIPConnectionFactoryImplWs implements SIPConnectionFactory
 	void addListeningConnection(ListeningPoint lp, SipInboundChannel channel, String chainName) throws IOException {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(this, tc,"addListeningConnection",
-				"adding channel to chain [" + chainName
+				"adding channel ["+ channel +"] to chain [" + chainName
 					+ "] on listening point [" + lp + ']');
 		}
 		m_channels.put(lp, channel);

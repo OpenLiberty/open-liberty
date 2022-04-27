@@ -22,7 +22,6 @@ public class SipMessageBufferStreamDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		// System.out.println("decode. " + in.toString(Charset.forName("utf-8")));
 		SipMessageByteBuffer data = SipMessageByteBuffer.fromPool();
 
 		while (in.isReadable()) {
@@ -31,6 +30,5 @@ public class SipMessageBufferStreamDecoder extends ByteToMessageDecoder {
 		}
 
 		out.add(data);
-		// System.out.println("decode. length [" + data.getMarkedBytesNumber() + "].");
 	}
 }

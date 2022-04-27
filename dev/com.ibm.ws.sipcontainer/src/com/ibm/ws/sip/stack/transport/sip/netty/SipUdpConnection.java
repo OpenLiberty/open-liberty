@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,7 @@ import com.ibm.ws.sip.parser.MessageParser;
 import com.ibm.ws.sip.stack.context.MessageContext;
 import com.ibm.ws.sip.stack.transaction.transport.UseCompactHeaders;
 import com.ibm.ws.sip.stack.transaction.transport.connections.SIPListenningConnection;
-//TODO Liberty import com.ibm.ws.management.AdminHelper;
-
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 import io.netty.channel.Channel;
 
 /**
@@ -84,7 +83,7 @@ public class SipUdpConnection extends BaseConnection
 	 * @see com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection#getTransport()
 	 */
 	public String getTransport() {
-		return "udp";
+		return SipStackUtil.UDP;
 	}
 
 	/**

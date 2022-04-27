@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
+import com.ibm.ws.sip.stack.transport.sip.SipChannelFactory;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 import com.ibm.wsspi.channelfw.Channel;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
@@ -36,7 +38,6 @@ import com.ibm.wsspi.channelfw.exception.ChannelFactoryPropertyIgnoredException;
  * creates inbound channels for any type of transport under websphere.
  * creates an outbound chain for each inbound channel.
  * 
- * @author ran
  */
 public class SipInboundChannelFactoryWs extends SipChannelFactory
 {
@@ -159,7 +160,7 @@ public class SipInboundChannelFactoryWs extends SipChannelFactory
 				},
 				null);
 		}
-		else if (transport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)) {
+		else if (transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)) {
 			String outboundChainName = "TlsOutboundChain_" + chainNumber;
 			channel = new SipTlsInboundChannel(config, lp, outboundChainName);
 			ChannelData tlsChannel = (ChannelData)channels[nChannels-2];

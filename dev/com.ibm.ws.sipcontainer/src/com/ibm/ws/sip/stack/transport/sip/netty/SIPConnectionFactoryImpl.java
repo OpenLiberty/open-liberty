@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,16 +18,8 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.ws.sip.stack.transaction.transport.connections.tls.SSLRepertoire;
 
 /**
- * creates channel-framework chains using standalone configuration. in the past,
- * this class used to implement SIPConnectionFactory and create channel chains
- * when running in standalone mode with channel framework enabled. currently,
- * SIPConnectionFactoryImplWs is the only connection factory that supports
- * channel framework, and is used either in standalone or under WAS. currently
- * the only thing this class does is create the chain group when running in
- * standalone mode, using custom config properties as the source of information
- * for listening points.
- * 
- * @author ran
+ * This class used to do a lot more for channel framework, but here for netty
+ * we just initialize chain counter and tls property hash.
  */
 public class SIPConnectionFactoryImpl
 {

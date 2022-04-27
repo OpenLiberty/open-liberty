@@ -33,7 +33,7 @@ public class SipHandlerUtils {
     protected static ListeningPoint getListeningPoint(SocketAddress addr, String transport) {
         ListeningPoint lp = null, defaultLp = null;
 
-        if (addr == null || !(addr instanceof InetSocketAddress)) {
+        if (!(addr instanceof InetSocketAddress)) {
             return null;
         }
 

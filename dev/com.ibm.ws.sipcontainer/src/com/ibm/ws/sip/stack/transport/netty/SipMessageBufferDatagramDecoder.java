@@ -30,8 +30,7 @@ public final class SipMessageBufferDatagramDecoder extends MessageToMessageDecod
         final ByteBuf content = packet.content();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "new packet length: " + content.readableBytes() + " for datagram: " + packet
-                    + " and buffer: " + content);
+            Tr.debug(this, tc, "new packet length: " + content.readableBytes() + " for datagram: " + packet);
         }
 
         if (content.readableBytes() < 20) {

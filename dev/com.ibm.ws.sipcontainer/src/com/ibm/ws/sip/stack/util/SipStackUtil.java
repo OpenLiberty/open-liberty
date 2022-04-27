@@ -59,9 +59,15 @@ public class SipStackUtil {
 	 */
 	public final static String DESTINATION_URI = "IBM-Destination";
 
+	public static final String INADDR_ANY = "0.0.0.0";
+	
 	public static final String SIP_SCHEME = "sip";
 
 	public static final String SIPS_SCHEME = "sips";
+	
+	public static final String TCP = "TCP";
+	
+	public static final String UDP = "UDP";
 
 	public static final String TLS_TRANSPORT = "tls";
 
@@ -291,7 +297,7 @@ public class SipStackUtil {
 		if (transport.equalsIgnoreCase(ListeningPoint.TRANSPORT_TCP)) {
 			return SipStackUtil.SIP_SCHEME;
 		}
-		if (transport.equalsIgnoreCase(SipStackUtil.TLS_TRANSPORT)) {
+		if (transport.equalsIgnoreCase(TLS_TRANSPORT)) {
 			return SipStackUtil.SIPS_SCHEME;
 		}
 		return null;
@@ -394,7 +400,7 @@ public class SipStackUtil {
 			String transport = topVia.getTransport();
 			aliasPort =
 				transport != null &&
-				transport.equalsIgnoreCase(ListeningPointImpl.TRANSPORT_TLS)
+				transport.equalsIgnoreCase(TLS_TRANSPORT)
 					? 5061
 					: 5060;
 		}

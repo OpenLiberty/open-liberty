@@ -24,6 +24,7 @@ import org.osgi.framework.ServiceRegistration;
 import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.sip.stack.transport.sip.SipChannelFactory;
 import com.ibm.ws.sip.stack.transport.sip.chfw.*;
 import com.ibm.wsspi.channelfw.ChannelFactory;
 

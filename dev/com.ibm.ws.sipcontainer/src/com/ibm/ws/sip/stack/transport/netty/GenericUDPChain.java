@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,7 @@ public class GenericUDPChain extends GenericChain  {
     
     private static final LogMgr c_logger = Log.get(GenericUDPChain.class);
 
-    /**  Chain name    */
-    private String m_myName;
+    private String chainName;
 
     
     /**
@@ -59,9 +58,7 @@ public class GenericUDPChain extends GenericChain  {
      * @param name
      */
     public void init(String endpointId, Object componentId, NettyFramework nfBundle, String name) {
-
-        m_myName = "UDP_" + name + "_" + endpointId;
-        
+        chainName = "UDP_" + name + "_" + endpointId;        
         super.init(endpointId, componentId, nfBundle, name);
     }
 
@@ -83,7 +80,6 @@ public class GenericUDPChain extends GenericChain  {
         // We have to destroy/rebuild the chains because the channels don't
         // really support dynamic updates. *sigh*
 
-        // Remove any channels that have to be rebuilt.. 
 	}
 
     
@@ -92,7 +88,7 @@ public class GenericUDPChain extends GenericChain  {
 	 * @return
 	 */
 	public String getName() {
-		return m_myName;
+		return chainName;
 	}
 
   
@@ -101,12 +97,12 @@ public class GenericUDPChain extends GenericChain  {
      * given properties set about the chain.
      */
     public void setupEventProps(Map<String, Object> eventProps) {
-        //TODO Liberty - do we need to setup properties for this chain ?
+        // No properties for this chain at this time
     }
 
 	@Override
 	public Type getType() {
-		return Type.udp;
+		return Type.UDP;
 	}
 
 	@Override
@@ -145,7 +141,7 @@ public class GenericUDPChain extends GenericChain  {
                     });
                 } catch (NettyException e) {
                     if (c_logger.isTraceDebugEnabled()) {
-                        c_logger.traceDebug("Exception creating TCP bootstrap: " + e);
+                        c_logger.traceDebug("Exception creating UDP bootstrap: " + e);
                     }
                 }
             }

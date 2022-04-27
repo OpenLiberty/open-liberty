@@ -36,7 +36,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sip.resolver.DomainResolver;
 import com.ibm.websphere.sip.resolver.DomainResolverListener;
 import com.ibm.websphere.sip.resolver.exception.SipURIResolveException;
-import com.ibm.ws.sip.container.SipContainer;
 import com.ibm.ws.sip.container.internal.SipContainerComponent;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.util.SipUtil;
@@ -46,8 +45,6 @@ import com.ibm.ws.sip.properties.SipPropertiesMap;
 import com.ibm.ws.sip.stack.internalapi.NaptrRequestListener;
 import com.ibm.ws.sip.stack.internalapi.SipStackDomainResolver;
 import com.ibm.ws.sip.stack.transaction.SIPTransactionConstants;
-import com.ibm.ws.sip.util.FeatureUtil;
-//TODO Liberty change to Liberty channel framework classes
 import com.ibm.wsspi.sip.channel.resolver.SIPUri;
 import com.ibm.wsspi.sip.channel.resolver.SipURILookup;
 import com.ibm.wsspi.sip.channel.resolver.SipURILookupException;
@@ -55,10 +52,10 @@ import com.ibm.wsspi.sip.channel.resolver.SipURILookupException;
 import io.openliberty.netty.internal.NettyFramework;
 
 @Component(service = DomainResolverImpl.class,
-configurationPolicy = ConfigurationPolicy.OPTIONAL,
-configurationPid = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
-name = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
-property = {"service.vendor=IBM"} )
+   configurationPolicy = ConfigurationPolicy.OPTIONAL,
+   configurationPid = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
+   name = "com.ibm.ws.sip.container.resolver.DomainResolverImpl",
+   property = {"service.vendor=IBM"} )
 public class DomainResolverImpl implements DomainResolver, SipStackDomainResolver {
 	
 	/** trace variable */
@@ -142,7 +139,7 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
      * or CHFWBundle to be active.
      * 
      * @param bundle
-     *            CHFWBundle instance to unset
+     *            CHFWBundle instance to set
      */
     @Reference( policy = ReferencePolicy.STATIC, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setChfwBundle(CHFWBundle bundle) {
@@ -237,18 +234,18 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 			dsProps.put(CoreProperties.SIP_DNS_QUERY_TIMEOUT, queryTimeoutDuration);
 
 			_useNetty = SipContainerComponent.useNetty();
-		     if (_useNetty) {
-		         if (m_nettyfw == null) {
-		             throw new RuntimeException("NettyFramework service was null!");
-		         }
-	              com.ibm.ws.sip.channel.resolver.impl.netty.SipResolverService.initialize(dsProps, m_nettyfw);
+		    if (_useNetty) {
+		        if (m_nettyfw == null) {
+		            throw new RuntimeException("NettyFramework service was null!");
+		        }
+	            com.ibm.ws.sip.channel.resolver.impl.netty.SipResolverService.initialize(dsProps, m_nettyfw);
 
-		     } else {
-	              if (m_chfw == null) {
-	                     throw new RuntimeException("NettyFramework service was null!");
-	                 }
-                 com.ibm.ws.sip.channel.resolver.impl.chfw.SipResolverService.initialize(dsProps, m_chfw);
-		     }
+		    } else {
+	            if (m_chfw == null) {
+	                throw new RuntimeException("ChannelFramework service was null!");
+	            }
+                com.ibm.ws.sip.channel.resolver.impl.chfw.SipResolverService.initialize(dsProps, m_chfw);
+		    }
 			
 			if (c_logger.isTraceDebugEnabled()) {
 				c_logger.traceDebug(this, "DomainResolverImpl", "SipResolverService initialized.");
@@ -455,7 +452,8 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 		return _naptrAutoResolve;
 	}	
 	
-   private SipURILookup getSipURILookup(SipURILookupCallbackImpl callback, SIPUri uri) {
+	
+    private SipURILookup getSipURILookup(SipURILookupCallbackImpl callback, SIPUri uri) {
         if (_useNetty) {
             return com.ibm.ws.sip.channel.resolver.impl.netty.SipResolverService.getInstance(callback, uri);
         } else {

@@ -20,6 +20,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import jain.protocol.ip.sip.ListeningPoint;
+import java.io.IOException;
 
 public class SipStreamHandler extends SimpleChannelInboundHandler<SipMessageByteBuffer> {
 
@@ -67,8 +68,9 @@ public class SipStreamHandler extends SimpleChannelInboundHandler<SipMessageByte
             connLink.complete(msg);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "channelRead0", "could not associate an incoming messafe with a SIP channel");
+                Tr.debug(this, tc, "channelRead0", "could not associate an incoming message with a SIP channel");
             }
+            throw new IOException("could not associate an incoming message with a SIP channel");
         }
 
     }
@@ -76,14 +78,14 @@ public class SipStreamHandler extends SimpleChannelInboundHandler<SipMessageByte
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disonnected");
+            Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
         }
 
         Attribute<SipTcpInboundConnLink> attr = ctx.channel().attr(attrKey);
         SipTcpInboundConnLink connLink = attr.get();
         // clean up from connections table
         if (connLink != null) {
-            connLink.destroy(null);
+            connLink.destroy();
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "channelInactive", "could not find a SIP channel");

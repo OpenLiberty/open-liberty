@@ -187,7 +187,7 @@ public class GenericTCPChain extends GenericChain implements ChainEventListener 
 
     @Override
     public Type getType() {
-        return isTLS ? Type.tls : Type.tcp;
+        return isTLS ? Type.TLS : Type.TCP;
     }
 
 

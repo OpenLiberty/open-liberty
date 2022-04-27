@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -117,45 +117,15 @@ public abstract class SipConnLink extends BaseConnection implements ChannelFutur
 	  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "connectionEstablished");
         }
-		  
 		
 		logConnection();
-		// 1. in case outbound messages queued while trying to connect, send
+		// in case outbound messages queued while trying to connect, send
 		// them now
 		synchronized (m_outMessages) {
 			super.connectionEstablished();
 			sendPendingMessages();
 		}
 
-		// 2. prepare for reading inbound messages
-		/*
-		TCPConnectionContext connectionContext = getConnectionContext();
-		TCPReadRequestContext readCtx = connectionContext.getReadInterface();
-		if (readCtx == null) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc,  "connectionEstablished", "no read context");
-	        }
-			return;
-		}
-		WsByteBuffer[] buffers = readCtx.getBuffers();
-
-		if (buffers == null || buffers.length == 0) {
-			
-			WsByteBuffer buffer = GenericEndpointImpl.getBufferManager().allocate(READ_BUFFER_SIZE);
-			readCtx.setBuffer((com.ibm.wsspi.bytebuffer.WsByteBuffer) buffer);
-			
-			VirtualConnection connection = readCtx.read(1, this, true, TCPRequestContext.NO_TIMEOUT);
-			
-			if (connection == null) {
-				// complete will be called back by the channel framework
-			} else {
-				complete(connection, readCtx);
-			}
-			
-		} else {
-			complete(m_vc, readCtx);
-		}*/
-		
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc,  "connectionEstablished", "exit");
         }
@@ -310,6 +280,10 @@ public abstract class SipConnLink extends BaseConnection implements ChannelFutur
 	public void destroy(Exception e) {
 		connectionError(e);
 	}
+	
+	public void destroy() {
+		connectionError(null);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -321,17 +295,8 @@ public abstract class SipConnLink extends BaseConnection implements ChannelFutur
 			Tr.debug(tc,  "writeComplete", "entry [" + System.identityHashCode(messageContext) + ']');
 		}
 
-		// TODO should we release a ByteBuf created by Unpooled.buffer
-		/*
-		// get its buffer and release it
-		WsByteBuffer oldBuffer = messageContext.getWsByteBuffer();
+		// TODO should we release a ByteBuf created by Unpooled.buffer ?
 
-		if (oldBuffer != null) {
-			// recycle buffer instance
-			messageContext.setWsByteBuffer(null);
-			oldBuffer.release();
-		}
-		*/
 		synchronized (m_outMessages) {
 			m_sendPending = false;
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -399,7 +364,7 @@ public abstract class SipConnLink extends BaseConnection implements ChannelFutur
 	}
 
 	/**
-	 * called by the channel framework when new data arrives
+	 * called when new data arrives
 	 * 
 	 */
 	public void complete(SipMessageByteBuffer buffer) {
