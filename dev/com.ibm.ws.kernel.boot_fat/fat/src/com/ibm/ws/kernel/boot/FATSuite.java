@@ -56,7 +56,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 PackageCommandTest.class,
                 PackageLooseRunnableTest.class,
                 PackageLooseContentsTest.class,
-//                PackageLooseFilterTest.class, // Recreates issue 15724; disabled until that is fixed.
+                // PackageLooseFilterTest.class, // Recreates issue 15724; disabled until that is fixed.
                 LogLevelPropertyTest.class,
                 CreateCommandTest.class,
                 StartCommandTest.class,
@@ -66,7 +66,8 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 PauseResumeCommandTest.class,
                 EmbeddedServerMergeProductExtensionTest.class,
                 ServerEndpointControlMBeanTest.class,
-                OSGiEmbedManagerTest.class
+                OSGiEmbedManagerTest.class,
+                ServerCleanTest.class
 })
 public class FATSuite {
     // Empty
