@@ -15,6 +15,11 @@ Bundle-SymbolicName: io.openliberty.org.eclipse.persistence-3.1; singleton:=true
 
 Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Import-Package: \
   com.ibm.ws.threadContext, \
   com.ibm.ws.runtime.metadata, \

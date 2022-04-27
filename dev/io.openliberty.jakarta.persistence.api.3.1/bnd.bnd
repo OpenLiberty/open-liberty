@@ -20,3 +20,8 @@ Require-Bundle: io.openliberty.org.eclipse.persistence-3.1
  jakarta.persistence.spi; \
    jpa="3.1"; version="3.1.0"
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+

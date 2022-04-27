@@ -30,6 +30,7 @@ Specification-Version: ${eclVersion}
 
 javac.source: 11
 javac.target: 11
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
