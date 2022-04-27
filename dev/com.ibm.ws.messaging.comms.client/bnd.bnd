@@ -96,6 +96,5 @@ instrument.disabled: true
 	io.openliberty.netty.internal;version=latest,\
 	com.ibm.ws.kernel.service,\
 	io.openliberty.io.netty.ssl,\
-	io.openliberty.io.netty.ssl,\
 	com.ibm.ws.wsbytebuffer,\
 	com.ibm.ws.kernel.boot.core

@@ -1,17 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.netty.jfapchannel;
 
-import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
-import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
-import com.ibm.ws.sib.jfapchannel.impl.octracker.OutboundConnectionTracker;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 import io.netty.channel.ChannelHandlerContext;
