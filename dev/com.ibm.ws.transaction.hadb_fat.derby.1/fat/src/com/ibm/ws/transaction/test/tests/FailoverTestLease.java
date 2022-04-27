@@ -179,7 +179,7 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testHADBLeaseUpdateFailover() throws Exception {
         final String method = "testHADBLeaseUpdateFailover";
         StringBuilder sb = null;
@@ -213,7 +213,7 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testHADBLeaseDeleteFailover() throws Exception {
         final String method = "testHADBLeaseDeleteFailover";
         StringBuilder sb = null;
@@ -247,7 +247,7 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testHADBLeaseClaimFailover() throws Exception {
         final String method = "testHADBLeaseClaimFailover";
         StringBuilder sb = null;
@@ -281,7 +281,7 @@ public class FailoverTestLease extends FATServletClient {
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testHADBLeaseGetFailover() throws Exception {
         final String method = "testHADBLeaseGetFailover";
         StringBuilder sb = null;
