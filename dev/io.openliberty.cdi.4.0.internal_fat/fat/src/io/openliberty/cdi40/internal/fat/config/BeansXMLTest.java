@@ -27,13 +27,14 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 import io.openliberty.cdi40.internal.fat.config.beansxml.AllBeansServlet;
 import io.openliberty.cdi40.internal.fat.config.beansxml.AnnotatedBeansServlet;
 import io.openliberty.cdi40.internal.fat.config.beansxml.RequestScopedBean;
 import io.openliberty.cdi40.internal.fat.config.beansxml.UnannotatedBean;
 
 @RunWith(FATRunner.class)
-public class BeansXMLTest {
+public class BeansXMLTest extends FATServletClient {
     public static final String SERVER_NAME = "CDI40Server";
 
     public static final String EMPTY_BEANS_APP_NAME = "EmptyBeans";
