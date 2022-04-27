@@ -84,7 +84,7 @@ public class FileLogHolder implements TraceWriter {
      * The header written at the beginning of all log files, or null to write
      * nothing.
      */
-    private FileLogHeader logHeader;
+    private final FileLogHeader logHeader;
 
     protected final FileLogSet fileLogSet = new FileLogSet(true);
 
