@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,11 @@ public class SipContainerComponent {
 		if (c_logger.isTraceDebugEnabled() && useNetty) {
 			c_logger.traceDebug("SipContainerComponent activate: useNetty=true");
 		}
-
+		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
+			//log when beta=true but useNetty=false
+			c_logger.traceDebug("SipContainerComponent activate: useNetty=false");
+		}
+		
 		genericEndpointRef.activate(context);
 		sipMessageFactoryRef.activate(context);
 	}
@@ -179,6 +183,10 @@ public class SipContainerComponent {
 			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
 		if (c_logger.isTraceDebugEnabled() && useNetty) {
 			c_logger.traceDebug("SipContainerComponent modified: useNetty=true");
+		}
+		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
+			//log when beta=true but useNetty=false
+			c_logger.traceDebug("SipContainerComponent activate: useNetty=false");
 		}
 	}
 	

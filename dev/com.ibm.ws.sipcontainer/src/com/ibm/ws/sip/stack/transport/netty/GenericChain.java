@@ -212,11 +212,10 @@ abstract public class GenericChain extends GenericChainBase {
     }
 
     /**
-     * Setup event propertied - OSGI
+     * Setup event properties - OSGI
      * 
      * @param eventProps
      */
-
     abstract protected void setupEventProps(Map<String, Object> eventProps);
 
     /**
@@ -271,8 +270,7 @@ abstract public class GenericChain extends GenericChainBase {
 
         final ActiveConfiguration oldConfig = getCurrentConfig();
 
-        // The old configuration was "valid" if it existed, and if it was correctly
-        // configured
+        // The old configuration was "valid" if it existed, and if it was correctly configured
         final boolean validOldConfig = oldConfig == null ? false : oldConfig.validConfiguration;
         final ActiveConfiguration newConfig = createActiveConfiguration();
 
@@ -293,8 +291,7 @@ abstract public class GenericChain extends GenericChainBase {
                 c_logger.traceDebug("Configuration is unchanged " + newConfig);
             }
             // If configurations are identical, see if the listening port is also the same
-            // which would indicate that the chain is running with the unchanged
-            // configuration
+            // which would indicate that the chain is running with the unchanged configuration
             int port = newConfig.getActivePort();
             if (port == oldConfig.getActivePort() && port != -1) {
                 if (c_logger.isTraceDebugEnabled()) {
@@ -307,16 +304,17 @@ abstract public class GenericChain extends GenericChainBase {
                 c_logger.traceDebug("Existing config must be started " + newConfig);
             }
         } else {
-            if (c_logger.isTraceDebugEnabled()) {
-                c_logger.traceDebug("New/changed chain configuration " + newConfig);
-            }
-        }
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug("New/changed chain configuration "
+						+ newConfig);
+			}
+		}
 
         if (validOldConfig) {
             rebuildTheChannel(oldConfig, newConfig);
         }
-
-        createChannels(newConfig);
+        else
+           createChannels(newConfig);
         // save the new/changed configuration before we start setting up the
         // new chain
         setCurrentConfig(newConfig);
@@ -327,15 +325,12 @@ abstract public class GenericChain extends GenericChainBase {
      * ChainEventListener method. This method can not be synchronized (deadlock with
      * update/stop). Rely on CFW synchronization of chain operations.
      * 
-     * TODO: wire this up with netty started event
      */
     public synchronized void chainStarted() {
 
         if (c_logger.isTraceDebugEnabled()) {
             c_logger.traceDebug("Chain " + toString() + " is started");
         }
-
-//        chainState.set(ChainState.STARTED.val);
 
         final ActiveConfiguration cfg = currentConfig;
         final int port = cfg.getActivePort();
@@ -362,7 +357,7 @@ abstract public class GenericChain extends GenericChainBase {
             eventProps.put(GenericServiceConstants.ENDPOINT_ACTIVE_HOST, c.activeHost);
         }
 
-        eventProps.put(GenericServiceConstants.ENDPOINT_ACTIVE_PORT, c.configHost);
+        eventProps.put(GenericServiceConstants.ENDPOINT_ACTIVE_PORT, c.configPort); //was configHost?
         eventProps.put(GenericServiceConstants.ENDPOINT_CONFIG_HOST, c.configHost);
         eventProps.put(GenericServiceConstants.ENDPOINT_CONFIG_PORT, c.configPort);
 
@@ -383,32 +378,14 @@ abstract public class GenericChain extends GenericChainBase {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-//        return this.getClass().getSimpleName() + "[@=" + System.identityHashCode(this) + ",enabled=" + enabled
-//                + ",state=" + ChainState.printState(chainState.get()) + ",chainName=" + chainName + ",config="
-//                + currentConfig + "]";
         return this.getClass().getSimpleName() + "[@=" + System.identityHashCode(this) + ",enabled=" + enabled
                 + ",chainName=" + chainName + ",config="
                 + currentConfig + "]";
-
     }
 
-    /**
-     * Adds chain to the ChannelFramework
-     * 
-     * @param chanList
-     * @param cd
-     * @param newConfig
-     */
-    protected void addChain(String[] chanList, ActiveConfiguration newConfig) {
-        // We configured the chain successfully
-        newConfig.validConfiguration = true;
-    }
 
     @Override
     protected void createChannels(ActiveConfiguration newConfig) {
-//        EndPointMgr em = EndPointMgrImpl.getRef();
-//        EndPointInfo ep = em.getEndPoint(getEndpointName());
-//        ep = em.defineEndPoint(getEndpointName(), newConfig.configHost, newConfig.configPort);
     }
 
     @Override

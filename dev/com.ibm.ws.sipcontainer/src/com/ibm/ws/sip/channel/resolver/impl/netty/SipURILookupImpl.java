@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 	/** Array to hold the SIPUri objects which the lookup resolves to */
 	protected ArrayList<SIPUri>    _answerList;  
 	/** SIPUri being resolved */
-	protected final SIPUri               _suri;
+	protected final SIPUri         _suri;
 	protected String               _target;
 	protected int                  _port;
 	protected String               _transport;
@@ -78,9 +78,9 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 	protected final SipURILookupCallback _sll;
 	/** Error */
 	
-	private	Timer				_timer;
+	private	Timer				   _timer;
 	
-	protected StateMachine        _fsm;
+	protected StateMachine         _fsm;
 	
 	private static final short         TARGET_NUMERIC  = 0;
 	private static final short         TARGET_HOSTNAME = 1;
@@ -246,16 +246,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 				bool = false;
 				throw new SipURILookupException(SipURILookupException.DEFAULTMSG);
 			}
-			//else {
-            //Here we need to set the timer to cancel this request if a timeout occurs
-			//	_timeoutTask = new RequestTimeoutTimerTask();
-					
-			//	Date currentDate = new Date();	//	Get the current time
-				
-				// do we need to schedule this earlier? 424229
-				//	Add the timeout interval to the current time and schedule the task to run.
-			//	_timer.schedule(_timeoutTask, new Date(currentDate.getTime() + MESSAGE_TIMEOUT_INTERVAL));
-			//}
 		}
 		else if (_fsm.currentState == StateMachine.COMPLETE){ // came from the cache
 			bool = true;
@@ -387,9 +377,9 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 		int bit0 = checkScheme();
 		
 		if (bit3 == TARGET_INVALID){
-		  fsmAction = StateMachine.NAPTR_ERROR; 
-		  _fsm.initAction = fsmAction;
-		  return fsmAction;
+		    fsmAction = StateMachine.NAPTR_ERROR; 
+		    _fsm.initAction = fsmAction;
+		    return fsmAction;
 		}
 		
 		/** fully qualify the target if hostname */
@@ -737,15 +727,14 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
                 }
                 
             } else {
-                // TODO
-                // what to do here, we already tried NAMING_TRY_TCP once before for
-                // this request, should we go through the NAMING_EXCEPTION logic
-                // above?
+                // We already tried NAMING_TRY_TCP once before for
+                // this request, log message.  
+				if (c_logger.isTraceDebugEnabled()) 
+					c_logger.traceDebug("SipURILookupImpl: invalid NAMING_TRY_TCP repeat");
                 
             }
             
             break;
-            
             
             
             
@@ -764,7 +753,7 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 		
 	
 	/**
-	 * @author bpulito
+	 * 
 	 */
 	private class RequestTimeoutTimerTask extends TimerTask
 	{
@@ -785,12 +774,11 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			cancel();
 			if (c_logger.isTraceEntryExitEnabled())
 				c_logger.traceExit(this, "RequestTimeoutTimerTask: run: exit: id="+hashCode());
-
 		}
 	}
 	
 	/**
-	 * @author bpulito
+	 * 
 	 */
 	private class UriExpirationTimerTask extends TimerTask
 	{
@@ -982,7 +970,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			/* ERROR      */ new e(NONE,ERROR),      new e(NONE,ERROR),        new e(NONE,ERROR),     new e(NONE,ERROR)}
 			/************************************************************************************************************************************/
 			};
-			
 		};
 		
 
@@ -994,7 +981,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			_SRVResponses   = null;
 			_AResponses     = new Hashtable<String,Vector>();
 			_AAAAResponses  = new Hashtable<String,Vector>();
-			
 
 		}
 
@@ -1223,10 +1209,8 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 			/** if we have NAPTR responses; use for SRV requests */
 			if (_NAPTRResponses.size() > 0) {
 				/** send out the SRV request for each element in the NAPTR answer */
-				//System.out.println("StateMachine:handleResponse + _NAPTRResponses " + request.getNAPTRResponses().size());
 				for (Enumeration e = _NAPTRResponses.elements(); e.hasMoreElements();) {
 					NAPTRRecord r = (NAPTRRecord) e.nextElement();
-					//System.out.println("SipResolverLookupImpl:handleResponse send out SRV ");
 					DnsMessage request = new DnsMessage(Dns.SRV, r.getReplacement().getString());
 					/**  invoke the resolver */
 					sendReq(request);
@@ -1761,9 +1745,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 						c_logger.traceDebug("StateMachine: checkNAPTRAnswer: v size " + vAnswer.size());
 					NAPTRRecord r = (NAPTRRecord)e.nextElement();
 					/** throw away non secure services for secure requests */
-					//if (_scheme.startsWith(SIPS) && !(r.getService().startsWith("SIPS"))){
-					//	if (c_logger.isTraceDebugEnabled())
-					//		c_logger.traceDebug("StateMachine: checkNAPTRAnswer: looking for secure answer ");
 					/** ensure we have a valid NAPTR Service */
 					if (validateNAPTRService(r)){
 						continue;
@@ -1776,7 +1757,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 					else {
 						int i = 0;
 						for (Enumeration e1 = _NAPTRResponses.elements(); e1.hasMoreElements();){
-							//NAPTRRecord existing = (NAPTRRecord)_NAPTRResponses.get(r.getOrder());
 							NAPTRRecord existing = (NAPTRRecord)e1.nextElement();
 							i = _NAPTRResponses.indexOf(existing);
 							if (c_logger.isTraceDebugEnabled())
@@ -1862,25 +1842,8 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 				bool = true;
 			}
 			
-			/** now check the replacement field for service */
-                        /** per RFC 2915, don't validate the replacement field for SRV */
-                        
-			//String replacement = nr.getReplacement().getString();
-			//if  (!replacement.startsWith("_"+SIP)){
-		        //		if (c_logger.isTraceDebugEnabled())
-		        //			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacment service " + replacement);
-		        //		bool = true;
-			//}
-                        
-       			/** now check the replacement field for protocol */
-			
-			//if  (!replacement.contains("_"+UDP+".") && 
-			//	 !replacement.contains("_"+TCP+".")	&&
-			//	 !replacement.contains("_"+SCTP+".")){
-			//		if (c_logger.isTraceDebugEnabled())
-			//			c_logger.traceDebug("StateMachine: validateNAPTRService: Unsupported replacment protocol " + replacement);
-			//		bool = true;
-			//	}
+            /* per RFC 2915, don't validate the replacement field for SRV (block 
+               of code that implemented replacement field has been deleted) */
 			
 			if (c_logger.isTraceEntryExitEnabled())
 				c_logger.traceExit(this, "StateMachine: validateNAPTRService: exit: id="+hashCode());
@@ -1979,7 +1942,6 @@ public class SipURILookupImpl implements SipURILookup, SipResolverListener{
 											}
 										}
 										else if (srv.getPriority() < existing.getPriority()){
-											//System.out.println("StateMachine:checkSRVs lower priority");
 											_SRVResponses[_NAPTRResponses.indexOf(naptr)].insertElementAt(srv, i);
 											break;
 

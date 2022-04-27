@@ -426,7 +426,7 @@ public class OutgoingSipServletAckRequest extends OutgoingSipServletRequest
 		else {
 	        String transport =
 	                lp.isSecure()
-	                    ? ListeningPointImpl.TRANSPORT_TLS
+	                    ? SipStackUtil.TLS_TRANSPORT
 	                    : lp.getTransport();
 	            viaHeader =
 	                headerFactory.createViaHeader(

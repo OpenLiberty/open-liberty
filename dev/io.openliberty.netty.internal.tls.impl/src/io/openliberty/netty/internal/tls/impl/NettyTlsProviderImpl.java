@@ -47,7 +47,7 @@ import io.netty.handler.ssl.SslContext;
 @Component(configurationPid = "io.openliberty.netty.internal.tls", immediate = true, service = NettyTlsProvider.class, property = { "service.vendor=IBM" })
 public class NettyTlsProviderImpl implements NettyTlsProvider {
 
-    private static final TraceComponent tc = Tr.register(NettyTlsProvider.class);
+    private static final TraceComponent tc = Tr.register(NettyTlsProviderImpl.class);
     
     /**
      * DS deactivate
@@ -58,7 +58,7 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
     @Activate
     protected void activate(ComponentContext ctx){
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NettyTlsProviderImpl activiate " + this);
+            Tr.debug(tc, "NettyTlsProviderImpl activate " + this);
         }
     }
     
@@ -300,13 +300,6 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         try {
             SSLConfig config = new SSLConfig(props);
             context = com.ibm.websphere.ssl.JSSEHelper.getInstance().getSSLContext(connectionInfo, config);
-//            SSLLinkConfig linkConfig = new SSLLinkConfig(props);
-//            if (null == link) {
-//                // discrimination path
-//                vc.getStateMap().put(SSLConnectionLink.LINKCONFIG, linkConfig);
-//            } else {
-//                link.setLinkConfig(linkConfig);
-//            }
         } catch (Exception e) {
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

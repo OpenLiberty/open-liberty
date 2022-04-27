@@ -84,25 +84,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
-    /**
-     * DS method for setting the required channel framework service. For now this
-     * reference is needed for access to EndPointMgr. That code will be split out.
-     *
-     * @param bundle
-     */
-    @Reference(name = "chfwBundle")
-    protected void setChfwBundle(CHFWBundle bundle) {
-        chfw = bundle;
-    }
-
-    /**
-     * This is a required static reference, this won't be called until the component
-     * has been deactivated
-     *
-     * @param bundle CHFWBundle instance to unset
-     */
-    protected void unsetChfwBundle(CHFWBundle bundle) {
-    }
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {

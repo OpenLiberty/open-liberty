@@ -34,4 +34,4 @@ Import-Package: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   io.openliberty.io.netty;version=latest,\
   io.openliberty.io.netty.ssl;version=latest,\
-  io.openliberty.netty.internal;version=latest,\
+  io.openliberty.netty.internal;version=latest

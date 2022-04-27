@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -391,13 +391,11 @@ public class SipResolver implements SipResolverTransportListener {
                 if (c_logger.isTraceDebugEnabled()) {
                     c_logger.traceDebug("SipResolver: resolve: dns request using UDP");
                 }
-                // TODO: pooling
                 _udpTransport.writeRequest(dnsRequest.toBuffer());
             } else {
                 if (c_logger.isTraceDebugEnabled()) {
                     c_logger.traceDebug("SipResolver: resolve: dns request using TCP");
                 }
-                // TODO: pooling
                 _tcpTransport.writeRequest(dnsRequest.toBuffer());
             }
 
@@ -450,9 +448,6 @@ public class SipResolver implements SipResolverTransportListener {
                     c_logger.traceDebug("SipResolver: responseReceived: remove from _requestPending: "
                             + new Integer(dnsResponse.getId()));
                 }
-
-                // listener = (SipResolverListener) _requestPending.remove(new
-                // Integer(dnsResponse.getId()));
 
                 request = _requestPending.remove(new Integer(dnsResponse.getId()));
             }
@@ -607,7 +602,6 @@ public class SipResolver implements SipResolverTransportListener {
                 c_logger.traceDebug("SipResolver: transportError: sending NAMING_TRANSPORT_RETRY to listeners");
             }
             for (Enumeration e = toRetry.elements(); e.hasMoreElements();) {
-                // SipResolverListener listener = (SipResolverListener)e.nextElement();
                 RequestPending request = (RequestPending) e.nextElement();
 
                 SipResolverListener listener = request.getListener();

@@ -87,8 +87,9 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "setting receive buffer to size " + getReceiveBufferSize());
             }
+            //SO_RCVBUF - size of buffer that holds the datagrams the client hasn't read yet
             bootstrap.option(ChannelOption.SO_RCVBUF, getReceiveBufferSize());
-            // see https://stackoverflow.com/questions/28090357/the-receivebuffersize-not-being-honored-udp-packet-truncated
+            //set common RCVBUF_ALLOCATOR strategy 
             bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(getReceiveBufferSize()));
         }
         if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)

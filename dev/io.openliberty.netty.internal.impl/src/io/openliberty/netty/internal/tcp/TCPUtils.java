@@ -32,6 +32,8 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
+import io.openliberty.netty.internal.impl.NettyConstants;
+
 
 public class TCPUtils {
 
@@ -87,7 +89,7 @@ public class TCPUtils {
 
         ChannelFuture oFuture = null;
         if (inetHost.equals("*")) {
-            inetHost = "0.0.0.0";
+            inetHost = NettyConstants.INADDR_ANY;
         }
         if (config.isInbound()) {
             oFuture = ((ServerBootstrapExtended) bootstrap).bind(inetHost, inetPort);
@@ -103,7 +105,7 @@ public class TCPUtils {
         openFuture.addListener(future -> {
             if (future.isSuccess()) {
 
-                // add the new channel to the set of active channels, and set a close future to
+                // add new channel to set of active channels, and set a close future to
                 // remove it
                 final Channel channel = openFuture.channel();
                 framework.getActiveChannels().add(channel);
@@ -115,15 +117,15 @@ public class TCPUtils {
                 channel.attr(ConfigConstants.PortKey).set(inetPort);
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInbound());
 
-                // set up the a helpful log message
-                String hostLogString = newHost == "0.0.0.0" ? "*" : newHost;
+                // set up a helpful log message
+                String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
                 SocketAddress addr = channel.localAddress();
                 InetSocketAddress inetAddr = (InetSocketAddress)addr;
                 String IPvType = "IPv4";
                 if (inetAddr.getAddress() instanceof Inet6Address) {
                     IPvType = "IPv6";
                 }
-                if (newHost == "0.0.0.0") {
+                if (newHost == NettyConstants.INADDR_ANY) {
                     hostLogString = "*  (" + IPvType + ")";
                 } else {
                     hostLogString = config.getHostname() + "  (" + IPvType + ": "

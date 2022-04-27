@@ -27,6 +27,7 @@ import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 public class UDPUtils {
 
@@ -71,7 +72,7 @@ public class UDPUtils {
             int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
         ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
         if (inetHost.equals("*")) {
-            inetHost = "0.0.0.0";
+            inetHost = NettyConstants.INADDR_ANY;
         }
         final String newHost = inetHost;
 
@@ -96,15 +97,15 @@ public class UDPUtils {
                 channel.attr(ConfigConstants.PortKey).set(inetPort);
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInboundChannel());
                 
-                // set up the a helpful log message
-                String hostLogString = newHost == "0.0.0.0" ? "*" : newHost;
+                // set up a helpful log message
+                String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
                 SocketAddress addr = channel.localAddress();
                 InetSocketAddress inetAddr = (InetSocketAddress)addr;
                 String IPvType = "IPv4";
                 if (inetAddr.getAddress() instanceof Inet6Address) {
                     IPvType = "IPv6";
                 }
-                if (newHost == "0.0.0.0") {
+                if (newHost == NettyConstants.INADDR_ANY) {
                     hostLogString = "*  (" + IPvType + ")";
                 } else {
                     hostLogString = config.getHostname() + "  (" + IPvType + ": "
@@ -208,9 +209,9 @@ public class UDPUtils {
                     InetSocketAddress address = null;
                     String newHost = inetHost;
                     if (newHost.equals("*")) {
-                        newHost = "0.0.0.0";
+                        newHost = NettyConstants.INADDR_ANY;
                     }
-                    String hostLogString = newHost == "0.0.0.0" ? "*" : newHost;
+                    String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
                     address = new InetSocketAddress(newHost, inetPort);
                     if (address.isUnresolved()) {
                         final String channelName = ((UDPConfigurationImpl) bootstrap.getConfiguration())

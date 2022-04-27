@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,13 +60,10 @@ public abstract class SipOutboundChannel
             Tr.event(tc, "Stop channel: " + this + " time=" + millisec);
         }
 	  
-	  signalNoConnections();
-	  
-	  //TODO Anat: We need to make an intelligent decision about this Channel and not
-	  // fire an immediate event in signalNoConnections() method.
+	    signalNoConnections();
 	}
 
-	  /**
+	/**
      * Send an event to the channel framework that there are no more active
      * connections on this quiesced channel instance. This will allow an early
      * final chain stop instead of waiting the full quiesce timeout length.

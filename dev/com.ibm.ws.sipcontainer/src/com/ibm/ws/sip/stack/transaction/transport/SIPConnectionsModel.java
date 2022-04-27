@@ -22,6 +22,7 @@ import com.ibm.ws.sip.parser.util.InetAddressCache;
 import com.ibm.ws.sip.stack.transaction.transport.connections.*;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
 import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 import jain.protocol.ip.sip.ListeningPoint;
 
@@ -447,7 +448,7 @@ public class SIPConnectionsModel
 
 	synchronized SIPListenningConnection createSIPListenningConnection( ListeningPointImpl lp ) throws IOException
 	{
-		String transportFactoryKey = lp.getTransport().equals("tcp") && lp.isSecure() ? "tls" : lp.getTransport();
+		String transportFactoryKey = lp.getTransport().equals("tcp") && lp.isSecure() ? SipStackUtil.TLS_TRANSPORT : lp.getTransport();
 		SIPConnectionFactory factory = getConnectionFactory(transportFactoryKey);
 
 		SIPListenningConnection listenConnection = factory.createListeningConnection( lp );
@@ -554,7 +555,7 @@ public class SIPConnectionsModel
      * @return tls
      */
     public String getDefaultSecureTransport() {
-    	return ListeningPointImpl.TRANSPORT_TLS;
+    	return SipStackUtil.TLS_TRANSPORT;
     }
     
     /**

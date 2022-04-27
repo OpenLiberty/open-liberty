@@ -19,7 +19,7 @@ import java.util.Map;
 abstract public class GenericChainBase {
 
     public enum Type {
-        tcp, tls, udp
+        TCP, TLS, UDP
     };
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.ws.sip.properties.CoreProperties;
 import com.ibm.wsspi.sip.channel.resolver.SIPUri;
 import com.ibm.wsspi.sip.channel.resolver.SipURILookup;
@@ -39,7 +38,7 @@ public class SipResolverService {
 	static private boolean								initialized = false;
 	static private SipResolver							sipResolver = null;
 	static private Timer								resolverTimer = null;
-	static private int				timerCounter = 0;						
+	static private int				                    timerCounter = 0;						
 	static private boolean								_addTTL = false;
 	static private boolean								usePreciseSystemTimer = false;
 	static private Hashtable<SIPUri, SipURILookupImpl>	lookupCache = new Hashtable<SIPUri, SipURILookupImpl>();
@@ -52,160 +51,134 @@ public class SipResolverService {
 	private static final String SIP_RFC3263_ADD_TTL = "add_ttl";
 	private static final String SIP_DNS_QUERY_TIMEOUT = "SIP_DNS_QUERY_TIMEOUT";
 	private static final String SIP_USE_PRECISE_SYSTEM_TIMER = "SIP_USE_PRECISE_SYSTEM_TIMER";
-    // not used   private static final String SIP_RFC3263_UDP_PAYLOAD_SIZE = "SIP_RFC3263_udp_payload_size";
-	
-	
 	   
 
-        synchronized static public void initialize(Properties containerProps, NettyFramework framework)
-        {
-                 if (c_logger.isTraceEntryExitEnabled())
-                         c_logger.traceEntry(SipResolverService.class, "SipResolverService: initialize(Properties): entry"); 
-
+    synchronized static public void initialize(Properties containerProps, NettyFramework framework)
+    {
+         if (c_logger.isTraceEntryExitEnabled())
+            c_logger.traceEntry(SipResolverService.class, "SipResolverService: initialize(Properties): entry"); 
                  
-                 if (initialized == false)
-                 {
-                         initialized = true;
+         if (initialized == false)
+         {
+                 initialized = true;
 
-                         /*
-                          * SIP_MESSAGE_TIMEOUT is an optional config property.
-                          */
-                         Object tempObject = containerProps.get(CoreProperties.SIP_DNS_QUERY_TIMEOUT);
-                         if (tempObject != null) {
-                        	 Long messageTimeout = tempObject instanceof Long ? (Long) tempObject : 0;
-	                         if (messageTimeout != 0) {
-	                       		if (c_logger.isTraceDebugEnabled())
-	                       			c_logger.traceDebug("SipResolverService: initialize: " + CoreProperties.SIP_DNS_QUERY_TIMEOUT + " = " + messageTimeout);
-	                       		SipURILookupImpl.setMessageTimeoutValue(messageTimeout);
-	                         } 
-	                         else {
-                        		if (c_logger.isTraceDebugEnabled())
-                           			c_logger.traceDebug("SipResolverService: initialize:  <" + CoreProperties.SIP_DNS_QUERY_TIMEOUT + ">  is the wrong data type");                        	 
-	                         }
-                         }
-                         else {
-                       		if (c_logger.isTraceDebugEnabled())
-                       			c_logger.traceDebug("SipResolverService: initialize:  <" + CoreProperties.SIP_DNS_QUERY_TIMEOUT + ">  is not set");
-                         }
-                         
-                    /*     //read the use precise system timer value
-                         tempObject = containerProps.get(SIP_USE_PRECISE_SYSTEM_TIMER);
-                         if (tempObject != null) {
-                        	 usePreciseSystemTimer = tempObject instanceof Boolean ? (Boolean) tempObject : false; 
-                       		 if (c_logger.isTraceDebugEnabled()) {
-                       			if (tempObject instanceof Boolean)
-                       				 c_logger.traceDebug("SipResolverService: initialize:  <" + SIP_USE_PRECISE_SYSTEM_TIMER + ">  is a Boolean");
-                       			else
-                      				 c_logger.traceDebug("SipResolverService: initialize:  <" + SIP_USE_PRECISE_SYSTEM_TIMER + ">  is NOT a Boolean");
-                                c_logger.traceDebug("SipResolverService: initialize:  <" + SIP_USE_PRECISE_SYSTEM_TIMER + ">  is set to " +
-                            			tempObject);
-                       		 }
-                       		 SipURILookupImpl.setUsePreciseSystemTimer(usePreciseSystemTimer);
-                         }
-                         else {
-                        	 if (c_logger.isTraceDebugEnabled())
-                         		c_logger.traceDebug("SipResolverService: initialize:  <" + SIP_USE_PRECISE_SYSTEM_TIMER + ">  is not set");
-                         }
-                     */    
-                         //read the add TTL parameter value
-                         _addTTL = (Boolean) containerProps.get(CoreProperties.SIP_RFC3263_ADD_TTL);
-						 
-                         String serverString = containerProps.getProperty(CoreProperties.DNSSERVERNAMES);
-                         // If the custome property isn't set, return
-                         if (serverString == null) {
-                                 if (c_logger.isInfoEnabled()) c_logger.info("info.sip.resolver.not.initialized");
-                                 initialized = false;
-                                 return;
-                        } 
-
-                         //	Create the SIP Resolver
-                         Vector<InetSocketAddress> nameServers = serverStringtoVector(serverString);
-
-                         if (!nameServers.isEmpty()){
-
-                             if (c_logger.isTraceDebugEnabled()) c_logger.traceDebug("nameServers is not empty");
-                                    
-                             String sEDNS = containerProps.getProperty(CoreProperties.DNS_EDNS);
-                                 
-                             if (sEDNS != null){
-                                	 
-                            	 /** custom property used to turn of EDNS in the resolver */
-                                 if (c_logger.isTraceDebugEnabled())
-                                     c_logger.traceDebug("SipResolverService: sEDNS is: " + sEDNS);
-                                 sEDNS = sEDNS.trim();
-                                 // WTL THIS IS A BUGFIX
-                                 if (sEDNS.equalsIgnoreCase("N")){
-                                     SipResolver.setEDNS(false);
-                                 }
-                                 // "Y" is default, we don't really need this check.
-                                 // but put it here in case off becomes default
-                                 else if (sEDNS.equalsIgnoreCase("Y")){
-                                     SipResolver.setEDNS(true);
-                                 }
-                             } else {
-                                 if (c_logger.isTraceDebugEnabled())
-                                     c_logger.traceDebug("SipResolverService: sEDNS property is: null ");
-                             }
-
-                             sipResolver = SipResolver.createResolver(nameServers, containerProps, framework);
-                             
-                             Short sPayload = (Short) containerProps.get(CoreProperties.DNS_UDP_PAYLOAD_SIZE);
-                              
-                             if (sPayload != null){
-                            	 if (512 <= sPayload && sPayload <= 32767){
-                            		 sipResolver.setUdpPayloadSize(sPayload);
-                                }
-                                else {
-                                	if (c_logger.isTraceDebugEnabled()){
-                                            c_logger.traceDebug("SipResolverService: initialize: invalid SIP_RFC3263_udp_payload_size" + sPayload);
-                                     }
-                                 }
-                             }
-                             
-                             
-                             String sTimeout = containerProps.getProperty(SIP_RFC3263_TIMEOUT);
-                          
-                             if (sTimeout != null && sTimeout.length() > 0) {
-                            	 try {
-                                	 long l = Long.parseLong(sTimeout);
-                                	 if (l >= 10) {
-                                		 lookupCacheTimeout = l * 60 * 1000;
-                                	 }
-                            	 } catch (NumberFormatException e) {
-                                	 if (c_logger.isTraceDebugEnabled())
-                                         c_logger.traceDebug("SipResolverService: initialize: invalid SIP_RFC3263_TIMEOUT " + sTimeout);
-                            	 }
-                            	 if (c_logger.isTraceDebugEnabled())
-                            		 c_logger.traceDebug("SipResolverService: initialize: SIP_RFC3263_TIMEOUT " + lookupCacheTimeout / 1000);
-                             }
-                         }
-                         else {
-                             if (c_logger.isTraceDebugEnabled()) c_logger.traceDebug("nameServers is empty");
-                             
-                             if (c_logger.isInfoEnabled()) c_logger.info("info.sip.resolver.not.initialized");
-
-                             initialized = false;
-                             return;
-                         }
-
-                         resolverTimer = new Timer();
-
-                         if (c_logger.isInfoEnabled()) {
-                                 //X CR 4564
-                                 InetSocketAddress socket1 = (InetSocketAddress)nameServers.firstElement();
-                                 //System.out.println(s1.getAddress().getHostAddress()+"@"+s1.getPort());
-                                 c_logger.info("info.sip.resolver.initialized", null, socket1.getAddress().getHostAddress() +"@"+ socket1.getPort());
-                                 if (nameServers.size() > 1){
-                                         InetSocketAddress socket2 = (InetSocketAddress)nameServers.elementAt(1);
-                                         if (socket2 != null) {
-                                                 c_logger.info("info.sip.resolver.initialized", null, socket2.getAddress().getHostAddress()+"@"+ socket2.getPort());
-                                         }
-                                 }
-                         }		 
+                 /*
+                  * SIP_MESSAGE_TIMEOUT is an optional config property.
+                  */
+                 Object tempObject = containerProps.get(CoreProperties.SIP_DNS_QUERY_TIMEOUT);
+                 if (tempObject != null) {
+                   	 Long messageTimeout = tempObject instanceof Long ? (Long) tempObject : 0;
+	                 if (messageTimeout != 0) {
+	               		if (c_logger.isTraceDebugEnabled())
+	                   		c_logger.traceDebug("SipResolverService: initialize: " + CoreProperties.SIP_DNS_QUERY_TIMEOUT + " = " + messageTimeout);
+	                 	SipURILookupImpl.setMessageTimeoutValue(messageTimeout);
+	                 } 
+	                 else {
+                     	if (c_logger.isTraceDebugEnabled())
+                       		c_logger.traceDebug("SipResolverService: initialize:  <" + CoreProperties.SIP_DNS_QUERY_TIMEOUT + ">  is the wrong data type");                        	 
+	                 }
                  }
-                 if (c_logger.isTraceEntryExitEnabled())
-                                c_logger.traceExit(SipResolverService.class, "SipResolverService: initialize: exit");
+                 else {
+                     if (c_logger.isTraceDebugEnabled())
+                         c_logger.traceDebug("SipResolverService: initialize:  <" + CoreProperties.SIP_DNS_QUERY_TIMEOUT + ">  is not set");
+                 }
+                         
+                 //read the add TTL parameter value
+                 _addTTL = (Boolean) containerProps.get(CoreProperties.SIP_RFC3263_ADD_TTL);
+						 
+                 String serverString = containerProps.getProperty(CoreProperties.DNSSERVERNAMES);
+                 // If the custom property isn't set, return
+                 if (serverString == null) {
+                     if (c_logger.isInfoEnabled()) 
+                      	 c_logger.info("info.sip.resolver.not.initialized");
+                     initialized = false;
+                     return;
+                 } 
+
+                 //	Create the SIP Resolver
+                 Vector<InetSocketAddress> nameServers = serverStringtoVector(serverString);
+
+                 if (!nameServers.isEmpty()) {
+                         if (c_logger.isTraceDebugEnabled()) c_logger.traceDebug("nameServers is not empty");
+                         String sEDNS = containerProps.getProperty(CoreProperties.DNS_EDNS);
+                                 
+                         if (sEDNS != null) {
+                                	 
+                           	 /** custom property used to turn of EDNS in the resolver */
+                             if (c_logger.isTraceDebugEnabled())
+                                 c_logger.traceDebug("SipResolverService: sEDNS is: " + sEDNS);
+                             sEDNS = sEDNS.trim();
+                             // WTL THIS IS A BUGFIX
+                             if (sEDNS.equalsIgnoreCase("N")) {
+                                 SipResolver.setEDNS(false);
+                             }
+                             // "Y" is default, we don't really need this check.
+                             // but put it here in case off becomes default
+                             else if (sEDNS.equalsIgnoreCase("Y")){
+                                 SipResolver.setEDNS(true);
+                             }
+                         } else {
+                             if (c_logger.isTraceDebugEnabled())
+                                 c_logger.traceDebug("SipResolverService: sEDNS property is: null ");
+                         }
+
+                         sipResolver = SipResolver.createResolver(nameServers, containerProps, framework);
+                             
+                         Short sPayload = (Short) containerProps.get(CoreProperties.DNS_UDP_PAYLOAD_SIZE);
+                              
+                         if (sPayload != null) {
+                             if (512 <= sPayload && sPayload <= 32767) {
+                                 sipResolver.setUdpPayloadSize(sPayload);
+                             }
+                             else {
+                             	if (c_logger.isTraceDebugEnabled()) {
+                                    c_logger.traceDebug("SipResolverService: initialize: invalid SIP_RFC3263_udp_payload_size" + sPayload);
+                                }
+                             }
+                         }
+
+                         String sTimeout = containerProps.getProperty(SIP_RFC3263_TIMEOUT);
+                          
+                         if (sTimeout != null && sTimeout.length() > 0) {
+                          	 try {
+                               	 long l = Long.parseLong(sTimeout);
+                               	 if (l >= 10) {
+                              		 lookupCacheTimeout = l * 60 * 1000;
+                               	 }
+                             } catch (NumberFormatException e) {
+                               	 if (c_logger.isTraceDebugEnabled())
+                                     c_logger.traceDebug("SipResolverService: initialize: invalid SIP_RFC3263_TIMEOUT " + sTimeout);
+                             }
+                           	 if (c_logger.isTraceDebugEnabled())
+                           		 c_logger.traceDebug("SipResolverService: initialize: SIP_RFC3263_TIMEOUT " + lookupCacheTimeout / 1000);
+                         }
+                 }
+                 else {
+                       if (c_logger.isTraceDebugEnabled()) c_logger.traceDebug("nameServers is empty");
+                             
+                       if (c_logger.isInfoEnabled()) c_logger.info("info.sip.resolver.not.initialized");
+
+                       initialized = false;
+                       return;
+                 }
+
+                 resolverTimer = new Timer();
+
+                 if (c_logger.isInfoEnabled()) {
+                     //X CR 4564
+                     InetSocketAddress socket1 = (InetSocketAddress)nameServers.firstElement();
+                     c_logger.info("info.sip.resolver.initialized", null, socket1.getAddress().getHostAddress() +"@"+ socket1.getPort());
+                     if (nameServers.size() > 1) {
+                          InetSocketAddress socket2 = (InetSocketAddress)nameServers.elementAt(1);
+                          if (socket2 != null) {
+                              c_logger.info("info.sip.resolver.initialized", null, socket2.getAddress().getHostAddress()+"@"+ socket2.getPort());
+                          }
+                     }
+                 }		 
          }
+         if (c_logger.isTraceEntryExitEnabled())
+             c_logger.traceExit(SipResolverService.class, "SipResolverService: initialize: exit");
+    }
 
         /**
          * SIP_RFC3263_nameserver key to sip container custom property for setting nameserver address
@@ -254,7 +227,7 @@ public class SipResolverService {
                         }
 
                         try {
-                        	if (host !=null && host != ""){
+                        	if (host !=null && host != "") {
                                 nameServers.add(new InetSocketAddress(InetAddress.getByName(host), port));
                         	}
 
@@ -303,7 +276,7 @@ public class SipResolverService {
                  c_logger.traceDebug("  suri.getHost(): " + suri.getHost());
                  c_logger.traceDebug("  suri.getScheme(): " + suri.getScheme());
              } else {
-                    c_logger.traceDebug("suri is null"); 
+                 c_logger.traceDebug("suri is null"); 
              }
          }
          

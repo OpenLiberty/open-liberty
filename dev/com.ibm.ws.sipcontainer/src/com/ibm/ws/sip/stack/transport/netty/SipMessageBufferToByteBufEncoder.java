@@ -23,3 +23,4 @@ public class SipMessageBufferToByteBufEncoder extends MessageToByteEncoder<SipMe
 		msg.reset();
 	}
 }
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public class GenericEndpointImpl {
 	private boolean isForcedDefaultEndpointIdDeactivate = false;
 	
 	private static GenericChannelProvider channelProvider = null;
-
+	
 	/** number of retries in case of bind failure */
 	// public static final String BIND_RETRIES = "javax.sip.bind.retries";
 	// public static final int BIND_RETRIES_DEFAULT = 60;
@@ -99,8 +99,8 @@ public class GenericEndpointImpl {
 	/** Event service reference -- required */
 	private static EventAdmin eventService = null;
 	
-    /** Class Logger */
-    private static final LogMgr c_logger = Log.get(GenericEndpointImpl.class);
+        /** Class Logger */
+        private static final LogMgr c_logger = Log.get(GenericEndpointImpl.class);
 	
 	private static final int DEACTIVATED = 1;
 	private static final int ENABLED = 2;
@@ -117,8 +117,8 @@ public class GenericEndpointImpl {
 	/** Required, static Channel framework reference */
 	private static NettyFramework m_nettyBundle = null;
 	
-    /** Required, static Channel framework reference */
-    private static CHFWBundle m_chfw = null;
+        /** Required, static Channel framework reference */
+        private static CHFWBundle m_chfw = null;
 
 	/** Current endpoint configuration */
 	private volatile Map<String, Object> endpointConfig = null;
@@ -169,21 +169,21 @@ public class GenericEndpointImpl {
 	/** Reference to the Future action */
 	private Future<?> actionFuture = null;
 
-   /**
-     * 
-     * @return ChannelFramework reference
-     */
-    public static ChannelFramework getChannelFramework() {
-        return m_chfw.getFramework();
-    }
+        /**
+         * 
+         * @return ChannelFramework reference
+         */
+        public static ChannelFramework getChannelFramework() {
+            return m_chfw.getFramework();
+        }
 
-    /**
-     * 
-     * @return WsByteBufferPoolManager related to this channel Framework
-     */
-    public static WsByteBufferPoolManager getBufferManager() {
-        return m_chfw.getBufferManager();
-    }
+        /**
+         * 
+         * @return WsByteBufferPoolManager related to this channel Framework
+         */
+        public static WsByteBufferPoolManager getBufferManager() { 
+            return m_chfw.getBufferManager();
+        }
 
 	/**
 	 * action runner
@@ -291,22 +291,22 @@ public class GenericEndpointImpl {
 
 		// switch between chfw and netty implementations
 		if (useNetty()) {
-	        _genericTCPChain = new com.ibm.ws.sip.stack.transport.netty.GenericTCPChain(this, false);
-	        _genericUDPChain = new com.ibm.ws.sip.stack.transport.netty.GenericUDPChain(this);
-	        _genericTLSChain = new com.ibm.ws.sip.stack.transport.netty.GenericTCPChain(this, true);
+   	            _genericTCPChain = new com.ibm.ws.sip.stack.transport.netty.GenericTCPChain(this, false);
+	            _genericUDPChain = new com.ibm.ws.sip.stack.transport.netty.GenericUDPChain(this);
+	            _genericTLSChain = new com.ibm.ws.sip.stack.transport.netty.GenericTCPChain(this, true);
 		} else {
-            _genericTCPChain = new com.ibm.ws.sip.stack.transport.chfw.GenericTCPChain(this, false);
-            _genericUDPChain = new com.ibm.ws.sip.stack.transport.chfw.GenericUDPChain(this);
-            _genericTLSChain = new com.ibm.ws.sip.stack.transport.chfw.GenericTCPChain(this, true);
-
+                _genericTCPChain = new com.ibm.ws.sip.stack.transport.chfw.GenericTCPChain(this, false);
+                _genericUDPChain = new com.ibm.ws.sip.stack.transport.chfw.GenericUDPChain(this);
+                _genericTLSChain = new com.ibm.ws.sip.stack.transport.chfw.GenericTCPChain(this, true);
 		}
 
 
-		if(isNeedToActivateSipEndpoint(name)){
+		if(isNeedToActivateSipEndpoint(name)) {
 			if (c_logger.isEventEnabled()) {
 				c_logger.event("GEP activate: " + this + " properties="
 						+ properties);
 			}
+			
 			if (!useNetty() && channelProvider == null) {
 				try {
 					channelProvider = new GenericChannelProvider(
@@ -325,12 +325,8 @@ public class GenericEndpointImpl {
 			if (c_logger.isEventEnabled()) {
 				c_logger.event("activate sipEndpoint " + this);
 			}
-
-			if (c_logger.isEventEnabled()) {
-				c_logger.event("activate sipEndpoint " + this);
-			}
 			
-		     if (useNetty()) {
+		    if (useNetty()) {
 		            if (udpOptions != null) {
 		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericUDPChain).init(name, cid, m_nettyBundle, "InboundUDPChain");
 		            }
@@ -342,7 +338,7 @@ public class GenericEndpointImpl {
 		            if (sslOptions != null) {
 		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTLSChain).init(name, cid, m_nettyBundle, "InboundTLSChain");
 		            }
-    	     } else {
+    	    } else {
     	            if (udpOptions != null) {
     	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericUDPChain).init(name, cid, m_chfw, "InboundUDPChain");
     	            }
@@ -354,7 +350,7 @@ public class GenericEndpointImpl {
     	            if (sslOptions != null) {
     	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTLSChain).init(name, cid, m_chfw, "InboundTLSChain");
     	            }
-    	     }
+    	    }
 			startChains(properties);
 			
 			try {
@@ -367,7 +363,7 @@ public class GenericEndpointImpl {
 											  e);
 			} 
 		}
-		else{
+		else {
 			isForcedDefaultEndpointIdDeactivate = true;
 			if (c_logger.isTraceDebugEnabled()){
 				c_logger.traceDebug("defaultSipEndpoint endpoint wasn't activated since was configured other sipendpoint");
@@ -423,7 +419,7 @@ public class GenericEndpointImpl {
 	 * @param config
 	 */
 	@Modified
-	protected void modified(Map<String, Object> config){
+	protected void modified(Map<String, Object> config) {
 		if (c_logger.isEventEnabled()) {
 			c_logger.event("GEP modified: " + this + " properties="
 					+ config);
@@ -567,7 +563,7 @@ public class GenericEndpointImpl {
     @Reference
     protected void setConfigurationAdmin(ConfigurationAdmin ca) {
         if (c_logger.isTraceDebugEnabled()) {
-        	c_logger.traceDebug("ConfigurationAdmin ", ca);
+      	    c_logger.traceDebug("ConfigurationAdmin ", ca);
         }
         configAdminRef = ca;
     }
@@ -592,15 +588,6 @@ public class GenericEndpointImpl {
 			c_logger.event("enable ssl support ", this);
 		}
 		sslSupport = config;
-		//_genericTLSChain.enable();
-
-		// TODO Liberty: currently we do not support update on the fly for
-		// Endpoint
-		// if (endpointConfig != null) {
-		// // If this is post-activate, drive the update action
-		// performAction(updateActionTLS);
-		// }
-
 	}
 
 	/**
@@ -698,8 +685,6 @@ public class GenericEndpointImpl {
 			c_logger.event("update tcp options  - not supported yet"
 					+ config.getProperty("id"), this);
 		}
-		// TODO Liberty Anat : Currently we do not support update of the
-		// Endpoint on the fly
 	}
 
 	protected void unsetTcpOptions(ChannelConfiguration config) {
@@ -707,9 +692,6 @@ public class GenericEndpointImpl {
 			c_logger.event("unsetTcpOptions, stoppint TCP and TLS chains "
 					+ config.getProperty("id") + this);
 		}
-		//_genericTCPChain.stop();
-		//_genericTLSChain.stop();
-		
 		if(!isForcedDefaultEndpointIdDeactivate){
 			tcpOptions = null;	
 		}
@@ -776,33 +758,32 @@ public class GenericEndpointImpl {
 	}
 	
     @Reference(name = "NettyTlsProvider",
-    service = NettyTlsProvider.class,
-    policy = ReferencePolicy.DYNAMIC,
-    policyOption = ReferencePolicyOption.GREEDY,
-    cardinality = ReferenceCardinality.OPTIONAL)
+            service = NettyTlsProvider.class,
+            policy = ReferencePolicy.DYNAMIC,
+            policyOption = ReferencePolicyOption.GREEDY,
+            cardinality = ReferenceCardinality.OPTIONAL)
     protected void setNettyTlsProvider(NettyTlsProvider tls) {
         if (c_logger.isEventEnabled()) {
-            c_logger.event("setNettyTlsProvider " + this);
+            c_logger.event("setNettyTlsProvider " + tls);
         }
         tlsProviderService = tls;
     }
     
     protected void unsetNettyTlsProvider(NettyTlsProvider tls) {
         if (c_logger.isEventEnabled()) {
-            c_logger.event("unsetSipTlsProvider"
-                    + this);
+            c_logger.event("unsetSipTlsProvider" + tls);
         }
         tlsProviderService = null;
     }
 
     @Reference(name = "nettyBundle",
-        service = NettyFramework.class,
-        policy = ReferencePolicy.DYNAMIC,
-        policyOption = ReferencePolicyOption.GREEDY,
-        cardinality = ReferenceCardinality.OPTIONAL)
+            service = NettyFramework.class,
+            policy = ReferencePolicy.DYNAMIC,
+            policyOption = ReferencePolicyOption.GREEDY,
+            cardinality = ReferenceCardinality.OPTIONAL)
 	protected void setNettyBundle(NettyFramework bundle) {
 		if (c_logger.isEventEnabled()) {
-			c_logger.event("setNettyBundle " + this);
+			c_logger.event("setNettyBundle " + bundle);
 		}
 		m_nettyBundle = bundle;
 	}
@@ -816,9 +797,8 @@ public class GenericEndpointImpl {
 	protected void unsetNettyBundle(NettyFramework bundle) {
 		if (c_logger.isEventEnabled()) {
 			c_logger.event("unsetNettyBundle and stop all open chains"
-					+ this);
+					+ bundle);
 		}
-		// TODO ANNA implement 
 		if(!isForcedDefaultEndpointIdDeactivate){
 			m_nettyBundle = null;	
 		}
@@ -826,55 +806,54 @@ public class GenericEndpointImpl {
 		performAction(stopAction);
 	}
 
-	   /**
-     * DS method for setting the required channel framework service.
-     * 
-     * @param bundle
-     */
-    @Reference(name = "chfwBundle",
+	/**
+         * DS method for setting the required channel framework service.
+         * 
+         * @param bundle
+         */
+        @Reference(name = "chfwBundle",
             service = CHFWBundle.class,
             policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY,
             cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setChfwBundle(CHFWBundle bundle) {
-        if (c_logger.isEventEnabled()) {
-            c_logger.event("setChfwBundle " + this);
+        protected void setChfwBundle(CHFWBundle bundle) {
+            if (c_logger.isEventEnabled()) {
+                c_logger.event("setChfwBundle " + bundle);
+            }
+            m_chfw = bundle;
         }
-        m_chfw = bundle;
-    }
 
-    /**
-     * This is a required static reference, this won't be called until the
-     * component has been deactivated
-     * 
-     * @param bundle
-     *            CHFWBundle instance to unset
-     */
-    protected void unsetChfwBundle(CHFWBundle bundle) {
-        if (c_logger.isEventEnabled()) {
-            c_logger.event("unsetChfwBundle and stop all open chains"
-                    + this);
-        }
-        
-        if(!isForcedDefaultEndpointIdDeactivate){
-            m_chfw = null;  
-        }
-        
-        performAction(stopAction);
-        
-    }
+        /**
+         * This is a required static reference, this won't be called until the
+         * component has been deactivated
+         * 
+         * @param bundle
+         *            CHFWBundle instance to unset
+         */
+        protected void unsetChfwBundle(CHFWBundle bundle) {
+            if (c_logger.isEventEnabled()) {
+                c_logger.event("unsetChfwBundle and stop all open chains" + bundle);
+            }
 
-    /**
-     * Returns reference to ChannelFramework
-     * 
-     * @return
-     */
-    protected CHFWBundle getChfwBundle() {
-        if (c_logger.isEventEnabled()) {
-            c_logger.event("chfwBundle = " + m_chfw);
+            if(!isForcedDefaultEndpointIdDeactivate){
+                m_chfw = null;  
+            }
+        
+            performAction(stopAction);
+        
         }
-        return m_chfw;
-    }
+
+        /**
+         * Returns reference to ChannelFramework
+         * 
+         * @return
+         */
+        protected CHFWBundle getChfwBundle() {
+            if (c_logger.isEventEnabled()) {
+                c_logger.event("chfwBundle = " + m_chfw);
+            }
+            return m_chfw;
+        }
 
 	/**
 	 * DS method for setting the required dynamic executor service reference.
@@ -944,11 +923,11 @@ public class GenericEndpointImpl {
 			// place.
 			action.run();
 		} else {
-			// If we can find the executor service, we'll add the action to the
-			// queue.
+			// If we can find the executor service, we'll add the action to
+			// the queue.
 			// If the actionFuture is null (no pending actions), we'll
 			// submit the actionsRunner to the executor service to drain the
-			// queue
+			// queue.
 			synchronized (actionQueue) {
 				actionQueue.add(action);
 				if (actionFuture == null) {

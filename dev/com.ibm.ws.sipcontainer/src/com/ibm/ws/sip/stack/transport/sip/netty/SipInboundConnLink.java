@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public abstract class SipInboundConnLink extends SipConnLink
 	/** class logger */
 	private static final TraceComponent tc = Tr.register(SipInboundConnLink.class);
 	
-	/** true if initialzed, false if not yet */
+	/** true if initialized, false if not yet */
 	private boolean m_initialized;
 	
 	
@@ -49,9 +49,9 @@ public abstract class SipInboundConnLink extends SipConnLink
 	
 
 	protected void init() {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc,"init");
-        }
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { 
+			Tr.debug(this, tc,"init"); 
+		}
 		
 		InetAddress remoteAddress = ((InetSocketAddress) m_channel.remoteAddress()).getAddress();
 		int remotePort = ((InetSocketAddress) m_channel.remoteAddress()).getPort();
@@ -80,6 +80,7 @@ public abstract class SipInboundConnLink extends SipConnLink
 			}
 		}
 	}
+
 
 	/**
 	 * called by the channel framework when new data arrives
