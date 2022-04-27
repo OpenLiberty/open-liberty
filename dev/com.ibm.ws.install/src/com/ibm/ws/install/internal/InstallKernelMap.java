@@ -138,7 +138,6 @@ public class InstallKernelMap implements Map {
     private static final String UPGRADE_COMPLETE = "upgrade.complete";
     private static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
     private static final String CAUSED_UPGRADE = "caused.upgrade";
-    private static final String REQ_OL_JSON_COORD = "req.ol.json.coord";
     private static final String JSON_PROVIDED = "json.provided";
     private static final String IS_OPEN_LIBERTY = "is.open.liberty";
     private static final String GENERATE_JSON = "generate.json";
@@ -178,6 +177,7 @@ public class InstallKernelMap implements Map {
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
     private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
+    private final List<MavenRepository> workingRepos = new ArrayList<MavenRepository>();
 
     private enum ActionType {
         install,
@@ -1160,6 +1160,10 @@ public class InstallKernelMap implements Map {
             String fromRepo = (String) data.get(FROM_REPO);
             Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
             String downloadDir;
+            List<MavenRepository> repos = getMavenRepo(fromRepo);
+            Set<String> missingFeatures = null;
+            List<String> copyFeatureList = new ArrayList<>();
+
             if (cleanupNeeded != null && cleanupNeeded) {
                 fine("Using temp location: " + TEMP_DIRECTORY);
                 data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
@@ -1167,18 +1171,32 @@ public class InstallKernelMap implements Map {
             } else {
                 downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
             }
-            MavenRepository repo = getMavenRepo(fromRepo);
 
-            try {
-                artifactDownloader.setEnvMap(envMap);
-                artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
-            } catch (InstallException e) {
-                data.put(ACTION_RESULT, ERROR);
-                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-                return null;
+            copyFeatureList.addAll(featureList);
+            artifactDownloader.setEnvMap(envMap);
+
+            for (MavenRepository repo : repos) {
+                if (!copyFeatureList.isEmpty()) {
+                    try {
+                        missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, repo);
+                        copyFeatureList.removeAll(missingFeatures);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, downloadDir, repo);
+                        //Try downloading missing features from next repo
+                        copyFeatureList = new ArrayList<>(missingFeatures);
+                    } catch (InstallException e) {
+                        this.put(ACTION_RESULT, ERROR);
+                        this.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                        this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                        return null;
+                    }
+                }
             }
 
+            if (missingFeatures != null && !missingFeatures.isEmpty()) {
+                this.put(ACTION_RESULT, ERROR);
+                this.put(ACTION_ERROR_MESSAGE, ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repos).getMessage());
+                return null;
+            }
             return artifactDownloader.getDownloadedEsas();
         }
     }
@@ -1201,19 +1219,28 @@ public class InstallKernelMap implements Map {
             }
             String artifact = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
             String filetype = (String) this.get(DOWNLOAD_FILETYPE);
-            MavenRepository repo = getMavenRepo(fromRepo);
-            try {
-                artifactDownloader.setEnvMap(envMap);
-                artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
-                // data.put(DOWNLOAD_LOCATION, null);
-            } catch (InstallException e) {
-                this.put(ACTION_RESULT, ERROR);
-                this.put(ACTION_ERROR_MESSAGE, e.getMessage());
-                this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-                return null;
+
+            List<MavenRepository> repos = getMavenRepo(fromRepo);
+            InstallException encounteredException = null;
+            for (MavenRepository repo : repos) {
+                try {
+                    artifactDownloader.setEnvMap(envMap);
+                    artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
+                    return artifactDownloader.getDownloadedFiles();
+                } catch (InstallException e) {
+                    fine(artifact + " not found on the following repo: " + repo);
+                    encounteredException = e;
+                }
             }
 
-            return artifactDownloader.getDownloadedFiles();
+            this.put(ACTION_RESULT, ERROR);
+            if (encounteredException != null) {
+                this.put(ACTION_ERROR_MESSAGE, encounteredException.getMessage());
+                this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(encounteredException));
+            }
+
+            return null;
+
         }
     }
 
@@ -1297,38 +1324,35 @@ public class InstallKernelMap implements Map {
     }
 
     /**
-     * @return
+     * @return list of all working maven repository
      */
-    private MavenRepository getMavenRepo(String fromRepo) {
-        // get the next working maven repo
-        MavenRepository next = getNextWorkingRepository();
-
-        MavenRepository repo = next != null ? next : MAVEN_CENTRAL_REPOSITORY;
-        fine("Connecting to the following repository: " + repo.getRepositoryUrl());
-        return repo;
+    private List<MavenRepository> getMavenRepo(String fromRepo) {
+        // working repo should at least have one repo (maven central)
+        if (workingRepos != null && !workingRepos.isEmpty()) {
+            return workingRepos;
+        }
+        checkWorkingRepository();
+        return workingRepos;
     }
 
-    private MavenRepository getNextWorkingRepository() {
+    private void checkWorkingRepository() {
         List<MavenRepository> repositories = (List<MavenRepository>) envMap.get("FEATURE_UTILITY_MAVEN_REPOSITORIES");
-        if (repositories == null) {
-            return null;
-        }
-        try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
-            artifactDownloader.setEnvMap(envMap);
-            String openLibertyVersion = getLibertyVersion();
-            List<String> reqJsons = new ArrayList<String>();
-            reqJsons.add((String) data.get(REQ_OL_JSON_COORD) + ":" + "features" + ":" + openLibertyVersion);
-            for (MavenRepository repository : repositories) {
-                logger.fine("Testing connection for repository: " + repository);
-                if (artifactDownloader.testConnection(repository)) {
-                    return repository;
-                } else {
-                    artifactDownloader.testConnection(repository, reqJsons);
+
+        if (repositories != null) {
+            try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
+                artifactDownloader.setEnvMap(envMap);
+                for (MavenRepository repository : repositories) {
+                    logger.fine("Testing connection for repository: " + repository);
+                    if (artifactDownloader.testConnection(repository)) {
+                        workingRepos.add(repository);
+                    }
                 }
             }
         }
 
-        return null;
+        if (workingRepos.isEmpty()) {
+            workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1350,18 +1374,27 @@ public class InstallKernelMap implements Map {
             } else {
                 downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
             }
-            MavenRepository repo = getMavenRepo(fromRepo);
-            try {
-                artifactDownloader.setEnvMap(envMap);
-                artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
-            } catch (InstallException e) {
-                data.put(ACTION_RESULT, ERROR);
-                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-                return null;
+
+            List<MavenRepository> repos = getMavenRepo(fromRepo);
+            InstallException encounteredException = null;
+            for (MavenRepository repo : repos) {
+                try {
+                    artifactDownloader.setEnvMap(envMap);
+                    artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
+                    return artifactDownloader.getDownloadedFiles().get(0);
+                } catch (InstallException e) {
+                    fine(featureList + " not found on the following repo: " + repo);
+                    encounteredException = e;
+                }
             }
 
-            return artifactDownloader.getDownloadedFiles().get(0);
+            this.put(ACTION_RESULT, ERROR);
+            if (encounteredException != null) {
+                this.put(ACTION_ERROR_MESSAGE, encounteredException.getMessage());
+                this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(encounteredException));
+            }
+
+            return null;
         }
     }
 
@@ -2101,7 +2134,7 @@ public class InstallKernelMap implements Map {
         if (!downloadDir.endsWith(File.separator)) {
             downloadDir += File.separator;
         }
-        String filename = ArtifactDownloaderUtils.getfilename(licenseCoord, "zip");
+        String filename = ArtifactDownloaderUtils.getfilename(licenseCoord) + ".zip";
         File zipFile = new File(downloadDir + groupId + artifactId + "/" + version + "/" + filename);
 
         FileInputStream fis = new FileInputStream(zipFile);

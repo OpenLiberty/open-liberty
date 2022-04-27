@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -61,7 +62,7 @@ public class ArtifactDownloaderUtils {
         return thread_num;
     }
 
-    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
+    public static List<String> getMissingFiles(Set<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
         List<String> result = new Vector<String>();
         logger.fine("number of missing features: " + featureURLs.size());
 
@@ -153,18 +154,12 @@ public class ArtifactDownloaderUtils {
         }
     }
 
-    public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {
-        List<String> result = new ArrayList<String>();
+    public static void acquireFeatureURLs(List<String> mavenCoords, String repo, Map<String, String> urltoMavenCoord) {
         for (String coord : mavenCoords) {
-            String groupId = getGroupId(coord).replace(".", "/") + "/";
-            String artifactId = getartifactId(coord);
-            String version = getVersion(coord);
-            String esafilename = getfilename(coord, "esa");
-            String pomfilename = getfilename(coord, "pom");
-            result.add(getUrlLocation(repo, groupId, artifactId, version, esafilename));
-            result.add(getUrlLocation(repo, groupId, artifactId, version, pomfilename));
+            String url = getUrlLocation(repo, coord);
+            urltoMavenCoord.put(url + ".esa", coord);
+            urltoMavenCoord.put(url + ".pom", coord);
         }
-        return result;
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
@@ -215,11 +210,11 @@ public class ArtifactDownloaderUtils {
         return getChecksumFromURL(urlLocation);
     }
 
-    public static void deleteFiles(List<File> fileList, String dLocation, String groupId, String artifactId, String version, String filename) {
+    public static void deleteFiles(List<File> fileList, String dLocation, File mavenArtifact) {
         for (File f : fileList) {
             f.delete();
         }
-        File file = (new File(getFileLocation(dLocation, groupId, artifactId, version, filename))).getParentFile();
+        File file = mavenArtifact.getParentFile();
         while (!(file.toString() + "/").equals(dLocation)) {
             File[] files = file.listFiles(new FilenameFilter() {
                 @Override
@@ -247,12 +242,17 @@ public class ArtifactDownloaderUtils {
         return mavenCoords.split(":")[2];
     }
 
-    public static String getfilename(String mavenCoords, String filetype) {
-        return getartifactId(mavenCoords) + "-" + getVersion(mavenCoords) + "." + filetype;
+    public static String getfilename(String mavenCoords) {
+        return getartifactId(mavenCoords) + "-" + getVersion(mavenCoords);
     }
 
     public static String getUrlLocation(String repo, String groupId, String artifactId, String version, String filename) {
         return repo + groupId + artifactId + "/" + version + "/" + filename;
+    }
+
+    public static String getUrlLocation(String repo, String mavenCoords) {
+        String[] coordSplit = mavenCoords.split(":");
+        return repo + coordSplit[0].replace(".", "/") + "/" + coordSplit[1] + "/" + coordSplit[2] + "/" + coordSplit[1] + "-" + coordSplit[2];
     }
 
     public static String getFileLocation(String dLocation, String groupId, String artifactId, String version, String filename) {
@@ -261,7 +261,7 @@ public class ArtifactDownloaderUtils {
 
     public static String getFileNameFromURL(String str) {
         String[] pathSplit = str.split("/");
-        return pathSplit[pathSplit.length - 3];
+        return pathSplit[pathSplit.length - 1];
     }
 
     public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {

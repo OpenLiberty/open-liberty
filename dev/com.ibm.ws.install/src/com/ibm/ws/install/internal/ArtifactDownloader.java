@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,88 +77,83 @@ public class ArtifactDownloader implements AutoCloseable {
         });
     }
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation,
-                                              MavenRepository repository) throws InstallException {
+    public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication(repository);
 
-        downloadedFiles.clear();
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
-        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
-        List<String> missingFeatures;
-        dLocation = FormatPathSuffix(dLocation);
-        try {
-            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
-            if (responseCode != 404) {
-                ArtifactDownloaderUtils.checkResponseCode(responseCode, repo);
-            }
-        } catch (IOException e) {
-            fine(e.getMessage());
+        Map<String, String> URLtoMavenCoordMap = new HashMap<>();
+        ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo, URLtoMavenCoordMap);
+        List<String> missingFeaturesURLs;
+        Set<String> missingCoords = new HashSet<String>();
+
+        if (!testConnection(repository)) {
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
         }
+
         updateProgress(progressBar.getMethodIncrement("establishConnection"));
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
 
         try {
-            missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs, envMap);
+            missingFeaturesURLs = ArtifactDownloaderUtils.getMissingFiles(URLtoMavenCoordMap.keySet(), envMap);
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new InstallException(e.getMessage());
         }
 
-        if (!missingFeatures.isEmpty()) {
-
-            List<String> missingFeatureList = new ArrayList<String>();
-            for (String f : missingFeatures) {
-                if (f.endsWith(".esa")) {
-                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".esa");
-                } else if (f.endsWith(".pom")) {
-                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".pom");
-                }
+        if (!missingFeaturesURLs.isEmpty()) {
+            List<String> missingFeatureList = new ArrayList<String>(); //for debugging
+            for (String f : missingFeaturesURLs) {
+                String featureName = ArtifactDownloaderUtils.getFileNameFromURL(f);
+                String featureCoord = URLtoMavenCoordMap.get(f);
+                missingFeatureList.add(featureName);
+                missingCoords.add(featureCoord);
             }
-            fine("The remote repository is missing the following artifacts: " + missingFeatureList.toString());
-            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repo);
-        } else {
-            List<String> result = new ArrayList<String>();
+            fine("The remote repository \"" + repo.toString() + "\" is missing the following artifacts: " + missingFeatureList.toString());
 
-            final List<Future<?>> futures = new ArrayList<>();
-            // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
-            double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
-            progressBar.updateMethodMap("downloadArtifact", individualSize);
-            info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
-            for (String coords : mavenCoords) {
-                Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
-                futures.add(future1);
-                Future<?> future2 = submitDownloadRequest(coords, "pom", dLocation, repository);
-                futures.add(future2);
-            }
-
-            while (!futures.isEmpty()) {
-                Iterator<Future<?>> iter = futures.iterator();
-                try {
-                    while (iter.hasNext()) {
-                        Future<?> future = iter.next();
-                        if (future.isDone()) {
-                            String downloadedCoords;
-                            downloadedCoords = (String) future.get();
-                            // update progress bar, drain the downloadArtifacts total size
-                            updateProgress(individualSize);
-                            progressBar.updateMethodMap("downloadArtifacts",
-                                                        progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
-                            fine("Finished downloading artifact: " + downloadedCoords);
-
-                            iter.remove();
-                        }
-                    }
-                    fine("Remaining artifacts: " + futures.size());
-                    Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new InstallException(e.getMessage());
-                }
-            }
-            progressBar.manuallyUpdate();
         }
+        return missingCoords;
+    }
+
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
+        final List<Future<?>> futures = new ArrayList<>();
+        // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
+        double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
+        progressBar.updateMethodMap("downloadArtifacts", individualSize);
+        info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
+        for (String coords : mavenCoords) {
+            Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
+            futures.add(future1);
+            Future<?> future2 = submitDownloadRequest(coords, "pom", dLocation, repository);
+            futures.add(future2);
+        }
+
+        while (!futures.isEmpty()) {
+            Iterator<Future<?>> iter = futures.iterator();
+            try {
+                while (iter.hasNext()) {
+                    Future<?> future = iter.next();
+                    if (future.isDone()) {
+                        String downloadedCoords;
+                        downloadedCoords = (String) future.get();
+                        // update progress bar, drain the downloadArtifacts total size
+                        updateProgress(individualSize);
+                        progressBar.updateMethodMap("downloadArtifacts",
+                                                    progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
+                        fine("Finished downloading artifact: " + downloadedCoords);
+
+                        iter.remove();
+                    }
+                }
+                fine("Remaining artifacts: " + futures.size());
+                Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new InstallException(e.getMessage());
+            }
+        }
+        progressBar.manuallyUpdate();
+
     }
 
     /**
@@ -173,61 +170,54 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private String FormatUrlSuffix(String url) {
         String result = url;
-        if (!url.endsWith("/")) {
-            result += "/";
+        if (!url.endsWith(File.separator)) {
+            result += File.separator;
         }
         return result;
     }
 
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
-        configureProxyAuthentication();
-        configureAuthentication(repository);
-        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
-        dLocation = FormatPathSuffix(dLocation);
-        String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
-        String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
-        String version = ArtifactDownloaderUtils.getVersion(mavenCoords);
-        new File(dLocation + groupId + artifactId + "/" + version + "/").mkdirs();
+        String urlLocation;
 
-        String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
-        String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
-
-        if (individualDownload) {
-            checkValidProxy();
-            int repoResponseCode;
-            try {
-                repoResponseCode = ArtifactDownloaderUtils.exists(urlLocation, envMap);
-                if (repoResponseCode != 404) {
-                    ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
-                }
-            } catch (Exception e) {
-                fine(e.getMessage());
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
-            }
-        }
         String[] checksumFormats = new String[3];
 
         checksumFormats[0] = "MD5";
         checksumFormats[1] = "SHA1";
         checksumFormats[2] = "SHA256";
 
+        checkValidProxy();
+        configureProxyAuthentication();
+        configureAuthentication(repository);
+        dLocation = FormatPathSuffix(dLocation);
+        String repo = FormatUrlSuffix(repository.getRepositoryUrl());
+
+        urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, mavenCoords) + "." + filetype;
+
         try {
-            if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
-            } else {
-                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats, repository);
+            if (individualDownload) {
+                if (!testConnection(repository)) {
+                    throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+                }
+
+                if (ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
+                    throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getfilename(mavenCoords), filetype + " file",
+                                                     repository.toString()); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
+                }
             }
+
+            download(urlLocation, dLocation, checksumFormats, repository);
+
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
         }
 
     }
 
-    private void download(String urlLocation, String dLocation, String groupId, String artifactId, String version, String filename,
-                          String[] checksumFormats, MavenRepository mavenRepository) throws IOException, InstallException {
+    private void download(String urlLocation, String dLocation, String[] checksumFormats, MavenRepository mavenRepository) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
-            File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, artifactId, version, filename));
+            File fileLoc = new File(urlLocation.replace(mavenRepository.toString(), dLocation));
+            String filename = ArtifactDownloaderUtils.getFileNameFromURL(urlLocation);
 
             downloadInternal(uriLoc, fileLoc, mavenRepository);
 
@@ -254,7 +244,7 @@ public class ArtifactDownloader implements AutoCloseable {
             }
             if (someChecksumExists) {
                 if (checksumFail) {
-                    ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
+                    ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, fileLoc);
                     downloadedFiles.clear();
                     throw ExceptionUtils.createByKey("ERROR_CHECKSUM_FAILED_MAVEN", filename);
                 }
@@ -325,29 +315,6 @@ public class ArtifactDownloader implements AutoCloseable {
      *
      * @return
      */
-    protected boolean testConnection(MavenRepository repository, List<String> mavenCoords) {
-        configureProxyAuthentication();
-        configureAuthentication(repository);
-        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repository.getRepositoryUrl());
-        try {
-            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
-            logger.fine("Response code: " + responseCode);
-            if (responseCode != 404) {
-                // repo is fine for use
-                return true;
-            }
-        } catch (IOException e) {
-            logger.warning(repository.getRepositoryUrl() + " cannot be connected");
-            logger.fine(e.getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
-     *
-     * @return
-     */
     protected boolean testConnection(MavenRepository repository) {
         configureProxyAuthentication();
         configureAuthentication(repository);
@@ -380,6 +347,8 @@ public class ArtifactDownloader implements AutoCloseable {
         final String userAgentValue = calculateUserAgent();
         conn.setRequestProperty("User-Agent", userAgentValue);
         conn.connect();
+
+        destination.getParentFile().mkdirs();
         File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
         try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile))) {
             byte[] buffer = new byte[BUFFER_SIZE];
