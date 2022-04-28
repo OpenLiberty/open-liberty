@@ -38,6 +38,7 @@
 		<maven.compiler.release>11</maven.compiler.release>
 
 		<!-- Jakarta EE API -->
+		<jakarta.json.version>2.1.0-SNAPSHOT</jakarta.json.version>
 		<jakarta.json.tck.version>2.1.0-SNAPSHOT</jakarta.json.tck.version>
 		
 
