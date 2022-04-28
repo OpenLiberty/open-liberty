@@ -22,7 +22,11 @@ Bundle-Description: Provides interceptors for Jakarta Concurrency; version=${bVe
 
 WS-TraceGroup: concurrent
 
-Import-Package: *
+# TODO: these CDI package imports can be removed when JEE9 compatibility is no longer required
+Import-Package: \
+ jakarta.enterprise.event;version="[3.0,5)",\
+ jakarta.enterprise.inject.spi;version="[3.0,5)",\
+ *
 
 Private-Package: \
   io.openliberty.concurrent.internal.cdi.*,\
@@ -46,7 +50,7 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.c
   com.ibm.ws.concurrent,\
   com.ibm.ws.threading,\
   io.openliberty.jakarta.annotation.2.0,\
-  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.cdi.3.0,\
   io.openliberty.jakarta.concurrency.3.0,\
   io.openliberty.jakarta.interceptor.2.0,\
   io.openliberty.jakarta.transaction.2.0
