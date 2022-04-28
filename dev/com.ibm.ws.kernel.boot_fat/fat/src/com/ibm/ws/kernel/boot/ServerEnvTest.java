@@ -215,17 +215,25 @@ public class ServerEnvTest {
             dir.mkdirs();
         }
 
-        Charset charset = Charset.forName("UTF-8");
-        Machine machine = Machine.getLocalMachine();
-        if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
-            charset = Charset.forName("IBM-1047");
-        }
+//        Charset charset = Charset.forName("UTF-8");
+//        Machine machine = Machine.getLocalMachine();
+//        if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
+//            charset = Charset.forName("IBM-1047");
+//        }
 
         FileOutputStream fos = null;
         PrintWriter pw = null;
+        Writer w = null;
         try {
             fos = new FileOutputStream(serverEnvFile);
-            Writer w = new OutputStreamWriter(fos, charset);
+
+            Machine machine = Machine.getLocalMachine();
+            if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
+                w = new OutputStreamWriter(fos, Charset.forName("IBM-1047"));
+            } else {
+                w = new OutputStreamWriter(fos);
+            }
+
             pw = new PrintWriter(w);
             pw.print(fileContents.getBytes());
         } finally {
