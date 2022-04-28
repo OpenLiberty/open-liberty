@@ -33,8 +33,7 @@ jobs:
       github.event_name == 'pull_request' &&
       (
         github.event.pull_request.draft == false && 
-        github.event.pull_request.state != 'closed' && 
-        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+        github.event.pull_request.state != 'closed' 
       )
     steps:
     - uses: actions/checkout@v2
