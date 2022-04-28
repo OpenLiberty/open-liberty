@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,8 @@ public class ServerClasspathTest {
                                                         "com.ibm.java.lang.management.internal",
                                                         "org.ietf.jgss", "jdk", // Java 9
                                                         "com.ibm.sharedclasses.spi", // Open JDK 9
-                                                        "openj9"
+                                                        "openj9",
+                                                        "com.ibm.gpu" // Semeru 11.0.15
     };
 
     @BeforeClass

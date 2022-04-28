@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.ibm.ws.install.internal.asset.ServerAsset;
+import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import test.common.SharedOutputManager;
 
@@ -60,6 +61,8 @@ public class ServerAssetTest {
     public static void tearDownAfterClass() throws Exception {
         deleteDirectory(testDir);
         outputMgr.restoreStreams();
+        // unset the user dir so that the default doesn't affect other tests like ProductTest
+        Utils.setUserDir(null);
     }
 
     private void initializeTestCase(String testName) {

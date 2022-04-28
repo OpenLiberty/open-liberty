@@ -91,10 +91,11 @@ public class GenerateCategories {
             debug("Unmentioned categories were: " + unmentionedCategories);
         }
 
+	List<String> quarantinedProjects = getBuckets("QUARANTINE");
         List<String> finalCategories = new ArrayList<>();
         // If any FATs were modified at all, add special categories
         // that run directly modified buckets
-        List<String> modifiedFATs = modifiedProjects.stream().filter(f -> f.contains("_fat")).collect(Collectors.toList());
+        List<String> modifiedFATs = modifiedProjects.stream().filter(f -> f.contains("_fat") && !quarantinedProjects.contains(f)).collect(Collectors.toList());
         if (!modifiedFATs.isEmpty()) {
             debug("At least 1 FAT was modified in this PR.");
 

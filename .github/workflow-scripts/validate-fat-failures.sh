@@ -25,20 +25,25 @@ cd dev
 mkdir failing_buckets
 
 echo "::group::Bucket results";
+failure=false
 for FAT_BUCKET in $FAT_BUCKETS
 do
   if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
     echo "  [!FAILED!] $FAT_BUCKET";
+    failure=true
     if [[ -d $FAT_BUCKET/build/libs/autoFVT ]]; then
       pushd $FAT_BUCKET/build/libs/autoFVT &> /dev/null
       zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
       popd &> /dev/null
     fi
-    echo "::set-output name=status::failure"
   else
     echo "  [ PASSED ] $FAT_BUCKET";
-    echo "::set-output name=status::success"
   fi
 done
+if [[ "$failure" = true ]]; then
+  echo "::set-output name=status::failure"
+else
+  echo "::set-output name=status::success"
+fi
 echo "::endgroup::";
 
