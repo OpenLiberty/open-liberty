@@ -53,11 +53,13 @@ public class LogoutTokenBuilder {
     private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
     private final OAuth20Provider oauth20provider;
+    private final OAuth20EnhancedTokenCache tokenCache;
 
     public LogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
         this.request = request;
         this.oidcServerConfig = oidcServerConfig;
         this.oauth20provider = getOAuth20Provider(oidcServerConfig);
+        this.tokenCache = oauth20provider.getTokenCache();
     }
 
     OAuth20Provider getOAuth20Provider(OidcServerConfig oidcServerConfig) {
@@ -141,7 +143,6 @@ public class LogoutTokenBuilder {
     }
 
     Collection<OAuth20Token> getAllCachedUserTokens(String user) {
-        OAuth20EnhancedTokenCache tokenCache = oauth20provider.getTokenCache();
         return tokenCache.getAllUserTokens(user);
     }
 
@@ -165,7 +166,8 @@ public class LogoutTokenBuilder {
                 // Only log out clients that have a backchannel_logout_uri configured
                 String logoutUri = client.getBackchannelLogoutUri();
                 if (logoutUri != null) {
-                    addCachedIdTokenToMap(cachedIdTokensMap, client, (IDTokenImpl) cachedToken);
+                    IDTokenImpl cachedIdToken = (IDTokenImpl) cachedToken;
+                    addCachedIdTokenToMap(cachedIdTokensMap, client, cachedIdToken);
                 }
             }
         }
@@ -217,6 +219,7 @@ public class LogoutTokenBuilder {
             try {
                 String logoutToken = createLogoutTokenForClientFromCachedIdToken(client, cachedIdToken);
                 logoutTokens.add(logoutToken);
+                removeIdTokenFromCache(cachedIdToken);
             } catch (LogoutTokenBuilderException e) {
                 if (e.getCause() instanceof IdTokenDifferentIssuerException) {
                     if (tc.isDebugEnabled()) {
@@ -291,6 +294,10 @@ public class LogoutTokenBuilder {
         requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
         issuerIdentifier += requestUri;
         return issuerIdentifier;
+    }
+
+    void removeIdTokenFromCache(IDTokenImpl cachedIdToken) {
+        tokenCache.remove(cachedIdToken.getId());
     }
 
 }
