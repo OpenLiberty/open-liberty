@@ -849,4 +849,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String TOKEN_ENDPOINT_SERVLET = "TokenEndpointServlet";
     public static final String USERINFO_ENDPOINT_SERVLET = "UserinfoEndpointServlet";
 
+    /************************************** Misc Parms***** ************************************/
+    public static final String PROVIDER_HINT = "oidcAuthnHint";
+    public static final String OIDC_CLIENT = "oidc_client";
+
 }

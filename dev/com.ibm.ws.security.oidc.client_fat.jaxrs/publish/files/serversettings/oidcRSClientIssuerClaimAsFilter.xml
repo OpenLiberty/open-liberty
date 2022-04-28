@@ -1,0 +1,341 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectClient
+		id="RSclient01"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient02"
+		scope="openid profile"
+		clientId="client02"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient03"
+		scope="openid profile"
+		clientId="client03"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="RS256"
+		trustAliasName="trustedcertentry"
+		trustStoreRef="myTrustStore"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03"
+	>
+	</openidConnectClient>
+
+<!-- default issuer  -->
+	<openidConnectClient
+		id="RSclient04"
+		scope="openid profile"
+		clientId="client04"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider04/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider04/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider04/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+	>
+	</openidConnectClient>
+
+<!-- client05 is used to test 2 clients that could process the same request -->
+<!-- Tests will make 2 requests - one app will match the filter and use RSclient05_authFilter client
+		the other will NOT match the filter and use RSclient05_issuerAsFilter
+		Both request will use jwt's containing the client05 issuer -->
+	<authFilter id="myAuthFilter05">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient05"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RSclient05_authFilter"
+		scope="openid profile"
+		clientId="client05"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter05"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient05_issuerAsFilter"
+		scope="openid profile"
+		clientId="client05"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="RS256"
+		trustAliasName="trustedcertentry"
+		trustStoreRef="myTrustStore"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05"
+	>
+	</openidConnectClient>
+
+<!--  filter that won't match request -->
+	<authFilter id="myAuthFilter07">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient007"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RSclient07"
+		scope="openid profile"
+		clientId="client07"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07"
+		authFilterRef="myAuthFilter07"
+	>
+	</openidConnectClient>
+
+<!-- good filter and default issuer (provider uses a non-default issuer) -->
+	<authFilter id="myAuthFilter08a">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient08a"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RSclient08a"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter08a"
+	>
+	</openidConnectClient>
+
+<!-- good filter and a bad issuer -->
+	<authFilter id="myAuthFilter08b">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient08b"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RSclient08b"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="badValue"
+		authFilterRef="myAuthFilter08b"
+	>
+	</openidConnectClient>
+
+<!-- good filter and good non-default issuer -->
+	<authFilter id="myAuthFilter08c">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient08c"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RSclient08c"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="uniqueIssuer08"
+		authFilterRef="myAuthFilter08c"
+	>
+	</openidConnectClient>
+
+<!-- no filter and good non-default issuer -->
+	<openidConnectClient
+		id="RSclient08d"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="uniqueIssuer08"
+	>
+	</openidConnectClient>
+
+<!-- no filter and bad default issuer -->
+	<openidConnectClient
+		id="RSclient08e"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient08f"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="badValue"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient09"
+		scope="openid profile"
+		clientId="client09"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09"
+		authFilterRef="someNonExistantFilter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient20"
+		scope="openid profile"
+		clientId="client20"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="HS256"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="RSclient21"
+		scope="openid profile"
+		clientId="client21"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider21/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider21/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider21/introspect"
+		validationMethod="introspect"
+		signatureAlgorithm="RS256"
+		trustAliasName="trustedcertentry"
+		trustStoreRef="myTrustStore"
+		keyManagementKeyAlias="rs256"
+		sslRef="DefaultSSLSettings"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider21"
+	>
+	</openidConnectClient>
+	
+</server>
