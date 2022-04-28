@@ -17,8 +17,6 @@ import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 
 public class SocialConstants extends Constants {
 
-    public static final String SOCIAL = "Social";
-
     public static final String CONFIGS_DIR = "configs" + File.separator;
 
     public static final String DEFAULT_CONTEXT_ROOT = Oauth2LoginConfigImpl.DEFAULT_CONTEXT_ROOT;
