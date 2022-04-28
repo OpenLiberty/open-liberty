@@ -14,6 +14,7 @@ import java.io.File;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.internal.CheckpointImpl;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
@@ -21,11 +22,11 @@ import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 public class J9CRIUSupport {
 
     @FFDCIgnore(ClassNotFoundException.class)
-    public static ExecuteCRIU create() {
+    public static ExecuteCRIU create(CheckpointImpl checkpointImpl) {
         try {
             Class.forName("org.eclipse.openj9.criu.CRIUSupport");
             // return a fully functional implementation. Yay!
-            return new ExecuteCRIU_OpenJ9();
+            return new ExecuteCRIU_OpenJ9(checkpointImpl);
         } catch (ClassNotFoundException e) {
             return createCRIUNotSupported(Type.UNSUPPORTED_IN_JVM, "There is no CRIU support in this JVM.", null);
         }
@@ -45,7 +46,8 @@ public class J9CRIUSupport {
         final CheckpointFailedException criuSupportException = new CheckpointFailedException(type, msg, null);
         return new ExecuteCRIU() {
             @Override
-            public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
+            public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps,
+                             boolean unprivileged) throws CheckpointFailedException {
                 throw criuSupportException;
             }
 

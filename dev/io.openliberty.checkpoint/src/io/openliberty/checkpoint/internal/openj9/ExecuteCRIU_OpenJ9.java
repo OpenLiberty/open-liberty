@@ -20,11 +20,17 @@ import org.eclipse.openj9.criu.SystemCheckpointException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.internal.CheckpointImpl;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 
 public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
+    private final CheckpointImpl checkpointImpl;
+
+    public ExecuteCRIU_OpenJ9(CheckpointImpl checkpointImpl) {
+        this.checkpointImpl = checkpointImpl;
+    }
 
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
@@ -42,21 +48,21 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
             try {
                 criuSupport.setUnprivileged(true);
             } catch (NoSuchMethodError e) {
-                throw new CheckpointFailedException(Type.UNKNOWN, "JVM does not support CRIU unprivileged mode", e);
+                throw new CheckpointFailedException(Type.UNKNOWN_CHECKPOINT, "JVM does not support CRIU unprivileged mode", e);
             }
         }
         try {
             criuSupport.checkpointJVM();
         } catch (JVMCheckpointException e) {
-            throw new CheckpointFailedException(Type.JVM_CHECKPOINT_FAILED, e.getMessage(), e, e.getErrorCode());
+            throw new CheckpointFailedException(Type.JVM_CHECKPOINT_FAILED, e.getMessage(), e);
         } catch (SystemCheckpointException e) {
-            throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, e.getMessage(), e, e.getErrorCode());
+            throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, e.getMessage(), e);
         } catch (RestoreException e) {
-            throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e, e.getErrorCode());
+            throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e);
         } catch (JVMCRIUException e) {
-            throw new CheckpointFailedException(Type.UNKNOWN, e.getMessage(), e, e.getErrorCode());
+            throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         } catch (RuntimeException e) {
-            throw new CheckpointFailedException(Type.UNKNOWN, e.getMessage(), e);
+            throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         }
     }
 

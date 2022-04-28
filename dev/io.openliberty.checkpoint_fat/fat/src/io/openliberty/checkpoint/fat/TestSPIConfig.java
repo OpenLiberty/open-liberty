@@ -22,12 +22,15 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
@@ -67,7 +70,7 @@ public class TestSPIConfig {
 
     @Test
     public void testRestoreWithDefaults() throws Exception {
-        server.startServer();
+        server.startServer(getTestMethod() + ".log");
         findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
         findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
@@ -76,13 +79,13 @@ public class TestSPIConfig {
 
     @Test
     public void testRestoreWithEnvSet() throws Exception {
-        server.startServer();
+        server.startServer(getTestMethod() + ".log");
         findLogMessage("No restore config", "TESTING - modified config: pida=env2 pidb=env2", "", 0);
     }
 
     @Test
     public void testAddImmutableEnvKey() throws Exception {
-        server.startServer();
+        server.startServer(getTestMethod() + ".log");
         findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
     }
 
@@ -92,20 +95,46 @@ public class TestSPIConfig {
         findLogMessage("Activate should have non-null running condition", "TESTING - activate running condition: ", "io.openliberty.process.running null", 500);
     }
 
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testFailedCheckpoint() throws Exception {
+        ProgramOutput output = server.startServer(getTestMethod() + ".log");
+        int retureCode = output.getReturnCode();
+        assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testFailedRestore() throws Exception {
+        server.startServer(getTestMethod() + ".log");
+        ProgramOutput output = server.checkpointRestore();
+        int retureCode = output.getReturnCode();
+        assertEquals("Wrong return code for failed checkpoint.", 77, retureCode);
+    }
+
     @Before
     public void beforeEachTest() throws Exception {
         TestMethod testMethod = getTestMethod();
         try {
             server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+            // first switch is to conditionally change the configuration before checkpoint
             switch (testMethod) {
                 case testAddImmutableEnvKey:
                     server.copyFileToLibertyServerRoot("addImmutableEnvKey/server.env");
+                    break;
+                case testFailedCheckpoint:
+                    server.copyFileToLibertyServerRoot("TestSPIConfig.fail.checkpoint/server.xml");
+                    break;
+                case testFailedRestore:
+                    server.copyFileToLibertyServerRoot("TestSPIConfig.fail.restore/server.xml");
+                    server.copyFileToLibertyServerRoot("TestSPIConfig.fail.restore/server.env");
                     break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
                     break;
             }
+            // second switch is to conditionally set the checkpoint
             switch (testMethod) {
                 case testRunningConditionLaunch:
                     break;
@@ -121,14 +150,23 @@ public class TestSPIConfig {
     }
 
     private void setCheckpoint(TestMethod testMethod) {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
-                             server -> {
-                                 findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
-                                 findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
-                                 findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
-                                 findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
-                                 runBeforeRestore(testMethod);
-                             });
+        boolean autoRestore = true;
+        boolean expectCheckpointFailure = false;
+        boolean expectRestoreFailure = false;
+        if (testMethod == TestMethod.testFailedCheckpoint) {
+            autoRestore = false;
+            expectCheckpointFailure = true;
+        } else if (testMethod == TestMethod.testFailedRestore) {
+            autoRestore = false;
+            expectRestoreFailure = true;
+        }
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, autoRestore, expectCheckpointFailure, expectRestoreFailure, server -> {
+            findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
+            findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
+            findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
+            findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
+            runBeforeRestore(testMethod);
+        }));
     }
 
     /**
@@ -183,6 +221,8 @@ public class TestSPIConfig {
         testRestoreWithEnvSet,
         testAddImmutableEnvKey,
         testRunningConditionLaunch,
+        testFailedCheckpoint,
+        testFailedRestore,
         unknown
     }
 

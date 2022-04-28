@@ -1444,9 +1444,14 @@ restoreServer()
   IFS=$saveIFS
 
   safeEcho "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
-
+  rm -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker
+  
   criuRestore $BACKGROUND_RESTORE
   rc=$?
+  if [ -f "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker" ]; then
+    rc=`cat ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker`
+    return $rc
+  fi
   if [ $rc -ne 0 ]; then
     issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
   fi
