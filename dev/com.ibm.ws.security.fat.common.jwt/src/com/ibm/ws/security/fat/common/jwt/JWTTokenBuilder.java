@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,18 +92,34 @@ public class JWTTokenBuilder {
 //            //_jws.setHeader("typ","JWT");  // not sure if we should do this or let twas figure it out.
 //            System.out.println("jws key: " + _jws.getKey());
         } catch (Exception e) {
-            Log.info(thisClass, "JWTTokenBuilder", e.getMessage());
+            e.printStackTrace(System.out);
         }
 
     }
+
+//    private static String pemEncode(Key publicKey) {
+//        byte[] encoded = publicKey.getEncoded(); // X509 SPKI
+//        return BEGIN_PUBLIC_KEY + "\r\n" + SimplePEMEncoder.encode(encoded) + "\r\n" + END_PUBLIC_KEY;
+//    }
+
+//    public String getPublicKeyPem() {
+//        //return RsaKeyUtil.pemEncode(_rsajwk.getPublicKey());
+//        return pubKey;
+//    }
+
+//    public String getPrivateKeyPem() {
+//        //byte[] encoded = _rsajwk.getPrivateKey().getEncoded(); // X509 SPKI
+//        //return BEGIN_PUBLIC_KEY + "\r\n" + SimplePEMEncoder.encode(encoded) + END_PUBLIC_KEY;
+//        return privKey;
+//    }
 
     public String readKeyFromFile(String theFile) throws Exception {
         return new String(Files.readAllBytes(Paths.get(theFile)));
     }
 
-    private PrivateKey fromPemEncoded(String pem, String instance) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
+    private PrivateKey fromPemEncoded(String pem) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
 
-        String thisMethod = "rsaFromPemEncoded";
+        String thisMethod = "fromPemEncoded";
         int beginIndex = pem.indexOf(BEGIN_PRIV_KEY) + BEGIN_PRIV_KEY.length();
         int endIndex = pem.indexOf(END_PRIV_KEY);
         Log.info(thisClass, thisMethod, "begin: " + beginIndex);
@@ -113,7 +129,7 @@ public class JWTTokenBuilder {
         byte[] decode = SimplePEMEncoder.decode(base64);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
-        KeyFactory kf = KeyFactory.getInstance(instance);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
 
@@ -234,25 +250,25 @@ public class JWTTokenBuilder {
         try {
             _jws.setKey(new HmacKey(keyId.getBytes("UTF-8")));
         } catch (Exception e) {
-            Log.info(thisClass, "setHSAKey", e.getMessage());
+            e.printStackTrace(System.out);
             _jws.setKey(null);
         }
         return this;
     }
 
+//    public JWTTokenBuilder setRSAKey() {
+//        try {
+//            _jws.setKey(this.fromPemEncoded(privKey));
+//        } catch (Exception e) {
+//            e.printStackTrace(System.out);
+//            _jws.setKey(null);
+//        }
+//        return this;
+//    }
+
     public JWTTokenBuilder setRSAKey(String keyFile) {
 
-        return setKey(keyFile, "RSA");
-    }
-
-    public JWTTokenBuilder setECKey(String keyFile) {
-
-        return setKey(keyFile, "EC");
-    }
-
-    public JWTTokenBuilder setKey(String keyFile, String instance) {
-
-        String thisMethod = "setKey";
+        String thisMethod = "setRSAKey";
         try {
             if (keyFile == null) {
 //                return setRSAKey();
@@ -260,9 +276,9 @@ public class JWTTokenBuilder {
             }
             String key = readKeyFromFile(keyFile);
             Log.info(thisClass, thisMethod, "Read from file: " + keyFile + " key is: " + key);
-            _jws.setKey(this.fromPemEncoded(key, instance));
+            _jws.setKey(this.fromPemEncoded(key));
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, e.getMessage());
+            e.printStackTrace(System.out);
             _jws.setKey(null);
         }
         return this;
@@ -303,6 +319,7 @@ public class JWTTokenBuilder {
     // to generate encrypted tokens
     // Use apps such as JwtBuilderSetApisClient and JwtBuilderServlet
     public String build() {
+        String thisMethod = "build";
 
         try {
             if (_claims.getIssuedAt() == null) {
@@ -311,18 +328,11 @@ public class JWTTokenBuilder {
         } catch (MalformedClaimException e1) {
             e1.printStackTrace(System.out);
         }
-        return buildAsIs();
-
-    }
-
-    public String buildAsIs() {
-        String thisMethod = "build";
-
         try {
             _jws.setPayload(_claims.toJson());
             Log.info(thisClass, thisMethod, "after setPayload in build");
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, e.getMessage());
+            e.printStackTrace(System.out);
             return null;
         }
         // key may already have been set with setkey
@@ -334,10 +344,9 @@ public class JWTTokenBuilder {
             Log.info(thisClass, thisMethod, "jws: " + _jws.getKey());
 //            _jws.setKey(this.fromPemEncoded(privKey));
             _jwt = _jws.getCompactSerialization();
-            Log.info(thisClass, thisMethod, "jwt (after compact): " + _jwt);
+            Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, "Error building token: " + e.getMessage());
             e.printStackTrace(System.out);
             return null;
         }
@@ -355,12 +364,11 @@ public class JWTTokenBuilder {
             if (contentType != null) {
                 _jwe.setHeader("cty", contentType);
             }
-            Log.info(thisClass, thisMethod, "JWE header: " + _jwe.getHeader());
-            Log.info(thisClass, thisMethod, "jwsPart: " + jwsPart);
+            Log.info(thisClass,  thisMethod, "JWE header: " + _jwe.getHeader());
             _jwe.setPayload(jwsPart);
             Log.info(thisClass, thisMethod, "after setPayload in jwe");
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, e.getMessage());
+            e.printStackTrace(System.out);
             return null;
         }
 
@@ -369,7 +377,7 @@ public class JWTTokenBuilder {
             Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, e.getMessage());
+            e.printStackTrace(System.out);
             return null;
         }
 
@@ -399,7 +407,7 @@ public class JWTTokenBuilder {
             Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, e.getMessage());
+            e.printStackTrace(System.out);
             return null;
         }
 
@@ -415,13 +423,5 @@ public class JWTTokenBuilder {
 
     public JwtClaims getRawClaims() {
         return _claims;
-    }
-
-    public void printBuilder() throws Exception {
-
-        String thisMethod = "printBuilder";
-
-        Log.info(thisClass, thisMethod, "Header: " + getJsonClaims());
-        Log.info(thisClass, thisMethod, "jwt: " + _jwt);
     }
 }
