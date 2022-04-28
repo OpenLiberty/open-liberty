@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.ejbcontainer.timer.np.config.late.ejb;
 
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.NoSuchObjectLocalException;
@@ -29,9 +31,12 @@ public class LateWarningBean implements LateWarning {
     private TimerService timerService;
 
     private static boolean svHasSlept = false;
+    private static CountDownLatch CancelLatch = null;
 
     @Override
     public void createIntervalTimer(long intervalDuration, long threshold) {
+        svHasSlept = false;
+        CancelLatch = new CountDownLatch(1);
         try {
             TimerConfig timerConfig = new TimerConfig("Interval: NpTimerConfigLateWarningEJB: LateWarningBean:" + threshold, false);
             timerService.createIntervalTimer(0l, intervalDuration, timerConfig);
@@ -42,7 +47,17 @@ public class LateWarningBean implements LateWarning {
 
     @Override
     public void cancelIntervalTimer() {
+        // Timer will cancel itself on second run; allow some time for timeout to complete
+        CountDownLatch cancelLatch = CancelLatch;
+        if (cancelLatch != null) {
+            try {
+                cancelLatch.await(30, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
 
+        // Cleanup any timers that are still around, just in case.
         Collection<Timer> timers = timerService.getTimers();
         for (Timer timer : timers) {
             try {
@@ -53,7 +68,6 @@ public class LateWarningBean implements LateWarning {
                 ex.printStackTrace(System.out);
             }
         }
-        svHasSlept = false;
     }
 
     @Timeout
@@ -66,6 +80,7 @@ public class LateWarningBean implements LateWarning {
             svHasSlept = true;
         } else {
             timer.cancel();
+            CancelLatch.countDown();
         }
     }
 
