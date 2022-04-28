@@ -500,13 +500,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
          * Tried to future-proof this check by iterating over all the
          * installed features and finding the version of appSecurity installed,
          * but that introduced a performance degradation. So for now, checking
-         * for the appSecurity-3.0/4.0 features directly.
+         * for the appSecurity-3.0/4.0/5.0 features directly.
          */
         if (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_40) {
             return false;
         }
         Set<String> features = provisionerService.getInstalledFeatures();
-        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
+        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0") || features.contains("appSecurity-5.0");
     }
 
     /**
