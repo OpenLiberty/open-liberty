@@ -110,6 +110,7 @@ public class Constants {
     public static final int NOT_FOUND_STATUS = 404;
     public static final int NOT_ALLOWED_STATUS = 405;
     public static final int INTERNAL_SERVER_ERROR_STATUS = 500;
+    public static final int NOT_IMPLEMENTED_STATUS = 501;
     public static final int BAD_GATEWAY = 502;
 
     /* ***************** Http methods ******************* */
@@ -199,6 +200,8 @@ public class Constants {
     public static final String NOT_FOUND_ERROR = "Error 404:";
     public static final String OK_MESSAGE = "OK";
     public static final String BAD_REQUEST = "Bad Request";
+    public static final String METHOD_NOT_ALLOWED = "Method Not Allowed";
+    public static final String METHOD_NOT_IMPLEMENTED = "Not Implemented";
 
     /* ********************** MESSAGES ************************ */
     public static final String MSG_INVALID_PWD = "CWWKS1100A";
