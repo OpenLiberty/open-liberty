@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.junit.After;
@@ -217,7 +218,13 @@ public class ServerStartTest {
         assertTrue("the server should have been started", server.isStarted());
 
         // Use jcmd to generate a heap dump
-        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
+        }
+
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
         try (Reader reader = new InputStreamReader(process.getInputStream());
                         BufferedReader br = new BufferedReader(reader);) {
@@ -799,6 +806,8 @@ public class ServerStartTest {
             } else {
                 throw new IOException(ioe);
             }
+        } catch (NullPointerException npe) {
+            Log.info(c, method, "cmd = " + Arrays.toString(cmd) + " resulted in  = " + npe.getMessage());
         }
 
         return pid;
