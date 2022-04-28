@@ -157,7 +157,7 @@
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> <!-- provided by MvnUtils.runTCKMvnCmd -->
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> <!-- provided by runtime property -->
                     </suiteXmlFiles>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>

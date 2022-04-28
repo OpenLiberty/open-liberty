@@ -694,12 +694,12 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>4.0.0-RC3</version>
+      <version>4.0.0-RC5</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.lang-model</artifactId>
-      <version>4.0.0-RC3</version>
+      <version>4.0.0-RC5</version>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>

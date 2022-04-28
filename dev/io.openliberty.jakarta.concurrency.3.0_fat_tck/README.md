@@ -119,7 +119,7 @@ mvn clean test -B \
 -Dtck_username=arquillian \
 -Dtck_password=arquillianPassword \
 -Dsun.rmi.transport.tcp.responseTimeout=60000 \
--DsuiteXmlFile=tck-suite-full.xml \
+-DsuiteXmlFile=tck-suite.xml \
 -Djava.util.logging.config.file=$PWD/usr/servers/ConcurrentTCKServer/resources/logging/logging.properties
 ```
 

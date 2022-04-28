@@ -12,14 +12,23 @@ package io.openliberty.jakarta.enterprise.concurrent.tck;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testng.xml.XmlPackage;
+import org.testng.xml.XmlSuite;
+import org.testng.xml.XmlSuite.FailurePolicy;
+import org.testng.xml.XmlTest;
 
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.log.Log;
@@ -46,6 +55,8 @@ public class ConcurrentTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
 
+    private static String suiteXmlFile = "tck-suite.xml"; //Default value
+
     @Server("ConcurrentTCKServer")
     public static LibertyServer server;
 
@@ -54,6 +65,8 @@ public class ConcurrentTckLauncher {
         //UNCOMMENT - To test against a local snapshot of TCK
         //additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
         //additionalProps.put("jakarta.concurrent.tck.version", "3.0.0-SNAPSHOT");
+
+        suiteXmlFile = createSuiteXML();
 
         //username and password for Arquillian to authenticate to restConnect
         additionalProps.put("tck_username", "arquillian");
@@ -94,17 +107,6 @@ public class ConcurrentTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrentTCK() throws Exception {
-        String suiteXmlFile;
-        if (TestModeFilter.FRAMEWORK_TEST_MODE == Mode.TestMode.FULL) {
-            Log.info(getClass(), "launchConcurrentTCK", "Running full tests");
-            suiteXmlFile = "tck-suite-full.xml";
-        } else {
-            Log.info(getClass(), "launchConcurrentTCK", "Running lite tests");
-            suiteXmlFile = "tck-suite-lite.xml";
-        }
-
-        //UNCOMMENT - To perform signature testing only
-        //suiteXmlFile = "tck-suite-signature.xml";
 
         Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
 
@@ -127,5 +129,70 @@ public class ConcurrentTckLauncher {
         resultInfo.put("feature_version", "3.0");
         MvnUtils.preparePublicationFile(resultInfo);
         assertEquals(0, result);
+    }
+
+    /**
+     * Programmatically create a tck-suite-programmatic.xml file based on environment variables
+     *
+     * @return String suite file name
+     * @throws IOException if we are unable to write contents of tck-suite-programmatic.xml to filesystem
+     */
+    public static String createSuiteXML() throws IOException {
+        XmlSuite suite = new XmlSuite();
+        suite.setFileName("tck-suite-programmatic.xml");
+        suite.setName("jakarta-concurrency");
+        suite.setVerbose(2);
+        suite.setConfigFailurePolicy(FailurePolicy.CONTINUE);
+
+        XmlTest test = new XmlTest(suite);
+        test.setName("jakarta-concurrency-programmatic");
+
+        XmlPackage apiPackage = new XmlPackage();
+        XmlPackage specPackage = new XmlPackage();
+
+        apiPackage.setName("ee.jakarta.tck.concurrent.api.*");
+        specPackage.setName("ee.jakarta.tck.concurrent.spec.*");
+
+        List<String> apiExcludes = new ArrayList<>();
+        List<String> specExcludes = new ArrayList<>();
+
+        /**
+         * Exclude certain tests when running in lite mode
+         */
+        if (TestModeFilter.FRAMEWORK_TEST_MODE != Mode.TestMode.FULL) {
+            Log.info(ConcurrentTckLauncher.class, "createSuiteXML", "Modifying API and Spec packages to exclude specific tests for lite mode.");
+            apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");
+            specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi",
+                                              "ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"));
+        }
+
+        /**
+         * Skip signature testing on Windows
+         * So far as I can tell the signature test plugin is not supported on windows
+         * Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
+         */
+        if (System.getProperty("os.name").contains("Windows")) {
+            Log.info(ConcurrentTckLauncher.class, "createSuiteXML", "Skipping Signature Tests on Windows");
+            specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
+        }
+
+        apiPackage.setExclude(apiExcludes);
+        specPackage.setExclude(specExcludes);
+
+        test.setPackages(Arrays.asList(apiPackage, specPackage));
+
+        suite.setTests(Arrays.asList(test));
+
+        Log.info(ConcurrentTckLauncher.class, "createSuiteXML", suite.toXml());
+
+        //When this code runs it is running as part of an ant task already in the autoFVT directory.
+        //Therefore, use a relative path to this file.
+        String suiteXmlFileLocation = "publish/tckRunner/tck/" + suite.getFileName();
+        try (FileWriter suiteXmlWriter = new FileWriter(suiteXmlFileLocation);) {
+            suiteXmlWriter.write(suite.toXml());
+            Log.info(ConcurrentTckLauncher.class, "createSuiteXML", "Wrote to " + suiteXmlFileLocation);
+        }
+
+        return suite.getFileName();
     }
 }

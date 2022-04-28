@@ -8,10 +8,14 @@
 -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
+<!-- NOTE: this is not the suite executed as part of our automated testing.
+     Instead, we use a programmatically generated suite.xml
+ -->
 <suite name="jakarta-concurrency" verbose="2" configfailurepolicy="continue">
-	<test name="jakarta-concurrency.tck.sig">
-		<packages>
-    		<package name="ee.jakarta.tck.concurrent.spec.signature"/>
-        </packages> 
-	</test>
+    <test name="jakarta-concurrency">
+        <packages>
+            <package name="ee.jakarta.tck.concurrent.api.*"/>
+            <package name="ee.jakarta.tck.concurrent.spec.*"/>
+        </packages>
+    </test>
 </suite>
