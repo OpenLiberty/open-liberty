@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=\u7b49\u5f85\u5df2\u4e2d\u65ad\u3002{0}\u6d88\u606f\uff1a[{1}]
+
+2002=ServerSession \u4e0a\u53d1\u751f\u7b49\u5f85\u6545\u969c\u3002
+
+2003=ClientSession \u4e0a\u53d1\u751f\u7b49\u5f85\u6545\u969c\u3002
+
+2004=\u5728 ConcurrencyManager \u4e0a\u6267\u884c wait() \u4e4b\u524d\u5df2\u5c1d\u8bd5\u4fe1\u53f7\u3002\u8fd9\u901a\u5e38\u610f\u5473\u7740\u5df2\u5c1d\u8bd5\u5728\u4e8b\u52a1\u542f\u52a8\u4e4b\u524d{0}\u843d\u5b9e\u6216\u56de\u6eda\u8be5\u4e8b\u52a1\uff0c\u6216\u5df2\u5c1d\u8bd5\u56de\u6eda\u67d0\u4e2a\u4e8b\u52a1\u4e24\u6b21\u3002
+
+2005=\u5728 DatabaseSession \u7684\u5e8f\u5217\u8fde\u63a5\u5904\u7406\u7a0b\u5e8f\u4e0a\u53d1\u751f\u7b49\u5f85\u6545\u969c\u3002
+
+2006=\u8bf7\u5c1d\u8bd5\u5728\u591a\u4e2a\u7ebf\u7a0b\u4e2d\u540c\u65f6\u901a\u8fc7\u5355\u4e2a\u8fde\u63a5 ({0}) \u83b7\u53d6\u5e8f\u5217\u503c
+
+2007=\u8d85\u8fc7\u9501\u5b9a\u5bf9\u8c61 {0} \u7684\u6700\u5927\u5c1d\u8bd5\u6b21\u6570\u3002\u672a\u80fd\u514b\u9686\u8be5\u5bf9\u8c61\u3002
+
+2008=\u8d85\u8fc7\u9501\u5b9a\u5bf9\u8c61 {0} \u7684\u6700\u5927\u5c1d\u8bd5\u6b21\u6570\u3002\u672a\u80fd\u5408\u5e76\u4e8b\u52a1\u3002
+
+2009=\u8d85\u8fc7\u9501\u5b9a\u5bf9\u8c61\u7684\u6700\u5927\u5c1d\u8bd5\u6b21\u6570\u3002\u672a\u80fd\u6784\u5efa\u8be5\u5bf9\u8c61\u3002\u7ebf\u7a0b {0} \u5df2\u9501\u5b9a\u5bf9\u8c61\uff0c\u4f46\u662f\u7ebf\u7a0b {1} \u6b63\u5728\u6784\u5efa\u8be5\u5bf9\u8c61\u3002
+
+2010=\u9501\u5b9a\u5df2\u8f6c\u6362\u4e3a\u5ef6\u8fdf\u9501\u5b9a\u3002\u5728\u5408\u5e76\u671f\u95f4\uff0c\u7ebf\u7a0b {0} \u5df2\u8bf7\u6c42\u7b2c\u4e8c\u6b21\u5c1d\u8bd5\u8f6c\u6362\u8be5\u9501\u5b9a\u3002
+

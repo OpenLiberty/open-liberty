@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Szintaxisfelismer\u00e9si probl\u00e9ma a(z) [{0}] lek\u00e9rdez\u00e9s \u00e9rtelmez\u00e9sekor. Az \u00e9rtelmez\u0151 a k\u00f6vetkez\u0151t adta vissza: [{1}].
+
+8002=\u00c1ltal\u00e1nos probl\u00e9ma a(z) [{0}] lek\u00e9rdez\u00e9s \u00e9rtelmez\u00e9sekor. Az \u00e9rtelmez\u0151 a k\u00f6vetkez\u0151t adta vissza: [{1}].
+
+8003=A(z) [{0}] oszt\u00e1ly nem tal\u00e1lhat\u00f3. Az \u00e9rtelmez\u0151 a k\u00f6vetkez\u0151t adta vissza: [{1}].
+
+8004=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: ismeretlen [{3}] azonos\u00edt\u00f3 v\u00e1ltoz\u00f3. A lek\u00e9rdez\u00e9s FROM r\u00e9szkifejez\u00e9se nem deklar\u00e1l [{3}] azonos\u00edt\u00f3 v\u00e1ltoz\u00f3t.
+
+8005=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. Probl\u00e9ma mer\u00fclt fel az oszt\u00e1lyn\u00e9v felold\u00e1sakor - A(z) [{1}] oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+8006=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. Probl\u00e9ma mer\u00fclt fel az oszt\u00e1lyn\u00e9v felold\u00e1sakor - A(z) [{1}] le\u00edr\u00f3ja nem tal\u00e1lhat\u00f3.
+
+8007=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. Probl\u00e9ma mer\u00fclt fel az oszt\u00e1lyn\u00e9v felold\u00e1sakor - A(z) [{1}] lek\u00e9pez\u00e9se nem tal\u00e1lhat\u00f3.
+
+8008=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. Probl\u00e9ma mer\u00fclt fel a lek\u00e9rdez\u00e9si kifejez\u00e9s \u00f6ssze\u00e1ll\u00edt\u00e1sakor - A(z) [{1}] expressionBuilder nem tal\u00e1lhat\u00f3.
+
+8009=Probl\u00e9ma a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. A(z) [{1}] kifejez\u00e9s jelenleg nem t\u00e1mogatott.
+
+8010=\u00c1ltal\u00e1nos probl\u00e9ma a(z) [{0}] lek\u00e9rdez\u00e9s \u00e9rtelmez\u00e9sekor.
+
+8011=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] gy\u0171jtem\u00e9nytag deklar\u00e1ci\u00f3, a program egy gy\u0171jtem\u00e9ny \u00e9rt\u00e9k\u0171 t\u00e1rs\u00edt\u00e1si mez\u0151t v\u00e1rt.
+
+8012=Probl\u00e9ma a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. M\u00e9g nincs megval\u00f3s\u00edtva: {1}.
+
+8013=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{3}] konstruktoroszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+8014=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] SIZE argumentum, a program egy gy\u0171jtem\u00e9ny \u00e9rt\u00e9k\u0171 t\u00e1rs\u00edt\u00e1si mez\u0151t v\u00e1rt.
+
+8015=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen felsorol\u00e1si konstans, a(z) {3} felsorol\u00e1st\u00edpushoz nem tartozik egy {4} felsorol\u00e1si liter\u00e1l.
+
+8016=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] SELECT kifejez\u00e9s a lek\u00e9rdez\u00e9shez [{4}] csoportos\u00edt\u00e1ssal. Csak \u00f6sszes\u00edt\u00e9sek, GROUP BY elemek vagy ezek konstruktor kifejez\u00e9sei enged\u00e9lyezettek egy GROUP BY lek\u00e9rdez\u00e9s SELECT r\u00e9szkifejez\u00e9s\u00e9ben.
+
+8017=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] HAVING kifejez\u00e9s a lek\u00e9rdez\u00e9shez [{4}] csoportos\u00edt\u00e1ssal. A HAVING r\u00e9szkifejez\u00e9snek keres\u00e9si felt\u00e9teleket kell megadnia a csoportos\u00edt\u00f3 elemekhez, vagy \u00f6sszes\u00edt\u0151 f\u00fcggv\u00e9nyeket, amelyek a csoportos\u00edt\u00f3 elemekre \u00e9rv\u00e9nyesek.
+
+8018=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{3}] param\u00e9ter \u00e9rv\u00e9nytelen t\u00f6bbsz\u00f6r\u00f6s haszn\u00e1lata a(z) [{4}] \u00e9s [{5}] elt\u00e9r\u0151 param\u00e9tert\u00edpusok felt\u00e9telez\u00e9s\u00e9vel.
+
+8019=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{3}] azonos\u00edt\u00f3 v\u00e1ltoz\u00f3 t\u00f6bbsz\u00f6r\u00f6s deklar\u00e1ci\u00f3ja, kor\u00e1bban mint [{4} {3}] lett deklar\u00e1lva.
+
+8020=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen {3} [{4}] f\u00fcggv\u00e9ny argumentum, a program [{5}] t\u00edpus\u00fa argumentumot v\u00e1rt.
+
+8021=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{4}] t\u00edpus\u00fa [{3}] ORDER BY elem, a program egy rendezhet\u0151 t\u00edpust v\u00e1rt.
+
+8022=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen {3} [{4}] kifejez\u00e9s argumentum, a program [{5}] t\u00edpus\u00fa argumentumot v\u00e1rt.
+
+8023=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s \u00e9rtelmez\u00e9sekor.
+
+8024=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop \u00e9rtelmez\u00e9sekor: szintaktikai hiba a k\u00f6vetkez\u0151n\u00e9l: [{3}].
+
+8025=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop \u00e9rtelmez\u00e9sekor: v\u00e1ratlan [{3}] token.
+
+8026=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop \u00e9rtelmez\u00e9sekor: v\u00e1ratlan [{3}] karakter.
+
+8027=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop \u00e9rtelmez\u00e9sekor: v\u00e1rt [{3}] karakter, tal\u00e1lt [{4}].
+
+8028=Szintaktikai hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop \u00e9rtelmez\u00e9sekor: lek\u00e9rdez\u00e9s v\u00e1ratlan v\u00e9ge.
+
+8029=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] navig\u00e1ci\u00f3s kifejez\u00e9s, a(z) [{5}] t\u00edpus\u00fa [{4}] kifejez\u00e9s nem navig\u00e1lhat\u00f3 egy lek\u00e9rdez\u00e9sen bel\u00fcl.
+
+8030=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{4}] oszt\u00e1ly [{3}] \u00e1llapot- vagy t\u00e1rs\u00edt\u00e1si mez\u0151je \u00e9rv\u00e9nytelen.
+
+8031=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{4}] be\u00e1gyazott entit\u00e1shoz tartoz\u00f3 {3} nem t\u00e1mogatott.
+
+8032=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: a(z) [{4}] SET r\u00e9szkifejez\u00e9s c\u00e9lban l\u00e9v\u0151 [{3}] attrib\u00fatum hozz\u00e1f\u00e9r\u00e9se \u00e9rv\u00e9nytelen, egy SET r\u00e9szkifejez\u00e9sben csak \u00e1llapotmez\u0151k \u00e9s egy\u00e9rt\u00e9k\u0171 t\u00e1rs\u00edt\u00e1si mez\u0151k friss\u00edthet\u0151k.
+
+8033=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] navig\u00e1ci\u00f3s kifejez\u00e9s, a(z) [{4}] t\u00e1rs\u00edt\u00e1si mez\u0151 nem navig\u00e1lhat\u00f3 a SET r\u00e9szkifejez\u00e9s c\u00e9lban.
+
+8034=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s ford\u00edt\u00e1sakor. Ismeretlen egyedt\u00edpus: [{1}].
+
+8035=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen felsorol\u00e1si egyenl\u0151s\u00e9g kifejez\u00e9s, a(z) [{3}] t\u00edpus\u00fa felsorol\u00e1si \u00e9rt\u00e9k \u00f6sszehasonl\u00edt\u00e1sa egy [{4}] t\u00edpus\u00fa nem felsorol\u00e1si \u00e9rt\u00e9kkel.
+
+8036=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: \u00e9rv\u00e9nytelen [{3}] navig\u00e1ci\u00f3s kifejez\u00e9s, a gy\u0171jtem\u00e9ny \u00e9rt\u00e9k\u0171 [{4}] t\u00e1rs\u00edt\u00e1si mez\u0151 nem navig\u00e1lhat\u00f3.
+
+8037=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: Ismeretlen [{3}] egyedt\u00edpus.
+
+8038=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: probl\u00e9ma mer\u00fclt fel az oszt\u00e1lyn\u00e9v felold\u00e1sakor - A(z) [{3}] oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+8039=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: A(z) {3} v\u00e1ltoz\u00f3 nem egy t\u00e9rk\u00e9p, \u00e9s egy t\u00e9rk\u00e9pkulcsot k\u00e9rnek t\u0151le.
+
+8040=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: A(z) {3} \u00e1ln\u00e9v egy ORDER BY r\u00e9szkifejez\u00e9sben szerepel, de nincs meghat\u00e1rozva a lek\u00e9rdez\u00e9sben.
+
+8041=Hiba a(z) [{0}] lek\u00e9rdez\u00e9s, {1} sor, {2} oszlop ford\u00edt\u00e1sakor: Az index csak egy v\u00e1ltoz\u00f3hoz haszn\u00e1lhat\u00f3, \u00e9s egy nem-v\u00e1ltoz\u00f3 {3} elemhez lett megh\u00edvva.
+

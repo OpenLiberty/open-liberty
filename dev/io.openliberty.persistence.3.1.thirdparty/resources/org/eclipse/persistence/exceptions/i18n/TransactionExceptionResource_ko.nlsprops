@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=JNDI \uc774\ub984 [{0}] \uc544\ub798\uc5d0\uc11c \uc678\ubd80 \ud2b8\ub79c\uc7ad\uc158 \uc790\uc6d0\uc744 \ucc3e\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23002=\ud604\uc7ac \uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158 \uc0c1\ud0dc\ub97c \uc5bb\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23003=\ud604\uc7ac \uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158\uc744 \uc5bb\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23004=\ud2b8\ub79c\uc7ad\uc158 \uad00\ub9ac\uc790\ub97c \uc5bb\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23005=\uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158\uc5d0 \ubc14\uc778\ub529\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23006=\uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \uc0c8 \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23007=\uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158\uc744 \ucee4\ubbf8\ud2b8\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23008=\uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158\uc744 \ub864\ubc31\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23009=\ub864\ubc31\uc744 \uc704\ud574 \uc678\ubd80\uc5d0\uc11c \uad00\ub9ac\ub418\ub294 \ud2b8\ub79c\uc7ad\uc158\uc744 \ud45c\uc2dc\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud568
+
+23010=\uc774 \uc2a4\ub808\ub4dc\uc5d0 \ub300\ud574 \ud604\uc7ac \ud65c\uc131 \uc0c1\ud0dc\uc778 \uc678\ubd80 \uad00\ub9ac \ud2b8\ub79c\uc7ad\uc158\uc774 \uc5c6\uc74c
+
+23011=\uc5f0\uad00\ub41c \uc678\ubd80 \uad00\ub9ac \ud2b8\ub79c\uc7ad\uc158\uc774 \uc644\ub8cc\ub418\uae30 \uc804\uc5d0 UnitOfWork [{0}]\uc774(\uac00) \ube44\ud65c\uc131 \uc0c1\ud0dc\uac00 \ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+
+23012=\ud604\uc7ac \ud65c\uc131 \uc0c1\ud0dc\uc778 \ud2b8\ub79c\uc7ad\uc158\uc774 \uc5c6\uc74c
+
+23013=\ud2b8\ub79c\uc7ad\uc158\uc774 \ud604\uc7ac \ud65c\uc131 \uc0c1\ud0dc\uc784
+
+23014=JTA\ub97c \uc0ac\uc6a9\ud558\ub294 \ub3d9\uc548 EntityTransaction\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+23015=\ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \ub2e4\uc911 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \ud3ec\ud568\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+23016=\ud504\ub85d\uc2dc \uc2e4\ud589 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+

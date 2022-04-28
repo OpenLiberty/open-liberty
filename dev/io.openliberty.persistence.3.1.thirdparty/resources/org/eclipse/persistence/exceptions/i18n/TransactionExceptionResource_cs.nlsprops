@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Chyba p\u0159i vyhled\u00e1n\u00ed extern\u00edho prost\u0159edku transakce pod n\u00e1zvem rozhran\u00ed JNDI [{0}]
+
+23002=Chyba p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed stavu aktu\u00e1ln\u00ed extern\u011b spravovan\u00e9 transakce
+
+23003=Chyba p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed aktu\u00e1ln\u00ed extern\u011b spravovan\u00e9 transakce
+
+23004=Chyba p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed spr\u00e1vce transakc\u00ed
+
+23005=Chyba p\u0159i vytv\u00e1\u0159en\u00ed vazby na extern\u011b spravovanou transakci
+
+23006=Chyba p\u0159i zahajov\u00e1n\u00ed nov\u00e9 extern\u011b spravovan\u00e9 transakce
+
+23007=Chyba p\u0159i potvrzov\u00e1n\u00ed extern\u011b spravovan\u00e9 transakce
+
+23008=Chyba p\u0159i odvol\u00e1v\u00e1n\u00ed extern\u011b spravovan\u00e9 transakce
+
+23009=Chyba p\u0159i ozna\u010dov\u00e1n\u00ed extern\u011b spravovan\u00e9 transakce pro odvol\u00e1n\u00ed
+
+23010=Pro tento podproces nen\u00ed aktu\u00e1ln\u011b aktivn\u00ed \u017e\u00e1dn\u00e1 extern\u011b spravovan\u00e1 transakce
+
+23011=Rozhran\u00ed UnitOfWork [{0}] bylo p\u0159ed dokon\u010den\u00edm p\u0159idru\u017een\u00e9 extern\u011b spravovan\u00e9 transakce vykresleno jako neaktivn\u00ed.
+
+23012=Aktu\u00e1ln\u011b nen\u00ed aktivn\u00ed \u017e\u00e1dn\u00e1 transakce
+
+23013=Transakce je aktu\u00e1ln\u011b aktivn\u00ed
+
+23014=P\u0159i pou\u017eit\u00ed JTA nelze pou\u017e\u00edt rozhran\u00ed EntityTransaction.
+
+23015=V transakci nelze za\u0159adit v\u00edce zdroj\u016f dat.
+
+23016=V\u00fdjimka v proveden\u00ed serveru proxy.
+

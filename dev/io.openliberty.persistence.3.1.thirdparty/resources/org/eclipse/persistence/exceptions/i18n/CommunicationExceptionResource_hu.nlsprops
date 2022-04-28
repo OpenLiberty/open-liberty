@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/CommunicationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+12000=Hiba t\u00f6rt\u00e9nt a kapcsolat szolg\u00e1ltat\u00e1s k\u00fcld\u00e9sekor a k\u00f6vetkez\u0151nek: {0}.
+
+12001=Nem lehet csatlakozni a k\u00f6vetkez\u0151h\u00f6z: {0}.
+
+12002=Nem lehet terjeszteni a m\u00f3dos\u00edt\u00e1sokat a k\u00f6vetkez\u0151re: {0}.
+
+12003=Hiba a megh\u00edv\u00e1sban: {0}.
+
+12004=Hiba az \u00fczenet k\u00fcld\u00e9sekor a(z) {0} szolg\u00e1ltat\u00e1sb\u00f3l.
+

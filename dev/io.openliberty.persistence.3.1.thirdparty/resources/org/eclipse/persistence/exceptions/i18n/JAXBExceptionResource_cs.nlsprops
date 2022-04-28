@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=Kontextov\u00e1 cesta {0} neobsahuje \u017e\u00e1dnou tov\u00e1rnu ObjectFactory ani soubor jaxb.index, v map\u011b vlastnost\u00ed nebyla nalezena \u017e\u00e1dn\u00e1 extern\u00ed metadata a soubor sessions.xml byl nalezen nebo byl neplatn\u00fd.
+
+50001=T\u0159\u00edda {0} vy\u017eaduje konstruktor s nulov\u00fdm argumentem nebo ur\u010denou metodu tov\u00e1rny. Nezapome\u0148te, \u017ee nestatick\u00e9 vnit\u0159n\u00ed t\u0159\u00eddy nemaj\u00ed konstruktory s nulov\u00fdm argumentem a nejsou podporov\u00e1ny.
+
+50002=Na t\u0159\u00edd\u011b {0} je ur\u010dena t\u0159\u00edda tov\u00e1rny bez metody tov\u00e1rny.
+
+50003=Metoda tov\u00e1rny s n\u00e1zvem {0} nen\u00ed deklarov\u00e1na na t\u0159\u00edd\u011b {1}.
+
+50004=Anotace XmlAnyAttribute je na vlastnosti {0} neplatn\u00e1. Mus\u00ed b\u00fdt pou\u017eita s vlastnost\u00ed typu Map.
+
+50005=Na t\u0159\u00edd\u011b {0} je povolena pouze jedna vlastnost s anotac\u00ed XmlAnyAttribute.
+
+50006=Neplatn\u00e1 anotace XmlElementRef na vlastnosti {0} na t\u0159\u00edd\u011b {1}. Odkazovan\u00fd prvek nen\u00ed deklarovan\u00fd.
+
+50007=Kolize n\u00e1zv\u016f. Dv\u011b t\u0159\u00eddy maj\u00ed typ XML s identifik\u00e1torem URI {0} a n\u00e1zvem {1}.
+
+50008=Nepodporovan\u00e1 t\u0159\u00edda uzlu {0}. Metoda createBinder(Class) podporuje pouze t\u0159\u00eddu org.w3c.dom.Node.
+
+50009=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} je anotov\u00e1na jako do\u010dasn\u00e1, tak\u017ee nem\u016f\u017ee b\u00fdt obsa\u017eena v anotaci propOrder.
+
+50010=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} mus\u00ed b\u00fdt atributem, proto\u017ee pomoc\u00ed XmlValue je anotov\u00e1no jin\u00e9 pole nebo jin\u00e1 vlastnost.
+
+50011=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} nem\u016f\u017ee b\u00fdt anotov\u00e1na pomoc\u00ed XmlValue, proto\u017ee je podt\u0159\u00eddou jin\u00e9 t\u0159\u00eddy v\u00e1zan\u00e9 na XML.
+
+50012=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} byla ur\u010dena v anotaci propOrder, ale nejedn\u00e1 se o platnou vlastnost.
+
+50013=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} mus\u00ed b\u00fdt obsa\u017eena v prvku propOrder anotace XmlType.
+
+50014=Vlastnost nebo pole {0} na t\u0159\u00edd\u011b {1} s anotac\u00ed XmlValue mus\u00ed m\u00edt typ, kter\u00fd je mapovan\u00fd na jednoduch\u00fd typ sch\u00e9matu.
+
+50015=Anotace XmlElementWrapper je povolen\u00e1 na vlastnosti kolekce nebo pole, ale [{0}] nen\u00ed vlastnost kolekce nebo pole.
+
+50016=Vlastnost [{0}] m\u00e1 anotaci XmlID, ale jej\u00ed typ nen\u00ed \u0159et\u011bzec.
+
+50017=Neplatn\u00e1 anotace XmlIDREF na vlastnosti [{0}]. T\u0159\u00edda [{1}] mus\u00ed m\u00edt vlastnost anotovanou pomoc\u00ed XmlID.
+
+50018=Anotace XmlList je povolen\u00e1 pouze na vlastnosti kolekce nebo pole, ale [{0}] nen\u00ed vlastnost kolekce ani pole.
+
+50019=Byl rozpozn\u00e1n neplatn\u00fd typ parametru p\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed. Hodnota p\u0159idru\u017een\u00e1 ke kl\u00ed\u010di [eclipselink-oxm-xml] mus\u00ed b\u00fdt [Map<String, Object>, List<Object> nebo Object]. Objekt mus\u00ed b\u00fdt [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node nebo org.xml.sax.InputSource]. V p\u0159\u00edpad\u011b [Map<String, Object>] je String n\u00e1zev bal\u00edku.
+
+50021=Byl rozpozn\u00e1n neplatn\u00fd typ parametru p\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed. V p\u0159\u00edpad\u011b [Map<String, Object>] mus\u00ed b\u00fdt kl\u00ed\u010d typu [String] (ozna\u010duje n\u00e1zev bal\u00edku).
+
+50022=Byl rozpozn\u00e1n neplatn\u00fd typ parametru p\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed. V p\u0159\u00edpad\u011b [Map<String, Object>] mus\u00ed b\u00fdt hodnota [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node nebo org.xml.sax.InputSource] (manipul\u00e1tor pro soubor metadat).
+
+50023=P\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed byla rozpozn\u00e1na hodnota null pro kl\u00ed\u010d [{0}]. Hodnota mus\u00ed b\u00fdt nenulov\u00e1 a mus\u00ed p\u0159edstavovat jednu z n\u00e1sleduj\u00edc\u00edch hodnot [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node nebo org.xml.sax.InputSource] (manipul\u00e1tor pro soubor metadat).
+
+50024=P\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed byl rozpozn\u00e1n kl\u00ed\u010d s hodnotou null. Kl\u00ed\u010d mus\u00ed b\u00fdt nenulov\u00fd a mus\u00ed b\u00fdt typu [String] (ozna\u010duje n\u00e1zev bal\u00edku).
+
+50025=Nelze na\u010d\u00edst t\u0159\u00eddu [{0}] deklarovanou v extern\u00edm souboru metadat. Zkontrolujte, zda je n\u00e1zev t\u0159\u00eddy spr\u00e1vn\u00fd a zda byl nastaven spr\u00e1vn\u00fd zavad\u011b\u010d t\u0159\u00edd.
+
+50026=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed t\u0159\u00eddy JAXBContext pro XmlModel.
+
+50027=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vy\u0159azen\u00ed externalizovan\u00e9ho souboru metadat.
+
+50028=Nebylo mo\u017en\u00e9 vytvo\u0159it novou instanci [{0}].
+
+50029=T\u0159\u00edda [{0}] poskytnut\u00e1 na anotaci XmlCustomizer neimplementuje rozhran\u00ed org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=Do\u0161lo k pokusu o nastaven\u00ed v\u00edce ne\u017e jedn\u00e9 vlastnosti XmlID na t\u0159\u00edd\u011b [{1}]. Vlastnost [{0}] nelze nastavit jako XmlID, proto\u017ee jako XmlID je ji\u017e nastavena vlastnost [{2}].
+
+50031=Do\u0161lo k pokusu o nastaven\u00ed v\u00edce ne\u017e jedn\u00e9 vlastnosti XmlValue na t\u0159\u00edd\u011b [{0}]. Vlastnost [{1}] nelze nastavit jako XmlValue, proto\u017ee jako XmlValue je ji\u017e nastavena vlastnost [{2}].
+
+50032=Do\u0161lo k pokusu o nastaven\u00ed v\u00edce ne\u017e jedn\u00e9 vlastnosti XmlAnyElement na t\u0159\u00edd\u011b [{0}]. Vlastnost [{1}] nelze nastavit jako XmlAnyElement, proto\u017ee jako XmlAnyElement je ji\u017e nastavena vlastnost [{2}].
+
+50033=Nelze inicializovat DomHandlerConverter pro DomHandler [{0}] nastaven\u00fd na vlastnosti [{1}].
+
+50034=Vlastnost nebo pole [{0}] nelze anotovat pomoc\u00ed XmlAttachmentRef, proto\u017ee se nejedn\u00e1 o DataHandler.
+
+50035=Proto\u017ee je vlastnost nebo pole [{0}] nastavena jako XmlIDREF, c\u00edlov\u00fd typ ka\u017ed\u00e9ho prvku XmlElement deklarovan\u00e9ho v r\u00e1mci seznamu prvk\u016f XmlElement mus\u00ed m\u00edt vlastnost XmlID. Zkontrolujte, zda c\u00edlov\u00fd typ prvku XmlElement [{1}] obsahuje vlastnost XmlID.
+
+50036=Na TypeMappingInfo s n\u00e1zvem XmlTagName QName [{0}] mus\u00ed b\u00fdt nastaven\u00fd nenulov\u00fd typ.
+
+50037=Javovsk\u00fd typ s bal\u00edkem [{0}] nen\u00ed povolen\u00fd ve v\u00e1zac\u00edm souboru uzam\u010den\u00e9m na bal\u00edku [{1}].
+
+50038=Kontext DynamicJAXBContext nelze vytvo\u0159it z konkr\u00e9tn\u00edch t\u0159\u00edd. K vytvo\u0159en\u00ed kontextu z existuj\u00edc\u00edch t\u0159\u00edd pou\u017eijte t\u0159\u00eddu org.eclipse.persistence.jaxb.JAXBContext, nebo ur\u010dete org.eclipse.persistence.jaxb.JAXBContextFactory v souboru jaxb.properties.
+
+50039=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: Uzel mus\u00ed b\u00fdt instanc\u00ed dokumentu nebo prvku.
+
+50040=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext.
+
+50041=Nebyla nalezena konstanta v\u00fd\u010dtu [{0}].
+
+50042=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: N\u00e1zev relace m\u011bl hodnotu null.
+
+50043=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: Zdroj m\u011bl hodnotu null.
+
+50044=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: Proud InputStream m\u011bl hodnotu null.
+
+50045=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: Uzel m\u011bl hodnotu null.
+
+50046=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: XJC se nezda\u0159ilo vygenerovat CodeModel.
+
+50047=Nebyla nalezena t\u0159\u00edda [{0}].
+
+50048=Transform\u00e1tor \u010dten\u00ed ur\u010den\u00fd pro vlastnost [{0}] m\u00e1 jak t\u0159\u00eddu, tak metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+50049=Transform\u00e1tor \u010dten\u00ed ur\u010den\u00fd pro vlastnost [{0}] nem\u00e1 t\u0159\u00eddu ani metodu. T\u0159\u00edda nebo metoda je povinn\u00e1.
+
+50050=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro cestu XML [{1}] vlastnosti [{0}] m\u00e1 t\u0159\u00eddu i metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+50051=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro cestu XML [{1}] vlastnosti [{0}] nem\u00e1 t\u0159\u00eddu ani metodu. T\u0159\u00edda nebo metoda je povinn\u00e1.
+
+50052=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro vlastnost [{0}] nem\u00e1 nastavenou cestu XML. Cesta XML je povinn\u00e1.
+
+50053=Nebyla nalezena metoda transformace [{0}] s parametry (), (AbstractSession) nebo (Session).
+
+50054=Nebyla nalezena t\u0159\u00edda transform\u00e1toru [{0}]. Zkontrolujte, zda je n\u00e1zev t\u0159\u00eddy spr\u00e1vn\u00fd a zda byl nastaven spr\u00e1vn\u00fd zavad\u011b\u010d t\u0159\u00edd.
+
+50055=Chyba p\u0159i vytv\u00e1\u0159en\u00ed kontextu DynamicJAXBContext: V map\u011b vlastnost\u00ed nebyl nalezen zdroj eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) nebo m\u011bla mapa hodnotu null.
+
+50056=Vlastnost [{0}] obsahuje deklaraci XmlJoinNode, ale odkazovanou t\u0159\u00eddu [{1}] nelze pro tento typ vztahu pou\u017e\u00edt.
+
+50057=Vlastnost [{1}] ve t\u0159\u00edd\u011b [{0}] odkazuje na t\u0159\u00eddu [{2}], kter\u00e1 je ozna\u010dena jako do\u010dasn\u00e1, co\u017e nen\u00ed povoleno.
+
+50058=Vlastnost [{1}] ve t\u0159\u00edd\u011b [{0}] m\u00e1 deklaraci XmlJoinNode, ale c\u00edlov\u00e1 t\u0159\u00edda [{2}] nem\u00e1 \u017e\u00e1dnou vlastnost XmlID ani vlastnosti XmlKey. Je nutn\u00e9, aby na c\u00edlov\u00e9 t\u0159\u00edd\u011b existovala pro ka\u017edou cestu referencedXmlPath vlastnost XmlID/XmlKey s odpov\u00eddaj\u00edc\u00ed cestou XmlPath.
+
+50059=Vlastnost [{1}] ve t\u0159\u00edd\u011b [{0}] m\u00e1 deklaraci XmlJoinNode s cestou referencedXmlPath [{3}], ale na c\u00edlov\u00e9 t\u0159\u00edd\u011b [{2}] neexistuje \u017e\u00e1dn\u00e1 vlastnost XmlID nebo XmlKey s cestou XmlPath [{3}]. Je nutn\u00e9, aby na c\u00edlov\u00e9 t\u0159\u00edd\u011b existovala pro ka\u017edou cestu referencedXmlPath vlastnost XmlID/XmlKey s odpov\u00eddaj\u00edc\u00ed cestou XmlPath.
+
+50060=Vlastnost [{1}] ve t\u0159\u00edd\u011b [{0}] m\u00e1 deklaraci XmlIDREF, ale c\u00edlovou t\u0159\u00eddu [{2}] nelze pro tento typ vztahu pou\u017e\u00edt.
+
+50061=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o na\u010dten\u00ed t\u0159\u00eddy XmlAdapterClass [{0}]. Mo\u017enou p\u0159\u00ed\u010dinou je nespr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy adapt\u00e9ru nebo nastaven\u00ed chybn\u00e9ho zavad\u011b\u010de.
+
+50062=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o p\u0159\u00edstup k deklarovan\u00fdm metod\u00e1m t\u0159\u00eddy XmlAdapterClass [{0}]. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee spr\u00e1vce SecurityManager odep\u0159el p\u0159\u00edstup k deklarovan\u00fdm metod\u00e1m v r\u00e1mci t\u0159\u00eddy adapt\u00e9ru, nebo spr\u00e1vce SecuritManager odep\u0159el p\u0159\u00edstup k bal\u00edku t\u0159\u00eddy adapt\u00e9ru.
+
+50063=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy XmlAdapterClass [{0}]. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee t\u0159\u00edda adapt\u00e9ru nem\u00e1 \u017e\u00e1dn\u00fd nulov\u00fd konstruktor argumentu.
+
+50064=T\u0159\u00edda XmlAdapterClass [{0}] neroz\u0161i\u0159uje "javax.xml.bind.annotation.adapters.XmlAdapter" podle o\u010dek\u00e1v\u00e1n\u00ed. Je nezbytn\u00e9, aby t\u0159\u00edda adapt\u00e9ru roz\u0161i\u0159ovala "javax.xml.bind.annotation.adapters.XmlAdapter" a deklarovala metody "public abstract BoundType unmarshal(ValueType v)" a "public abstract ValueType marshal(BoundType v)".
+
+50065=Byl ur\u010den neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] pro bal\u00edk [{1}]. Mo\u017enou p\u0159\u00ed\u010dinou je nespr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy adapt\u00e9ru nebo nastaven\u00ed chybn\u00e9ho zavad\u011b\u010de.
+
+50066=Byl ur\u010den neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] pro t\u0159\u00eddu [{1}]. Mo\u017enou p\u0159\u00ed\u010dinou je nespr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy adapt\u00e9ru nebo nastaven\u00ed chybn\u00e9ho zavad\u011b\u010de.
+
+50067=Byl ur\u010den neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] pro pole/vlastnost [{1}] na t\u0159\u00edd\u011b [{2}]. Mo\u017enou p\u0159\u00ed\u010dinou je nespr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy adapt\u00e9ru nebo nastaven\u00ed chybn\u00e9ho zavad\u011b\u010de.
+
+50068=P\u0159i zpracov\u00e1n\u00ed extern\u00edch metadat prost\u0159ednictv\u00edm mapy vlastnost\u00ed byla rozpozn\u00e1na hodnota null. Je nezbytn\u00e9, aby manipul\u00e1tor pro soubor metadat XML byl nenulov\u00fd a m\u011bl jednu z n\u00e1sleduj\u00edc\u00edch hodnot: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node nebo org.xml.sax.InputSource].
+
+50069=Pro poskytnut\u00fd soubor metadat XML nebyl ur\u010den bal\u00edk. Bal\u00edk lze ur\u010dit p\u0159ed\u00e1n\u00edm v Map<String, Object> (kde String = bal\u00edk, Object = manipul\u00e1tor pro soubor metadat XML) nebo nastaven\u00edm atributu package-name na prvku xml-bindings v souboru metadat XML.
+
+50070=Vlastnost [{0}] na t\u0159\u00edd\u011b [{1}] m\u00e1 deklaraci XmlElements obsahuj\u00edc\u00ed nestejn\u00fd po\u010det prvk\u016f XmlElement/XmlJoinNodes. Je nezbytn\u00e9, aby pro ka\u017ed\u00fd prvek XmlElement obsa\u017een\u00fd v deklaraci XmlElements existoval odpov\u00eddaj\u00edc\u00ed prvek XmlJoinNodes.
+
+50071=Vlastnost [{0}] na t\u0159\u00edd\u011b [{1}] m\u00e1 deklaraci XmlPaths obsahuj\u00edc\u00ed cestu XmlPath s atributem v ko\u0159enu cesty [{2}]. V p\u0159\u00edpad\u011b deklarace XmlPaths mus\u00ed b\u00fdt atributy vno\u0159eny v cest\u011b XmlPath, tj. [foo/{2}].
+
+50072=Na t\u0159\u00edd\u011b [{1}] byla nalezena duplicitn\u00ed vlastnost s n\u00e1zvem [{0}].
+
+50073=Vlastnost [{0}] na t\u0159\u00edd\u011b [{1}] je ur\u010dena ve v\u00edce extern\u00edch v\u00e1zac\u00edch souborech. Ka\u017ed\u00e1 vlastnost m\u016f\u017ee b\u00fdt ur\u010dena pouze v jednom souboru.
+
+50074=Do\u0161lo k v\u00fdjimce p\u0159i p\u0159\u00edstupu k transform\u00e1toru XMLNameTransformer [{0}]
+
+50075=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o transformaci n\u00e1zvu [{0}] pomoc\u00ed transform\u00e1toru XMLNameTransformer [{1}]
+
+50076=Nelze na\u010d\u00edst extern\u00ed metadata z poskytnut\u00e9ho um\u00edst\u011bn\u00ed: [{0}]. Toto um\u00edst\u011bn\u00ed mus\u00ed b\u00fdt bu\u010f platn\u00e1 adresa URL, nebo odkaz na cestu ke t\u0159\u00edd\u011b.
+
+50077=Nelze obnovit metadata. Aby bylo podporov\u00e1no obnoven\u00ed, mus\u00ed b\u00fdt metadata poskytnuta jako uzel XML.
+
+50078=Nelze zpracovat extern\u00ed v\u00e1zac\u00ed soubory (XJB). Chcete-li pou\u017e\u00edvat extern\u00ed v\u00e1zac\u00ed soubory, mus\u00ed b\u00fdt soubory XSD i XJB poskytnuty jako javax.xml.transform.Sources.
+
+50079=Nelze zpracovat sch\u00e9mata. Pokud pou\u017e\u00edv\u00e1te importy sch\u00e9mat, mus\u00ed b\u00fdt soubory XSD poskytnuty jako javax.xml.transform.Source.
+
+50080=Um\u00edst\u011bn\u00ed XmlLocation je povoleno pouze na vlastnostech typu org.xml.sax.Locator, ale [{0}] je typu [{1}].
+
+50081=Do\u0161lo k v\u00fdjimce b\u011bhem generov\u00e1n\u00ed sch\u00e9matu.
+
+50082=Do\u0161lo k pokusu o z\u00e1pis hodnoty {0} bez ur\u010den\u00e9ho kl\u00ed\u010de. Zkuste na t\u0159\u00edd\u011b JAXBMarshaller nastavit JSON_VALUE_WRAPPER.
+
+50083=Do\u0161lo k chyb\u011b p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy AccessorFactory {0}
+
+50084=Ur\u010den\u00e1 t\u0159\u00edda AccessorFactory: {0} je neplatn\u00e1. Mus\u00ed implementovat metodu createFieldAccessor(Class, Field, boolean) a createPropertyAccessor(Class, Method, Method).
+
+50085=Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed metody createFieldAccessor na t\u0159\u00edd\u011b AccessorFactory {0}
+
+50086=Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed metody createPropertyAccessor na t\u0159\u00edd\u011b AccessorFactory {0}
+
+50087=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vyvol\u00e1n\u00ed metody {0} na p\u0159istupuj\u00edc\u00edm objektu {1}
+
+50088=Hodnota v\u00fd\u010dtov\u00e9ho typu {0} nen\u00ed platn\u00e1 pro XmlEnum s t\u0159\u00eddou {1}
+
+50089=Rozhran\u00ed Java {0} nelze mapovat pomoc\u00ed JAXB, proto\u017ee m\u00e1 v\u00edce mapovateln\u00fdch nad\u0159\u00edzen\u00fdch rozhran\u00ed. V\u00edcen\u00e1sobn\u00e1 d\u011bdi\u010dnost nen\u00ed podporov\u00e1na.
+
+50090=Neplatn\u00e1 hodnota pro graf objektu: {0}. Hodnota mus\u00ed b\u00fdt \u0159et\u011bzec nebo instance ObjectGraph.
+
+50091=N\u00e1zev prvku {0} m\u00e1 v\u00edce ne\u017e jedno mapov\u00e1n\u00ed.
+
+50092=Na t\u0159\u00edd\u011b {1} je povolena pouze jedna vlastnost XmlElementRef typu {0}.
+
+50093=T\u0159\u00edda {0} nen\u00ed mapovan\u00fdm typem ve t\u0159\u00edd\u011b JAXBContext.
+
+50094=Vlastnost {0} ur\u010den\u00e1 v anotaci XmlVariableNode nebyla nalezena na t\u0159\u00edd\u011b {1}.
+
+50095=Vlastnost {0} typu {1} na t\u0159\u00edd\u011b {2} nen\u00ed platn\u00e1 pro anotaci XmlVariableNode. Jsou povoleny pouze vlastnosti typu String nebo QName.
+
+50096=Vlastnost @XmlAttribute {0} v typu {1} mus\u00ed odkazovat na typ mapovan\u00fd na text v XML. {2} nelze mapovat na textovou hodnotu.
+

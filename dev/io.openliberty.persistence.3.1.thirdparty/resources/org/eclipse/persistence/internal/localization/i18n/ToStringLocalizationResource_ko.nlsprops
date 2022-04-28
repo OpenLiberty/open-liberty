@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=\uc2dc\uc791 \ud504\ub85c\ud30c\uc77c \uad6c\uc131
+
+class=\ud074\ub798\uc2a4
+
+commit_depth=(\ucee4\ubbf8\ud2b8 \uae4a\uc774 = {0})
+
+connected=\uc5f0\uacb0\ub428
+
+connector=\ucee4\ub125\ud130
+
+context=\ucee8\ud14d\uc2a4\ud2b8:    
+
+database_name=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc774\ub984
+
+datasource=\ub370\uc774\ud130 \uc18c\uc2a4
+
+datasource_URL=\ub370\uc774\ud130 \uc18c\uc2a4 URL
+
+datasource_name=\ub370\uc774\ud130 \uc18c\uc2a4 \uc774\ub984
+
+depth_reset_key=(\uae4a\uc774 = {0}, \uc7ac\uc124\uc815 \ud0a4 = {1}, \uc7ac\uc124\uc815 \ubc84\uc804 = {2})
+
+disconnected=\uc5f0\uacb0 \ub04a\uae40
+
+empty_commit_order_dependency_node=\ube44\uc5b4 \uc788\ub294 CommitOrderDependencyNode
+
+end_profile=\uc885\ub8cc \ud504\ub85c\ud30c\uc77c
+
+error_printing_expression=\ud45c\ud604\uc2dd \uc778\uc1c4 \uc911 \uc624\ub958 \ubc1c\uc0dd
+
+lazy=\uc9c0\uc5f0
+
+local_time=\ub85c\uceec \uc2dc\uac04
+
+login=\ub85c\uadf8\uc778
+
+longestTime=\ucd5c\uc7a5 \uc2dc\uac04
+
+min_max=(\ucd5c\uc18c \uc5f0\uacb0 \uc218 = {0}, \ucd5c\ub300 \uc5f0\uacb0 \uc218 = {1})
+
+mulitple_files=\uc5ec\ub7ec \ud30c\uc77c
+
+multiple_readers=\uc5ec\ub7ec \ub9ac\ub354
+
+name=\uc774\ub984: 
+
+nest_level=(\uc911\ucca9 \ub808\ubca8 = {0})
+
+no_files=\ud30c\uc77c \uc5c6\uc74c
+
+no_streams=\uc2a4\ud2b8\ub9bc \uc5c6\uc74c
+
+node=\ub178\ub4dc ({0})
+
+non_lazy=\ube44\uc9c0\uc5f0
+
+not_instantiated=\uc778\uc2a4\ud134\uc2a4\ud654\ub418\uc9c0 \uc54a\uc74c
+
+number_of_objects=\uc624\ube0c\uc81d\ud2b8 \uc218
+
+objects_second=\uc624\ube0c\uc81d\ud2b8/\ucd08
+
+platform=\ud50c\ub7ab\ud3fc
+
+pooled=\ud480\ub9c1\ub428
+
+profile=\ud504\ub85c\ud30c\uc77c
+
+profiling_time=\uc2dc\uac04 \ud504\ub85c\ud30c\uc77c\ub9c1
+
+reader=\ub9ac\ub354
+
+schema=\uc2a4\ud0a4\ub9c8: 
+
+sdo_classgenerator_usage_help_1of8={0} \uc0ac\uc6a9\ubc95: org.eclipse.persistence.sdo.helper.{0} [-\uc635\uc158]
+
+sdo_classgenerator_usage_help_2of8=\uc635\uc158:
+
+sdo_classgenerator_usage_help_3of8=    -help                        \ub3c4\uc6c0\ub9d0 \uba54\uc2dc\uc9c0 \ud14d\uc2a4\ud2b8 \uc778\uc1c4
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       \uc785\ub825 \uc2a4\ud0a4\ub9c8 \ud30c\uc77c(\ud544\uc218)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Java \uc18c\uc2a4\ub97c \uc0dd\uc131\ud560 \ub514\ub809\ud1a0\ub9ac(\uc120\ud0dd\uc0ac\ud56d)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        \ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12 \uc9c0\uc815(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces                \uc778\ud130\ud398\uc774\uc2a4 \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
+
+sdo_classgenerator_usage_help_8of8=    -noImpls                     impl \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
+
+sdo_classgenerator_usage_missing_sourcefile={0} -sourceFile \ub9e4\uac1c\ubcc0\uc218\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uace0 \uc774\ub294 \ud544\uc218\uc785\ub2c8\ub2e4.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} -sourceFile\uc758 \uac12\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+
+sdo_classgenerator_usage_missing_targetdir={0} -targetDirectory\uc758 \uac12\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+
+server_name=\uc11c\ubc84 \uc774\ub984
+
+shortestTime=\ucd5c\ub2e8 \uc2dc\uac04
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           \ub85c\uae45 \ud30c\uc77c\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           \ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
+
+staticweave_commandline_help_message_14of19=    \uc18c\uc2a4\uc5d0\uc11c \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud558\ub294 \ub370 \ud544\uc694\ud55c \ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_15of19=    \uc18c\uc2a4 \ubc0f \ub300\uc0c1\uc774 \ub3d9\uc77c\ud55c \uc704\uce58\ub97c \uac00\ub974\ud0a4\ub294 \uacbd\uc6b0 \uc704\ube59\uc774 \uc801\uc808\ud558\uac8c \uc218\ud589\ub429\ub2c8\ub2e4. \uc801\uc808\ud55c \uc704\ube59\uc740 \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc18c\uc2a4\uc5d0\uc11c\ub9cc \uc801\uc6a9 \uac00\ub2a5\ud569\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_16of19=  \uc608\uc81c:
+
+staticweave_commandline_help_message_17of19=    C:\\foo-containing-persistence-xml.jar \ub0b4\uc5d0 \ud3ec\ud568\ub41c \ud574\ub2f9 persistence.xml\uc774 \ud3ec\ud568\ub41c C:\\foo-source.jar\uc5d0 \uc788\ub294 \ubaa8\ub4e0 \uc5d4\ud2f0\ud2f0 \uc704\ube0c
+
+staticweave_commandline_help_message_18of19=    C:\\foo-target.jar\uc5d0 \ucd9c\ub825:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  \uc0ac\uc6a9\ubc95: StaticWeave [\uc635\uc158] \uc18c\uc2a4 \ub300\uc0c1
+
+staticweave_commandline_help_message_2of19=  \uc635\uc158:
+
+staticweave_commandline_help_message_3of19=    -classpath classpath
+
+staticweave_commandline_help_message_4of19=           \uc0ac\uc6a9\uc790 \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \uc124\uc815\ud569\ub2c8\ub2e4. \uad6c\ubd84 \uae30\ud638\ub85c ";"(Windows) \ubc0f ":"(Unix)\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           META-INF/persistence.xml\uc774 \uc800\uc7a5\ub41c \uc704\uce58\ub97c \uba85\uc2dc\uc801\uc73c\ub85c \uc2dd\ubcc4\ud569\ub2c8\ub2e4. \uc774\ub294 META-INF/persistence.xml\uc758 \ub8e8\ud2b8\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_7of19=           \uc774 \uc635\uc158\uc740 persistence.xml\uc758 <jar-file>\uc5d0\uc11c \ucc38\uc870\ub41c \ud30c\uc77c\uc744 \uc704\ube0c\ud558\ub294 \uacbd\uc6b0 \uae30\ubcf8 jar\uc744 \uc9c0\uc815\ud558\ub294 \ub370 \uc77c\ubc18\uc801\uc73c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           META-INF/persistence.xml\uc774 \uc544\ub2cc \uc704\uce58\uc5d0 \uc788\ub294 \uacbd\uc6b0 \uc9c0\uc18d\uc131 \ub2e8\uc704\uc758 \ub8e8\ud2b8\uc5d0 \uc0c1\ub300\uc801\uc73c\ub85c persistence.xml\uc758 \uc704\uce58\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+staticweave_processor_dir_not_created={0} \ub514\ub809\ud1a0\ub9ac\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+staticweave_processor_file_not_created={0} \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+staticweave_processor_unknown_outcome=\ub514\ub809\ud1a0\ub9ac\uc5d0 \uc800\uc7a5\ub41c \ud074\ub798\uc2a4\ub97c \uc704\ube0c\ud558\uace0 JAR\ub85c \ucd9c\ub825\ud558\uba74 \uc885\uc885 \uc608\uc0c1\uce58 \ubabb\ud55c \uacb0\uacfc\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+
+time_object=\uc2dc\uac04/\uc624\ube0c\uc81d\ud2b8
+
+total_time=\ucd1d \uc2dc\uac04
+
+unknown=\uc54c \uc218 \uc5c6\uc74c
+
+user_name=\uc0ac\uc6a9\uc790 \uc774\ub984
+
+writer=\uae30\ub85d\uae30
+

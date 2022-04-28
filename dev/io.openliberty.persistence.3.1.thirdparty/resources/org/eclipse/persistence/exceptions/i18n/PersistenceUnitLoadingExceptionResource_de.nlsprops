@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, eine Persistenzeinheit f\u00fcr das Verzeichnis zu laden: {0}
+
+30002=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, eine Persistenzeinheit f\u00fcr die JAR-Datei zu laden: {0}
+
+30003=Es wurde eine Ausnahme beim Verarbeiten einer Persistenzeinheit an der URL ausgel\u00f6st: {0}
+
+30004=Es wurde eine Ausnahme beim Verarbeiten der Datei persistence.xml aus der URL ausgel\u00f6st: {0}
+
+30005=Bei der Suche nach Persistenzarchiven wurde eine Ausnahme durch folgenden Klassenlader ausgel\u00f6st: {0}
+
+30006=Es wurde eine Ausnahme bei der Suche nach Entit\u00e4ten an der URL {0} ausgel\u00f6st.
+
+30007=Beim Laden der Klasse {0}, mit der gepr\u00fcft werden sollte, ob sie @Entity, @Embeddable oder @MappedSuperclass implementiert, wurde ein Ausnahme ausgel\u00f6st.
+
+30008=Der zur\u00fcckgegebene Dateipfad war leer oder null.
+
+30009=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, eine Persistenzeinheit an der URL {0} zu laden.
+
+30010=Es wurde eine Ausnahme beim Laden der ORM-XML-Datei {0} ausgel\u00f6st.
+
+30011=EclipseLink konnte keine Klassen aus der URL {0} abrufen. EclipseLink hat versucht, diese URL als JAR-Datei und als Verzeichnis zu lesen und konnte sie nicht verarbeiten.
+
+30012=EclipseLink konnte keine Persistenzeinheit aus der URL {0} abrufen.
+
+30013=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, einen Persistenzeinheitennamen f\u00fcr die Persistenzeinheit [{1}] aus der URL {0} zu erstellen.
+
+30014=Die Persistenzeinheit gibt als Validierungsmodus "CALLBACK" an, es konnte jedoch keine ValidatorFactory-Beanvalidierung initialisiert werden. Suchen Sie in der verschachtelten Ausnahme nach n\u00e4heren Einzelheiten. Stellen Sie sicher, dass die Beanvalidierungs-API und der Beanvalidierungsprovider im Klassenpfad verf\u00fcgbar sind.
+
+30015=Es wurde eine Ausnahme beim Laden der Validierungsgruppenklasse {0} ausgel\u00f6st.
+
+30016=Der Sitzungsname {0} kann von der Persistenzeinheit {1} nicht verwendet werden, da er bereits von der Persistenzeinheit {2} verwendet wird.
+
+30017=Die Persistenzeinheit {0} ist in der URL {1} und in der URL {2} definiert. Mehrere Persistenzeinheiten mit demselben Namen k\u00f6nnen nicht von demselben Klassenlader geladen werden.
+
+30018=Die Ausnahme {1} wurde bei dem Versuch ausgel\u00f6st, die benutzerdefinierte ArchiveFactory {0} zu instanziieren.
+
+30019=Sie rufen die Methode refreshMetadata f\u00fcr eine EntityManagerFactory f\u00fcr die Persistenzeinheit {0} auf. Die Metadaten k\u00f6nnen nicht aktualisiert werden, weil diese EntityManagerFactory aus einem aus einer Persistenzeinheit abgeleiteten Sitzungsobjekt erstellt wurde.
+

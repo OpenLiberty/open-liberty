@@ -34,5 +34,6 @@ public class FATSuite {
                     .withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
+//                    .andWith(FeatureReplacementAction.EE10_FEATURES()); // CDI for JEE 10 is not yet ready.
     public static String repeatPhase = "";
 }

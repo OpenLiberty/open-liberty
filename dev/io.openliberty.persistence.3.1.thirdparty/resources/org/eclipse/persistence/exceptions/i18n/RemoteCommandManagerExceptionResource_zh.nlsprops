@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=\u672a\u80fd\u83b7\u53d6 JNDI \u4e0a\u4e0b\u6587\uff0c\u8bf7\u68c0\u67e5\u60a8\u7684\u5c5e\u6027\u662f\u5426\u6b63\u786e\u8bbe\u7f6e\u3002
+
+22102=\u672a\u80fd\u901a\u8fc7\u672c\u5730\u547d\u540d\u670d\u52a1\u53d1\u5e03\u540d\u79f0\u4e3a {0} \u7684\u8fde\u63a5
+
+22103=\u672a\u80fd\u67e5\u627e\u540d\u79f0\u4e3a {0} \u4e14 URL \u4e3a {1} \u7684\u8fdc\u7a0b\u8fde\u63a5
+
+22104=\u672a\u80fd\u67e5\u627e\u4e3b\u673a\u540d
+
+22105=\u672a\u80fd\u5c06\u547d\u4ee4\u4f20\u64ad\u5230 {0}
+
+22106=\u672a\u80fd\u4f7f\u7528\u4e3b\u9898 {0} \u548c\u4e3b\u9898\u5de5\u5382 {1} \u521b\u5efa\u5916\u90e8 JMS \u8fde\u63a5\u3002\u6b64\u5916\uff0c\u8bf7\u68c0\u67e5\u60a8\u7684\u4e0a\u4e0b\u6587\u5c5e\u6027\u662f\u5426\u6b63\u786e\u8bbe\u7f6e\u3002
+
+22107=\u672a\u80fd\u901a\u8fc7\u672c\u5730\u547d\u540d\u670d\u52a1\u79fb\u9664\u540d\u79f0\u4e3a {0} \u7684\u672c\u5730\u8fde\u63a5
+
+22108=\u672a\u80fd\u5e8f\u5217\u5316\u6216\u53cd\u5e8f\u5217\u5316\u547d\u4ee4
+
+22109=\u672a\u80fd\u4ece JMS \u63d0\u4f9b\u7a0b\u5e8f\u63a5\u6536\u5230 JMS \u6d88\u606f
+
+22110=\u672a\u80fd\u53d1\u73b0\u672c\u5730\u4e3b\u673a IP \u5730\u5740\u3002
+
+22111=\u672a\u80fd\u83b7\u53d6 ServerPlatform\u3002\u5fc5\u987b\u5728 Session \u6216 RemoteCommandManager \u4e0a\u8bbe\u7f6e ServerPlatform\u3002
+
+22112=\u672a\u80fd\u4f7f\u7528\u4e3b\u9898 {0} \u548c\u4e3b\u9898\u5de5\u5382 {1} \u521b\u5efa\u672c\u5730 JMS \u8fde\u63a5\u3002\u6b64\u5916\uff0c\u8bf7\u68c0\u67e5\u60a8\u7684\u4e0a\u4e0b\u6587\u5c5e\u6027\u662f\u5426\u6b63\u786e\u8bbe\u7f6e\u3002
+
+22113=\u5728\u4f7f\u7528\u5de5\u5382 {2} \u7684\u60c5\u51b5\u4e0b\uff0c\u672a\u80fd\u521b\u5efa Oc4jJGroupsRemoteConnection \u670d\u52a1\u6807\u8bc6 {0} \u4e3b\u9898 {1}\u3002\u6b64\u5916\uff0c\u8bf7\u68c0\u67e5\u60a8\u7684\u4e0a\u4e0b\u6587\u5c5e\u6027\u662f\u5426\u6b63\u786e\u8bbe\u7f6e\u3002
+
+22114={0}\uff1a\u672a\u80fd\u53cd\u5e8f\u5217\u5316\u68c0\u7d22\u5230\u7684\u6d88\u606f {1}\u3002
+
+22115={0}\uff1a\u672a\u80fd\u5904\u7406\u4ece\u6d88\u606f {1} \u68c0\u7d22\u5230\u7684\u8fdc\u7a0b\u547d\u4ee4\uff08\u6765\u81ea {2}\uff0c\u5e76\u4e14\u547d\u4ee4\u7c7b\u578b\u4e3a {3}\uff09
+
+22116=\u63a5\u6536\u5230\u7684 JMS \u6d88\u606f\u4e3a\u7a7a\u6d88\u606f\u3002\u6b63\u5728\u5c06\u5176\u89c6\u4e3a JMSException
+
+22117=\u5728\u5904\u7406\u5165\u5c40\u6d88\u606f\u65f6\uff0c\u4f1a\u8bdd\u7684 RemoteCommandManager \u5df2\u5173\u95ed\u6216\u5c1a\u672a\u521d\u59cb\u5316
+
+22118=\u672a\u80fd\u4f7f\u7528\u914d\u7f6e\u6587\u4ef6\u521b\u5efa JGroups \u8fde\u63a5\uff1a{0}
+

@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=A espera foi interrompida. {0}Mensagem: [{1}]
+
+2002=Falha de espera na ServerSession.
+
+2003=Falha de espera na ClientSession.
+
+2004=Um sinal foi tentado antes de wait() em ConcurrencyManager. Isso normalmente significa que foi feita uma tentativa de {0}confirmar ou retroceder uma transa\u00e7\u00e3o antes que ela fosse iniciada, ou retroceder uma transa\u00e7\u00e3o duas vezes.
+
+2005=Falha de espera no Manipulador de sequenciamento de conex\u00e3o para DatabaseSession.
+
+2006=Tentativa de adquirir valores de sequenciamento por meio de uma \u00fanica conex\u00e3o ({0}) simultaneamente em diversos encadeamentos
+
+2007=N\u00famero m\u00e1ximo de tentativas de bloquear o objeto: {0} excedido.  Falha ao clonar o objeto.
+
+2008=N\u00famero m\u00e1ximo de tentativas de bloquear o objeto: {0} excedido.  Falha ao mesclar a transa\u00e7\u00e3o.
+
+2009=O n\u00famero m\u00e1ximo de tentativas de bloquear o objeto foi excedido.  Falha ao construir o objeto. O encadeamento: {0} tem um bloqueio no objeto, mas o encadeamento: {1} est\u00e1 construindo o objeto.
+
+2010=O bloqueio j\u00e1 foi movido para um Bloqueio adiado.  Uma segunda tentativa de transi\u00e7\u00e3o do bloqueio foi solicitada pelo encadeamento {0} durante a mesclagem.
+

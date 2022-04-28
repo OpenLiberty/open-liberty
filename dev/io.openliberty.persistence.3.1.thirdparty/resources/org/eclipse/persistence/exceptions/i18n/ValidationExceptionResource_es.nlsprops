@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Debe iniciar una sesi\u00f3n en ServerSession antes de adquirir ClientSessions.
+
+7002=La agrupaci\u00f3n denominada [{0}] no existe.
+
+7003=El tama\u00f1o m\u00e1ximo debe ser mayor que el tama\u00f1o m\u00ednimo.
+
+7004=Las agrupaciones deben configurarse antes del inicio de sesi\u00f3n.
+
+7008=El tipo Java [{0}] no es un tipo de base de datos v\u00e1lido.
+
+7009=Falta el descriptor para [{0}].  Verifique que el descriptor se haya registrado correctamente con la sesi\u00f3n.
+
+7010=El \u00edndice de inicio est\u00e1 fuera de rango.
+
+7011=El \u00edndice de detenci\u00f3n est\u00e1 fuera de rango.
+
+7012=Se ha producido un error muy grave.
+
+7013=Est\u00e1 utilizando la API SessionManager en desuso y no se ha encontrado ning\u00fan archivo EclipseLink.properties en la classpath.  No se han podido leer las sesiones del archivo.
+
+7017=Los descriptores hijo no tienen una correlaci\u00f3n de identidades y comparten la de sus padres
+
+7018=Error de archivo.
+
+7023=Se ha proporcionado una instancia de inicio de sesi\u00f3n incorrecta.  Debe proporcionarse un DatabaseLogin.
+
+7024=Pol\u00edtica de fusi\u00f3n no v\u00e1lida.
+
+7025=Las \u00fanicas claves v\u00e1lidas para DatabaseRows son Strings y DatabaseFields.
+
+7027=La secuencia denominada [{0}] se ha configurado incorrectamente.  Su incremento no coincide con su tama\u00f1o de preasignaci\u00f3n.
+
+7028=No se permite writeObject() en una UnitOfWork.
+
+7030=No puede establecer el tama\u00f1o de la agrupaci\u00f3n de lectura despu\u00e9s de un inicio de sesi\u00f3n.
+
+7031=No puede a\u00f1adir descriptores a un SessionBroker.
+
+7032=No hay ninguna sesi\u00f3n registrada para la clase [{0}].
+
+7033=No hay ninguna sesi\u00f3n registrada con el nombre [{0}].
+
+7038=Error al registrar el mensaje en el registro de sesiones.
+
+7039=No se puede eliminar del conjunto de clases de s\u00f3lo lectura en una UnitOfWork anidada. {0} El conjunto de clases de s\u00f3lo lectura de una UnitOfWork anidada debe ser igual o un superconjunto del conjunto de las clases de s\u00f3lo lectura de su padre.
+
+7040=No se puede cambiar el conjunto de clases de s\u00f3lo lectura de una UnitOfWork una vez utilizada la UnitOfWork. {0} Los cambios en el conjunto de s\u00f3lo lectura deben realizarse cuando se adquiere la UnitOfWork o inmediatamente despu\u00e9s.
+
+7042=No se ha encontrado la clase de plataforma de base de datos [{0}].
+
+7043=[{0}] no tiene tablas que crear en la base de datos.
+
+7044=La clase de contenedor especificada [{0}] no puede utilizarse como contenedor porque no implementa una colecci\u00f3n o una correlaci\u00f3n.
+
+7047=El contenedor especificado [{0}] no requiere claves.  Ha intentado utilizar el m\u00e9todo [{1}].
+
+7048=No existe el m\u00e9todo de instancia ni el campo denominado [{0}] para la clase de elemento [{1}] y, por lo tanto, no se puede utilizar para crear una clave para la correlaci\u00f3n.
+
+7051=Falta el atributo [{1}] para el descriptor [{0}], invocado desde [{2}]
+
+7052=Se ha intentado utilizar [{0}] (con el m\u00e9todo de clave [{1}]) como contenedor para una DirectCollectionMapping.  El m\u00e9todo useMapClass() no puede utilizarse; s\u00f3lo tiene soporte la API useCollectionClass() para DirectCollectionMappings.
+
+7053=Se ha intentado release() en una sesi\u00f3n que no es una ClientSession.  S\u00f3lo pueden liberarse ClientSessions.
+
+7054=Se ha intentado acquire() en una sesi\u00f3n que no es una ServerSession.  Las ClientSessions s\u00f3lo pueden adquirirse de ServerSessions.
+
+7055=El bloqueo optimista no est\u00e1 soportado con la generaci\u00f3n de procedimientos almacenados.
+
+7056=Se ha registrado el objeto incorrecto en la UnitOfWork.  El objeto [{0}] debe ser el objeto de la cach\u00e9 padre [{1}].
+
+7058=Conector no v\u00e1lido [{0}] (debe ser del tipo DefaultConnector).
+
+7059=Nombre de origen de datos no v\u00e1lido [{0}].
+
+7060=No se puede adquirir el origen de datos [{0}].
+
+7061=Se ha producido una excepci\u00f3n en JTS.
+
+7062=El bloqueo a nivel de campo no est\u00e1 soportado fuera de una UnitOfWork.  Para utilizar el bloqueo a nivel de campo, debe utilizarse una UnitOfWork para TODA la escritura.
+
+7063=Se ha producido una excepci\u00f3n en el contenedor de EJB.
+
+7064=Se ha producido una excepci\u00f3n en la extracci\u00f3n de claves primarias del EJB reflexivo.  Aseg\u00farese el objeto de clave primaria se haya definido correctamente. {2}Clave: [{0}] {2}Bean: [{1}]
+
+7065=La clase remota del bean no puede cargarse o no se encuentra.  Aseg\u00farese de que se haya establecido el cargador de clases correcto. {2}Bean: [{0}] {2}Clase remota: [{1}]
+
+7066=No se pueden crear o eliminar beans a menos que exista una transacci\u00f3n JTS. {1}Bean: [{0}]
+
+7068=No se ha encontrado la clase de proyecto [{0}] para el proyecto [{1}] utilizando el cargador de clases predeterminado.
+
+7071=No se pueden utilizar los par\u00e1metros de entrada/salida sin utilizar el enlace.
+
+7072=No se ha encontrado la clase de plataforma de base de datos [{0}] para el proyecto [{1}] utilizando el cargador de clases predeterminado.
+
+7073=El tipo de objeto de Oracle con el nombre de tipo [{0}] no est\u00e1 definido.
+
+7074=El nombre del tipo de objeto de Oracle [{0}] no est\u00e1 definido.
+
+7075=No se ha definido el tama\u00f1o m\u00e1ximo para el tipo VARRAY de Oracle [{0}].  Debe definirse un tama\u00f1o m\u00e1ximo.
+
+7076=Cuando se genera la clase de proyecto, los descriptores del proyecto no deben inicializarse. {1}Descriptor: [{0}]
+
+7077=La interfaz inicial [{0}], especificada durante la creaci\u00f3n de BMPWrapperPolicy, no contiene el m\u00e9todo findByPrimaryKey() correcto.  Debe existir un m\u00e9todo findByPrimaryKey() que obtenga la clase PrimaryKey para este bean.
+
+7079=No se ha encontrado el descriptor para [{0}] en la sesi\u00f3n [{1}].  Revise el proyecto que se est\u00e1 utilizando para esta sesi\u00f3n.
+
+7080=Se ha generado una excepci\u00f3n FinderException al intentar cargar [{0}], de la clase [{1}], con la clave primaria [{2}].
+
+7081=El objeto agregado [{0}] no se puede registrar directamente en la UnitOfWork.  Debe estar asociado con el objeto de origen (propietario).
+
+7084=El archivo [{0}] no es un tipo v\u00e1lido para la lectura.  Debe proporcionarse el archivo de proyecto XML desplegado a ProjectReader.
+
+7086=El tipo de sesi\u00f3n [{0}] del nombre de la sesi\u00f3n [{1}] no se ha definido correctamente.
+
+7087=No se ha encontrado el tipo de sesi\u00f3n [{0}] para [{1}] utilizando el cargador de clases predeterminado.
+
+7088=No se puede crear una instancia del controlador de transacciones externas [{0}], especificado en el archivo de propiedades.
+
+7089=Se ha producido una excepci\u00f3n al buscar o invocar el m\u00e9todo de modificaci\u00f3n de la sesi\u00f3n [{0}] en la clase [{1}] con los par\u00e1metros [{2}].
+
+7091=No se pueden establecer las clases de escucha.
+
+7092=No se puede a\u00f1adir una consulta cuyos tipos est\u00e1n en conflicto con una consulta existente. La consulta que se va a a\u00f1adir: [{0}] se denomina: [{1}] con los argumentos [{2}]. La consulta en conflicto existente: [{3}] se denomina: [{4}] con los argumentos: [{5}].
+
+7093=En la consulta denominada [{0}], no se encuentra la clase [{2}] para el argumento de consulta denominado [{1}]. Incluya la clase que falta en la classpath.
+
+7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+
+7096=No se puede utilizar el m\u00e9todo commit() para confirmar UnitOfWork de nuevo.
+
+7097=La operaci\u00f3n no est\u00e1 soportada: [{0}].
+
+7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+
+7100=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
+
+7101=No se ha encontrado "meta-inf/eclipselink-ejb-jar.xml" en la classpath.  No se ha podido leer la sesi\u00f3n CMP en el archivo.
+
+7102=Se ha encontrado un valor nulo para una clave de cach\u00e9 cuando se intentaba eliminar{2}un objeto de la correlaci\u00f3n de identidades: [{0}]{2}que contiene un objeto de clase: [{1}] (o una clase en esta jerarqu\u00eda){2}La causa m\u00e1s probable de esta situaci\u00f3n es que el objeto ya se haya recogido en la{2}basura y, por lo tanto, no exista en la correlaci\u00f3n de identidades.{2}Se recomienda utilizar una correlaci\u00f3n de identidades alternativa para evitar esta situaci\u00f3n.{2}Consulte la documentaci\u00f3n de EclipseLink para obtener m\u00e1s detalles sobre las correlaciones de identidades.
+
+7103=Se ha encontrado una referencia nula al intentar invocar el{1}m\u00e9todo: [{0}] en un objeto que utiliza la indirecci\u00f3n de proxy. {1} Compruebe que este objeto no sea nulo antes de invocar sus m\u00e9todos.
+
+7104=El inicio de sesi\u00f3n de secuenciaci\u00f3n no debe utilizar el controlador de transacciones externas.
+
+7105=Se ha encontrado un error al convertir la clase de cifrado: [{0}]
+
+7106=Se ha encontrado un error durante el cifrado de la serie.
+
+7107=Se ha encontrado un error durante el descifrado de la serie.
+
+7108=Esta operaci\u00f3n no est\u00e1 soportada para las plataformas no relacionales.
+
+7109=El inicio de sesi\u00f3n en el proyecto utilizado para crear la sesi\u00f3n es nulo; debe ser un inicio de sesi\u00f3n v\u00e1lido.
+
+7110=Actualmente, HistoricalSession s\u00f3lo funciona con bases de datos Oracle 9R2 o posteriores, ya que utiliza la caracter\u00edstica Flashback de Oracle.
+
+7111=No puede adquirir una HistoricalSession de una UnitOfWork, otra HistoricalSession, una ServerSession o un ServerSessionBroker.  Puede adquirir una de una sesi\u00f3n regular, una ClientSession o un ClientSessionBroker.
+
+7112=Ha especificado que EclipseLink utilice la caracter\u00edstica: {0}, pero esta caracter\u00edstica no est\u00e1 disponible en la versi\u00f3n de JDK actualmente en ejecuci\u00f3n: {1}.
+
+7113={0} no da soporte a la llamada con devoluci\u00f3n.
+
+7114=Los datos aislados no est\u00e1n soportados actualmente en un intermediario de sesiones de cliente. La sesi\u00f3n denominada {0} contiene descriptores que representan datos aislados.
+
+7115=No se puede utilizar una conexi\u00f3n exclusiva para las lecturas de ClientSession sin datos aislados.  Actualice la ConnectionPolicy utilizada para eliminar la configuraci\u00f3n de ExclusiveConnection o el proyecto para establecer determinados datos como exclusivos.
+
+7116=Se han utilizado argumentos no v\u00e1lidos.  Consulte la API p\u00fablica del m\u00e9todo de llamada y utilice valores v\u00e1lidos para los argumentos.
+
+7117=Se ha intentado utilizar m\u00e1s de un cursor en SQLCall {0}
+
+7118=Se ha invocado el m\u00e9todo setCustomSQLArgumentType en SQLCall {0}, pero esta llamada no utiliza SQL personalizado
+
+7119=Una SQLCall {0} sin preparar ha intentado la conversi\u00f3n
+
+7120=El par\u00e1metro {0} en la SQLCall {1} no puede utilizarse como un cursor, porque tiene un tipo de par\u00e1metro distinto de OUT
+
+7121={0} no da soporte a las funciones almacenadas
+
+7122=La conexi\u00f3n exclusiva asociada con la sesi\u00f3n no est\u00e1 disponible para la consulta de {0}
+
+7123=Se ha invocado un m\u00e9todo writeChanges() satisfactorio en esta UnitOfWork.  Como el proceso de confirmaci\u00f3n se ha iniciado pero todav\u00eda no ha finalizado, las \u00fanicas operaciones soportadas ahora son commit, commitAndResume, release y cualquier ejecuci\u00f3n de SQLCall o consulta que no sea a nivel de objeto.  La operaci\u00f3n {0} no est\u00e1 permitida en este momento.
+
+7124=Se ha invocado un m\u00e9todo writeChanges() no satisfactorio en esta UnitOfWork.  Teniendo en cuenta el peligro de que se hayan grabado cambios parciales en el almac\u00e9n de datos pero no se hayan retrotra\u00eddo (si est\u00e1n dentro de una transacci\u00f3n externa), las \u00fanicas operaciones soportadas ahora son liberar, la retrotracci\u00f3n de transacciones globales y cualquier ejecuci\u00f3n de SQLCall o consulta que no sea a nivel de objeto.  Se ha intentado la operaci\u00f3n {0}.
+
+7125=Una vez confirmada y/o liberada la UnitOfWork, no deben realizarse en ella m\u00e1s operaciones.  Se ha intentado la operaci\u00f3n {0} en ella.
+
+7126=No puede invocarse writeChanges en una UnitOfWork anidada.  Una UnitOfWork anidada nunca graba los cambios directamente en el almac\u00e9n de datos, s\u00f3lo lo hace la UnitOfWork padre.
+
+7127=S\u00f3lo puede grabar cambios en el almac\u00e9n de datos una vez, al igual que s\u00f3lo puede invocar commit una vez.
+
+7128=Ya se ha iniciado la sesi\u00f3n [{0}].
+
+7129=Los argumentos del m\u00e9todo no pueden tener un valor nulo.
+
+7130=La UnitOfWork anidada no se admite en el seguimiento de cambios de atributo.
+
+7131={0} es el tipo incorrecto.  El tipo de suceso de cambio de colecci\u00f3n debe ser a\u00f1adir o eliminar.
+
+7132={0} es la clase de suceso incorrecta.  S\u00f3lo tienen soporte PropertyChangeEvent y CollectionChangeEvent.
+
+7133=La confirmaci\u00f3n antigua no est\u00e1 soportada para el seguimiento de cambios de atributo.
+
+7134=La plataforma del servidor {0} es de s\u00f3lo lectura despu\u00e9s de un inicio de sesi\u00f3n.
+
+7135=No puede confirmar y reanudar una UnitOfWork que contenga consultas de modificar todo
+
+7136=La UnitOfWork anidada se admite en consultas de modificar todo
+
+7137=El objeto se ha captado parcialmente (utilizando el grupo de captaci\u00f3n); el atributo no captado ({0}) no se puede editar.
+
+7139=No pueden emitirse consultas de modificar todo en una UnitOfWork que contenga otras operaciones de grabaci\u00f3n.
+
+7140=El tipo de secuencia {0} no tiene el m\u00e9todo {1}.
+
+7141=La secuencia {0} es de tipo DefaultSequence, que no puede utilizarse en el m\u00e9todo setDefaultSequence.
+
+7142=La secuencia {0} no puede establecerse como el valor predeterminado, porque ya se ha a\u00f1adido una secuencia con ese nombre.
+
+7143=La secuencia {0} no puede a\u00f1adirse, porque ya se ha establecido una secuencia con ese nombre como el valor predeterminado.
+
+7144={0}: la plataforma {1} no da soporte a {2}.
+
+7145={2} intenta conectarse a la secuencia {0}, pero ya est\u00e1 conectada a {1}. Es probable que las dos sesiones compartan el objeto DatasourcePlatform
+
+7146=QuerySequence {1} no tiene una consulta de selecci\u00f3n.
+
+7147=La plataforma {0} no puede crear una secuencia predeterminada de plataforma; no altera temporalmente el m\u00e9todo createPlatformDefaultSequence
+
+7148=commitAndResume() no puede utilizarse con una UnitOfWork sincronizada/JTA
+
+7149=El atributo de clave primaria compuesta [{2}] del tipo [{4}] en la clase de entidad [{0}] debe ser del mismo tipo que se ha definido en su clase de clave primaria [{1}]. Es decir, debe ser del tipo [{3}].
+
+7150=Especificaci\u00f3n de clave primaria compuesta no v\u00e1lida. Los nombres de los campos de clave primaria o las propiedades en la clase de clave primaria [{1}] y los de la clase de bean de entidad [{0}] deben corresponderse y sus tipos deben ser iguales. Asimismo, aseg\u00farese de que ha especificado elementos de ID para los atributos correspondientes en XML y/o un @Id en los campos o propiedades correspondientes de la clase de entidad.
+
+7151=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n enumerada. El atributo debe estar definido como una enumeraci\u00f3n Java.
+
+7153=No pueden aplicarse anotaciones de correlaci\u00f3n a los campos o las propiedades que tienen un @Transient especificado. [{0}] incumple esta restricci\u00f3n.
+
+7154=El atributo [{3}] en la clase de entidad [{2}] tiene un valor mappedBy [{1}] que no existe en su clase de entidad propietaria [{0}]. Si la clase de entidad propietaria es una @MappedSuperclass, no es v\u00e1lida y el atributo debe hacer referencia a la subclase correcta.
+
+7155=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n serializada. El tipo de atributo debe implementar la interfaz serializable.
+
+7156=No se puede encontrar la clase denominada [{0}]. Aseg\u00farese de que el nombre de clase/la classpath sean correctos y que est\u00e9n disponibles para el cargador de clases.
+
+7157=La clase de entidad [{0}] debe utilizar @JoinColumn en lugar de @Column para correlacionar su atributo de relaci\u00f3n [{1}].
+
+7158=Se ha producido un error al crear @NamedQuery [{1}] a partir de la clase de entidad [{0}].
+
+7159=No se encuentra la clave de correlaci\u00f3n [{0}] en la clase de entidad [{1}] para la correlaci\u00f3n [{2}].
+
+7160=@OneToMany para el nombre de atributo [{1}] en la clase de entidad [{0}] no puede tener JoinColumn(s) especificadas. Si un @OneToMany no est\u00e1 correlacionado por otra entidad (es decir, es el lado de propietario y es unidireccional) debe especificarse @JoinTable, no @JoinColumn(s). Si no se especifica @JoinTable, se utilizar\u00e1 una tabla de uni\u00f3n predeterminada en su lugar. Especifique @JoinTable s\u00f3lo si la configuraci\u00f3n predeterminada debe alterarse temporalmente.
+
+7161=La clase de entidad [{0}] no tiene ninguna clave primaria especificada. Debe definir @Id, @EmbeddedId o @IdClass. Si ha definido PK utilizando cualquiera de estas anotaciones, aseg\u00farese de que no tiene un tipo de acceso mixto (campos y propiedades anotadas) en la jerarqu\u00eda de clases de entidad.
+
+7162=La clase de entidad [{0}] tiene varias anotaciones de @EmbeddedId especificadas (en los atributos [{1}] y [{2}]). S\u00f3lo puede especificarse un @EmbeddedId por entidad.
+
+7163=La clase de entidad [{0}] tiene un @EmbdeddedId (en el atributo [{1}]) y un @Id (en el atributo [{2}]). Ambos tipos de ID no pueden especificarse en la misma entidad.
+
+7164=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n de LOB. Para un LOB de tipo BLOB, el atributo debe definirse como java.sql.Blob, byte[], Byte[] o un tipo serializable. Para un LOB de tipo CLOB, el atributo debe definirse como java.sql.Clob, char[], Character[] o un tipo de serie.
+
+7165=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n temporal. El atributo debe definirse como java.util.Date o java.util.Calendar.
+
+7166=Se ha encontrado un generador de tablas que utiliza el nombre reservado [{0}] para el "nombre" en [{1}]. No puede utilizar este nombre porque est\u00e1 reservado para el valor predeterminado del "nombre de secuencia" de un generador de secuencias.
+
+7167=Se ha encontrado un generador de secuencias que utiliza el nombre reservado [{0}] para el "nombre de secuencia" en [{1}]. No puede utilizar este nombre porque est\u00e1 reservado para el valor predeterminado del "nombre" de un generador de tablas.
+
+7168=El atributo [{0}] de tipo [{1}] en la clase identidad [{2}] no es v\u00e1lido para una propiedad de versi\u00f3n. Los siguientes tipos est\u00e1n soportados: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=La clase [{0}] tiene dos @GeneratedValues: para los campos [{1}] y [{2}]. S\u00f3lo se permite uno.
+
+7172=Se ha producido un error al crear una instancia de la clase [{0}].
+
+7173=Se ha activado un suceso de cambio de propiedad en una propiedad con el nombre [{1}] en [{0}].  No obstante, esta propiedad no existe.
+
+7174=El m\u00e9todo de obtenci\u00f3n [{1}] en la clase identidad [{0}] no tiene definido un m\u00e9todo de establecimiento correspondiente.
+
+7175=La correlaci\u00f3n [{0}] no da soporte al bloqueo optimista de versi\u00f3n en cascada.
+
+7176=La correlaci\u00f3n [{0}] no da soporte al bloqueo optimista de versi\u00f3n en cascada porque tiene una consulta personalizada.
+
+7177=El descriptor de agregaci\u00f3n [{0}] tiene correlaciones de propiedad privada. Los descriptores de agregaci\u00f3n no dan soporte al bloqueo optimista de versi\u00f3n en cascada.
+
+7178=OracleOCIProxyConnector requiere el origen de datos OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiere el origen de datos que produce OracleConnections.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiere JDBC de Oracle versi\u00f3n 10.1.0.2 o superior para que OracleConnection declare el m\u00e9todo openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requiere que el valor de propiedad PersistenceUnitProperties.ORACLE_PROXY_TYPE sea un entero o convertible en un entero: para la instancia OracleConnection.PROXYTYPE_USER_NAME o Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - No se ha podido encontrar la clase de controlador [{0}]
+
+7183=Error al cerrar el archivo persistence.xml.
+
+7184=No se ha especificado la propiedad del sistema [{0}]. Debe establecerse en una clase que define un m\u00e9todo "getContainerConfig()".
+
+7185=No se encuentra la clase [{0}] especificada en [{1}]
+
+7186=No se puede invocar el m\u00e9todo [{0}] en la clase [{1}] especificada en [{2}]
+
+7187=[{0}] debe definir un m\u00e9todo est\u00e1tico p\u00fablico [{1}] que no tenga par\u00e1metros y devuelva la colecci\u00f3n
+
+7188=Se necesita una lista de clases no nula.
+
+7189=No se puede crear el cargador de clases temporal a partir del cargador actual: [{0}]
+
+7190=Error en [{0}]
+
+7191=No se ha encontrado la clase de entidad [{0}] utilizando el cargador de clases [{1}].
+
+7192=ClassFileTransformer [{0}] genera una excepci\u00f3n cuando ejecuta transform() en la clase [{1}].
+
+7193=Los archivos jar en el XML de persistencia no est\u00e1n soportados en esta versi\u00f3n de EclipseLink.
+
+7194=No se ha podido enlazar: [{0}] con: [{1}].
+
+7195=Excepci\u00f3n al configurar EntityManagerFactory.
+
+7196=[{0}] del tipo [{1}] no se puede difundir a [{2}].
+
+7197=Se ha encontrado una clave primaria cero o nula en el clon de UnitOfWork [{0}] y clave primaria [{1}]. Establezca la IdValidation del descriptor o la propiedad "eclipselink.id-validation".
+
+7198=No se ha encontrado la clase: [{0}] durante la conversi\u00f3n de los nombres de clase en las clases.
+
+7199=No se ha definido una tabla primaria para la entidad {0} en el archivo de correlaciones de entidades: {1}.  Se necesita una tabla primaria para procesar una relaci\u00f3n de entidad.
+
+7200=No se ha encontrado el atributo [{1}] en la clase incorporable [{0}]. Se hace referencia a \u00e9l en una alteraci\u00f3n temporal de atributo para el atributo incorporado [{3}] en la clase [{2}].
+
+7201=Se ha producido una excepci\u00f3n al analizar el archivo de correlaciones de entidades: {0}.
+
+7202=El nombre de alteraci\u00f3n temporal de atributo {0} no es v\u00e1lido; aseg\u00farese de que exista un atributo con el mismo nombre en el atributo incorporable {1}.
+
+7203=El elemento de correlaci\u00f3n [{1}] para la clase [{2}] tiene un tipo de colecci\u00f3n no soportado [{0}]. S\u00f3lo est\u00e1n soportados Set, List, Map y Collection.
+
+7207=El atributo [{1}] en la clase identidad [{0}] tiene un tipo no v\u00e1lido para un LOB de tipo BLOB. El atributo debe definirse como java.sql.Blob, byte[], Byte[] o un tipo serializable.
+
+7208=El atributo [{1}] en la clase identidad [{0}] tiene un tipo no v\u00e1lido para un LOB de tipo CLOB. El atributo debe definirse como java.sql.Clob, char[], Character[] o un tipo de serie.
+
+7212=El atributo [{0}] de la clase de entidad [{1}] no especifica un tipo temporal. Debe especificarse un tipo temporal para las propiedades o los campos persistentes de tipo java.util.Date y java.util.Calendar.
+
+7213=Se han especificado referencias mappedBy circulares (Clase: [{0}], atributo: [{1}] y Clase: [{2}], atributo: [{3}]). Esto no es v\u00e1lido; s\u00f3lo un lado puede ser el propietario de la relaci\u00f3n. Por lo tanto, especifique un valor mappedBy s\u00f3lo en el lado no propietario de la relaci\u00f3n.
+
+7214=No se puede determinar la entidad de destino del atributo de relaci\u00f3n [{0}] en la clase [{1}].  Si no utiliza valores gen\u00e9ricos, aseg\u00farese de que la entidad de destino est\u00e9 definida en la correlaci\u00f3n de relaciones.
+
+7215=No se ha podido cargar el campo denominado [{0}] en la clase [{1}]. Aseg\u00farese de que haya definido un campo correspondiente con ese nombre en la clase.
+
+7216=No se ha podido cargar el m\u00e9todo para el nombre de la propiedad [{0}] en la clase [{1}]. Aseg\u00farese de que haya definido un m\u00e9todo get correspondiente para ese nombre de propiedad en la clase.
+
+7217=El valor de ordenar por [{0}], especificado en el elemento [{2}] de entidad [{3}], no es v\u00e1lido. No existe ninguna propiedad o campo con ese nombre en la entidad de destino [{1}].
+
+7218=[{0}] no altera temporalmente el m\u00e9todo getCreateTempTableSqlPrefix. Las DatabasePlatforms que dan soporte a las tablas temporales deben alterar temporalmente este m\u00e9todo.
+
+7219=[{0}] no altera temporalmente el m\u00e9todo valueFromRowInternalWithJoin, pero el m\u00e9todo isJoiningSupported devuelve true. La correlaci\u00f3n de referencias externas que da soporte a la uni\u00f3n debe alterar temporalmente este m\u00e9todo.
+
+7220=@JoinColumns en el elemento anotado [{0}] de la clase de entidad [{1}] est\u00e1 incompleto. Cuando la clase de entidad de origen utiliza una clave primaria compuesta, debe especificarse un @JoinColumn para cada columna de uni\u00f3n que utilice @JoinColumns. Deben especificarse el nombre y los elementos referencedColumnName en cada @JoinColumn.
+
+7222=Se ha especificado un @PrimaryKeyJoinColumns incompleto en el elemento anotado [{0}]. Cuando se especifica @PrimaryKeyJoinColumns para una entidad que tiene una clave primaria compuesta, debe especificarse un @PrimaryKeyJoinColumn para cada columna de uni\u00f3n de clave primaria que utilice @PrimaryKeyJoinColumns. Deben especificarse el nombre y los elementos referencedColumnName en cada @PrimaryKeyJoinColumn.
+
+7223=Se ha encontrado un @PrimaryKeyJoinColumns en el elemento anotado [{0}]. Cuando la entidad utiliza una \u00fanica clave primaria, s\u00f3lo puede especificarse una @PrimaryKeyJoinColumn individual (o cero).
+
+7224=El m\u00e9todo [{1}] en la clase de escucha [{0}] es un m\u00e9todo de devoluci\u00f3n de llamada no v\u00e1lido.
+
+7225=No se ha encontrado el m\u00e9todo [{1}] en la clase de escucha [{0}].
+
+7226=El m\u00e9todo [{1}] en la clase de escucha [{0}] tiene un modificador no v\u00e1lido. Los m\u00e9todos de devoluci\u00f3n de llamada no pueden ser est\u00e1ticos o finales.
+
+7227=La clase de escucha [{0}] tiene varios m\u00e9todos de devoluci\u00f3n de llamada de ciclo de vida para el mismo suceso de ciclo de vida ([{1}] y [{2}]).
+
+7228=El m\u00e9todo de devoluci\u00f3n de llamada [{1}] en la clase de escucha [{0}] tiene una firma incorrecta. No puede tener ning\u00fan par\u00e1metro.
+
+7229=El m\u00e9todo de devoluci\u00f3n de llamada [{3}] en la clase de escucha de entidad [{2}] tiene una firma incorrecta. El m\u00e9todo debe tener 1 par\u00e1metro que debe poder asignarse desde la clase de entidad. En este caso, la clase de par\u00e1metro [{1}] no puede asignarse desde la clase de entidad [{0}].
+
+7231=No se puede persistir el objeto desconectado [{0}]. {3}Clase> {1} Clave primaria> {2}
+
+7232=La clase de entidad [{0}] contiene varias declaraciones de @Id, pero no define elementos <id> en el documento de instancia correlaciones de entidades.  Aseg\u00farese de que si hay varias declaraciones de @Id para una determinada clase de entidad, la definici\u00f3n de <entity> correspondiente contenga un elemento <id> para cada una.
+
+7233=Los metadatos de correlaci\u00f3n no pueden aplicarse a las propiedades o los m\u00e9todos que utilizan argumentos. El atributo [{0}] de la clase [{1}] incumple esta restricci\u00f3n. Aseg\u00farese de que el m\u00e9todo no tenga argumentos si est\u00e1 correlacionado con anotaciones o en un archivo de correlaci\u00f3n XML.
+
+7234=La generaci\u00f3n de DDL requiere que el transformador de clases que se utiliza con la correlaci\u00f3n de transformaciones del atributo [{1}] del descriptor [{0}] especifique un tipo de retorno espec\u00edfico para su m\u00e9todo [{2}] (no Objeto). La generaci\u00f3n de DDL necesita este tipo de retorno espec\u00edfico para poder generar el tipo de campo correcto.
+
+7235=El transformador de clases utilizado con la correlaci\u00f3n de transformaciones del atributo [{1}] del descriptor [{0}] no implementa el m\u00e9todo [{2}]. Este m\u00e9todo forma parte de la interfaz de FieldTransformer y debe implementarse. Asimismo, tenga en cuenta, cuando se implemente, que su tipo de retorno tambi\u00e9n debe ser un tipo expl\u00edcito (no Objeto) cuando se utiliza la generaci\u00f3n de DDL.
+
+7237=El nombre de entidad debe ser exclusivo en una unidad de persistencia. El nombre de entidad [{0}] se utiliza para las clases de entidad [{1}] y [{2}].
+
+7238=El generador de tablas especificado en [{2}] con el nombre == [{0}] entra en conflicto con el generador de secuencias con el mismo nombre especificado en [{1}].
+
+7240=El generador de tablas especificado en [{2}] con el valor de columna de pk == [{0}] entra en conflicto con el generador de secuencias especificado en [{1}] con el nombre de secuencia == [{0}]. No pueden utilizar el mismo valor.
+
+7242=Se ha intentado atravesar una relaci\u00f3n utilizando una indirecci\u00f3n que ten\u00eda una sesi\u00f3n nula.  Esto ocurre a menudo cuando se serializa una entidad con una relaci\u00f3n LAZY sin instancias y esa relaci\u00f3n poco activa se atraviesa despu\u00e9s de la serializaci\u00f3n.  Para evitar este problema, cree una instancia de la relaci\u00f3n LAZY antes de la serializaci\u00f3n.
+
+7243=Faltan metadatos para la clase [{0}]. Aseg\u00farese de que la clase no se est\u00e9 excluyendo de la unidad de persistencia mediante un valor <exclude-unlisted-classes>true</exclude-unlisted-classes>. Si este es el caso, deber\u00e1 incluir la clase directamente a\u00f1adiendo una entrada <class>[{0}]</class> para la unidad de persistencia.
+
+7244=Se ha encontrado una correlaci\u00f3n incompatible entre [{0}] y [{1}]. Esto ocurre normalmente cuando la cardinalidad de una correlaci\u00f3n no se corresponde con la cardinalidad de su puntero centrador posterior.
+
+7245=La clase incorporable [{0}] se utiliza en las clases con tipos de acceso en conflicto. La clase [{1}] utiliza el acceso [{2}] y la clase [{3}] utiliza el acceso [{4}]. Cuando se comparte un objeto incorporable entre clases, los tipos de acceso de esas clases incorporables deben ser iguales.
+
+7246=La clase de entidad [{0}] tiene un atributo incorporado [{1}] de tipo [{2}] que NO es una clase incorporable. Posible raz\u00f3n: falta @Embeddable o falta <embeddable> en orm.xml si metadata-complete = true
+
+7247=Se ha descubierto una referencia circular al procesar los ID derivados de las siguientes clases de entidad: [{0}] 
+
+7249=La entidad [{0}] utiliza [{1}] como clase de ID incorporado cuyo tipo de acceso se ha determinado como [{2}]. No obstante, [{1}] no define ning\u00fan [{2}]. Es probable que no haya proporcionado suficientes metadatos en la clase de ID [{1}].
+
+7250=[{0}] utiliza una no entidad [{1}] como entidad de destino en el atributo de relaci\u00f3n [{2}].
+
+7251=El atributo [{1}] de la clase [{0}] est\u00e1 correlacionado con una columna de clave primaria en la base de datos. No se permiten actualizaciones.
+
+7252=Hay varios archivos de correlaci\u00f3n denominados [{1}] en la classpath para la unidad de persistencia denominada [ {0} ].
+
+7253=No hay ning\u00fan archivo de correlaci\u00f3n denominado [{1}] en la classpath para la unidad de persistencia denominada [ {0} ].
+
+7254=El conversor con el nombre [{1}] en la clase [{0}] ha correlacionado el valor de datos [{2}] con varios valores de objeto. Un valor de conversi\u00f3n s\u00f3lo puede correlacionar cada valor de datos una vez.
+
+7255=La clase [{0}] especifica un @Convert en [{1}]. Esto no es v\u00e1lido. Un @Convert s\u00f3lo est\u00e1 soportado con @Basic, @BasicCollection, @BasicMap y @ElementCollection. Para las correlaciones "con muchos" que utilizan una correlaci\u00f3n, s\u00f3lo puede utilizar un @MapKeyConvert.
+
+7256=El conversor con el nombre [{1}] utilizado con el elemento [{2}] en la clase [{0}] no se ha encontrado en la unidad de persistencia. Aseg\u00farese de proporcionar el nombre de conversor correcto.
+
+7257=No se puede crear una instancia del valor de datos con el tipo [{2}] y el valor [{1}] del conversor de tipos de objeto denominado [{0}]
+
+7258=No se puede crear una instancia del valor de objeto con el tipo [{2}] y el valor [{1}] del conversor de tipos de objeto denominado [{0}]
+
+7259=No se puede determinar el tipo de datos para el atributo [{1}] a partir de la clase de entidad [{0}] que utiliza el conversor denominado [{2}]. Debe especificarse un tipo utilizando el tipo de datos en el conversor o el atributo debe utilizar una especificaci\u00f3n gen\u00e9rica.
+
+7260=No se puede determinar el tipo de objeto para el atributo [{1}] a partir de la clase de entidad [{0}] que utiliza el conversor denominado [{2}]. Debe especificarse un tipo utilizando el tipo de objeto en el conversor o el atributo debe utilizar una especificaci\u00f3n gen\u00e9rica.
+
+7261=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n de colecciones b\u00e1sica. El atributo debe ser de tipo Collection.class, List.class o Set.class.
+
+7262=El tipo [{1}] para el atributo [{0}] en la clase de entidad [{2}] no es un tipo v\u00e1lido para una correlaci\u00f3n de correlaciones b\u00e1sica. El atributo debe ser del tipo Map.class.
+
+7263=La clase [{0}] tiene una especificaci\u00f3n de bloqueo optimista incompleta. Para una pol\u00edtica de bloqueo optimista de tipo SELECTED_COLUMNS, deben especificarse las columnas seleccionadas y no pueden omitirse los nombres de las columnas.
+
+7264=La clase [{0}] tiene una especificaci\u00f3n de bloqueo optimista incompleta. Para una pol\u00edtica de bloqueo optimista de tipo VERSION_COLUMN, debe especificarse un @Version en el campo o la propiedad de versi\u00f3n.
+
+7265=No se permite una anotaci\u00f3n de @Cache en una clase incorporable.
+
+7266=En la anotaci\u00f3n de @Cache en la clase [{0}] se ha especificado expiry() y expiryTimeOfDay(). S\u00f3lo puede especificarse uno de los dos en un valor de anotaci\u00f3n de @Cache.
+
+7267=La clase de manejador de excepciones especificada [{0}] no es v\u00e1lida; la clase debe existir en la classpath e implementar la interfaz ExceptionHandler.
+
+7268=La clase de escucha de sucesos de sesi\u00f3n especificada [{0}] no es v\u00e1lida; la clase debe existir en la classpath e implementar la interfaz SessionEventListener.
+
+7270=El valor del tama\u00f1o de sentencias de cach\u00e9 especificado [{0}] no es v\u00e1lido [{1}].
+
+7271=El valor booleano especificado [{0}] para establecer el SQL nativo no es v\u00e1lido; el valor debe ser "true" o "false".
+
+7272=El valor booleano especificado [{0}] para habilitar la cach\u00e9 de sentencias SQL no es v\u00e1lido; el valor debe ser "true" o "false".
+
+7273=El valor booleano especificado [{0}] para copiar consultas con nombre del descriptor en la sesi\u00f3n no es v\u00e1lida; el valor debe ser "true" o "false".
+
+7274=Se ha generado una excepci\u00f3n al intentar crear el archivo de registro [{0}]:[{1}].
+
+7275=No se puede crear una instancia de la clase de manejador de excepciones [{0}] especificado en la propiedad eclipselink.exception-handler [{1}].
+
+7276=No se puede crear una instancia de la clase de escucha de sucesos de sesi\u00f3n [{0}] especificado en la propiedad eclipselink.session-event-listener [{1}].
+
+7277=No se ha especificado el nombre del archivo de registro.
+
+7278=El valor booleano especificado [{0}] para la propiedad de persistencia [{1}] no es v\u00e1lido; el valor debe ser "true" o "false".
+
+7282=No puede definirse el StructConverter: {0} en la correlaci\u00f3n {1}.  Los StructConverters s\u00f3lo pueden utilizarse en las correlaciones directas.
+
+7283=Se han a\u00f1adido dos StructConverters para la clase {0}.  S\u00f3lo puede a\u00f1adirse un StructConverter por clase.
+
+7284=La clase [{0}] no es un comparador v\u00e1lido. La clase debe implementar la interfaz de comparador.
+
+7285=La clase de perfilador especificada [{0}] no es v\u00e1lida; la clase debe existir en la classpath e implementar la interfaz SessionProfiler.
+
+7286=No se puede crear una instancia de la clase de perfilador [{0}] especificado en la propiedad eclipselink.profiler [{1}].
+
+7287=El transformador de lectura especificado para el elemento [{0}] no implementa la interfaz AttributeTransformer necesaria.
+
+7288=El transformador de lectura especificado para el elemento [{0}] tiene una clase y un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+7289=El transformador de lectura especificado para el elemento [{0}] no tiene ni una clase ni un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+7290=El transformador de escritura especificado para la columna [{1}] del elemento [{0}] no implementa la interfaz FieldTransformer necesaria.
+
+7291=El transformador de escritura especificado para la columna [{1}] del elemento [{0}] tiene una clase y un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+7292=El transformador de escritura especificado para la columna [{1}] del elemento [{0}] no tiene ni una clase ni un m\u00e9todo. Se requiere una clase o un m\u00e9todo, pero no ambos.
+
+7293=El transformador de escritura especificado para el elemento [{0}] no tiene una columna o la columna no tiene nombre.
+
+7294=El elemento de uno a uno variable [{1}] tiene varias entidades correlacionadas con el mismo discriminador [{0}]. Cada entidad que implementa la interfaz de uno a uno variable debe tener su propio discriminador exclusivo.
+
+7295=La CloneCopyPolicy especificada en la clase [{0}] no especifica un m\u00e9todo o un workingCopyMethod.  Debe especificar uno de estos dos.
+
+7296=La clase [{0}] tiene varias anotaciones de CopyPolicy.  S\u00f3lo se permite una CopyPolicyAnnotation por clase.
+
+7297=Se ha generado una excepci\u00f3n mientras se creaba una instancia de la clase [{0}] de forma reflexiva.  Esto normalmente significa que la clase se ha especificado en los metadatos y por alguna raz\u00f3n java no puede crear una instancia de la clase de forma reflexiva con un constructor sin argumentos.  Consulte la excepci\u00f3n encadenada para obtener m\u00e1s informaci\u00f3n.  Nota: para ver la excepci\u00f3n encadenada, deber\u00e1 aumentar el nivel de registro.
+
+7298=La correlaci\u00f3n [{2}] de la clase de ID incorporado [{3}] es una correlaci\u00f3n no v\u00e1lida para esta clase. Una clase incorporable que se utiliza con una especificaci\u00f3n de ID incorporado (el atributo [{0}] del origen [{1}]) s\u00f3lo puede contener correlaciones b\u00e1sicas. Elimine la correlaci\u00f3n no b\u00e1sica o cambie la especificaci\u00f3n de ID incorporado en el origen que se va a incorporar.
+
+7299=Se han encontrado anotaciones en conflicto con el mismo nombre [{0}]. La primera [{1}] se ha encontrado en [{2}] y la segunda [{3}] se ha encontrado en [{4}]. Las anotaciones especificadas deben ser exclusivas en la unidad de persistencia.
+
+7300=Se han encontrado elementos XML en conflicto [{1}] con el mismo nombre [{0}]. El primero se ha encontrado en el archivo de correlaciones [{2}] y el segundo en el archivo de correlaciones [{3}]. Los elementos XML especificados deben ser exclusivos en la unidad de persistencia.
+
+7301=Se han encontrado anotaciones en conflicto. La primera [{0}] se ha encontrado en [{1}] y la segunda [{2}] se ha encontrado en [{3}]. Corrija este error eliminando la anotaci\u00f3n que no se aplique.
+
+7302=Se han encontrado elementos XML en conflicto [{0}] para el elemento [{1}]. El primero se ha encontrado en el archivo de correlaciones [{2}] y el segundo en el archivo de correlaciones [{3}]. Corrija este error eliminando el elemento XML que no se aplique.
+
+7303=No se ha encontrado la propiedad PersistenceUnitProperties.ORACLE_PROXY_TYPE establecida en [{0}], que se necesita para esta propiedad de tipo de proxy [{1}].
+
+7304=La propiedad PersistenceUnitProperties.ORACLE_PROXY_TYPE se ha establecido en un tipo desconocido [{0}]; los tipos conocidos son [{1}], [{2}], [{3}].
+
+7305=Se ha generado una excepci\u00f3n al procesar el archivo de correlaciones desde el URL: [{0}].
+
+7306=El elemento anotado [{0}] de la clase [{1}] tiene especificado un tipo de acceso expl\u00edcito incorrecto. Debe especificar un tipo de acceso [{2}].
+
+7307=Falta una serie de contexto de registro para el contexto [{0}]. Es una excepci\u00f3n interna que se ha producido al recuperar un mensaje de registro para el proceso de metadatos JPA; informe de un error.
+
+7308=El valor especificado [{0}] para la propiedad de persistencia [{1}] no es v\u00e1lido: [{2}].
+
+7309=El atributo denominado [{1}] de la clase incorporable [{0}] no es una correlaci\u00f3n v\u00e1lida para utilizarla con una alteraci\u00f3n temporal del atributo [{3}] en la clase [{2}].
+
+7310=No se puede determinar la clase de destino del atributo de colecci\u00f3n de elementos [{0}] en la clase [{1}].  Si no utiliza valores gen\u00e9ricos, aseg\u00farese de que la clase de destino est\u00e9 definida en la correlaci\u00f3n de colecciones de elementos.
+
+7311=Se est\u00e1 utilizando una clase de destino no v\u00e1lida con el atributo de colecci\u00f3n de elementos [{0}] en la clase [{1}].  S\u00f3lo se permiten tipos b\u00e1sicos y clases incorporables.
+
+7312=Se est\u00e1 utilizando una clase incorporable no v\u00e1lida [{0}] con el atributo de colecci\u00f3n de elementos [{1}] en la clase [{2}]. Consulte la secci\u00f3n 2.6 de la especificaci\u00f3n: "Una clase incorporable (incluida una clase incorporable dentro de otra clase incorporable) contenida en una colecci\u00f3n de elementos no puede contener una colecci\u00f3n de elementos, ni puede contener una relaci\u00f3n con una entidad que no sea una relaci\u00f3n de muchos a uno o de uno a uno". La clase incorporable debe estar en el lado de propietario de esta relaci\u00f3n y la relaci\u00f3n debe estar correlacionada mediante una correlaci\u00f3n de claves for\u00e1neas. La correlaci\u00f3n del atributo [{3}] en la clase incorporable es una violaci\u00f3n de esto.
+
+7313=No se ha encontrado el atributo [{1}] en la clase incorporable [{0}]. Se hace referencia a \u00e9l en una alteraci\u00f3n temporal de asociaci\u00f3n para el atributo incorporado [{3}] en la clase [{2}].
+
+7314=La correlaci\u00f3n [{0}] se est\u00e1 utilizando para correlacionar la clave en una MappedKeyMapContainerPolicy y utiliza la indirecci\u00f3n.  Las correlaciones utilizadas para las claves de correlaci\u00f3n no pueden utilizar la indirecci\u00f3n.
+
+7315=No se puede determinar la clase de clave de correlaci\u00f3n del atributo de colecci\u00f3n de elementos [{0}] en la clase [{1}].  Cuando especifique una clave de conversi\u00f3n con una colecci\u00f3n de elementos, aseg\u00farese de utilizar una definici\u00f3n gen\u00e9rica para que pueda determinarse un tipo de clase para el conversor.
+
+7316=El valor [{0}] de MapsId del atributo de correlaci\u00f3n [{1}] no es v\u00e1lido. Debe definirse un atributo equivalente con ese nombre en la IdClass [{2}]
+
+7317=El campo de orden de lista no est\u00e1 soportado para [{0}].
+
+7318=[{0}] tiene un orden de lista establecido, pero se ha enviado CollectionChangeEvent.REMOVE sin un \u00edndice.
+
+7319=El atributo denominado [{1}] de la clase incorporable [{0}] no es una relaci\u00f3n v\u00e1lida para utilizarla con la alteraci\u00f3n temporal de asociaci\u00f3n denominada [{2}] de [{3}]. S\u00f3lo puede especificarse una alteraci\u00f3n temporal de asociaci\u00f3n cuando la clase incorporable se encuentra en el lado de propietario de la relaci\u00f3n.
+
+7320=El atributo [{0}] de la clase [{1}] (o el heredado de una superclase correlacionada) no es un tipo v\u00e1lido para utilizarlo con una especificaci\u00f3n de columna de orden. Cuando se especifica una columna de orden, el atributo debe ser del tipo Lista.
+
+7321=El campo [{1}] de la correlaci\u00f3n de ID derivados [{2}] de la clase [{3}] es un campo de ID no v\u00e1lido de la clase de referencia [{0}]. Aseg\u00farese de que haya una correlaci\u00f3n de ID correspondiente con ese campo. 
+
+7322=El nombre de columna de referencia [{0}] de la alteraci\u00f3n temporal de asociaci\u00f3n denominada [{1}] en el atributo [{2}] de la clase [{3}] no es un campo de clave primaria correlacionado v\u00e1lido. Aseg\u00farese de que haya una correlaci\u00f3n de ID correspondiente con ese campo
+
+7323=La tabla con el nombre [{1}] de [{2}] tiene varias restricciones exclusivas con el nombre [{0}]. Esto no est\u00e1 permitido; los nombres de restricci\u00f3n exclusivos deben ser exclusivo en todas las tablas.
+
+7324=La clase de entidad [{1}] especifica un @ClassExtractor y metadatos de discriminador. Cuando se utiliza un @ClassExtractor, no deben especificarse un @DiscriminatorColumn y/o un @DiscriminatorValue en esta clase, ni deben definirse metadatos de valor de discriminador en sus subclases.
+
+7325=La correlaci\u00f3n de conjunto de resultados SQL [{0}] utilizada con la consulta con nombre [{1}] de [{2}] no es una correlaci\u00f3n de conjunto de resultados SQL reconocida. Aseg\u00farese de que el nombre sea correcto y que exista una correlaci\u00f3n de conjunto de resultados SQL con ese nombre.
+
+7326=El atributo [{0}] de la clase [{1}] correlacionado en [{2}] que utiliza el acceso VIRTUAL no especifica un tipo de atributo. Cuando se utiliza el acceso VIRTUAL, debe especificarse un tipo de atributo. Nota: para una relaci\u00f3n de uno a uno o de muchos a uno, el tipo de atributo se especifica utilizando la entidad de destino. Para una relaci\u00f3n de uno a uno variable, se especifica utilizando la clase de destino.
+
+7327=La clase incorporable [{0}] se utiliza en las clases con m\u00e9todos de acceso en conflicto. La clase [{1}] utiliza los m\u00e9todos de acceso [{2}] y la clase [{3}] utiliza los m\u00e9todos de acceso [{4}]. Cuando se comparte un objeto incorporable entre clases, los m\u00e9todos de acceso de esas clases incorporables deben ser iguales.
+
+7328=Cuando se utiliza el acceso VIRTUAL, debe proporcionarse un DynamicClassLoader al crear la EntityManagerFactory utilizando la propiedad eclipselink [eclipselink.classloader]. Es decir, cree EntityManagerFactory(String persistenceUnitName, propiedades de correlaci\u00f3n) y a\u00f1ada un nuevo DynamicClassLoader() a las propiedades de correlaci\u00f3n.
+
+7329=El atributo {1} de {0} no est\u00e1 correlacionado.
+
+7330=El atributo {1} de {0} hace referencia a un grupo de captaci\u00f3n anidado, pero o bien no est\u00e1 correlacionado con ForeignReferenceMapping o la correlaci\u00f3n no tiene un descriptor de referencia.
+
+7331=El atributo {1} de {0} hace referencia a un grupo de captaci\u00f3n anidado, pero la clase de destino no da soporte a los grupos de captaci\u00f3n.
+
+7332=El atributo de clave primaria compuesta derivado [{2}] del tipo [{4}] de [{1}] debe ser del mismo tipo que su campo de ID padre de [{0}]. Es decir, debe ser del tipo [{3}].
+
+7334=La clase [{0}] tiene una especificaci\u00f3n de clave primaria incompleta. Cuando se especifican columnas de clave primaria, deben especificarse los nombres de esas columnas.
+
+7335=Se ha proporcionado un valor de partici\u00f3n duplicado [{1}] para el @ValuePartitioning denominado [{0}]
+
+7336=Se han especificado varias propiedades de contexto [{2}] y [{3}] para el mismo campo de discriminador de inquilino [{1}] para la clase [{0}]
+
+7337=La columna de discriminador de inquilino correlacionada [{1}] en la clase [{0}] debe marcarse como de s\u00f3lo lectura. En JPA, esto se realiza estableciendo insertable=false y updatable=false en la columna, por ej. @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=No puede a\u00f1adir secuencias a un SessionBroker.
+
+7339=El alias [{0}] se utiliza en las clases [{1}] y [{2}]. El alias de descriptor debe ser exclusivo.
+
+7340=Hay varios archivos de correlaci\u00f3n denominados [{0}] en la classpath.
+
+7341=No se ha especificado ning\u00fan eclipselink-orm.xml para el XMLMetadataSource.  Especifique uno utilizando la propiedad de unidad de persistencia eclipselink.metadata-source.xml.file o eclipselink.metadata-source.xml.url.
+
+7342=El valor booleano especificado [{0}] para establecer las consultas SQL nativas de permiso no es v\u00e1lido; el valor debe ser "true" o "false".
+
+7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de inquilino). La entidad [{1}] utiliza [{0}] y la entidad [{3]} utiliza [{2}]. Cuando se utiliza una estrategia de VPD de varios inquilinos, s\u00f3lo puede haber una columna de discriminador de inquilino por entidad y su propiedad de contexto debe ser coherente en todas las entidades de VPD de varios inquilinos.
+
+7344=VPD (conexiones y generaci\u00f3n DDL) no est\u00e1 soportado para la plataforma: [{0}].
+
+7345=No se ha encontrado el archivo {0} especificado para XMLMetadataSource
+
+7346=No se ha proporcionado la propiedad de contexto de varios inquilinos [{0}]. Cuando la propiedad de unidad de persistencia (eclipselink.multitenant.tenants-share-emf) se establece en false, todas las propiedades de contexto de varios inquilinos deben proporcionarse por adelantado. Esto puede hacerse utilizando la definici\u00f3n de unidad de persistencia directamente o pasando una correlaci\u00f3n de propiedades que contiene todas las propiedades de contexto de varios inquilinos en la llamada a la creaci\u00f3n de EntityManagerFactory.
+
+7347=La clase [{0}] especifica los metadatos de conversi\u00f3n a nivel de tipo sin especificar un nombre de atributo para cada uno. Debe proporcionarse un nombre de atributo para todos los metadatos de conversi\u00f3n a nivel de tipo, para garantizar la aplicaci\u00f3n correcta de un atributo de superclase.
+
+7348=La correlaci\u00f3n incorporada [{1}] de [{0}] no especifica un nombre de atributo al que se va a aplicar la conversi\u00f3n. Debe especificar un nombre de atributo en Incorporable.
+
+7350=El nombre de atributo de conversi\u00f3n [{3}] de la correlaci\u00f3n [{1}] de la clase [{0}] no se ha encontrado en la clase incorporable [{2}]. Aseg\u00farese de que el atributo exista y que tenga el nombre correcto.
+
+7351=No se ha encontrado la clase de conversor [{2}] especificada en el atributo de correlaci\u00f3n [{1}] de la clase [{0}]. Aseg\u00farese de que el nombre de clase de conversor sea correcto y exista con la definici\u00f3n de unidad de persistencia.
+
+7352=La clase de conversor [{0}] debe implementar la interfaz javax.persistence.AttributeConverter<X, Y> JPA para ser una clase de conversor v\u00e1lida.
+
+7353=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una especificaci\u00f3n de conversi\u00f3n.
+
+7354=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una especificaci\u00f3n de conversi\u00f3n de claves de correlaci\u00f3n.
+
+7355=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una conversi\u00f3n utilizando una especificaci\u00f3n de nombre de atributo. El nombre de atributo s\u00f3lo debe especificarse para atravesar un tipo de correlaci\u00f3n incorporada.
+
+7356=El procedimiento: [{1}] no puede ejecutarse porque {0} no da soporte actualmente a varios par\u00e1metros de salida
+

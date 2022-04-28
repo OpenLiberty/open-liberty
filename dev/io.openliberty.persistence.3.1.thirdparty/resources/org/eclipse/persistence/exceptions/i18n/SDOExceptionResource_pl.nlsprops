@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nie mo\u017cna znale\u017a\u0107 elementu identyfikatora typu ID dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45001=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania importu z atrybutem schemaLocation o warto\u015bci [{0}] i przestrzeni nazw [{1}].
+
+45002=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania w\u0142\u0105czenia z atrybutem schemaLocation o warto\u015bci [{0}].
+
+45003=Nie znaleziono przywo\u0142ywanej w\u0142a\u015bciwo\u015bci o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45004=Stara sekwencja nie zosta\u0142a znaleziona w elemencie changesummary.
+
+45005=Warto\u015bci\u0105 w\u0142a\u015bciwo\u015bci o nazwie [{0}] musi by\u0107 obiekt DataObject
+
+45006=Sekwencja nie mo\u017ce mie\u0107 warto\u015bci null, je\u015bli type.isSequenced() zwraca warto\u015b\u0107 true.
+
+45007=Nie ustawiono typu w\u0142a\u015bciwo\u015bci o nazwie [{0}].
+
+45008=Wyst\u0105pi\u0142 wyj\u0105tek we/wy.
+
+45009=Nie znaleziono typu o identyfikatorze URI [{0}] i nazwie [{1}]
+
+45010=Nie mo\u017cna znale\u017a\u0107 typu dla klasy interfejsu [{0}]. Upewnij si\u0119, \u017ce typ zosta\u0142 zdefiniowany.  Ponadto program \u0142aduj\u0105cy klasy interfejsu powinien nale\u017ce\u0107 do hierarchii programu \u0142aduj\u0105cego klasy kontekst\u00f3w programu pomocy. Wygl\u0105da na to, \u017ce jest to [{1}].
+
+45011=Nie mo\u017cna utworzy\u0107 obiektu DataObject dla typu o identyfikatorze URI [{0}] i nazwie [{1}], poniewa\u017c type.isAbstract() zwraca warto\u015b\u0107 true.
+
+45012=Nie mo\u017cna utworzy\u0107 obiektu DataObject dla interfejsu [{0}]. Pr\u00f3ba utworzenia obiektu DataObject dla typu o identyfikatorze URI [{1}] i nazwie [{2}] 
+
+45013=Nie mo\u017cna wyszuka\u0107 informacji o aplikacji dla argumentu o warto\u015bci null.
+
+45014=Nie mo\u017cna zdefiniowa\u0107 typu.  Typy mo\u017cna zdefiniowa\u0107 tylko dla obiekt\u00f3w DataObject o typie ustawionym na commonj.sdo.Type
+
+45015=Nie mo\u017cna zdefiniowa\u0107 typu z nazw\u0105 o warto\u015bci null.
+
+45016=Zmodyfikowany obiekt w kodzie XML elementu changesummary nie ma atrybutu ref lub jego warto\u015b\u0107 nie jest okre\u015blona.
+
+45017=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania wyra\u017cenia XPath [{0}].
+
+45018=Dodawanie zduplikowanego wpisu dla z\u0142o\u017conego ustawienia pojedynczego [{1}] do sekwencji na pozycji [{0}] nie jest obs\u0142ugiwane.
+
+45019=Dodawanie w\u0142a\u015bciwo\u015bci atrybutu [{0}] do sekwencji nie jest obs\u0142ugiwane.
+
+45020=Nie znaleziono sekwencji dla \u015bcie\u017cki [{0}].
+
+45021=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by utworzenia instancji obiektu Sequence z polem instancji obiektu dataObject o warto\u015bci null.
+
+45022=Sekwencja nie jest obs\u0142ugiwana dla w\u0142a\u015bciwo\u015bci [{0}].
+
+45023=Nie mo\u017cna ustawi\u0107 w\u0142a\u015bciwo\u015bci o typie z identyfikatorem URI [{0}] i nazw\u0105 [{1}] na warto\u015b\u0107 klasy [{2}]
+
+45024=Wyst\u0105pi\u0142 b\u0142\u0105d konwersji.
+
+45025=Nie mo\u017cna znale\u017a\u0107 w\u0142a\u015bciwo\u015bci na pozycji indeksu [{0}]
+
+45026=Nie mo\u017cna wykona\u0107 operacji [{0}] na parametrze o warto\u015bci null.
+
+45027=Nie mo\u017cna znale\u017a\u0107 klasy dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45028=Nie mo\u017cna ustawi\u0107 typu na open ani datatype.  B\u0142\u0105d dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45029=Niepoprawny indeks [{0}] przekazany do metody [{1}].
+
+45030=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania konstruktora z argumentem typu String w klasie [{0}].
+
+45031=Nie mo\u017cna ustawi\u0107 niepoprawnego typu docelowego [{0}] dla w\u0142a\u015bciwo\u015bci [{1}], poniewa\u017c docelowy typ type.dataType ma warto\u015b\u0107 true.
+
+45032=Wyst\u0105pi\u0142 wyj\u0105tek XMLMarshalException dla identyfikatora URI [{1}] i nazwy lokalnej [{2}].  Wyj\u0105tek: [{0}]
+
+45033=Wyst\u0105pi\u0142 b\u0142\u0105d podczas generowania typ\u00f3w. Komponent schematu XML o nazwie [{1}] i identyfikatorze URI przestrzeni nazw [{0}] jest przywo\u0142ywany, ale nigdy nie zosta\u0142 zdefiniowany.  W schemacie XML mo\u017ce brakowa\u0107 importu lub w\u0142\u0105czenia dla identyfikatora URI przestrzeni nazw [{0}].
+
+45034=Warto\u015bci\u0105 parametru options musi by\u0107 obiekt DataObject o typie z identyfikatorem URI [{0}] i nazw\u0105 [{1}].
+
+45035=Warto\u015b\u0107, kt\u00f3ra odpowiada w\u0142a\u015bciwo\u015bci type, musi by\u0107 obiektem Type.
+
+45036=Nie znaleziono globalnej w\u0142a\u015bciwo\u015bci odpowiadaj\u0105cej \u0142adowanemu w\u0119z\u0142owi XML.
+
+45037=U\u017cywany jest przedrostek [{0}], kt\u00f3ry nie zosta\u0142 zadeklarowany w schemacie XML.
+
+45038=Nie mo\u017cna wykona\u0107 operacji na w\u0142a\u015bciwo\u015bci [{0}], poniewa\u017c nie jest ona osi\u0105galna ze \u015bcie\u017cki [{1}]. \u015acie\u017cka jest niepoprawna albo przynajmniej jeden obiekt danych w \u015bcie\u017cce ma warto\u015b\u0107 null.
+
+45039=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania dost\u0119pu do pola externalizableDelegator [{0}] w obiekcie DataObject.
+
+45040=Nie mo\u017cna wykona\u0107 operacji [{0}] z parametrem [{1}] o warto\u015bci null.
+
+45041=Warto\u015b\u0107 [{0}] klasy [{1}] jest niepoprawna dla w\u0142a\u015bciwo\u015bci [{2}] typu [{3}].
+
+45100=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zwr\u00f3cenia \u017c\u0105danego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pami\u0119ci podr\u0119cznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie mo\u017cna okre\u015bli\u0107 nazwy aplikacji, poniewa\u017c wyszukiwanie {0} si\u0119 nie powiod\u0142o.
+
+45101=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zwr\u00f3cenia \u017c\u0105danego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pami\u0119ci podr\u0119cznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie mo\u017cna okre\u015bli\u0107 nazwy aplikacji, poniewa\u017c nie mo\u017cna wywo\u0142a\u0107 {0} odpowiednio na {1}.
+
+45102=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zwr\u00f3cenia \u017c\u0105danego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pami\u0119ci podr\u0119cznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie mo\u017cna okre\u015bli\u0107 nazwy aplikacji, poniewa\u017c nie mo\u017cna utworzy\u0107/zwr\u00f3ci\u0107 obiektu ObjectName dla {0}.
+
+45103=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zwr\u00f3cenia \u017c\u0105danego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pami\u0119ci podr\u0119cznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie mo\u017cna okre\u015bli\u0107 nazwy aplikacji, poniewa\u017c nie mo\u017cna utworzy\u0107 instancji kontekstu InitialContext.
+
+45200=SDO/JAXB - nie mo\u017cna znale\u017a\u0107 deskryptora OXM odpowiadaj\u0105cego typowi SDO [{0}]. Upewnij si\u0119, \u017ce klasa Java jest odwzorowana na typ XML [{1}].
+
+45201=SDO/JAXB - nie mo\u017cna znale\u017a\u0107 odwzorowania OXM odpowiadaj\u0105cego w\u0142a\u015bciwo\u015bci SDO [{0}]. Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 Java jest odwzorowana na w\u0119ze\u0142 XML [{1}].
+
+45202=SDO/JAXB - nie mo\u017cna znale\u017a\u0107 typu SDO odpowiadaj\u0105cego klasie Java [{0}].
+
+45203=SDO/JAXB - odwo\u0142anie do schematu musi by\u0107 ustawione na deskryptor klasy Java [{0}].
+
+45204=SDO/JAXB - kontekst schematu musi by\u0107 ustawiony na odwo\u0142anie do schematu w deskryptorze klasy Java [{0}].
+
+45205=SDO/JAXB - nie mo\u017cna znale\u017a\u0107 typu SDO odpowiadaj\u0105cego klasie Java [{0}]. Upewnij si\u0119, \u017ce typ SDO odpowiada typowi XML [{1}].
+
+45206=SDO/JAXB - wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia obiektu JAXB Unmarshaller.
+
+45207=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by rozstrzygni\u0119cia schematu przy u\u017cyciu udost\u0119pnionej klasy SchemaResolver.
+
+45208=Nie mo\u017cna odwzorowa\u0107 w\u0142a\u015bciwo\u015bci {0} z typu {1}. W celu odwzorowania w\u0142a\u015bciwo\u015bci typu DataHandler wymagane s\u0105 pakiety javax.activation i javax.mail. Upewnij si\u0119, \u017ce oba s\u0105 dost\u0119pne w \u015bcie\u017cce klas.
+
+45209=Podj\u0119to pr\u00f3b\u0119 zresetowania instancji ApplicationResolver w kontek\u015bcie SDOHelperContext.  Dozwolony jest tylko jeden zestaw.
+
+45210=Zestawiany obiekt DataObject nie pochodzi z tego samego kontekstu HelperContext co XMLHelper.
+
+45211=Nie mo\u017cna zdefiniowa\u0107 typu przy u\u017cyciu nazwy [{0}]. Ta nazwa nie jest poprawn\u0105 nazw\u0105 XML.
+
+45212=Nie mo\u017cna zdefiniowa\u0107 w\u0142a\u015bciwo\u015bci przy u\u017cyciu nazwy [{0}]. Ta nazwa nie jest poprawn\u0105 nazw\u0105 XML.
+

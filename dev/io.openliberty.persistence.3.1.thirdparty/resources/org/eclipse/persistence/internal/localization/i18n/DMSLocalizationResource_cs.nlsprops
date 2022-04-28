@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Zahrnuje \u010das str\u00e1ven\u00fd \u00fadr\u017ebou mechanizmu po\u0159adov\u00fdch \u010d\u00edsel a skute\u010dn\u00fdm nastaven\u00edm po\u0159adov\u00fdch \u010d\u00edsel u objekt\u016f
+
+cache_hits=Kolikr\u00e1t byl objekt nalezen v mezipam\u011bti
+
+cache_misses=Kolikr\u00e1t nebyl objekt nalezen v mezipam\u011bti
+
+caching=Zahrnuje \u010das str\u00e1ven\u00fd p\u0159id\u00e1v\u00e1n\u00edm, vyhled\u00e1v\u00e1n\u00edm a odeb\u00edr\u00e1n\u00edm objekt\u016f z mezipam\u011bti
+
+change_set_not_processed=Po\u010det vyhozen\u00fdch objekt\u016f ObjectChangeSets, proto\u017ee tento objekt NEBYL nalezen v mezipam\u011bti
+
+change_set_processed=Po\u010det objekt\u016f ObjectChangeSets nalezen\u00fdch v mezipam\u011bti
+
+client_session_count=Po\u010det p\u0159ihl\u00e1\u0161en\u00fdch relac\u00ed ClientSession
+
+connect_call=Celkov\u00fd po\u010det proveden\u00fdch vol\u00e1n\u00ed p\u0159ipojen\u00ed
+
+connection=\u010cas str\u00e1ven\u00fd spr\u00e1vnou p\u0159ipojen\u00ed, v\u010detn\u011b p\u0159ipojen\u00ed, op\u011btovn\u00e9ho p\u0159ipojen\u00ed a odpojen\u00ed od zdroje dat
+
+connection_in_used=Po\u010det pou\u017e\u00edvan\u00fdch p\u0159ipojen\u00ed pro dan\u00fd fond pro v\u0161echny v\u00fdlu\u010dn\u00e9 operace ConnectionPool(Write, ExclusiveRead)
+
+connection_ping=\u010cas str\u00e1ven\u00fd testov\u00e1n\u00edm datab\u00e1zov\u00e9ho p\u0159ipojen\u00ed k ur\u010den\u00ed, zda ho lze pou\u017e\u00edt.
+
+database_execute=\u010cas str\u00e1ven\u00fd ve vol\u00e1n\u00ed p\u0159\u00edkaz\u016f JDBC, zahrnuje \u010das str\u00e1ven\u00fd vol\u00e1n\u00edmi: close, executeUpdate a executeQuery
+
+deleted_object=Objekt je t\u0159eba odebrat z mapy identityMap ze sady ObjectChangeSet
+
+descriptor_event=\u010cas str\u00e1ven\u00fd proveden\u00edm ud\u00e1losti DescriptorEvent
+
+disconnect_call=Celkov\u00fd po\u010det proveden\u00fdch vol\u00e1n\u00ed odpojen\u00ed
+
+distributed_merge=\u010cas str\u00e1ven\u00fd slu\u010dov\u00e1n\u00edm zm\u011bn vzd\u00e1len\u00fdch transakc\u00ed do lok\u00e1ln\u00ed sd\u00edlen\u00e9 mezipam\u011bti. Objevuje se, kdy\u017e se pou\u017e\u00edv\u00e1 synchronizace mezipam\u011bti.
+
+jts_aftercompletion=\u010cas str\u00e1ven\u00fd metodou JTS afterCompletion(Object status)
+
+jts_beforecompletion=\u010cas str\u00e1ven\u00fd metodou JTS beforeCompletion()
+
+logging=\u010cas str\u00e1ven\u00fd protokolov\u00e1n\u00ed aktivit TopLink
+
+merge_time=\u010cas str\u00e1ven\u00fd slu\u010dov\u00e1n\u00edm zm\u011bn do sd\u00edlen\u00e9 mezipam\u011bti
+
+object_building=\u010cas str\u00e1ven\u00fd sestavov\u00e1n\u00edm trval\u00fdch objekt\u016f z datab\u00e1zov\u00fdch \u0159\u00e1dk\u016f
+
+optimistic_lock=Po\u010det vydan\u00fdch v\u00fdjimek zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed
+
+query=Celkov\u00fd \u010das str\u00e1ven\u00fd v operaci: {0}
+
+query_misc=Celkov\u00fd \u010das str\u00e1ven\u00fd v operaci: {0}. Tato hodnota je ur\u010dena pro speci\u00e1ln\u00ed operace, kter\u00e9 nejsou sou\u010d\u00e1st\u00ed \u017e\u00e1dn\u00fdch dotazov\u00fdch slov, jako jsou nap\u0159. z\u00e1pisy do vyrovn\u00e1vac\u00ed pam\u011bti.
+
+query_prepareation=\u010cas na p\u0159\u00edpravu dotazu
+
+rcm_message_received=Po\u010det zpr\u00e1v p\u0159ijat\u00fdch prost\u0159ednictv\u00edm RCM
+
+rcm_message_sent=Po\u010det zpr\u00e1v odeslan\u00fdch prost\u0159ednictv\u00edm RCM
+
+rcm_status=Jedno z [nekonfigurov\u00e1no, spu\u0161t\u011bno, zastaveno]
+
+remote_change_set=Po\u010det sad zm\u011bn p\u0159ijat\u00fdch ze vzd\u00e1len\u00fdch po\u010d\u00edta\u010d\u016f a zpracovan\u00fdch
+
+row_fetch=\u010cas str\u00e1ven\u00fd sestaven\u00edm objekt\u016f typu Z\u00e1znam ze sady v\u00fdsledk\u016f JDBC. Zahrnuje regul\u00e1rn\u00ed vol\u00e1n\u00ed SQL a vol\u00e1n\u00ed ulo\u017een\u00fdch procedur.
+
+session_event=\u010cas str\u00e1ven\u00fd proveden\u00edm ud\u00e1losti SessionEvent
+
+session_login_time=\u010cas, po kterou byla relace p\u0159ihl\u00e1\u0161en\u00e1
+
+session_name=N\u00e1zev relace
+
+sql_generation=\u010cas str\u00e1ven\u00fd generov\u00e1n\u00edm SQL. V p\u0159\u00edpad\u011b v\u00fdraz\u016f TopLink to je \u010das str\u00e1ven\u00fd p\u0159evodem v\u00fdrazu na SQL.
+
+sql_prepare=\u010cas str\u00e1ven\u00fd v JDBC p\u0159\u00edpravou p\u0159\u00edkazu. Zahrnuje tak\u00e9 \u010das str\u00e1ven\u00fd v EIS vytv\u00e1\u0159en\u00edm interakce p\u0159idru\u017een\u00e9 k p\u0159ipojen\u00ed a vytv\u00e1\u0159en\u00edm vstupn\u00edho a v\u00fdstupn\u00edho objektu typu Z\u00e1znam.
+
+unitofwork_commit=M\u011b\u0159\u00ed proces potvrzen\u00ed objekt\u016f UnitOfWork
+
+unitofwork_commits=Po\u010det potvrzen\u00ed objekt\u016f UnitOfWork
+
+unitofwork_count=Po\u010d\u00edt\u00e1 celkov\u00fd po\u010det vytvo\u0159en\u00fdch objekt\u016f UnitOfWork
+
+unitofwork_register=Zahrnuje \u010das str\u00e1ven\u00fd v metod\u00e1ch registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy
+
+unitofwork_rollback=Po\u010det odvolan\u00fdch potvrzen\u00ed objekt\u016f UnitOfWork
+
+wrapping=\u010cas str\u00e1ven\u00fd cyklick\u00fdm zalamov\u00e1n\u00edm objekt\u016f typu bean typu CMP a BMP
+

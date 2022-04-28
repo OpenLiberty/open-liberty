@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=A(z) {0} kontextus\u00fatvonal nem tartalmaz ObjectFactory vagy jaxb.index elemet, \u00e9s k\u00fcls\u0151 metaadatok sem tal\u00e1lhat\u00f3k a tulajdons\u00e1gok t\u00e9rk\u00e9p\u00e9ben, valamint nem tal\u00e1lhat\u00f3 sessions.xml f\u00e1jl, vagy az \u00e9rv\u00e9nytelen.
+
+50001=A(z) {0} oszt\u00e1ly egy argumentum n\u00e9lk\u00fcli konstruktort vagy egy megadott gy\u00e1rt\u00f3 met\u00f3dust ig\u00e9nyel.  Vegye figyelembe, hogy a nem statikus bels\u0151 oszt\u00e1lyoknak nincs argumentum n\u00e9lk\u00fcli konstruktoruk, \u00e9s nem t\u00e1mogatottak.
+
+50002=A gy\u00e1rt\u00f3 oszt\u00e1ly gy\u00e1rt\u00f3 met\u00f3dus n\u00e9lk\u00fcl van megadva a(z) {0} oszt\u00e1lyhoz.
+
+50003=A(z) {0} nev\u0171 gy\u00e1rt\u00f3 met\u00f3dus nincs deklar\u00e1lva a(z) {1} oszt\u00e1lyhoz.
+
+50004=Az XmlAnyAttribute \u00e9rv\u00e9nytelen a(z) {0} tulajdons\u00e1g eset\u00e9n. Egy Map t\u00edpus\u00fa tulajdons\u00e1ggal kell haszn\u00e1lni.
+
+50005=Csak egyetlen XmlAnyAttribute attrib\u00fatummal rendelkez\u0151 tulajdons\u00e1g enged\u00e9lyezett a(z) {0} oszt\u00e1lyhoz.
+
+50006=\u00c9rv\u00e9nytelen XmlElementRef a(z) {0} tulajdons\u00e1ghoz, a(z) {1} oszt\u00e1lyhoz. A hivatkozott elem nincs deklar\u00e1lva.
+
+50007=N\u00e9v\u00fctk\u00f6z\u00e9s.  K\u00e9t oszt\u00e1ly rendelkezik a(z) {0} uri-t \u00e9s {1} nevet tartalmaz\u00f3 XML t\u00edpussal.
+
+50008=Nem t\u00e1mogatott {0} Node oszt\u00e1ly.  A createBinder(Class) met\u00f3dus csak az org.w3c.dom.Node oszt\u00e1lyt t\u00e1mogatja.
+
+50009=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 \u00e1tmeneti annot\u00e1ci\u00f3val van megjel\u00f6lve, \u00edgy nem foglalhat\u00f3 bele a propOrder annot\u00e1ci\u00f3ba.
+
+50010=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1gnak vagy mez\u0151nek egy attrib\u00fatumnak kell lennie, mivel egy m\u00e1sik tulajdons\u00e1g vagy mez\u0151 meg van jel\u00f6lve az XmlValue annot\u00e1ci\u00f3val.
+
+50011=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 nem jel\u00f6lhet\u0151 meg az XmlValue annot\u00e1ci\u00f3val, mivel az egy m\u00e1sik XML k\u00f6t\u00e9s\u0171 oszt\u00e1ly sz\u00e1rmaztatott oszt\u00e1lya.
+
+50012=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 meg lett adva a propOrder elemben, azonban ez nem \u00e9rv\u00e9nyes tulajdons\u00e1g.
+
+50013=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1got vagy mez\u0151t bele kell foglalni az XmlType annot\u00e1ci\u00f3 propOrder elem\u00e9be.
+
+50014=Az {1} oszt\u00e1lyhoz megadott XmlValue annot\u00e1ci\u00f3val ell\u00e1tott {0} tulajdons\u00e1gnak vagy mez\u0151nek olyan t\u00edpus\u00fanak kell lennie, amely egyszer\u0171 s\u00e9mat\u00edpusra van lek\u00e9pezve.
+
+50015=Az XmlElementWrapper csak egy collection vagy array tulajdons\u00e1ghoz enged\u00e9lyezett, azonban a(z) [{0}] nem egy collection vagy array tulajdons\u00e1g.
+
+50016=A(z) [{0}] tulajdons\u00e1g rendelkezik egy XmlID annot\u00e1ci\u00f3val, azonban a t\u00edpusa nem String.
+
+50017=\u00c9rv\u00e9nytelen XmlIDREF a(z) [{0}] tulajdons\u00e1ghoz.  A(z) [{1}] oszt\u00e1lynak rendelkeznie kell egy XmlID annot\u00e1ci\u00f3val ell\u00e1tott tulajdons\u00e1ggal.
+
+50018=Az XmlList csak egy collection vagy array tulajdons\u00e1ghoz enged\u00e9lyezett, azonban a(z) [{0}] nem egy collection vagy array tulajdons\u00e1g.
+
+50019=\u00c9rv\u00e9nytelen param\u00e9tert\u00edpus a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  Az [eclipselink-oxm-xml] kulccsal t\u00e1rs\u00edtott \u00e9rt\u00e9k csak a k\u00f6vetkez\u0151k egyike lehet: [Map<String, Object>, List<Object> vagy Object].  Az objektum csak a k\u00f6vetkez\u0151k egyike lehet: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource]. A [Map<String, Object>] eset\u00e9ben a String param\u00e9ter a csomagn\u00e9v.
+
+50021=\u00c9rv\u00e9nytelen param\u00e9tert\u00edpus a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  A [Map<String, Object>] eset\u00e9ben a kulcs (Key) csak a csomagnevet jel\u00f6l\u0151 [String] t\u00edpus lehet.
+
+50022=\u00c9rv\u00e9nytelen param\u00e9tert\u00edpus a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  A [Map<String, Object>] eset\u00e9ben az \u00e9rt\u00e9k (Value) csak a k\u00f6vetkez\u0151k egyike lehet: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource] (a metaadatf\u00e1jl azonos\u00edt\u00f3ja).
+
+50023=A(z) [{0}] kulcs \u00e9rt\u00e9ke null a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  Az \u00e9rt\u00e9k nem lehet null, \u00e9s a k\u00f6vetkez\u0151k egyik\u00e9nek kell lennie: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource] (a metaadatf\u00e1jl azonos\u00edt\u00f3ja).
+
+50024=Null kulcs \u00e9szlel\u00e9se a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  A kulcs nem lehet null, \u00e9s a csomagnevet jel\u00f6l\u0151 [String] t\u00edpus\u00fanak kell lennie.
+
+50025=A k\u00fcls\u0151 metaadatf\u00e1jlban deklar\u00e1lt [{0}] oszt\u00e1ly nem t\u00f6lthet\u0151 be.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1lyn\u00e9v helyes, \u00e9s hogy a megfelel\u0151 ClassLoader van be\u00e1ll\u00edtva.
+
+50026=Kiv\u00e9tel t\u00f6rt\u00e9nt egy JAXBContext l\u00e9trehoz\u00e1sakor az XmlModel sz\u00e1m\u00e1ra.
+
+50027=Kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00fcls\u0151leg el\u00e9rhet\u0151v\u00e9 tett metaadatf\u00e1jl visszarendez\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+
+50028=A(z) [{0}] \u00faj p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre.
+
+50029=Az XmlCustomizer elemhez megadott [{0}] oszt\u00e1ly nem val\u00f3s\u00edtja meg az org.eclipse.persistence.config.DescriptorCustomizer fel\u00fcletet.
+
+50030=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb XmlID tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra a(z) [{1}] oszt\u00e1lyhoz.  A(z) [{0}] tulajdons\u00e1g nem \u00e1ll\u00edthat\u00f3 be, mint XmlID, mivel a(z) [{2}] tulajdons\u00e1g m\u00e1r be van \u00e1ll\u00edtva, mint XmlID.
+
+50031=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb XmlValue tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra a(z) [{0}] oszt\u00e1lyhoz.  A(z) [{1}] tulajdons\u00e1g nem \u00e1ll\u00edthat\u00f3 be, mint XmlValue, mivel a(z) [{2}] tulajdons\u00e1g m\u00e1r be van \u00e1ll\u00edtva, mint XmlValue.
+
+50032=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb XmlAnyElement tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra a(z) [{0}] oszt\u00e1lyhoz.  A(z) [{1}] tulajdons\u00e1g nem \u00e1ll\u00edthat\u00f3 be, mint XmlAnyElement, mivel a(z) [{2}] tulajdons\u00e1g m\u00e1r be van \u00e1ll\u00edtva, mint XmlAnyElement.
+
+50033=A(z) [{1}] tulajdons\u00e1ghoz be\u00e1ll\u00edtott [{0}] DomHandler eset\u00e9n a DomHandlerConverter nem inicializ\u00e1lhat\u00f3.
+
+50034=A(z) [{0}] tulajdons\u00e1g vagy mez\u0151 nem jel\u00f6lhet\u0151 meg az XmlAttachmentRef annot\u00e1ci\u00f3val, mivel az nem egy DataHandler.
+
+50035=Mivel a(z) [{0}] tulajdons\u00e1g vagy mez\u0151 mint XmlIDREF van be\u00e1ll\u00edtva, az XmlElements list\u00e1n bel\u00fcl deklar\u00e1lt egyes XmlElement elemek c\u00e9lt\u00edpus\u00e1nak rendelkeznie kell egy XmlID tulajdons\u00e1ggal.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{1}] XmlElement c\u00e9lt\u00edpusa tartalmaz egy XmlID tulajdons\u00e1got.
+
+50036=A(z) [{0}] XmlTagName QName tulajdons\u00e1ggal rendelkez\u0151 TypeMappingInfo elemhez be kell \u00e1ll\u00edtani egy nem null Type elemet.
+
+50037=A(z) [{0}] csomagot tartalmaz\u00f3 java-type nem enged\u00e9lyezett a(z) [{1}] csomaghoz kulcsk\u00e9nt megadott k\u00f6t\u00e9si f\u00e1jlban.
+
+50038=Konkr\u00e9t oszt\u00e1lyokb\u00f3l nem hozhat\u00f3 l\u00e9tre DynamicJAXBContext.  Haszn\u00e1lja az org.eclipse.persistence.jaxb.JAXBContext csomagot, vagy adja meg az org.eclipse.persistence.jaxb.JAXBContextFactory csomagot a jaxb.properties f\u00e1jlban egy kontextus l\u00e9trehoz\u00e1s\u00e1hoz a megl\u00e9v\u0151 oszt\u00e1lyokb\u00f3l.
+
+50039=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: A Node csak a Document vagy Element p\u00e9ld\u00e1nya lehet.
+
+50040=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor.
+
+50041=A(z) [{0}] felsorol\u00e1si konstans nem tal\u00e1lhat\u00f3.
+
+50042=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: A Session param\u00e9ter null volt.
+
+50043=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: A Source param\u00e9ter null volt.
+
+50044=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: Az InputStream param\u00e9ter null volt.
+
+50045=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: A Node param\u00e9ter null volt.
+
+50046=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: Az XJC nem tudott el\u0151\u00e1ll\u00edtani egy CodeModel elemet.
+
+50047=A(z) [{0}] oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+50048=A(z) [{0}] tulajdons\u00e1ghoz megadott olvas\u00e1si \u00e1talak\u00edt\u00f3 egyar\u00e1nt tartalmaz oszt\u00e1lyt \u00e9s met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+50049=A(z) [{0}] tulajdons\u00e1ghoz megadott olvas\u00e1si \u00e1talak\u00edt\u00f3 nem tartalmaz sem oszt\u00e1lyt, sem met\u00f3dust. Egy oszt\u00e1ly vagy met\u00f3dus megad\u00e1sa k\u00f6telez\u0151.
+
+50050=A(z) [{0}] tulajdons\u00e1g [{1}] xml-path attrib\u00fatum\u00e1hoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 egyar\u00e1nt tartalmaz oszt\u00e1lyt \u00e9s met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+50051=A(z) [{0}] tulajdons\u00e1g [{1}] xml-path attrib\u00fatum\u00e1hoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 nem tartalmaz sem oszt\u00e1lyt, sem met\u00f3dust. Egy oszt\u00e1ly vagy met\u00f3dus megad\u00e1sa k\u00f6telez\u0151.
+
+50052=A(z) [{0}] tulajdon\u00e1ghoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3hoz nincs be\u00e1ll\u00edtva xml-path. Egy xml-path megad\u00e1sa k\u00f6telez\u0151.
+
+50053=Nem tal\u00e1lhat\u00f3 a(z) [{0}] \u00e1talak\u00edt\u00e1si met\u00f3dus a (), (AbstractSession) vagy (Session) param\u00e9terrel.
+
+50054=A(z) [{0}] \u00e1talak\u00edt\u00e1si oszt\u00e1ly nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1lyn\u00e9v helyes, \u00e9s hogy a megfelel\u0151 ClassLoader van be\u00e1ll\u00edtva.
+
+50055=Hiba a DynamicJAXBContext l\u00e9trehoz\u00e1sakor: az eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) nem tal\u00e1lhat\u00f3 a tulajdons\u00e1g t\u00e9rk\u00e9pben, vagy a t\u00e9rk\u00e9p null volt.
+
+50056=A(z) [{0}] tulajdons\u00e1g tartalmaz egy XmlJoinNode deklar\u00e1ci\u00f3t, azonban a hivatkozott [{1}] oszt\u00e1ly nem alkalmazhat\u00f3 az ilyen t\u00edpus\u00fa viszonyhoz.
+
+50057=A(z) [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{1}] tulajdons\u00e1g egy [{2}] osztl\u00e1yra hivatkozik, amely \u00e1tmeneti min\u0151s\u00edt\u0151vel van megjel\u00f6lve, ami nem enged\u00e9lyezett.
+
+50058=A(z) [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{1}] tulajdons\u00e1g tartalmaz egy XmlJoinNode deklar\u00e1ci\u00f3t, azonban a c\u00e9l [{2}] oszt\u00e1ly nem tartalmaz XmlID tulajdons\u00e1got vagy XmlKey tulajdons\u00e1gokat.  K\u00f6telez\u0151, hogy legyen egy XmlID/XmlKey tuladons\u00e1g egy megfelel\u0151 XmlPath elemmel az egyes referencedXmlPath elemek c\u00e9loszt\u00e1ly\u00e1hoz.
+
+50059=A(z) [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{1}] tulajdons\u00e1g tartalmaz egy XmlJoinNode deklar\u00e1ci\u00f3t egy [{3}] referencedXmlPath elemmel, azonban nincs XmlID vagy XmlKey tulajdons\u00e1g a(z) [{3}] XmlPath elemet tartalmaz\u00f3 [{2}] c\u00e9loszt\u00e1lyhoz.  K\u00f6telez\u0151, hogy legyen egy XmlID/XmlKey tuladons\u00e1g egy megfelel\u0151 XmlPath elemmel az egyes referencedXmlPath elemek c\u00e9loszt\u00e1ly\u00e1hoz.
+
+50060=A(z) [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{1}] tulajdons\u00e1g tartalmaz egy XmlIDREF deklar\u00e1ci\u00f3t, azonban a(z) [{2}] c\u00e9loszt\u00e1ly nem alkalmazhat\u00f3 az ilyen t\u00edpus\u00fa viszonyra.
+
+50061=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] XmlAdapterClass bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A lehets\u00e9ges okok: helytelen illeszt\u0151 oszt\u00e1lyn\u00e9v vagy helytelen bet\u00f6lt\u0151 lett be\u00e1ll\u00edtva.
+
+50062=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] XmlAdapterClass deklar\u00e1lt met\u00f3dusainak el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A lehets\u00e9ges okok: A SecurityManager megtagadta a hozz\u00e1f\u00e9r\u00e9st az illeszt\u0151 oszt\u00e1lyon bel\u00fcl deklar\u00e1lt met\u00f3dusokhoz, vagy a SecuritManager megtagadta a hozz\u00e1f\u00e9r\u00e9st az illeszt\u0151 oszt\u00e1ly csomagj\u00e1hoz.
+
+50063=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] XmlAdapterClass p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Egy lehets\u00e9ges ok az, hogy az illeszt\u0151 oszt\u00e1lynak nincs argumentumok n\u00e9lk\u00fcli konstruktora.
+
+50064=A(z) [{0}] XmlAdapterClass nem terjeszti ki a "javax.xml.bind.annotation.adapters.XmlAdapter" oszt\u00e1lyt az elv\u00e1rtnak megfelel\u0151en.  Az illeszt\u0151 oszt\u00e1lynak ki kell terjesztenie a "javax.xml.bind.annotation.adapters.XmlAdapter" oszt\u00e1lyt, \u00e9s deklar\u00e1lnia kell "public abstract BoundType unmarshal(ValueType v)" \u00e9s a "public abstract ValueType marshal(BoundType v)" met\u00f3dusokat.
+
+50065=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] csomaghoz. A lehets\u00e9ges okok: helytelen illeszt\u0151 oszt\u00e1lyn\u00e9v vagy helytelen bet\u00f6lt\u0151 lett be\u00e1ll\u00edtva.
+
+50066=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] oszt\u00e1lyhoz. A lehets\u00e9ges okok: helytelen illeszt\u0151 oszt\u00e1lyn\u00e9v vagy helytelen bet\u00f6lt\u0151 lett be\u00e1ll\u00edtva.
+
+50067=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] mez\u0151h\u00f6z/tulajdons\u00e1ghoz a(z) [{2}] oszt\u00e1lyon. A lehets\u00e9ges okok: helytelen illeszt\u0151 oszt\u00e1lyn\u00e9v vagy helytelen bet\u00f6lt\u0151 lett be\u00e1ll\u00edtva.
+
+50068=Null \u00e9rt\u00e9k \u00e9szlel\u00e9se a k\u00fcls\u0151 metaadatok feldolgoz\u00e1sakor a tulajdons\u00e1g t\u00e9rk\u00e9pen kereszt\u00fcl.  Az XML metaadatf\u00e1jl azonos\u00edt\u00f3ja nem lehet null, \u00e9s a k\u00f6vetkez\u0151k egyik\u00e9nek kell lennie: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource].
+
+50069=A biztos\u00edtott XML metaadatf\u00e1jlhoz nem lett megadva csomag.  A csomag a Map<String, Object> \u00e1tad\u00e1s\u00e1val adhat\u00f3 meg (ahol String = csomag, Object = az XML metaadatf\u00e1jl azonos\u00edt\u00f3ja),  vagy az xml-bindings elem package-name attrib\u00fatum\u00e1nak be\u00e1ll\u00edt\u00e1s\u00e1val az XML metaadatf\u00e1jlban.
+
+50070=A(z) [{1}] oszt\u00e1ly [{0}] tulajdons\u00e1ga tartalmaz egy XmlElements deklar\u00e1ci\u00f3t, amelyben az XmlElement/XmlJoinNodes sz\u00e1m nem egyenl\u0151.  Az XmlElements deklar\u00e1ci\u00f3n bel\u00fcl tartalmazott minden egyes XmlElement elemhez tartoznia kell egy megfelel\u0151 XmlJoinNodes elemnek.
+
+50071=A(z) [{1}] oszt\u00e1lyban l\u00e9v\u0151 [{0}] tulajdons\u00e1g egy olyan XmlPaths deklar\u00e1ci\u00f3t tartalmaz, amelyben egy XmlPath attrib\u00fatum a(z) [{2}] \u00fatvonal gy\u00f6ker\u00e9ben tal\u00e1lhat\u00f3.  Az XmlPath elemek eset\u00e9ben az attrib\u00fatumokat be kell \u00e1gyazni az XmlPath elemben, vagyis: [foo/{2}].
+
+50072=T\u00f6bbsz\u00f6r szerepl\u0151 [{0}] nev\u0171 tulajdons\u00e1g tal\u00e1lhat\u00f3 a(z) [{1}] oszt\u00e1lyban
+
+50073=A(z) [{1}] oszt\u00e1ly [{0}] tulajdons\u00e1ga t\u00f6bb k\u00fcls\u0151 k\u00f6t\u00e9si f\u00e1jlban van megadva. Az egyes tulajdons\u00e1gok csak egyetlen f\u00e1jlban adhat\u00f3k meg.
+
+50074=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] XMLNameTransformer el\u00e9r\u00e9sekor
+
+50075=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] \u00e1talak\u00edt\u00e1sn\u00e9v el\u00e9r\u00e9sekor a(z) [{1}] XMLNameTransformer eset\u00e9n
+
+50076=A k\u00fcls\u0151 metaadatok nem t\u00f6lthet\u0151k be a megadott helyr\u0151l: [{0}]. Ez a hely csak egy \u00e9rv\u00e9nyes URL vagy oszt\u00e1ly\u00fatvonal hivatkoz\u00e1s lehet.
+
+50077=A metaadatok nem friss\u00edthet\u0151k.  A friss\u00edt\u00e9s t\u00e1mogat\u00e1sa \u00e9rdek\u00e9ben a metaadatokat XML Node form\u00e1ban kell megadni.
+
+50078=A k\u00fcls\u0151 k\u00f6t\u00e9s f\u00e1jlok (XJB) nem dolgozhat\u00f3k fel.  K\u00fcls\u0151 k\u00f6t\u00e9s f\u00e1jlok haszn\u00e1lat\u00e1hoz az XSD-t \u00e9s az XJB-t egyar\u00e1nt javax.xml.transform.Sources form\u00e1ban kell megadni.
+
+50079=A s\u00e9m\u00e1k nem dolgozhat\u00f3k fel.  Ha s\u00e9maimport\u00e1l\u00e1sokat haszn\u00e1l, akkor az XSD-ket mint javax.xml.transform.Source kell megadni.
+
+50080=Az XmlLocation csak org.xml.sax.Locator t\u00edpus\u00fa tulajdons\u00e1gokhoz enged\u00e9lyezett, azonban a(z) [{0}] [{1}] t\u00edpus\u00fa.
+
+50081=Kiv\u00e9tel t\u00f6rt\u00e9nt a s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+
+50082=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy {0} \u00e9rt\u00e9k \u00edr\u00e1s\u00e1ra egy kulcs megad\u00e1sa n\u00e9lk\u00fcl.  Pr\u00f3b\u00e1lja meg be\u00e1ll\u00edtani a JSON_VALUE_WRAPPER \u00e9rt\u00e9ket a JAXBMarshaller sz\u00e1m\u00e1ra
+
+50083=Hiba t\u00f6rt\u00e9nt a(z) {0} AccessorFactory oszt\u00e1ly p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+
+50084=A megadott {0} AccessorFactory oszt\u00e1ly \u00e9rv\u00e9nytelen. Meg kell val\u00f3s\u00edtania a createFieldAccessor(Class, Field, boolean) \u00e9s createPropertyAccessor(Class, Method, Method) met\u00f3dusokat.
+
+50085=Kiv\u00e9tel t\u00f6rt\u00e9nt a createFieldAccessor met\u00f3dus megh\u00edv\u00e1sakor a(z) {0} AccessorFactory eset\u00e9n
+
+50086=Kiv\u00e9tel t\u00f6rt\u00e9nt a createPropertyAccessor met\u00f3dus megh\u00edv\u00e1sakor a(z) {0} AccessorFactory eset\u00e9n
+
+50087=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus megh\u00edv\u00e1sakor a(z) {1} Accessor eset\u00e9n
+
+50088=A(z) {0} felsorol\u00e1si \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes egy {1} oszt\u00e1ly\u00fa XmlEnum eset\u00e9n
+
+50089=A(z) {0} Java fel\u00fclet nem k\u00e9pezhet\u0151 le JAXB haszn\u00e1lat\u00e1val, mivel t\u00f6bb lek\u00e9pezhet\u0151 sz\u00fcl\u0151fel\u00fclete van. A t\u00f6bbsz\u00f6r\u00f6s \u00f6r\u00f6kl\u00e9s nem t\u00e1mogatott.
+
+50090=Az object graph \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen: {0}. Az \u00e9rt\u00e9k csak egy karaktersorozat vagy az ObjectGraph oszt\u00e1ly egy p\u00e9ld\u00e1nya lehet.
+
+50091=A(z) {0} elemn\u00e9vnek t\u00f6bb lek\u00e9pez\u00e9se van.
+
+50092=A(z) {1} oszt\u00e1lyhoz csak egyetlen {0} t\u00edpus\u00fa XmlElementRef tulajdons\u00e1g enged\u00e9lyezett.
+
+50093=A(z) {0} oszt\u00e1ly nem egy lek\u00e9pezett t\u00edpus a JAXBContext kontextusban.
+
+50094=Az XmlVariableNode annot\u00e1ci\u00f3hoz megadott {0} tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1lyhoz.
+
+50095=A(z) {1} t\u00edpus\u00fa {0} tulajdons\u00e1g a(z) {2} oszt\u00e1lyhoz nem \u00e9rv\u00e9nyes egy XmlVariableNode annot\u00e1ci\u00f3hoz.  Csak String vagy QName t\u00edpus\u00fa tulajdons\u00e1gok enged\u00e9lyezettek.
+
+50096=A(z) {0} @XmlAttribute tulajdons\u00e1gnak a(z) {1} t\u00edpusban egy olyan t\u00edpusra kell hivatkoznia, amely az XML-ben l\u00e9v\u0151 sz\u00f6vegre van lek\u00e9pezve.  {2} nem k\u00e9pezhet\u0151 le egy sz\u00f6veg\u00e9rt\u00e9kre.
+

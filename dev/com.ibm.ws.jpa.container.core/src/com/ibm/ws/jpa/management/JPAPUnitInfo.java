@@ -1286,10 +1286,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                         Tr.error(tc,
                                  "ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E",
                                  className);
-                    } catch (RuntimeException t) {
-                        // The transform() method should only throw IllegalClassFormatException but some
+                    } catch (Throwable t) {
+                        // The transform() method should only throw IllegalClassFormatException (in JPA < 3.1) but some
                         // providers may allow a RuntimeException to bubble through, so we have to deal with that
                         // possibility.
+                        // JPA 3.1: The transform method signature has been changed to throw jakarta.persistence.spi.TransformerException.  Since this
+                        // exception doesn't exist in earlier versions of JPA, this catch block has been updated to catch Throwable instead of RuntimeException.
                         final StringBuilder sb = new StringBuilder();
                         try {
                             sb.append("\n----------\n");
@@ -1297,7 +1299,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                             sb.append(") for class ").append(className).append(" :\n");
                             sb.append(dumpByteCode(classBytes));
 
-                            sb.append("\nRuntime Exception thrown by transformer:\n");
+                            sb.append("\nException thrown by transformer:\n");
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             t.printStackTrace(new PrintStream(baos));
                             sb.append(baos.toString());

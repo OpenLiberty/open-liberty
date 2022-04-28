@@ -22,6 +22,7 @@ import com.ibm.ws.jpa.FATSuite;
 
 import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -33,6 +34,7 @@ import componenttest.topology.utils.PrivHelper;
  *
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES) // TODO: Remove before leaving beta
 public class JPACDIIntegrationTest {
     public static final String APP_NAME = "cdi";
     public static final String SERVLET = "eli";
