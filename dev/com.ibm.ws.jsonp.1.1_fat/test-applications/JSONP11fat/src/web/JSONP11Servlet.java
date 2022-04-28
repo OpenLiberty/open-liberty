@@ -11,6 +11,7 @@
 package web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.json.Json;
@@ -20,6 +21,7 @@ import javax.json.JsonObject;
 import javax.json.JsonPatch;
 import javax.json.JsonPointer;
 import javax.json.JsonString;
+import javax.json.spi.JsonProvider;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,12 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JSONP11Servlet")
 public class JSONP11Servlet extends FATServlet {
+    
+    @Test
+    public void testJSONProvider(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        JsonProvider jp = JsonProvider.provider();
+        assertNotNull(jp);
+    }
 
     @Test
     public void testJSONPointer(HttpServletRequest request, HttpServletResponse response) throws Exception {
