@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ final public class SessionProperties {
         FullyQualifiedPropertiesMap.put("SessionIdentifierMaxLength", "idMaxLength");
         FullyQualifiedPropertiesMap.put("CloneSeparatorChange", "cloneSeparatorChange");
         FullyQualifiedPropertiesMap.put("CloneSeparator", "cloneSeparator");
+        FullyQualifiedPropertiesMap.put("CacheSeparator", "cacheSeparator");
         FullyQualifiedPropertiesMap.put("NoAffinitySwitchBack", "noAffinitySwitchBack");
         FullyQualifiedPropertiesMap.put("UseOracleBLOB", "useOracleBlob");
         FullyQualifiedPropertiesMap.put("SessionTableSkipIndexCreation", "skipIndexCreation");
@@ -263,6 +264,22 @@ final public class SessionProperties {
             }
         }
 
+        // httpSessionCache property
+        final String propCacheSeparator = "CacheSeparator";
+        strProp = getStringProperty(propCacheSeparator, xtpProperties);
+        if (strProp != null) {
+            // Must be exactly one char, and cannot be space
+            if ((strProp.length() == 1) && (strProp.trim().length() == 1)) {
+                if (shouldSetAndDoLogging(propCacheSeparator, true, baseServerLevelConfig, xtpProperties, strProp, null, false)) {
+                    char charProp = strProp.charAt(0);
+                    SessionManagerConfig.setCacheSeparator(charProp);
+                }
+            } else {
+                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.WARNING, methodClassName, methodName, invalidPropFoundMessage,
+                                                     new Object[] { strProp });
+            }
+        }        
+        
         // no affinity switch back - stick to new server after failover
         final String propNoAffSwitch = "NoAffinitySwitchBack";
         strProp = getStringProperty(propNoAffSwitch, xtpProperties);

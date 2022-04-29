@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -152,10 +152,16 @@ public class CacheHashMap extends BackedHashMap {
             // Build a unique per-application cache name by starting with the application context root and percent encoding
             // the / and : characters (JCache spec does not allow these in cache names)
             // and also the % character (which is necessary because of percent encoding)
-            String a = PERCENT.matcher(_iStore.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
-            a = SLASH.matcher(a).replaceAll("%2F");
-            a = COLON.matcher(a).replaceAll("%3A");
-
+            String a = _iStore.getId();
+            if (Character.compare(_smc.getCacheSeparator(), '%') == 0) {
+                a = PERCENT.matcher(a).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
+                a = SLASH.matcher(a).replaceAll("%2F");
+                a = COLON.matcher(a).replaceAll("%3A");
+            } else {
+                a = SLASH.matcher(a).replaceAll(Character.toString(_smc.getCacheSeparator()));
+                a = COLON.matcher(a).replaceAll(Character.toString(_smc.getCacheSeparator()));
+            }
+            
             // Session Meta Information Cache
 
             String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();

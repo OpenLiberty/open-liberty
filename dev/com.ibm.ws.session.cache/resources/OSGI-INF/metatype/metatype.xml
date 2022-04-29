@@ -39,6 +39,7 @@
    <Option label="%writeFrequency.tb"                      value="TIME_BASED_WRITE"/>
   </AD>
   <AD id="writeInterval"                  type="String"  ibm:type="duration(s)" default="2m" ibmui:group="performance" name="%writeInterval"  description="%writeInterval.desc"/>
+  <AD id="cacheSeparator"                 type="String"  required="false"       default="%" ibmui:group="performance" name="%cacheSeparator" description="%cacheSeparator.desc"/>
   
   <!-- 
        JCache configuration.
