@@ -9,10 +9,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
- <!-- TODO
- <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"> 
-  -->
-<web-app version="5.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"> 
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
 
   <!-- For testing access to the application component namespace -->
   <env-entry>
@@ -20,5 +17,17 @@
     <env-entry-type>java.lang.String</env-entry-type>
     <env-entry-value>1value</env-entry-value>
   </env-entry>
+
+  <context-service>
+    <name>java:comp/concurrent/zosWLMContextPropagateOrNew</name>
+    <cleared>Security</cleared>
+    <cleared>SyncToOSThread</cleared>
+    <cleared>Transaction</cleared>
+    <propagated>Classification</propagated>
+    <unchanged>Remaining</unchanged>
+    <property><name>daemonTransactionClass</name><value>DAEMON_TX</value></property>
+    <property><name>defaultTransactionClass</name><value>DEFAULT_TX</value></property>
+    <property><name>wlm</name><value>PropagateOrNew</value></property>
+  </context-service>
 
 </web-app>
