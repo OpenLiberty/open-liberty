@@ -100,14 +100,9 @@ public class ConsumerUtil {
     JwtContext parseJwtAndGetJwtContext(String jwtString, JwtConsumerConfig config) throws Exception {
         JwtContext jwtContext = parseJwtWithoutValidation(jwtString, config);
         if (config.isValidationRequired()) {
-            jwtContext = getSigningKeyAndParseJwtWithValidation(jwtContext.getJwt(), config, jwtContext);
+            validateJwtContext(jwtContext, config);
         }
         return jwtContext;
-    }
-
-    JwtContext getSigningKeyAndParseJwtWithValidation(String jwtString, JwtConsumerConfig config, JwtContext jwtContext) throws Exception {
-        Key signingKey = getSigningKey(config, jwtContext);
-        return parseJwtWithValidation(jwtString, jwtContext, config, signingKey);
     }
 
     /**
@@ -159,14 +154,17 @@ public class ConsumerUtil {
         Key signingKey = null;
         String sigAlg = mpConfigProps.getConfiguredSignatureAlgorithm(config);
 
+        boolean isAsymmetricAlgorithm = false;
         if (keyAlgChecker.isHSAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForHS(sigAlg, config);
         } else if (keyAlgChecker.isRSAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForRS(config, jwtContext);
+            isAsymmetricAlgorithm = true;
         } else if (keyAlgChecker.isESAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForES(config, jwtContext);
+            isAsymmetricAlgorithm = true;
         }
-        if (isAsymmetricAlgorithm(sigAlg)) {
+        if (isAsymmetricAlgorithm) {
             if (!keyAlgChecker.isPublicKeyValidType(signingKey, sigAlg)) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Public key " + signingKey + " does not match the parameters of the " + sigAlg + " algorithm");
@@ -175,10 +173,6 @@ public class ConsumerUtil {
             }
         }
         return signingKey;
-    }
-
-    boolean isAsymmetricAlgorithm(String sigAlg) {
-        return (keyAlgChecker.isRSAlgorithm(sigAlg) || keyAlgChecker.isESAlgorithm(sigAlg));
     }
 
     Key getSigningKeyForHS(String signatureAlgorithm, JwtConsumerConfig config) throws KeyException {
@@ -394,7 +388,8 @@ public class ConsumerUtil {
         return firstPassJwtConsumer.process(jwtString);
     }
 
-    protected JwtContext parseJwtWithValidation(String jwtString, JwtContext jwtContext, JwtConsumerConfig config, Key key) throws Exception {
+    protected void validateJwtContext(JwtContext jwtContext, JwtConsumerConfig config) throws Exception {
+        Key key = getSigningKey(config, jwtContext);
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
 
         if (tc.isDebugEnabled()) {
@@ -406,7 +401,7 @@ public class ConsumerUtil {
 
         JwtConsumerBuilder consumerBuilder = initializeJwtConsumerBuilderWithValidation(config, jwtClaims, key);
         JwtConsumer jwtConsumer = consumerBuilder.build();
-        return processJwtStringWithConsumer(jwtConsumer, jwtString);
+        processJwtContextWithConsumer(jwtConsumer, jwtContext);
     }
 
     JwtConsumerBuilder initializeJwtConsumerBuilderWithoutValidation(JwtConsumerConfig config) {
@@ -699,10 +694,9 @@ public class ConsumerUtil {
         }
     }
 
-    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, InvalidJwtException {
-        JwtContext validatedJwtContext = null;
+    void processJwtContextWithConsumer(JwtConsumer jwtConsumer, JwtContext jwtContext) throws InvalidTokenException, InvalidJwtException {
         try {
-            validatedJwtContext = jwtConsumer.process(jwtString);
+            jwtConsumer.processContext(jwtContext);
         } catch (InvalidJwtSignatureException e) {
             String msg = Tr.formatMessage(tc, "JWT_INVALID_SIGNATURE", new Object[] { e.getLocalizedMessage() });
             throw new InvalidTokenException(msg, e);
@@ -716,7 +710,6 @@ public class ConsumerUtil {
                 throw e;
             }
         }
-        return validatedJwtContext;
     }
 
     String getAlgorithmFromJwtHeader(JwtContext jwtContext) {
