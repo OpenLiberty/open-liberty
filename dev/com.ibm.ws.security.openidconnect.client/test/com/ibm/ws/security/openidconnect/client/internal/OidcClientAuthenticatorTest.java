@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.client.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -116,10 +116,7 @@ public class OidcClientAuthenticatorTest {
     // private static final String SHARED_KEY = "secret";  // conversion from net.oauth to jose4j requires a longer key
     private static final String SHARED_KEY = "secretsecretsecretsecretsecretsecret";
     private static final String TEST_ACR_VALUES = "urn:mace:incommon:iap:silver urn:mace:incommon:iap:bronze";
-    private static final String authMethod = "basic";
     private static final String AUTHZ_CODE = "authorizaCodeAAA";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
-    private static final String SIGNATURE_ALG_NONE = "none";
     private static final String METHOD_POST = "POST";
     private static final String METHOD_GET = "GET";
     private static final String PARAMETER_OIDC_CLIENT = "oidc_client";
@@ -549,20 +546,8 @@ public class OidcClientAuthenticatorTest {
             createGetAuthzCodeAndSateFromCookieExpectations();
             createHandleTokensExpectations(ANOTHER_ORIGINAL_STATE, ANOTHER_ORIGINAL_STATE, false, TEST_TOKEN_STRING, TEST_ACCESS_TOKEN);
 
-            final String myStateKey = ANOTHER_ORIGINAL_STATE;
-            final String originalState = ANOTHER_ORIGINAL_STATE;
-            Cache requestStates = new Cache(0, 0);
-            requestStates.put(myStateKey, originalState);
-
             final OidcClientAuthenticator oica = new OidcClientAuthenticator(sslSupportRef);
-            //mock.checking(new Expectations() {
-            //   {
-            //      one(oica.getAttributeToSubject(clientConfig, payload, "tokenStr"));
-            //      will(returnValue(attributeToSubject));
-            //  }
-            //});
 
-            //oica.requestStates = requestStates;
             oica.oidcClientUtil = oidcClientUtil;
 
             ProviderAuthenticationResult result = oica.authenticate(req, res, clientConfig); //
@@ -586,13 +571,7 @@ public class OidcClientAuthenticatorTest {
             createGetAuthzCodeAndSateFromCookieExpectations();
             createHandleTokensExpectations(ANOTHER_ORIGINAL_STATE, ANOTHER_ORIGINAL_STATE, true, TEST_TOKEN_STRING, TEST_ACCESS_TOKEN);
 
-            final String myStateKey = ANOTHER_ORIGINAL_STATE;
-            final String originalState = TEST_ORIGINAL_STATE;
-            Cache requestStates = new Cache(0, 0);
-            requestStates.put(myStateKey, originalState);
-
             OidcClientAuthenticator oica = new OidcClientAuthenticator(sslSupportRef);
-            //oica.requestStates = requestStates;
             oica.oidcClientUtil = oidcClientUtil;
 
             ProviderAuthenticationResult result = oica.authenticate(req, res, clientConfig); //
@@ -808,49 +787,6 @@ public class OidcClientAuthenticatorTest {
                 will(returnValue(null));
                 allowing(clientConfig).getJwkClientSecret();
                 will(returnValue(null));
-            }
-        });
-    }
-
-    private void createResponseStateExpectations(final String stateKey) {
-        final Cookie[] cookies = new Cookie[] { cookie1 };
-        final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + ANOTHER_ORIGINAL_STATE.hashCode();
-        mock.checking(new Expectations() {
-            {
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(cookie1).getName();
-                will(returnValue(cookieName));
-                one(cookie1).getValue();
-                will(returnValue(stateKey));
-            }
-        });
-        createReferrerUrlCookieExpectations(cookieName);
-    }
-
-    private void createHttpsRequirementExpectationsForTokenEndpoint() {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getTokenEndpointUrl();
-                will(returnValue(TEST_TOKEN_ENDPOINT));
-                allowing(clientConfig).isDisableLtpaCookie();
-                will(returnValue(false));
-            }
-        });
-        createHttpsRequirementExpectations(false);
-    }
-
-    private void createSSLContextExpectations(final String sslConfigurationName, final SSLContext sslContext) throws SSLException {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getTokenEndpointUrl();
-                will(returnValue(TEST_TOKEN_ENDPOINT));
-                allowing(clientConfig).getSSLConfigurationName();
-                will(returnValue(sslConfigurationName));
-                one(sslSupport).getJSSEHelper();
-                will(returnValue(jsseHelper));
-                one(jsseHelper).getSSLContext(sslConfigurationName, null, null, true);
-                will(returnValue(sslContext));
             }
         });
     }
@@ -1100,8 +1036,6 @@ public class OidcClientAuthenticatorTest {
                     "notAoriginalState6547".hashCode();
             final String myStateKey = TEST_STATE_KEY;
             final String originalState = TEST_ORIGINAL_STATE;
-            Cache requestStates = new Cache(0, 0); //LinkedHashMap<String, Object>(10000);
-            requestStates.put(myStateKey, originalState);
             mock.checking(new Expectations() {
                 {
                     one(req).getCookies();
@@ -1245,7 +1179,6 @@ public class OidcClientAuthenticatorTest {
             };
             final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY +
                     TEST_ORIGINAL_STATE.hashCode();
-            final String myStateKey = TEST_STATE_KEY;
             final String originalState = TEST_ORIGINAL_STATE;
 
             mock.checking(new Expectations() {
@@ -1316,7 +1249,6 @@ public class OidcClientAuthenticatorTest {
             };
             final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY +
                     TEST_ORIGINAL_STATE.hashCode();
-            final String myStateKey = TEST_STATE_KEY;
             final String originalState = TEST_ORIGINAL_STATE;
             mock.checking(new Expectations() {
                 {

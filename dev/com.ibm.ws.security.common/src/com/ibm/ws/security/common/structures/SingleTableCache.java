@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,17 +20,14 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 
 public class SingleTableCache extends CommonCache {
 
-    protected Map<String, Object> lookupTable;
+    protected Map<Object, CacheValue> lookupTable;
 
     public SingleTableCache(long timeoutInMilliSeconds) {
         this(0, timeoutInMilliSeconds);
     }
 
     public SingleTableCache(int entryLimit, long timeoutInMilliSeconds) {
-        if (entryLimit > 0) {
-            this.entryLimit = entryLimit;
-        }
-        lookupTable = Collections.synchronizedMap(new BoundedHashMap(this.entryLimit));
+        lookupTable = Collections.synchronizedMap(new BoundedGenericHashMap<Object, CacheValue>(entryLimit));
 
         rescheduleCleanup(timeoutInMilliSeconds);
     }
@@ -45,24 +42,38 @@ public class SingleTableCache extends CommonCache {
     /**
      * Find and return the object associated with the specified key.
      */
-    public synchronized Object get(@Sensitive String key) {
-        CacheEntry entry = (CacheEntry) lookupTable.get(key);
-        if (entry == null) {
+    public synchronized Object get(@Sensitive Object key) {
+        CacheValue cacheValue = lookupTable.get(key);
+        if (cacheValue == null) {
             return null;
         }
-        if (entry.isExpired(timeoutInMilliSeconds)) {
+        if (cacheValue.isExpired(timeoutInMilliSeconds)) {
             remove(key);
             return null;
         }
-        return entry.getValue();
+        return cacheValue.getValue();
     }
 
     /**
      * Insert the value into the Cache using the specified key.
      */
-    public synchronized void put(@Sensitive String key, Object value) {
-        CacheEntry entry = new CacheEntry(value);
-        lookupTable.put(key, entry);
+    public synchronized void put(@Sensitive Object key, Object value) {
+        put(key, value, 0);
+    }
+
+    /**
+     * Insert the value into the Cache using the specified key.
+     */
+    public synchronized void put(@Sensitive Object key, Object value, long clockSkew) {
+        lookupTable.put(key, createCacheValue(value, clockSkew));
+    }
+
+    protected CacheValue createCacheValue(Object value, long clockSkew) {
+        return new CacheValue(value, clockSkew);
+    }
+
+    public int size() {
+        return lookupTable.size();
     }
 
     /**
@@ -70,16 +81,16 @@ public class SingleTableCache extends CommonCache {
      */
     @Override
     protected synchronized void evictStaleEntries() {
-        List<String> keysToRemove = new ArrayList<String>();
-        for (Entry<String, Object> entry : lookupTable.entrySet()) {
-            String key = entry.getKey();
-            Object cacheEntry = entry.getValue();
-            if (cacheEntry == null || ((CacheEntry) cacheEntry).isExpired(timeoutInMilliSeconds)) {
+        List<Object> keysToRemove = new ArrayList<>();
+        for (Entry<Object, CacheValue> entry : lookupTable.entrySet()) {
+            Object key = entry.getKey();
+            CacheValue cacheValue = entry.getValue();
+            if (cacheValue == null || cacheValue.isExpired(timeoutInMilliSeconds)) {
                 keysToRemove.add(key);
             }
         }
-        for (String keyToRemove : keysToRemove) {
-            lookupTable.remove(keyToRemove);
+        for (Object keyToRemove : keysToRemove) {
+            remove(keyToRemove);
         }
     }
 

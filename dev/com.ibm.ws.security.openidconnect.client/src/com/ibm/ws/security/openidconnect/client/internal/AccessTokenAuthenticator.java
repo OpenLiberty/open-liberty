@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
 import java.util.Date;
@@ -40,8 +40,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
-import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
@@ -226,7 +224,7 @@ public class AccessTokenAuthenticator {
     }
 
     ProviderAuthenticationResult fixSubject(ProviderAuthenticationResult oidcResult) {
-        return new OidcClientAuthenticator().fixSubject(oidcResult);
+        return OidcClientAuthenticator.fixSubject(oidcResult);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,29 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-public class CacheEntry {
+import java.util.Objects;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+public class CacheValue {
+
+    private static final TraceComponent tc = Tr.register(CacheValue.class);
 
     private Object value;
     private long createdAt = 0L;
 
-    public CacheEntry(Object value) {
+    public CacheValue(Object value) {
+        this(value, 0);
+    }
+
+    public CacheValue(Object value, long clockSkew) {
         this.value = value;
         this.createdAt = System.currentTimeMillis();
+        if (clockSkew > 0) {
+            // Take the clock skew into account up front
+            this.createdAt += clockSkew;
+        }
     }
 
     public Object getValue() {
@@ -31,6 +46,9 @@ public class CacheEntry {
     public boolean isExpired(long timeoutInMilliseconds) {
         long now = System.currentTimeMillis();
         if ((now - createdAt) > timeoutInMilliseconds) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Entry is considered expired; the current time " + now + " - the created at time " + createdAt + " was larger than the specified timeout " + timeoutInMilliseconds);
+            }
             return true;
         }
         return false;
@@ -38,10 +56,7 @@ public class CacheEntry {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hash(value);
     }
 
     @Override
@@ -52,15 +67,8 @@ public class CacheEntry {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CacheEntry other = (CacheEntry) obj;
-        if (value == null) {
-            if (other.getValue() != null) {
-                return false;
-            }
-        } else if (!value.equals(other.getValue())) {
-            return false;
-        }
-        return true;
+        CacheValue other = (CacheValue) obj;
+        return Objects.equals(value, other.value);
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,39 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-/**
- *
- */
-public class BoundedHashMap extends LinkedHashMap<String, Object> {
+public class BoundedHashMap extends BoundedGenericHashMap<String, Object> {
 
     private static final long serialVersionUID = 7306671418293201026L;
 
-    private int MAX_ENTRIES = 10000;
-
     public BoundedHashMap(int maxEntries) {
-        super();
-        if (maxEntries > 0) {
-            MAX_ENTRIES = maxEntries;
-        }
+        super(maxEntries);
     }
 
     public BoundedHashMap(int initSize, int maxEntries) {
-        super(initSize);
-        if (maxEntries > 0) {
-            MAX_ENTRIES = maxEntries;
-        }
+        super(initSize, maxEntries);
     }
 
     public BoundedHashMap() {
         super();
-    }
-
-    @Override
-    protected boolean removeEldestEntry(Map.Entry eldest) {
-        return size() > MAX_ENTRIES;
     }
 
 }

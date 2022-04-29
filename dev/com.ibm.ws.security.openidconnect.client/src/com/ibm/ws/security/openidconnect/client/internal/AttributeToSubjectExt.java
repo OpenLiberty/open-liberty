@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,13 +18,11 @@ import java.util.List;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.openidconnect.client.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.clients.common.AttributeToSubject;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
-import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
-import com.ibm.ws.security.openidconnect.token.Payload;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.UserCredentialResolver;
 import com.ibm.wsspi.security.oauth20.UserIdentityException;
@@ -32,7 +30,7 @@ import com.ibm.wsspi.security.oauth20.UserIdentityException;
 /**
  * This class extends AttributeToSubject to add support for the UserCredentialResolver SPI
  */
-public class AttributeToSubjectExt extends AttributeToSubject {
+class AttributeToSubjectExt extends AttributeToSubject {
     public static final TraceComponent tc = Tr.register(AttributeToSubject.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     public static final String JOBJ_TYPE = "jobj";
     public static final String PAYLOAD_TYPE = "payload";
@@ -47,9 +45,8 @@ public class AttributeToSubjectExt extends AttributeToSubject {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @FFDCIgnore({ UserIdentityException.class, IOException.class })
-    public AttributeToSubjectExt(OidcClientConfig clientConfig, JSONObject jobj, String accessToken) {
+    AttributeToSubjectExt(OidcClientConfig clientConfig, JSONObject jobj, String accessToken) {
         earlyinit(clientConfig, accessToken);
         String jobjStr = null;
         //userName = (String) jobj.get(ClientConstants.SUB);
@@ -75,73 +72,6 @@ public class AttributeToSubjectExt extends AttributeToSubject {
 
         initialize(clientConfig, jobj, accessToken);
 
-    }
-
-    @SuppressWarnings("unchecked")
-    public AttributeToSubjectExt(OidcClientConfig clientConfig, Payload payload, String idToken) {
-        earlyinit(clientConfig, idToken);
-        if (isTokenMappingSpi()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "activatedUserResolverRef size():" + activatedUserResolverRef.size());
-            }
-            try {
-                String[] jwtParts = JsonTokenUtil.splitTokenString(idToken);
-                if (jwtParts.length > 1) {
-                    //jwtPart[0] = header, jwtParts[1] = payload
-                    //payloadStr = jwtParts[1]; //payload
-                    String decodedPayload = Base64Coder.base64Decode(jwtParts[1]);
-                    getTheTokenMappingFromSpi(decodedPayload, clientConfig);
-                }
-                //userName = getUserFromUserResolver(jobjStr);
-            } catch (UserIdentityException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SPI implementation throws an exception for user mapping!!");
-                }
-                Tr.error(tc, "PROPAGATION_TOKEN_INTERNAL_ERR", e.getLocalizedMessage(), clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-                return;
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SPI implementation throws an exception for user mapping!!");
-                }
-                Tr.error(tc, "PROPAGATION_TOKEN_INTERNAL_ERR", e.getLocalizedMessage(), clientConfig.getValidationMethod(), clientConfig.getValidationEndpointUrl());
-                return;
-            }
-
-        }
-        initializep(clientConfig, payload, idToken);
-
-    }
-
-    String getUserFromUserResolver(String jobjStr) throws UserIdentityException {
-        String userid = null;
-        Iterator<UserCredentialResolver> userIdResolvers = activatedUserResolverRef.getServices();
-        if (userIdResolvers.hasNext()) {
-            UserCredentialResolver userIdResolver = userIdResolvers.next();
-            userid = userIdResolver.mapToUser(jobjStr);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "spi returns user id = ", userid);
-        }
-        return userid;
-    }
-
-    /**
-     * @param jobjStr
-     * @return
-     * @throws UserIdentityException
-     */
-    @SuppressWarnings("unused")
-    private String getRealmFromUserResolver(String jobjStr) throws UserIdentityException {
-        String realm = null;
-        Iterator<UserCredentialResolver> userIdResolvers = activatedUserResolverRef.getServices();
-        if (userIdResolvers.hasNext()) {
-            UserCredentialResolver userIdResolver = userIdResolvers.next();
-            realm = userIdResolver.mapToRealm(jobjStr);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "spi returns the realm = ", realm);
-        }
-        return realm;
     }
 
     protected boolean isTokenMappingSpi() {
@@ -184,7 +114,7 @@ public class AttributeToSubjectExt extends AttributeToSubject {
 
     }
 
-    public AttributeToSubjectExt(OidcClientConfig clientConfig, OidcTokenImplBase idToken) {
+    AttributeToSubjectExt(OidcClientConfig clientConfig, OidcTokenImplBase idToken) {
         super(clientConfig, idToken);
 
         if (isTokenMappingSpi()) {

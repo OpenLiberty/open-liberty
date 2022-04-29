@@ -18,6 +18,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
@@ -30,12 +31,17 @@ public class AccessTokenCacheHelper {
 
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
+    public AccessTokenCacheKey getCacheKey(@Sensitive String accessToken, String configId) {
+        return new AccessTokenCacheKey(accessToken, configId);
+    }
+
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
         if (!clientConfig.getAccessTokenCacheEnabled()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
-        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(token);
+        AccessTokenCacheKey cacheKey = getCacheKey(token, clientConfig.getId());
+        AccessTokenCacheValue cacheEntry = (AccessTokenCacheValue) cache.get(cacheKey);
         if (cacheEntry == null) {
             return null;
         }
@@ -60,7 +66,8 @@ public class AccessTokenCacheHelper {
             if (customProperties != null) {
                 uniqueID = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
             }
-            cache.put(token, new AccessTokenCacheEntry(uniqueID, result));
+            AccessTokenCacheKey cacheKey = getCacheKey(token, clientConfig.getId());
+            cache.put(cacheKey, new AccessTokenCacheValue(uniqueID, result), clientConfig.getClockSkew());
         }
     }
 
