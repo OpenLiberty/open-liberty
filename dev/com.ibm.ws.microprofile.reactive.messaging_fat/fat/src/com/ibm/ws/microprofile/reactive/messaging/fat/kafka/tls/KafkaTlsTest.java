@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProp
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.apache.kafka.common.config.SslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -31,8 +27,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.Direction;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.TlsTests;
 
 import componenttest.annotation.Server;
@@ -48,7 +46,6 @@ public class KafkaTlsTest {
 
     private static final String APP_NAME = "kafkaTlsTest";
     private static final String APP_GROUP_ID = "tls-test-group";
-    private static final String TRUSTSTORE_FILENAME = "kafkakey.jks";
 
     @Server("SimpleRxMessagingServer")
     @TestServlet(contextRoot = APP_NAME, servlet = KafkaTlsTestServlet.class)
@@ -56,18 +53,15 @@ public class KafkaTlsTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(TlsTests.kafkaContainer.getBootstrapServers(), BasicMessagingBean.CHANNEL_OUT);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, BasicMessagingBean.CHANNEL_OUT);
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(TlsTests.kafkaContainer.getBootstrapServers(), BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(null, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
         ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "liberty-kafka")
-                        .addProperty(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, TRUSTSTORE_FILENAME)
-                        .addProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, TlsTests.kafkaContainer.getKeystorePassword())
-                        .addProperty("security.protocol", "SSL");
+                        .addAll(TlsTests.connectionProperties());
 
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, TlsTests.kafkaContainer.getBootstrapServers())
-                        .addProperty(KafkaTlsTestServlet.TRUSTSTORE_PASSWORD_PROPERTY, TlsTests.kafkaContainer.getKeystorePassword())
+                        .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(TlsTests.connectionProperties()))
                         .include(incomingProperties)
                         .include(outgoingProperties)
                         .include(connectorProperties);
@@ -83,9 +77,7 @@ public class KafkaTlsTest {
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        // Copy the file so it's where copyFileToLibertyServerRoot wants it to be...
-        Files.copy(TlsTests.kafkaContainer.getKeystoreFile().toPath(), Paths.get(server.pathToAutoFVTTestFiles, TRUSTSTORE_FILENAME));
-        server.copyFileToLibertyServerRoot(TRUSTSTORE_FILENAME);
+        KafkaUtils.copyTrustStore(TlsTests.kafkaContainer, server);
 
         server.startServer();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 
@@ -54,77 +52,22 @@ public class ConnectorProperties extends PropertiesAsset {
      * <p>
      * The message type is String
      *
-     * @param kafka       the kafka container
-     * @param channelName the channel and topic name
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String channelName) {
-        return simpleOutgoingChannel(kafka.getBootstrapServers(), channelName);
-    }
-
-    /**
-     * Creates a simple configuration for a channel sending to a topic of the given name
-     * <p>
-     * The message type is String
-     *
-     * @param kafka       the kafka container
-     * @param channelName the channel and topic name
-     * @param topic       the topic name
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String channelName, String topic) {
-        return simpleOutgoingChannel(kafka, DEFAULT_CONNECTOR_ID, channelName, topic);
-    }
-
-    /**
-     * Creates a simple configuration for a channel sending to a topic of the same name
-     * <p>
-     * The message type is String
-     *
-     * @param kafka       the kafka container
-     * @param connectorID the connector ID
-     * @param channelName the channel and topic name
-     * @param topic       the topic name
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String connectorID, String channelName, String topic) {
-        return simpleOutgoingChannel(Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers()), connectorID, channelName, topic);
-    }
-
-    /**
-     * Creates a simple configuration for a channel sending to a topic of the same name
-     * <p>
-     * The message type is String
-     *
-     * @param kafkaBootstrapServers the kafka bootstrap server config
-     * @param channelName           the channel and topic name
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleOutgoingChannel(String kafkaBoostrapServers, String channelName) {
-        return simpleOutgoingChannel(Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBoostrapServers), channelName);
-    }
-
-    /**
-     * Creates a simple configuration for a channel sending to a topic of the same name
-     * <p>
-     * The message type is String
-     *
-     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param connectionProperties the properties required to connect to the kafka broker, may be {@code null} if no properties are required
      * @param channelName          the channel and topic name
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleOutgoingChannel(Map<? extends String, ?> connectionProperties, String channelName) {
         return new ConnectorProperties(Direction.OUTGOING, channelName)
-                        .addAll(connectionProperties)
+                        .addAll(connectionProperties != null ? connectionProperties : Collections.emptyMap())
                         .addProperty("connector", DEFAULT_CONNECTOR_ID);
     }
 
     /**
-     * Creates a simple configuration for a channel sending to a topic of the same name
+     * Creates a simple configuration for a channel sending to a topic
      * <p>
      * The message type is String
      *
-     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param connectionProperties the properties required to connect to the kafka broker, may be {@code null} if no properties are required
      * @param connectorID          the name of the connector
      * @param channelName          the channel name
      * @param topic                the name of the topic
@@ -141,57 +84,29 @@ public class ConnectorProperties extends PropertiesAsset {
      * <p>
      * The message type is String
      *
-     * @param kafka       the kafka container
-     * @param channelName the channel and topic name
-     * @param groupId     the reader group id (used to commit message offsets)
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleIncomingChannel(KafkaContainer kafka, String channelName, String groupId) {
-        return simpleIncomingChannel(kafka.getBootstrapServers(), channelName, groupId);
-    }
-
-    /**
-     * Creates a simple configuration for a channel receiving from a topic of the same name
-     * <p>
-     * The message type is String
-     *
-     * @param kafkaBootstrapServers the kafka bootstrap server config
-     * @param channelName           the channel and topic name
-     * @param groupId               the reader group id (used to commit message offsets)
-     * @return the ConnectorProperties to add to the app configuration
-     */
-    public static ConnectorProperties simpleIncomingChannel(String kafkaBootstrapServers, String channelName, String groupId) {
-        return simpleIncomingChannel(Collections.singletonMap(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers), channelName, groupId);
-    }
-
-    /**
-     * Creates a simple configuration for a channel receiving from a topic of the same name
-     * <p>
-     * The message type is String
-     *
-     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param connectionProperties the properties required to connect to the kafka broker, may be {@code null} if no properties are required
      * @param channelName          the channel and topic name
      * @param groupId              the reader group id (used to commit message offsets)
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String channelName, String groupId) {
         return new ConnectorProperties(Direction.INCOMING, channelName)
-                        .addAll(connectionProperties)
+                        .addAll(connectionProperties != null ? connectionProperties : Collections.emptyMap())
                         .addProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
                         .addProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
                         .addProperty("connector", DEFAULT_CONNECTOR_ID);
     }
 
     /**
-     * Creates a simple configuration for a channel
+     * Creates a simple configuration for a channel receiving from a topic
      * <p>
      * The message type is String
      *
-     * @param connectionProperties the properties required to connect to the kafka broker
+     * @param connectionProperties the properties required to connect to the kafka broker, may be {@code null} if no properties are required
      * @param connectorID          the connector ID
      * @param channelName          the channel name
      * @param groupId              the reader group id (used to commit message offsets)
-     * @param topic                the topic names
+     * @param topic                the topic name
      * @return the ConnectorProperties to add to the app configuration
      */
     public static ConnectorProperties simpleIncomingChannel(Map<? extends String, ?> connectionProperties, String connectorID, String channelName, String groupId, String topic) {

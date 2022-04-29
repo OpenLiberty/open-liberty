@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,17 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.containers.Network;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.flatmap.KafkaFlatMapTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.ConsumerRecordTest;
@@ -63,11 +65,11 @@ public class PlaintextTests {
     }
 
     @ClassRule
-    public static Network network = Network.newNetwork();
-
-    @ClassRule
-    public static KafkaContainer kafkaContainer = new KafkaContainer()
-                    .withNetwork(network)
+    public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()
                     .withStartupTimeout(Duration.ofMinutes(2))
                     .withStartupAttempts(3);
+
+    public static Map<String, String> connectionProperties() {
+        return Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
+    }
 }

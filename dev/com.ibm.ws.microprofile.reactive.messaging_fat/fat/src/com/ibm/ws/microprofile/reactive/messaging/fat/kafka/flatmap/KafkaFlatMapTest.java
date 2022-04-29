@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ public class KafkaFlatMapTest {
     public static void setup() throws Exception {
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, KafkaFlatMapServlet.IN_TOPIC, KafkaFlatMapServlet.APP_GROUPID))
-                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.kafkaContainer, KafkaFlatMapServlet.OUT_TOPIC));
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), KafkaFlatMapServlet.IN_TOPIC, KafkaFlatMapServlet.APP_GROUPID))
+                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), KafkaFlatMapServlet.OUT_TOPIC));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())

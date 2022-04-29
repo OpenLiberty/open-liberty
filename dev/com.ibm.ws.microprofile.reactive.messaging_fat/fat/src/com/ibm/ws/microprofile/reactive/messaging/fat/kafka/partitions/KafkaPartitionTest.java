@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,10 +71,10 @@ public class KafkaPartitionTest {
         // Create and deploy the app
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, PartitionTestReceptionBean.CHANNEL_NAME,
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), PartitionTestReceptionBean.CHANNEL_NAME,
                                                                            KafkaPartitionTestServlet.APP_GROUPID)
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5"))
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, LivePartitionTestBean.CHANNEL_IN,
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), LivePartitionTestBean.CHANNEL_IN,
                                                                            LivePartitionTestServlet.APP_GROUPID)
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5")
                                         .addProperty(KafkaConnectorConstants.UNACKED_LIMIT, "100")); // Want to simulate having lots of unacked messages

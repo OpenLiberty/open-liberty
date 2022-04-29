@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,9 @@ public class KafkaSharedLibTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.kafkaContainer.getBootstrapServers(), SharedLibMessagingBean.CHANNEL_OUT);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.connectionProperties(), SharedLibMessagingBean.CHANNEL_OUT);
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.kafkaContainer.getBootstrapServers(), SharedLibMessagingBean.CHANNEL_IN, APP_GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.connectionProperties(), SharedLibMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())

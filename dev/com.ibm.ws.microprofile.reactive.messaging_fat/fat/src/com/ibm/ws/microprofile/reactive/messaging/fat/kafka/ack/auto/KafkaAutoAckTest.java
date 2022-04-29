@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
@@ -52,7 +51,7 @@ public class KafkaAutoAckTest {
     @BeforeClass
     public static void setup() throws Exception {
 
-        Map<String, Object> connectionProps = KafkaUtils.connectionProperties(PlaintextTests.kafkaContainer);
+        Map<String, String> connectionProps = PlaintextTests.connectionProperties();
 
         ConnectorProperties incomingConnection = ConnectorProperties.simpleIncomingChannel(connectionProps, KafkaAutoAckReceptionBean.CHANNEL_IN,
                                                                                            KafkaAutoAckTestServlet.APP_GROUPID);
