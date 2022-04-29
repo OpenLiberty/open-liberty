@@ -13,14 +13,20 @@ package componenttest.rules.repeater;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 
 /**
- *
+ * Test repeat action that aside from all the logic done by JVMOptionsAction, it's also used
+ * to enable EE9 transformation for test applications.
  */
-public class BetaEE9JVMOptionsAction extends BetaJVMOptionsAction {
+public class EE9JVMOptionsAction extends JVMOptionsAction {
 
-    public static final String ID = "BETA_OPTIONS_EE9";
+    public static final String ID = "JVM_OPTIONS_EE9";
 
-    public BetaEE9JVMOptionsAction() {
+    public EE9JVMOptionsAction() {
         super();
+        withID(ID);
+    }
+
+    public EE9JVMOptionsAction(boolean useBeta) {
+        super(true);
         withID(ID);
     }
 

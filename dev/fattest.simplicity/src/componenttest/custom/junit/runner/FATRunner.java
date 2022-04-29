@@ -56,7 +56,7 @@ import componenttest.annotation.processor.TestServletProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
-import componenttest.rules.repeater.BetaEE9JVMOptionsAction;
+import componenttest.rules.repeater.EE9JVMOptionsAction;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -637,7 +637,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (ExpectedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() || BetaEE9JVMOptionsAction.isActive()) {
+                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() || EE9JVMOptionsAction.isActive()) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;
@@ -691,7 +691,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() || BetaEE9JVMOptionsAction.isActive()) {
+                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() || EE9JVMOptionsAction.isActive()) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;

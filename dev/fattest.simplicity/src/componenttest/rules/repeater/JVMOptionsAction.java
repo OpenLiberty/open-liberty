@@ -10,6 +10,7 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
@@ -32,21 +33,17 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FileUtils;
 
 /**
- * Test repeat action that works with JVM Options adding a beta edition option and an other defined options.
- * Goes through all servers and appends to the jvm.options already specified or creates jvm.options on them.
- *
- * Be careful using this as it doesn't clean up the jvm options after running.
- * so that it interferes with other repeats. Could look more into using a RuleChain
- * in conjunction with RepeatAction to manage things more cleanly
+ * Test repeat action that works with JVM Options adding defined options as needed.
+ * Goes through all servers and clients and appends to the jvm.options already specified or creates jvm.options on them.
  */
-public class BetaJVMOptionsAction extends FeatureReplacementAction {
-    private static final Class<?> c = BetaJVMOptionsAction.class;
+public class JVMOptionsAction extends FeatureReplacementAction {
+    private static final Class<?> c = JVMOptionsAction.class;
 
-    public static final String ID = "BETA_OPTIONS";
+    public static final String ID = "JVM_OPTIONS";
 
     private final Set<String> optionsToAdd;
 
-    private static final String BETA_EDITION_OPTION = "-Dcom.ibm.ws.beta.edition=true";
+    public static final String BETA_EDITION_OPTION = "-Dcom.ibm.ws.beta.edition=true";
 
     private final Set<File> optionFilesCreated = new HashSet<File>();
 
@@ -54,7 +51,17 @@ public class BetaJVMOptionsAction extends FeatureReplacementAction {
 
     private boolean needsFeatureTransformation = false;
 
-    public BetaJVMOptionsAction() {
+    public JVMOptionsAction() {
+        optionsToAdd = new HashSet<String>();
+        withID(ID);
+    }
+
+    /**
+     * Additional constructor for specifying if beta options will be used on the servers
+     *
+     * @param useBeta Use to specify if beta edition will be added to servers
+     */
+    public JVMOptionsAction(boolean useBeta) {
         optionsToAdd = new HashSet<String>();
         optionsToAdd.add(BETA_EDITION_OPTION);
         withID(ID);
@@ -62,42 +69,40 @@ public class BetaJVMOptionsAction extends FeatureReplacementAction {
 
     @Override
     public String toString() {
-        return "Beta Options FAT repeat action (" + getID() + ")";
+        return "JVM Options FAT repeat action (" + getID() + ")";
     }
 
-    //
-
     @Override
-    public BetaJVMOptionsAction addFeature(String addFeature) {
+    public JVMOptionsAction addFeature(String addFeature) {
         needsFeatureTransformation = true;
-        return (BetaJVMOptionsAction) super.addFeature(addFeature);
+        return (JVMOptionsAction) super.addFeature(addFeature);
     }
 
     @Override
-    public BetaJVMOptionsAction addFeatures(Set<String> addFeatures) {
+    public JVMOptionsAction addFeatures(Set<String> addFeatures) {
         needsFeatureTransformation = true;
-        return (BetaJVMOptionsAction) super.addFeatures(addFeatures);
+        return (JVMOptionsAction) super.addFeatures(addFeatures);
     }
 
     @Override
-    public BetaJVMOptionsAction removeFeature(String removeFeature) {
+    public JVMOptionsAction removeFeature(String removeFeature) {
         needsFeatureTransformation = true;
-        return (BetaJVMOptionsAction) super.removeFeature(removeFeature);
+        return (JVMOptionsAction) super.removeFeature(removeFeature);
     }
 
     @Override
-    public BetaJVMOptionsAction removeFeatures(Set<String> removeFeatures) {
+    public JVMOptionsAction removeFeatures(Set<String> removeFeatures) {
         needsFeatureTransformation = true;
-        return (BetaJVMOptionsAction) super.removeFeatures(removeFeatures);
+        return (JVMOptionsAction) super.removeFeatures(removeFeatures);
     }
 
     @Override
-    public BetaJVMOptionsAction withID(String id) {
+    public JVMOptionsAction withID(String id) {
         // TODO Auto-generated method stub
-        return (BetaJVMOptionsAction) super.withID(id);
+        return (JVMOptionsAction) super.withID(id);
     }
 
-    public BetaJVMOptionsAction withOptions(String... jvmOptions) {
+    public JVMOptionsAction withOptions(String... jvmOptions) {
         optionsToAdd.addAll(Arrays.asList(jvmOptions));
         return this;
     }
@@ -105,6 +110,9 @@ public class BetaJVMOptionsAction extends FeatureReplacementAction {
     @Override
     public void setup() throws Exception {
         final String m = "setup";
+
+        //check that there are actually some options to be added
+        assertFalse("No options were set to be added or removed for " + getID(), optionsToAdd.size() == 0);
 
         Path publishDir = Paths.get("publish");
         Path backupsDir = Paths.get("publish/backups");
