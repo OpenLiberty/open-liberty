@@ -417,36 +417,6 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     }
 
     /**
-     * Test that the logout_token is does not contain the session id
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenCreationTests_sessionNotRequired() throws Exception {
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionNotRequired");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsNotRequired);
-    }
-
-    /**
-     * Test that the logout_token is does contain the session id
-     *
-     * @throws Exception
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void LogoutTokenCreationTests_sessionRequired() throws Exception {
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionRequired");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsRequired);
-
-    }
-
-    /**
      * Test that the logout_token constains a jti claim that does NOT match the jti that is contained in the id_token
      *
      * @throws Exception
@@ -488,7 +458,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceAll");
 
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceAllSample", sidIsNotRequired);
 
     }
 
@@ -503,7 +473,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceOne");
 
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceOneSample", sidIsNotRequired);
 
     }
 
@@ -518,7 +488,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceMultiple");
 
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceMultipleSample", sidIsNotRequired);
 
     }
 
@@ -548,9 +518,9 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenCreationTests_sign_HS256() throws Exception {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_sessionNotRequired");
+        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_hs256");
 
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigHS256Sample", sidIsNotRequired);
 
     }
 
@@ -579,7 +549,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_rs256");
 
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigRs256Sample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigRS256Sample", sidIsNotRequired);
 
     }
 

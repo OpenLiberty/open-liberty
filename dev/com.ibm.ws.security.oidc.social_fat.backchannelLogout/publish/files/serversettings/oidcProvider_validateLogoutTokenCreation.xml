@@ -11,48 +11,6 @@
 <server>
 
 	<openidConnectProvider
-		id="OidcConfigSample"
-		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
-		oauthProviderRef="OAuthConfigSample" />
-
-	<oauthProvider
-		id="OAuthConfigSample"
-		autoAuthorize="true"
-	>
-		<autoAuthorizeClient>client_sessionNotRequired</autoAuthorizeClient>
-		<autoAuthorizeClient>client_sessionRequired</autoAuthorizeClient>
-	
-		<localStore>
-			<client
-				name="client_sessionNotRequired"
-				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_sessionNotRequired"
-				scope="ALL_SCOPES"
-				enabled="true"
-			>
-			</client>
-			<client
-				name="client_sessionRequired"
-				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="true"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_sessionRequired"
-				scope="ALL_SCOPES"
-				enabled="true"
-			>
-			</client>
-			
-		</localStore>
-	</oauthProvider>
-
-	<openidConnectProvider
 		id="OidcConfigJtiSample"
 		jtiClaimEnabled="true"
 		signatureAlgorithm="HS256"
@@ -115,19 +73,17 @@
 	</oauthProvider>
 
 	<openidConnectProvider
-		id="OidcConfigAudienceSample"
+		id="OidcConfigAudienceAllSample"
 		signatureAlgorithm="HS256"
 		audience="aud1"
 		keyStoreRef="key_allSigAlg"
-		oauthProviderRef="OAuthConfigAudienceSample" />
+		oauthProviderRef="OAuthConfigAudienceAllSample" />
 
 	<oauthProvider
-		id="OAuthConfigAudienceSample"
+		id="OAuthConfigAudienceAllSample"
 		autoAuthorize="true"
 	>
 		<autoAuthorizeClient>client_nonDefaultAudienceAll</autoAuthorizeClient>
-		<autoAuthorizeClient>client_nonDefaultAudienceOne</autoAuthorizeClient>
-		<autoAuthorizeClient>client_nonDefaultAudienceMultiple</autoAuthorizeClient>
 	
 		<localStore>
 			<client
@@ -143,6 +99,23 @@
 			>
 			</client>
 			
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigAudienceOneSample"
+		signatureAlgorithm="HS256"
+		audience="aud1"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigAudienceOneSample" />
+
+	<oauthProvider
+		id="OAuthConfigAudienceOneSample"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client_nonDefaultAudienceOne</autoAuthorizeClient>
+	
+		<localStore>
 			<client
 				name="client_nonDefaultAudienceOne"
 				secret="secret"
@@ -155,7 +128,24 @@
 				enabled="true"
 			>
 			</client>
-			
+						
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigAudienceMultipleSample"
+		signatureAlgorithm="HS256"
+		audience="aud1"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigAudienceMultipleSample" />
+
+	<oauthProvider
+		id="OAuthConfigAudienceMultipleSample"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client_nonDefaultAudienceMultiple</autoAuthorizeClient>
+	
+		<localStore>
 			<client
 				name="client_nonDefaultAudienceMultiple"
 				secret="secret"
@@ -173,14 +163,42 @@
 	</oauthProvider>
 
 	<openidConnectProvider
-		id="OidcConfigRs256Sample"
+		id="OidcConfigHS256Sample"
+		signatureAlgorithm="HS256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigHS256Sample" />
+
+	<oauthProvider
+		id="OAuthConfigHS256Sample"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client_hs256</autoAuthorizeClient>
+	
+		<localStore>
+			<client
+				name="client_hs256"
+				secret="secret"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
+				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
+				displayname="user1"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_hs256"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigRS256Sample"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keyStoreRef="key_allSigAlg"
-		oauthProviderRef="OAuthConfigRs256Sample" />
+		oauthProviderRef="OAuthConfigRS256Sample" />
 
 	<oauthProvider
-		id="OAuthConfigRs256Sample"
+		id="OAuthConfigRS256Sample"
 		autoAuthorize="true"
 	>
 		<autoAuthorizeClient>client_rs256</autoAuthorizeClient>

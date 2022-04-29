@@ -9,46 +9,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-	<authFilter id="mySessionNotRequiredAuthFilter">
-		<requestUrl
-			matchType="contains" 
-			urlPattern="/simple/client_sessionNotRequired" />
-	</authFilter>
-
-	<openidConnectClient
-		id="client_sessionNotRequired"
-		clientId="client_sessionNotRequired"
-		clientSecret="secret"
-		sharedKey="secret"
-		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
-		userInfoEndpointEnabled="true"
-		authFilterRef="mySessionNotRequiredAuthFilter"
-	>
-	</openidConnectClient>
-
-	<authFilter id="mySessionRequiredAuthFilter">
-		<requestUrl
-			matchType="contains" 
-			urlPattern="/simple/client_sessionRequired" />
-	</authFilter>
-
-	<openidConnectClient
-		id="client_sessionRequired"
-		clientId="client_sessionRequired"
-		clientSecret="secret"
-		sharedKey="secret"
-		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
-		userInfoEndpointEnabled="true"
-		authFilterRef="mySessionRequiredAuthFilter"
-	>
-	</openidConnectClient>
 	
 	<authFilter id="myJtiAuthFilter">
 		<requestUrl
@@ -104,9 +64,9 @@
 		sharedKey="secret"
 		audiences="ALL_AUDIENCES"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceAllSample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceAllSample/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceAllSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesAllAuthFilter"
 	>
@@ -125,9 +85,9 @@
 		sharedKey="secret"
 		audiences="aud1"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceOneSample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceOneSample/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceOneSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesOneAuthFilter"
 	>
@@ -146,15 +106,35 @@
 		sharedKey="secret"
 		audiences="aud1,aud2"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceSample/userinfo"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceMultipleSample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceMultipleSample/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigAudienceMultipleSample/userinfo"
 		userInfoEndpointEnabled="true"
 		authFilterRef="myAudiencesMultipleAuthFilter"
 	>
 	</openidConnectClient>
 	
-	<authFilter id="myRs256AuthFilter">
+	<authFilter id="myHS256AuthFilter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/client_hs256" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client_hs256"
+		clientId="client_hs256"
+		clientSecret="secret"
+		sharedKey="secret"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigHS256Sample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigHS256Sample/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigHS256Sample/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="myHS256AuthFilter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="myRS256AuthFilter">
 		<requestUrl
 			matchType="contains" 
 			urlPattern="/simple/client_rs256" />
@@ -168,11 +148,11 @@
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/token"
-		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRs256Sample/userinfo"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRS256Sample/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRS256Sample/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigRS256Sample/userinfo"
 		userInfoEndpointEnabled="true"
-		authFilterRef="myRs256AuthFilter"
+		authFilterRef="myRS256AuthFilter"
 	>
 	</openidConnectClient>
 		
