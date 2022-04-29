@@ -24,6 +24,7 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -197,6 +198,18 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         List<String> sans = new ArrayList<>();
         if (looksLikeIp(ipAddress)) {
             sans.add("IP:" + ipAddress);
+            try {
+                // Attempt a reverse name lookup on the IP address to get the hostname.
+                // The Kafka client seems to sometimes to find the hostname even if we
+                // only give it the IP address and in that case the certificate needs
+                // the IP address and the hostname
+                String hostname = InetAddress.getByName(ipAddress).getCanonicalHostName();
+                if (!looksLikeIp(hostname)) {
+                    sans.add("DNS:" + hostname);
+                }
+            } catch (Exception e) {
+                // Don't care
+            }
         } else {
             sans.add("DNS:" + ipAddress);
         }
