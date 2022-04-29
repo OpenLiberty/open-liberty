@@ -13,6 +13,7 @@ package com.ibm.ws.kernel.feature.internal.subsystem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
@@ -80,34 +81,38 @@ public class FeatureIntrospector implements Introspector {
                     SubsystemFeatureDefinitionImpl subSysFeatureDef = (SubsystemFeatureDefinitionImpl) proFeatDef;
                     ProvisioningDetails details = subSysFeatureDef.getProvisioningDetails();
                     boolean detailsAreSet = false;
-                    //Create provisioning details if not already set
-                    if (details == null) {
-                        try {
-                            details = new ProvisioningDetails(subSysFeatureDef.getImmutableAttributes().featureFile, null);
-                            details.setImmutableAttributes(subSysFeatureDef.getImmutableAttributes());
-                            subSysFeatureDef.setProvisioningDetails(details);
-                            detailsAreSet = true;
-                        } catch (IOException e) {
-                            //AutoFFDC is fine here
+                    try {
+                        //Create provisioning details if not already set
+                        if (details == null) {
+                            try {
+                                details = new ProvisioningDetails(subSysFeatureDef.getImmutableAttributes().featureFile, null);
+                                details.setImmutableAttributes(subSysFeatureDef.getImmutableAttributes());
+                                subSysFeatureDef.setProvisioningDetails(details);
+                                detailsAreSet = true;
+                            } catch (IOException e) {
+                                //AutoFFDC is fine here
+                            }
                         }
-                    }
-                    boolean isSuperseded = details.isSuperseded();
-                    out.println("    Superseded: " + isSuperseded);
-                    if (isSuperseded) {
-                        out.println("        Superseded by: " + details.getSupersededBy());
-                    }
-                    Collection<FeatureResource> constituents = details.getConstituents(null);
-                    out.println("    Constituents: ");
-                    for (FeatureResource constituent : constituents) {
-                        out.println("        " + constituent.getSymbolicName());
-                        out.println("            " + constituent.getAttributes().toString());
-                    }
-                    if (detailsAreSet) {
-                        subSysFeatureDef.setProvisioningDetails(null);
+                        boolean isSuperseded = details.isSuperseded();
+                        out.println("    Superseded: " + isSuperseded);
+                        if (isSuperseded) {
+                            out.println("        Superseded by: " + details.getSupersededBy());
+                        }
+                        Collection<FeatureResource> constituents = details.getConstituents(null);
+                        out.println("    Constituents: ");
+                        for (FeatureResource constituent : constituents) {
+                            List<String> tolerates = constituent.getTolerates();
+                            String toleratesString = tolerates == null ? "" : ": tolerates:=" + tolerates;
+                            out.println("        " + constituent.getSymbolicName() + " " + toleratesString);
+                            out.println("            " + constituent.getAttributes().toString());
+                        }
+                    } finally {
+                        if (detailsAreSet) {
+                            subSysFeatureDef.setProvisioningDetails(null);
+                        }
                     }
                 }
             }
         }
     }
-
 }
