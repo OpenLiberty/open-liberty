@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2020 IBM Corporation and others.
+    Copyright (c) 2017, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -16,7 +16,4 @@
         <feature>cdi-2.0</feature>
         <feature>beanValidation-2.0</feature>
     </featureManager>
-
-    <!-- CDI and WC trace added for #11250 --> 
-    <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all:com.ibm.ws.webcontainer*=all:JCDI=all:org.jboss.weld*=all:com.ibm.ws.cdi*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
 </server>
