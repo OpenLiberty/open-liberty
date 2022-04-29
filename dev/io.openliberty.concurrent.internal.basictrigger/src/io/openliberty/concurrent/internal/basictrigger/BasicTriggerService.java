@@ -33,8 +33,8 @@ public class BasicTriggerService implements TriggerService {
     private static final TraceComponent tc = Tr.register(BasicTriggerService.class);
 
     @Override
-    public ZonedDateTime getNextRunTime(Object lastExecution, ZonedDateTime taskScheduledTime, Object trigger) {
-        Date nextExecutionDate = ((Trigger) trigger).getNextRunTime((LastExecution) lastExecution, Date.from(taskScheduledTime.toInstant()));
+    public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime taskScheduledTime, Trigger trigger) {
+        Date nextExecutionDate = trigger.getNextRunTime(lastExecution, Date.from(taskScheduledTime.toInstant()));
         return nextExecutionDate == null //
                         ? null //
                         : nextExecutionDate.toInstant().atZone(taskScheduledTime.getZone());
@@ -42,12 +42,12 @@ public class BasicTriggerService implements TriggerService {
 
     @Override
     @Trivial
-    public ZoneId getZoneId(Object trigger) {
+    public ZoneId getZoneId(Trigger trigger) {
         return ZoneId.systemDefault();
     }
 
     @Override
-    public boolean skipRun(Object lastExecution, ZonedDateTime nextExecutionTime, Object trigger) {
-        return ((Trigger) trigger).skipRun((LastExecution) lastExecution, Date.from(nextExecutionTime.toInstant()));
+    public boolean skipRun(LastExecution lastExecution, ZonedDateTime nextExecutionTime, Trigger trigger) {
+        return trigger.skipRun(lastExecution, Date.from(nextExecutionTime.toInstant()));
     }
 }

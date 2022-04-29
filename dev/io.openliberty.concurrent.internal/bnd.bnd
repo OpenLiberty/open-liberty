@@ -52,7 +52,7 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/resources/*.class
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.wsspi.org.osgi.service.metatype;version=latest,\
   com.ibm.ws.concurrency.policy;version=latest,\
-  com.ibm.ws.concurrent;version=latest,\
+  com.ibm.ws.concurrent.jakarta;version=latest,\
   com.ibm.ws.config;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.context;version=latest,\

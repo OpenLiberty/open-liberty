@@ -13,6 +13,9 @@ package com.ibm.ws.concurrent;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import javax.enterprise.concurrent.LastExecution;
+import javax.enterprise.concurrent.Trigger;
+
 /**
  * Invokes trigger operations on a Concurrency 3.0+ ZonedTrigger or Concurrency 1.0/2.0 Trigger,
  * depending on which feature is enabled and whether the trigger implements ZonedTrigger.
@@ -26,8 +29,7 @@ public interface TriggerService {
      * @param trigger           Trigger or ZonedTrigger.
      * @return next time to run the task. Null if the task should not run again.
      */
-    // TODO switch Object to LastExecution and Trigger once projects can compile against Jakartified artifacts
-    ZonedDateTime getNextRunTime(Object lastExecution, ZonedDateTime taskScheduledTime, Object trigger);
+    ZonedDateTime getNextRunTime(LastExecution previous, ZonedDateTime taskScheduledTime, Trigger trigger);
 
     /**
      * Returns the time zone id for the trigger.
@@ -35,8 +37,7 @@ public interface TriggerService {
      * @param trigger Trigger or ZonedTrigger.
      * @return ZonedId of the ZonedTrigger. Otherwise the default ZoneId.
      */
-    // TODO switch Object to Trigger once projects can compile against Jakartified artifacts
-    ZoneId getZoneId(Object trigger);
+    ZoneId getZoneId(Trigger trigger);
 
     /**
      * Invokes skipRun on the Trigger, using the signature with ZonedDateTime if possible.
@@ -46,6 +47,5 @@ public interface TriggerService {
      * @param trigger           Trigger or ZonedTrigger.
      * @return true if the execution of the task should be skipped. Otherwise false.
      */
-    // TODO switch Object to LastExecution and Trigger once projects can compile against Jakartified artifacts
-    boolean skipRun(Object lastExecution, ZonedDateTime nextExecutionTime, Object trigger);
+    boolean skipRun(LastExecution lastExecution, ZonedDateTime nextExecutionTime, Trigger trigger);
 }

@@ -34,12 +34,12 @@ public class ZonedTriggerService implements TriggerService {
     private static final TraceComponent tc = Tr.register(ZonedTriggerService.class);
 
     @Override
-    public ZonedDateTime getNextRunTime(Object lastExecution, ZonedDateTime taskScheduledTime, Object trigger) {
+    public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime taskScheduledTime, Trigger trigger) {
         ZonedDateTime nextExecTime;
         if (trigger instanceof ZonedTrigger) {
-            nextExecTime = ((ZonedTrigger) trigger).getNextRunTime((LastExecution) lastExecution, taskScheduledTime);
+            nextExecTime = ((ZonedTrigger) trigger).getNextRunTime(lastExecution, taskScheduledTime);
         } else {
-            Date nextExecutionDate = ((Trigger) trigger).getNextRunTime((LastExecution) lastExecution, Date.from(taskScheduledTime.toInstant()));
+            Date nextExecutionDate = trigger.getNextRunTime(lastExecution, Date.from(taskScheduledTime.toInstant()));
             nextExecTime = nextExecutionDate == null //
                             ? null //
                             : nextExecutionDate.toInstant().atZone(taskScheduledTime.getZone());
@@ -49,7 +49,7 @@ public class ZonedTriggerService implements TriggerService {
 
     @Override
     @Trivial
-    public ZoneId getZoneId(Object trigger) {
+    public ZoneId getZoneId(Trigger trigger) {
         ZoneId zone = trigger instanceof ZonedTrigger //
                         ? ((ZonedTrigger) trigger).getZoneId() //
                         : ZoneId.systemDefault();
@@ -60,12 +60,12 @@ public class ZonedTriggerService implements TriggerService {
     }
 
     @Override
-    public boolean skipRun(Object lastExecution, ZonedDateTime nextExecutionTime, Object trigger) {
+    public boolean skipRun(LastExecution lastExecution, ZonedDateTime nextExecutionTime, Trigger trigger) {
         boolean skip;
         if (trigger instanceof ZonedTrigger) {
-            skip = ((ZonedTrigger) trigger).skipRun((LastExecution) lastExecution, nextExecutionTime);
+            skip = ((ZonedTrigger) trigger).skipRun(lastExecution, nextExecutionTime);
         } else {
-            skip = ((Trigger) trigger).skipRun((LastExecution) lastExecution, Date.from(nextExecutionTime.toInstant()));
+            skip = trigger.skipRun(lastExecution, Date.from(nextExecutionTime.toInstant()));
         }
         return skip;
     }
