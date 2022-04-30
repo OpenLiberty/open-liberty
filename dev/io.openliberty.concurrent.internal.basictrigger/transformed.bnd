@@ -10,6 +10,6 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: Trigger interoperability for Concurrency 1.0 and 2.0 Jakarta
+Bundle-Name: Trigger interoperability for Jakarta Concurrency 2.0
 Bundle-SymbolicName: io.openliberty.concurrent.internal.basictrigger.jakarta
-Bundle-Description: Trigger interoperability for Java EE Concurrency 1.0 and Jakarta Concurrency 2.0; version=${bVersion}; Jakarta Enabled
+Bundle-Description: Trigger interoperability for Jakarta Concurrency 2.0; version=${bVersion}; Jakarta Enabled
