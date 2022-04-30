@@ -291,6 +291,18 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "javaPermission")
     private ConfigElementList<JavaPermission> javaPermissions;
 
+    @XmlElement(name = "oauth2Login")
+    private ConfigElementList<OAuth2Login> oauth2Logins;
+
+    @XmlElement(name = "oidcLogin")
+    private ConfigElementList<OidcLogin> oidcLogins;
+    
+    @XmlElement(name = "openidConnectClient")
+    private ConfigElementList<OpenidConnectClient> openIdConnectClients;
+
+    @XmlElement(name = "jwtBuilder")
+    private ConfigElementList<JwtBuilder> jwtBuilders;
+    
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -1350,5 +1362,53 @@ public class ServerConfiguration implements Cloneable {
         }
         return this.headers;
 
+    }
+
+    /**
+     * Get the 'oauth2Login' elements.
+     *
+     * @return The {@link OAuth2Login} configuration instance.
+     */
+    public ConfigElementList<OAuth2Login> getOAuth2Logins() {
+        if (this.oauth2Logins == null) {
+            this.oauth2Logins = new ConfigElementList<OAuth2Login>();
+        }
+        return this.oauth2Logins;
+    }
+    
+    /**
+     * Get the 'oidcLogin' elements.
+     *
+     * @return The {@link OidcLogin} configuration instance.
+     */
+    public ConfigElementList<OidcLogin> getOidcLogins() {
+        if (this.oidcLogins == null) {
+            this.oidcLogins = new ConfigElementList<OidcLogin>();
+        }
+        return this.oidcLogins;
+    }
+    
+    /**
+     * Get the 'openidConnectClient' elements.
+     *
+     * @return The {@link OpenidConnectClient} configuration instance.
+     */
+    public ConfigElementList<OpenidConnectClient> getOpenidConnectClients() {
+        if (this.openIdConnectClients == null) {
+            this.openIdConnectClients = new ConfigElementList<OpenidConnectClient>();
+        }
+        return this.openIdConnectClients;
+    }
+
+    /**
+     * Get the 'jwtBuilder' elements.
+     *
+     * @return The {@link JwtBuilder} configuration instance.
+     */
+    public ConfigElementList<JwtBuilder> getJwtBuilders() {
+        if (this.jwtBuilders == null) {
+            this.jwtBuilders = new ConfigElementList<JwtBuilder>();
+        }
+        return this.jwtBuilders;
     }
 }

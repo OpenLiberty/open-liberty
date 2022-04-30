@@ -97,6 +97,14 @@ Include-Resource: \
 
 -dsannotations-inherit = true
 
+Service-Component: \
+  com.ibm.ws.security.jwt.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="\
+      service.vendor=IBM,\
+      classes=com.ibm.ws.security.jwt.internal.ClaimsImpl"
+
 instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
 
 -buildpath: \

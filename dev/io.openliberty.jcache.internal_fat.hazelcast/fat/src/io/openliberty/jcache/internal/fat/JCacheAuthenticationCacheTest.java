@@ -36,7 +36,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache authentication cache tests for LTPA and basic authentication.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheAuthenticationCacheTest extends BaseTestCase {
@@ -72,6 +71,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName, 25000, TTL_SECONDS);
         basicAuthClient1 = new BasicAuthClient(server1);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -85,6 +85,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         server2.addInstalledAppForValidation("basicauth");
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2);
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
     }
@@ -196,7 +197,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         response = basicAuthClient2.accessProtectedServletWithAuthorizedCookie(BasicAuthClient.PROTECTED_ALL_ROLE, basicAuthClient1.getCookieFromLastLogin());
         assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
         assertResponseContainsCustomCredentials(response);
-        assertLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
+        assertJCacheLtpaAuthCacheHit(true, server2, basicAuthClient1.getCookieFromLastLogin());
 
         /*
          * 3. Wait TTL seconds to make the same request to server2 again. This time the entry will have been evicted since
@@ -208,7 +209,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
             response = basicAuthClient2.accessProtectedServletWithAuthorizedCookie(BasicAuthClient.PROTECTED_ALL_ROLE, basicAuthClient1.getCookieFromLastLogin());
             assertTrue("Did not get the expected response", basicAuthClient2.verifyResponse(response, USER1_NAME, false, false));
             assertResponseContainsCustomCredentials(response);
-            assertLtpaAuthCacheHit(false, server2, basicAuthClient1.getCookieFromLastLogin());
+            assertJCacheLtpaAuthCacheHit(false, server2, basicAuthClient1.getCookieFromLastLogin());
         }
     }
 }

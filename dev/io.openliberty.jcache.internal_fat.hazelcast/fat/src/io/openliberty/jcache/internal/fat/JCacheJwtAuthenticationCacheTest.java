@@ -37,8 +37,6 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  * Contains distributed JCache authentication cache tests for JWT SSO.
  */
 // TODO JtiNonceCache (both of them) for Oidc and mpJwt...
-// TODO Can't test against EE9/9.1 until mpJwt supports EE9/9.1. TODO REMOVE???
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
@@ -73,6 +71,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
          */
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName.toString(), 25000, TTL_SECONDS);
+        waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
         if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
             waitForExistingJCache(server1, AUTH_CACHE_NAME);
@@ -85,6 +84,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
          */
         server2.addInstalledAppForValidation("basicauth");
         startServer2(server2, groupName.toString());
+        waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForExistingJCache(server2, AUTH_CACHE_NAME);
 

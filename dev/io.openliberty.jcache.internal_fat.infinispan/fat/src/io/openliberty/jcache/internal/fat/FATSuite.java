@@ -39,7 +39,10 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
                 JCacheDeleteAuthCacheTest.class,
                 JCacheAuthCacheFailureTest.class,
                 JCacheSamlAuthenticationCacheTest.class,
-                JCacheSpnegoAuthenticationCacheTest.class
+                JCacheSpnegoAuthenticationCacheTest.class,
+                JCacheOauth20AuthenticationCacheTest.class,
+                JCacheOidcClientAuthenticationCacheTest.class,
+                JCacheOidcLoginAuthenticationCacheTest.class
 })
 public class FATSuite {
 

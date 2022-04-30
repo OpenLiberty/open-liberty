@@ -66,6 +66,7 @@ addRequiredLibraries {
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 autoFVT.dependsOn ':io.openliberty.jcache.internal_fat.hazelcast:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:samlclient_WAR'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:helloworld_war_ZIP'
 autoFVT.doLast {
   /*
    * Copy the basicauth.war into test servers.
@@ -138,6 +139,25 @@ autoFVT.doLast {
     copy { 
       from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/samlclient.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  /*
+   * Copy the helloworld.war into test servers.
+   */
+  servers = [
+    'io.openliberty.jcache.internal.fat.oauth20.auth.cache.1',
+    'io.openliberty.jcache.internal.fat.oauth20.auth.cache.2',
+    'io.openliberty.jcache.internal.fat.oidcclient.auth.cache.1',
+    'io.openliberty.jcache.internal.fat.oidcclient.auth.cache.2',
+    'io.openliberty.jcache.internal.fat.oidclogin.auth.cache.1',
+    'io.openliberty.jcache.internal.fat.oidclogin.auth.cache.2',
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/helloworld.war.zip")
+      into new File(autoFvtDir, "publish/servers/" + server + '/apps')
+      rename 'helloworld.war.zip', 'helloworld.war'
     }
   }
   

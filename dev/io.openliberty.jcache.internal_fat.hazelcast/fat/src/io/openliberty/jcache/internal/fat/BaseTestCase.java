@@ -19,6 +19,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -31,6 +35,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  * Abstract test class that can extended from concrete test classes to user common testing functionality.
  */
 public abstract class BaseTestCase {
+    private static final Class<?> CLASS = BaseTestCase.class;
 
     protected static final String USER1_NAME = "user1";
     protected static final String USER1_PASSWORD = "user1Password";
@@ -216,18 +221,41 @@ public abstract class BaseTestCase {
      * @param cookie         The LTPA cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
-    protected static void assertLtpaAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
+    protected static void assertJCacheLtpaAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
         /*
          * Make the cookie regex friendly.
          */
         String encodedCookie = encodeForRegex(cookie);
 
         if (expectCacheHit) {
-            assertFalse("Request should have resulted in an auth cache hit for LTPA cookie " + cookie + ".",
+            assertFalse("Request should have resulted in a JCache auth cache hit for LTPA cookie " + cookie + ".",
                         server.findStringsInLogsAndTraceUsingMark(JCACHE_HIT + encodedCookie).isEmpty());
         } else {
-            assertFalse("Request should have resulted in an auth cache miss for LTPA cookie " + cookie + ".",
+            assertFalse("Request should have resulted in a JCache auth cache miss for LTPA cookie " + cookie + ".",
                         server.findStringsInLogsAndTraceUsingMark(JCACHE_MISS + encodedCookie).isEmpty());
+        }
+    }
+
+    /**
+     * Assert whether there was or was not an LTPA authentication cache hit to the in-memory cache.
+     *
+     * @param expectCacheHit Whether to expect there was a cache hit.
+     * @param server         The server to check the logs for the cache hit.
+     * @param cookie         The LTPA cookie to check for.
+     * @throws Exception If the check failed for some unforeseen reason.
+     */
+    protected static void assertInMemoryLtpaAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
+        /*
+         * Make the cookie regex friendly.
+         */
+        String encodedCookie = encodeForRegex(cookie);
+
+        if (expectCacheHit) {
+            assertFalse("Request should have resulted in an in-memory auth cache hit for LTPA cookie " + cookie + ".",
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_HIT + encodedCookie).isEmpty());
+        } else {
+            assertFalse("Request should have resulted in an in-memory auth cache miss for LTPA cookie " + cookie + ".",
+                        server.findStringsInLogsAndTraceUsingMark(IN_MEMORY_MISS + encodedCookie).isEmpty());
         }
     }
 
@@ -381,6 +409,16 @@ public abstract class BaseTestCase {
     }
 
     /**
+     * Wait for the HTTPS endpoint for the server to start.
+     *
+     * @param server The server to check the logs for the message.
+     */
+    protected static void waitForDefaultHttpsEndpoint(LibertyServer server) {
+        assertNotNull("The SSL TCP Channel for default HTTPS endpoint did not start in time.",
+                      server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl.*" + server.getHttpDefaultSecurePort()));
+    }
+
+    /**
      * Wait for a messaging indicating an existing JCache cache has been found.
      *
      * @param server    The server to check the logs for the message.
@@ -419,7 +457,7 @@ public abstract class BaseTestCase {
      * @param config The configuration to use.
      * @throws Exception If there was an issue updating the server configuration.
      */
-    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
+    protected static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
         updateConfigDynamically(server, config, false);
     }
 
@@ -432,12 +470,35 @@ public abstract class BaseTestCase {
      * @param waitForAppToStart Wait for the application to start.
      * @throws Exception If there was an issue updating the server configuration.
      */
-    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
+    protected static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
         resetMarksInLogs(server);
         server.updateServerConfiguration(config);
         server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
         if (waitForAppToStart) {
             server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
         }
+    }
+
+    /**
+     * Print some output for the {@link WebResponse}.
+     *
+     * @param methodName The method making the call.
+     * @param response   The {@link WebResponse} to printout.
+     * @param webClient  The {@link WebClient} the response came from.
+     */
+    protected static void printWebResponse(String methodName, WebResponse response, WebClient webClient) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("\n");
+        sb.append("Request URL: ").append(response.getWebRequest().getUrl()).append("\n");
+        sb.append("HTTP Response: ").append(response.getStatusCode()).append(" ").append(response.getStatusMessage()).append("\n");
+        for (NameValuePair nvp : response.getResponseHeaders()) {
+            sb.append("HEADER: ").append(nvp).append("\n");
+        }
+        for (Cookie cookie : webClient.getCookies(response.getWebRequest().getUrl())) {
+            sb.append("COOKIE: ").append(cookie).append("\n");
+        }
+        sb.append(response.getContentAsString());
+
+        Log.info(CLASS, methodName, "Got page response: " + sb.toString());
     }
 }

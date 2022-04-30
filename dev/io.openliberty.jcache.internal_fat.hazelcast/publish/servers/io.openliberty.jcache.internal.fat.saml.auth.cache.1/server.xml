@@ -31,7 +31,8 @@
 		location="${shared.resource.dir}/configs/customLoginModule.xml" />
 	<include
 		location="${shared.resource.dir}/configs/libraries.xml" />
-	<include location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/ssl.xml" />
 
 	<!--
 		Configure the JCache instances.
@@ -57,8 +58,8 @@
 		NOTE: spCookieName is not public and is used for experimental testing.
 	 -->
 	<samlWebSso20 id="defaultSP" authFilterRef="myAuthFilter1"
-		idpMetadata="${server.config.dir}/resources/security/master-samlIdpMetadata.xml"
-		httpsRequired="false" allowCreate="true" realmName="master"
+		idpMetadata="${server.config.dir}/resources/security/TestRealm-samlIdpMetadata.xml"
+		httpsRequired="false" allowCreate="true" realmName="TestRealm"
 		spCookieName="SamlSpCookie_ABCDEFG" />
 
 	<authFilter id="myAuthFilter1">
